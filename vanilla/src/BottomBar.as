@@ -1,26 +1,34 @@
-﻿class BottomBar extends MovieClip
+﻿import Components.Meter;
+
+class BottomBar extends MovieClip
 {
+	var Buttons:Array;
+	
     var PlayerInfoCard_mc;
 	var iLastItemType;
+	
 	var HealthMeter;
 	var MagickaMeter;
 	var StaminaMeter;
 	var LevelMeter;
-	var Buttons;
+
 	var iLeftOffset;
 	var PlayerInfoObj;
 	
     function BottomBar()
     {
         super();
+		
         PlayerInfoCard_mc = PlayerInfoCard_mc;
         iLastItemType = InventoryDefines.ICT_NONE;
-        HealthMeter = new Components.Meter(PlayerInfoCard_mc.HealthRect.MeterInstance.Meter_mc);
-        MagickaMeter = new Components.Meter(PlayerInfoCard_mc.MagickaRect.MeterInstance.Meter_mc);
-        StaminaMeter = new Components.Meter(PlayerInfoCard_mc.StaminaRect.MeterInstance.Meter_mc);
-        LevelMeter = new Components.Meter(PlayerInfoCard_mc.LevelMeterInstance.Meter_mc);
+        HealthMeter = new Meter(PlayerInfoCard_mc.HealthRect.MeterInstance.Meter_mc);
+        MagickaMeter = new Meter(PlayerInfoCard_mc.MagickaRect.MeterInstance.Meter_mc);
+        StaminaMeter = new Meter(PlayerInfoCard_mc.StaminaRect.MeterInstance.Meter_mc);
+        LevelMeter = new Meter(PlayerInfoCard_mc.LevelMeterInstance.Meter_mc);
+		
         var _loc3 = 0;
         Buttons = new Array();
+		
         while (this["Button" + _loc3] != undefined)
         {
             Buttons.push(this["Button" + _loc3]);
@@ -164,7 +172,8 @@
                     _loc5 = false;
                     break;
                 } 
-            } // End of switch
+            }
+			
             if (_loc5)
             {
                 PlayerInfoCard_mc.CarryWeightValue.textAutoSize = "shrink";
@@ -260,7 +269,8 @@
         {
             PlayerInfoCard_mc.VendorGoldLabel.SetText("$Gold");
             PlayerInfoCard_mc.VendorGoldLabel.SetText(astrVendorName + " " + PlayerInfoCard_mc.VendorGoldLabel.text);
-        } // end if
+        }
+		
         PlayerInfoCard_mc.VendorGoldLabel._x = PlayerInfoCard_mc.VendorGoldValue._x + PlayerInfoCard_mc.VendorGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.VendorGoldLabel._width - 5;
         PlayerInfoCard_mc.PlayerGoldValue._x = PlayerInfoCard_mc.VendorGoldLabel._x + PlayerInfoCard_mc.VendorGoldLabel.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldValue._width - 20;
         PlayerInfoCard_mc.PlayerGoldLabel._x = PlayerInfoCard_mc.PlayerGoldValue._x + PlayerInfoCard_mc.PlayerGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldLabel._width - 5;
@@ -287,7 +297,8 @@
                         {
                             _loc2 = _loc2 + " <font color=\'#FF0000\'>(" + _loc4.toString() + ")</font>";
                         } // end if
-                    } // end else if
+                    }
+					
                     PlayerInfoCard_mc.ArmorRatingValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.ArmorRatingValue.html = true;
                     PlayerInfoCard_mc.ArmorRatingValue.SetText(_loc2, true);
@@ -333,7 +344,7 @@
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             Buttons[_loc2].SetPlatform(aiPlatform, abPS3Switch);
-        } // end of for
+        }
     }
 	
     function ShowButtons()
@@ -341,7 +352,7 @@
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             Buttons[_loc2]._visible = Buttons[_loc2].label.length > 0;
-        } // end of for
+        }
     }
 	
     function HideButtons()
@@ -349,7 +360,7 @@
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             Buttons[_loc2]._visible = false;
-        } // end of for
+        }
     }
 	
     function SetButtonsText()
@@ -358,7 +369,8 @@
         {
             Buttons[_loc3].label = _loc3 < arguments.length ? (arguments[_loc3]) : ("");
             Buttons[_loc3]._visible = Buttons[_loc3].label.length > 0;
-        } // end of for
+        }
+		
         PositionButtons();
     }
 	
@@ -369,7 +381,7 @@
             Buttons[aIndex].label = aText;
             Buttons[aIndex]._visible = aText.length > 0;
             PositionButtons();
-        } // end if
+        }
     }
 	
     function SetButtonsArt(aButtonArt)
@@ -377,7 +389,7 @@
         for (var _loc2 = 0; _loc2 < aButtonArt.length; ++_loc2)
         {
             SetButtonArt(aButtonArt[_loc2], _loc2);
-        } // end of for
+        }
     }
 	
     function GetButtonsArt()
@@ -386,7 +398,8 @@
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             _loc3[_loc2] = Buttons[_loc2].GetArt();
-        } // end of for
+        }
+		
         return (_loc3);
     }
 	

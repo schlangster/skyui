@@ -38,7 +38,8 @@ class ItemCard extends MovieClip
 	var ShoutEffectsLabel;
 	var ShoutCostValue;
 	var ActiveEffectTimeValue;
-	var SecsText; SoulLevel;
+	var SecsText;
+	var SoulLevel;
 	var ListChargeMeter;
 	var ChargeMeter_Default;
 	var TotalChargesValue;
@@ -53,9 +54,10 @@ class ItemCard extends MovieClip
 	var StolenTextInstance;
 	var EnchantingSlider_mc;
 	var PrevFocus;
-	var dispatchEvent;
 	var SliderValueText;
 	var MessageText;
+	
+	var dispatchEvent:Function;
 	
     function ItemCard()
     {

@@ -18,13 +18,13 @@ class QuantitySlider extends gfx.controls.Slider
             {
                 if (details.navEquivalent == NavigationCode.PAGE_DOWN || details.navEquivalent == NavigationCode.GAMEPAD_L1)
                 {
-                    value = Math.floor(value - maximum / 4));
+                    value = Math.floor(value - maximum / 4);
                     dispatchEvent({type: "change"});
                     _loc4 = true;
                 }
                 else if (details.navEquivalent == NavigationCode.PAGE_UP || details.navEquivalent == NavigationCode.GAMEPAD_R1)
                 {
-                    value = Math.ceil(value + maximum / 4));
+                    value = Math.ceil(value + maximum / 4);
                     dispatchEvent({type: "change"});
                     _loc4 = true;
                 }

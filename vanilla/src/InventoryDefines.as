@@ -16,6 +16,7 @@
     static var ICT_SPELL_DEFAULT = 13;
     static var ICT_LIST = 14;
     static var ICT_CRAFT_ENCHANTING = 15;
+	
     static var ES_NONE = 0;
     static var ES_EQUIPPED = 1;
     static var ES_LEFT_EQUIPPED = 2;
