@@ -7,12 +7,12 @@ class BottomBar extends MovieClip
     var PlayerInfoCard_mc;
 	var iLastItemType;
 	
-	var HealthMeter;
-	var MagickaMeter;
-	var StaminaMeter;
-	var LevelMeter;
+	var HealthMeter:Meter;
+	var MagickaMeter:Meter;
+	var StaminaMeter:Meter;
+	var LevelMeter:Meter;
 
-	var iLeftOffset;
+	var iLeftOffset:Number;
 	var PlayerInfoObj;
 	
     function BottomBar()
@@ -26,17 +26,17 @@ class BottomBar extends MovieClip
         StaminaMeter = new Meter(PlayerInfoCard_mc.StaminaRect.MeterInstance.Meter_mc);
         LevelMeter = new Meter(PlayerInfoCard_mc.LevelMeterInstance.Meter_mc);
 		
-        var _loc3 = 0;
+        var i = 0;
         Buttons = new Array();
 		
-        while (this["Button" + _loc3] != undefined)
+        while (this["Button" + i] != undefined)
         {
-            Buttons.push(this["Button" + _loc3]);
-            ++_loc3;
+            Buttons.push(this["Button" + i]);
+            ++i;
         }
     }
 	
-    function PositionElements(aiLeftOffset, aiRightOffset)
+    function PositionElements(aiLeftOffset:Number, aiRightOffset:Number)
     {
         iLeftOffset = aiLeftOffset;
         PositionButtons();
@@ -56,7 +56,7 @@ class BottomBar extends MovieClip
     function UpdatePerItemInfo(aItemUpdateObj)
     {
         var type = aItemUpdateObj.type;
-        var _loc5 = true;
+        var isEquip = true;
 		
         if (type != undefined)
         {
@@ -78,74 +78,72 @@ class BottomBar extends MovieClip
                 case InventoryDefines.ICT_ARMOR:
                 {
                     PlayerInfoCard_mc.gotoAndStop("Armor");
-                    var _loc4 = Math.floor(PlayerInfoObj.armor).toString();
+                    var armorStr = Math.floor(PlayerInfoObj.armor).toString();
 					
                     if (aItemUpdateObj.armorChange != undefined)
                     {
-                        var _loc7 = Math.round(aItemUpdateObj.armorChange);
-                        if (_loc7 > 0)
+                        var armorChange = Math.round(aItemUpdateObj.armorChange);
+                        if (armorChange > 0)
                         {
-                            _loc4 = _loc4 + " <font color=\'#189515\'>(+" + _loc7.toString() + ")</font>";
+                            armorStr = armorStr + " <font color=\'#189515\'>(+" + armorChange.toString() + ")</font>";
                         }
-                        else if (_loc7 < 0)
+                        else if (armorChange < 0)
                         {
-                            _loc4 = _loc4 + " <font color=\'#FF0000\'>(" + _loc7.toString() + ")</font>";
+                            armorStr = armorStr + " <font color=\'#FF0000\'>(" + armorChange.toString() + ")</font>";
                         }
                     }
 					
                     PlayerInfoCard_mc.ArmorRatingValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.ArmorRatingValue.html = true;
-                    PlayerInfoCard_mc.ArmorRatingValue.SetText(_loc4, true);
+                    PlayerInfoCard_mc.ArmorRatingValue.SetText(armorStr, true);
                     break;
                 } 
                 case InventoryDefines.ICT_WEAPON:
                 {
                     PlayerInfoCard_mc.gotoAndStop("Weapon");
-                    _loc4 = Math.floor(PlayerInfoObj.damage).toString();
+                    var dmgStr = Math.floor(PlayerInfoObj.damage).toString();
 					
                     if (aItemUpdateObj.damageChange != undefined)
                     {
                         var _loc6 = Math.round(aItemUpdateObj.damageChange);
                         if (_loc6 > 0)
                         {
-                            _loc4 = _loc4 + " <font color=\'#189515\'>(+" + _loc6.toString() + ")</font>";
+                            dmgStr = dmgStr + " <font color=\'#189515\'>(+" + _loc6.toString() + ")</font>";
                         }
                         else if (_loc6 < 0)
                         {
-                            _loc4 = _loc4 + " <font color=\'#FF0000\'>(" + _loc6.toString() + ")</font>";
-                        } // end if
+                            dmgStr = dmgStr + " <font color=\'#FF0000\'>(" + _loc6.toString() + ")</font>";
+                        }
                     }
 					
                     PlayerInfoCard_mc.DamageValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.DamageValue.html = true;
-                    PlayerInfoCard_mc.DamageValue.SetText(_loc4, true);
+                    PlayerInfoCard_mc.DamageValue.SetText(dmgStr, true);
                     break;
                 } 
                 case InventoryDefines.ICT_POTION:
                 case InventoryDefines.ICT_FOOD:
                 {
-                    var _loc9 = 0;
-                    var _loc8 = 1;
-                    var _loc10 = 2;
-                    if (aItemUpdateObj.potionType == _loc8)
+                    if (aItemUpdateObj.potionType == 1)
                     {
                         PlayerInfoCard_mc.gotoAndStop("MagickaPotion");
                     }
-                    else if (aItemUpdateObj.potionType == _loc10)
+                    else if (aItemUpdateObj.potionType == 2)
                     {
                         PlayerInfoCard_mc.gotoAndStop("StaminaPotion");
                     }
-                    else if (aItemUpdateObj.potionType == _loc9)
+                    else if (aItemUpdateObj.potionType == 0)
                     {
                         PlayerInfoCard_mc.gotoAndStop("HealthPotion");
-                    } // end else if
+                    }
+					
                     break;
                 } 
                 case InventoryDefines.ICT_BOOK:
                 case InventoryDefines.ICT_INGREDIENT:
                 case InventoryDefines.ICT_MISC:
                 case InventoryDefines.ICT_KEY:
-		{
+				{
                     PlayerInfoCard_mc.gotoAndStop("Default");
                     break;
                 } 
@@ -153,36 +151,33 @@ class BottomBar extends MovieClip
                 case InventoryDefines.ICT_ACTIVE_EFFECT:
                 {
                     PlayerInfoCard_mc.gotoAndStop("Magic");
-                    _loc5 = false;
+                    isEquip = false;
                     break;
                 }
-
-
                 case InventoryDefines.ICT_SPELL:
                 {
                     PlayerInfoCard_mc.gotoAndStop("MagicSkill");
                     if (aItemUpdateObj.magicSchoolName != undefined)
                     {
                         UpdateSkillBar(aItemUpdateObj.magicSchoolName, aItemUpdateObj.magicSchoolLevel, aItemUpdateObj.magicSchoolPct);
-                    } // end if
-                    _loc5 = false;
+                    }
+                    isEquip = false;
                     break;
                 } 
                 case InventoryDefines.ICT_SHOUT:
                 {
                     PlayerInfoCard_mc.gotoAndStop("Shout");
                     PlayerInfoCard_mc.DragonSoulTextInstance.SetText(PlayerInfoObj.dragonSoulText);
-                    _loc5 = false;
+                    isEquip = false;
                     break;
                 }
-		default:
-		{
+				default:
+				{
                     PlayerInfoCard_mc.gotoAndStop("Default");
-                    break;
                 } 
             }
 			
-            if (_loc5)
+            if (isEquip)
             {
                 PlayerInfoCard_mc.CarryWeightValue.textAutoSize = "shrink";
                 PlayerInfoCard_mc.CarryWeightValue.SetText(Math.ceil(PlayerInfoObj.encumbrance) + "/" + Math.floor(PlayerInfoObj.maxEncumbrance));
@@ -190,6 +185,7 @@ class BottomBar extends MovieClip
                 PlayerInfoCard_mc.PlayerGoldLabel._x = PlayerInfoCard_mc.PlayerGoldValue._x + PlayerInfoCard_mc.PlayerGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldLabel._width;
                 PlayerInfoCard_mc.CarryWeightValue._x = PlayerInfoCard_mc.PlayerGoldLabel._x + PlayerInfoCard_mc.PlayerGoldLabel.getLineMetrics(0).x - PlayerInfoCard_mc.CarryWeightValue._width - 5;
                 PlayerInfoCard_mc.CarryWeightLabel._x = PlayerInfoCard_mc.CarryWeightValue._x + PlayerInfoCard_mc.CarryWeightValue.getLineMetrics(0).x - PlayerInfoCard_mc.CarryWeightLabel._width;
+				
                 switch (type)
                 {
                     case InventoryDefines.ICT_ARMOR:
@@ -204,12 +200,13 @@ class BottomBar extends MovieClip
                         PlayerInfoCard_mc.DamageLabel._x = PlayerInfoCard_mc.DamageValue._x + PlayerInfoCard_mc.DamageValue.getLineMetrics(0).x - PlayerInfoCard_mc.DamageLabel._width;
                         break;
                     } 
-                } // End of switch
-            } // end if
+                }
+            }
+			
             UpdateStatMeter(PlayerInfoCard_mc.HealthRect, HealthMeter, PlayerInfoObj.health, PlayerInfoObj.maxHealth, PlayerInfoObj.healthColor);
             UpdateStatMeter(PlayerInfoCard_mc.MagickaRect, MagickaMeter, PlayerInfoObj.magicka, PlayerInfoObj.maxMagicka, PlayerInfoObj.magickaColor);
             UpdateStatMeter(PlayerInfoCard_mc.StaminaRect, StaminaMeter, PlayerInfoObj.stamina, PlayerInfoObj.maxStamina, PlayerInfoObj.staminaColor);
-        } // end if
+        }
     }
 	
     function UpdatePlayerInfo(aPlayerUpdateObj, aItemUpdateObj)
@@ -218,7 +215,7 @@ class BottomBar extends MovieClip
         UpdatePerItemInfo(aItemUpdateObj);
     }
 	
-    function UpdateSkillBar(aSkillName, aiLevelStart, afLevelPercent)
+    function UpdateSkillBar(aSkillName, aiLevelStart:Number, afLevelPercent:Number)
     {
         PlayerInfoCard_mc.SkillLevelLabel.SetText(aSkillName);
         PlayerInfoCard_mc.SkillLevelCurrent.SetText(aiLevelStart);
@@ -227,18 +224,19 @@ class BottomBar extends MovieClip
         LevelMeter.SetPercent(afLevelPercent);
     }
 	
-    function UpdateCraftingInfo(aSkillName, aiLevelStart, afLevelPercent)
+    function UpdateCraftingInfo(aSkillName, aiLevelStart:Number, afLevelPercent:Number)
     {
         PlayerInfoCard_mc.gotoAndStop("Crafting");
         UpdateSkillBar(aSkillName, aiLevelStart, afLevelPercent);
     }
 	
-    function UpdateStatMeter(aMeterRect, aMeterObj, aiCurrValue, aiMaxValue, aColor)
+    function UpdateStatMeter(aMeterRect, aMeterObj, aiCurrValue:Number, aiMaxValue:Number, aColor)
     {
         if (aColor == undefined)
         {
             aColor = "#FFFFFF";
-        } // end if
+        }
+		
         if (aMeterRect._alpha > 0)
         {
             if (aMeterRect.MeterText != undefined)
@@ -249,15 +247,16 @@ class BottomBar extends MovieClip
             } // end if
             aMeterRect.MeterInstance.gotoAndStop("Pause");
             aMeterObj.SetPercent(aiCurrValue / aiMaxValue * 100);
-        } // end if
+        }
     }
 	
-    function SetBarterInfo(aiPlayerGold, aiVendorGold, aiGoldDelta, astrVendorName)
+    function SetBarterInfo(aiPlayerGold:Number, aiVendorGold:Number, aiGoldDelta:Number, astrVendorName:String)
     {
         if (PlayerInfoCard_mc._currentframe == 1)
         {
             PlayerInfoCard_mc.gotoAndStop("Barter");
-        } // end if
+        }
+		
         PlayerInfoCard_mc.PlayerGoldValue.textAutoSize = "shrink";
         PlayerInfoCard_mc.VendorGoldValue.textAutoSize = "shrink";
 		
@@ -341,45 +340,45 @@ class BottomBar extends MovieClip
                     PlayerInfoCard_mc.gotoAndStop("Barter");
                     break;
                 } 
-            } // End of switch
-        } // end if
+            }
+        }
     }
 	
-    function SetGiftInfo(aiFavorPoints)
+    function SetGiftInfo(aiFavorPoints:Number)
     {
         PlayerInfoCard_mc.gotoAndStop("Gift");
     }
 	
     function SetPlatform(aiPlatform, abPS3Switch)
     {
-        for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
+        for (var i = 0; i < Buttons.length; ++i)
         {
-            Buttons[_loc2].SetPlatform(aiPlatform, abPS3Switch);
+            Buttons[i].SetPlatform(aiPlatform, abPS3Switch);
         }
     }
 	
     function ShowButtons()
     {
-        for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
+        for (var i = 0; i < Buttons.length; ++i)
         {
-            Buttons[_loc2]._visible = Buttons[_loc2].label.length > 0;
+            Buttons[i]._visible = Buttons[i].label.length > 0;
         }
     }
 	
     function HideButtons()
     {
-        for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
+        for (var i = 0; i < Buttons.length; ++i)
         {
-            Buttons[_loc2]._visible = false;
+            Buttons[i]._visible = false;
         }
     }
 	
     function SetButtonsText()
     {
-        for (var _loc3 = 0; _loc3 < Buttons.length; ++_loc3)
+        for (var i = 0; i < Buttons.length; ++i)
         {
-            Buttons[_loc3].label = _loc3 < arguments.length ? (arguments[_loc3]) : ("");
-            Buttons[_loc3]._visible = Buttons[_loc3].label.length > 0;
+            Buttons[i].label = i < arguments.length ? (arguments[i]) : ("");
+            Buttons[i]._visible = Buttons[i].label.length > 0;
         }
 		
         PositionButtons();
@@ -397,45 +396,46 @@ class BottomBar extends MovieClip
 	
     function SetButtonsArt(aButtonArt)
     {
-        for (var _loc2 = 0; _loc2 < aButtonArt.length; ++_loc2)
+        for (var i = 0; i < aButtonArt.length; ++i)
         {
-            SetButtonArt(aButtonArt[_loc2], _loc2);
+            SetButtonArt(aButtonArt[i], i);
         }
     }
 	
     function GetButtonsArt()
     {
-        var _loc3 = new Array(Buttons.length);
-        for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
+        var a = new Array(Buttons.length);
+        for (var i = 0; i < Buttons.length; ++i)
         {
-            _loc3[_loc2] = Buttons[_loc2].GetArt();
+            a[i] = Buttons[i].GetArt();
         }
 		
-        return (_loc3);
+        return a;
     }
 	
-    function SetButtonArt(aPlatformArt, aIndex)
+    function SetButtonArt(aPlatformArt, aIndex:Number)
     {
         if (aIndex < Buttons.length)
         {
-            var _loc2 = Buttons[aIndex];
-            _loc2.PCArt = aPlatformArt.PCArt;
-            _loc2.XBoxArt = aPlatformArt.XBoxArt;
-            _loc2.PS3Art = aPlatformArt.PS3Art;
-            _loc2.RefreshArt();
-        } // end if
+            var button = Buttons[aIndex];
+            button.PCArt = aPlatformArt.PCArt;
+            button.XBoxArt = aPlatformArt.XBoxArt;
+            button.PS3Art = aPlatformArt.PS3Art;
+            button.RefreshArt();
+        }
     }
 	
     function PositionButtons()
     {
-        var _loc4 = 10;
-        var _loc3 = iLeftOffset;
-        for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
+        var spacing = 10;
+        var curPos = iLeftOffset;
+		
+        for (var i = 0; i < Buttons.length; ++i)
         {
-            if (Buttons[_loc2].label.length > 0)
+            if (Buttons[i].label.length > 0)
             {
-                Buttons[_loc2]._x = _loc3 + Buttons[_loc2].ButtonArt._width;
-                _loc3 = Buttons[_loc2]._x + Buttons[_loc2].textField.getLineMetrics(0).width + _loc4;
+                Buttons[i]._x = curPos + Buttons[i].ButtonArt._width;
+                curPos = Buttons[i]._x + Buttons[i].textField.getLineMetrics(0).width + spacing;
             }
         }
     }
