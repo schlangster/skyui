@@ -6,6 +6,7 @@
     var getTextFormat;
 	var htmlText;
 	var setTextFormat;
+	
 	var text;
 	var _parent;
 	var _y;

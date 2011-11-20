@@ -49,6 +49,7 @@ class Shared.BSScrollingList extends MovieClip
         fListHeight = border._height;
         ListScrollbar = scrollbar;
         iMaxItemsShown = 0;
+		
         for (var _loc3 = GetClipByIndex(iMaxItemsShown); _loc3 != undefined; _loc3 = GetClipByIndex(++iMaxItemsShown))
         {
             _loc3.clipIndex = iMaxItemsShown;
@@ -257,7 +258,7 @@ class Shared.BSScrollingList extends MovieClip
 	
     function get disableSelection()
     {
-        return (bDisableSelection);
+        return bDisableSelection;
     }
 	
     function set disableSelection(abFlag)
@@ -267,7 +268,7 @@ class Shared.BSScrollingList extends MovieClip
 	
     function get disableInput()
     {
-        return (bDisableInput);
+        return bDisableInput;
     }
 	
     function set disableInput(abFlag)
@@ -277,27 +278,27 @@ class Shared.BSScrollingList extends MovieClip
 	
     function get maxEntries()
     {
-        return (iMaxItemsShown);
+        return iMaxItemsShown;
     }
 	
     function get textOption()
     {
-        return (iTextOption);
+        return iTextOption;
     }
 	
     function set textOption(strNewOption)
     {
         if (strNewOption == "None")
         {
-            iTextOption = Shared.BSScrollingList.TEXT_OPTION_NONE;
+            iTextOption = TEXT_OPTION_NONE;
         }
         else if (strNewOption == "Shrink To Fit")
         {
-            iTextOption = Shared.BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT;
+            iTextOption = TEXT_OPTION_SHRINK_TO_FIT;
         }
         else if (strNewOption == "Multi-Line")
         {
-            iTextOption = Shared.BSScrollingList.TEXT_OPTION_MULTILINE;
+            iTextOption = TEXT_OPTION_MULTILINE;
         }
     }
 	

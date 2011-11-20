@@ -80,12 +80,12 @@ class InventoryLists extends MovieClip
             {
                 if (details.navEquivalent == strHideItemsCode && iCurrentState == InventoryLists.TWO_PANELS)
                 {
-                    this.HideItemsList();
+                    HideItemsList();
                     _loc2 = true;
                 }
                 else if (details.navEquivalent == strShowItemsCode && iCurrentState == InventoryLists.ONE_PANEL)
                 {
-                    this.ShowItemsList();
+                    ShowItemsList();
                     _loc2 = true;
                 }
             }
@@ -202,11 +202,11 @@ class InventoryLists extends MovieClip
     {
         if (iCurrentState == InventoryLists.ONE_PANEL)
         {
-            this.ShowItemsList();
+            ShowItemsList();
         }
         else if (iCurrentState == InventoryLists.TWO_PANELS)
         {
-            this.ShowItemsList(true, false);
+            ShowItemsList(true, false);
         }
     }
 	
@@ -214,14 +214,14 @@ class InventoryLists extends MovieClip
     {
         if (iCurrentState == InventoryLists.TWO_PANELS && !_ItemsList.disableSelection && !_ItemsList.disableInput)
         {
-            this.HideItemsList();
+            HideItemsList();
             _CategoriesList.UpdateList();
         }
     }
 	
     function onCategoriesListMoveUp(event)
     {
-        this.doCategorySelectionChange(event);
+        doCategorySelectionChange(event);
         if (event.scrollChanged == true)
         {
             _CategoriesList._parent.gotoAndPlay("moveUp");
@@ -230,7 +230,7 @@ class InventoryLists extends MovieClip
 	
     function onCategoriesListMoveDown(event)
     {
-        this.doCategorySelectionChange(event);
+        doCategorySelectionChange(event);
         if (event.scrollChanged == true)
         {
             _CategoriesList._parent.gotoAndPlay("moveDown");
@@ -241,7 +241,7 @@ class InventoryLists extends MovieClip
     {
         if (event.keyboardOrMouse == 0)
         {
-            this.doCategorySelectionChange(event);
+            doCategorySelectionChange(event);
         } // end if
     }
 	
@@ -267,13 +267,13 @@ class InventoryLists extends MovieClip
     {
         if (event.keyboardOrMouse == 0)
         {
-            this.doItemsSelectionChange(event);
+            doItemsSelectionChange(event);
         }
     }
 	
     function doCategorySelectionChange(event)
     {
-        this.dispatchEvent({type: "categoryChange", index: event.index});
+        dispatchEvent({type: "categoryChange", index: event.index});
         if (event.index != -1)
         {
             gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);

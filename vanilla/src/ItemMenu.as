@@ -69,7 +69,7 @@ class ItemMenu extends MovieClip
     function PositionElements()
     {
         Shared.GlobalFunc.SetLockFunction();
-        (MovieClip)(InventoryLists_mc).Lock("L");
+        MovieClip(InventoryLists_mc).Lock("L");
         InventoryLists_mc._x = InventoryLists_mc._x - 20;
         var _loc4 = Stage.visibleRect.x + Stage.safeRect.x;
         var _loc3 = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
@@ -81,6 +81,7 @@ class ItemMenu extends MovieClip
         RestoreCategoryRect._x = ExitMenuRect._x + InventoryLists_mc.CategoriesList._parent._width;
         ItemsListInputCatcher._x = RestoreCategoryRect._x + RestoreCategoryRect._width;
         ItemsListInputCatcher._width = _root._width - ItemsListInputCatcher._x;
+		
         if (MouseRotationRect != undefined)
         {
             (MovieClip)(MouseRotationRect).Lock("T");
