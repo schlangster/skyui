@@ -141,6 +141,7 @@ class DialogueMenu extends MovieClip
         var _loc11 = 1;
         var _loc8 = 2;
         var _loc10 = 3;
+		
         TopicList.ClearList();
 		
         for (var _loc3 = 0; _loc3 < arguments.length - 1; _loc3 = _loc3 + _loc10)
@@ -158,9 +159,9 @@ class DialogueMenu extends MovieClip
 	
     function DoShowDialogueList(abNewList, abHideExitButton)
     {
-        if (eMenuState == DialogueMenu.TOPIC_CLICKED || eMenuState == DialogueMenu.SHOW_GREETING && TopicList.entryList.length > 0)
+        if (eMenuState == TOPIC_CLICKED || eMenuState == SHOW_GREETING && TopicList.entryList.length > 0)
         {
-            this.ShowDialogueList(abNewList, abNewList && eMenuState == DialogueMenu.TOPIC_CLICKED);
+            ShowDialogueList(abNewList, abNewList && eMenuState == TOPIC_CLICKED);
         }
 		
         ExitButton._visible = !abHideExitButton;
@@ -179,13 +180,13 @@ class DialogueMenu extends MovieClip
     {
         if (bAllowProgress && event.keyboardOrMouse != 0)
         {
-            if (eMenuState == DialogueMenu.TOPIC_LIST_SHOWN)
+            if (eMenuState == TOPIC_LIST_SHOWN)
             {
-                this.onSelectionClick();
+                onSelectionClick();
             }
-            else if (eMenuState == DialogueMenu.TOPIC_CLICKED || eMenuState == DialogueMenu.SHOW_GREETING)
+            else if (eMenuState == TOPIC_CLICKED || eMenuState == SHOW_GREETING)
             {
-                this.SkipText();
+                SkipText();
             }
             bAllowProgress = false;
         }
@@ -207,18 +208,18 @@ class DialogueMenu extends MovieClip
         {
             return;
         } // end if
-        this.onItemSelect();
+        onItemSelect();
     }
 	
     function onCancelPress()
     {
-        if (eMenuState == DialogueMenu.SHOW_GREETING)
+        if (eMenuState == SHOW_GREETING)
         {
-            this.SkipText();
+            SkipText();
         }
         else
         {
-            this.StartHideMenu();
+            StartHideMenu();
         } // end else if
     }
 	
@@ -237,7 +238,7 @@ class DialogueMenu extends MovieClip
         if (aEvent.scrollChanged == true)
         {
             aEvent.target._parent.gotoAndPlay("moveUp");
-        } // end if
+        }
     }
 	
     function playListDownAnim(aEvent)
@@ -245,23 +246,26 @@ class DialogueMenu extends MovieClip
         if (aEvent.scrollChanged == true)
         {
             aEvent.target._parent.gotoAndPlay("moveDown");
-        } // end if
+        }
     }
 	
     function onSelectionClick()
     {
-        if (eMenuState == DialogueMenu.TOPIC_LIST_SHOWN)
+        if (eMenuState == TOPIC_LIST_SHOWN)
         {
-            eMenuState = DialogueMenu.TOPIC_CLICKED;
-        } // end if
+            eMenuState = TOPIC_CLICKED;
+        }
+		
         if (TopicList.scrollPosition != TopicList.selectedIndex)
         {
             TopicList.RestoreScrollPosition(TopicList.selectedIndex, true);
             TopicList.UpdateList();
-        } // end if
+        }
+		
         TopicListHolder.gotoAndPlay("topicClicked");
         TopicListHolder.TextCopy_mc._visible = true;
         TopicListHolder.TextCopy_mc.textField.SetText(TopicListHolder.List_mc.selectedEntry.text);
+		
         var _loc2 = TopicListHolder.TextCopy_mc._y - TopicListHolder.List_mc._y - TopicListHolder.List_mc.Entry4._y;
         TopicListHolder.TextCopy_mc.textField._y = 6.250000 - _loc2;
         GameDelegate.call("TopicClicked", [TopicList.selectedEntry.topicIndex]);
