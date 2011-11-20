@@ -55,24 +55,25 @@ class BottomBar extends MovieClip
 	
     function UpdatePerItemInfo(aItemUpdateObj)
     {
-        var _loc3 = aItemUpdateObj.type;
+        var type = aItemUpdateObj.type;
         var _loc5 = true;
-        if (_loc3 != undefined)
+		
+        if (type != undefined)
         {
-            iLastItemType = _loc3;
+            iLastItemType = type;
         }
         else
         {
-            _loc3 = iLastItemType;
+            type = iLastItemType;
             if (aItemUpdateObj == undefined)
             {
                 aItemUpdateObj = {type: iLastItemType};
-            } // end if
+            }
         }
 		
         if (PlayerInfoObj != undefined && aItemUpdateObj != undefined)
         {
-            switch (_loc3)
+            switch (type)
             {
                 case InventoryDefines.ICT_ARMOR:
                 {
@@ -89,7 +90,7 @@ class BottomBar extends MovieClip
                         else if (_loc7 < 0)
                         {
                             _loc4 = _loc4 + " <font color=\'#FF0000\'>(" + _loc7.toString() + ")</font>";
-                        } // end if
+                        }
                     }
 					
                     PlayerInfoCard_mc.ArmorRatingValue.textAutoSize = "shrink";
@@ -101,6 +102,7 @@ class BottomBar extends MovieClip
                 {
                     PlayerInfoCard_mc.gotoAndStop("Weapon");
                     _loc4 = Math.floor(PlayerInfoObj.damage).toString();
+					
                     if (aItemUpdateObj.damageChange != undefined)
                     {
                         var _loc6 = Math.round(aItemUpdateObj.damageChange);
@@ -143,19 +145,20 @@ class BottomBar extends MovieClip
                 case InventoryDefines.ICT_INGREDIENT:
                 case InventoryDefines.ICT_MISC:
                 case InventoryDefines.ICT_KEY:
-                case InventoryDefines.ICT_SPELL_DEFAULT:
-                {
+		{
                     PlayerInfoCard_mc.gotoAndStop("Default");
                     break;
                 } 
+                case InventoryDefines.ICT_SPELL_DEFAULT:
                 case InventoryDefines.ICT_ACTIVE_EFFECT:
-                case InventoryDefines.ICT_SPELL:
                 {
                     PlayerInfoCard_mc.gotoAndStop("Magic");
                     _loc5 = false;
                     break;
-                } 
-                case InventoryDefines.ICT_SHOUT:
+                }
+
+
+                case InventoryDefines.ICT_SPELL:
                 {
                     PlayerInfoCard_mc.gotoAndStop("MagicSkill");
                     if (aItemUpdateObj.magicSchoolName != undefined)
@@ -165,11 +168,16 @@ class BottomBar extends MovieClip
                     _loc5 = false;
                     break;
                 } 
-                default:
+                case InventoryDefines.ICT_SHOUT:
                 {
                     PlayerInfoCard_mc.gotoAndStop("Shout");
                     PlayerInfoCard_mc.DragonSoulTextInstance.SetText(PlayerInfoObj.dragonSoulText);
                     _loc5 = false;
+                    break;
+                }
+		default:
+		{
+                    PlayerInfoCard_mc.gotoAndStop("Default");
                     break;
                 } 
             }
@@ -182,7 +190,7 @@ class BottomBar extends MovieClip
                 PlayerInfoCard_mc.PlayerGoldLabel._x = PlayerInfoCard_mc.PlayerGoldValue._x + PlayerInfoCard_mc.PlayerGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldLabel._width;
                 PlayerInfoCard_mc.CarryWeightValue._x = PlayerInfoCard_mc.PlayerGoldLabel._x + PlayerInfoCard_mc.PlayerGoldLabel.getLineMetrics(0).x - PlayerInfoCard_mc.CarryWeightValue._width - 5;
                 PlayerInfoCard_mc.CarryWeightLabel._x = PlayerInfoCard_mc.CarryWeightValue._x + PlayerInfoCard_mc.CarryWeightValue.getLineMetrics(0).x - PlayerInfoCard_mc.CarryWeightLabel._width;
-                switch (_loc3)
+                switch (type)
                 {
                     case InventoryDefines.ICT_ARMOR:
                     {
@@ -252,6 +260,7 @@ class BottomBar extends MovieClip
         } // end if
         PlayerInfoCard_mc.PlayerGoldValue.textAutoSize = "shrink";
         PlayerInfoCard_mc.VendorGoldValue.textAutoSize = "shrink";
+		
         if (aiGoldDelta == undefined)
         {
             PlayerInfoCard_mc.PlayerGoldValue.SetText(aiPlayerGold.toString(), true);
@@ -263,8 +272,10 @@ class BottomBar extends MovieClip
         else
         {
             PlayerInfoCard_mc.PlayerGoldValue.SetText(aiPlayerGold.toString() + " <font color=\'#FF0000\'>(" + aiGoldDelta.toString() + ")</font>", true);
-        } // end else if
+        }
+		
         PlayerInfoCard_mc.VendorGoldValue.SetText(aiVendorGold.toString());
+		
         if (astrVendorName != undefined)
         {
             PlayerInfoCard_mc.VendorGoldLabel.SetText("$Gold");
