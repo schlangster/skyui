@@ -1,4 +1,6 @@
-﻿class Components.Meter
+﻿import Shared.GlobalFunc;
+
+class Components.Meter
 {
     var Empty:Number;
 	var Full:Number;
@@ -27,8 +29,9 @@
     {
         CurrentPercent = Math.min(100, Math.max(aPercent, 0));
         TargetPercent = CurrentPercent;
-        var _loc2 = Math.floor(Shared.GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent));
-        meterMovieClip.gotoAndStop(_loc2);
+		
+        var frame = Math.floor(GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent));
+        meterMovieClip.gotoAndStop(frame);
     }
 	
     function SetTargetPercent(aPercent:Number)
@@ -53,12 +56,12 @@
             if (TargetPercent - CurrentPercent > FillSpeed)
             {
                 CurrentPercent = CurrentPercent + FillSpeed;
-                var _loc3 = Shared.GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
-                meterMovieClip.gotoAndStop(_loc3);
+                var frame = GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
+                meterMovieClip.gotoAndStop(frame);
             }
             else
             {
-                this.SetPercent(TargetPercent);
+                SetPercent(TargetPercent);
             }
         }
         else if (TargetPercent <= CurrentPercent)
@@ -76,12 +79,12 @@
                     CurrentPercent = TargetPercent;
                 }
 				
-                _loc3 = Shared.GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
-                meterMovieClip.gotoAndStop(_loc3);
+                var frame = GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
+                meterMovieClip.gotoAndStop(frame);
             }
             else if (CurrentPercent >= 0)
             {
-                this.SetPercent(TargetPercent);
+                SetPercent(TargetPercent);
             }
         }
     }

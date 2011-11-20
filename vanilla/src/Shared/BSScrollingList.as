@@ -1,4 +1,7 @@
-﻿class Shared.BSScrollingList extends MovieClip
+﻿import gfx.events.EventDispatcher;
+import gfx.ui.NavigationCode;
+
+class Shared.BSScrollingList extends MovieClip
 {
 	static var TEXT_OPTION_NONE = 0;
     static var TEXT_OPTION_SHRINK_TO_FIT = 1;
@@ -36,7 +39,7 @@
         bDisableSelection = false;
         bDisableInput = false;
         bMouseDrivenNav = false;
-        gfx.events.EventDispatcher.initialize(this);
+		EventDispatcher.initialize(this);
         Mouse.addListener(this);
         iSelectedIndex = -1;
         iScrollPosition = 0;
@@ -46,7 +49,7 @@
         fListHeight = border._height;
         ListScrollbar = scrollbar;
         iMaxItemsShown = 0;
-        for (var _loc3 = this.GetClipByIndex(iMaxItemsShown); _loc3 != undefined; _loc3 = this.GetClipByIndex(++iMaxItemsShown))
+        for (var _loc3 = GetClipByIndex(iMaxItemsShown); _loc3 != undefined; _loc3 = GetClipByIndex(++iMaxItemsShown))
         {
             _loc3.clipIndex = iMaxItemsShown;
             _loc3.onRollOver = function ()
@@ -64,7 +67,7 @@
                     _parent.onItemPress(aiKeyboardOrMouse);
                     if (!_parent.bDisableInput && onMousePress != undefined)
                     {
-                        this.onMousePress();
+                        onMousePress();
                     }
                 }
             };
@@ -84,7 +87,7 @@
         {
             ListScrollbar.position = 0;
             ListScrollbar.addEventListener("scroll", this, "onScroll");
-        } // end if
+        }
     }
 	
     function ClearList()
@@ -94,7 +97,7 @@
 	
     function GetClipByIndex(aiIndex)
     {
-        return (this["Entry" + aiIndex]);
+        return this["Entry" + aiIndex];
     }
 	
     function handleInput(details, pathToFocus)
@@ -102,23 +105,23 @@
         var _loc2 = false;
         if (!bDisableInput)
         {
-            var _loc4 = this.GetClipByIndex(selectedIndex - scrollPosition);
+            var _loc4 = GetClipByIndex(selectedIndex - scrollPosition);
             _loc2 = _loc4 != undefined && _loc4.handleInput != undefined && _loc4.handleInput(details, pathToFocus.slice(1));
             if (!_loc2 && Shared.GlobalFunc.IsKeyPressed(details))
             {
-                if (details.navEquivalent == gfx.ui.NavigationCode.UP)
+                if (details.navEquivalent == NavigationCode.UP)
                 {
-                    this.moveSelectionUp();
+                    moveSelectionUp();
                     _loc2 = true;
                 }
-                else if (details.navEquivalent == gfx.ui.NavigationCode.DOWN)
+                else if (details.navEquivalent == NavigationCode.DOWN)
                 {
-                    this.moveSelectionDown();
+                    moveSelectionDown();
                     _loc2 = true;
                 }
-                else if (!bDisableSelection && details.navEquivalent == gfx.ui.NavigationCode.ENTER)
+                else if (!bDisableSelection && details.navEquivalent == NavigationCode.ENTER)
                 {
-                    this.onItemPress();
+                    onItemPress();
                     _loc2 = true;
                 }
             }
@@ -134,7 +137,7 @@
             {
                 if (_loc2 == this)
                 {
-                    this.doSetSelectedIndex(-1, 0);
+                    doSetSelectedIndex(-1, 0);
                     if (delta < 0)
                     {
                         scrollPosition = scrollPosition + 1;
@@ -151,7 +154,7 @@
 	
     function get selectedIndex()
     {
-        return (iSelectedIndex);
+        return iSelectedIndex;
     }
 	
     function set selectedIndex(aiNewIndex)
@@ -161,7 +164,7 @@
 	
     function get listAnimating()
     {
-        return (bListAnimating);
+        return bListAnimating;
     }
 	
     function set listAnimating(abFlag)
@@ -177,7 +180,7 @@
             iSelectedIndex = aiNewIndex;
             if (_loc2 != -1)
             {
-                this.SetEntry(this.GetClipByIndex(EntriesA[_loc2].clipIndex), EntriesA[_loc2]);
+                SetEntry(GetClipByIndex(EntriesA[_loc2].clipIndex), EntriesA[_loc2]);
             }
 			
             if (iSelectedIndex != -1)
@@ -194,15 +197,15 @@
                     }
                     else
                     {
-                        SetEntry(this.GetClipByIndex(EntriesA[iSelectedIndex].clipIndex), EntriesA[iSelectedIndex]);
+                        SetEntry(GetClipByIndex(EntriesA[iSelectedIndex].clipIndex), EntriesA[iSelectedIndex]);
                     }
                 }
                 else
                 {
-                    this.SetEntry(this.GetClipByIndex(EntriesA[iSelectedIndex].clipIndex), EntriesA[iSelectedIndex]);
+                    SetEntry(GetClipByIndex(EntriesA[iSelectedIndex].clipIndex), EntriesA[iSelectedIndex]);
                 }
             }
-            this.dispatchEvent({type: "selectionChange", index: iSelectedIndex, keyboardOrMouse: aiKeyboardOrMouse});
+            dispatchEvent({type: "selectionChange", index: iSelectedIndex, keyboardOrMouse: aiKeyboardOrMouse});
         }
     }
 	
@@ -226,7 +229,7 @@
             }
             else
             {
-                this.updateScrollPosition(aiNewPosition);
+                updateScrollPosition(aiNewPosition);
             }
         }
     }
@@ -234,7 +237,7 @@
     function updateScrollPosition(aiPosition)
     {
         iScrollPosition = aiPosition;
-        this.UpdateList();
+        UpdateList();
     }
 	
     function get selectedEntry()
@@ -300,17 +303,19 @@
 	
     function UpdateList()
     {
-        var _loc6 = this.GetClipByIndex(0)._y;
+        var _loc6 = GetClipByIndex(0)._y;
         var _loc5 = 0;
+		
         for (var _loc2 = 0; _loc2 < iScrollPosition; ++_loc2)
         {
             EntriesA[_loc2].clipIndex = undefined;
-        } // end of for
+        }
+		
         iListItemsShown = 0;
         for (var _loc2 = iScrollPosition; _loc2 < EntriesA.length && iListItemsShown < iMaxItemsShown && _loc5 <= fListHeight; ++_loc2)
         {
-            var _loc3 = this.GetClipByIndex(iListItemsShown);
-            this.SetEntry(_loc3, EntriesA[_loc2]);
+            var _loc3 = GetClipByIndex(iListItemsShown);
+            SetEntry(_loc3, EntriesA[_loc2]);
             EntriesA[_loc2].clipIndex = iListItemsShown;
             _loc3.itemIndex = _loc2;
             _loc3._y = _loc6 + _loc5;
@@ -324,7 +329,7 @@
 		
         for (var _loc4 = iListItemsShown; _loc4 < iMaxItemsShown; ++_loc4)
         {
-            this.GetClipByIndex(_loc4)._visible = false;
+            GetClipByIndex(_loc4)._visible = false;
         }
 		
         if (ScrollUp != undefined)
@@ -343,7 +348,7 @@
     {
         var _loc2 = iMaxScrollPosition;
         fListHeight = border._height;
-        this.CalculateMaxScrollPosition();
+        CalculateMaxScrollPosition();
         if (ListScrollbar != undefined)
         {
             if (_loc2 != iMaxScrollPosition)
@@ -353,12 +358,12 @@
                 if (iScrollbarDrawTimerID != undefined)
                 {
                     clearInterval(iScrollbarDrawTimerID);
-                } // end if
+                }
                 iScrollbarDrawTimerID = setInterval(this, "SetScrollbarVisibility", 50);
             }
             else
             {
-                this.SetScrollbarVisibility();
+                SetScrollbarVisibility();
             }
         }
 		
@@ -371,7 +376,7 @@
         {
             iScrollPosition = iMaxScrollPosition;
         }
-        this.UpdateList();
+        UpdateList();
     }
 	
     function SetScrollbarVisibility()
@@ -386,7 +391,7 @@
         var _loc3 = 0;
         for (var _loc2 = EntriesA.length - 1; _loc2 >= 0 && _loc3 <= fListHeight; --_loc2)
         {
-            _loc3 = _loc3 + this.GetEntryHeight(_loc2);
+            _loc3 = _loc3 + GetEntryHeight(_loc2);
             if (_loc3 <= fListHeight)
             {
             }
@@ -396,9 +401,9 @@
 	
     function GetEntryHeight(aiEntryIndex)
     {
-        var _loc2 = this.GetClipByIndex(0);
-        this.SetEntry(_loc2, EntriesA[aiEntryIndex]);
-        return (_loc2._height);
+        var _loc2 = GetClipByIndex(0);
+        SetEntry(_loc2, EntriesA[aiEntryIndex]);
+        return _loc2._height;
     }
 	
     function moveSelectionUp()
@@ -435,11 +440,11 @@
     {
         if (!bDisableInput && !bDisableSelection && iSelectedIndex != -1)
         {
-            this.dispatchEvent({type: "itemPress", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
+            dispatchEvent({type: "itemPress", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
         }
         else
         {
-            this.dispatchEvent({type: "listPress"});
+            dispatchEvent({type: "listPress"});
         }
     }
 	
@@ -447,7 +452,7 @@
     {
         if (!bDisableInput && !bDisableSelection && iSelectedIndex != -1 && aiButtonIndex == 1)
         {
-            this.dispatchEvent({type: "itemPressAux", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
+            dispatchEvent({type: "itemPressAux", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
         }
     }
 	

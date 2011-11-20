@@ -15,7 +15,7 @@ class Components.UniformTimeMeter extends Components.Meter
 	var Empty;
 	var meterMovieClip;
 	
-    function UniformTimeMeter(aMovieClip, aFinishSound, aClip, aAnimStart)
+    function UniformTimeMeter(aMovieClip:MovieClip, aFinishSound, aClip, aAnimStart)
     {
         super(aMovieClip);
         FinishSound = aFinishSound;

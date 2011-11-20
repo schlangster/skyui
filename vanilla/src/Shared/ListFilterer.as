@@ -6,8 +6,7 @@ class Shared.ListFilterer
 	var EntryMatchesFunc;
 	var _filterArray;
 	
-	// Mixin
-	var dispatchEvent;
+	var dispatchEvent:Function;
 	
     function ListFilterer()
     {

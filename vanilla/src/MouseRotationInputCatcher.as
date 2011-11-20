@@ -2,7 +2,6 @@
 {
 	static var PROCESS_ROTATION_DELAY = 150;
 	
-    //var _parent,
 	var iProcessRotationDelayTimerID;
 	
     function MouseRotationInputCatcher()
@@ -19,7 +18,7 @@
         } // end if
         if (_loc2 && iProcessRotationDelayTimerID == undefined)
         {
-            iProcessRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", MouseRotationInputCatcher.PROCESS_ROTATION_DELAY);
+            iProcessRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", PROCESS_ROTATION_DELAY);
         } // end if
     }
 	

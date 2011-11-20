@@ -11,10 +11,10 @@
 	var getNextHighestDepth;
 	var ShowNotifications = true;
     
-	static var Instance,
-	static var AnimLetter,
-	static var ShoutLetter,
-	static var LevelUpMeterIntervalIndex,
+	static var Instance;
+	static var AnimLetter;
+	static var ShoutLetter;
+	static var LevelUpMeterIntervalIndex;
 	static var LevelUpMeterKillIntervalIndex;
 	static var QuestNotificationIntervalIndex = 0;
     static var AnimationCount = 0;

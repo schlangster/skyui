@@ -1,5 +1,8 @@
 ﻿class Shared.GlobalFunc
 {
+    static var RegisteredTextFields = new Object();
+    static var RegisteredMovieClips = new Object();
+	
     var getTextFormat;
 	var htmlText;
 	var setTextFormat;
@@ -8,8 +11,6 @@
 	var _y;
 	var _x;
 	var _currentframe;
-	//var gotoAndStop;
-	//var gotoAndPlay;
 	var _name;
     
 	static function Lerp(aTargetMin:Number, aTargetMax:Number, aSourceMin:Number, aSourceMax:Number, aSource:Number, abClamp:Number):Number
@@ -19,7 +20,7 @@
         {
             _loc1 = Math.min(Math.max(_loc1, aTargetMin), aTargetMax);
         }
-        return (_loc1);
+        return _loc1;
     }
     
 	static function IsKeyPressed(aInputInfo, abProcessKeyHeldDown)
@@ -34,7 +35,7 @@
 	static function RoundDecimal(aNumber:Number, aPrecision:Number):Number
     {
         var _loc1 = Math.pow(10, aPrecision);
-        return (Math.round(_loc1 * aNumber) / _loc1);
+        return Math.round(_loc1 * aNumber) / _loc1;
     }
     
 	static function MaintainTextFormat()
@@ -63,7 +64,7 @@
                 this.setTextFormat(_loc4);
             } // end else if
         };
-    } // End of the function
+    } 
 	
     static function SetLockFunction()
     {
@@ -104,7 +105,8 @@
                 {
                     _loc2.push(this[_loc3]);
                 } // end if
-            } // end of for...in
+            }
+			
             return (_loc2);
         };
         MovieClip.prototype.showMovieClips = function ()
@@ -118,7 +120,8 @@
                 } // end if
             } // end of for...in
         };
-    } // End of the function
+    }
+	
     static function AddReverseFunctions()
     {
         MovieClip.prototype.PlayReverse = function ()
@@ -153,39 +156,43 @@
             delete this.onEnterFrame;
             this.gotoAndPlay(aFrame);
         };
-    } // End of the function
+    }
+	
     static function GetTextField(aParentClip, aName)
     {
-        if (Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name] != undefined)
+        if (RegisteredTextFields[aName + aParentClip._name] != undefined)
         {
-            return (Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name]);
+            return (RegisteredTextFields[aName + aParentClip._name]);
         }
         else
         {
             trace (aName + " is not registered a TextField name.");
         } // end else if
-    } // End of the function
+    }
+	
     static function GetMovieClip(aParentClip, aName)
     {
-        if (Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name] != undefined)
+        if (RegisteredMovieClips[aName + aParentClip._name] != undefined)
         {
-            return (Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name]);
+            return (RegisteredMovieClips[aName + aParentClip._name]);
         }
         else
         {
             trace (aName + " is not registered a MovieClip name.");
         } // end else if
-    } // End of the function
+    }
+	
     static function AddRegisterTextFields()
     {
         TextField.prototype.RegisterTextField = function (aStartingClip)
         {
-            if (Shared.GlobalFunc.RegisteredTextFields[_name + aStartingClip._name] == undefined)
+            if (RegisteredTextFields[_name + aStartingClip._name] == undefined)
             {
-                Shared.GlobalFunc.RegisteredTextFields[_name + aStartingClip._name] = this;
+                RegisteredTextFields[_name + aStartingClip._name] = this;
             } // end if
         };
-    } // End of the function
+    }
+	
     static function RegisterTextFields(aStartingClip)
     {
         for (var _loc2 in aStartingClip)
@@ -195,25 +202,28 @@
                 aStartingClip[_loc2].RegisterTextField(aStartingClip);
             } // end if
         } // end of for...in
-    } // End of the function
+    }
+	
     static function RegisterAllTextFieldsInTimeline(aStartingClip)
     {
         for (var _loc2 = 1; aStartingClip._totalFrames && _loc2 <= aStartingClip._totalFrames; ++_loc2)
         {
             aStartingClip.gotoAndStop(_loc2);
-            Shared.GlobalFunc.RegisterTextFields(aStartingClip);
+            RegisterTextFields(aStartingClip);
         } // end of for
-    } // End of the function
+    }
+	
     static function AddRegisterMovieClips()
     {
         MovieClip.prototype.RegisterMovieClip = function (aStartingClip)
         {
-            if (Shared.GlobalFunc.RegisteredMovieClips[_name + aStartingClip._name] == undefined)
+            if (RegisteredMovieClips[_name + aStartingClip._name] == undefined)
             {
-                Shared.GlobalFunc.RegisteredMovieClips[_name + aStartingClip._name] = this;
+                RegisteredMovieClips[_name + aStartingClip._name] = this;
             } // end if
         };
-    } // End of the function
+    }
+	
     static function RegisterMovieClips(aStartingClip)
     {
         for (var _loc2 in aStartingClip)
@@ -223,7 +233,8 @@
                 aStartingClip[_loc2].RegisterMovieClip(aStartingClip);
             } // end if
         } // end of for...in
-    } // End of the function
+    }
+	
     static function RecursiveRegisterMovieClips(aStartingClip, aRootClip)
     {
         for (var _loc3 in aStartingClip)
@@ -232,20 +243,22 @@
             {
                 if (aStartingClip[_loc3] != aStartingClip)
                 {
-                    Shared.GlobalFunc.RecursiveRegisterMovieClips(aStartingClip[_loc3], aRootClip);
+                    RecursiveRegisterMovieClips(aStartingClip[_loc3], aRootClip);
                 } // end if
                 aStartingClip[_loc3].RegisterMovieClip(aRootClip);
             } // end if
         } // end of for...in
-    } // End of the function
+    }
+	
     static function RegisterAllMovieClipsInTimeline(aStartingClip)
     {
         for (var _loc2 = 1; aStartingClip._totalFrames && _loc2 <= aStartingClip._totalFrames; ++_loc2)
         {
             aStartingClip.gotoAndStop(_loc2);
-            Shared.GlobalFunc.RegisterMovieClips(aStartingClip);
+            RegisterMovieClips(aStartingClip);
         } // end of for
-    } // End of the function
+    }
+	
     static function StringTrim(astrText)
     {
         var _loc2 = 0;
@@ -262,7 +275,5 @@
         } // end of for
         _loc3 = _loc3.substring(0, _loc1 + 1);
         return (_loc3);
-    } // End of the function
-    static var RegisteredTextFields = new Object();
-    static var RegisteredMovieClips = new Object();
-} // End of Class
+    }
+}

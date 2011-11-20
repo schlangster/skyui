@@ -18,11 +18,11 @@
         };
         _loc2.target = obj;
         _loc2.func = func;
-        return (_loc2);
+        return _loc2;
     }
 	
     function createDelegate(obj)
     {
-        return (mx.utils.Delegate.create(obj, func));
+        return create(obj, func);
     }
 }

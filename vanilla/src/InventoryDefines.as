@@ -31,23 +31,23 @@
     {
         switch (aiItemType)
         {
-            case InventoryDefines.ICT_ARMOR:
+            case ICT_ARMOR:
             {
                 return ("$Equip");
                 break;
             } 
-            case InventoryDefines.ICT_BOOK:
+            case ICT_BOOK:
             {
                 return ("$Read");
                 break;
             } 
-            case InventoryDefines.ICT_POTION:
+            case ICT_POTION:
             {
                 return ("$Use");
                 break;
             } 
-            case InventoryDefines.ICT_FOOD:
-            case InventoryDefines.ICT_INGREDIENT:
+            case ICT_FOOD:
+            case ICT_INGREDIENT:
             {
                 return ("$Eat");
                 break;

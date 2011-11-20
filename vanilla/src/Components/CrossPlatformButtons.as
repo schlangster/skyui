@@ -51,7 +51,7 @@
                 if (PCButton != "None")
                 {
                     ButtonArt_mc = this.attachMovie(PCButton, "ButtonArt", this.getNextHighestDepth());
-                } // end if
+                }
                 break;
             } 
             case Shared.ButtonChange.PLATFORM_PC_GAMEPAD:

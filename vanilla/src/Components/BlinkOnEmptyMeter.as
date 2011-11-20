@@ -1,10 +1,6 @@
 ﻿class Components.BlinkOnEmptyMeter extends Components.Meter
 {
-    var meterMovieClip;
-	var CurrentPercent;
-	var Empty;
-	
-    function BlinkOnEmptyMeter(aMeterClip)
+    function BlinkOnEmptyMeter(aMeterClip:MovieClip)
     {
         super(aMeterClip);
     }

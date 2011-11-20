@@ -9,9 +9,10 @@
 	var bRepositionEntries;
 	var iMaxEntriesTopHalf;
 	var iMaxEntriesBottomHalf;
-	var dispatchEvent:Function;
 	var bMultilineList;
 	var bToFitList;
+	
+	var dispatchEvent:Function;
 	
     function CenteredList()
     {
@@ -27,15 +28,18 @@
         bRepositionEntries = true;
         for (iMaxEntriesTopHalf = 0; TopHalf["Entry" + iMaxEntriesTopHalf] != undefined; iMaxEntriesTopHalf++)
         {
-        } // end of for
+        }
+		
         for (iMaxEntriesBottomHalf = 0; BottomHalf["Entry" + iMaxEntriesBottomHalf] != undefined; iMaxEntriesBottomHalf++)
         {
-        } // end of for
-    } // End of the function
+        }
+    }
+	
     function ClearList()
     {
         EntriesA.splice(0, EntriesA.length);
-    } // End of the function
+    }
+	
     function handleInput(details, pathToFocus)
     {
         var _loc2 = false;
@@ -43,20 +47,20 @@
         {
             if (details.navEquivalent == gfx.ui.NavigationCode.UP)
             {
-                this.moveListDown();
+                moveListDown();
                 _loc2 = true;
             }
             else if (details.navEquivalent == gfx.ui.NavigationCode.DOWN)
             {
-                this.moveListUp();
+                moveListUp();
                 _loc2 = true;
             }
             else if (details.navEquivalent == gfx.ui.NavigationCode.ENTER && iSelectedIndex != -1)
             {
-                this.dispatchEvent({type: "itemPress", index: iSelectedIndex, entry: EntriesA[iSelectedIndex]});
+                dispatchEvent({type: "itemPress", index: iSelectedIndex, entry: EntriesA[iSelectedIndex]});
                 _loc2 = true;
-            } // end else if
-        } // end else if
+            }
+        }
         return (_loc2);
     }
 	
@@ -68,12 +72,12 @@
             {
                 if (delta < 0)
                 {
-                    this.moveListUp();
+                    moveListUp();
                     continue;
                 } // end if
                 if (delta > 0)
                 {
-                    this.moveListDown();
+                    moveListDown();
                 } // end if
             } // end if
         } // end of for
@@ -85,7 +89,7 @@
         {
             if (_loc2 == SelectedEntry)
             {
-                this.dispatchEvent({type: "itemPress", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
+                dispatchEvent({type: "itemPress", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
             } // end if
         } // end of for
     }
@@ -98,7 +102,7 @@
             {
                 if (_loc2 == SelectedEntry)
                 {
-                    this.dispatchEvent({type: "itemPressAux", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
+                    dispatchEvent({type: "itemPressAux", index: iSelectedIndex, entry: EntriesA[iSelectedIndex], keyboardOrMouse: aiKeyboardOrMouse});
                 } // end if
             } // end of for
         } // end if
@@ -159,23 +163,24 @@
         iSelectedIndex = Math.min(Math.max(iSelectedIndex, 0), EntriesA.length - 1);
         if (iSelectedIndex > 0)
         {
-            this.UpdateTopHalf(EntriesA.slice(0, iSelectedIndex));
+            UpdateTopHalf(EntriesA.slice(0, iSelectedIndex));
         }
         else
         {
-            this.UpdateTopHalf(_loc2);
+            UpdateTopHalf(_loc2);
         } // end else if
-        this.SetEntry(SelectedEntry, EntriesA[iSelectedIndex]);
+        SetEntry(SelectedEntry, EntriesA[iSelectedIndex]);
         if (iSelectedIndex < EntriesA.length - 1)
         {
-            this.UpdateBottomHalf(EntriesA.slice(iSelectedIndex + 1));
+            UpdateBottomHalf(EntriesA.slice(iSelectedIndex + 1));
         }
         else
         {
-            this.UpdateBottomHalf(_loc2);
+            UpdateBottomHalf(_loc2);
         } // end else if
-        this.RepositionEntries();
-    } // End of the function
+        RepositionEntries();
+    }
+	
     function UpdateTopHalf(aEntryArray)
     {
         for (var _loc2 = iMaxEntriesTopHalf - 1; _loc2 >= 0; --_loc2)
@@ -183,24 +188,26 @@
             var _loc3 = _loc2 - (iMaxEntriesTopHalf - aEntryArray.length);
             if (_loc3 >= 0 && _loc3 < aEntryArray.length)
             {
-                this.SetEntry(TopHalf["Entry" + _loc2], aEntryArray[_loc3]);
+                SetEntry(TopHalf["Entry" + _loc2], aEntryArray[_loc3]);
                 continue;
             } // end if
-            this.SetEntry(TopHalf["Entry" + _loc2]);
+            SetEntry(TopHalf["Entry" + _loc2]);
         } // end of for
-    } // End of the function
+    }
+	
     function UpdateBottomHalf(aTextArray)
     {
         for (var _loc2 = 0; _loc2 < iMaxEntriesBottomHalf; ++_loc2)
         {
             if (_loc2 < aTextArray.length)
             {
-                this.SetEntry(BottomHalf["Entry" + _loc2], aTextArray[_loc2]);
+                SetEntry(BottomHalf["Entry" + _loc2], aTextArray[_loc2]);
                 continue;
             } // end if
-            this.SetEntry(BottomHalf["Entry" + _loc2]);
+            SetEntry(BottomHalf["Entry" + _loc2]);
         } // end of for
-    } // End of the function
+    }
+	
     function SetEntry(aEntryClip, aEntryObject)
     {
         if (bMultilineList == true)
@@ -226,7 +233,8 @@
         {
             aEntryClip.textField.SetText(" ");
         } // end else if
-    } // End of the function
+    }
+	
     function SetupMultilineList()
     {
         bMultilineList = true;
@@ -242,7 +250,8 @@
         {
             SelectedEntry.textField.verticalAutoSize = "top";
         } // end if
-    } // End of the function
+    }
+	
     function SetupToFitList()
     {
         bToFitList = true;
@@ -258,7 +267,8 @@
         {
             SelectedEntry.textField.textAutoSize = "shrink";
         } // end if
-    } // End of the function
+    }
+	
     function RepositionEntries()
     {
         if (bRepositionEntries)

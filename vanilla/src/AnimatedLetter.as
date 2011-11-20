@@ -1,11 +1,11 @@
-﻿class AnimatedLetter extends MovieClip
+﻿import Shared.GlobalFunc;
+
+class AnimatedLetter extends MovieClip
 {
 	static var SpaceWidth:Number = 15;
 	
     var QuestName:String;
 	var AnimationBase_mc;
-	//var _parent;
-	//var onEnterFrame;
 	var LetterSpacing:Number = 0;
     var OldWidth:Number = 0;
     var QuestNameIndex:Number = 0;
@@ -16,7 +16,7 @@
     function AnimatedLetter()
     {
         super();
-        Shared.GlobalFunc.MaintainTextFormat();
+        GlobalFunc.MaintainTextFormat();
     }
 	
     function ShowQuestUpdate(aQuestName, aQuestStatus)
@@ -74,7 +74,7 @@
         }
         else
         {
-            delete this.onEnterFrame;
+            delete onEnterFrame;
         }
     }
 }

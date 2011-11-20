@@ -31,7 +31,7 @@
     function PositionElements(aiLeftOffset, aiRightOffset)
     {
         iLeftOffset = aiLeftOffset;
-        this.PositionButtons();
+        PositionButtons();
         PlayerInfoCard_mc._x = aiRightOffset - PlayerInfoCard_mc._width;
     }
 	
@@ -60,7 +60,8 @@
             {
                 aItemUpdateObj = {type: iLastItemType};
             } // end if
-        } // end else if
+        }
+		
         if (PlayerInfoObj != undefined && aItemUpdateObj != undefined)
         {
             switch (_loc3)
@@ -69,6 +70,7 @@
                 {
                     PlayerInfoCard_mc.gotoAndStop("Armor");
                     var _loc4 = Math.floor(PlayerInfoObj.armor).toString();
+					
                     if (aItemUpdateObj.armorChange != undefined)
                     {
                         var _loc7 = Math.round(aItemUpdateObj.armorChange);
@@ -80,7 +82,8 @@
                         {
                             _loc4 = _loc4 + " <font color=\'#FF0000\'>(" + _loc7.toString() + ")</font>";
                         } // end if
-                    } // end else if
+                    }
+					
                     PlayerInfoCard_mc.ArmorRatingValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.ArmorRatingValue.html = true;
                     PlayerInfoCard_mc.ArmorRatingValue.SetText(_loc4, true);
@@ -101,7 +104,8 @@
                         {
                             _loc4 = _loc4 + " <font color=\'#FF0000\'>(" + _loc6.toString() + ")</font>";
                         } // end if
-                    } // end else if
+                    }
+					
                     PlayerInfoCard_mc.DamageValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.DamageValue.html = true;
                     PlayerInfoCard_mc.DamageValue.SetText(_loc4, true);
@@ -148,7 +152,7 @@
                     PlayerInfoCard_mc.gotoAndStop("MagicSkill");
                     if (aItemUpdateObj.magicSchoolName != undefined)
                     {
-                        this.UpdateSkillBar(aItemUpdateObj.magicSchoolName, aItemUpdateObj.magicSchoolLevel, aItemUpdateObj.magicSchoolPct);
+                        UpdateSkillBar(aItemUpdateObj.magicSchoolName, aItemUpdateObj.magicSchoolLevel, aItemUpdateObj.magicSchoolPct);
                     } // end if
                     _loc5 = false;
                     break;
@@ -185,16 +189,18 @@
                     } 
                 } // End of switch
             } // end if
-            this.UpdateStatMeter(PlayerInfoCard_mc.HealthRect, HealthMeter, PlayerInfoObj.health, PlayerInfoObj.maxHealth, PlayerInfoObj.healthColor);
-            this.UpdateStatMeter(PlayerInfoCard_mc.MagickaRect, MagickaMeter, PlayerInfoObj.magicka, PlayerInfoObj.maxMagicka, PlayerInfoObj.magickaColor);
-            this.UpdateStatMeter(PlayerInfoCard_mc.StaminaRect, StaminaMeter, PlayerInfoObj.stamina, PlayerInfoObj.maxStamina, PlayerInfoObj.staminaColor);
+            UpdateStatMeter(PlayerInfoCard_mc.HealthRect, HealthMeter, PlayerInfoObj.health, PlayerInfoObj.maxHealth, PlayerInfoObj.healthColor);
+            UpdateStatMeter(PlayerInfoCard_mc.MagickaRect, MagickaMeter, PlayerInfoObj.magicka, PlayerInfoObj.maxMagicka, PlayerInfoObj.magickaColor);
+            UpdateStatMeter(PlayerInfoCard_mc.StaminaRect, StaminaMeter, PlayerInfoObj.stamina, PlayerInfoObj.maxStamina, PlayerInfoObj.staminaColor);
         } // end if
-    } // End of the function
+    }
+	
     function UpdatePlayerInfo(aPlayerUpdateObj, aItemUpdateObj)
     {
         PlayerInfoObj = aPlayerUpdateObj;
-        this.UpdatePerItemInfo(aItemUpdateObj);
-    } // End of the function
+        UpdatePerItemInfo(aItemUpdateObj);
+    }
+	
     function UpdateSkillBar(aSkillName, aiLevelStart, afLevelPercent)
     {
         PlayerInfoCard_mc.SkillLevelLabel.SetText(aSkillName);
@@ -202,12 +208,14 @@
         PlayerInfoCard_mc.SkillLevelNext.SetText(aiLevelStart + 1);
         PlayerInfoCard_mc.LevelMeterInstance.gotoAndStop("Pause");
         LevelMeter.SetPercent(afLevelPercent);
-    } // End of the function
+    }
+	
     function UpdateCraftingInfo(aSkillName, aiLevelStart, afLevelPercent)
     {
         PlayerInfoCard_mc.gotoAndStop("Crafting");
-        this.UpdateSkillBar(aSkillName, aiLevelStart, afLevelPercent);
-    } // End of the function
+        UpdateSkillBar(aSkillName, aiLevelStart, afLevelPercent);
+    }
+	
     function UpdateStatMeter(aMeterRect, aMeterObj, aiCurrValue, aiMaxValue, aColor)
     {
         if (aColor == undefined)
@@ -225,7 +233,8 @@
             aMeterRect.MeterInstance.gotoAndStop("Pause");
             aMeterObj.SetPercent(aiCurrValue / aiMaxValue * 100);
         } // end if
-    } // End of the function
+    }
+	
     function SetBarterInfo(aiPlayerGold, aiVendorGold, aiGoldDelta, astrVendorName)
     {
         if (PlayerInfoCard_mc._currentframe == 1)
@@ -255,7 +264,8 @@
         PlayerInfoCard_mc.VendorGoldLabel._x = PlayerInfoCard_mc.VendorGoldValue._x + PlayerInfoCard_mc.VendorGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.VendorGoldLabel._width - 5;
         PlayerInfoCard_mc.PlayerGoldValue._x = PlayerInfoCard_mc.VendorGoldLabel._x + PlayerInfoCard_mc.VendorGoldLabel.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldValue._width - 20;
         PlayerInfoCard_mc.PlayerGoldLabel._x = PlayerInfoCard_mc.PlayerGoldValue._x + PlayerInfoCard_mc.PlayerGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldLabel._width - 5;
-    } // End of the function
+    }
+	
     function SetBarterPerItemInfo(aItemUpdateObj, aPlayerInfoObj)
     {
         if (aItemUpdateObj != undefined)
@@ -311,32 +321,37 @@
                 } 
             } // End of switch
         } // end if
-    } // End of the function
+    }
+	
     function SetGiftInfo(aiFavorPoints)
     {
         PlayerInfoCard_mc.gotoAndStop("Gift");
-    } // End of the function
+    }
+	
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             Buttons[_loc2].SetPlatform(aiPlatform, abPS3Switch);
         } // end of for
-    } // End of the function
+    }
+	
     function ShowButtons()
     {
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             Buttons[_loc2]._visible = Buttons[_loc2].label.length > 0;
         } // end of for
-    } // End of the function
+    }
+	
     function HideButtons()
     {
         for (var _loc2 = 0; _loc2 < Buttons.length; ++_loc2)
         {
             Buttons[_loc2]._visible = false;
         } // end of for
-    } // End of the function
+    }
+	
     function SetButtonsText()
     {
         for (var _loc3 = 0; _loc3 < Buttons.length; ++_loc3)
@@ -344,15 +359,16 @@
             Buttons[_loc3].label = _loc3 < arguments.length ? (arguments[_loc3]) : ("");
             Buttons[_loc3]._visible = Buttons[_loc3].label.length > 0;
         } // end of for
-        this.PositionButtons();
-    } // End of the function
+        PositionButtons();
+    }
+	
     function SetButtonText(aText, aIndex)
     {
         if (aIndex < Buttons.length)
         {
             Buttons[aIndex].label = aText;
             Buttons[aIndex]._visible = aText.length > 0;
-            this.PositionButtons();
+            PositionButtons();
         } // end if
     }
 	
@@ -360,7 +376,7 @@
     {
         for (var _loc2 = 0; _loc2 < aButtonArt.length; ++_loc2)
         {
-            this.SetButtonArt(aButtonArt[_loc2], _loc2);
+            SetButtonArt(aButtonArt[_loc2], _loc2);
         } // end of for
     }
 	
@@ -396,7 +412,7 @@
             {
                 Buttons[_loc2]._x = _loc3 + Buttons[_loc2].ButtonArt._width;
                 _loc3 = Buttons[_loc2]._x + Buttons[_loc2].textField.getLineMetrics(0).width + _loc4;
-            } // end if
-        } // end of for
-    } // End of the function
-} // End of Class
+            }
+        }
+    }
+}

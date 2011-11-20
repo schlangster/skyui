@@ -89,7 +89,7 @@ class DialogueMenu extends MovieClip
             {
                 onCancelPress();
             }
-            else if (details.navEquivalent != NavigationCode.UP && details.navEquivalent != NavigationCode.DOWN || eMenuState == DialogueMenu.TOPIC_LIST_SHOWN)
+            else if (details.navEquivalent != NavigationCode.UP && details.navEquivalent != NavigationCode.DOWN || eMenuState == TOPIC_LIST_SHOWN)
             {
                 pathToFocus[0].handleInput(details, pathToFocus.slice(1));
             }
@@ -186,9 +186,9 @@ class DialogueMenu extends MovieClip
             else if (eMenuState == DialogueMenu.TOPIC_CLICKED || eMenuState == DialogueMenu.SHOW_GREETING)
             {
                 this.SkipText();
-            } // end else if
+            }
             bAllowProgress = false;
-        } // end if
+        }
     }
 	
     function SkipText()

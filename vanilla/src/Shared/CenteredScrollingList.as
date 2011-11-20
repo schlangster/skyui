@@ -18,9 +18,10 @@
 	var bMouseDrivenNav;
 	var doSetSelectedIndex;
 	var border;
-	var dispatchEvent;
 	var bDisableInput;
 	var SetEntryText;
+	
+	var dispatchEvent:Function;
 	
     function CenteredScrollingList()
     {
@@ -68,7 +69,7 @@
 	
     function get centeredEntry()
     {
-        return (EntriesA[this.GetClipByIndex(iNumTopHalfEntries).itemIndex]);
+        return (EntriesA[GetClipByIndex(iNumTopHalfEntries).itemIndex]);
     }
 	
     function IsDivider(aEntry)
@@ -78,7 +79,7 @@
 	
     function IsSelectionAboveDivider()
     {
-        //return (iDividerIndex == -1 || this.selectedIndex() < iDividerIndex);
+        return (iDividerIndex == -1 || selectedIndex < iDividerIndex);
     }
 	
     function RestoreScrollPosition(aiNewPosition, abRecenterSelection)
@@ -99,13 +100,13 @@
 	
     function UpdateList()
     {
-        var _loc10 = this.GetClipByIndex(0)._y;
+        var _loc10 = GetClipByIndex(0)._y;
         var _loc6 = 0;
-        var _loc2 = this.filterer.ClampIndex(0);
+        var _loc2 = filterer.ClampIndex(0);
         iDividerIndex = -1;
         for (var _loc7 = 0; _loc7 < EntriesA.length; ++_loc7)
         {
-            if (this.IsDivider(EntriesA[_loc7]))
+            if (IsDivider(EntriesA[_loc7]))
             {
                 iDividerIndex = _loc7;
             } // end if
@@ -117,27 +118,27 @@
         }
         else
         {
-            iSelectedIndex = this.filterer.ClampIndex(iSelectedIndex);
+            iSelectedIndex = filterer.ClampIndex(iSelectedIndex);
         }
 		
         for (var _loc9 = 0; _loc9 < iScrollPosition - iNumTopHalfEntries; ++_loc9)
         {
             EntriesA[_loc2].clipIndex = undefined;
-            _loc2 = this.filterer.GetNextFilterMatch(_loc2);
+            _loc2 = filterer.GetNextFilterMatch(_loc2);
         }
 		
         iListItemsShown = 0;
         iNumUnfilteredItems = 0;
         for (var _loc4 = 0; _loc4 < iNumTopHalfEntries; ++_loc4)
         {
-            var _loc5 = this.GetClipByIndex(_loc4);
+            var _loc5 = GetClipByIndex(_loc4);
             if (iScrollPosition - iNumTopHalfEntries + _loc4 >= 0)
             {
-                this.SetEntry(_loc5, EntriesA[_loc2]);
+                SetEntry(_loc5, EntriesA[_loc2]);
                 _loc5._visible = true;
-                _loc5.itemIndex = this.IsDivider(EntriesA[_loc2]) != true ? (_loc2) : (undefined);
+                _loc5.itemIndex = IsDivider(EntriesA[_loc2]) != true ? (_loc2) : (undefined);
                 EntriesA[_loc2].clipIndex = _loc4;
-                _loc2 = this.filterer.GetNextFilterMatch(_loc2);
+                _loc2 = filterer.GetNextFilterMatch(_loc2);
                 ++iNumUnfilteredItems;
             }
             else
@@ -157,10 +158,10 @@
 		
         while (_loc2 != undefined && _loc2 != -1 && _loc2 < EntriesA.length && iListItemsShown < iMaxItemsShown && _loc6 <= fListHeight)
         {
-            _loc5 = this.GetClipByIndex(iListItemsShown);
-            this.SetEntry(_loc5, EntriesA[_loc2]);
+            _loc5 = GetClipByIndex(iListItemsShown);
+            SetEntry(_loc5, EntriesA[_loc2]);
             EntriesA[_loc2].clipIndex = iListItemsShown;
-            _loc5.itemIndex = this.IsDivider(EntriesA[_loc2]) != true ? (_loc2) : (undefined);
+            _loc5.itemIndex = IsDivider(EntriesA[_loc2]) != true ? (_loc2) : (undefined);
             _loc5._y = _loc10 + _loc6;
             _loc5._visible = true;
             _loc6 = _loc6 + _loc5._height;
@@ -169,7 +170,7 @@
                 ++iListItemsShown;
                 ++iNumUnfilteredItems;
             } // end if
-            _loc2 = this.filterer.GetNextFilterMatch(_loc2);
+            _loc2 = filterer.GetNextFilterMatch(_loc2);
         }
 		
         for (var _loc8 = iListItemsShown; _loc8 < iMaxItemsShown; ++_loc8)
@@ -184,7 +185,7 @@
             {
                 if (_loc3._parent == this && _loc3._visible && _loc3.itemIndex != undefined)
                 {
-                    this.doSetSelectedIndex(_loc3.itemIndex, 0);
+                    doSetSelectedIndex(_loc3.itemIndex, 0);
                 } // end if
             } // end of for
         } // end if
@@ -270,7 +271,7 @@
                 {
                     if (delta < 0)
                     {
-                        var _loc4 = this.GetClipByIndex(iNumTopHalfEntries + 1);
+                        var _loc4 = GetClipByIndex(iNumTopHalfEntries + 1);
                         if (_loc4._visible == true)
                         {
                             if (_loc4.itemIndex == undefined)
@@ -287,7 +288,7 @@
 					
                     if (delta > 0)
                     {
-                        var _loc3 = this.GetClipByIndex(iNumTopHalfEntries - 1);
+                        var _loc3 = GetClipByIndex(iNumTopHalfEntries - 1);
                         if (_loc3._visible == true)
                         {
                             if (_loc3.itemIndex == undefined)
@@ -307,7 +308,7 @@
     function CalculateMaxScrollPosition()
     {
         iMaxScrollPosition = -1;
-        for (var _loc2 = this.filterer.ClampIndex(0); _loc2 != undefined; _loc2 = this.filterer.GetNextFilterMatch(_loc2))
+        for (var _loc2 = filterer.ClampIndex(0); _loc2 != undefined; _loc2 = filterer.GetNextFilterMatch(_loc2))
         {
             ++iMaxScrollPosition;
         }
@@ -322,7 +323,7 @@
     {
         if (aEntryClip != undefined)
         {
-            if (this.IsDivider(aEntryObject) == true)
+            if (IsDivider(aEntryObject) == true)
             {
                 aEntryClip.gotoAndStop("Divider");
             }
@@ -333,7 +334,7 @@
 			
             if (iPlatform == 0)
             {
-                aEntryClip._alpha = aEntryObject == this.selectedEntry ? (100) : (60);
+                aEntryClip._alpha = aEntryObject == selectedEntry ? (100) : (60);
             }
             else
             {
@@ -350,8 +351,8 @@
                 {
                     aEntryClip._alpha = 100;
                 } // end else if
-            } // end else if
-            this.SetEntryText(aEntryClip, aEntryObject);
-        } // end if
-    } // End of the function
-} // End of Class
+            }
+            SetEntryText(aEntryClip, aEntryObject);
+        }
+    }
+}

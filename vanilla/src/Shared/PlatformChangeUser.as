@@ -1,4 +1,4 @@
-﻿import Shared.PlatformChangeUser.PlatformChange;
+﻿import Shared.ButtonChange;
 
 class Shared.PlatformChangeUser extends MovieClip
 {
@@ -7,7 +7,7 @@ class Shared.PlatformChangeUser extends MovieClip
     function PlatformChangeUser()
     {
         super();
-        PlatformChange = new Shared.ButtonChange();
+        PlatformChange = new ButtonChange();
     }
 	
     function RegisterPlatformChangeListener(aCrossPlatformButton)

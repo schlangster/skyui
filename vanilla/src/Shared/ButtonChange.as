@@ -1,19 +1,16 @@
 ﻿class Shared.ButtonChange extends gfx.events.EventDispatcher
 {
-    //var dispatchEvent;
-	//var __get__Platform;
-	
 	static var PLATFORM_PC:Number = 0;
     static var PLATFORM_PC_GAMEPAD:Number = 1;
     static var PLATFORM_360:Number = 2;
     static var PLATFORM_PS3:Number = 3;
 	
-    var iCurrPlatform:Number = Shared.ButtonChange.PLATFORM_360;
+    var iCurrPlatform:Number = PLATFORM_360;
 	
     function ButtonChange()
     {
         super();
-        gfx.events.EventDispatcher.initialize(this);
+        initialize(this);
     }
 	
     function get Platform()
@@ -22,7 +19,7 @@
     }
     function IsGamepadConnected()
     {
-        return (iCurrPlatform == Shared.ButtonChange.PLATFORM_PC_GAMEPAD || iCurrPlatform == Shared.ButtonChange.PLATFORM_360 || iCurrPlatform == Shared.ButtonChange.PLATFORM_PS3);
+        return (iCurrPlatform == PLATFORM_PC_GAMEPAD || iCurrPlatform == PLATFORM_360 || iCurrPlatform == PLATFORM_PS3);
     }
 	
     function SetPlatform(aSetPlatform, aSetSwapPS3)

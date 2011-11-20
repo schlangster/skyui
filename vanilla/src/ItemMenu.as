@@ -100,7 +100,7 @@ class ItemMenu extends MovieClip
 	
     function GetInventoryItemList()
     {
-        //return (InventoryLists_mc.ItemsList());
+		return InventoryLists_mc.ItemsList;
     }
 	
     function handleInput(details, pathToFocus)
@@ -111,7 +111,7 @@ class ItemMenu extends MovieClip
             {
                 if (Shared.GlobalFunc.IsKeyPressed(details) && details.navEquivalent == gfx.ui.NavigationCode.TAB)
                 {
-                    gfx.io.GameDelegate.call("CloseMenu", []);
+                    GameDelegate.call("CloseMenu", []);
                 }
             }
         }
@@ -123,12 +123,12 @@ class ItemMenu extends MovieClip
     {
         for (var _loc2 = Mouse.getTopMostEntity(); _loc2 && _loc2 != undefined; _loc2 = _loc2._parent)
         {
-            if (_loc2 == MouseRotationRect && this.ShouldProcessItemsListInput(false) || !bFadedIn && delta == -1)
+            if (_loc2 == MouseRotationRect && ShouldProcessItemsListInput(false) || !bFadedIn && delta == -1)
             {
-                gfx.io.GameDelegate.call("ZoomItemModel", [delta]);
+                GameDelegate.call("ZoomItemModel", [delta]);
                 continue;
             } // end if
-            if (_loc2 == ItemsListInputCatcher && this.ShouldProcessItemsListInput(false))
+            if (_loc2 == ItemsListInputCatcher && ShouldProcessItemsListInput(false))
             {
                 if (delta == 1)
                 {
@@ -140,7 +140,7 @@ class ItemMenu extends MovieClip
                     InventoryLists_mc.ItemsList.moveSelectionDown();
                 } // end if
             } // end if
-        } // end of for
+        }
     }
 	
     function onExitMenuRectClick()
@@ -169,16 +169,16 @@ class ItemMenu extends MovieClip
     {
         if (event.index != -1)
         {
-            gfx.io.GameDelegate.call("UpdateItem3D", [true]);
-            gfx.io.GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
+            GameDelegate.call("UpdateItem3D", [true]);
+            GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
             ItemCard_mc.FadeInCard();
             BottomBar_mc.ShowButtons();
-        } // end if
+        }
     }
 	
     function onHideItemsList(event)
     {
-        gfx.io.GameDelegate.call("UpdateItem3D", [false]);
+        GameDelegate.call("UpdateItem3D", [false]);
         ItemCard_mc.FadeOutCard();
         BottomBar_mc.HideButtons();
     }
@@ -193,18 +193,18 @@ class ItemMenu extends MovieClip
             }
             else
             {
-                this.onQuantityMenuSelect({amount: 1});
-            } // end else if
+                onQuantityMenuSelect({amount: 1});
+            }
         }
         else
         {
-            gfx.io.GameDelegate.call("DisabledItemSelect", []);
-        } // end else if
+            GameDelegate.call("DisabledItemSelect", []);
+        }
     }
 	
     function onQuantityMenuSelect(event)
     {
-        gfx.io.GameDelegate.call("ItemSelect", [event.amount]);
+        GameDelegate.call("ItemSelect", [event.amount]);
     }
 	
     function UpdatePlayerInfo(aUpdateObj)
@@ -233,12 +233,13 @@ class ItemMenu extends MovieClip
             InventoryLists_mc.ItemsList.disableInput = false;
             InventoryLists_mc.CategoriesList.disableSelection = false;
             InventoryLists_mc.CategoriesList.disableInput = false;
-        } // end else if
+        }
     }
 	
     function ShouldProcessItemsListInput(abCheckIfOverRect)
     {
         var _loc4 = bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.TWO_PANELS && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
+		
         if (_loc4 && iPlatform == 0 && abCheckIfOverRect)
         {
             var _loc2 = Mouse.getTopMostEntity();
@@ -307,7 +308,7 @@ class ItemMenu extends MovieClip
         InventoryLists_mc.ItemsList.disableInput = false;
 		InventoryLists_mc.CategoriesList.disableSelection = false;
 		InventoryLists_mc.CategoriesList.disableInput = false;
-    } // End of the function
+    }
 	
     function RestoreIndices()
     {

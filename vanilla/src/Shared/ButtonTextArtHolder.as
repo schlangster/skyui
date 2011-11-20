@@ -1,4 +1,6 @@
-﻿class Shared.ButtonTextArtHolder extends MovieClip
+﻿import gfx.io.GameDelegate;
+
+class Shared.ButtonTextArtHolder extends MovieClip
 {
     var strButtonName:String;
 	
@@ -7,7 +9,7 @@
         super();
     }
 	
-    function SetButtonName(aText)
+    function SetButtonName(aText:String)
     {
         strButtonName = aText;
     }
@@ -23,7 +25,7 @@
             while (startIndex != -1 && len != -1)
             {
                 var _loc10 = aInputText.text.substring(startIndex + 1, len);
-                gfx.io.GameDelegate.call("GetButtonFromUserEvent", [_loc10], this, "SetButtonName");
+                GameDelegate.call("GetButtonFromUserEvent", [_loc10], this, "SetButtonName");
                 if (strButtonName != undefined)
                 {
                     var _loc6 = flash.display.BitmapData.loadBitmap(strButtonName + ".png");
