@@ -1,5 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
+import Shared.GlobalFunc;
 
 class Shared.BSScrollingList extends MovieClip
 {
@@ -41,6 +42,7 @@ class Shared.BSScrollingList extends MovieClip
         bMouseDrivenNav = false;
 		EventDispatcher.initialize(this);
         Mouse.addListener(this);
+		
         iSelectedIndex = -1;
         iScrollPosition = 0;
         iMaxScrollPosition = 0;
@@ -50,10 +52,10 @@ class Shared.BSScrollingList extends MovieClip
         ListScrollbar = scrollbar;
         iMaxItemsShown = 0;
 		
-        for (var _loc3 = GetClipByIndex(iMaxItemsShown); _loc3 != undefined; _loc3 = GetClipByIndex(++iMaxItemsShown))
+        for (var item = GetClipByIndex(iMaxItemsShown); item != undefined; item = GetClipByIndex(++iMaxItemsShown))
         {
-            _loc3.clipIndex = iMaxItemsShown;
-            _loc3.onRollOver = function ()
+            item.clipIndex = iMaxItemsShown;
+            item.onRollOver = function ()
             {
                 if (!_parent.listAnimating && !_parent.bDisableInput && itemIndex != undefined)
                 {
@@ -61,7 +63,7 @@ class Shared.BSScrollingList extends MovieClip
                     _parent.bMouseDrivenNav = true;
                 }
             };
-            _loc3.onPress = function (aiMouseIndex, aiKeyboardOrMouse)
+            item.onPress = function (aiMouseIndex, aiKeyboardOrMouse)
             {
                 if (itemIndex != undefined)
                 {
@@ -72,7 +74,7 @@ class Shared.BSScrollingList extends MovieClip
                     }
                 }
             };
-            _loc3.onPressAux = function (aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
+            item.onPressAux = function (aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
             {
                 if (itemIndex != undefined)
                 {
@@ -101,14 +103,14 @@ class Shared.BSScrollingList extends MovieClip
         return this["Entry" + aiIndex];
     }
 	
-    function handleInput(details, pathToFocus)
+    function handleInput(details, pathToFocus):Boolean
     {
         var _loc2 = false;
         if (!bDisableInput)
         {
             var _loc4 = GetClipByIndex(selectedIndex - scrollPosition);
             _loc2 = _loc4 != undefined && _loc4.handleInput != undefined && _loc4.handleInput(details, pathToFocus.slice(1));
-            if (!_loc2 && Shared.GlobalFunc.IsKeyPressed(details))
+            if (!_loc2 && GlobalFunc.IsKeyPressed(details))
             {
                 if (details.navEquivalent == NavigationCode.UP)
                 {
@@ -134,9 +136,9 @@ class Shared.BSScrollingList extends MovieClip
     {
         if (!bDisableInput)
         {
-            for (var _loc2 = Mouse.getTopMostEntity(); _loc2 && _loc2 != undefined; _loc2 = _loc2._parent)
+            for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent)
             {
-                if (_loc2 == this)
+                if (target == this)
                 {
                     doSetSelectedIndex(-1, 0);
                     if (delta < 0)
@@ -173,7 +175,7 @@ class Shared.BSScrollingList extends MovieClip
         bListAnimating = abFlag;
     }
 	
-    function doSetSelectedIndex(aiNewIndex, aiKeyboardOrMouse)
+    function doSetSelectedIndex(aiNewIndex:Number, aiKeyboardOrMouse)
     {
         if (!bDisableSelection && aiNewIndex != iSelectedIndex)
         {
@@ -286,7 +288,7 @@ class Shared.BSScrollingList extends MovieClip
         return iTextOption;
     }
 	
-    function set textOption(strNewOption)
+    function set textOption(strNewOption:String)
     {
         if (strNewOption == "None")
         {
@@ -307,18 +309,19 @@ class Shared.BSScrollingList extends MovieClip
         var _loc6 = GetClipByIndex(0)._y;
         var _loc5 = 0;
 		
-        for (var _loc2 = 0; _loc2 < iScrollPosition; ++_loc2)
+        for (var i = 0; i < iScrollPosition; ++i)
         {
-            EntriesA[_loc2].clipIndex = undefined;
+            EntriesA[i].clipIndex = undefined;
         }
 		
         iListItemsShown = 0;
-        for (var _loc2 = iScrollPosition; _loc2 < EntriesA.length && iListItemsShown < iMaxItemsShown && _loc5 <= fListHeight; ++_loc2)
+		
+        for (var pos = iScrollPosition; pos < EntriesA.length && iListItemsShown < iMaxItemsShown && _loc5 <= fListHeight; ++pos)
         {
             var _loc3 = GetClipByIndex(iListItemsShown);
-            SetEntry(_loc3, EntriesA[_loc2]);
-            EntriesA[_loc2].clipIndex = iListItemsShown;
-            _loc3.itemIndex = _loc2;
+            SetEntry(_loc3, EntriesA[pos]);
+            EntriesA[pos].clipIndex = iListItemsShown;
+            _loc3.itemIndex = pos;
             _loc3._y = _loc6 + _loc5;
             _loc3._visible = true;
             _loc5 = _loc5 + _loc3._height;

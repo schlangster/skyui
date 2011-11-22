@@ -108,21 +108,22 @@ class Shared.ListFilterer
 	
     function ClampIndex(aiStartIndex)
     {
-        var _loc2 = aiStartIndex;
-        if (aiStartIndex != undefined && !this.EntryMatchesFunc(_filterArray[_loc2]))
+        var index = aiStartIndex;
+		
+        if (aiStartIndex != undefined && !EntryMatchesFunc(_filterArray[index]))
         {
-            var _loc3 = this.GetNextFilterMatch(_loc2);
-            if (_loc3 == undefined)
+            var nextIndex = this.GetNextFilterMatch(index);
+            if (nextIndex == undefined)
             {
-                _loc3 = this.GetPrevFilterMatch(_loc2);
+                nextIndex = this.GetPrevFilterMatch(index);
             }
 			
-            if (_loc3 == undefined)
+            if (nextIndex == undefined)
             {
-                _loc3 = -1;
+                nextIndex = -1;
             }
-            _loc2 = _loc3;
+            index = nextIndex;
         }
-        return (_loc2);
+        return index;
     }
 }

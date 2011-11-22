@@ -19,11 +19,11 @@ class gfx.io.GameDelegate
         }
 		
         nextID = ++nextID;
-        var _loc1 = nextID;
-        responseHash[_loc1] = [scope, callBack];
-        params.unshift(methodName, _loc1);
+        var id = nextID;
+        responseHash[id] = [scope, callBack];
+        params.unshift(methodName, id);
         ExternalInterface.call.apply(null, params);
-        delete responseHash[_loc1];
+        delete responseHash[id];
     }
 	
     static function receiveResponse(uid)

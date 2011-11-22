@@ -75,6 +75,7 @@ class InventoryLists extends MovieClip
     function handleInput(details, pathToFocus)
     {
         var _loc2 = false;
+		
         if (iCurrentState == ONE_PANEL || iCurrentState == TWO_PANELS)
         {
             if (Shared.GlobalFunc.IsKeyPressed(details))
