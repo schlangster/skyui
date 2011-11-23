@@ -54,7 +54,7 @@ class dui.ItemNameFilter implements dui.IFilter
 
 	}
 
-	function process(a_entryList:Array, a_indexMap:Array, a_debug)
+	function process(a_entryList:Array, a_indexMap:Array)
 	{
 		if (_nameFilter == undefined || _nameFilter == "") {
 			return;

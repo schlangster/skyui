@@ -18,9 +18,9 @@ class dui.DynamicList extends MovieClip
 	private var _bListAnimating:Boolean;
 
 	private var _selectedIndex:Number;
-	
+
 	private var _itemClipIndex:Number;
-	
+
 	// Component settings
 	private var _entryClassName:String;
 	private var _textOption:Number;
@@ -29,8 +29,11 @@ class dui.DynamicList extends MovieClip
 	var border:MovieClip;
 
 	var onMousePress:Function;
+
+	// Mixin
 	var dispatchEvent:Function;
-	
+	var addEventListener:Function;
+
 	var debug;
 
 	// Constructor
@@ -50,12 +53,12 @@ class dui.DynamicList extends MovieClip
 		_selectedIndex = -1;
 		_platform = 1;
 	}
-	
+
 	function set entryClassName(a_className)
 	{
 		_entryClassName = a_className;
 	}
-	
+
 	function get entryClassName()
 	{
 		return _entryClassName;
@@ -70,31 +73,27 @@ class dui.DynamicList extends MovieClip
 	{
 		var entryClip = this["Entry" + a_index];
 
-		if (entryClip != undefined)
-		{
+		if (entryClip != undefined) {
 			return entryClip;
 		}
-		// Create on-demand 
+		// Create on-demand  
 		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
 
 		entryClip.clipIndex = a_index;
 
 		entryClip.onRollOver = function()
 		{
-			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined)
-			{
-				_parent.doSetSelectedIndex(this.itemIndex, 0);
+			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined) {
+				_parent.doSetSelectedIndex(this.itemIndex,0);
 				_parent._bMouseDrivenNav = true;
 			}
 		};
 
 		entryClip.onPress = function(aiMouseIndex, a_keyboardOrMouse)
 		{
-			if (this.itemIndex != undefined)
-			{
+			if (this.itemIndex != undefined) {
 				_parent.onItemPress(a_keyboardOrMouse);
-				if (!_parent._bDisableInput && onMousePress != undefined)
-				{
+				if (!_parent._bDisableInput && onMousePress != undefined) {
 					onMousePress();
 				}
 			}
@@ -102,15 +101,14 @@ class dui.DynamicList extends MovieClip
 
 		entryClip.onPressAux = function(aiMouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			if (this.itemIndex != undefined)
-			{
+			if (this.itemIndex != undefined) {
 				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
 			}
 		};
 
 		return entryClip;
 	}
-	
+
 	function get selectedIndex()
 	{
 		return _selectedIndex;
@@ -121,15 +119,13 @@ class dui.DynamicList extends MovieClip
 		doSetSelectedIndex(a_newIndex);
 	}
 
-	
+
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{
-		if (!_bDisableSelection && a_newIndex != _selectedIndex)
-		{
+		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
 			_selectedIndex = a_newIndex;
 
-			if (_selectedIndex != -1)
-			{
+			if (_selectedIndex != -1) {
 				setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
 			}
 
@@ -189,24 +185,18 @@ class dui.DynamicList extends MovieClip
 
 	function set textOption(a_newOption:String)
 	{
-		if (a_newOption == "None")
-		{
+		if (a_newOption == "None") {
 			_textOption = TEXT_OPTION_NONE;
-		}
-		else if (a_newOption == "Shrink To Fit")
-		{
+		} else if (a_newOption == "Shrink To Fit") {
 			_textOption = TEXT_OPTION_SHRINK_TO_FIT;
-		}
-		else if (a_newOption == "Multi-Line")
-		{
+		} else if (a_newOption == "Multi-Line") {
 			_textOption = TEXT_OPTION_MULTILINE;
 		}
 	}
 
 	function InvalidateData()
 	{
-		if (_selectedIndex >= _entryList.length)
-		{
+		if (_selectedIndex >= _entryList.length) {
 			_selectedIndex = _entryList.length - 1;
 		}
 
@@ -217,9 +207,8 @@ class dui.DynamicList extends MovieClip
 	{
 		var yStart = 100;
 		var yOffset = 0;
-		
-		for (var i = 0; i < _entryList.length; ++i)
-		{
+
+		for (var i = 0; i < _entryList.length; ++i) {
 			var entryClip = getClipByIndex(i);
 
 			setEntry(entryClip,_entryList[i]);
@@ -235,34 +224,26 @@ class dui.DynamicList extends MovieClip
 
 	function onItemPress(a_keyboardOrMouse)
 	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1)
-		{
+		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
 			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
-		}
-		else
-		{
+		} else {
 			dispatchEvent({type:"listPress"});
 		}
 	}
 
 	function onItemPressAux(a_keyboardOrMouse, a_buttonIndex)
 	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1 && a_buttonIndex == 1)
-		{
+		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1 && a_buttonIndex == 1) {
 			dispatchEvent({type:"itemPressAux", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
 		}
 	}
 
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		if (a_entryClip != undefined)
-		{
-			if (a_entryObject == selectedEntry)
-			{
+		if (a_entryClip != undefined) {
+			if (a_entryObject == selectedEntry) {
 				a_entryClip.gotoAndStop("Selected");
-			}
-			else
-			{
+			} else {
 				a_entryClip.gotoAndStop("Normal");
 			}
 
@@ -272,33 +253,24 @@ class dui.DynamicList extends MovieClip
 
 	function setEntryText(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		if (a_entryClip.textField != undefined)
-		{
-			if (textOption == TEXT_OPTION_SHRINK_TO_FIT)
-			{
+		if (a_entryClip.textField != undefined) {
+			if (textOption == TEXT_OPTION_SHRINK_TO_FIT) {
 				a_entryClip.textField.textAutoSize = "shrink";
-			}
-			else if (textOption == TEXT_OPTION_MULTILINE)
-			{
+			} else if (textOption == TEXT_OPTION_MULTILINE) {
 				a_entryClip.textField.verticalAutoSize = "top";
 			}
 
-			if (a_entryObject.text != undefined)
-			{
+			if (a_entryObject.text != undefined) {
 				a_entryClip.textField.SetText(a_entryObject.text);
-			}
-			else
-			{
+			} else {
 				a_entryClip.textField.SetText(" ");
 			}
 
-			if (a_entryObject.enabled != undefined)
-			{
+			if (a_entryObject.enabled != undefined) {
 				a_entryClip.textField.textColor = a_entryObject.enabled == false ? (6316128) : (16777215);
 			}
 
-			if (a_entryObject.disabled != undefined)
-			{
+			if (a_entryObject.disabled != undefined) {
 				a_entryClip.textField.textColor = a_entryObject.disabled == true ? (6316128) : (16777215);
 			}
 		}
