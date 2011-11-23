@@ -43,6 +43,15 @@ class dui.DynamicScrollingList extends dui.DynamicList
 			scrollbar.addEventListener("scroll",this,"onScroll");
 		}
 	}
+	
+	function getClipByIndex(a_index)
+	{
+		if (a_index < 0 || a_index >= _maxListIndex) {
+			return undefined;
+		}
+		
+		return super.getClipByIndex(a_index);
+	}
 
 	function handleInput(details, pathToFocus):Boolean
 	{

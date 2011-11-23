@@ -71,11 +71,18 @@ class dui.DynamicList extends MovieClip
 
 	function getClipByIndex(a_index)
 	{
+		debug.textField.SetText("Requesting entry " + a_index);
+		
+		if (a_index < 0) {
+			return undefined;
+		}
+		
 		var entryClip = this["Entry" + a_index];
 
 		if (entryClip != undefined) {
 			return entryClip;
 		}
+		
 		// Create on-demand  
 		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
 
@@ -126,6 +133,7 @@ class dui.DynamicList extends MovieClip
 			_selectedIndex = a_newIndex;
 
 			if (_selectedIndex != -1) {
+				debug.textField.SetText("1 Requesting entry " + _entryList[_selectedIndex].clipIndex);
 				setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
 			}
 

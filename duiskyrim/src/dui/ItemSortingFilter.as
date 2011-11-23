@@ -18,19 +18,6 @@ class dui.ItemSortingFilter implements dui.IFilter
 	function ItemSortingFilter()
 	{
 		EventDispatcher.initialize(this);
-		
-		var tmp = new Array();
-		var idx = new Array();
-		var names = [ "one", "two", "three", "four", "five" ];
-		
-		for (var i = 0; i < 5; i++) {
-			tmp[i] = {text: names[i], _infoValue: i*10};
-			idx[i] = i;
-		}
-
-		process(tmp, idx);
-		
-
 	}
 
 	function setSortBy(a_sortBy:Number, a_bAscending:Boolean)

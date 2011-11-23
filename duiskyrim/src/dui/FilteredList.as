@@ -57,7 +57,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 		}
 
 		for (var i = 0; i < _filterChain.length; i++) {
-			_filterChain[i].process(_entryList,_indexMap,debug);
+			_filterChain[i].process(_entryList,_indexMap);
 		}
 	}
 

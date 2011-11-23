@@ -3,18 +3,18 @@
 class ItemMenu extends MovieClip
 {
 
-	var _bFadedIn;
-	var ItemsListInputCatcher;
-	var RestoreCategoryRect;
-	var ExitMenuRect;
-	var MouseRotationRect;
-	var _platform;
+	private var _bFadedIn;
+	private var _platform;
 
 	// Children
 	var InventoryLists_mc:InventoryLists;
 	var ItemCardFadeHolder_mc:MovieClip;
 	var ItemCard_mc:MovieClip;
 	var BottomBar_mc:MovieClip;
+	var ItemsListInputCatcher:MovieClip;
+	var RestoreCategoryRect:MovieClip;
+	var ExitMenuRect:MovieClip;
+	var MouseRotationRect:MovieClip;
 
 	function ItemMenu()
 	{
