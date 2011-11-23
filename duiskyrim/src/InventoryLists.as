@@ -75,6 +75,7 @@ class InventoryLists extends MovieClip
     function handleInput(details, pathToFocus)
     {
         var _loc2 = false;
+		
         if (iCurrentState == ONE_PANEL || iCurrentState == TWO_PANELS)
         {
             if (Shared.GlobalFunc.IsKeyPressed(details))
@@ -169,7 +170,7 @@ class InventoryLists extends MovieClip
         }
 		
         if (_CategoriesList.selectedEntry != undefined)
-        {
+        {			
             iCurrCategoryIndex = _CategoriesList.selectedIndex;
             _ItemsList.filterer.itemFilter = _CategoriesList.selectedEntry.flag;
             _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex, true);
@@ -213,6 +214,7 @@ class InventoryLists extends MovieClip
 	
     function onCategoriesListPress()
     {
+		
         if (iCurrentState == TWO_PANELS && !_ItemsList.disableSelection && !_ItemsList.disableInput)
         {
             HideItemsList();
@@ -299,7 +301,8 @@ class InventoryLists extends MovieClip
         var _loc13 = 1;
         var _loc5 = 2;
         var _loc11 = 3;
-        _CategoriesList.entryList.splice(0, _CategoriesList.entryList.length);
+		
+        _CategoriesList.clearList();
 		
         for (var _loc3 = 0; _loc3 < arguments.length; _loc3 = _loc3 + _loc11)
         {
@@ -310,8 +313,9 @@ class InventoryLists extends MovieClip
             }
             _CategoriesList.entryList.push(_loc4);
         }
+		
         _CategoriesList.InvalidateData();
-        _ItemsList.filterer.itemFilterer = _CategoriesList.selectedEntry.flag;
+        _ItemsList.filterer.itemFilter = _CategoriesList.selectedEntry.flag;
     }
 	
     function InvalidateListData()
@@ -321,7 +325,7 @@ class InventoryLists extends MovieClip
 		
         for (var _loc3 = 0; _loc3 < _CategoriesList.entryList.length; ++_loc3)
         {
-            _CategoriesList.entryList[_loc3].filterFlag = _CategoriesList.entryList[_loc3].bDontHide ? (1) : (0);
+            _CategoriesList.entryList[_loc3].filterFlag = _CategoriesList.entryList[_loc3].bDontHide ? 1 : 0;
         }
 		
         _ItemsList.InvalidateData();

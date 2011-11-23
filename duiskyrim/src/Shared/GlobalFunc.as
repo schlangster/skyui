@@ -17,6 +17,7 @@
 	static function Lerp(aTargetMin:Number, aTargetMax:Number, aSourceMin:Number, aSourceMax:Number, aSource:Number, abClamp:Number):Number
     {
         var _loc1:Number = aTargetMin + (aSource - aSourceMin) / (aSourceMax - aSourceMin) * (aTargetMax - aTargetMin);
+		
         if (abClamp)
         {
             _loc1 = Math.min(Math.max(_loc1, aTargetMin), aTargetMax);
@@ -46,7 +47,8 @@
             if (aText == undefined || aText == "")
             {
                 aText = " ";
-            } // end if
+            }
+			
             if (abHTMLText)
             {
                 var _loc4 = this.getTextFormat();
@@ -63,7 +65,7 @@
                 _loc4 = this.getTextFormat();
                 text = aText;
                 this.setTextFormat(_loc4);
-            } // end else if
+            }
         };
     } 
 	
@@ -73,6 +75,7 @@
         {
             var _loc4 = {x: Stage.visibleRect.x + Stage.safeRect.x, y: Stage.visibleRect.y + Stage.safeRect.y};
             var _loc3 = {x: Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
+			
             _parent.globalToLocal(_loc4);
             _parent.globalToLocal(_loc3);
 			
