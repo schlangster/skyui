@@ -1,67 +1,56 @@
-﻿class dui.InventoryItemList extends dui.DynamicScrollingList
+﻿class dui.InventoryItemList extends dui.FilteredList
 {
-    var iMaxTextLength;
-	
-    function InventoryItemList()
-    {
-        super();
-    }
-	
-    function SetEntryText(aEntryClip, aEntryObject)
-    {
-        var _loc5 = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
+	var _maxTextLength;
+
+	function InventoryItemList()
+	{
+		super();
+	}
+
+	function setEntryText(a_entryClip, a_entryObject)
+	{
+		super.setEntryText(a_entryClip, a_entryObject);
 		
-        if (aEntryObject.text != undefined)
-        {
-            var _loc3 = aEntryObject.text;
-            if (aEntryObject.soulLVL != undefined)
-            {
-                _loc3 = _loc3 + " (" + aEntryObject.soulLVL + ")";
-            }
+		var states = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
+
+		if (a_entryObject.text != undefined) {
+			var text = a_entryObject.text;
+			if (a_entryObject.soulLVL != undefined) {
+				text = text + " (" + a_entryObject.soulLVL + ")";
+			}
+
+			if (a_entryObject.count > 1) {
+				text = text + " (" + a_entryObject.count.toString() + ")";
+			}
+
+			if (text.length > _maxTextLength) {
+				text = text.substr(0, _maxTextLength - 3) + "...";
+			}
+
+			if (a_entryObject.bestInClass == true) {
+				text = text + "<img src=\'BestIcon.png\' vspace=\'2\'>";
+			}
+
+			a_entryClip.textField.textAutoSize = "shrink";
+			a_entryClip.textField.SetText(text,true);
 			
-            if (aEntryObject.count > 1)
-            {
-                _loc3 = _loc3 + " (" + aEntryObject.count.toString() + ")";
-            }
-			
-            if (_loc3.length > iMaxTextLength)
-            {
-                _loc3 = _loc3.substr(0, iMaxTextLength - 3) + "...";
-            }
-			
-            if (aEntryObject.bestInClass == true)
-            {
-                _loc3 = _loc3 + "<img src=\'BestIcon.png\' vspace=\'2\'>";
-            }
-			
-            aEntryClip.textField.textAutoSize = "shrink";
-            aEntryClip.textField.SetText(_loc3, true);
-            if (aEntryObject.negativeEffect == true || aEntryObject.isStealing == true)
-            {
-                aEntryClip.textField.textColor = aEntryObject.enabled == false ? (8388608) : (16711680);
-            }
-            else
-            {
-                aEntryClip.textField.textColor = aEntryObject.enabled == false ? (5000268) : (16777215);
-            }
-        }
-		
-        if (aEntryObject != undefined && aEntryObject.equipState != undefined)
-        {
-            aEntryClip.EquipIcon.gotoAndStop(_loc5[aEntryObject.equipState]);
-        }
-        else
-        {
-            aEntryClip.EquipIcon.gotoAndStop("None");
-        }
-		
-        if (aEntryObject.favorite == true && (aEntryObject.equipState == 0 || aEntryObject.equipState == 1))
-        {
-            aEntryClip.EquipIcon.FavoriteIconInstance.gotoAndStop("On");
-        }
-        else
-        {
-            aEntryClip.EquipIcon.FavoriteIconInstance.gotoAndStop("Off");
-        }
-    } 
+			if (a_entryObject.negativeEffect == true || a_entryObject.isStealing == true) {
+				a_entryClip.textField.textColor = a_entryObject.enabled == false ? (8388608) : (16711680);
+			} else {
+				a_entryClip.textField.textColor = a_entryObject.enabled == false ? (5000268) : (16777215);
+			}
+		}
+
+		if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
+			a_entryClip.EquipIcon.gotoAndStop(states[a_entryObject.equipState]);
+		} else {
+			a_entryClip.EquipIcon.gotoAndStop("None");
+		}
+
+		if (a_entryObject.favorite == true && (a_entryObject.equipState == 0 || a_entryObject.equipState == 1)) {
+			a_entryClip.EquipIcon.FavoriteIconInstance.gotoAndStop("On");
+		} else {
+			a_entryClip.EquipIcon.FavoriteIconInstance.gotoAndStop("Off");
+		}
+	}
 }
