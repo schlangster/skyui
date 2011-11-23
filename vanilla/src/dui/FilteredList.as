@@ -1,25 +1,37 @@
 ﻿import Shared.ListFilterer;
+import dui.ItemTypeFilter;
+import dui.ItemNameFilter;
+//import dui.SortingFilter;
 
 class dui.FilteredList extends dui.DynamicScrollingList
 {
-	private var _filterer;
 	private var _maxTextLength;
-	private var _numUnfilteredItems;
+
+	private var _filterChain:Array;
+	private var _indexMap:Array;
+	private var _filterer;
 
 	function FilteredList()
 	{
 		super();
-		_filterer = new Shared.ListFilterer();
-		_filterer.addEventListener("filterChange",this,"onFilterChange");
+		_indexMap = new Array();
+		_filterChain = new Array();
+
+		_filterer = new ItemTypeFilter();
+        _filterer.addEventListener("filterChange", this, "onFilterChange");
+		
+        _filterer.addEventListener("filterChange", this, "onFilterChange");
+		
+		_filterChain.push(_filterer);
+		_filterChain.push(new ItemNameFilter());
 
 		_maxTextLength = 256;
-		_numUnfilteredItems = 0;
 	}
-
-	function get filterer()
-	{
-		return _filterer;
-	}
+	
+    function get filterer()
+    {
+        return _filterer;
+    }
 
 	function set maxTextLength(a_length)
 	{
@@ -29,9 +41,19 @@ class dui.FilteredList extends dui.DynamicScrollingList
 		}
 	}
 
+	function getMappedEntry(a_index:Number):Object
+	{
+		return _entryList[_indexMap[a_index]];
+	}
+	
+	function getMappedIndex(a_index:Number):Object
+	{
+		return _indexMap[a_index];
+	}
+
 	function get numUnfilteredItems()
 	{
-		return _numUnfilteredItems;
+		return _indexMap.length;
 	}
 
 	function get maxTextLength()
@@ -39,119 +61,159 @@ class dui.FilteredList extends dui.DynamicScrollingList
 		return _maxTextLength;
 	}
 
+	function updateIndexMap()
+	{
+		_indexMap.splice(0);
+
+		for (var i = 0; i < _entryList.length; i++)
+		{
+			_indexMap[i] = i;
+		}
+		
+		//_filterer.process(_entryList, _indexMap, debug);
+		
+		for (var i = 0; i < _filterChain.length; i++)
+		{
+			_filterChain[i].process(_entryList, _indexMap, debug);
+		}
+	}
+
 	function UpdateList()
 	{
-		var yStart = _y;
+		var yStart = 100;
 		var yOffset = 0;
-		
-		var index = filterer.ClampIndex(0);
 
-		if (_platform != 0)
+		for (var i = 0; i < _scrollPosition; i++)
 		{
-			_selectedIndex = -1;
-		}
-		else
-		{
-			_selectedIndex = filterer.ClampIndex(_selectedIndex);
+			getMappedEntry(i).clipIndex = undefined;
+			getMappedEntry(i).mapIndex = undefined;
 		}
 
 		_listIndex = 0;
-		_numUnfilteredItems = 0;
-		_listIndex = 0;
 
-
-		while (index != undefined && index != -1 && index < _entryList.length && _listIndex < _maxListIndex && yOffset <= _listHeight)
+		for (var i = _scrollPosition; i < _indexMap.length && _listIndex < _maxListIndex && yOffset <= _listHeight; i++)
 		{
-			var item = getClipByIndex(_listIndex);
+			var entryClip = getClipByIndex(_listIndex);
 
-			setEntry(item, _entryList[index]);
+			setEntry(entryClip, getMappedEntry(i));
+			
+			// clipEntry -> listEntry
+			// listEntry -> clipIndex
+			// listEntry -> mapIndex
+			entryClip.itemIndex = getMappedIndex(i);
+			getMappedEntry(i).clipIndex = _listIndex;
+			getMappedEntry(i).mapIndex = i;
 
-			_entryList[index].clipIndex = _listIndex;
-			item.itemIndex = index;
-			item._y = yStart + yOffset;
-			item._visible = true;
-			yOffset = yOffset + item._height;
 
-			if (yOffset <= _listHeight && _listIndex < _maxListIndex)
-			{
-				++_listIndex;
-				++_numUnfilteredItems;
-			}
-			index = filterer.GetNextFilterMatch(index);
+			entryClip._y = yStart + yOffset;
+			entryClip._visible = true;
+
+			yOffset = yOffset + entryClip._height;
+
+			_listIndex++;
 		}
 
-		for (var pos = _listIndex; pos < _maxListIndex; ++pos)
+		for (var i = _listIndex; i < _maxListIndex; i++)
 		{
-			getClipByIndex(pos)._visible = false;
-			getClipByIndex(pos).itemIndex = undefined;
+			getClipByIndex(i)._visible = false;
+			getClipByIndex(i).itemIndex = undefined;
+		}
+
+		if (ScrollUp != undefined)
+		{
+			ScrollUp._visible = scrollPosition > 0;
+		}
+
+		if (ScrollDown != undefined)
+		{
+			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
 	}
 
 	function InvalidateData()
 	{
-		filterer.filterArray = _entryList;
-
+		updateIndexMap();
 		super.InvalidateData();
 	}
 
-	function onFilterChange()
+	function calculateMaxScrollPosition()
 	{
-		_selectedIndex = filterer.ClampIndex(_selectedIndex);
-		
-		CalculateMaxScrollPosition();
+		var t = _indexMap.length - _maxListIndex;
+		_maxScrollPosition = (t > 0) ? t : 0;
 	}
-
+	
 	function moveSelectionUp()
 	{
-		var index = filterer.GetPrevFilterMatch(_selectedIndex);
-		var oldScrollPosition = _scrollPosition;
-
-		if (index != undefined)
+		if (!_bDisableSelection)
 		{
-			_selectedIndex = index;
-
-			if (_scrollPosition > 0)
+			if (selectedEntry.mapIndex > 0)
 			{
-				--_scrollPosition;
+				selectedIndex = getMappedIndex(selectedEntry.mapIndex - 1);
 			}
-
-			_bMouseDrivenNav = false;
-			UpdateList();
-			dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged:oldScrollPosition != _scrollPosition});
+		}
+		else
+		{
+			scrollPosition = scrollPosition - 1;
 		}
 	}
 
 	function moveSelectionDown()
 	{
-		var index = filterer.GetNextFilterMatch(_selectedIndex);
-		var oldScrollPosition = _scrollPosition;
-
-		if (index != undefined)
+		if (!_bDisableSelection)
 		{
-			_selectedIndex = index;
-			if (_scrollPosition < _maxScrollPosition)
+			if (selectedEntry.mapIndex < _indexMap.length - 1)
 			{
-				++_scrollPosition;
+				selectedIndex = getMappedIndex(selectedEntry.mapIndex + 1);
+			}
+		}
+		else
+		{
+			scrollPosition = scrollPosition + 1;
+		}
+	}
+	
+	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
+	{
+		if (!_bDisableSelection && a_newIndex != _selectedIndex)
+		{
+			var oldIndex = _selectedIndex;
+			_selectedIndex = a_newIndex;
+
+			if (oldIndex != -1)
+			{
+				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex), _entryList[oldIndex]);
 			}
 
-			_bMouseDrivenNav = false;
-			UpdateList();
-			dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged:oldScrollPosition != _scrollPosition});
+			if (_selectedIndex != -1)
+			{
+				
+				if (_platform != 0)
+				{
+					if (selectedEntry.mapIndex < _scrollPosition)
+					{
+						scrollPosition = selectedEntry.mapIndex;
+					}
+					else if (selectedEntry.mapIndex >= _scrollPosition + _listIndex)
+					{
+						scrollPosition = Math.min(selectedEntry.mapIndex - _listIndex + 1, _maxScrollPosition);
+					}
+					else
+					{
+						setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+					}
+				}
+				else
+				{
+					setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+				}
+			}
+			dispatchEvent({type:"selectionChange", index:_selectedIndex, keyboardOrMouse:a_keyboardOrMouse});
 		}
 	}
-
-	function CalculateMaxScrollPosition()
-	{
-		_maxScrollPosition = -1;
-		
-		for (var _loc2 = filterer.ClampIndex(0); _loc2 != undefined; _loc2 = filterer.GetNextFilterMatch(_loc2))
-		{
-			++_maxScrollPosition;
-		}
-
-		if (_maxScrollPosition == undefined || _maxScrollPosition < 0)
-		{
-			_maxScrollPosition = 0;
-		}
-	}
+	
+	function onFilterChange()
+    {
+		updateIndexMap();
+        calculateMaxScrollPosition();
+    }
 }

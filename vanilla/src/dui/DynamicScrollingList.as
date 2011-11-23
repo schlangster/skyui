@@ -8,6 +8,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 	private var _scrollPosition:Number;
 	private var _maxScrollPosition:Number;
 
+	private var _listIndex:Number;
 	private var _maxListIndex:Number;
 	private var _listHeight:Number;
 
@@ -29,6 +30,8 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		
 		_scrollPosition = 0;
 		_maxScrollPosition = 0;
+		_listIndex = 0;
+
 		_listHeight = border._height;
 		_maxListIndex = Math.floor(_listHeight / 50);
 	}
@@ -186,23 +189,20 @@ class dui.DynamicScrollingList extends dui.DynamicList
 
 			setEntry(entry,_entryList[pos]);
 			_entryList[pos].clipIndex = _listIndex;
-			entry._itemIndex = pos;
+			entry.itemIndex = pos;
 
 			entry._y = yStart + yOffset;
 			entry._visible = true;
 
 			yOffset = yOffset + entry._height;
-
-			if (yOffset <= _listHeight && _listIndex < _maxListIndex)
-			{
-				++_listIndex;
-			}
+			
+			++_listIndex;
 		}
 
 		for (var i = _listIndex; i < _maxListIndex; i++)
 		{
 			getClipByIndex(i)._visible = false;
-			getClipByIndex(i)._itemIndex = undefined;
+			getClipByIndex(i).itemIndex = undefined;
 		}
 
 		if (ScrollUp != undefined)
@@ -216,11 +216,9 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		}
 	}
 
-	var counter = 0;
-
 	function InvalidateData()
 	{
-		debug.textField.SetText("Invalidated" + counter++);
+		//debug.textField.SetText("Invalidated" + counter++);
 		
 		for (var i = 0; i < _entryList.length; i++)
 		{
@@ -262,6 +260,8 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		var lastPosition = _maxScrollPosition;
 
 		_listHeight = border._height;
+		_maxListIndex = Math.floor(_listHeight / 50);
+		
 		calculateMaxScrollPosition();
 
 		if (scrollbar != undefined)
@@ -305,7 +305,8 @@ class dui.DynamicScrollingList extends dui.DynamicList
 	function calculateMaxScrollPosition()
 	{
 		var t = _entryList.length - _maxListIndex;
-		_maxScrollPosition = (t > 0)? t : 0;
+		
+		_maxScrollPosition = t > 0 ? t : 0;
 	}
 
 	function moveSelectionUp()
@@ -354,12 +355,12 @@ class dui.DynamicScrollingList extends dui.DynamicList
 			if (a_entryObject.text != undefined)
 			{
 				a_entryClip.textField.SetText(a_entryObject.text);
-				a_entryClip.weightField.SetText(a_entryObject._infoWeight);
-				a_entryClip.valueField.SetText(a_entryObject._infoValue);
+				a_entryClip.weightField.SetText(int(a_entryObject._infoWeight*100)/100);
+				a_entryClip.valueField.SetText(Math.round(a_entryObject._infoValue));
 
 				if (a_entryObject._infoStat != undefined)
 				{
-					a_entryClip.statField.SetText(a_entryObject._infoStat);
+					a_entryClip.statField.SetText(Math.round(a_entryObject._infoStat));
 				}
 				else
 				{

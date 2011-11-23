@@ -18,9 +18,8 @@ class dui.DynamicList extends MovieClip
 	private var _bListAnimating:Boolean;
 
 	private var _selectedIndex:Number;
-
-	private var _listIndex:Number;
-	private var _itemIndex:Number;
+	
+	private var _itemClipIndex:Number;
 	
 	// Component settings
 	private var _entryClassName:String;
@@ -31,6 +30,8 @@ class dui.DynamicList extends MovieClip
 
 	var onMousePress:Function;
 	var dispatchEvent:Function;
+	
+	var debug;
 
 	// Constructor
 	function DynamicList()
@@ -47,7 +48,6 @@ class dui.DynamicList extends MovieClip
 		Mouse.addListener(this);
 
 		_selectedIndex = -1;
-		_listIndex = 0;
 		_platform = 1;
 	}
 	
@@ -63,34 +63,34 @@ class dui.DynamicList extends MovieClip
 
 	function clearList()
 	{
-		_entryList.splice(0,_entryList.length);
+		_entryList.splice(0);
 	}
 
 	function getClipByIndex(a_index)
 	{
-		var entry = this["Entry" + a_index];
+		var entryClip = this["Entry" + a_index];
 
-		if (entry != undefined)
+		if (entryClip != undefined)
 		{
-			return entry;
+			return entryClip;
 		}
 		// Create on-demand 
-		entry = attachMovie(_entryClassName, "Entry" + a_index, a_index);
+		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
 
-		entry.clipIndex = a_index;
+		entryClip.clipIndex = a_index;
 
-		entry.onRollOver = function()
+		entryClip.onRollOver = function()
 		{
-			if (!_parent.listAnimating && !_parent._bDisableInput && _itemIndex != undefined)
+			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined)
 			{
-				_parent.doSetSelectedIndex(_itemIndex,0);
+				_parent.doSetSelectedIndex(this.itemIndex, 0);
 				_parent._bMouseDrivenNav = true;
 			}
 		};
 
-		entry.onPress = function(aiMouseIndex, a_keyboardOrMouse)
+		entryClip.onPress = function(aiMouseIndex, a_keyboardOrMouse)
 		{
-			if (_itemIndex != undefined)
+			if (this.itemIndex != undefined)
 			{
 				_parent.onItemPress(a_keyboardOrMouse);
 				if (!_parent._bDisableInput && onMousePress != undefined)
@@ -100,15 +100,15 @@ class dui.DynamicList extends MovieClip
 			}
 		};
 
-		entry.onPressAux = function(aiMouseIndex, a_keyboardOrMouse, a_buttonIndex)
+		entryClip.onPressAux = function(aiMouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			if (_itemIndex != undefined)
+			if (this.itemIndex != undefined)
 			{
 				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
 			}
 		};
 
-		return entry;
+		return entryClip;
 	}
 	
 	function get selectedIndex()
@@ -120,6 +120,7 @@ class dui.DynamicList extends MovieClip
 	{
 		doSetSelectedIndex(a_newIndex);
 	}
+
 	
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{
@@ -202,29 +203,6 @@ class dui.DynamicList extends MovieClip
 		}
 	}
 
-	function UpdateList()
-	{
-		var yStart = 100;
-		var yOffset = 0;
-
-		_listIndex = 0;
-
-		for (var pos = 0; pos < _entryList.length; ++pos)
-		{
-			var entry = getClipByIndex(_listIndex);
-
-			setEntry(entry,_entryList[pos]);
-			_entryList[pos].clipIndex = _listIndex;
-			entry._itemIndex = pos;
-
-			entry._y = yStart + yOffset;
-			entry._visible = true;
-
-			yOffset = yOffset + entry._height;
-			_listIndex++;
-		}
-	}
-
 	function InvalidateData()
 	{
 		if (_selectedIndex >= _entryList.length)
@@ -235,11 +213,24 @@ class dui.DynamicList extends MovieClip
 		UpdateList();
 	}
 
-	function getEntryHeight(a_entryIndex:Number):Number
+	function UpdateList()
 	{
-		var entry = getClipByIndex(0);
-		setEntry(entry,_entryList[a_entryIndex]);
-		return entry._height;
+		var yStart = 100;
+		var yOffset = 0;
+		
+		for (var i = 0; i < _entryList.length; ++i)
+		{
+			var entryClip = getClipByIndex(i);
+
+			setEntry(entryClip,_entryList[i]);
+			_entryList[i].clipIndex = i;
+			entryClip.itemIndex = i;
+
+			entryClip._y = yStart + yOffset;
+			entryClip._visible = true;
+
+			yOffset = yOffset + entryClip._height;
+		}
 	}
 
 	function onItemPress(a_keyboardOrMouse)
@@ -283,11 +274,11 @@ class dui.DynamicList extends MovieClip
 	{
 		if (a_entryClip.textField != undefined)
 		{
-			if (textOption == Shared.BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT)
+			if (textOption == TEXT_OPTION_SHRINK_TO_FIT)
 			{
 				a_entryClip.textField.textAutoSize = "shrink";
 			}
-			else if (textOption == Shared.BSScrollingList.TEXT_OPTION_MULTILINE)
+			else if (textOption == TEXT_OPTION_MULTILINE)
 			{
 				a_entryClip.textField.verticalAutoSize = "top";
 			}

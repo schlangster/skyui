@@ -5,6 +5,10 @@ import Shared.GlobalFunc;
 class dui.HorizontalList extends dui.DynamicList
 {
 	private var _spacing:Number = 50;
+	
+	// Component settings
+	private var _entryClassName:String;
+	private var _textOption:Number;
 
 	// Children
 	var border:MovieClip;
@@ -19,31 +23,32 @@ class dui.HorizontalList extends dui.DynamicList
 
 	function getClipByIndex(a_index)
 	{
-		var entry = this["Entry" + a_index];
+		var entryClip = this["Entry" + a_index];
 
-		if (entry != undefined)
+		if (entryClip != undefined)
 		{
-			return entry;
+			return entryClip;
 		}
 		
 		// Create on-demand  
-		entry = attachMovie(_entryClassName, "Entry" + a_index, a_index);
+		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
 
-		entry.clipIndex = a_index;
+		entryClip.clipIndex = a_index;
 
-		entry.buttonArea.onRollOver = function()
+		entryClip.buttonArea.onRollOver = function()
 		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent._itemIndex != undefined)
+			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined)
 			{
-				_parent._parent.doSetSelectedIndex(_parent._itemIndex, 0);
+				_parent._parent.doSetSelectedIndex(_parent.itemIndex, 0);
 				_parent._parent._bMouseDrivenNav = true;
 			}
 		};
 
-		entry.buttonArea.onPress = function(aiMouseIndex, aiKeyboardOrMouse)
+		entryClip.buttonArea.onPress = function(aiMouseIndex, aiKeyboardOrMouse)
 		{
-			if (_parent._itemIndex != undefined)
-			{
+			if (_parent.itemIndex != undefined)
+			{				
+				
 				_parent._parent.onItemPress(aiKeyboardOrMouse);
 				if (!_parent._parent._bDisableInput && _parent.onMousePress != undefined)
 				{
@@ -52,37 +57,46 @@ class dui.HorizontalList extends dui.DynamicList
 			}
 		};
 
-		entry.buttonArea.onPressAux = function(aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
+		entryClip.buttonArea.onPressAux = function(aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
 		{
-			if (_parent._itemIndex != undefined)
+			if (_parent.itemIndex != undefined)
 			{
 				_parent._parent.onItemPressAux(aiKeyboardOrMouse,aiButtonIndex);
 			}
 		};
 
-		return entry;
+		return entryClip;
 	}
 
 	function UpdateList()
 	{
-		var xOffset = this._x;
+		var xOffset = 50;
+		var contentWidth = 100;
 
 		for (var i = 0; i < _entryList.length; i++)
 		{
-			var item = getClipByIndex(i);
+			var entryClip = getClipByIndex(i);
 
-			setEntry(item,_entryList[i]);
+			setEntry(entryClip, _entryList[i]);
+			
 			_entryList[i].clipIndex = i;
-			item._itemIndex = i;
+			entryClip.itemIndex = i;
 
-			item.textField.autoSize = "left";
-			item.buttonArea._width = item.textField._width;
+			entryClip.textField.autoSize = "left";
+			entryClip.buttonArea._width = entryClip.textField._width + 20;
+			
+			contentWidth = contentWidth + entryClip.buttonArea._width;
+		}
+		
+		var spacing = (Stage.visibleRect.width - contentWidth) / _entryList.length;
+		
+		for (var i = 0; i < _entryList.length; i++)
+		{
+			var entryClip = getClipByIndex(i);
+			entryClip._x = xOffset;
 
-			item._x = xOffset;
-
-			xOffset = xOffset + item.buttonArea._width + _spacing;
-			item.visible = true;
-			_listIndex++;
+			xOffset = xOffset + entryClip.buttonArea._width + spacing;
+			entryClip.visible = true;
 		}
 	}
 }
