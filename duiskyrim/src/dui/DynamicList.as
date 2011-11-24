@@ -71,8 +71,6 @@ class dui.DynamicList extends MovieClip
 
 	function getClipByIndex(a_index)
 	{
-		debug.textField.SetText("Requesting entry " + a_index);
-		
 		if (a_index < 0) {
 			return undefined;
 		}

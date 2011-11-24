@@ -194,31 +194,6 @@ class dui.DynamicScrollingList extends dui.DynamicList
 	{
 		//debug.textField.SetText("Invalidated" + counter++);
 
-		for (var i = 0; i < _entryList.length; i++) {
-			requestItemInfo(i);
-
-			switch (_itemInfo.type) {
-				case InventoryDefines.ICT_ARMOR :
-					_entryList[i]._infoStat = _itemInfo.armor;
-					break;
-				case InventoryDefines.ICT_WEAPON :
-					_entryList[i]._infoStat = _itemInfo.damage;
-					break;
-				case InventoryDefines.ICT_SPELL :
-				case InventoryDefines.ICT_SHOUT :
-					_entryList[i]._infoStat = _itemInfo.spellCost.toString();
-					break;
-				case InventoryDefines.ICT_SOUL_GEMS :
-					_entryList[i]._infoStat = _itemInfo.soulLVL;
-					break;
-				default :
-					_entryList[i]._infoStat = undefined;
-			}
-
-			_entryList[i]._infoValue = _itemInfo.value;
-			_entryList[i]._infoWeight = _itemInfo.weight;
-		}
-
 		var lastPosition = _maxScrollPosition;
 
 		_listHeight = border._height;

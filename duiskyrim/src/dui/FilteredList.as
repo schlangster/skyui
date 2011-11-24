@@ -66,14 +66,16 @@ class dui.FilteredList extends dui.DynamicScrollingList
 		var yStart = 100;
 		var yOffset = 0;
 
-		for (var i = 0; i < _scrollPosition; i++) {
-			getMappedEntry(i).clipIndex = undefined;
-			getMappedEntry(i).mapIndex = undefined;
+		for (var i = 0; i < _indexMap.length; i++) {
+			if (i < scrollPosition) {
+				getMappedEntry(i).clipIndex = undefined;
+			}
+			getMappedEntry(i).mapIndex = i;
 		}
 
 		_listIndex = 0;
 
-		for (var i = _scrollPosition; i < _indexMap.length && _listIndex < _maxListIndex && yOffset <= _listHeight; i++) {
+		for (var i = _scrollPosition; i < _indexMap.length && _listIndex < _maxListIndex; i++) {
 			var entryClip = getClipByIndex(_listIndex);
 
 			setEntry(entryClip,getMappedEntry(i));
@@ -124,6 +126,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 	{
 		if (!_bDisableSelection) {
 			if (selectedEntry.mapIndex > 0) {
+				//debug.textField.SetText("moving from " + selectedEntry.mapIndex + " (" + selectedIndex + ") to " + (selectedEntry.mapIndex - 1) + " (" + getMappedIndex(selectedEntry.mapIndex - 1) + ")");
 				selectedIndex = getMappedIndex(selectedEntry.mapIndex - 1);
 			}
 		} else {
@@ -153,20 +156,17 @@ class dui.FilteredList extends dui.DynamicScrollingList
 			}
 
 			if (_selectedIndex != -1) {
+				debug.textField.SetText("comparing " + selectedEntry.mapIndex + " vs " + _scrollPosition + "(+ " + _listIndex + ")");
 
-				if (_platform != 0) {
-					if (selectedEntry.mapIndex < _scrollPosition) {
-						scrollPosition = selectedEntry.mapIndex;
-					} else if (selectedEntry.mapIndex >= _scrollPosition + _listIndex) {
-						scrollPosition = Math.min(selectedEntry.mapIndex - _listIndex + 1, _maxScrollPosition);
-					} else {
-						setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
-					}
+				if (selectedEntry.mapIndex < _scrollPosition) {
+					scrollPosition = selectedEntry.mapIndex;
+				} else if (selectedEntry.mapIndex >= _scrollPosition + _listIndex) {
+					scrollPosition = Math.min(selectedEntry.mapIndex - _listIndex + 1, _maxScrollPosition);
 				} else {
 					setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
 				}
 			}
-			
+
 			dispatchEvent({type:"selectionChange", index:_selectedIndex, keyboardOrMouse:a_keyboardOrMouse});
 		}
 	}
