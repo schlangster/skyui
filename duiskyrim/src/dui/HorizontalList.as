@@ -4,34 +4,48 @@ import Shared.GlobalFunc;
 
 class dui.HorizontalList extends dui.DynamicList
 {
+	static var FILL_BORDER = 0;
+	static var FILL_PARENT = 1;
+	static var FILL_STAGE = 2;
+	
+	private var _bNoIcons:Boolean;
+	private var _bNoText:Boolean;
+	private var _xOffset:Number;
+	private var _fillType:Number;
+	
 	// Component settings
-	private var _bUseIcons;
-	// iconX holds label name of iconX
-
-	// Children
-	var border:MovieClip;
-
-	var onMousePress:Function;
-	var dispatchEvent:Function;
+	var buttonOption:String;
+	var fillOption:String;
+	var borderWidth:Number;
+	// iconX holds label name for iconX
+	
 
 	function HorizontalList()
-	{
+	{		
 		super();
-		_indent = 5;
-
-		if (_bUseIcons == undefined) {
-			_bUseIcons = false;
+		
+		if (borderWidth != undefined) {
+			_indent = borderWidth;
 		}
-	}
-	
-	function set useIcons(a_bFlag:Boolean)
-	{
-		_bUseIcons = a_bFlag;
-	}
-	
-	function get useIcons():Boolean
-	{
-		return _bUseIcons;
+
+		if (buttonOption == "text and icons") {
+			_bNoIcons = false;;
+			_bNoText = false;
+		} else if (buttonOption == "icons only") {
+			_bNoIcons = false;
+			_bNoText = true;
+		} else {
+			_bNoIcons = true;
+			_bNoText = false;
+		}
+		
+		if (fillOption == "parent") {
+			_fillType = FILL_PARENT;
+		} else if (fillOption == "stage") {
+			_fillType = FILL_STAGE;
+		} else {
+			_fillType = FILL_BORDER;
+		}
 	}
 
 	function getClipByIndex(a_index)
@@ -78,13 +92,15 @@ class dui.HorizontalList extends dui.DynamicList
 			}
 		};
 		
-		if (_bUseIcons) {
-			if (this["icon" + a_index] != undefined) {
-				entryClip.icon.gotoAndStop(this["icon" + a_index]);
-			} else {
-				entryClip.icon._visible = false;
-				entryClip.textField._x = 0;
+		if (!_bNoIcons && this["icon" + a_index] != undefined) {
+			entryClip.icon.gotoAndStop(this["icon" + a_index]);
+					
+			if (_bNoText) {
+				entryClip.textField._visible = false;
 			}
+		} else {
+			entryClip.icon._visible = false;
+			entryClip.textField._x = 0;
 		}
 
 		return entryClip;
@@ -92,8 +108,20 @@ class dui.HorizontalList extends dui.DynamicList
 
 	function UpdateList()
 	{
-		var xOffset = _indent;
 		var contentWidth = _indent * 2;
+		var totalWidth;
+		var xOffset;
+		
+		if (_fillType == FILL_PARENT) {
+			xOffset = _parent._x;
+			totalWidth = _parent._width;
+		} else if (_fillType == FILL_STAGE) {
+			xOffset = 0;
+			totalWidth = Stage.visibleRect.width;
+		} else {
+			xOffset = border._x;
+			totalWidth = border._width;
+		}
 
 		for (var i = 0; i < _entryList.length; i++)
 		{
@@ -106,23 +134,27 @@ class dui.HorizontalList extends dui.DynamicList
 
 			entryClip.textField.autoSize = "left";
 			
-			if (_bUseIcons && entryClip.icon._visible) {
-				entryClip.buttonArea._width = entryClip.textField._width + entryClip.icon._width + 5;				
-			} else {
-				entryClip.buttonArea._width = entryClip.textField._width + 5;				
+			var w = 5;
+			if (entryClip.icon._visible) {
+				w = w + entryClip.icon._width;
 			}
-			
-			contentWidth = contentWidth + entryClip.buttonArea._width;
+			if (entryClip.textField._visible) {
+				w = w + entryClip.textField._width;
+			}
+			entryClip.buttonArea._width = w;
+			contentWidth = contentWidth + w;
 		}
 		
-		var spacing = (Stage.visibleRect.width - contentWidth) / _entryList.length;
+		var spacing = (totalWidth - contentWidth) / (_entryList.length + 1);
+		
+		var xPos = xOffset + _indent + spacing;
 		
 		for (var i = 0; i < _entryList.length; i++)
 		{
 			var entryClip = getClipByIndex(i);
-			entryClip._x = xOffset;
+			entryClip._x = xPos;
 
-			xOffset = xOffset + entryClip.buttonArea._width + spacing;
+			xPos = xPos + entryClip.buttonArea._width + spacing;
 			entryClip._visible = true;
 		}
 	}

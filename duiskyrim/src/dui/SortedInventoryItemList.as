@@ -5,13 +5,13 @@ class dui.SortedInventoryItemList extends dui.FilteredList
 {
 	private var _maxTextLength:Number;
 	private var _sortFilter:ItemSortingFilter;
-	private var _bAscending;
-	private var _lastSortBy;
+	private var _bAscending:Boolean;
+	private var _lastSortBy:Number;
 	
 	// Children
 	var header:MovieClip;
 
-	function InventoryItemList()
+	function SortedInventoryItemList()
 	{
 		super();		
 		_indent = header._y + header._height;
@@ -64,7 +64,6 @@ class dui.SortedInventoryItemList extends dui.FilteredList
 	
 	function onSortToggle(a_sortBy:Number)
 	{
-		debug.textField.SetText("received sort by " + a_sortBy);
 		
 		if (_lastSortBy == a_sortBy) {
 			_bAscending = !_bAscending

@@ -17,6 +17,8 @@ class dui.DynamicScrollingList extends dui.DynamicList
 	private var _itemInfo:Object;
 
 	// Children
+	var scrollBar;
+	
 	var scrollbar:MovieClip;
 	var ScrollUp:MovieClip;
 	var ScrollDown:MovieClip;
@@ -33,7 +35,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		_listIndex = 0;
 
 		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 50);
+		_maxListIndex = Math.floor(_listHeight / 20);
 	}
 
 	function onLoad()
@@ -161,7 +163,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 
 		_listIndex = 0;
 
-		for (var pos = _scrollPosition; pos < _entryList.length && _listIndex < _maxListIndex && yOffset <= _listHeight; pos++) {
+		for (var pos = _scrollPosition; pos < _entryList.length && _listIndex < _maxListIndex; pos++) {
 			var entry = getClipByIndex(_listIndex);
 
 			setEntry(entry,_entryList[pos]);
@@ -197,9 +199,14 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		var lastPosition = _maxScrollPosition;
 
 		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 50);
+		_maxListIndex = Math.floor(_listHeight / 40);
 
 		calculateMaxScrollPosition();
+
+		if (_maxScrollPosition > 0) {
+			scrollbar
+		} else {
+		}
 
 		if (scrollbar != undefined) {
 			if (lastPosition != _maxScrollPosition) {

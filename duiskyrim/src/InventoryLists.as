@@ -19,6 +19,7 @@ class InventoryLists extends MovieClip
 	static var TRANSITIONING_TO_TWO_PANELS = 5;
 
 	private var _CategoriesList:HorizontalList;
+	private var _CategoryLabel:MovieClip;
 	private var _ItemsList:FilteredList;
 	private var _hideItemsCode:String;
 	private var _showItemsCode:String;
@@ -43,6 +44,7 @@ class InventoryLists extends MovieClip
 		super();
 		
 		_CategoriesList = CategoriesListHolder.List_mc;
+		_CategoryLabel = CategoriesListHolder.CategoryLabel;
 		_ItemsList = ItemsListHolder.List_mc;
 
 		EventDispatcher.initialize(this);
@@ -180,6 +182,7 @@ class InventoryLists extends MovieClip
 		if (_CategoriesList.selectedEntry != undefined) {
 			_currCategoryIndex = _CategoriesList.selectedIndex;
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
+			_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
 		}
 
 		_ItemsList.UpdateList();

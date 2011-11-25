@@ -40,9 +40,7 @@ class dui.DynamicList extends MovieClip
 
 	// Constructor
 	function DynamicList()
-	{
-		super();
-
+	{		
 		_entryList = new Array();
 
 		_bDisableSelection = false;
