@@ -152,7 +152,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 
 	function UpdateList()
 	{
-		var yStart = 100;
+		var yStart = _indent;
 		var yOffset = 0;
 
 		for (var i = 0; i < _scrollPosition; i++) {

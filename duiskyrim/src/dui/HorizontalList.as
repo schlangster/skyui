@@ -4,11 +4,9 @@ import Shared.GlobalFunc;
 
 class dui.HorizontalList extends dui.DynamicList
 {
-	private var _spacing:Number = 50;
-	
 	// Component settings
-	private var _entryClassName:String;
-	private var _textOption:Number;
+	private var _bUseIcons;
+	// iconX holds label name of iconX
 
 	// Children
 	var border:MovieClip;
@@ -19,6 +17,21 @@ class dui.HorizontalList extends dui.DynamicList
 	function HorizontalList()
 	{
 		super();
+		_indent = 5;
+
+		if (_bUseIcons == undefined) {
+			_bUseIcons = false;
+		}
+	}
+	
+	function set useIcons(a_bFlag:Boolean)
+	{
+		_bUseIcons = a_bFlag;
+	}
+	
+	function get useIcons():Boolean
+	{
+		return _bUseIcons;
 	}
 
 	function getClipByIndex(a_index)
@@ -64,14 +77,23 @@ class dui.HorizontalList extends dui.DynamicList
 				_parent._parent.onItemPressAux(aiKeyboardOrMouse,aiButtonIndex);
 			}
 		};
+		
+		if (_bUseIcons) {
+			if (this["icon" + a_index] != undefined) {
+				entryClip.icon.gotoAndStop(this["icon" + a_index]);
+			} else {
+				entryClip.icon._visible = false;
+				entryClip.textField._x = 0;
+			}
+		}
 
 		return entryClip;
 	}
 
 	function UpdateList()
 	{
-		var xOffset = 50;
-		var contentWidth = 100;
+		var xOffset = _indent;
+		var contentWidth = _indent * 2;
 
 		for (var i = 0; i < _entryList.length; i++)
 		{
@@ -83,7 +105,12 @@ class dui.HorizontalList extends dui.DynamicList
 			entryClip.itemIndex = i;
 
 			entryClip.textField.autoSize = "left";
-			entryClip.buttonArea._width = entryClip.textField._width + 20;
+			
+			if (_bUseIcons && entryClip.icon._visible) {
+				entryClip.buttonArea._width = entryClip.textField._width + entryClip.icon._width + 5;				
+			} else {
+				entryClip.buttonArea._width = entryClip.textField._width + 5;				
+			}
 			
 			contentWidth = contentWidth + entryClip.buttonArea._width;
 		}
@@ -96,7 +123,7 @@ class dui.HorizontalList extends dui.DynamicList
 			entryClip._x = xOffset;
 
 			xOffset = xOffset + entryClip.buttonArea._width + spacing;
-			entryClip.visible = true;
+			entryClip._visible = true;
 		}
 	}
 }

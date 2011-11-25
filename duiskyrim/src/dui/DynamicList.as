@@ -18,12 +18,14 @@ class dui.DynamicList extends MovieClip
 	private var _bListAnimating:Boolean;
 
 	private var _selectedIndex:Number;
-
 	private var _itemClipIndex:Number;
+	
+	private var _indent:Number;
 
 	// Component settings
 	private var _entryClassName:String;
 	private var _textOption:Number;
+
 
 	// Children
 	var border:MovieClip;
@@ -52,6 +54,7 @@ class dui.DynamicList extends MovieClip
 
 		_selectedIndex = -1;
 		_platform = 1;
+		_indent = 0;
 	}
 
 	function set entryClassName(a_className)
@@ -131,7 +134,6 @@ class dui.DynamicList extends MovieClip
 			_selectedIndex = a_newIndex;
 
 			if (_selectedIndex != -1) {
-				debug.textField.SetText("1 Requesting entry " + _entryList[_selectedIndex].clipIndex);
 				setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
 			}
 
@@ -211,7 +213,7 @@ class dui.DynamicList extends MovieClip
 
 	function UpdateList()
 	{
-		var yStart = 100;
+		var yStart = _indent;
 		var yOffset = 0;
 
 		for (var i = 0; i < _entryList.length; ++i) {

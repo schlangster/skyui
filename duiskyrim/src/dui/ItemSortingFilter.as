@@ -7,8 +7,8 @@ class dui.ItemSortingFilter implements dui.IFilter
 	static var SORT_BY_WEIGHT = 2;
 	static var SORT_BY_STAT = 3;
 
-	private var _sortBy = 1;
-	private var _bAscending = false;
+	private var _sortBy = 0;
+	private var _bAscending = true;
 	private var _filterArray:Array;
 
 	//Mixin

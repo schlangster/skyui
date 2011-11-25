@@ -18,7 +18,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 
 	function addFilter(a_filter:IFilter)
 	{
-		return _filterChain.push(a_filter);
+		_filterChain.push(a_filter);
 	}
 
 	function set maxTextLength(a_length)
@@ -63,7 +63,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 
 	function UpdateList()
 	{
-		var yStart = 100;
+		var yStart = _indent;
 		var yOffset = 0;
 
 		for (var i = 0; i < _indexMap.length; i++) {
@@ -175,5 +175,6 @@ class dui.FilteredList extends dui.DynamicScrollingList
 	{
 		updateIndexMap();
 		calculateMaxScrollPosition();
+		UpdateList();
 	}
 }

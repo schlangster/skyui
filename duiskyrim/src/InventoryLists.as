@@ -7,7 +7,6 @@ import dui.HorizontalList;
 import dui.FilteredList;
 import dui.ItemTypeFilter;
 import dui.ItemNameFilter;
-import dui.ItemSortingFilter;
 
 class InventoryLists extends MovieClip
 {
@@ -29,7 +28,6 @@ class InventoryLists extends MovieClip
 	
 	private var _typeFilter:ItemTypeFilter;
 	private var _nameFilter:ItemNameFilter;
-	private var _sortFilter:ItemSortingFilter;
 
 	// Children
 	var CategoriesListHolder:MovieClip;
@@ -55,7 +53,6 @@ class InventoryLists extends MovieClip
 
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
-		_sortFilter = new ItemSortingFilter();
 
 		_hideItemsCode = NavigationCode.LEFT;
 		_showItemsCode = NavigationCode.RIGHT;
@@ -65,7 +62,6 @@ class InventoryLists extends MovieClip
 	{
 		_ItemsList.addFilter(_typeFilter);
 		_ItemsList.addFilter(_nameFilter);
-		_ItemsList.addFilter(_sortFilter);
 
 		_typeFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 
@@ -83,7 +79,7 @@ class InventoryLists extends MovieClip
 		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
 	}
 
-	function setPlatform(a_platform, a_bPS3Switch)
+	function setPlatform(a_platform:Number, a_bPS3Switch:Boolean)
 	{
 		_platform = a_platform;
 		
