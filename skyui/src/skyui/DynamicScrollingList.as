@@ -3,9 +3,9 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 
-import dui.ScrollBar;
+import skyui.ScrollBar;
 
-class dui.DynamicScrollingList extends dui.DynamicList
+class skyui.DynamicScrollingList extends skyui.DynamicList
 {
 	private var _scrollPosition:Number;
 	private var _maxScrollPosition:Number;

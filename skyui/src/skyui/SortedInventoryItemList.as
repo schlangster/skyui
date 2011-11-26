@@ -1,7 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
-import dui.ItemSortingFilter;
+import skyui.ItemSortingFilter;
 
-class dui.SortedInventoryItemList extends dui.FilteredList
+class skyui.SortedInventoryItemList extends skyui.FilteredList
 {
 	private var _maxTextLength:Number;
 	private var _sortFilter:ItemSortingFilter;

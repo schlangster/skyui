@@ -3,10 +3,10 @@ import gfx.ui.NavigationCode;
 import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
 
-import dui.HorizontalList;
-import dui.FilteredList;
-import dui.ItemTypeFilter;
-import dui.ItemNameFilter;
+import skyui.HorizontalList;
+import skyui.FilteredList;
+import skyui.ItemTypeFilter;
+import skyui.ItemNameFilter;
 
 class InventoryLists extends MovieClip
 {

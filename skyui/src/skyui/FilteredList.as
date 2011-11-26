@@ -1,7 +1,7 @@
 ﻿import Shared.ListFilterer;
-import dui.IFilter;
+import skyui.IFilter;
 
-class dui.FilteredList extends dui.DynamicScrollingList
+class skyui.FilteredList extends skyui.DynamicScrollingList
 {
 	private var _maxTextLength:Number;
 

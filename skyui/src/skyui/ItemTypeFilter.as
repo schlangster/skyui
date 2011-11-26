@@ -1,6 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 
-class dui.ItemTypeFilter implements dui.IFilter
+class skyui.ItemTypeFilter implements skyui.IFilter
 {
 	private var _itemFilter;
 	private var _filterArray:Array;

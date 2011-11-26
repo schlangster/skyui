@@ -1,7 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 
 
-class dui.ItemNameFilter implements dui.IFilter
+class skyui.ItemNameFilter implements skyui.IFilter
 {
 	private var _nameFilter:String;
 

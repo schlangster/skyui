@@ -3,7 +3,7 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 
-class dui.DynamicList extends MovieClip
+class skyui.DynamicList extends MovieClip
 {
 	static var TEXT_OPTION_NONE = 0;
 	static var TEXT_OPTION_SHRINK_TO_FIT = 1;

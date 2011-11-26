@@ -2,7 +2,7 @@
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-class dui.HorizontalList extends dui.DynamicList
+class skyui.HorizontalList extends skyui.DynamicList
 {
 	static var FILL_BORDER = 0;
 	static var FILL_PARENT = 1;

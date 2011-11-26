@@ -1,6 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 
-class dui.ItemSortingFilter implements dui.IFilter
+class skyui.ItemSortingFilter implements skyui.IFilter
 {
 	static var SORT_BY_NAME = 0;
 	static var SORT_BY_VALUE = 1;

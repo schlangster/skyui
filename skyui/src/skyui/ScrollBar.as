@@ -1,4 +1,4 @@
-﻿class dui.ScrollBar extends MovieClip
+﻿class skyui.ScrollBar extends MovieClip
 {
 	private var _contentHeight:Number;
 	private var _maxIndex:Number;
