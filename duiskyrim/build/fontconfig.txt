@@ -1,7 +1,9 @@
 [FontConfig "English"]
 fontlib "fonts_console.swf"
 fontlib "fonts_en.swf"
+fontlib "fonts_en_snk.swf"
 
+map "$ConsoleFont" = "Gentium" Normal
 map "$ConsoleFont" = "Arial" Normal
 map "$StartMenuFont" = "Futura Condensed" Normal
 map "$DialogueFont" = "Futura CondensedLight" Normal
