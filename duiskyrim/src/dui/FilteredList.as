@@ -3,7 +3,7 @@ import dui.IFilter;
 
 class dui.FilteredList extends dui.DynamicScrollingList
 {
-	private var _maxTextLength;
+	private var _maxTextLength:Number;
 
 	private var _filterChain:Array;
 	private var _indexMap:Array;
@@ -50,6 +50,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 
 	function updateIndexMap()
 	{
+
 		_indexMap.splice(0);
 
 		for (var i = 0; i < _entryList.length; i++) {
@@ -109,7 +110,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
 		
-		scrollBar.setParameters(h, _listIndex, _scrollPosition, _maxListIndex);
+		scrollBar.setParameters(h, _listIndex, _scrollPosition, _indexMap.length);
 	}
 
 	function InvalidateData()

@@ -193,7 +193,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
 		
-		scrollBar.setParameters(h, _listIndex, _scrollPosition, _maxListIndex);
+		scrollBar.setParameters(h, _listIndex, _scrollPosition, _entryList.length);
 	}
 
 	function InvalidateData()
