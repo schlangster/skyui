@@ -3,6 +3,8 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 
+import dui.ScrollBar;
+
 class dui.DynamicScrollingList extends dui.DynamicList
 {
 	private var _scrollPosition:Number;
@@ -17,7 +19,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 	private var _itemInfo:Object;
 
 	// Children
-	var scrollBar;
+	var scrollBar:ScrollBar;
 	
 	var scrollbar:MovieClip;
 	var ScrollUp:MovieClip;
@@ -35,7 +37,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		_listIndex = 0;
 
 		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 20);
+		_maxListIndex = Math.floor(_listHeight / 35);
 	}
 
 	function onLoad()
@@ -155,7 +157,7 @@ class dui.DynamicScrollingList extends dui.DynamicList
 	function UpdateList()
 	{
 		var yStart = _indent;
-		var yOffset = 0;
+		var h = 0;
 
 		for (var i = 0; i < _scrollPosition; i++) {
 			_entryList[i].clipIndex = undefined;
@@ -170,10 +172,10 @@ class dui.DynamicScrollingList extends dui.DynamicList
 			_entryList[pos].clipIndex = _listIndex;
 			entry.itemIndex = pos;
 
-			entry._y = yStart + yOffset;
+			entry._y = yStart + h;
 			entry._visible = true;
 
-			yOffset = yOffset + entry._height;
+			h = h + entry._height;
 
 			++_listIndex;
 		}
@@ -190,6 +192,8 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		if (ScrollDown != undefined) {
 			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
+		
+		scrollBar.setParameters(h, _listIndex, _scrollPosition, _maxListIndex);
 	}
 
 	function InvalidateData()
@@ -199,14 +203,9 @@ class dui.DynamicScrollingList extends dui.DynamicList
 		var lastPosition = _maxScrollPosition;
 
 		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 40);
+		_maxListIndex = Math.floor(_listHeight / 35);
 
 		calculateMaxScrollPosition();
-
-		if (_maxScrollPosition > 0) {
-			scrollbar
-		} else {
-		}
 
 		if (scrollbar != undefined) {
 			if (lastPosition != _maxScrollPosition) {

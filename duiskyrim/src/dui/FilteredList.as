@@ -64,7 +64,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 	function UpdateList()
 	{
 		var yStart = _indent;
-		var yOffset = 0;
+		var h = 0;
 
 		for (var i = 0; i < _indexMap.length; i++) {
 			if (i < scrollPosition) {
@@ -88,10 +88,10 @@ class dui.FilteredList extends dui.DynamicScrollingList
 			getMappedEntry(i).mapIndex = i;
 
 
-			entryClip._y = yStart + yOffset;
+			entryClip._y = yStart + h;
 			entryClip._visible = true;
 
-			yOffset = yOffset + entryClip._height;
+			h = h + entryClip._height;
 
 			_listIndex++;
 		}
@@ -108,6 +108,8 @@ class dui.FilteredList extends dui.DynamicScrollingList
 		if (ScrollDown != undefined) {
 			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
+		
+		scrollBar.setParameters(h, _listIndex, _scrollPosition, _maxListIndex);
 	}
 
 	function InvalidateData()
@@ -156,7 +158,7 @@ class dui.FilteredList extends dui.DynamicScrollingList
 			}
 
 			if (_selectedIndex != -1) {
-				debug.textField.SetText("comparing " + selectedEntry.mapIndex + " vs " + _scrollPosition + "(+ " + _listIndex + ")");
+				//debug.textField.SetText("comparing " + selectedEntry.mapIndex + " vs " + _scrollPosition + "(+ " + _listIndex + ")");
 
 				if (selectedEntry.mapIndex < _scrollPosition) {
 					scrollPosition = selectedEntry.mapIndex;
