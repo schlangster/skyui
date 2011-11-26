@@ -3,7 +3,7 @@ fontlib "fonts_console.swf"
 fontlib "fonts_en.swf"
 fontlib "fonts_en_snk.swf"
 
-map "$ConsoleFont" = "Gentium" Normal
+map "$ListFont" = "Futura Condensed" Normal
 map "$ConsoleFont" = "Arial" Normal
 map "$StartMenuFont" = "Futura Condensed" Normal
 map "$DialogueFont" = "Futura CondensedLight" Normal
