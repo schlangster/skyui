@@ -110,7 +110,17 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
 		
-		scrollBar.setParameters(h, _listIndex, _scrollPosition, _indexMap.length);
+		if (scrollbar != undefined) {
+			scrollbar._visible = true;
+			scrollbar.__height = h;
+			scrollbar.setScrollProperties(_maxListIndex, 0, _maxScrollPosition);
+			if (_scrollbarDrawTimerID != undefined) {
+				clearInterval(_scrollbarDrawTimerID);
+			}
+			_scrollbarDrawTimerID = setInterval(this, "setScrollbarVisibility", 50);
+		} else {
+			setScrollbarVisibility();
+		}
 	}
 
 	function InvalidateData()

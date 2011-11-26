@@ -19,8 +19,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	private var _itemInfo:Object;
 
 	// Children
-	var scrollBar:ScrollBar;
-	
 	var scrollbar:MovieClip;
 	var ScrollUp:MovieClip;
 	var ScrollDown:MovieClip;
@@ -45,6 +43,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		if (scrollbar != undefined) {
 			scrollbar.position = 0;
 			scrollbar.addEventListener("scroll",this,"onScroll");
+			scrollbar._y = _indent;
 		}
 	}
 	
@@ -193,7 +192,17 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
 		
-		scrollBar.setParameters(h, _listIndex, _scrollPosition, _entryList.length);
+		if (scrollbar != undefined) {
+			scrollbar._visible = true;
+			scrollbar.__height = h;
+			scrollbar.setScrollProperties(_maxListIndex, 0, _maxScrollPosition);
+			if (_scrollbarDrawTimerID != undefined) {
+				clearInterval(_scrollbarDrawTimerID);
+			}
+			_scrollbarDrawTimerID = setInterval(this, "SetScrollbarVisibility", 50);
+		} else {
+			setScrollbarVisibility();
+		}
 	}
 
 	function InvalidateData()

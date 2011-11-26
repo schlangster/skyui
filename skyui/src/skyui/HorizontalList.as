@@ -12,12 +12,19 @@ class skyui.HorizontalList extends skyui.DynamicList
 	private var _bNoText:Boolean;
 	private var _xOffset:Number;
 	private var _fillType:Number;
+	private var _contentWidth:Number;
+	private var _totalWidth:Number;
 	
 	// Component settings
 	var buttonOption:String;
 	var fillOption:String;
 	var borderWidth:Number;
 	// iconX holds label name for iconX
+	
+	// Children
+	var selectorCenter:MovieClip;
+	var selectorLeft:MovieClip;
+	var selectorRight:MovieClip;
 	
 
 	function HorizontalList()
@@ -108,19 +115,20 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 	function UpdateList()
 	{
-		var contentWidth = _indent * 2;
-		var totalWidth;
-		var xOffset;
+		var cw = _indent * 2;
+		_contentWidth = _indent * 2;
+		var tw = 0;
+		var xOffset = 0;
 		
 		if (_fillType == FILL_PARENT) {
 			xOffset = _parent._x;
-			totalWidth = _parent._width;
+			tw = _parent._width;
 		} else if (_fillType == FILL_STAGE) {
 			xOffset = 0;
-			totalWidth = Stage.visibleRect.width;
+			tw = Stage.visibleRect.width;
 		} else {
 			xOffset = border._x;
-			totalWidth = border._width;
+			tw = border._width;
 		}
 
 		for (var i = 0; i < _entryList.length; i++)
@@ -142,10 +150,13 @@ class skyui.HorizontalList extends skyui.DynamicList
 				w = w + entryClip.textField._width;
 			}
 			entryClip.buttonArea._width = w;
-			contentWidth = contentWidth + w;
+			cw = cw + w;
 		}
 		
-		var spacing = (totalWidth - contentWidth) / (_entryList.length + 1);
+		_contentWidth = cw;
+		_totalWidth = tw;
+		
+		var spacing = (_totalWidth - _contentWidth) / (_entryList.length + 1);
 		
 		var xPos = xOffset + _indent + spacing;
 		
@@ -156,6 +167,32 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 			xPos = xPos + entryClip.buttonArea._width + spacing;
 			entryClip._visible = true;
+		}
+		
+
+	}
+	
+	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
+	{
+		super.doSetSelectedIndex(a_newIndex, a_keyboardOrMouse);
+		
+		if (selectorCenter != undefined) {
+			var selectedClip = getClipByIndex(_selectedIndex);			
+
+			selectorCenter._x = selectedClip._x + selectedClip.buttonArea._width / 2 -  selectorCenter._width / 2 ;
+			selectorCenter._y = selectedClip._y + selectedClip.buttonArea._height;			
+			
+			if (selectorLeft != undefined) {
+				selectorLeft._x = 0;
+				selectorLeft._y = selectorCenter._y;
+				selectorLeft._width = selectorCenter._x;
+			}
+			
+			if (selectorRight != undefined) {
+				selectorRight._x = selectorCenter._x + selectorCenter._width;
+				selectorRight._y = selectorCenter._y;
+				selectorRight._width = _totalWidth - selectorRight._x;
+			}
 		}
 	}
 }

@@ -96,7 +96,7 @@ class ItemMenu extends MovieClip
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
 	{
 		_platform = a_platform;
-		InventoryLists_mc.setPlatform(a_platform,a_bPS3Switch);
+		InventoryLists_mc.SetPlatform(a_platform,a_bPS3Switch);
 		ItemCard_mc.SetPlatform(a_platform,a_bPS3Switch);
 		BottomBar_mc.SetPlatform(a_platform,a_bPS3Switch);
 	}

@@ -81,7 +81,7 @@ class InventoryLists extends MovieClip
 		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
 	}
 
-	function setPlatform(a_platform:Number, a_bPS3Switch:Boolean)
+	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
 	{
 		_platform = a_platform;
 		
