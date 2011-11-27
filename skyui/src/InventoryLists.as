@@ -12,8 +12,12 @@ import skyui.ItemNameFilter;
 
 class InventoryLists extends MovieClip
 {
-	// Act as if still using 2 panels to the outside for compatiblity with older menus
-	// as long as they havent been replaced yet.
+	// Pretend to the outside as if still using two panels for compatiblity.
+	// The internal transitions are
+	// NO_PANELS -> TRANSITIONING_TO_TWO_PANELS -> TWO_PANELS
+	// TWO_PANELS -> TRANSITIONING_TO_NO_PANELS -> NO_PANELS
+	// ONE_PANEL is skipped
+	
 	static var NO_PANELS = 0;
 	static var ONE_PANEL = 1;
 	static var TWO_PANELS = 2;
@@ -24,11 +28,17 @@ class InventoryLists extends MovieClip
 	private var _CategoriesList:HorizontalList;
 	private var _CategoryLabel:MovieClip;
 	private var _ItemsList:FilteredList;
-	private var _hideItemsCode:String;
-	private var _showItemsCode:String;
+	
+	private var _prevCategoryCode:String;
+	private var _nextCategoryCode:String;
+	private var _prevItemCode:String;
+	private var _nextItemCode:String;
+	
 	private var _platform:Number;
 	private var _currentState:Number;
+
 	private var _currCategoryIndex:Number;
+	private var _defaultCategoryIndex:Number;
 	
 	private var _typeFilter:ItemTypeFilter;
 	private var _nameFilter:ItemNameFilter;
@@ -40,6 +50,8 @@ class InventoryLists extends MovieClip
 	// Mixin
 	var dispatchEvent:Function;
 	var addEventListener:Function;
+	
+	var debug;
 	
 
 	function InventoryLists()
@@ -59,8 +71,12 @@ class InventoryLists extends MovieClip
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
 
-		_hideItemsCode = NavigationCode.LEFT;
-		_showItemsCode = NavigationCode.RIGHT;
+		_prevCategoryCode = NavigationCode.LEFT;
+		_nextCategoryCode = NavigationCode.RIGHT;
+		_prevItemCode = NavigationCode.UP;
+		_nextItemCode = NavigationCode.DOWN;
+		
+		_defaultCategoryIndex = 1; // ALL
 	}
 
 	function onLoad()
@@ -77,7 +93,7 @@ class InventoryLists extends MovieClip
 		_CategoriesList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
 
 		_ItemsList.maxTextLength = 35;
-		_ItemsList.disableInput = true;
+		_ItemsList.disableInput = false;
 
 		_ItemsList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
 		_ItemsList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
@@ -94,23 +110,31 @@ class InventoryLists extends MovieClip
 
 	function handleInput(details, pathToFocus)
 	{
-		var _loc2 = false;
+		var bCaught = false;
+		
+		debug.textField.SetText("Received " + details.navEquivalent);
 
-		if (_currentState == ONE_PANEL || _currentState == TWO_PANELS) {
+		if (_currentState == TWO_PANELS) {
 			if (GlobalFunc.IsKeyPressed(details)) {
-				if (details.navEquivalent == _hideItemsCode && _currentState == TWO_PANELS) {
-					hideItemsList();
-					_loc2 = true;
-				} else if (details.navEquivalent == _showItemsCode && _currentState == ONE_PANEL) {
-					showItemsList();
-					_loc2 = true;
+				if (details.navEquivalent == _prevCategoryCode) {
+//					_CategoriesList.moveSelectionUp();
+					bCaught = true;
+				} else if (details.navEquivalent == _nextCategoryCode) {
+//					_CategoriesList.moveSelectionDown();
+					bCaught = true;
+				} else if (details.navEquivalent == _prevItemCode) {
+					_ItemsList.moveSelectionUp();
+					bCaught = true;					
+				} else if (details.navEquivalent == _nextItemCode) {
+					_ItemsList.moveSelectionDown();
+					bCaught = true;
 				}
 			}
-			if (!_loc2) {
-				_loc2 = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+			if (!bCaught) {
+				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 			}
 		}
-		return _loc2;
+		return bCaught;
 	}
 
 	function get CategoriesList()
@@ -130,6 +154,10 @@ class InventoryLists extends MovieClip
 
 	function set currentState(a_newState)
 	{
+		if (a_newState == TWO_PANELS) {
+			FocusHandler.instance.setFocus(this,0);
+		}
+		
 		_currentState = a_newState;
 	}
 
@@ -138,89 +166,73 @@ class InventoryLists extends MovieClip
 		_CategoriesList.selectedIndex = _currCategoryIndex;
 	}
 
-	function ShowCategoriesList(a_bPlayBladeSound)
+	function ShowCategoriesList(a_bPlayBladeSound:Boolean)
 	{
-		_currentState = TRANSITIONING_TO_ONE_PANEL;
+		_currentState = TRANSITIONING_TO_TWO_PANELS;
+		gotoAndPlay("PanelShow");
+		
+		_CategoriesList.selectedIndex = _defaultCategoryIndex;
 		dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
-		gotoAndPlay("Panel1Show");
 
 		if (a_bPlayBladeSound != false) {
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		}
+		
+		showItemsList();
 	}
 
 	function HideCategoriesList()
 	{
 		_currentState = TRANSITIONING_TO_NO_PANELS;
-		gotoAndPlay("Panel1Hide");
+		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 
-	function showItemsList(a_bPlayBladeSound, abPlayAnim)
+	function showItemsList()
 	{
-		if (abPlayAnim != false) {
-			_currentState = TRANSITIONING_TO_TWO_PANELS;
+		if (_CategoriesList.selectedEntry == undefined) {
+			_CategoriesList.selectedIndex = _defaultCategoryIndex;
 		}
 
-		if (_CategoriesList.selectedEntry != undefined) {
-			_currCategoryIndex = _CategoriesList.selectedIndex;
-			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-			_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
-		}
+		_currCategoryIndex = _CategoriesList.selectedIndex;
+		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
+		_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
 
 		_ItemsList.UpdateList();
 		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
-
-		if (abPlayAnim != false) {
-			gotoAndPlay("Panel2Show");
-		}
-		if (a_bPlayBladeSound != false) {
-			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-		}
+		
 		_ItemsList.disableInput = false;
 	}
 
 	function hideItemsList()
 	{
-		_currentState = TRANSITIONING_TO_ONE_PANEL;
-		dispatchEvent({type:"hideItemsList", index:_ItemsList.selectedIndex});
-		_ItemsList.selectedIndex = -1;
-		gotoAndPlay("Panel2Hide");
-		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-		_ItemsList.disableInput = true;
+//		_currentState = TRANSITIONING_TO_ONE_PANEL;
+//		dispatchEvent({type:"hideItemsList", index:_ItemsList.selectedIndex});
+//		_ItemsList.selectedIndex = -1;
+//		gotoAndPlay("Panel2Hide");
+//		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
+//		_ItemsList.disableInput = true;
 	}
 
 	function onCategoriesItemPress()
 	{
-		if (_currentState == ONE_PANEL) {
+		if (_currentState == TWO_PANELS) {
 			showItemsList();
-		} else if (_currentState == TWO_PANELS) {
-			showItemsList(true,false);
 		}
 	}
 
 	function onCategoriesListPress()
 	{
-		if (_currentState == TWO_PANELS && !_ItemsList.disableSelection && !_ItemsList.disableInput) {
-			hideItemsList();
-			_CategoriesList.UpdateList();
-		}
 	}
 
 	function onCategoriesListMoveUp(event)
 	{
 		doCategorySelectionChange(event);
-		if (event.scrollChanged == true) {
-			_CategoriesList._parent.gotoAndPlay("moveUp");
-		}
 	}
 
 	function onCategoriesListMoveDown(event)
 	{
 		doCategorySelectionChange(event);
-		if (event.scrollChanged == true) {
-			_CategoriesList._parent.gotoAndPlay("moveDown");
-		}
 	}
 
 	function onCategoriesListMouseSelectionChange(event)
@@ -233,17 +245,11 @@ class InventoryLists extends MovieClip
 	function onItemsListMoveUp(event)
 	{
 		this.doItemsSelectionChange(event);
-		if (event.scrollChanged == true) {
-			_ItemsList._parent.gotoAndPlay("moveUp");
-		}
 	}
 
 	function onItemsListMoveDown(event)
 	{
 		this.doItemsSelectionChange(event);
-		if (event.scrollChanged == true) {
-			_ItemsList._parent.gotoAndPlay("moveDown");
-		}
 	}
 
 	function onItemsListMouseSelectionChange(event)

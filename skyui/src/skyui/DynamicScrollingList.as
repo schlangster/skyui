@@ -13,15 +13,12 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	private var _listIndex:Number;
 	private var _maxListIndex:Number;
 	private var _listHeight:Number;
+	private var _itemInfo:Object;
 
 	private var _scrollbarDrawTimerID;
 
-	private var _itemInfo:Object;
-
 	// Children
 	var scrollbar:MovieClip;
-	var ScrollUp:MovieClip;
-	var ScrollDown:MovieClip;
 
 	var debug;
 
@@ -182,14 +179,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		for (var i = _listIndex; i < _maxListIndex; i++) {
 			getClipByIndex(i)._visible = false;
 			getClipByIndex(i).itemIndex = undefined;
-		}
-
-		if (ScrollUp != undefined) {
-			ScrollUp._visible = scrollPosition > 0;
-		}
-
-		if (ScrollDown != undefined) {
-			ScrollDown._visible = scrollPosition < _maxScrollPosition;
 		}
 		
 		if (scrollbar != undefined) {

@@ -101,14 +101,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			getClipByIndex(i)._visible = false;
 			getClipByIndex(i).itemIndex = undefined;
 		}
-
-		if (ScrollUp != undefined) {
-			ScrollUp._visible = scrollPosition > 0;
-		}
-
-		if (ScrollDown != undefined) {
-			ScrollDown._visible = scrollPosition < _maxScrollPosition;
-		}
 		
 		if (scrollbar != undefined) {
 			scrollbar._visible = true;
