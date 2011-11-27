@@ -3,6 +3,8 @@ import gfx.ui.NavigationCode;
 import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
 
+import Shared.GlobalFunc;
+
 import skyui.HorizontalList;
 import skyui.FilteredList;
 import skyui.ItemTypeFilter;
@@ -10,10 +12,11 @@ import skyui.ItemNameFilter;
 
 class InventoryLists extends MovieClip
 {
+	// Act as if still using 2 panels to the outside for compatiblity with older menus
+	// as long as they havent been replaced yet.
 	static var NO_PANELS = 0;
 	static var ONE_PANEL = 1;
 	static var TWO_PANELS = 2;
-
 	static var TRANSITIONING_TO_NO_PANELS = 3;
 	static var TRANSITIONING_TO_ONE_PANEL = 4;
 	static var TRANSITIONING_TO_TWO_PANELS = 5;
@@ -31,7 +34,7 @@ class InventoryLists extends MovieClip
 	private var _nameFilter:ItemNameFilter;
 
 	// Children
-	var CategoriesListHolder:MovieClip;
+	var panelContainer:MovieClip;
 	var ItemsListHolder:MovieClip;
 	
 	// Mixin
@@ -43,9 +46,9 @@ class InventoryLists extends MovieClip
 	{
 		super();
 		
-		_CategoriesList = CategoriesListHolder.List_mc;
-		_CategoryLabel = CategoriesListHolder.CategoryLabel;
-		_ItemsList = ItemsListHolder.List_mc;
+		_CategoriesList = panelContainer.categoriesList;
+		_CategoryLabel = panelContainer.CategoryLabel;
+		_ItemsList = panelContainer.itemsList;
 
 		EventDispatcher.initialize(this);
 		gotoAndStop("NoPanels");
@@ -87,14 +90,6 @@ class InventoryLists extends MovieClip
 		
 		_CategoriesList.setPlatform(a_platform,a_bPS3Switch);
 		_ItemsList.setPlatform(a_platform,a_bPS3Switch);
-
-		if (_platform == 0) {
-			CategoriesListHolder.ListBackground.gotoAndStop("Mouse");
-			ItemsListHolder.ListBackground.gotoAndStop("Mouse");
-		} else {
-			CategoriesListHolder.ListBackground.gotoAndStop("Gamepad");
-			ItemsListHolder.ListBackground.gotoAndStop("Gamepad");
-		}
 	}
 
 	function handleInput(details, pathToFocus)
@@ -102,7 +97,7 @@ class InventoryLists extends MovieClip
 		var _loc2 = false;
 
 		if (_currentState == ONE_PANEL || _currentState == TWO_PANELS) {
-			if (Shared.GlobalFunc.IsKeyPressed(details)) {
+			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == _hideItemsCode && _currentState == TWO_PANELS) {
 					hideItemsList();
 					_loc2 = true;
@@ -135,19 +130,7 @@ class InventoryLists extends MovieClip
 
 	function set currentState(a_newState)
 	{
-		switch (a_newState) {
-			case NO_PANELS :
-				_currentState = a_newState;
-				break;
-			case ONE_PANEL :
-				_currentState = a_newState;
-				FocusHandler.instance.setFocus(_CategoriesList,0);
-				break;
-			case TWO_PANELS :
-				_currentState = a_newState;
-				FocusHandler.instance.setFocus(_ItemsList,0);
-				break;
-		}
+		_currentState = a_newState;
 	}
 
 	function RestoreCategoryIndex()
