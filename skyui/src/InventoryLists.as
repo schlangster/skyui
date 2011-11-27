@@ -16,7 +16,7 @@ class InventoryLists extends MovieClip
 	// The internal transitions are
 	// NO_PANELS -> TRANSITIONING_TO_TWO_PANELS -> TWO_PANELS
 	// TWO_PANELS -> TRANSITIONING_TO_NO_PANELS -> NO_PANELS
-	// ONE_PANEL is skipped
+	// ONE_PANEL is skipped, only used to enable the menu closing with LEFT
 	
 	static var NO_PANELS = 0;
 	static var ONE_PANEL = 1;
@@ -111,16 +111,20 @@ class InventoryLists extends MovieClip
 	function handleInput(details, pathToFocus)
 	{
 		var bCaught = false;
-		
-		debug.textField.SetText("Received " + details.navEquivalent);
 
 		if (_currentState == TWO_PANELS) {
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == _prevCategoryCode) {
-//					_CategoriesList.moveSelectionUp();
-					bCaught = true;
+					
+					if (_CategoriesList.selectedIndex == 0) {
+						// Required to trigger the closing when InventoryMenu catches this event
+						currentState = ONE_PANEL;
+					} else {
+						_CategoriesList.moveSelectionLeft();
+						bCaught = true;
+					}
 				} else if (details.navEquivalent == _nextCategoryCode) {
-//					_CategoriesList.moveSelectionDown();
+					_CategoriesList.moveSelectionRight();
 					bCaught = true;
 				} else if (details.navEquivalent == _prevItemCode) {
 					_ItemsList.moveSelectionUp();

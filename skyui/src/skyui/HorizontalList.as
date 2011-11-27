@@ -195,4 +195,47 @@ class skyui.HorizontalList extends skyui.DynamicList
 			}
 		}
 	}
+	
+	function handleInput(details, pathToFocus):Boolean
+	{
+		var processed = false;
+
+		if (!_bDisableInput) {
+			var entry = getClipByIndex(selectedIndex);
+
+			processed = entry != undefined && entry.handleInput != undefined && entry.handleInput(details, pathToFocus.slice(1));
+
+			if (!processed && GlobalFunc.IsKeyPressed(details)) {
+				if (details.navEquivalent == NavigationCode.LEFT) {
+					moveSelectionLeft();
+					processed = true;
+				} else if (details.navEquivalent == NavigationCode.RIGHT) {
+					moveSelectionRight();
+					processed = true;
+				} else if (!_bDisableSelection && details.navEquivalent == NavigationCode.ENTER) {
+					onItemPress();
+					processed = true;
+				}
+			}
+		}
+		return processed;
+	}
+	
+	function moveSelectionLeft()
+	{
+		if (!_bDisableSelection) {
+			if (selectedIndex > 0) {
+				selectedIndex = selectedIndex - 1;
+			}
+		}
+	}
+
+	function moveSelectionRight()
+	{
+		if (!_bDisableSelection) {
+			if (selectedIndex < _entryList.length - 1) {
+				selectedIndex = selectedIndex + 1;
+			}
+		}
+	}
 }
