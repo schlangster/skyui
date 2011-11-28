@@ -1,100 +1,11 @@
 ﻿import gfx.events.EventDispatcher;
 import skyui.ItemSortingFilter;
+import skyui.Defines;
 
-class skyui.SortedInventoryItemList extends skyui.FilteredList
+class skyui.InventoryItemList extends skyui.FilteredList
 {
-	private var _maxTextLength:Number;
-	private var _sortFilter:ItemSortingFilter;
-	private var _bAscending:Boolean;
-	private var _lastSortBy:Number;
-	
-	// Children
-	var header:MovieClip;
+	private var _statType:Number;
 
-	function SortedInventoryItemList()
-	{
-		super();		
-		_indent = header._y + header._height;
-		
-		_sortFilter = new ItemSortingFilter();
-		addFilter(_sortFilter);
-		
-		_bAscending = true;
-		_lastSortBy = 0;
-	}
-	
-	function onLoad()
-	{
-		super.onLoad();
-		
-		_sortFilter.addEventListener("filterChange",this,"onFilterChange");
-		
-		header.buttons.textButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput) {
-				_parent._parent._parent.onSortToggle(ItemSortingFilter.SORT_BY_NAME);
-				_parent._parent._bMouseDrivenNav = true;
-			}
-		};
-		
-		header.buttons.valueButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput) {
-				_parent._parent._parent.onSortToggle(ItemSortingFilter.SORT_BY_VALUE);
-				_parent._parent._bMouseDrivenNav = true;
-			}
-		};
-		
-		header.buttons.weightButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput) {
-				_parent._parent._parent.onSortToggle(ItemSortingFilter.SORT_BY_WEIGHT);
-				_parent._parent._bMouseDrivenNav = true;
-			}
-		};
-		
-		header.buttons.statButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput) {
-				_parent._parent._parent.onSortToggle(ItemSortingFilter.SORT_BY_STAT);
-				_parent._parent._bMouseDrivenNav = true;
-			}
-		};
-	}
-	
-	function onSortToggle(a_sortBy:Number)
-	{
-		
-		if (_lastSortBy == a_sortBy) {
-			_bAscending = !_bAscending
-		} else if (a_sortBy == ItemSortingFilter.SORT_BY_NAME) {
-			_bAscending = true;
-		} else {
-			_bAscending = false;
-		}
-		_lastSortBy = a_sortBy;
-
-		var pos = 5;
-
-		switch (a_sortBy) {
-			case ItemSortingFilter.SORT_BY_STAT:
-				pos = pos + header.buttons.statButtonArea._x + header.buttons.statButtonArea._width;
-				break;
-			case ItemSortingFilter.SORT_BY_VALUE:
-				pos = pos + header.buttons.valueButtonArea._x + header.buttons.valueButtonArea._width;			
-				break;
-			case ItemSortingFilter.SORT_BY_WEIGHT:
-				pos = pos + header.buttons.weightButtonArea._x + header.buttons.weightButtonArea._width;
-				break;
-			default:
-				pos = pos + header.buttons.textButtonArea._x + header.buttons.textButtonArea._width;
-		}
-		
-		header.sortIcon._x = pos;
-		header.sortIcon.gotoAndStop(_bAscending? "asc" : "desc");
-		_sortFilter.setSortBy(a_sortBy, _bAscending);
-	}
-	
 	function InvalidateData()
 	{
 		for (var i = 0; i < _entryList.length; i++) {
@@ -122,14 +33,38 @@ class skyui.SortedInventoryItemList extends skyui.FilteredList
 			_entryList[i]._infoWeight = _itemInfo.weight;
 			_entryList[i]._infoType = _itemInfo.type;
 		}
-		
+
 		super.InvalidateData();
+	}
+
+	function set statType(a_type:Number)
+	{		
+		_statType = a_type;
+	}
+	
+	function get statType():Number
+	{
+		return _statType;
 	}
 
 	function setEntryText(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		super.setEntryText(a_entryClip, a_entryObject);
-		
+		super.setEntryText(a_entryClip,a_entryObject);
+
+		if (a_entryObject.text != undefined) {
+			a_entryClip.textField.SetText(a_entryObject.text);
+			a_entryClip.weightField.SetText(int(a_entryObject._infoWeight * 100) / 100);
+			a_entryClip.valueField.SetText(Math.round(a_entryObject._infoValue));
+
+			if (a_entryObject._infoStat != undefined && (_statType == Defines.FLAG_ARMOR || _statType == Defines.FLAG_DAMAGE)) {
+				a_entryClip.statField.SetText(Math.round(a_entryObject._infoStat));
+			} else {
+				a_entryClip.statField.SetText(" ");
+			}
+		} else {
+			a_entryClip.textField.SetText(" ");
+		}
+
 		var states = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
 		if (a_entryObject.text != undefined) {
@@ -149,7 +84,7 @@ class skyui.SortedInventoryItemList extends skyui.FilteredList
 			a_entryClip.textField.autoSize = "left";
 			a_entryClip.textField.textAutoSize = "shrink";
 			a_entryClip.textField.SetText(text,true);
-			
+
 			if (a_entryObject.negativeEffect == true || a_entryObject.isStealing == true) {
 				a_entryClip.textField.textColor = a_entryObject.enabled == false ? (8388608) : (16711680);
 			} else {
@@ -162,9 +97,9 @@ class skyui.SortedInventoryItemList extends skyui.FilteredList
 		} else {
 			a_entryClip.EquipIcon.gotoAndStop("None");
 		}
-		
+
 		var iconPos = a_entryClip.textField._x + a_entryClip.textField._width + 5;
-		
+
 		if (a_entryObject.bestInClass == true) {
 			a_entryClip.bestIcon._x = iconPos;
 			iconPos = iconPos + a_entryClip.bestIcon._width + 5;
@@ -173,14 +108,14 @@ class skyui.SortedInventoryItemList extends skyui.FilteredList
 		} else {
 			a_entryClip.bestIcon.gotoAndStop("hide");
 		}
-		
+
 		if (a_entryObject.favorite == true) {
 			a_entryClip.favoriteIcon._x = iconPos;
 			a_entryClip.favoriteIcon.gotoAndStop("show");
 		} else {
 			a_entryClip.favoriteIcon.gotoAndStop("hide");
 		}
-		
+
 		switch (a_entryObject._infoType) {
 			case InventoryDefines.ICT_WEAPON :
 				a_entryClip.typeIcon.gotoAndStop("weapon");

@@ -32,7 +32,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		_listIndex = 0;
 
 		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 35);
+		_maxListIndex = Math.floor(_listHeight / 28);
 	}
 
 	function onLoad()
@@ -41,6 +41,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			scrollbar.position = 0;
 			scrollbar.addEventListener("scroll",this,"onScroll");
 			scrollbar._y = _indent;
+			scrollbar.height = _listHeight;
 		}
 	}
 	
@@ -149,6 +150,20 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		_scrollPosition = a_position;
 		UpdateList();
 	}
+	
+	function updateScrollbar()
+	{
+		if (scrollbar != undefined) {
+			scrollbar._visible = false;
+			scrollbar.setScrollProperties(_maxListIndex, 0 , _maxScrollPosition);
+			if (_scrollbarDrawTimerID != undefined) {
+				clearInterval(_scrollbarDrawTimerID);
+			}
+			_scrollbarDrawTimerID = setInterval(this, "setScrollbarVisibility", 50);
+		} else {
+			setScrollbarVisibility();
+		}
+	}
 
 	function UpdateList()
 	{
@@ -180,18 +195,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			getClipByIndex(i)._visible = false;
 			getClipByIndex(i).itemIndex = undefined;
 		}
-		
-		if (scrollbar != undefined) {
-			scrollbar._visible = true;
-			scrollbar.__height = h;
-			scrollbar.setScrollProperties(_maxListIndex, 0, _maxScrollPosition);
-			if (_scrollbarDrawTimerID != undefined) {
-				clearInterval(_scrollbarDrawTimerID);
-			}
-			_scrollbarDrawTimerID = setInterval(this, "SetScrollbarVisibility", 50);
-		} else {
-			setScrollbarVisibility();
-		}
 	}
 
 	function InvalidateData()
@@ -200,23 +203,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 
 		var lastPosition = _maxScrollPosition;
 
-		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 35);
-
 		calculateMaxScrollPosition();
-
-		if (scrollbar != undefined) {
-			if (lastPosition != _maxScrollPosition) {
-				scrollbar._visible = false;
-				scrollbar.setScrollProperties(_maxListIndex,0,_maxScrollPosition);
-				if (_scrollbarDrawTimerID != undefined) {
-					clearInterval(_scrollbarDrawTimerID);
-				}
-				_scrollbarDrawTimerID = setInterval(this, "setScrollbarVisibility", 50);
-			} else {
-				setScrollbarVisibility();
-			}
-		}
 
 		if (_selectedIndex >= _entryList.length) {
 			_selectedIndex = _entryList.length - 1;
@@ -241,6 +228,8 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		var t = _entryList.length - _maxListIndex;
 
 		_maxScrollPosition = t > 0 ? t : 0;
+		
+		updateScrollbar();
 	}
 
 	function moveSelectionUp()
@@ -272,20 +261,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 				a_entryClip.textField.textAutoSize = "shrink";
 			} else if (textOption == Shared.BSScrollingList.TEXT_OPTION_MULTILINE) {
 				a_entryClip.textField.verticalAutoSize = "top";
-			}
-
-			if (a_entryObject.text != undefined) {
-				a_entryClip.textField.SetText(a_entryObject.text);
-				a_entryClip.weightField.SetText(int(a_entryObject._infoWeight * 100) / 100);
-				a_entryClip.valueField.SetText(Math.round(a_entryObject._infoValue));
-
-				if (a_entryObject._infoStat != undefined) {
-					a_entryClip.statField.SetText(Math.round(a_entryObject._infoStat));
-				} else {
-					a_entryClip.statField.SetText(" ");
-				}
-			} else {
-				a_entryClip.textField.SetText(" ");
 			}
 
 			if (a_entryObject.enabled != undefined) {

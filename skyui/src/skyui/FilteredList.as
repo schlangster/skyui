@@ -101,18 +101,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			getClipByIndex(i)._visible = false;
 			getClipByIndex(i).itemIndex = undefined;
 		}
-		
-		if (scrollbar != undefined) {
-			scrollbar._visible = true;
-			scrollbar.__height = h;
-			scrollbar.setScrollProperties(_maxListIndex, 0, _maxScrollPosition);
-			if (_scrollbarDrawTimerID != undefined) {
-				clearInterval(_scrollbarDrawTimerID);
-			}
-			_scrollbarDrawTimerID = setInterval(this, "setScrollbarVisibility", 50);
-		} else {
-			setScrollbarVisibility();
-		}
 	}
 
 	function InvalidateData()
@@ -125,6 +113,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	{
 		var t = _indexMap.length - _maxListIndex;
 		_maxScrollPosition = (t > 0) ? t : 0;
+		
+		updateScrollbar();
 	}
 
 	function moveSelectionUp()

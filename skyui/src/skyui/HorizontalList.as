@@ -116,7 +116,6 @@ class skyui.HorizontalList extends skyui.DynamicList
 	function UpdateList()
 	{
 		var cw = _indent * 2;
-		_contentWidth = _indent * 2;
 		var tw = 0;
 		var xOffset = 0;
 		
@@ -226,6 +225,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 		if (!_bDisableSelection) {
 			if (selectedIndex > 0) {
 				selectedIndex = selectedIndex - 1;
+				onItemPress(0); // normally changing the index should send an event down all the way to ItemList, but the onCategoryChange is empty there.
 			}
 		}
 	}
@@ -235,6 +235,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 		if (!_bDisableSelection) {
 			if (selectedIndex < _entryList.length - 1) {
 				selectedIndex = selectedIndex + 1;
+				onItemPress(0);
 			}
 		}
 	}

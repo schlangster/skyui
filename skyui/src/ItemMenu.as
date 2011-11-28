@@ -1,4 +1,5 @@
 ﻿import gfx.io.GameDelegate;
+import Shared.GlobalFunc;
 
 class ItemMenu extends MovieClip
 {
@@ -67,7 +68,8 @@ class ItemMenu extends MovieClip
 
 	function positionElements()
 	{
-		Shared.GlobalFunc.SetLockFunction();
+		GlobalFunc.SetLockFunction();
+		
 		MovieClip(InventoryLists_mc).Lock("L");
 		InventoryLists_mc._x = InventoryLists_mc._x - 20;
 		

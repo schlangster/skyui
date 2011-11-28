@@ -6,9 +6,11 @@ import gfx.managers.FocusHandler;
 import Shared.GlobalFunc;
 
 import skyui.HorizontalList;
-import skyui.FilteredList;
+import skyui.InventoryItemList;
 import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
+import skyui.ItemSortingFilter;
+import skyui.SortedListHeader;
 
 class InventoryLists extends MovieClip
 {
@@ -27,7 +29,8 @@ class InventoryLists extends MovieClip
 
 	private var _CategoriesList:HorizontalList;
 	private var _CategoryLabel:MovieClip;
-	private var _ItemsList:FilteredList;
+	private var _ItemsList:InventoryItemList;
+	private	var _itemsHeader:SortedListHeader;
 	
 	private var _prevCategoryCode:String;
 	private var _nextCategoryCode:String;
@@ -42,6 +45,7 @@ class InventoryLists extends MovieClip
 	
 	private var _typeFilter:ItemTypeFilter;
 	private var _nameFilter:ItemNameFilter;
+	private var _sortFilter:ItemSortingFilter;
 
 	// Children
 	var panelContainer:MovieClip;
@@ -61,8 +65,10 @@ class InventoryLists extends MovieClip
 		_CategoriesList = panelContainer.categoriesList;
 		_CategoryLabel = panelContainer.CategoryLabel;
 		_ItemsList = panelContainer.itemsList;
+		_itemsHeader = panelContainer.itemsHeader;
 
 		EventDispatcher.initialize(this);
+		
 		gotoAndStop("NoPanels");
 
 		GameDelegate.addCallBack("SetCategoriesList",this,"SetCategoriesList");
@@ -70,6 +76,7 @@ class InventoryLists extends MovieClip
 
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
+		_sortFilter = new ItemSortingFilter();
 
 		_prevCategoryCode = NavigationCode.LEFT;
 		_nextCategoryCode = NavigationCode.RIGHT;
@@ -83,8 +90,13 @@ class InventoryLists extends MovieClip
 	{
 		_ItemsList.addFilter(_typeFilter);
 		_ItemsList.addFilter(_nameFilter);
+		_ItemsList.addFilter(_sortFilter);
 
 		_typeFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
+		_nameFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
+		_sortFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
+		
+		_itemsHeader.addEventListener("sortChange",this,"onSortChange");
 
 		_CategoriesList.addEventListener("itemPress",this,"onCategoriesItemPress");
 		_CategoriesList.addEventListener("listPress",this,"onCategoriesListPress");
@@ -159,7 +171,7 @@ class InventoryLists extends MovieClip
 	function set currentState(a_newState)
 	{
 		if (a_newState == TWO_PANELS) {
-			FocusHandler.instance.setFocus(this,0);
+			FocusHandler.instance.setFocus(_ItemsList,0);
 		}
 		
 		_currentState = a_newState;
@@ -199,13 +211,19 @@ class InventoryLists extends MovieClip
 		}
 
 		_currCategoryIndex = _CategoriesList.selectedIndex;
-		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
+
 		_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
 
+		// Set stat type before update
+		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
+		_ItemsList.statType = _itemsHeader.statType = _CategoriesList.selectedEntry.flag;
 		_ItemsList.UpdateList();
+
 		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
 		
 		_ItemsList.disableInput = false;
+		
+
 	}
 
 	function hideItemsList()
@@ -281,6 +299,12 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 		}
 	}
+	
+	function onSortChange(event)
+	{
+		debug.textField.SetText(event.sortBy);
+		_sortFilter.setSortBy(event.sortBy, event.ascending);
+	}
 
 	function SetCategoriesList()
 	{
@@ -302,7 +326,7 @@ class InventoryLists extends MovieClip
 
 	function InvalidateListData()
 	{
-		var _loc7 = _CategoriesList.selectedEntry.flag;
+		var flag = _CategoriesList.selectedEntry.flag;
 
 		for (var i = 0; i < _CategoriesList.entryList.length; i++) {
 			_CategoriesList.entryList[i].filterFlag = _CategoriesList.entryList[i].bDontHide ? 1 : 0;
@@ -321,12 +345,10 @@ class InventoryLists extends MovieClip
 				}
 			}
 		}
-
-//		_CategoriesList.onFilterChange();
-
+		
 		_CategoriesList.UpdateList();
 
-		if (_loc7 != _CategoriesList.selectedEntry.flag) {
+		if (flag != _CategoriesList.selectedEntry.flag) {
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 			_ItemsList.UpdateList();
 			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
@@ -334,10 +356,8 @@ class InventoryLists extends MovieClip
 
 		if (_currentState != TWO_PANELS && _currentState != TRANSITIONING_TO_TWO_PANELS) {
 			_ItemsList.selectedIndex = -1;
-		} else if (_currentState == TWO_PANELS) {
-			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 		} else {
-			dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
+			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 		}
 	}
 }
