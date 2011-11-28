@@ -123,13 +123,13 @@ class ItemMenu extends MovieClip
 
 	function onMouseWheel(delta)
 	{
-		for (var _loc2 = Mouse.getTopMostEntity(); _loc2 && _loc2 != undefined; _loc2 = _loc2._parent) {
-			if (_loc2 == MouseRotationRect && ShouldProcessItemsListInput(false) || !_bFadedIn && delta == -1) {
+		for (var e = Mouse.getTopMostEntity(); e && e != undefined; e = e._parent) {
+			if (e == MouseRotationRect && ShouldProcessItemsListInput(false) || !_bFadedIn && delta == -1) {
 				GameDelegate.call("ZoomItemModel",[delta]);
 				continue;
 			}
 			
-			if (_loc2 == ItemsListInputCatcher && ShouldProcessItemsListInput(false)) {
+			if (e == ItemsListInputCatcher && ShouldProcessItemsListInput(false)) {
 				if (delta == 1) {
 					InventoryLists_mc.ItemsList.moveSelectionUp();
 					continue;
@@ -214,6 +214,7 @@ class ItemMenu extends MovieClip
 			InventoryLists_mc.ItemsList.disableInput = true;
 			InventoryLists_mc.CategoriesList.disableSelection = true;
 			InventoryLists_mc.CategoriesList.disableInput = true;
+			
 		} else if (event.opening == false) {
 			InventoryLists_mc.ItemsList.disableSelection = false;
 			InventoryLists_mc.ItemsList.disableInput = false;
@@ -224,21 +225,21 @@ class ItemMenu extends MovieClip
 
 	function ShouldProcessItemsListInput(a_bCheckIfOverRect)
 	{
-		var _loc4 = _bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.TWO_PANELS && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
+		var process = _bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.TWO_PANELS && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
 
-		if (_loc4 && _platform == 0 && a_bCheckIfOverRect) {
-			var _loc2 = Mouse.getTopMostEntity();
-			var _loc3 = false;
-			while (!_loc3 && _loc2 && _loc2 != undefined)
+		if (process && _platform == 0 && a_bCheckIfOverRect) {
+			var e = Mouse.getTopMostEntity();
+			var inRect = false;
+			while (!inRect && e && e != undefined)
 			{
-				if (_loc2 == ItemsListInputCatcher || _loc2 == InventoryLists_mc.ItemsList) {
-					_loc3 = true;
+				if (e == ItemsListInputCatcher || e == InventoryLists_mc.ItemsList) {
+					inRect = true;
 				}
-				_loc2 = _loc2._parent;
+				e = e._parent;
 			}
-			_loc4 = _loc4 && _loc3;
+			process = process && inRect;
 		}
-		return (_loc4);
+		return process;
 	}
 
 	function onMouseRotationStart()

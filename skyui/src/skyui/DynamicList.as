@@ -83,32 +83,60 @@ class skyui.DynamicList extends MovieClip
 		}
 		
 		// Create on-demand  
-		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
+		entryClip = attachMovie(_entryClassName, "Entry" + a_index, -a_index);
 
 		entryClip.clipIndex = a_index;
 
 		entryClip.onRollOver = function()
 		{
 			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined) {
-				_parent.doSetSelectedIndex(this.itemIndex,0);
+				
+				_parent.debug.textField.SetText("ro si: " + _parent.selectedIndex + " me: " + this.itemIndex);
+				
+				if (_parent.selectedIndex != this.itemIndex) {
+					this.gotoAndStop("Hover");
+				}
+				_parent._bMouseDrivenNav = true;
+			}
+		};
+		
+		entryClip.onRollOut = function()
+		{
+			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined) {
+				
+				_parent.debug.textField.SetText("ra si: " + _parent.selectedIndex + " me: " + this.itemIndex);
+				
+				if (_parent.selectedIndex != this.itemIndex) {
+					this.gotoAndStop("Normal");
+				}
 				_parent._bMouseDrivenNav = true;
 			}
 		};
 
-		entryClip.onPress = function(aiMouseIndex, a_keyboardOrMouse)
+		entryClip.onPress = function(a_mouseIndex, a_keyboardOrMouse)
 		{
 			if (this.itemIndex != undefined) {
-				_parent.onItemPress(a_keyboardOrMouse);
+				
+
+				
+				if (_parent.selectedIndex == this.itemIndex) {
+					_parent.debug.textField.SetText("pressed si: " + _parent.selectedIndex + " me: " + this.itemIndex);
+					_parent.onItemPress(a_keyboardOrMouse);
+				} else {
+					_parent.debug.textField.SetText("selected si: " + _parent.selectedIndex + " me: " + this.itemIndex);
+					_parent.doSetSelectedIndex(this.itemIndex,0);
+				}
+				
 				if (!_parent._bDisableInput && onMousePress != undefined) {
-					onMousePress();
+//					onMousePress();
 				}
 			}
 		};
 
-		entryClip.onPressAux = function(aiMouseIndex, a_keyboardOrMouse, a_buttonIndex)
+		entryClip.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			if (this.itemIndex != undefined) {
-				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
+//				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
 			}
 		};
 

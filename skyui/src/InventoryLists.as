@@ -88,6 +88,9 @@ class InventoryLists extends MovieClip
 
 	function onLoad()
 	{
+		_parent.ItemsListInputCatcher._visible = false;
+//		_parent.ItemsListInputCatcher.onMouseDown = undefined;
+		
 		_ItemsList.addFilter(_typeFilter);
 		_ItemsList.addFilter(_nameFilter);
 		_ItemsList.addFilter(_sortFilter);
