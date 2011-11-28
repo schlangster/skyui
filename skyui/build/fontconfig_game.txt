@@ -1,7 +1,7 @@
-[FontConfig "English"]
-fontlib "fonts_console.swf"
-fontlib "fonts_en.swf"
-
+fontlib "Interface\fonts_console.swf"
+fontlib "Interface\fonts_en.swf"
+fontlib "Interface\fonts_en_snk.swf"
+map "$ListFont" = "Futura Condensed" Normal
 map "$ConsoleFont" = "Arial" Normal
 map "$StartMenuFont" = "Futura Condensed" Normal
 map "$DialogueFont" = "Futura CondensedLight" Normal
@@ -18,4 +18,7 @@ map "$DaedricFont" = "Daedric" Normal
 map "$MageScriptFont" = "Mage Script" Normal
 map "$SkyrimSymbolsFont" = "SkyrimSymbols" Normal
 map "$SkyrimBooks_UnreadableFont" = "SkyrimBooks_Unreadable" Normal
-map "$ListFont" = "Futura Condensed" Normal
+validNameChars "`1234567890-=~!@#$%^&*():_+QWERTYUIOP[]ASDFGHJKL;'ZXCVBNM,./qwertyuiop{}\\asdfghjkl;'zxcvbnm<>?|¡¢£¤¥¦§¨©ª«®¯°²³´¶·¸¹º»¼½¾¿ÄÀÁÂÃÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüış ÿ "
+
+
+
