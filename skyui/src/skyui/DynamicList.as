@@ -90,25 +90,7 @@ class skyui.DynamicList extends MovieClip
 		entryClip.onRollOver = function()
 		{
 			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined) {
-				
-				_parent.debug.textField.SetText("ro si: " + _parent.selectedIndex + " me: " + this.itemIndex);
-				
-				if (_parent.selectedIndex != this.itemIndex) {
-					this.gotoAndStop("Hover");
-				}
-				_parent._bMouseDrivenNav = true;
-			}
-		};
-		
-		entryClip.onRollOut = function()
-		{
-			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined) {
-				
-				_parent.debug.textField.SetText("ra si: " + _parent.selectedIndex + " me: " + this.itemIndex);
-				
-				if (_parent.selectedIndex != this.itemIndex) {
-					this.gotoAndStop("Normal");
-				}
+				_parent.doSetSelectedIndex(this.itemIndex, 0);
 				_parent._bMouseDrivenNav = true;
 			}
 		};
@@ -116,19 +98,10 @@ class skyui.DynamicList extends MovieClip
 		entryClip.onPress = function(a_mouseIndex, a_keyboardOrMouse)
 		{
 			if (this.itemIndex != undefined) {
-				
-
-				
-				if (_parent.selectedIndex == this.itemIndex) {
-					_parent.debug.textField.SetText("pressed si: " + _parent.selectedIndex + " me: " + this.itemIndex);
-					_parent.onItemPress(a_keyboardOrMouse);
-				} else {
-					_parent.debug.textField.SetText("selected si: " + _parent.selectedIndex + " me: " + this.itemIndex);
-					_parent.doSetSelectedIndex(this.itemIndex,0);
-				}
+				_parent.onItemPress(a_keyboardOrMouse);
 				
 				if (!_parent._bDisableInput && onMousePress != undefined) {
-//					onMousePress();
+					onMousePress();
 				}
 			}
 		};
@@ -136,7 +109,7 @@ class skyui.DynamicList extends MovieClip
 		entryClip.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			if (this.itemIndex != undefined) {
-//				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
+				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
 			}
 		};
 

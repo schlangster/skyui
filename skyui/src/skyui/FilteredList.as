@@ -50,7 +50,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 	function updateIndexMap()
 	{
-
 		_indexMap.splice(0);
 
 		for (var i = 0; i < _entryList.length; i++) {
@@ -59,6 +58,10 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 		for (var i = 0; i < _filterChain.length; i++) {
 			_filterChain[i].process(_entryList,_indexMap);
+		}
+		
+		if (_selectedIndex >= _indexMap.length) {
+			_selectedIndex = _indexMap.length - 1;
 		}
 	}
 
@@ -106,6 +109,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	function InvalidateData()
 	{
 		updateIndexMap();
+		
 		super.InvalidateData();
 	}
 
@@ -113,6 +117,10 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	{
 		var t = _indexMap.length - _maxListIndex;
 		_maxScrollPosition = (t > 0) ? t : 0;
+		
+		if (_scrollPosition > _maxScrollPosition) {
+			_scrollPosition = _maxScrollPosition;
+		}
 		
 		updateScrollbar();
 	}
@@ -151,7 +159,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			}
 
 			if (_selectedIndex != -1) {
-				//debug.textField.SetText("comparing " + selectedEntry.mapIndex + " vs " + _scrollPosition + "(+ " + _listIndex + ")");
 
 				if (selectedEntry.mapIndex < _scrollPosition) {
 					scrollPosition = selectedEntry.mapIndex;

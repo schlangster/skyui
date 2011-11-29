@@ -49,7 +49,7 @@ class InventoryLists extends MovieClip
 
 	// Children
 	var panelContainer:MovieClip;
-	var ItemsListHolder:MovieClip;
+//	var ItemsListHolder:MovieClip;
 	
 	// Mixin
 	var dispatchEvent:Function;
@@ -59,7 +59,7 @@ class InventoryLists extends MovieClip
 	
 
 	function InventoryLists()
-	{
+	{		
 		super();
 		
 		_CategoriesList = panelContainer.categoriesList;
@@ -88,8 +88,8 @@ class InventoryLists extends MovieClip
 
 	function onLoad()
 	{
-		_parent.ItemsListInputCatcher._visible = false;
-//		_parent.ItemsListInputCatcher.onMouseDown = undefined;
+		
+		trace((((Stage.visibleRect.x + Stage.visibleRect.width) - panelContainer._width) / 2));
 		
 		_ItemsList.addFilter(_typeFilter);
 		_ItemsList.addFilter(_nameFilter);
@@ -190,14 +190,11 @@ class InventoryLists extends MovieClip
 		_currentState = TRANSITIONING_TO_TWO_PANELS;
 		gotoAndPlay("PanelShow");
 		
-		_CategoriesList.selectedIndex = _defaultCategoryIndex;
 		dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 
 		if (a_bPlayBladeSound != false) {
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		}
-		
-		showItemsList();
 	}
 
 	function HideCategoriesList()
@@ -209,10 +206,6 @@ class InventoryLists extends MovieClip
 
 	function showItemsList()
 	{
-		if (_CategoriesList.selectedEntry == undefined) {
-			_CategoriesList.selectedIndex = _defaultCategoryIndex;
-		}
-
 		_currCategoryIndex = _CategoriesList.selectedIndex;
 
 		_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
@@ -220,13 +213,12 @@ class InventoryLists extends MovieClip
 		// Set stat type before update
 		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 		_ItemsList.statType = _itemsHeader.statType = _CategoriesList.selectedEntry.flag;
+		
 		_ItemsList.UpdateList();
 
 		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
 		
 		_ItemsList.disableInput = false;
-		
-
 	}
 
 	function hideItemsList()
@@ -305,7 +297,6 @@ class InventoryLists extends MovieClip
 	
 	function onSortChange(event)
 	{
-		debug.textField.SetText(event.sortBy);
 		_sortFilter.setSortBy(event.sortBy, event.ascending);
 	}
 
@@ -325,6 +316,15 @@ class InventoryLists extends MovieClip
 
 		_CategoriesList.InvalidateData();
 		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
+		
+		_CategoriesList.selectedIndex = 1;
+
+		// TODO - better do this in ItemMenu once it's changed
+		var itemCardContainer = _parent.ItemCard_mc._parent;
+		itemCardContainer._x = Stage.visibleRect.x + Stage.visibleRect.width - itemCardContainer._width - 65;
+		_parent.ItemsListInputCatcher._visible = false;
+		
+		showItemsList();
 	}
 
 	function InvalidateListData()
@@ -361,6 +361,7 @@ class InventoryLists extends MovieClip
 			_ItemsList.selectedIndex = -1;
 		} else {
 			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+//	        dispatchEvent({type: "showItemsList", index:_ItemsList.selectedIndex});
 		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
-import gfx.io.GameDelegate;
 
 import skyui.ScrollBar;
 
@@ -13,7 +12,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	private var _listIndex:Number;
 	private var _maxListIndex:Number;
 	private var _listHeight:Number;
-	private var _itemInfo:Object;
 
 	// Children
 	var scrollbar:MovieClip;
@@ -42,13 +40,13 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			scrollbar.height = _listHeight;
 		}
 	}
-	
+
 	function getClipByIndex(a_index)
 	{
 		if (a_index < 0 || a_index >= _maxListIndex) {
 			return undefined;
 		}
-		
+
 		return super.getClipByIndex(a_index);
 	}
 
@@ -82,7 +80,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		if (!_bDisableInput) {
 			for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
 				if (target == this) {
-					doSetSelectedIndex(-1,0);
+					//doSetSelectedIndex(-1,0);
 
 					if (delta < 0) {
 						scrollPosition = scrollPosition + 1;
@@ -91,6 +89,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 					}
 				}
 			}
+			_bMouseDrivenNav = true;
 		}
 	}
 
@@ -148,12 +147,12 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		_scrollPosition = a_position;
 		UpdateList();
 	}
-	
+
 	function updateScrollbar()
 	{
 		if (scrollbar != undefined) {
 			scrollbar._visible = _maxScrollPosition > 0;
-			scrollbar.setScrollProperties(_maxListIndex, 0 , _maxScrollPosition);
+			scrollbar.setScrollProperties(_maxListIndex,0,_maxScrollPosition);
 		}
 	}
 
@@ -191,21 +190,9 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 
 	function InvalidateData()
 	{
-		//debug.textField.SetText("Invalidated" + counter++);
-
-		var lastPosition = _maxScrollPosition;
-
 		calculateMaxScrollPosition();
 
-		if (_selectedIndex >= _entryList.length) {
-			_selectedIndex = _entryList.length - 1;
-		}
-
-		if (_scrollPosition > _maxScrollPosition) {
-			_scrollPosition = _maxScrollPosition;
-		}
-
-		UpdateList();
+		super.InvalidateData();
 	}
 
 	function calculateMaxScrollPosition()
@@ -213,38 +200,61 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		var t = _entryList.length - _maxListIndex;
 
 		_maxScrollPosition = t > 0 ? t : 0;
-		
+
+		if (_scrollPosition > _maxScrollPosition) {
+			_scrollPosition = _maxScrollPosition;
+		}
+
 		updateScrollbar();
 	}
 
 	function moveSelectionUp()
 	{
+		var lastPosition = _scrollPosition;
+		
 		if (!_bDisableSelection) {
-			if (selectedIndex > 0) {
+			if (selectedIndex == -1) {
+				selectDefaultIndex();
+			} else if (selectedIndex > 0) {
 				selectedIndex = selectedIndex - 1;
 			}
 		} else {
 			scrollPosition = scrollPosition - 1;
 		}
+		_bMouseDrivenNav = false;
+		dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: lastPosition != _scrollPosition});
 	}
 
 	function moveSelectionDown()
 	{
+		var lastPosition = _scrollPosition;
+		
 		if (!_bDisableSelection) {
-			if (selectedIndex < _entryList.length - 1) {
+			if (selectedIndex == -1) {
+				selectDefaultIndex();
+			} else if (selectedIndex < _entryList.length - 1) {
 				selectedIndex = selectedIndex + 1;
 			}
 		} else {
 			scrollPosition = scrollPosition + 1;
+		}
+		_bMouseDrivenNav = false;
+		dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: lastPosition != _scrollPosition});
+	}
+
+	function selectDefaultIndex()
+	{
+		if (_entryList.length > 0) {
+			selectedIndex = scrollPosition;
 		}
 	}
 
 	function setEntryText(a_entryClip:MovieClip, a_entryObject:Object)
 	{
 		if (a_entryClip.textField != undefined) {
-			if (textOption == Shared.BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT) {
+			if (textOption == TEXT_OPTION_SHRINK_TO_FIT) {
 				a_entryClip.textField.textAutoSize = "shrink";
-			} else if (textOption == Shared.BSScrollingList.TEXT_OPTION_MULTILINE) {
+			} else if (textOption == TEXT_OPTION_MULTILINE) {
 				a_entryClip.textField.verticalAutoSize = "top";
 			}
 
@@ -256,19 +266,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 				a_entryClip.textField.textColor = a_entryObject.disabled == true ? (6316128) : (16777215);
 			}
 		}
-	}
-
-	function updateItemInfo(a_updateObj:Object)
-	{
-		this._itemInfo = a_updateObj;
-	}
-
-	function requestItemInfo(a_index:Number)
-	{
-		var oldIndex = _selectedIndex;
-		_selectedIndex = a_index;
-		GameDelegate.call("RequestItemCardInfo",[],this,"updateItemInfo");
-		_selectedIndex = oldIndex;
 	}
 
 	function onScroll(event)

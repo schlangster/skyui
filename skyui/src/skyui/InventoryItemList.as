@@ -1,10 +1,12 @@
 ﻿import gfx.events.EventDispatcher;
 import skyui.ItemSortingFilter;
 import skyui.Defines;
+import gfx.io.GameDelegate;
 
 class skyui.InventoryItemList extends skyui.FilteredList
 {
 	private var _statType:Number;
+	private var _itemInfo:Object;
 
 	function InvalidateData()
 	{
@@ -37,11 +39,24 @@ class skyui.InventoryItemList extends skyui.FilteredList
 		super.InvalidateData();
 	}
 
+	function updateItemInfo(a_updateObj:Object)
+	{
+		this._itemInfo = a_updateObj;
+	}
+
+	function requestItemInfo(a_index:Number)
+	{
+		var oldIndex = _selectedIndex;
+		_selectedIndex = a_index;
+		GameDelegate.call("RequestItemCardInfo",[],this,"updateItemInfo");
+		_selectedIndex = oldIndex;
+	}
+
 	function set statType(a_type:Number)
-	{		
+	{
 		_statType = a_type;
 	}
-	
+
 	function get statType():Number
 	{
 		return _statType;

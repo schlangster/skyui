@@ -62,6 +62,7 @@ class skyui.SortedListHeader extends MovieClip
 		buttons.statLabel.autoSize = "left";
 		buttons.valueLabel.autoSize = "left";
 		buttons.weightLabel.autoSize = "left";
+		buttons.statLabel.SetText(" ", true);
 		
 		updateHeader();
 	}
