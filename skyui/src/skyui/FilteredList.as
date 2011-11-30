@@ -13,7 +13,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		super();
 		_indexMap = new Array();
 		_filterChain = new Array();
-		_maxTextLength = 256;
+		_maxTextLength = 512;
 	}
 
 	function addFilter(a_filter:IFilter)

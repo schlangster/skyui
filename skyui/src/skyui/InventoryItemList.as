@@ -34,6 +34,7 @@ class skyui.InventoryItemList extends skyui.FilteredList
 			_entryList[i]._infoValue = _itemInfo.value;
 			_entryList[i]._infoWeight = _itemInfo.weight;
 			_entryList[i]._infoType = _itemInfo.type;
+			_entryList[i]._potionType = _itemInfo.potionType;
 		}
 
 		super.InvalidateData();
@@ -64,10 +65,11 @@ class skyui.InventoryItemList extends skyui.FilteredList
 
 	function setEntryText(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		super.setEntryText(a_entryClip,a_entryObject);
+		var states = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
 		if (a_entryObject.text != undefined) {
-			a_entryClip.textField.SetText(a_entryObject.text);
+
+			// Value, Weight, Stat
 			a_entryClip.weightField.SetText(int(a_entryObject._infoWeight * 100) / 100);
 			a_entryClip.valueField.SetText(Math.round(a_entryObject._infoValue));
 
@@ -76,14 +78,9 @@ class skyui.InventoryItemList extends skyui.FilteredList
 			} else {
 				a_entryClip.statField.SetText(" ");
 			}
-		} else {
-			a_entryClip.textField.SetText(" ");
-		}
 
-		var states = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
-
-		if (a_entryObject.text != undefined) {
-			var text = a_entryObject.text;
+			// Text
+			var text = a_entryObject.text; // + " " + a_entryObject.formType + " " + a_entryObject.weaponType;
 			if (a_entryObject.soulLVL != undefined) {
 				text = text + " (" + a_entryObject.soulLVL + ")";
 			}
@@ -105,14 +102,19 @@ class skyui.InventoryItemList extends skyui.FilteredList
 			} else {
 				a_entryClip.textField.textColor = a_entryObject.enabled == false ? (5000268) : (16777215);
 			}
+
+		} else {
+			a_entryClip.textField.SetText(" ");
 		}
 
+		// Equip Icon
 		if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
 			a_entryClip.EquipIcon.gotoAndStop(states[a_entryObject.equipState]);
 		} else {
 			a_entryClip.EquipIcon.gotoAndStop("None");
 		}
 
+		// BestInClass icon
 		var iconPos = a_entryClip.textField._x + a_entryClip.textField._width + 5;
 
 		if (a_entryObject.bestInClass == true) {
@@ -124,6 +126,7 @@ class skyui.InventoryItemList extends skyui.FilteredList
 			a_entryClip.bestIcon.gotoAndStop("hide");
 		}
 
+		// Fav icon
 		if (a_entryObject.favorite == true) {
 			a_entryClip.favoriteIcon._x = iconPos;
 			a_entryClip.favoriteIcon.gotoAndStop("show");
@@ -131,33 +134,87 @@ class skyui.InventoryItemList extends skyui.FilteredList
 			a_entryClip.favoriteIcon.gotoAndStop("hide");
 		}
 
-		switch (a_entryObject._infoType) {
-			case InventoryDefines.ICT_WEAPON :
-				a_entryClip.typeIcon.gotoAndStop("weapon");
-				break;
-			case InventoryDefines.ICT_ARMOR :
-				a_entryClip.typeIcon.gotoAndStop("armor");
-				break;
-			case InventoryDefines.ICT_POTION :
-				a_entryClip.typeIcon.gotoAndStop("potion");
-				break;
-			case InventoryDefines.ICT_SPELL :
-				a_entryClip.typeIcon.gotoAndStop("scroll");
-				break;
-			case InventoryDefines.ICT_FOOD :
-				a_entryClip.typeIcon.gotoAndStop("food");
-				break;
-			case InventoryDefines.ICT_INGREDIENT :
-				a_entryClip.typeIcon.gotoAndStop("ingredient");
-				break;
-			case InventoryDefines.ICT_BOOK :
-				a_entryClip.typeIcon.gotoAndStop("book");
-				break;
-			case InventoryDefines.ICT_KEY :
-				a_entryClip.typeIcon.gotoAndStop("key");
-				break;
-			default :
-				a_entryClip.typeIcon.gotoAndStop("misc");
+		// Iventory icon
+
+		if (a_entryObject.extended == undefined) {
+
+			// Default without script extender
+			switch (a_entryObject._infoType) {
+				case InventoryDefines.ICT_WEAPON :
+					a_entryClip.typeIcon.gotoAndStop("category_weapons");
+					break;
+				case InventoryDefines.ICT_ARMOR :
+					a_entryClip.typeIcon.gotoAndStop("category_armor");
+					break;
+				case InventoryDefines.ICT_POTION :
+					a_entryClip.typeIcon.gotoAndStop("category_potions");
+					break;
+				case InventoryDefines.ICT_SPELL :
+					a_entryClip.typeIcon.gotoAndStop("category_scrolls");
+					break;
+				case InventoryDefines.ICT_FOOD :
+					a_entryClip.typeIcon.gotoAndStop("category_food");
+					break;
+				case InventoryDefines.ICT_INGREDIENT :
+					a_entryClip.typeIcon.gotoAndStop("category_ingredients");
+					break;
+				case InventoryDefines.ICT_BOOK :
+					a_entryClip.typeIcon.gotoAndStop("category_books");
+					break;
+				case InventoryDefines.ICT_KEY :
+					a_entryClip.typeIcon.gotoAndStop("category_keys");
+					break;
+				default :
+					a_entryClip.typeIcon.gotoAndStop("category_misc");
+			}
+		} else {
+			
+			// With plugin-extended attributes
+			switch (a_entryObject._infoType) {
+				case InventoryDefines.ICT_WEAPON :
+					if (a_entryObject.formType == Defines.FORMTYPE_ARROW) {
+						a_entryClip.typeIcon.gotoAndStop("type_arrow");
+						break;
+					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_DAGGER) {
+						a_entryClip.typeIcon.gotoAndStop("weapon_dagger");
+						break;
+					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_BOW) {
+						a_entryClip.typeIcon.gotoAndStop("weapon_bow");
+						break;
+					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_GREATSWORD) {
+						a_entryClip.typeIcon.gotoAndStop("weapon_greatsword");
+						break;
+					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_WARAXE) {
+						a_entryClip.typeIcon.gotoAndStop("weapon_waraxe");
+						break;
+					}
+				
+					a_entryClip.typeIcon.gotoAndStop("category_weapons");
+					break;
+				case InventoryDefines.ICT_ARMOR :
+					a_entryClip.typeIcon.gotoAndStop("category_armor");
+					break;
+				case InventoryDefines.ICT_POTION :
+					a_entryClip.typeIcon.gotoAndStop("category_potions");
+					break;
+				case InventoryDefines.ICT_SPELL :
+					a_entryClip.typeIcon.gotoAndStop("category_scrolls");
+					break;
+				case InventoryDefines.ICT_FOOD :
+					a_entryClip.typeIcon.gotoAndStop("category_food");
+					break;
+				case InventoryDefines.ICT_INGREDIENT :
+					a_entryClip.typeIcon.gotoAndStop("category_ingredients");
+					break;
+				case InventoryDefines.ICT_BOOK :
+					a_entryClip.typeIcon.gotoAndStop("category_books");
+					break;
+				case InventoryDefines.ICT_KEY :
+					a_entryClip.typeIcon.gotoAndStop("category_keys");
+					break;
+				default :
+					a_entryClip.typeIcon.gotoAndStop("category_misc");
+			}
 		}
 	}
 }

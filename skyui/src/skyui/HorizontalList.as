@@ -62,9 +62,6 @@ class skyui.HorizontalList extends skyui.DynamicList
 	{
 		super.InvalidateData();
 		updateSelector();
-
-		//selectedIndex = 1;
-		//setInterval(this, "onItemPress", 1, [0]);
 	}
 
 	function getClipByIndex(a_index)
@@ -258,7 +255,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 		if (!_bDisableSelection) {
 			if (selectedIndex > 0) {
 				selectedIndex = selectedIndex - 1;
-				onItemPress(0);// normally changing the index should send an event down all the way to ItemList, but the onCategoryChange is empty there.
+				onItemPress(0);
 			}
 		}
 	}
@@ -270,6 +267,19 @@ class skyui.HorizontalList extends skyui.DynamicList
 				selectedIndex = selectedIndex + 1;
 				onItemPress(0);
 			}
+		}
+	}
+	
+	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
+	{
+		if (a_entryClip != undefined) {
+			if (a_entryObject == selectedEntry) {
+				a_entryClip._alpha = 100;
+			} else {
+				a_entryClip._alpha = 50;
+			}
+
+			setEntryText(a_entryClip,a_entryObject);
 		}
 	}
 }

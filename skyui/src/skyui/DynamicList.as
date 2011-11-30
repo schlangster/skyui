@@ -126,11 +126,15 @@ class skyui.DynamicList extends MovieClip
 		doSetSelectedIndex(a_newIndex);
 	}
 
-
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{
 		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
+			var oldIndex = _selectedIndex;
 			_selectedIndex = a_newIndex;
+
+			if (oldIndex != -1) {
+				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+			}
 
 			if (_selectedIndex != -1) {
 				setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
@@ -233,8 +237,6 @@ class skyui.DynamicList extends MovieClip
 	{
 		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
 			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
-		} else {
-			dispatchEvent({type:"listPress"});
 		}
 	}
 

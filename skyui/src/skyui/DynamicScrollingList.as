@@ -211,7 +211,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	function moveSelectionUp()
 	{
 		var lastPosition = _scrollPosition;
-		
+
 		if (!_bDisableSelection) {
 			if (selectedIndex == -1) {
 				selectDefaultIndex();
@@ -222,13 +222,13 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			scrollPosition = scrollPosition - 1;
 		}
 		_bMouseDrivenNav = false;
-		dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: lastPosition != _scrollPosition});
+		dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged:lastPosition != _scrollPosition});
 	}
 
 	function moveSelectionDown()
 	{
 		var lastPosition = _scrollPosition;
-		
+
 		if (!_bDisableSelection) {
 			if (selectedIndex == -1) {
 				selectDefaultIndex();
@@ -239,7 +239,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			scrollPosition = scrollPosition + 1;
 		}
 		_bMouseDrivenNav = false;
-		dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: lastPosition != _scrollPosition});
+		dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged:lastPosition != _scrollPosition});
 	}
 
 	function selectDefaultIndex()
@@ -271,5 +271,16 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	function onScroll(event)
 	{
 		updateScrollPosition(Math.floor(event.position + 0.500000));
+	}
+
+	function restoreScrollPosition(a_newPosition)
+	{
+		_scrollPosition = a_newPosition;
+		if (_scrollPosition < 0) {
+			_scrollPosition = 0;
+		}
+		if (_scrollPosition > _maxScrollPosition) {
+			_scrollPosition = _maxScrollPosition;
+		}
 	}
 }
