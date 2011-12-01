@@ -44,13 +44,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	{
 		return _maxTextLength;
 	}
-	
-	function getMappedIndex(a_index:Number):Number
-	{
-//		return _indexMap[a_index];
-	return 1;
-	}
-
 
 	function generateFilteredList()
 	{
