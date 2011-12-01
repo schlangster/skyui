@@ -1,6 +1,5 @@
 fontlib "Interface\fonts_console.swf"
 fontlib "Interface\fonts_en.swf"
-fontlib "Interface\fonts_en_snk.swf"
 map "$ListFont" = "Futura Condensed" Normal
 map "$ConsoleFont" = "Arial" Normal
 map "$StartMenuFont" = "Futura Condensed" Normal
