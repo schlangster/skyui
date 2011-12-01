@@ -58,7 +58,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		for (var i = 0; i < _filterChain.length; i++) {
 			_filterChain[i].process(_filteredList);
 		}
-		
+
 		for (var i = 0; i < _filteredList.length; i++) {
 			_filteredList[i].filteredIndex = i;
 		}
@@ -83,7 +83,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			var entryClip = getClipByIndex(_listIndex);
 
 			setEntry(entryClip,_filteredList[i]);
-			entryClip.itemIndex =_filteredList[i].unfilteredIndex;
+			entryClip.itemIndex = _filteredList[i].unfilteredIndex;
 			_filteredList[i].clipIndex = _listIndex;
 
 			entryClip._y = yStart + h;
@@ -133,7 +133,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(false);
 			} else if (selectedEntry.filteredIndex > 0) {
-				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex - 1].unfilteredIndex, 1);
+				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex - 1].unfilteredIndex,1);
 				_bMouseDrivenNav = false;
 				dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged:true});
 			}
@@ -148,7 +148,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(true);
 			} else if (selectedEntry.filteredIndex < _filteredList.length - 1) {
-				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex + 1].unfilteredIndex, 1);
+				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex + 1].unfilteredIndex,1);
 				_bMouseDrivenNav = false;
 				dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged:true});
 			}
@@ -156,18 +156,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			scrollPosition = scrollPosition + 1;
 		}
 	}
-
-	function selectDefaultIndex(a_bBottom)
-	{
-		if (_filteredList.length > 0) {
-			if (a_bBottom) {
-				doSetSelectedIndex(Math.min(_filteredList[_scrollPosition].unfilteredIndex, _filteredList.length-1), 0 );
-			} else {
-				doSetSelectedIndex(Math.min(_filteredList[_scrollPosition + _listIndex - 1].unfilteredIndex, _filteredList.length-1), 0 );
-			}
-		}
-	}
-
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{

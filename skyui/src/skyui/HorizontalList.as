@@ -14,6 +14,9 @@ class skyui.HorizontalList extends skyui.DynamicList
 	private var _fillType:Number;
 	private var _contentWidth:Number;
 	private var _totalWidth:Number;
+	
+	private var _selectorPos:Number = 0;
+	private var _targetSelectorPos:Number = 0;
 
 	// Component settings
 	var buttonOption:String;
@@ -26,12 +29,12 @@ class skyui.HorizontalList extends skyui.DynamicList
 	var selectorLeft:MovieClip;
 	var selectorRight:MovieClip;
 
-	var counter = 0;
-
-
 	function HorizontalList()
 	{
 		super();
+		
+		_selectorPos = 0;
+		_targetSelectorPos = 0;
 
 		if (borderWidth != undefined) {
 			_indent = borderWidth;
@@ -189,9 +192,6 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 	}
 	
-	var _selectorPos:Number = 0;
-	var _targetSelectorPos:Number = 0;
-	
     function onEnterFrame()
     {
 		if (_selectorPos < _targetSelectorPos) {
@@ -298,7 +298,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 					moveSelectionRight();
 					processed = true;
 				} else if (!_bDisableSelection && details.navEquivalent == NavigationCode.ENTER) {
-					onItemPress();
+					onItemPress(0);
 					processed = true;
 				}
 			}

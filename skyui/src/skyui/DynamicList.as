@@ -55,7 +55,7 @@ class skyui.DynamicList extends MovieClip
 		_indent = 0;
 	}
 
-	function set entryClassName(a_className)
+	function set entryClassName(a_className:String)
 	{
 		_entryClassName = a_className;
 	}
@@ -70,7 +70,7 @@ class skyui.DynamicList extends MovieClip
 		_entryList.splice(0);
 	}
 
-	function getClipByIndex(a_index)
+	function getClipByIndex(a_index:Number)
 	{
 		if (a_index < 0) {
 			return undefined;

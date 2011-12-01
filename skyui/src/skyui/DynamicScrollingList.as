@@ -41,7 +41,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		}
 	}
 
-	function getClipByIndex(a_index)
+	function getClipByIndex(a_index:Number)
 	{
 		if (a_index < 0 || a_index >= _maxListIndex) {
 			return undefined;
@@ -80,8 +80,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		if (!_bDisableInput) {
 			for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
 				if (target == this) {
-					//doSetSelectedIndex(-1,0);
-
 					if (delta < 0) {
 						scrollPosition = scrollPosition + 1;
 					} else if (delta > 0) {
@@ -202,7 +200,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		_maxScrollPosition = t > 0 ? t : 0;
 
 		if (_scrollPosition > _maxScrollPosition) {
-			_scrollPosition = _maxScrollPosition;
+			scrollPosition = _maxScrollPosition;
 		}
 
 		updateScrollbar();
@@ -242,10 +240,20 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged:lastPosition != _scrollPosition});
 	}
 
-	function selectDefaultIndex()
+	function selectDefaultIndex(a_bBottom:Boolean)
 	{
-		if (_entryList.length > 0) {
-			selectedIndex = scrollPosition;
+		if (_listIndex > 0) {
+			if (a_bBottom) {
+				var firstClip = getClipByIndex(0);
+				if (firstClip.itemIndex != undefined) {
+					doSetSelectedIndex(firstClip.itemIndex);
+				}
+			} else {
+				var lastClip = getClipByIndex(_listIndex - 1);
+				if (lastClip.itemIndex != undefined) {
+					doSetSelectedIndex(lastClip.itemIndex);
+				}
+			}
 		}
 	}
 
