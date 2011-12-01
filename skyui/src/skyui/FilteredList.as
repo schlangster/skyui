@@ -4,14 +4,15 @@ import skyui.IFilter;
 class skyui.FilteredList extends skyui.DynamicScrollingList
 {
 	private var _maxTextLength:Number;
+	private var _filteredList:Array;
 
 	private var _filterChain:Array;
-	private var _indexMap:Array;
+
 
 	function FilteredList()
 	{
 		super();
-		_indexMap = new Array();
+		_filteredList = new Array();
 		_filterChain = new Array();
 		_maxTextLength = 512;
 	}
@@ -28,40 +29,49 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		}
 	}
 
-	function getMappedEntry(a_index:Number):Object
+	function getFilteredEntry(a_index:Number):Object
 	{
-		return _entryList[_indexMap[a_index]];
+		return _filteredList[a_index];
 	}
 
-	function getMappedIndex(a_index:Number):Number
-	{
-		return _indexMap[a_index];
-	}
-
+	// Did you mean: numFilteredItems() ?
 	function get numUnfilteredItems():Number
 	{
-		return _indexMap.length;
+		return _filteredList.length;
 	}
 
 	function get maxTextLength():Number
 	{
 		return _maxTextLength;
 	}
-
-	function updateIndexMap()
+	
+	function getMappedIndex(a_index:Number):Number
 	{
-		_indexMap.splice(0);
+//		return _indexMap[a_index];
+	return 1;
+	}
+
+
+	function generateFilteredList()
+	{
+		_filteredList.splice(0);
 
 		for (var i = 0; i < _entryList.length; i++) {
-			_indexMap[i] = i;
+			_entryList[i].unfilteredIndex = i;
+			_entryList[i].filteredIndex = undefined;
+			_filteredList[i] = _entryList[i];
 		}
 
 		for (var i = 0; i < _filterChain.length; i++) {
-			_filterChain[i].process(_entryList,_indexMap);
+			_filterChain[i].process(_filteredList);
+		}
+		
+		for (var i = 0; i < _filteredList.length; i++) {
+			_filteredList[i].filteredIndex = i;
 		}
 
-		if (_selectedIndex >= _indexMap.length) {
-			_selectedIndex = _indexMap.length - 1;
+		if (_selectedIndex >= _filteredList.length) {
+			doSetSelectedIndex(_filteredList.length - 1,0);
 		}
 	}
 
@@ -70,27 +80,18 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		var yStart = _indent;
 		var h = 0;
 
-		for (var i = 0; i < _indexMap.length; i++) {
-			if (i < scrollPosition) {
-				getMappedEntry(i).clipIndex = undefined;
-			}
-			getMappedEntry(i).mapIndex = i;
+		for (var i = 0; i < _filteredList.length && i < _scrollPosition; i++) {
+			_filteredList[i].clipIndex = undefined;
 		}
 
 		_listIndex = 0;
 
-		for (var i = _scrollPosition; i < _indexMap.length && _listIndex < _maxListIndex; i++) {
+		for (var i = _scrollPosition; i < _filteredList.length && _listIndex < _maxListIndex; i++) {
 			var entryClip = getClipByIndex(_listIndex);
 
-			setEntry(entryClip,getMappedEntry(i));
-
-			// clipEntry -> listEntry
-			// listEntry -> clipIndex
-			// listEntry -> mapIndex
-			entryClip.itemIndex = getMappedIndex(i);
-			getMappedEntry(i).clipIndex = _listIndex;
-			getMappedEntry(i).mapIndex = i;
-
+			setEntry(entryClip,_filteredList[i]);
+			entryClip.itemIndex =_filteredList[i].unfilteredIndex;
+			_filteredList[i].clipIndex = _listIndex;
 
 			entryClip._y = yStart + h;
 			entryClip._visible = true;
@@ -109,7 +110,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		if (_bMouseDrivenNav) {
 			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
 				if (e._parent == this && e._visible && e.itemIndex != undefined) {
-					doSetSelectedIndex(e.itemIndex, 0);
+					doSetSelectedIndex(e.itemIndex,0);
 				}
 			}
 		}
@@ -117,14 +118,13 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 	function InvalidateData()
 	{
-		updateIndexMap();
-
+		generateFilteredList();
 		super.InvalidateData();
 	}
 
 	function calculateMaxScrollPosition()
 	{
-		var t = _indexMap.length - _maxListIndex;
+		var t = _filteredList.length - _maxListIndex;
 		_maxScrollPosition = (t > 0) ? t : 0;
 
 		if (_scrollPosition > _maxScrollPosition) {
@@ -139,8 +139,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		if (!_bDisableSelection) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex();
-			} else if (selectedEntry.mapIndex > 0) {
-				doSetSelectedIndex(getMappedIndex(selectedEntry.mapIndex - 1),1);
+			} else if (selectedEntry.filteredIndex > 0) {
+				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex - 1].unfilteredIndex, 1);
 				_bMouseDrivenNav = false;
 				dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged:true});
 			}
@@ -154,8 +154,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		if (!_bDisableSelection) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex();
-			} else if (selectedEntry.mapIndex < _indexMap.length - 1) {
-				doSetSelectedIndex(getMappedIndex(selectedEntry.mapIndex + 1),1);
+			} else if (selectedEntry.filteredIndex < _filteredList.length - 1) {
+				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex + 1].unfilteredIndex, 1);
 				_bMouseDrivenNav = false;
 				dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged:true});
 			}
@@ -166,8 +166,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 	function selectDefaultIndex()
 	{
-		if (_indexMap.length > 0) {
-			selectedIndex = scrollPosition;
+		if (_filteredList.length > 0) {
+			doSetSelectedIndex(_filteredList[_scrollPosition].unfilteredIndex, 0);
 		}
 	}
 
@@ -184,10 +184,10 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 			if (_selectedIndex != -1) {
 
-				if (selectedEntry.mapIndex < _scrollPosition) {
-					scrollPosition = selectedEntry.mapIndex;
-				} else if (selectedEntry.mapIndex >= _scrollPosition + _listIndex) {
-					scrollPosition = Math.min(selectedEntry.mapIndex - _listIndex + 1, _maxScrollPosition);
+				if (selectedEntry.filteredIndex < _scrollPosition) {
+					scrollPosition = selectedEntry.filteredIndex;
+				} else if (selectedEntry.filteredIndex >= _scrollPosition + _listIndex) {
+					scrollPosition = Math.min(selectedEntry.filteredIndex - _listIndex + 1, _maxScrollPosition);
 				} else {
 					setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
 				}
@@ -199,7 +199,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 	function onFilterChange()
 	{
-		updateIndexMap();
+		generateFilteredList();
 		calculateMaxScrollPosition();
 		UpdateList();
 	}

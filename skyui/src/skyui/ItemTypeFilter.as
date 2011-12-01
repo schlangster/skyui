@@ -62,17 +62,13 @@ class skyui.ItemTypeFilter implements skyui.IFilter
 		return (_loc3);
 	}
 
-	function process(a_entryList:Array, a_indexMap:Array)
+	function process(a_filteredList:Array)
 	{
-		var size = a_indexMap.length;
-
-		for (var i = 0; i < a_indexMap.length; i++) {
-			if (!entryMatchesFunc(a_entryList[a_indexMap[i]])) {
-				a_indexMap.splice(i,1);
+		for (var i = 0; i < a_filteredList.length; i++) {
+			if (!entryMatchesFunc(a_filteredList[i])) {
+				a_filteredList.splice(i,1);
 				i--;
 			}
 		}
-
-		//debug.textField.SetText("filter chain " + _itemFilter + " " + size + " " + a_indexMap.length);
 	}
 }

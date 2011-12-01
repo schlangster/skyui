@@ -31,9 +31,8 @@ class skyui.ItemSortingFilter implements skyui.IFilter
 		}
 	}
 
-	function process(a_entryList:Array, a_indexMap:Array)
+	function process(a_filteredList:Array)
 	{
-		var a = new Array();
 		var attr;
 		var opt = 0;
 		if (!_bAscending) {
@@ -61,25 +60,11 @@ class skyui.ItemSortingFilter implements skyui.IFilter
 				attr = "text";
 				opt = opt | Array.CASEINSENSITIVE;
 		}
-
-		for (var i = 0; i < a_indexMap.length; i++) {
-			var entry = a_entryList[a_indexMap[i]];
-			
-			if (_sortBy == SORT_BY_NAME) {
-				a[i] = {pos:a_indexMap[i], attr:entry[attr], equip:(entry.equipState > 0)};
-			} else {
-				a[i] = {pos:a_indexMap[i], attr:entry[attr]};
-			}
-		}
 		
 		if (_sortBy == SORT_BY_NAME) {
-			a.sortOn(["equip", "attr"], [Array.NUMERIC | Array.DESCENDING, opt]);
+			a_filteredList.sortOn(["equipState", attr], [Array.NUMERIC | Array.DESCENDING, opt]);
 		} else {
-			a.sortOn("attr", opt);
-		}
-		
-		for (var i = 0; i < a_indexMap.length; i++) {
-			a_indexMap[i] = a[i].pos;
+			a_filteredList.sortOn(attr, opt);
 		}
 	}
 }

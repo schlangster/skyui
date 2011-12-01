@@ -54,15 +54,15 @@ class skyui.ItemNameFilter implements skyui.IFilter
 
 	}
 
-	function process(a_entryList:Array, a_indexMap:Array)
+	function process(a_filteredList:Array)
 	{
 		if (_nameFilter == undefined || _nameFilter == "") {
 			return;
 		}
 
-		for (var i = 0; i < a_indexMap.length; i++) {
-			if (!EntryMatchesFunc(a_entryList[a_indexMap[i]])) {
-				a_indexMap.splice(i,1);
+		for (var i = 0; i < a_filteredList.length; i++) {
+			if (!EntryMatchesFunc(a_filteredList[i])) {
+				a_filteredList.splice(i,1);
 				i--;
 			}
 		}
