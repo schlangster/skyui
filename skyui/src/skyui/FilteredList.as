@@ -131,7 +131,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	{
 		if (!_bDisableSelection) {
 			if (_selectedIndex == -1) {
-				selectDefaultIndex();
+				selectDefaultIndex(false);
 			} else if (selectedEntry.filteredIndex > 0) {
 				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex - 1].unfilteredIndex, 1);
 				_bMouseDrivenNav = false;
@@ -146,7 +146,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	{
 		if (!_bDisableSelection) {
 			if (_selectedIndex == -1) {
-				selectDefaultIndex();
+				selectDefaultIndex(true);
 			} else if (selectedEntry.filteredIndex < _filteredList.length - 1) {
 				doSetSelectedIndex(_filteredList[selectedEntry.filteredIndex + 1].unfilteredIndex, 1);
 				_bMouseDrivenNav = false;
@@ -157,10 +157,14 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		}
 	}
 
-	function selectDefaultIndex()
+	function selectDefaultIndex(a_bBottom)
 	{
 		if (_filteredList.length > 0) {
-			doSetSelectedIndex(_filteredList[_scrollPosition].unfilteredIndex, 0);
+			if (a_bBottom) {
+				doSetSelectedIndex(Math.min(_filteredList[_scrollPosition].unfilteredIndex, _filteredList.length-1), 0 );
+			} else {
+				doSetSelectedIndex(Math.min(_filteredList[_scrollPosition + _listIndex - 1].unfilteredIndex, _filteredList.length-1), 0 );
+			}
 		}
 	}
 
@@ -176,7 +180,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			}
 
 			if (_selectedIndex != -1) {
-
 				if (selectedEntry.filteredIndex < _scrollPosition) {
 					scrollPosition = selectedEntry.filteredIndex;
 				} else if (selectedEntry.filteredIndex >= _scrollPosition + _listIndex) {

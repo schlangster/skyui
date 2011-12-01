@@ -188,13 +188,38 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 
 	}
-
+	
+	var _selectorPos:Number = 0;
+	var _targetSelectorPos:Number = 0;
+	
+    function onEnterFrame()
+    {
+		if (_selectorPos < _targetSelectorPos) {
+			_selectorPos = _selectorPos + (_targetSelectorPos - _selectorPos) * 0.2 + 1;
+			
+			refreshSelector();
+			
+			if (_selectorPos > _targetSelectorPos) {
+				_selectorPos = _targetSelectorPos;
+			}
+			
+		} else if (_selectorPos > _targetSelectorPos) {
+			_selectorPos = _selectorPos - (_selectorPos - _targetSelectorPos) * 0.2 - 1;
+			
+			refreshSelector();
+			
+			if (_selectorPos < _targetSelectorPos) {
+				_selectorPos = _targetSelectorPos;
+			}
+		}
+    }
+	
 	function updateSelector()
 	{
 		if (selectorCenter == undefined) {
 			return;
 		}
-
+			
 		if (_selectedIndex == -1) {
 			selectorCenter._visible = false;
 
@@ -208,23 +233,39 @@ class skyui.HorizontalList extends skyui.DynamicList
 			return;
 		}
 
-		selectorCenter._visible = true;
 		var selectedClip = getClipByIndex(_selectedIndex);
 
-		selectorCenter._x = selectedClip._x + selectedClip.buttonArea._width / 2 - selectorCenter._width / 2;
+		_targetSelectorPos = selectedClip._x + selectedClip.buttonArea._width / 2 - selectorCenter._width / 2;
+		
+		selectorCenter._visible = true;
 		selectorCenter._y = selectedClip._y + selectedClip.buttonArea._height;
-
+		
 		if (selectorLeft != undefined) {
 			selectorLeft._visible = true;
 			selectorLeft._x = 0;
 			selectorLeft._y = selectorCenter._y;
-			selectorLeft._width = selectorCenter._x;
 		}
 
 		if (selectorRight != undefined) {
 			selectorRight._visible = true;
-			selectorRight._x = selectorCenter._x + selectorCenter._width;
 			selectorRight._y = selectorCenter._y;
+			selectorRight._width = _totalWidth - selectorRight._x;
+		}
+	}
+
+	function refreshSelector()
+	{
+		selectorCenter._visible = true;
+		var selectedClip = getClipByIndex(_selectedIndex);
+
+		selectorCenter._x = _selectorPos;
+
+		if (selectorLeft != undefined) {
+			selectorLeft._width = selectorCenter._x;
+		}
+
+		if (selectorRight != undefined) {
+			selectorRight._x = selectorCenter._x + selectorCenter._width;
 			selectorRight._width = _totalWidth - selectorRight._x;
 		}
 	}
