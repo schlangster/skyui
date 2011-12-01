@@ -76,10 +76,25 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 		entryClip.clipIndex = a_index;
 
+		// Proper closures anyone? :(
 		entryClip.buttonArea.onRollOver = function()
 		{
 			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined) {
 
+				if (_parent.itemIndex != _parent._parent._selectedIndex) {
+					_parent._alpha = 75;
+				}
+				_parent._parent._bMouseDrivenNav = true;
+			}
+		};
+		
+		entryClip.buttonArea.onRollOut = function()
+		{
+			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined) {
+
+				if (_parent.itemIndex != _parent._parent._selectedIndex) {
+					_parent._alpha = 50;
+				}
 				_parent._parent._bMouseDrivenNav = true;
 			}
 		};
