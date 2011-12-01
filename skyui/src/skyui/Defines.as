@@ -1,5 +1,6 @@
 ﻿class skyui.Defines
 {
+	static var FLAG_ALL = 0;
 	static var FLAG_DAMAGE = 2;
 	static var FLAG_ARMOR = 4;
 	
@@ -13,6 +14,4 @@
 	static var WEAPON_TYPE_WARAXE = 3;
 	static var WEAPON_TYPE_GREATSWORD = 5;
 	static var WEAPON_TYPE_BOW = 7;
-
-
 }

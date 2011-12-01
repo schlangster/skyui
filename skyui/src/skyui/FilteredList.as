@@ -128,8 +128,9 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	function moveSelectionUp()
 	{
 		if (!_bDisableSelection) {
-			if (selectedEntry.mapIndex > 0) {
-				//debug.textField.SetText("moving from " + selectedEntry.mapIndex + " (" + selectedIndex + ") to " + (selectedEntry.mapIndex - 1) + " (" + getMappedIndex(selectedEntry.mapIndex - 1) + ")");
+			if (selectedIndex == -1) {
+				selectDefaultIndex();
+			} else if (selectedEntry.mapIndex > 0) {
 				selectedIndex = getMappedIndex(selectedEntry.mapIndex - 1);
 			}
 		} else {
@@ -140,13 +141,23 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	function moveSelectionDown()
 	{
 		if (!_bDisableSelection) {
-			if (selectedEntry.mapIndex < _indexMap.length - 1) {
+			if (selectedIndex == -1) {
+				selectDefaultIndex();
+			} else if (selectedEntry.mapIndex < _indexMap.length - 1) {
 				selectedIndex = getMappedIndex(selectedEntry.mapIndex + 1);
 			}
 		} else {
 			scrollPosition = scrollPosition + 1;
 		}
 	}
+	
+	function selectDefaultIndex()
+	{
+		if (_indexMap.length > 0) {
+			selectedIndex = scrollPosition;
+		}
+	}
+
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{

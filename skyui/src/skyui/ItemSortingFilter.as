@@ -63,17 +63,19 @@ class skyui.ItemSortingFilter implements skyui.IFilter
 		}
 
 		for (var i = 0; i < a_indexMap.length; i++) {
-			a[i] = {pos:a_indexMap[i], attr:a_entryList[a_indexMap[i]][attr]};
-		}
-				
-		for (var i = 0; i < a_indexMap.length; i++) {
-			trace(i + ": "+ a[i]["pos"] + ", " + a[i]["attr"]);
+			var entry = a_entryList[a_indexMap[i]];
+			
+			if (_sortBy == SORT_BY_NAME) {
+				a[i] = {pos:a_indexMap[i], attr:entry[attr], equip:(entry.equipState > 0)};
+			} else {
+				a[i] = {pos:a_indexMap[i], attr:entry[attr]};
+			}
 		}
 		
-		a.sortOn("attr", opt);
-		
-		for (var i = 0; i < a_indexMap.length; i++) {
-			trace(i + ": "+ a[i]["pos"] + ", " + a[i]["attr"]);
+		if (_sortBy == SORT_BY_NAME) {
+			a.sortOn(["equip", "attr"], [Array.NUMERIC | Array.DESCENDING, opt]);
+		} else {
+			a.sortOn("attr", opt);
 		}
 		
 		for (var i = 0; i < a_indexMap.length; i++) {
