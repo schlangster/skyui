@@ -63,8 +63,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			_filteredList[i].filteredIndex = i;
 		}
 
-		if (_selectedIndex >= _filteredList.length) {
-			doSetSelectedIndex(_filteredList.length - 1,0);
+		if (selectedEntry.filteredIndex == undefined) {
+			_selectedIndex = -1;
 		}
 	}
 
@@ -127,9 +127,9 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		updateScrollbar();
 	}
 
-	function moveSelectionUp()
+	function moveSelectionUp(a_bScrollPage:Boolean)
 	{
-		if (!_bDisableSelection) {
+		if (!_bDisableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(false);
 			} else if (selectedEntry.filteredIndex > 0) {
@@ -137,14 +137,18 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 				_bMouseDrivenNav = false;
 				dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged:true});
 			}
+		} else if (a_bScrollPage) {
+			var t = scrollPosition - _listIndex;
+			scrollPosition = t > 0 ? t : 0;
+			doSetSelectedIndex(-1, 0);
 		} else {
 			scrollPosition = scrollPosition - 1;
 		}
 	}
 
-	function moveSelectionDown()
+	function moveSelectionDown(a_bScrollPage:Boolean)
 	{
-		if (!_bDisableSelection) {
+		if (!_bDisableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(true);
 			} else if (selectedEntry.filteredIndex < _filteredList.length - 1) {
@@ -152,11 +156,15 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 				_bMouseDrivenNav = false;
 				dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged:true});
 			}
+		} else if (a_bScrollPage) {
+			var t = scrollPosition + _listIndex;
+			scrollPosition = t < _maxScrollPosition ? t : _maxScrollPosition;
+			doSetSelectedIndex(-1, 0);
 		} else {
 			scrollPosition = scrollPosition + 1;
 		}
 	}
-	
+
 	var counter = 0;
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
@@ -166,7 +174,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			_selectedIndex = a_newIndex;
 
 			if (oldIndex != -1) {
-				debug.textField.SetText("c: " + (counter++) + " new index: " + a_newIndex + " old index: " + oldIndex);
 				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
 			}
 

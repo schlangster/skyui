@@ -81,8 +81,6 @@ class InventoryLists extends MovieClip
 
 		_prevCategoryCode = NavigationCode.LEFT;
 		_nextCategoryCode = NavigationCode.RIGHT;
-		_prevItemCode = NavigationCode.UP;
-		_nextItemCode = NavigationCode.DOWN;
 		
 		_defaultCategoryIndex = 1; // ALL
 	}
@@ -139,12 +137,6 @@ class InventoryLists extends MovieClip
 					
 				} else if (details.navEquivalent == _nextCategoryCode) {
 					_CategoriesList.moveSelectionRight();
-					bCaught = true;
-				} else if (details.navEquivalent == _prevItemCode) {
-					_ItemsList.moveSelectionUp();
-					bCaught = true;					
-				} else if (details.navEquivalent == _nextItemCode) {
-					_ItemsList.moveSelectionDown();
 					bCaught = true;
 				}
 			}
@@ -238,7 +230,7 @@ class InventoryLists extends MovieClip
 			_ItemsList.statType = _CategoriesList.selectedEntry.flag;
 			_currCategoryIndex = _CategoriesList.selectedIndex;
 			
-            _ItemsList.restoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
+            _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
         }
 		
 		// Start with no selection
@@ -324,6 +316,9 @@ class InventoryLists extends MovieClip
 			_bFirstSelectionFlag = false;
 			dispatchEvent({type:"showItemsList", index:event.index});
 		} else {
+			if (event.index == -1) {
+				_bFirstSelectionFlag = true;
+			}
 			dispatchEvent({type:"itemHighlightChange", index:event.index});			
 		}
 
@@ -337,7 +332,7 @@ class InventoryLists extends MovieClip
 		_sortFilter.setSortBy(event.sortBy, event.ascending);
 	}
 
-	// API
+	// API - Called to initially set the category list
 	function SetCategoriesList()
 	{
 		var textOffset = 0;
@@ -356,19 +351,20 @@ class InventoryLists extends MovieClip
 		_CategoriesList.selectedIndex = _defaultCategoryIndex;
 		_CategoriesList.InvalidateData();
 
-		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
+//		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 
 		// <TODO> - do this in ItemMenu once we start changing it
 		var itemCardContainer = _parent.ItemCard_mc._parent;
 		itemCardContainer._x = Stage.visibleRect.x + Stage.visibleRect.width - itemCardContainer._width - 65;
 		_parent.ItemsListInputCatcher._visible = false;
+		_parent.RestoreCategoryRect._visible = false;
 		// </TODO>
 		
 
 		showItemsList();
 	}
 
-	// API
+	// API - Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	function InvalidateListData()
 	{
 		var flag = _CategoriesList.selectedEntry.flag;
@@ -396,30 +392,16 @@ class InventoryLists extends MovieClip
 		if (flag != _CategoriesList.selectedEntry.flag) {
 			// Triggers an update if filter flag changed
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-//			_ItemsList.UpdateList();
 			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 		}
 
-		if (_currentState != TWO_PANELS && _currentState != TRANSITIONING_TO_TWO_PANELS) {
-			_ItemsList.selectedIndex = -1;
-		} else {
+// Probably not necessary anymore
+
+//		if (_currentState != TWO_PANELS && _currentState != TRANSITIONING_TO_TWO_PANELS) {
+//			_ItemsList.selectedIndex = -1;
+//		} else {
 //			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 //	        dispatchEvent({type: "showItemsList", index:_ItemsList.selectedIndex});
-		}
-		
-		// TODO
-     //   if (iCurrentState != TWO_PANELS && iCurrentState != TRANSITIONING_TO_TWO_PANELS)
-//        {
-//            _ItemsList.selectedIndex = -1;
-//        }
-//        else if (iCurrentState == TWO_PANELS)
-//        {
-//            dispatchEvent({type: "itemHighlightChange", index: _ItemsList.selectedIndex});
-//        }
-//        else
-//        {
-//            dispatchEvent({type: "showItemsList", index: _ItemsList.selectedIndex});
-//        }
-		
+//		}
 	}
 }

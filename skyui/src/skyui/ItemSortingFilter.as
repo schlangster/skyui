@@ -61,10 +61,10 @@ class skyui.ItemSortingFilter implements skyui.IFilter
 				opt = opt | Array.CASEINSENSITIVE;
 		}
 		
-		if (_sortBy == SORT_BY_NAME) {
-			a_filteredList.sortOn(["equipState", attr], [Array.NUMERIC | Array.DESCENDING, opt]);
-		} else {
+//		if (_sortBy == SORT_BY_NAME) {
+//			a_filteredList.sortOn(["equipState", attr], [Array.NUMERIC | Array.DESCENDING, opt]);
+//		} else {
 			a_filteredList.sortOn(attr, opt);
-		}
+//		}
 	}
 }

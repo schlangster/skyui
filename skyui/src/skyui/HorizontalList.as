@@ -14,9 +14,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 	private var _fillType:Number;
 	private var _contentWidth:Number;
 	private var _totalWidth:Number;
-	
-	private var _selectorPos:Number = 0;
-	private var _targetSelectorPos:Number = 0;
+	private var _selectorPos:Number;
+	private var _targetSelectorPos:Number;
 
 	// Component settings
 	var buttonOption:String;
@@ -28,6 +27,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 	var selectorCenter:MovieClip;
 	var selectorLeft:MovieClip;
 	var selectorRight:MovieClip;
+	
+	var debug;
 
 	function HorizontalList()
 	{
@@ -61,25 +62,43 @@ class skyui.HorizontalList extends skyui.DynamicList
 		}
 	}
 
-	function InvalidateData()
-	{
-		super.InvalidateData();
-		updateSelector();
-	}
+// Somewhat working, but it's not that important and I'd rather do it properly later
+//
+//	// This menu doesnt really have/need scroll position anymore. Still, ItemMenu will try to save and restore it from the saved array index 0.
+//	// We can utilize this to remember the last selectedIndex (= last opened category)
+//	// <TODO> Just do this more transparently once ItemMenu.as is modified.
+//	function get scrollPosition():Number
+//	{
+//		return selectedIndex;
+//	}
+//	function RestoreScrollPosition(a_newIndex:Number)
+//	{
+//		debug.textField.SetText("Restoring " + a_newIndex);
+//		selectedIndex = a_newIndex;
+//	}
+//	// </TODO>
+//
+//	function InvalidateData()
+//	{
+//		super.InvalidateData();
+//		updateSelector();
+//	}
 
-	function getClipByIndex(a_index)
+	// Gets a clip, or if it doesn't exist, creates it.
+	function getClipByIndex(a_index):MovieClip
 	{
 		var entryClip = this["Entry" + a_index];
 
 		if (entryClip != undefined) {
 			return entryClip;
 		}
+		
 		// Create on-demand     
 		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
 
 		entryClip.clipIndex = a_index;
 
-		// Proper closures anyone? :(
+		// How about proper closures? :(
 		entryClip.buttonArea.onRollOver = function()
 		{
 			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined) {
@@ -188,8 +207,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 			xPos = xPos + entryClip.buttonArea._width + spacing;
 			entryClip._visible = true;
 		}
-
-
+		
+		updateSelector();
 	}
 	
     function onEnterFrame()
@@ -276,8 +295,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
 
 			//_parent._parent.debug.textField.SetText("ItemPress true" + counter);
-			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
 			updateSelector();
+			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
 		}
 	}
 
