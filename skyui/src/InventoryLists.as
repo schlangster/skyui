@@ -225,7 +225,7 @@ class InventoryLists extends MovieClip
 		_bFirstSelectionFlag = true;
 		
 		// Let's do this more elegant at some point.. :)
-		// Changing the sort filter might already trigger an update, so the ne
+		// Changing the sort filter might already trigger an update, so the final UpdateList is redudant
 		
 		if (_CategoriesList.selectedEntry != undefined) {
 			// Set filter type before update
@@ -394,16 +394,32 @@ class InventoryLists extends MovieClip
 		_CategoriesList.UpdateList();
 
 		if (flag != _CategoriesList.selectedEntry.flag) {
+			// Triggers an update if filter flag changed
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-			_ItemsList.UpdateList();
+//			_ItemsList.UpdateList();
 			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 		}
 
 		if (_currentState != TWO_PANELS && _currentState != TRANSITIONING_TO_TWO_PANELS) {
 			_ItemsList.selectedIndex = -1;
 		} else {
-			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
-	        dispatchEvent({type: "showItemsList", index:_ItemsList.selectedIndex});
+//			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+//	        dispatchEvent({type: "showItemsList", index:_ItemsList.selectedIndex});
 		}
+		
+		// TODO
+     //   if (iCurrentState != TWO_PANELS && iCurrentState != TRANSITIONING_TO_TWO_PANELS)
+//        {
+//            _ItemsList.selectedIndex = -1;
+//        }
+//        else if (iCurrentState == TWO_PANELS)
+//        {
+//            dispatchEvent({type: "itemHighlightChange", index: _ItemsList.selectedIndex});
+//        }
+//        else
+//        {
+//            dispatchEvent({type: "showItemsList", index: _ItemsList.selectedIndex});
+//        }
+		
 	}
 }

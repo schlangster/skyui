@@ -283,12 +283,12 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 
 	function restoreScrollPosition(a_newPosition)
 	{
-		_scrollPosition = a_newPosition;
-		if (_scrollPosition < 0) {
-			_scrollPosition = 0;
+		if (a_newPosition < 0) {
+			a_newPosition = 0;
+		} else if (a_newPosition > _maxScrollPosition) {
+			a_newPosition = _maxScrollPosition;
 		}
-		if (_scrollPosition > _maxScrollPosition) {
-			_scrollPosition = _maxScrollPosition;
-		}
+		
+		scrollPosition = a_newPosition;
 	}
 }
