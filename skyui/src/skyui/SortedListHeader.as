@@ -35,6 +35,16 @@ class skyui.SortedListHeader extends MovieClip
 	{
 		return _statType;
 	}
+	
+	function get ascending():Boolean
+	{
+		return _bAscending;
+	}
+	
+	function get sortBy():Number
+	{
+		return _sortBy;
+	}
 		
 	function onLoad()
 	{		
@@ -71,12 +81,19 @@ class skyui.SortedListHeader extends MovieClip
 	{
 		switch (_statType) {
 			case Defines.FLAG_DAMAGE:
+				buttons.statButtonArea._visible = true;
 				buttons.statLabel.SetText("$DAMAGE");
 				break;
 			case Defines.FLAG_ARMOR:
+				buttons.statButtonArea._visible = true;
 				buttons.statLabel.SetText("$ARMOR");
 				break;
 			default:
+				if (_sortBy == ItemSortingFilter.SORT_BY_STAT) {
+					_sortBy = ItemSortingFilter.SORT_BY_NAME
+					_bAscending = true;
+				}
+				buttons.statButtonArea._visible = false;
 				buttons.statLabel.SetText(" ");
 		}
 		

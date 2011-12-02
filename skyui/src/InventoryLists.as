@@ -224,11 +224,20 @@ class InventoryLists extends MovieClip
 
 		_bFirstSelectionFlag = true;
 		
+		// Let's do this more elegant at some point.. :)
+		// Changing the sort filter might already trigger an update, so the ne
+		
 		if (_CategoriesList.selectedEntry != undefined) {
 			// Set filter type before update
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-			_ItemsList.statType = _itemsHeader.statType = _CategoriesList.selectedEntry.flag;
+			
+			// Header my change the sort type, if STAT column is no longer available for the current category
+			_itemsHeader.statType = CategoriesList.selectedEntry.flag;
+			_sortFilter.setSortBy(_itemsHeader.sortBy, _itemsHeader.ascending);
+			
+			_ItemsList.statType = _CategoriesList.selectedEntry.flag;
 			_currCategoryIndex = _CategoriesList.selectedIndex;
+			
             _ItemsList.restoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
         }
 		
@@ -239,6 +248,7 @@ class InventoryLists extends MovieClip
 		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 		
 		_ItemsList.disableInput = false;
+		GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
 	// Not needed anymore, items list always visible
