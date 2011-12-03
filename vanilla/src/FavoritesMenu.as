@@ -5,12 +5,10 @@ import Shared.GlobalFunc;
 
 class FavoritesMenu extends MovieClip
 {
-        var bPCControlsReady:Boolean = true;
-        var List_mc:MovieClip;
+    var bPCControlsReady:Boolean = true;
+    var List_mc:MovieClip;
 	var ItemList:MovieClip;
-	var _parent:MovieClip;
-	var gotoAndPlay;
-	var LeftPanel;
+	var LeftPanel:MovieClip;
 	
     function FavoritesMenu()
     {
@@ -43,11 +41,11 @@ class FavoritesMenu extends MovieClip
     } 
     function get selectedIndex()
     {
-        return (ItemList.selectedEntry().index);
+        return ItemList.selectedEntry.index;
     } 
     function get itemList()
     {
-        return (ItemList);
+        return ItemList;
     }
     function setSelectedItem(aiIndex)
     {

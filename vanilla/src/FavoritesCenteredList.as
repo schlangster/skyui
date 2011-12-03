@@ -82,11 +82,11 @@
     {
         if (delta == 1)
         {
-            this.moveSelectionUp();
+            moveSelectionUp();
         }
         else if (delta == -1)
         {
-            this.moveSelectionDown();
+            moveSelectionDown();
         } 
     } 
 } 
