@@ -11,6 +11,7 @@ import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
 import skyui.ItemSortingFilter;
 import skyui.SortedListHeader;
+import skyui.Config;
 
 class InventoryLists extends MovieClip
 {
@@ -62,7 +63,7 @@ class InventoryLists extends MovieClip
 	function InventoryLists()
 	{		
 		super();
-		
+
 		_CategoriesList = panelContainer.categoriesList;
 		_CategoryLabel = panelContainer.CategoryLabel;
 		_ItemsList = panelContainer.itemsList;
@@ -227,7 +228,7 @@ class InventoryLists extends MovieClip
 			_itemsHeader.statType = CategoriesList.selectedEntry.flag;
 			_sortFilter.setSortBy(_itemsHeader.sortBy, _itemsHeader.ascending);
 			
-			_ItemsList.statType = _CategoriesList.selectedEntry.flag;
+//			_ItemsList.statType = _CategoriesList.selectedEntry.flag;
 			_currCategoryIndex = _CategoriesList.selectedIndex;
 			
             _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
@@ -359,7 +360,6 @@ class InventoryLists extends MovieClip
 		_parent.ItemsListInputCatcher._visible = false;
 		_parent.RestoreCategoryRect._visible = false;
 		// </TODO>
-		
 
 		showItemsList();
 	}

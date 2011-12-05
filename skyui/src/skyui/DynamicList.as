@@ -2,6 +2,7 @@
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
+import skyui.Config;
 
 class skyui.DynamicList extends MovieClip
 {
@@ -40,7 +41,7 @@ class skyui.DynamicList extends MovieClip
 
 	// Constructor
 	function DynamicList()
-	{		
+	{
 		_entryList = new Array();
 
 		_bDisableSelection = false;
@@ -69,6 +70,11 @@ class skyui.DynamicList extends MovieClip
 	{
 		_entryList.splice(0);
 	}
+	
+	function createEntryClip(a_index:Number):MovieClip
+	{
+		return attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
+	}
 
 	function getClipByIndex(a_index:Number)
 	{
@@ -82,8 +88,8 @@ class skyui.DynamicList extends MovieClip
 			return entryClip;
 		}
 		
-		// Create on-demand  
-		entryClip = attachMovie(_entryClassName, "Entry" + a_index, -a_index);
+		// Create on-demand
+		entryClip = createEntryClip(a_index);
 
 		entryClip.clipIndex = a_index;
 
