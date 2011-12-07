@@ -12,6 +12,8 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	private var _listIndex:Number;
 	private var _maxListIndex:Number;
 	private var _listHeight:Number;
+	
+	private var _entryHeight:Number;
 
 	// Children
 	var scrollbar:MovieClip;
@@ -27,8 +29,9 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		_maxScrollPosition = 0;
 		_listIndex = 0;
 
+		_entryHeight = 28;
 		_listHeight = border._height;
-		_maxListIndex = Math.floor(_listHeight / 28);
+		_maxListIndex = Math.floor(_listHeight / _entryHeight);
 	}
 
 	function onLoad()
@@ -175,7 +178,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			entry._y = yStart + h;
 			entry._visible = true;
 
-			h = h + entry._height;
+			h = h + _entryHeight;
 
 			++_listIndex;
 		}

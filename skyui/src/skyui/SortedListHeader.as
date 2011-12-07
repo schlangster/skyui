@@ -5,11 +5,12 @@ import skyui.Defines;
 class skyui.SortedListHeader extends MovieClip
 {
 	private var _bAscending:Boolean;
-	private var _sortBy:Number;	
-	private var _statType:Number;
+	private var _columns:Array;
+	private var _activeColumnIndex:Number;
+	private var _bArrowDown:Boolean;
+	private var _bArrowLeft:Boolean;
 	
 	// Children
-	var buttons:MovieClip;
 	var sortIcon:MovieClip;
 	
 	//Mixin
@@ -22,114 +23,94 @@ class skyui.SortedListHeader extends MovieClip
 		EventDispatcher.initialize(this);
 		
 		_bAscending = true;
-		_sortBy = ItemSortingFilter.SORT_BY_NAME;
-	}
-	
-	function set statType(a_type:Number)
-	{		
-		_statType = a_type;
-		updateHeader();
-	}
-	
-	function get statType():Number
-	{
-		return _statType;
-	}
-	
-	function get ascending():Boolean
-	{
-		return _bAscending;
-	}
-	
-	function get sortBy():Number
-	{
-		return _sortBy;
-	}
-		
-	function onLoad()
-	{		
-		buttons.textButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			_parent._parent.toggleSort(ItemSortingFilter.SORT_BY_NAME);
-		};
-		
-		buttons.valueButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			_parent._parent.toggleSort(ItemSortingFilter.SORT_BY_VALUE);
-		};
-		
-		buttons.weightButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			_parent._parent.toggleSort(ItemSortingFilter.SORT_BY_WEIGHT);
-		};
-		
-		buttons.statButtonArea.onPress = function(a_mouseIndex, a_keyboardOrMouse)
-		{
-			_parent._parent.toggleSort(ItemSortingFilter.SORT_BY_STAT);
-		};
-		
-		buttons.textLabel.autoSize = "left";
-		buttons.statLabel.autoSize = "left";
-		buttons.valueLabel.autoSize = "left";
-		buttons.weightLabel.autoSize = "left";
-		buttons.statLabel.SetText(" ", true);
-		
-		updateHeader();
+		_columns = new Array();
 	}
 	
 	function updateHeader()
 	{
-		switch (_statType) {
-			case Defines.FLAG_DAMAGE:
-				buttons.statButtonArea._visible = true;
-				buttons.statLabel.SetText("$DAMAGE");
-				break;
-			case Defines.FLAG_ARMOR:
-				buttons.statButtonArea._visible = true;
-				buttons.statLabel.SetText("$ARMOR");
-				break;
-			default:
-				if (_sortBy == ItemSortingFilter.SORT_BY_STAT) {
-					_sortBy = ItemSortingFilter.SORT_BY_NAME
-					_bAscending = true;
-				}
-				buttons.statButtonArea._visible = false;
-				buttons.statLabel.SetText(" ");
-		}
-		
 		var pos = 5;
-		
-		switch (_sortBy) {
-			case ItemSortingFilter.SORT_BY_STAT:
-				pos = pos + buttons.statLabel._x + buttons.statLabel._width;
-				break;
-			case ItemSortingFilter.SORT_BY_VALUE:
-				pos = pos + buttons.valueLabel._x + buttons.valueLabel._width;			
-				break;
-			case ItemSortingFilter.SORT_BY_WEIGHT:
-				pos = pos + buttons.weightLabel._x + buttons.weightLabel._width;
-				break;
-			case ItemSortingFilter.SORT_BY_NAME:
-			default:
-				pos = pos + buttons.textLabel._x + buttons.textLabel._width;
-		}
-		
 		sortIcon._x = pos;
 		sortIcon.gotoAndStop(_bAscending? "asc" : "desc");
 	}
 	
-	function toggleSort(a_sortBy:Number)
+	function columnPress(a_columnIndex:Number)
 	{
-		if (_sortBy == a_sortBy) {
-			_bAscending = !_bAscending
-		} else if (a_sortBy == ItemSortingFilter.SORT_BY_NAME) {
-			_bAscending = true;
-		} else {
-			_bAscending = false;
+		dispatchEvent({type:"columnPress", index: a_columnIndex});
+	}
+	
+	/* Hides all columns (but doesn't delete them since they can be re-used later */
+	function clearColumns()
+	{
+		for (var i=0; i< _columns.length; i++) {
+			_columns[i]._visible = false;
 		}
-		_sortBy = a_sortBy;
+	}
+	
+	function set activeColumnIndex(a_index:Number)
+	{
+		_activeColumnIndex = a_index;
+	}
+	
+	function set isArrowDown(a_bArrowDown:Boolean)
+	{
+		_bArrowDown = a_bArrowDown;
+	}
+	
+	function set isArrowLeft(a_bArrowLeft:Boolean)
+	{
+		_bArrowLeft = a_bArrowLeft;
+	}
+	
+	function addColumn(a_index:Number)
+	{
+		if (a_index < 0) {
+			return undefined;
+		}
 		
-		updateHeader();
-		dispatchEvent({type:"sortChange", sortBy: _sortBy, ascending: _bAscending});
+		var columnButton = this["Column" + a_index];
+
+		if (columnButton != undefined) {
+			_columns[a_index] = columnButton;
+			return columnButton;
+		}
+		
+		// Create on-demand
+		columnButton = attachMovie("HeaderColumn", "Column" + a_index, getNextHighestDepth());
+
+		columnButton.columnIndex = a_index;
+
+		columnButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
+		{
+			if (!this.columnIndex != undefined) {
+				_parent.columnPress(this.columnIndex);
+			}
+		};
+
+		columnButton.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
+		{
+			if (!this.columnIndex != undefined) {
+				_parent.columnPress(this.columnIndex);
+			}
+		};
+
+		_columns[a_index] = columnButton;
+		return columnButton;
+	}
+	
+	/* Places the buttonAreas around textfields and the sort indicator */
+	function positionButtons()
+	{
+		for (var i=0; i<_columns.length; i++) {
+			var e = _columns[i];
+			
+			e.label.autoSize = e.label.getTextFormat(0).align;
+			
+			e.label._y = -e.label._height;
+			
+			e.buttonArea._x = e.label._x - 4;
+			e.buttonArea._width = e.label._width + 8;
+			e.buttonArea._y = e.label._y - 2;
+			e.buttonArea._height = e.label._height + 2;
+		}
 	}
 }

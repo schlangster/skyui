@@ -257,9 +257,10 @@ class skyui.DynamicList extends MovieClip
 	{
 		if (a_entryClip != undefined) {
 			if (a_entryObject == selectedEntry) {
-				a_entryClip.gotoAndStop("Selected");
+				
+				a_entryClip.selectArea._alpha = 40;
 			} else {
-				a_entryClip.gotoAndStop("Normal");
+				a_entryClip.selectArea._alpha = 0;
 			}
 
 			setEntryText(a_entryClip,a_entryObject);

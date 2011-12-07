@@ -5,7 +5,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 {
 	private var _maxTextLength:Number;
 	private var _filteredList:Array;
-
 	private var _filterChain:Array;
 
 
@@ -89,7 +88,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			entryClip._y = yStart + h;
 			entryClip._visible = true;
 
-			h = h + entryClip._height;
+			h = h + _entryHeight;
 
 			_listIndex++;
 		}
@@ -164,8 +163,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			scrollPosition = scrollPosition + 1;
 		}
 	}
-
-	var counter = 0;
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{

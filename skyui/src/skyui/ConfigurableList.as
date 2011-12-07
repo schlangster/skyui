@@ -10,38 +10,55 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	private var _bEnableItemIcon:Boolean;
 	private var _bEnableEquipIcon:Boolean;
 	
-	// Cache the pre-calculated values so they can be looked up fast&easy
+	// Preset in config
+	private var _entryWidth:Number;
+	
+	// --- Story lots of pre-calculated values in memory so we don't have to recalculate them for each entry
 	
 	// [c1.x, c1.y, c2.x, c2.y, ...] - (x,y) Offset of column fields in a row (relative to the entry clip)
 	private var _columnPositions:Array;
+	
 	// [c1.width, c1.height, c2.width, c2.height, ...]
 	private var _columnSizes:Array;
+	
 	// These are the names like textField0, equipIcon etc used when positioning, not the names as defined in the config
 	private var _columnNames:Array;
 	private var _hiddenColumnNames:Array;
 	
 	// Only used for textfield-based columns
 	private var _columnEntryValues:Array;
-	
-	private var _entryHeight:Number;
+
+	private var _customEntryFormats:Array;
+	private var _defaultEntryFormat:TextFormat;
+	private var _defaultLabelFormat:TextFormat;
+
 	private var _bReposition:Boolean;
+	
+	// Children
+	var header:MovieClip;
+
 
 	function ConfigurableList()
 	{
 		super();
-		_bEnableItemIcon = false;
-		_bEnableEquipIcon = false;
 
 		_columnPositions = new Array();
 		_columnSizes = new Array();
 		_columnNames = new Array();
 		_hiddenColumnNames = new Array();
 		_columnEntryValues = new Array();
+		_customEntryFormats = new Array();
 		
-		_viewIndex = 1;
+		_defaultEntryFormat = new TextFormat(); 
+		_defaultLabelFormat = new TextFormat();
 		
+		// Reasonable defaults, will be overridden later
+		_entryWidth = 525;
+		_entryHeight = 28;
+		_viewIndex = 0;
 		_bReposition = false;
-		_entryHeight = 0;
+		_bEnableItemIcon = false;
+		_bEnableEquipIcon = false;
 
 		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
 	}
@@ -55,11 +72,21 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	{
 		_config = event.config;
 		_views = _config.ItemList.views;
+		_entryWidth = _config.ItemList.entry.width;
 
-//		createEntryClip(0);
+		// Create default formats
+		for (var prop in _config.ItemList.entry.format) {
+			if (_defaultEntryFormat.hasOwnProperty(prop)) {
+				_defaultEntryFormat[prop] = _config.ItemList.entry.format[prop];
+			}
+		}
+		for (var prop in _config.ItemList.label.format) {
+			if (_defaultLabelFormat.hasOwnProperty(prop)) {
+				_defaultLabelFormat[prop] = _config.ItemList.label.format[prop];
+			}
+		}
+
 		updateView();
-//		setEntry(createEntryClip(0), undefined);
-
 	}
 
 	function createEntryClip(a_index:Number):MovieClip
@@ -67,43 +94,51 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		var entryClip = attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
 
 		for (var i = 0; entryClip["textField" + i] != undefined; i++) {
-			//entryClip["textField" + i]._visible = false;
+			entryClip["textField" + i]._visible = false;
 		}
+		entryClip["itemIcon"]._visible = false;
+		entryClip["equipIcon"]._visible = false;
 
 		return entryClip;
 	}
 	
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		var columns = currentView.columns;
+		if (_bReposition) {
+			var columns = currentView.columns;
+			
+			a_entryClip.border._width = a_entryClip.selectArea._width = _entryWidth;
+			a_entryClip.border._height = a_entryClip.selectArea._height =  _entryHeight;
 		
-		for (var i=0; i<columns.length; i++) {
-			var e = a_entryClip[_columnNames[i]];
-			e._visible = true;
+			for (var i=0; i<columns.length; i++) {
+				var e = a_entryClip[_columnNames[i]];
+				e._visible = true;
 			
-			e._x = _columnPositions[i*2];
-			e._y = _columnPositions[i*2+1];
+				e._x = _columnPositions[i*2];
+				e._y = _columnPositions[i*2+1];
 			
-			if (_columnSizes[i*2] > 0) {
-				e._width = _columnSizes[i*2];
-			}
+				if (_columnSizes[i*2] > 0) {
+					e._width = _columnSizes[i*2];
+				}
 			
-			if (_columnSizes[i*2+1] > 0) {
-				e._height = _columnSizes[i*2+1];
-			}
-			
-			if (_columnEntryValues[i] != undefined) {
-				if (_columnEntryValues[i].charAt(0) == "@") {
-					e.SetText(a_entryObject[_columnEntryValues[i].slice(1)]);
+				if (_columnSizes[i*2+1] > 0) {
+					e._height = _columnSizes[i*2+1];
+				}
+				
+				if (e instanceof TextField) {
+					if (_customEntryFormats[i] != undefined) {
+						e.setTextFormat(_customEntryFormats[i]);
+					} else {
+						e.setTextFormat(_defaultEntryFormat);
+					}
 				}
 			}
+			
+			for (var i=0; i<_hiddenColumnNames.length; i++) {
+				var e = a_entryClip[_hiddenColumnNames[i]];
+				e._visible = false;
+			}
 		}
-		
-		for (var i=0; i<_hiddenColumnNames.length; i++) {
-			a_entryClip[_hiddenColumnNames[i]]._visible = false;
-		}
-		
-
 		
 		super.setEntry(a_entryClip, a_entryObject);
 	}
@@ -113,7 +148,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		super.UpdateList();
 		
 		// Done repositiong
-		_bReposition = false;
+//		_bReposition = false;
 	}
 
 	function changeFilterFlag(a_flag:Number)
@@ -133,13 +168,12 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	/* Calculate new column positions and widths for current view */
 	function updateView()
 	{
-		_bReposition = true;
 		_bEnableItemIcon = false;
 		_bEnableEquipIcon = false;
 		
 		var columns = currentView.columns;
 
-		var weightedWidth = 562;
+		var weightedWidth = _entryWidth;
 		var weightSum = 0;
 		var maxHeight = 0;
 		
@@ -150,6 +184,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_columnNames.splice(0);
 		_hiddenColumnNames.splice(0);
 		_columnEntryValues.splice(0);
+		_customEntryFormats.splice(0);
 		
 		// Set bit at position i if column is weighted
 		var weightedFlags = 0;
@@ -171,50 +206,64 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			// Height including borders for maxHeight
 			var curHeight = 0;
 			
-			// ITEM ICON
-			if (columns[i].type == Config.COL_TYPE_ITEM_ICON) {
-				_columnNames[i] = "itemIcon";
-				_bEnableItemIcon = true;
-				
-				if (columns[i].icon.size != undefined) {
-					_columnSizes[i*2] = columns[i].icon.size;
-					weightedWidth -= columns[i].icon.size;
+			switch (columns[i].type) {
+				// ITEM ICON + EQUIP ICON
+				case Config.COL_TYPE_ITEM_ICON:
+				case Config.COL_TYPE_EQUIP_ICON:
+					if (columns[i].type == Config.COL_TYPE_ITEM_ICON) {
+						_columnNames[i] = "itemIcon";
+						_bEnableItemIcon = true;
+					} else if (columns[i].type == Config.COL_TYPE_EQUIP_ICON) {
+						_columnNames[i] = "equipIcon";
+						_bEnableEquipIcon = true;
+					}
 					
-					_columnSizes[i*2+1] = columns[i].icon.size;
-					curHeight += columns[i].icon.size;
-				}
-				
-			// EQUIP ICON
-			} else if (columns[i].type == Config.COL_TYPE_EQUIP_ICON) {
-				_columnNames[i] = "equipIcon";
-				_bEnableEquipIcon = true;
+					if (columns[i].icon.size != undefined) {
+						_columnSizes[i*2] = columns[i].icon.size;
+						weightedWidth -= columns[i].icon.size;
+						
+						_columnSizes[i*2+1] = columns[i].icon.size;
+						curHeight += columns[i].icon.size;
+					}
 					
-				if (columns[i].icon.size != undefined) {
-					_columnSizes[i*2] = columns[i].icon.size;
-					weightedWidth -= columns[i].icon.size;
-					
-					_columnSizes[i*2+1] = columns[i].icon.size;
-					curHeight += columns[i].icon.size;
-				}
+					break;
 
-			// REST
-			} else {
-				_columnNames[i] = "textField" + textFieldIndex++;
-				
-				if (columns[i].entry.width != undefined) {
-					_columnSizes[i*2] = columns[i].entry.width;
-					weightedWidth -= columns[i].entry.width;
-				} else {
-					_columnSizes[i*2] = 0;
-				}
-				
-				if (columns[i].entry.height != undefined) {
-					_columnSizes[i*2+1] = columns[i].entry.height;
-				} else {
-					_columnSizes[i*2+1] = 0;
-				}
-				
-				_columnEntryValues[i] = columns[i].entry.text;
+				// REST
+				default:
+					_columnNames[i] = "textField" + textFieldIndex++;
+					
+					if (columns[i].entry.width != undefined) {
+						_columnSizes[i*2] = columns[i].entry.width;
+						weightedWidth -= columns[i].entry.width;
+					} else {
+						_columnSizes[i*2] = 0;
+					}
+					
+					if (columns[i].entry.height != undefined) {
+						_columnSizes[i*2+1] = columns[i].entry.height;
+					} else {
+						_columnSizes[i*2+1] = 0;
+					}
+					
+					_columnEntryValues[i] = columns[i].entry.text;
+					
+					if (columns[i].entry.format != undefined) {
+						var customFormat = new TextFormat();
+
+						// Duplicate default format
+						for (var prop in _defaultEntryFormat) {
+							customFormat[prop] = _defaultEntryFormat[prop];
+						}
+						
+						// Overrides
+						for (var prop in columns[i].entry.format) {
+							if (customFormat.hasOwnProperty(prop)) {
+								customFormat[prop] = columns[i].entry.format[prop];
+							}
+						}
+						
+						_customEntryFormats[i] = customFormat;
+					}
 			}
 			
 			if (columns[i].border != undefined) {
@@ -233,7 +282,11 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		if (weightSum > 0 && weightedWidth > 0 && weightedFlags != 0) {
 			for (var i=columns.length-1; i>=0; i--) {
 				if ((weightedFlags >>>= 1) & 1) {
-					_columnSizes[i*2] += (columns[i].weight / weightSum) * weightedWidth;
+					if (columns[i].border != undefined) {
+						_columnSizes[i*2] += ((columns[i].weight / weightSum) * weightedWidth) - columns[i].border[0] - columns[i].border[1];
+					} else {
+						_columnSizes[i*2] += (columns[i].weight / weightSum) * weightedWidth;
+					}
 				}
 			}
 		}
@@ -276,5 +329,59 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		trace("Max height: " + maxHeight);
 		trace("Weighted width: " + weightedWidth);
 		trace("Weight sum: " + weightSum);
+		
+		// Set up header
+		if (header != undefined) {
+			
+			header.clearColumns();
+			
+			for (var i = 0; i < columns.length; i++) {
+				var btn = header.addColumn(i);
+
+				btn.label._x = 0;
+
+				if (columns[i].border != undefined) {
+					btn._x = _columnPositions[i*2] - columns[i].border[0];
+					btn.label._width = _columnSizes[i*2] + columns[i].border[0] + columns[i].border[1];
+
+				} else {
+					btn._x = _columnPositions[i*2];
+					btn.label._width = _columnSizes[i*2];
+				}
+
+				btn.label.setTextFormat(_defaultLabelFormat);
+				
+				
+				if (columns[i].entry.format != undefined) {
+					var customFormat = new TextFormat();
+
+					// Duplicate default format
+					for (var prop in _defaultLabelFormat) {
+						customFormat[prop] = _defaultLabelFormat[prop];
+					}
+						
+					// Overrides
+					for (var prop in columns[i].label.format) {
+						if (customFormat.hasOwnProperty(prop)) {
+							customFormat[prop] = columns[i].label.format[prop];
+						}
+					}
+						
+					btn.label.setTextFormat(customFormat);
+				} else {
+					btn.label.setTextFormat(_defaultLabelFormat);
+				}
+				
+				btn.label.SetText(columns[i].label.text);
+			}
+			
+			header.activeColumn = 2;
+			header.positionButtons();
+		}
+		
+		_entryHeight = maxHeight;
+		_bReposition = true;
+		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
+		trace("Max index: " + _maxListIndex);
 	}
 }

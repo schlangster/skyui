@@ -60,6 +60,14 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 		for (var i=0; i<columns.length; i++) {
 			var e = a_entryClip[_columnNames[i]];
 			
+			// Substitute @variables by entryObject properties
+			if (_columnEntryValues[i] != undefined) {
+				if (_columnEntryValues[i].charAt(0) == "@") {
+					e.SetText(a_entryObject[_columnEntryValues[i].slice(1)]);
+				}
+			}
+			
+			// Process based on column type
 			switch (columns[i].type) {
 				// Equip Icon
 				case Config.COL_TYPE_EQUIP_ICON:
@@ -174,7 +182,8 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 			
 						e.autoSize = "left";
 						e.textAutoSize = "shrink";
-						e.SetText(text,true);
+//						e.SetText(text,true);
+						e.SetText(text);
 			
 						if (a_entryObject.negativeEffect == true || a_entryObject.isStealing == true) {
 							e.textColor = a_entryObject.enabled == false ? (8388608) : (16711680);

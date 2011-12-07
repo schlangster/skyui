@@ -16,6 +16,7 @@ dynamic class skyui.Config
 	static private var _loaded:Boolean = false;
 	
 	static private var _constantTable:Object = {
+		ASCENDING: 0,
 		DESCENDING: Array.DESCENDING,
 		CASEINSENSITIVE: Array.CASEINSENSITIVE,
 		NUMERIC: Array.NUMERIC,

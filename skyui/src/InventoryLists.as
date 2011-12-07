@@ -104,7 +104,7 @@ class InventoryLists extends MovieClip
 		_CategoriesList.addEventListener("listMovedDown",this,"onCategoriesListMoveDown");
 		_CategoriesList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
 
-		_ItemsList.maxTextLength = 35;
+		_ItemsList.maxTextLength = 50;
 		_ItemsList.disableInput = false;
 
 		_ItemsList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
@@ -225,8 +225,8 @@ class InventoryLists extends MovieClip
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 			
 			// Header my change the sort type, if STAT column is no longer available for the current category
-			_itemsHeader.statType = CategoriesList.selectedEntry.flag;
-			_sortFilter.setSortBy(_itemsHeader.sortBy, _itemsHeader.ascending);
+//			_itemsHeader.statType = CategoriesList.selectedEntry.flag;
+//			_sortFilter.setSortBy(_itemsHeader.sortBy, _itemsHeader.ascending);
 			
 //			_ItemsList.statType = _CategoriesList.selectedEntry.flag;
 			_currCategoryIndex = _CategoriesList.selectedIndex;
