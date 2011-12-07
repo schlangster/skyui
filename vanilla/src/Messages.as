@@ -34,7 +34,7 @@
             bAnimating = true;
             ySpacing = 0;
 			
-            function onEnterFrame()
+            this.onEnterFrame = function()
             {
                 if (ySpacing < Messages.Y_SPACING)
                 {
