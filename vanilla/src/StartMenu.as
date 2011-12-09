@@ -93,41 +93,41 @@
         var __reg8 = 3;
         var __reg9 = 4;
         var __reg4 = StartMenu.NEW_INDEX;
-        if (this.MainList.__get__entryList().length > 0) 
+        if (this.MainList.entryList.length > 0) 
         {
-            __reg4 = this.MainList.__get__centeredEntry().index;
+            __reg4 = this.MainList.centeredEntry.index;
         }
         this.MainList.ClearList();
         if (arguments[__reg5]) 
         {
-            this.MainList.__get__entryList().push({text: "$CONTINUE", index: StartMenu.CONTINUE_INDEX, disabled: false});
+            this.MainList.entryList.push({text: "$CONTINUE", index: StartMenu.CONTINUE_INDEX, disabled: false});
             if (__reg4 == StartMenu.NEW_INDEX) 
             {
                 __reg4 = StartMenu.CONTINUE_INDEX;
             }
         }
-        this.MainList.__get__entryList().push({text: "$NEW", index: StartMenu.NEW_INDEX, disabled: false});
-        this.MainList.__get__entryList().push({text: "$LOAD", disabled: !arguments[__reg5], index: StartMenu.LOAD_INDEX});
+        this.MainList.entryList.push({text: "$NEW", index: StartMenu.NEW_INDEX, disabled: false});
+        this.MainList.entryList.push({text: "$LOAD", disabled: !arguments[__reg5], index: StartMenu.LOAD_INDEX});
         if (arguments[__reg9] == true) 
         {
-            this.MainList.__get__entryList().push({text: "$DOWNLOADABLE CONTENT", index: StartMenu.DLC_INDEX, disabled: false});
+            this.MainList.entryList.push({text: "$DOWNLOADABLE CONTENT", index: StartMenu.DLC_INDEX, disabled: false});
         }
-        this.MainList.__get__entryList().push({text: "$CREDITS", index: StartMenu.CREDITS_INDEX, disabled: false});
+        this.MainList.entryList.push({text: "$CREDITS", index: StartMenu.CREDITS_INDEX, disabled: false});
         if (arguments[__reg7]) 
         {
-            this.MainList.__get__entryList().push({text: "$QUIT", index: StartMenu.QUIT_INDEX, disabled: false});
+            this.MainList.entryList.push({text: "$QUIT", index: StartMenu.QUIT_INDEX, disabled: false});
         }
         var __reg3 = 0;
-        while (__reg3 < this.MainList.__get__entryList().length) 
+        while (__reg3 < this.MainList.entryList.length) 
         {
-            if (this.MainList.__get__entryList()[__reg3].index == __reg4) 
+            if (this.MainList.entryList[__reg3].index == __reg4) 
             {
                 this.MainList.RestoreScrollPosition(__reg3, false);
             }
             ++__reg3;
         }
         this.MainList.InvalidateData();
-        if (this.__get__currentState() == undefined) 
+        if (this.currentState == undefined) 
         {
             if (arguments[__reg8]) 
             {
@@ -138,7 +138,7 @@
                 this.StartState(StartMenu.MAIN_STATE);
             }
         }
-        else if (this.__get__currentState() == StartMenu.SAVE_LOAD_STATE || this.__get__currentState() == StartMenu.SAVE_LOAD_CONFIRM_STATE || this.__get__currentState() == StartMenu.DELETE_SAVE_CONFIRM_STATE) 
+        else if (this.currentState == StartMenu.SAVE_LOAD_STATE || this.currentState == StartMenu.SAVE_LOAD_CONFIRM_STATE || this.currentState == StartMenu.DELETE_SAVE_CONFIRM_STATE) 
         {
             this.ShowDeleteButtonHelp(false);
             this.StartState(StartMenu.MAIN_STATE);
@@ -160,7 +160,7 @@
     {
         if (strNewState == StartMenu.MAIN_STATE) 
         {
-            this.MainList.__set__disableSelection(false);
+            this.MainList.disableSelection = false;
         }
         this.strCurrentState = strNewState;
         this.ChangeStateFocus(strNewState);
@@ -168,7 +168,7 @@
 
     function handleInput(details, pathToFocus)
     {
-        if (this.__get__currentState() == StartMenu.PRESS_START_STATE) 
+        if (this.currentState == StartMenu.PRESS_START_STATE) 
         {
             if (Shared.GlobalFunc.IsKeyPressed(details) && (details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_START || details.navEquivalent == gfx.ui.NavigationCode.ENTER)) 
             {
@@ -192,7 +192,7 @@
                 {
                     this.ConfirmDeleteSave();
                 }
-                else if (details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_Y && this.__get__currentState() == StartMenu.DLC_STATE && this.MarketplaceButton._visible && this.MarketplaceButton._alpha == 100) 
+                else if (details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_Y && this.currentState == StartMenu.DLC_STATE && this.MarketplaceButton._visible && this.MarketplaceButton._alpha == 100) 
                 {
                     this.SaveLoadConfirmText.textField.SetText("$Open Xbox LIVE Marketplace?");
                     this.SetPlatform(this.iPlatform);
@@ -207,17 +207,17 @@
     {
         if ((__reg0 = this.strCurrentState) === StartMenu.MAIN_CONFIRM_STATE) 
         {
-            if (this.MainList.__get__selectedEntry().index == StartMenu.NEW_INDEX) 
+            if (this.MainList.selectedEntry.index == StartMenu.NEW_INDEX) 
             {
                 gfx.io.GameDelegate.call("PlaySound", ["UIStartNewGame"]);
                 this.FadeOutAndCall("StartNewGame");
             }
-            else if (this.MainList.__get__selectedEntry().index == StartMenu.CONTINUE_INDEX) 
+            else if (this.MainList.selectedEntry.index == StartMenu.CONTINUE_INDEX) 
             {
                 gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
                 this.FadeOutAndCall("ContinueLastSavedGame");
             }
-            else if (this.MainList.__get__selectedEntry().index == StartMenu.QUIT_INDEX) 
+            else if (this.MainList.selectedEntry.index == StartMenu.QUIT_INDEX) 
             {
                 gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
                 gfx.io.GameDelegate.call("QuitToDesktop", []);
@@ -227,29 +227,29 @@
         else if (__reg0 === StartMenu.SAVE_LOAD_CONFIRM_STATE) 
         {
             gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-            this.FadeOutAndCall("LoadGame", [this.SaveLoadListHolder.__get__selectedIndex()]);
+            this.FadeOutAndCall("LoadGame", [this.SaveLoadListHolder.selectedIndex]);
             return;
         }
         else if (__reg0 === "SaveLoadConfirmStartAnim") 
         {
             gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-            this.FadeOutAndCall("LoadGame", [this.SaveLoadListHolder.__get__selectedIndex()]);
+            this.FadeOutAndCall("LoadGame", [this.SaveLoadListHolder.selectedIndex]);
             return;
         }
         else if (__reg0 === StartMenu.DELETE_SAVE_CONFIRM_STATE) 
         {
             this.SaveLoadListHolder.DeleteSelectedSave();
-            if (this.SaveLoadListHolder.__get__numSaves() == 0) 
+            if (this.SaveLoadListHolder.numSaves == 0) 
             {
                 this.ShowDeleteButtonHelp(false);
                 this.StartState(StartMenu.MAIN_STATE);
-                if (this.MainList.__get__entryList()[2].index == StartMenu.LOAD_INDEX) 
+                if (this.MainList.entryList[2].index == StartMenu.LOAD_INDEX) 
                 {
-                    this.MainList.__get__entryList()[2].disabled = true;
+                    this.MainList.entryList[2].disabled = true;
                 }
-                if (this.MainList.__get__entryList()[0].index == StartMenu.CONTINUE_INDEX) 
+                if (this.MainList.entryList[0].index == StartMenu.CONTINUE_INDEX) 
                 {
-                    this.MainList.__get__entryList().shift();
+                    this.MainList.entryList.shift();
                 }
                 this.MainList.RestoreScrollPosition(1, true);
                 this.MainList.InvalidateData();
@@ -347,8 +347,8 @@
                 }
                 else 
                 {
-                    this.SaveLoadListHolder.__set__isSaving(false);
-                    gfx.io.GameDelegate.call("LOAD", [this.SaveLoadListHolder.List_mc.entryList, this.SaveLoadListHolder.__get__batchSize()]);
+                    this.SaveLoadListHolder.isSaving = false;
+                    gfx.io.GameDelegate.call("LOAD", [this.SaveLoadListHolder.List_mc.entryList, this.SaveLoadListHolder.batchSize]);
                 }
                 return;
             }
@@ -432,7 +432,7 @@
         }
         this.MarketplaceButton._visible = aiPlatform == 2;
         this.iPlatform = aiPlatform;
-        this.SaveLoadListHolder.__set__platform(this.iPlatform);
+        this.SaveLoadListHolder.platform = this.iPlatform;
         this.MainList.SetPlatform(aiPlatform, abPS3Switch);
     }
 
@@ -480,7 +480,7 @@
         }
         if (this.strCurrentState == StartMenu.MAIN_STATE) 
         {
-            this.MainList.__set__disableSelection(true);
+            this.MainList.disableSelection = true;
         }
         this.strCurrentState = strStateName + "StartAnim";
         this.gotoAndPlay(this.strCurrentState);
@@ -552,7 +552,7 @@
 
     function OnSaveListOpenSuccess()
     {
-        if (this.SaveLoadListHolder.__get__numSaves() > 0) 
+        if (this.SaveLoadListHolder.numSaves > 0) 
         {
             gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
             this.StartState(StartMenu.SAVE_LOAD_STATE);
@@ -628,19 +628,19 @@
     function DoLoadDLCList()
     {
         clearInterval(this.iLoadDLCListTimerID);
-        this.DLCList_mc.__get__entryList().splice(0, this.DLCList_mc.__get__entryList().length);
-        gfx.io.GameDelegate.call("LoadDLC", [this.DLCList_mc.__get__entryList()], this, "UpdateDLCPanel");
+        this.DLCList_mc.entryList.splice(0, this.DLCList_mc.entryList.length);
+        gfx.io.GameDelegate.call("LoadDLC", [this.DLCList_mc.entryList], this, "UpdateDLCPanel");
     }
 
     function UpdateDLCPanel(abMarketplaceAvail, abNewDLCAvail)
     {
-        if (this.DLCList_mc.__get__entryList().length > 0) 
+        if (this.DLCList_mc.entryList.length > 0) 
         {
             this.DLCList_mc._visible = true;
             this.DLCPanel.warningText.SetText(" ");
             if (this.iPlatform != 0) 
             {
-                this.DLCList_mc.__set__selectedIndex(0);
+                this.DLCList_mc.selectedIndex = 0;
             }
             this.DLCList_mc.InvalidateData();
         }
