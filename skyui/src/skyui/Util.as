@@ -20,4 +20,17 @@
 		
 		return a_str.slice(i,j+1);
 	}
+	
+    static function addArrayFunctions()
+	{
+		Array.prototype.indexOf = function (a_element):Number
+		{
+			for (var i=0; i<this.length; i++) { 
+				if (this[i] == a_element) { 
+					return i;
+				}
+			}
+			return undefined;
+		};
+	}
 }

@@ -118,7 +118,7 @@ dynamic class skyui.Config
 				continue;
 			}
 			
-			trace(key + "=" + val + "%");
+//			trace(key + "=" + val + "%");
 
 			// Store val at config.section.a.b.c.d
 			loc[a[a.length-1]] = val;

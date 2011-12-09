@@ -12,6 +12,7 @@ import skyui.ItemNameFilter;
 import skyui.ItemSortingFilter;
 import skyui.SortedListHeader;
 import skyui.Config;
+import skyui.Util;
 
 class InventoryLists extends MovieClip
 {
@@ -62,6 +63,8 @@ class InventoryLists extends MovieClip
 	function InventoryLists()
 	{		
 		super();
+		
+		Util.addArrayFunctions();
 
 		_CategoriesList = panelContainer.categoriesList;
 		_CategoryLabel = panelContainer.CategoryLabel;
@@ -93,8 +96,6 @@ class InventoryLists extends MovieClip
 		_typeFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 		_nameFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 		_sortFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
-		
-
 
 		_CategoriesList.addEventListener("itemPress",this,"onCategoriesItemPress");
 		_CategoriesList.addEventListener("listPress",this,"onCategoriesListPress");
@@ -102,7 +103,7 @@ class InventoryLists extends MovieClip
 		_CategoriesList.addEventListener("listMovedDown",this,"onCategoriesListMoveDown");
 		_CategoriesList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
 
-		_ItemsList.maxTextLength = 50;
+		_ItemsList.maxTextLength = 100;
 		_ItemsList.disableInput = false;
 
 		_ItemsList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
@@ -219,23 +220,22 @@ class InventoryLists extends MovieClip
 		// Let's do this more elegant at some point.. :)
 		// Changing the sort filter might already trigger an update, so the final UpdateList is redudant
 		
+		// Start with no selection
+		_ItemsList.selectedIndex = -1;
+		
 		if (_CategoriesList.selectedEntry != undefined) {
 			// Set filter type before update
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 			
-			// Header my change the sort type, if STAT column is no longer available for the current category
-//			_itemsHeader.statType = CategoriesList.selectedEntry.flag;
-//			_sortFilter.setSortBy(_itemsHeader.sortBy, _itemsHeader.ascending);
-			
 //			_ItemsList.statType = _CategoriesList.selectedEntry.flag;
 			_currCategoryIndex = _CategoriesList.selectedIndex;
+			_ItemsList.changeFilterFlag(_CategoriesList.selectedEntry.flag);
+
 			
             _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
-        }
-		
-		// Start with no selection
-		_ItemsList.selectedIndex = -1;
-		_ItemsList.UpdateList();
+        } else {
+			_ItemsList.UpdateList();
+		}
 		
 		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 		

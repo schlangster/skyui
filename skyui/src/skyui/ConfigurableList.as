@@ -1,4 +1,5 @@
 ﻿import skyui.Config;
+import skyui.Util;
 
 class skyui.ConfigurableList extends skyui.FilteredList
 {
@@ -36,8 +37,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	private var _customEntryFormats:Array;
 	private var _defaultEntryFormat:TextFormat;
 	private var _defaultLabelFormat:TextFormat;
-
-	private var _bReposition:Boolean;
 	
 	// Children
 	var header:MovieClip;
@@ -61,16 +60,13 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_entryWidth = 525;
 		_entryHeight = 28;
 		_activeViewIndex = 0;
-		_bReposition = false;
 		_bEnableItemIcon = false;
 		_bEnableEquipIcon = false;
 		_activeColumnState = 1;
-		_activeColumnIndex = 2;
+		_activeColumnIndex = 0;
 
 		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
 	}
-	
-	var intervalId;
 	
 	function onLoad()
 	{
@@ -79,8 +75,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		if (header != 0) {
 			header.addEventListener("columnPress", this, "onColumnPress");
 		}
-		
-//		intervalId = setInterval(this, "debugEvent", 5000);
 	}
 	
 	function get currentView()
@@ -124,7 +118,9 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		if (_bReposition) {
+		if (a_entryClip.viewIndex != _activeViewIndex) {
+			a_entryClip.viewIndex = _activeViewIndex;
+			
 			var columns = currentView.columns;
 			
 			a_entryClip.border._width = a_entryClip.selectArea._width = _entryWidth;
@@ -162,32 +158,43 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		
 		super.setEntry(a_entryClip, a_entryObject);
 	}
-	
-	function UpdateList()
-	{
-		super.UpdateList();
-		
-		// Done repositiong
-//		_bReposition = false;
-	}
 
 	function changeFilterFlag(a_flag:Number)
 	{
-		// Match view
+		var newIndex = -1;
+		
+		// Find a match, or use last index
 		for (var i = 0; i < _views.length; i++) {
-			if (_views[i].category == a_flag) {
-				if (i != _activeViewIndex) {
-					_activeViewIndex = i;
-					updateView();
-				}
+			if (_views[i].category == a_flag || i == _views.length-1) {
+				newIndex = i;
 				break;
 			}
 		}
+		
+		if (_activeViewIndex == newIndex) {
+			return;
+		}
+		
+		_activeViewIndex = newIndex;
+		_activeColumnState = 1;
+		_activeColumnIndex = _views[_activeViewIndex].columns.indexOf(_views[_activeViewIndex].primaryColumn);
+					
+		if (_activeColumnIndex == undefined) {
+			_activeColumnIndex = 0;
+		}
+		
+		updateView();
 	}
 	
 	function onColumnPress(event)
 	{
 		if (event.index != undefined) {
+			
+			// Don't process for passive columns
+			if (currentView.columns[event.index].passive) {
+				return;
+			}
+			
 			if (_activeColumnIndex != event.index) {
 				_activeColumnIndex = event.index;
 				_activeColumnState = 1;
@@ -201,12 +208,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			
 			updateView();
 		}
-	}
-	
-	function debugEvent()
-	{
-		onColumnPress({index: 5});
-//		clearInterval(intervalId);
 	}
 
 	/* Calculate new column positions and widths for current view */
@@ -258,6 +259,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			}
 
 			columns[i].label.text = stateData.label.text;
+			columns[i].label.arrowDown = stateData.label.arrowDown;
 			columns[i].entry.text = stateData.entry.text;
 			columns[i].sortAttributes = stateData.sortAttributes;
 			columns[i].sortOptions = stateData.sortOptions;
@@ -396,20 +398,17 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			_hiddenColumnNames.push("equipIcon");
 		}
 		
-		for (var i=0; i<columns.length; i++) {
-			trace("[" + _columnNames[i] + "]\t w:" + _columnSizes[i*2] + "\tx: " + _columnPositions[i*2] + "\ty: " + _columnPositions[i*2+1] + "\ttext: " + _columnEntryValues[i]);
-		}
-		
-		trace("Column: " + _activeColumnIndex + " State: " +  _activeColumnState);
-		trace("Max height: " + maxHeight);
-		trace("Weighted width: " + weightedWidth);
-		trace("Weight sum: " + weightSum);
-		
 		// Set up header
 		if (header != undefined) {
 			
 			header.clearColumns();
 			header.activeColumnIndex = _activeColumnIndex;
+			
+			if (columns[_activeColumnIndex].label.arrowDown == true) {
+				header.isArrowDown = true;
+			} else {
+				header.isArrowDown = false;
+			}
 			
 			for (var i = 0; i < columns.length; i++) {
 				var btn = header.addColumn(i);
@@ -456,10 +455,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 		
 		_entryHeight = maxHeight;
-		_bReposition = true;
 		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
-		
-		trace("Max index: " + _maxListIndex);
 		
 		updateSortParams();
 	}
@@ -475,11 +471,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			return;
 		}
 		
-		trace ("Sorting");
-		
 		// No attribute(s) set? Try to use entry value
 		if (sortAttributes == undefined) {
-			trace (_columnEntryValues);
 			if (_columnEntryValues[_activeColumnIndex] != undefined) {
 
 				if (_columnEntryValues[_activeColumnIndex].charAt(0) == "@") {
@@ -499,8 +492,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		if (! sortOptions instanceof Array) {
 			sortOptions = [sortOptions];
 		}
-		
-		trace ("Sorting");
 		
 		dispatchEvent({type:"sortChange", attributes: sortAttributes, options: sortOptions});
 	}

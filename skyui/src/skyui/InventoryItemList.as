@@ -197,7 +197,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 				
 						if (a_entryObject.bestInClass == true) {
 							a_entryClip.bestIcon._x = iconPos;
-							iconPos = iconPos + a_entryClip.bestIcon._width + 5;
+							iconPos = iconPos + 10;
 				
 							a_entryClip.bestIcon.gotoAndStop("show");
 						} else {

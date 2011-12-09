@@ -38,9 +38,19 @@ class skyui.SortedListHeader extends MovieClip
 		}
 	}
 	
+	function get activeColumnIndex():Number
+	{
+		return _activeColumnIndex;
+	}
+	
 	function set activeColumnIndex(a_index:Number)
 	{
 		_activeColumnIndex = a_index;
+	}
+	
+	function get isArrowDown():Boolean
+	{
+		return _bArrowDown;
 	}
 	
 	function set isArrowDown(a_bArrowDown:Boolean)
@@ -98,12 +108,10 @@ class skyui.SortedListHeader extends MovieClip
 			e.buttonArea._height = e.label._height + 2;
 			
 			if (_activeColumnIndex == i) {
-				sortIcon._x = e._x + e._width + 2;
+				sortIcon._x = e._x + e.buttonArea._x + e.buttonArea._width + 2;
 				sortIcon._y = -e._height + ((e._height - sortIcon._height) / 2);
-				sortIcon.gotoAndStop(_bArrowDown? "asc" : "desc");
+				sortIcon.gotoAndStop(_bArrowDown? "desc" : "asc");
 			}
-			
-
 		}
 	}
 }
