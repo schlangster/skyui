@@ -5,7 +5,12 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	private var _config:Config;
 
 	private var _views:Array;
-	private var _viewIndex:Number;
+	private var _activeViewIndex:Number;
+	
+	private var _activeColumnIndex:Number;
+	
+	// 1 .. n
+	private var _activeColumnState:Number;
 
 	private var _bEnableItemIcon:Boolean;
 	private var _bEnableEquipIcon:Boolean;
@@ -13,7 +18,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	// Preset in config
 	private var _entryWidth:Number;
 	
-	// --- Story lots of pre-calculated values in memory so we don't have to recalculate them for each entry
+	// --- Store lots of pre-calculated values in memory so we don't have to recalculate them for each entry
 	
 	// [c1.x, c1.y, c2.x, c2.y, ...] - (x,y) Offset of column fields in a row (relative to the entry clip)
 	private var _columnPositions:Array;
@@ -55,17 +60,32 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		// Reasonable defaults, will be overridden later
 		_entryWidth = 525;
 		_entryHeight = 28;
-		_viewIndex = 0;
+		_activeViewIndex = 0;
 		_bReposition = false;
 		_bEnableItemIcon = false;
 		_bEnableEquipIcon = false;
+		_activeColumnState = 1;
+		_activeColumnIndex = 2;
 
-		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
+		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+	}
+	
+	var intervalId;
+	
+	function onLoad()
+	{
+		super.onLoad();
+		
+		if (header != 0) {
+			header.addEventListener("columnPress", this, "onColumnPress");
+		}
+		
+//		intervalId = setInterval(this, "debugEvent", 5000);
 	}
 	
 	function get currentView()
 	{
-		return _views[_viewIndex];
+		return _views[_activeViewIndex];
 	}
 
 	function onConfigLoad(event)
@@ -156,13 +176,37 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		// Match view
 		for (var i = 0; i < _views.length; i++) {
 			if (_views[i].category == a_flag) {
-				if (i != _viewIndex) {
-					_viewIndex = i;
+				if (i != _activeViewIndex) {
+					_activeViewIndex = i;
 					updateView();
 				}
 				break;
 			}
 		}
+	}
+	
+	function onColumnPress(event)
+	{
+		if (event.index != undefined) {
+			if (_activeColumnIndex != event.index) {
+				_activeColumnIndex = event.index;
+				_activeColumnState = 1;
+			} else {
+				if (_activeColumnState < currentView.columns[_activeColumnIndex].states) {
+					_activeColumnState++;
+				} else {
+					_activeColumnState = 1;
+				}
+			}
+			
+			updateView();
+		}
+	}
+	
+	function debugEvent()
+	{
+		onColumnPress({index: 5});
+//		clearInterval(intervalId);
 	}
 
 	/* Calculate new column positions and widths for current view */
@@ -188,6 +232,36 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		
 		// Set bit at position i if column is weighted
 		var weightedFlags = 0;
+		
+		// Move some data from current state to root of the column so we can access single- and multi-state columns in the same manner
+		for (var i = 0; i < columns.length; i++) {
+			
+			// Single-state
+			if (columns[i].states == undefined || columns[i].states < 2) {
+				continue;
+			}
+			
+			// Non-active columns always use state 1
+			var stateData;
+			if (i == _activeColumnIndex) {
+				stateData = columns[i]["state" + _activeColumnState];
+			} else {
+				stateData = columns[i]["state1"];
+			}
+
+			// Might have to create parents nodes first
+			if (columns[i].label == undefined) {
+				columns[i].label = {};
+			}
+			if (columns[i].entry == undefined) {
+				columns[i].entry = {};
+			}
+
+			columns[i].label.text = stateData.label.text;
+			columns[i].entry.text = stateData.entry.text;
+			columns[i].sortAttributes = stateData.sortAttributes;
+			columns[i].sortOptions = stateData.sortOptions;
+		}
 
 		// Subtract fixed widths to get weighted width & summ up weights & already set as much as possible
 		for (var i = 0; i < columns.length; i++) {
@@ -326,6 +400,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			trace("[" + _columnNames[i] + "]\t w:" + _columnSizes[i*2] + "\tx: " + _columnPositions[i*2] + "\ty: " + _columnPositions[i*2+1] + "\ttext: " + _columnEntryValues[i]);
 		}
 		
+		trace("Column: " + _activeColumnIndex + " State: " +  _activeColumnState);
 		trace("Max height: " + maxHeight);
 		trace("Weighted width: " + weightedWidth);
 		trace("Weight sum: " + weightSum);
@@ -334,6 +409,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		if (header != undefined) {
 			
 			header.clearColumns();
+			header.activeColumnIndex = _activeColumnIndex;
 			
 			for (var i = 0; i < columns.length; i++) {
 				var btn = header.addColumn(i);
@@ -382,6 +458,50 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_entryHeight = maxHeight;
 		_bReposition = true;
 		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
+		
 		trace("Max index: " + _maxListIndex);
+		
+		updateSortParams();
+	}
+	
+	function updateSortParams()
+	{
+
+		var columns = currentView.columns;
+		var sortAttributes = columns[_activeColumnIndex].sortAttributes;
+		var sortOptions = columns[_activeColumnIndex].sortOptions;
+		
+		if (sortOptions == undefined) {
+			return;
+		}
+		
+		trace ("Sorting");
+		
+		// No attribute(s) set? Try to use entry value
+		if (sortAttributes == undefined) {
+			trace (_columnEntryValues);
+			if (_columnEntryValues[_activeColumnIndex] != undefined) {
+
+				if (_columnEntryValues[_activeColumnIndex].charAt(0) == "@") {
+					sortAttributes = [_columnEntryValues[_activeColumnIndex].slice(1)];
+				}
+			}
+		}
+		
+		if (sortAttributes == undefined) {
+			return;
+		}
+		
+		// Wrap single attribute in array
+		if (! sortAttributes instanceof Array) {
+			sortAttributes = [sortAttributes];
+		}
+		if (! sortOptions instanceof Array) {
+			sortOptions = [sortOptions];
+		}
+		
+		trace ("Sorting");
+		
+		dispatchEvent({type:"sortChange", attributes: sortAttributes, options: sortOptions});
 	}
 }

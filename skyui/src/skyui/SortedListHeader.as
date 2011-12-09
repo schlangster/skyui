@@ -4,11 +4,9 @@ import skyui.Defines;
 
 class skyui.SortedListHeader extends MovieClip
 {
-	private var _bAscending:Boolean;
 	private var _columns:Array;
 	private var _activeColumnIndex:Number;
 	private var _bArrowDown:Boolean;
-	private var _bArrowLeft:Boolean;
 	
 	// Children
 	var sortIcon:MovieClip;
@@ -22,15 +20,9 @@ class skyui.SortedListHeader extends MovieClip
 	{
 		EventDispatcher.initialize(this);
 		
-		_bAscending = true;
 		_columns = new Array();
-	}
-	
-	function updateHeader()
-	{
-		var pos = 5;
-		sortIcon._x = pos;
-		sortIcon.gotoAndStop(_bAscending? "asc" : "desc");
+		_activeColumnIndex = 0;
+		_bArrowDown = false;
 	}
 	
 	function columnPress(a_columnIndex:Number)
@@ -56,11 +48,6 @@ class skyui.SortedListHeader extends MovieClip
 		_bArrowDown = a_bArrowDown;
 	}
 	
-	function set isArrowLeft(a_bArrowLeft:Boolean)
-	{
-		_bArrowLeft = a_bArrowLeft;
-	}
-	
 	function addColumn(a_index:Number)
 	{
 		if (a_index < 0) {
@@ -71,6 +58,7 @@ class skyui.SortedListHeader extends MovieClip
 
 		if (columnButton != undefined) {
 			_columns[a_index] = columnButton;
+			_columns[a_index]._visible = true;
 			return columnButton;
 		}
 		
@@ -102,15 +90,20 @@ class skyui.SortedListHeader extends MovieClip
 	{
 		for (var i=0; i<_columns.length; i++) {
 			var e = _columns[i];
-			
-			e.label.autoSize = e.label.getTextFormat(0).align;
-			
 			e.label._y = -e.label._height;
 			
-			e.buttonArea._x = e.label._x - 4;
-			e.buttonArea._width = e.label._width + 8;
+			e.buttonArea._x = e.label.getLineMetrics(0).x - 4;
+			e.buttonArea._width = e.label.getLineMetrics(0).width + 8;
 			e.buttonArea._y = e.label._y - 2;
 			e.buttonArea._height = e.label._height + 2;
+			
+			if (_activeColumnIndex == i) {
+				sortIcon._x = e._x + e._width + 2;
+				sortIcon._y = -e._height + ((e._height - sortIcon._height) / 2);
+				sortIcon.gotoAndStop(_bArrowDown? "asc" : "desc");
+			}
+			
+
 		}
 	}
 }

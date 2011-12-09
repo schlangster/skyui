@@ -31,7 +31,6 @@ class InventoryLists extends MovieClip
 	private var _CategoriesList:HorizontalList;
 	private var _CategoryLabel:MovieClip;
 	private var _ItemsList:InventoryItemList;
-	private	var _itemsHeader:SortedListHeader;
 	
 	private var _prevCategoryCode:String;
 	private var _nextCategoryCode:String;
@@ -67,7 +66,6 @@ class InventoryLists extends MovieClip
 		_CategoriesList = panelContainer.categoriesList;
 		_CategoryLabel = panelContainer.CategoryLabel;
 		_ItemsList = panelContainer.itemsList;
-		_itemsHeader = panelContainer.itemsHeader;
 
 		EventDispatcher.initialize(this);
 		
@@ -96,7 +94,7 @@ class InventoryLists extends MovieClip
 		_nameFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 		_sortFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 		
-		_itemsHeader.addEventListener("sortChange",this,"onSortChange");
+
 
 		_CategoriesList.addEventListener("itemPress",this,"onCategoriesItemPress");
 		_CategoriesList.addEventListener("listPress",this,"onCategoriesListPress");
@@ -110,6 +108,7 @@ class InventoryLists extends MovieClip
 		_ItemsList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
 		_ItemsList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
 		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
+		_ItemsList.addEventListener("sortChange",this,"onSortChange");
 	}
 
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
@@ -330,7 +329,7 @@ class InventoryLists extends MovieClip
 	
 	function onSortChange(event)
 	{
-		_sortFilter.setSortBy(event.sortBy, event.ascending);
+		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 
 	// API - Called to initially set the category list

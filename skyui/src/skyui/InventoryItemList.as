@@ -33,6 +33,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 			_entryList[i].infoWeight = int(_itemInfo.weight * 100) / 100;
 			_entryList[i].infoType = _itemInfo.type;
 			_entryList[i].infoPotionType = _itemInfo.potionType;
+			_entryList[i].infoWeightValue = _itemInfo.weight != 0 ?  Math.round(_itemInfo.value / _itemInfo.weight) : 0;
 		}
 
 		super.InvalidateData();
