@@ -133,7 +133,7 @@
             if (_currentframe > 1)
             {
                 this.gotoAndStop(_currentframe - 1);
-                function onEnterFrame()
+                this.onEnterFrame = function()
                 {
                     if (_currentframe > 1)
                     {
