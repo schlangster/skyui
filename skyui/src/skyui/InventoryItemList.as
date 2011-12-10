@@ -132,33 +132,48 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 								} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_WARAXE) {
 									e.gotoAndStop("weapon_waraxe");
 									break;
+								} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_MACE) {
+									e.gotoAndStop("weapon_mace");
+									break;
+								} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_LONGSWORD) {
+									e.gotoAndStop("weapon_sword");
+									break;
+								} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_HAMMER) {
+									e.gotoAndStop("weapon_hammer");
+									break;
+								} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_STAFF) {
+									e.gotoAndStop("weapon_staff");
+									break;
 								}
-							
-								e.gotoAndStop("category_weapons");
+								e.gotoAndStop("default_weapons");
 								break;
 							case InventoryDefines.ICT_ARMOR :
-								e.gotoAndStop("category_armor");
+								e.gotoAndStop("default_armor");
 								break;
 							case InventoryDefines.ICT_POTION :
-								e.gotoAndStop("category_potions");
+								e.gotoAndStop("default_potions");
 								break;
 							case InventoryDefines.ICT_SPELL :
-								e.gotoAndStop("category_scrolls");
+								e.gotoAndStop("default_scrolls");
 								break;
 							case InventoryDefines.ICT_FOOD :
-								e.gotoAndStop("category_food");
+								e.gotoAndStop("default_food");
 								break;
 							case InventoryDefines.ICT_INGREDIENT :
-								e.gotoAndStop("category_ingredients");
+								e.gotoAndStop("default_ingredients");
 								break;
 							case InventoryDefines.ICT_BOOK :
-								e.gotoAndStop("category_books");
+								e.gotoAndStop("default_books");
 								break;
 							case InventoryDefines.ICT_KEY :
-								e.gotoAndStop("category_keys");
+								e.gotoAndStop("default_keys");
 								break;
 							default :
-								e.gotoAndStop("category_misc");
+								if (a_entryObject.weaponType == Defines.FORMTYPE_SOULGEM) 
+									e.gotoAndStop("misc_soulgem");
+								else
+									e.gotoAndStop("default_misc");
+								
 						}
 					}
 					break;
