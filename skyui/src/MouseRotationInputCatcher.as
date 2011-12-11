@@ -2,7 +2,7 @@
 {
 	static var PROCESS_ROTATION_DELAY = 150;
 	
-	var iProcessRotationDelayTimerID;
+	private var _processRotationDelayTimerID;
 	
     function MouseRotationInputCatcher()
     {
@@ -11,36 +11,39 @@
 	
     function onMouseDown()
     {
-        var _loc2 = Mouse.getTopMostEntity() == this;
-        if (_loc2 || _parent.bFadedIn == false)
+        var pressed = Mouse.getTopMostEntity() == this;
+		
+        if (pressed || _parent.bFadedIn == false)
         {
             _parent.onMouseRotationStart();
-        } // end if
-        if (_loc2 && iProcessRotationDelayTimerID == undefined)
+        }
+		
+        if (pressed && _processRotationDelayTimerID == undefined)
         {
-            iProcessRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", PROCESS_ROTATION_DELAY);
-        } // end if
+            _processRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", PROCESS_ROTATION_DELAY);
+        }
     }
 	
     function onProcessDelayElapsed()
     {
-        clearInterval(iProcessRotationDelayTimerID);
-        iProcessRotationDelayTimerID = undefined;
+        clearInterval(_processRotationDelayTimerID);
+        _processRotationDelayTimerID = undefined;
     }
 	
     function onMouseUp()
     {
         _parent.onMouseRotationStop();
-        clearInterval(iProcessRotationDelayTimerID);
-        if (iProcessRotationDelayTimerID != undefined && _parent.bFadedIn != false)
+        clearInterval(_processRotationDelayTimerID);
+		
+        if (_processRotationDelayTimerID != undefined && _parent.bFadedIn != false)
         {
             _parent.onMouseRotationFastClick(0);
-        } // end if
-        iProcessRotationDelayTimerID = undefined;
+        }
+        _processRotationDelayTimerID = undefined;
     }
 	
     function onPressAux()
     {
         _parent.onMouseRotationFastClick(1);
     }
-} // End of Class
+}

@@ -4,20 +4,20 @@ import gfx.ui.NavigationCode;
 
 class InventoryMenu extends ItemMenu
 {
-    var bMenuClosing;
-	var EquipButtonArt;
-	var AltButtonArt;
-	var ChargeButtonArt;
-	var ItemCardListButtonArt;
-	var PrevButtonArt;
-	var InventoryLists_mc;
-	var BottomBar_mc;
-	var ItemCard_mc;
-	var bFadedIn;
-	var ToggleMenuFade;
-	var SaveIndices;
-	var ShouldProcessItemsListInput;
+	// TODO: Use real types once we include them
+    var bMenuClosing:Boolean;
+	var bFadedIn:Boolean;
 	var bPCControlsReady = true;
+	
+	var EquipButtonArt:Object;
+	var AltButtonArt:Object;
+	var ChargeButtonArt:Object;
+	var ItemCardListButtonArt:Object;
+	var PrevButtonArt:Object;
+	var InventoryLists_mc:MovieClip;
+	var BottomBar_mc:MovieClip;
+	var ItemCard_mc:MovieClip;
+
 	
     function InventoryMenu()
     {
@@ -33,13 +33,15 @@ class InventoryMenu extends ItemMenu
     function InitExtensions()
     {
         super.InitExtensions();
-        Shared.GlobalFunc.AddReverseFunctions();
+		
+        GlobalFunc.AddReverseFunctions();
         InventoryLists_mc.ZoomButtonHolderInstance.gotoAndStop(1);
         BottomBar_mc.SetButtonArt(ChargeButtonArt, 3);
         GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
         GameDelegate.addCallBack("DropItem", this, "DropItem");
         GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
         GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
+		
         ItemCard_mc.addEventListener("itemPress", this, "onItemCardListPress");
     }
 	
@@ -47,7 +49,7 @@ class InventoryMenu extends ItemMenu
     {
         if (bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
         {
-            if (Shared.GlobalFunc.IsKeyPressed(details))
+            if (GlobalFunc.IsKeyPressed(details))
             {
                 if (InventoryLists_mc.currentState == InventoryLists.ONE_PANEL && details.navEquivalent == NavigationCode.LEFT)
                 {
@@ -181,8 +183,7 @@ class InventoryMenu extends ItemMenu
         }
     }
 	
-	// TODO: Not part of vanilla, but required to prevent clicks on the scrollbar from equipping/using stuff
-	// Move modified version of inventorymenu.fla & co to skyui/ at some point where it can be changed freely
+	// Added to prevent clicks on the scrollbar from equipping/using stuff
 	function ConfirmSelectedEntry():Boolean
 	{
 		for (var e = Mouse.getTopMostEntity(); e && e != undefined; e = e._parent) {
@@ -195,11 +196,11 @@ class InventoryMenu extends ItemMenu
 	
     function DropItem()
     {
-        if (this.ShouldProcessItemsListInput(false) && InventoryLists_mc.ItemsList.selectedEntry != undefined)
+        if (ShouldProcessItemsListInput(false) && InventoryLists_mc.ItemsList.selectedEntry != undefined)
         {
             if (InventoryLists_mc.ItemsList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
             {
-                this.onQuantityMenuSelect({amount: 1});
+                onQuantityMenuSelect({amount: 1});
             }
             else
             {
@@ -207,9 +208,10 @@ class InventoryMenu extends ItemMenu
             }
         }
     }
+	
     function AttemptChargeItem()
     {
-        if (this.ShouldProcessItemsListInput(false) && ItemCard_mc.itemInfo.charge != undefined && ItemCard_mc.itemInfo.charge < 100)
+        if (ShouldProcessItemsListInput(false) && ItemCard_mc.itemInfo.charge != undefined && ItemCard_mc.itemInfo.charge < 100)
         {
             GameDelegate.call("ShowSoulGemList", []);
         }

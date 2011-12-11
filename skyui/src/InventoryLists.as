@@ -110,8 +110,6 @@ class InventoryLists extends MovieClip
 		_ItemsList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
 		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
 		_ItemsList.addEventListener("sortChange",this,"onSortChange");
-		
-		trace(panelRightAnchor._x);
 	}
 
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
@@ -148,6 +146,12 @@ class InventoryLists extends MovieClip
 			}
 		}
 		return bCaught;
+	}
+	
+	function getContentBounds():Array
+	{
+		var lb = panelContainer.ListBackground;
+		return [lb._x, lb._y, lb._width, lb._height];
 	}
 
 	function get CategoriesList()
@@ -334,8 +338,6 @@ class InventoryLists extends MovieClip
 		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 
-var panelRightAnchor, debugarea;
-
 	// API - Called to initially set the category list
 	function SetCategoriesList()
 	{
@@ -354,23 +356,6 @@ var panelRightAnchor, debugarea;
 		// Start with selected default category (ALL)
 		_CategoriesList.selectedIndex = _defaultCategoryIndex;
 		_CategoriesList.InvalidateData();
-
-//		_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-
-		// <TODO> - do this in ItemMenu once we start changing it
-		var itemCardContainer = _parent.ItemCard_mc._parent;
-//		itemCardContainer._x = Stage.visibleRect.x + Stage.visibleRect.width - itemCardContainer._width - 65;
-		_parent.ItemsListInputCatcher._visible = false;
-		_parent.RestoreCategoryRect._visible = false;
-
-//		itemCardContainer._x = panelRightAnchor._x + 85;
-		itemCardContainer.attachMovie("debugarea", "Entryxxx", getNextHighestDepth());
-
-
-//		debugarea._x = itemCardContainer._x;
-//		_parent._parent.panelRightAnchor;
-
-		// </TODO>
 
 		showItemsList();
 	}
