@@ -57,7 +57,8 @@ class InventoryLists extends MovieClip
 	var dispatchEvent:Function;
 	var addEventListener:Function;
 	
-	var debug;
+	var textInput;
+	var PrevFocus;
 	
 
 	function InventoryLists()
@@ -85,6 +86,12 @@ class InventoryLists extends MovieClip
 		_nextCategoryCode = NavigationCode.RIGHT;
 		
 		_defaultCategoryIndex = 1; // ALL
+		
+		textInput.onPress = function(aiMouseIndex, aiKeyboardOrMouse)
+		{
+			_global.skse.Log("pressed textInput");
+			_parent.TextSearch();
+		};		
 	}
 
 	function onLoad()
@@ -119,6 +126,34 @@ class InventoryLists extends MovieClip
 		_CategoriesList.setPlatform(a_platform,a_bPS3Switch);
 		_ItemsList.setPlatform(a_platform,a_bPS3Switch);
 	}
+	
+	function TextSearch()
+    {          
+		_global.skse.Log("Entered TextSearch()");
+		PrevFocus = FocusHandler.instance.getFocus(0);
+		textInput.textField.text = "";
+		textInput.textField.type = "input";
+        textInput.textField.noTranslate = true;
+        textInput.textField.selectable = true;
+        Selection.setFocus(textInput.textField, 0);
+        Selection.setSelection(0, 0);
+		_global.skse.AllowTextInput(true);
+    }
+	
+	function EndTextSearch()
+    {
+		 _global.skse.Log("Entered EndTextSearch()");
+        textInput.textField.type = "dynamic";
+        textInput.textField.noTranslate = false;
+        textInput.textField.selectable = false;
+        textInput.textField.maxChars = null;
+        var _loc2 = PrevFocus.focusEnabled;
+        PrevFocus.focusEnabled = true;
+        Selection.setFocus(PrevFocus, 0);
+        PrevFocus.focusEnabled = _loc2;
+		_global.skse.AllowTextInput(false);
+ 
+    }
 
 	function handleInput(details, pathToFocus)
 	{
@@ -139,6 +174,18 @@ class InventoryLists extends MovieClip
 				} else if (details.navEquivalent == _nextCategoryCode) {
 					_CategoriesList.moveSelectionRight();
 					bCaught = true;
+				}
+				// check textinput for keypress
+				if (details.navEquivalent == NavigationCode.ENTER && details.code != 32)
+           		 {
+					 _global.skse.Log("pressed enter in textInput");
+            	    _nameFilter.nameFilter = textInput.textField.text.toLowerCase();
+					this.EndTextSearch();
+           		 }
+				else if (details.navEquivalent == NavigationCode.TAB)
+				{
+					 _global.skse.Log("pressed tab in textInput");
+					this.EndTextSearch();
 				}
 			}
 			if (!bCaught) {
