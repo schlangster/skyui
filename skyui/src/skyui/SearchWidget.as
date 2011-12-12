@@ -23,9 +23,16 @@ class skyui.SearchWidget extends MovieClip
 		EventDispatcher.initialize(this);
 		
 		_currentInput = undefined;
+		
+		textField.onKillFocus = function(a_newFocus:Object)
+		{
+			if (a_newFocus != _parent) {
+				_parent.endInput();
+			}
+		}
 	}
 	
-	function onSetFocus(a_mouseIndex, a_keyboardOrMouse)
+	function onPress(a_mouseIndex, a_keyboardOrMouse)
 	{
 		skse.Log("pressed textInput");
 		
@@ -43,7 +50,6 @@ class skyui.SearchWidget extends MovieClip
 			
 			Selection.setFocus(textField,0);
 		}
-		
 	}
 
 	function startInput()
@@ -66,6 +72,8 @@ class skyui.SearchWidget extends MovieClip
 		_bActive = true;
 		skse.AllowTextInput(true);
 		icon.gotoAndStop("on");
+		
+		dispatchEvent({type: "inputStart"});
 	}
 
 	function endInput()
@@ -92,10 +100,10 @@ class skyui.SearchWidget extends MovieClip
 		refreshInput();
 
 		if (_currentInput != undefined()) {
-			dispatchEvent({type: "inputChange", data: _currentInput});
+			dispatchEvent({type: "inputEnd", data: _currentInput});
 		} else {
 			textField.SetText("FILTER");
-			dispatchEvent({type: "inputChange", data: ""});
+			dispatchEvent({type: "inputEnd", data: ""});
 		}
 	}
 

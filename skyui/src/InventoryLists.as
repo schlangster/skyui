@@ -110,8 +110,9 @@ class InventoryLists extends MovieClip
 		_ItemsList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
 		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
 		_ItemsList.addEventListener("sortChange",this,"onSortChange");
-		
-		_SearchWidget.addEventListener("inputChange",this,"onSearchInputChange");
+
+		_SearchWidget.addEventListener("inputStart",this,"onSearchInputStart");
+		_SearchWidget.addEventListener("inputEnd",this,"onSearchInputEnd");
 	}
 	
 	function onConfigLoad(event)
@@ -351,8 +352,17 @@ class InventoryLists extends MovieClip
 		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 	
-	function onSearchInputChange(event)
+	function onSearchInputStart(event)
 	{
+		_CategoriesList.disableSelection = true;
+		_ItemsList.disableInput = true;
+//		_nameFilter.filterText = event.data;
+	}
+	
+	function onSearchInputEnd(event)
+	{
+		_CategoriesList.disableSelection = false;
+		_ItemsList.disableInput = false;
 		_nameFilter.filterText = event.data;
 	}
 
