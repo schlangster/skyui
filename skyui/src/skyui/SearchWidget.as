@@ -78,19 +78,21 @@ class skyui.SearchWidget extends MovieClip
 		
 		dispatchEvent({type: "inputStart"});
 		
-		this.onEnterFrame = function()
-		{
-			refreshInput();
-			
-			if (_currentInput != _lastInput) {
-				_lastInput = _currentInput;
+		if ( _bEnableAutoupdate) {
+			this.onEnterFrame = function()
+			{
+				refreshInput();
 				
-				if (_updateTimerId != undefined) {
-					clearInterval(_updateTimerId);
+				if (_currentInput != _lastInput) {
+					_lastInput = _currentInput;
+					
+					if (_updateTimerId != undefined) {
+						clearInterval(_updateTimerId);
+					}
+					_updateTimerId = setInterval(this, "updateInput", _updateDelay);
 				}
-				_updateTimerId = setInterval(this, "updateInput", _updateDelay);
-			}
-		};
+			};
+		}
 	}
 	
 	function updateInput()
@@ -112,7 +114,7 @@ class skyui.SearchWidget extends MovieClip
 		if (!_bActive) {
 			return;
 		}
-		
+
 		delete this.onEnterFrame;
 		
 		textField.type = "dynamic";
