@@ -11,6 +11,7 @@ import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
 import skyui.ItemSortingFilter;
 import skyui.SortedListHeader;
+import skyui.SearchWidget;
 import skyui.Config;
 import skyui.Util;
 
@@ -32,11 +33,7 @@ class InventoryLists extends MovieClip
 	private var _CategoriesList:HorizontalList;
 	private var _CategoryLabel:MovieClip;
 	private var _ItemsList:InventoryItemList;
-	
-	private var _prevCategoryCode:String;
-	private var _nextCategoryCode:String;
-	private var _prevItemCode:String;
-	private var _nextItemCode:String;
+	private var _SearchWidget:SearchWidget;
 	
 	private var _platform:Number;
 	private var _currentState:Number;
@@ -49,6 +46,8 @@ class InventoryLists extends MovieClip
 	
 	private var _currCategoryIndex:Number;
 	private var _bFirstSelectionFlag:Boolean;
+	
+	private var _searchKey:Number;
 
 	// Children
 	var panelContainer:MovieClip;
@@ -57,8 +56,7 @@ class InventoryLists extends MovieClip
 	var dispatchEvent:Function;
 	var addEventListener:Function;
 	
-	var textInput;
-	var PrevFocus;
+	private var _config;
 	
 
 	function InventoryLists()
@@ -70,6 +68,7 @@ class InventoryLists extends MovieClip
 		_CategoriesList = panelContainer.categoriesList;
 		_CategoryLabel = panelContainer.CategoryLabel;
 		_ItemsList = panelContainer.itemsList;
+		_SearchWidget = panelContainer.searchWidget;
 
 		EventDispatcher.initialize(this);
 		
@@ -81,17 +80,11 @@ class InventoryLists extends MovieClip
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
 		_sortFilter = new ItemSortingFilter();
-
-		_prevCategoryCode = NavigationCode.LEFT;
-		_nextCategoryCode = NavigationCode.RIGHT;
 		
 		_defaultCategoryIndex = 1; // ALL
+		_searchKey = undefined;
 		
-		textInput.onPress = function(aiMouseIndex, aiKeyboardOrMouse)
-		{
-			_global.skse.Log("pressed textInput");
-			_parent.TextSearch();
-		};		
+		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
 	}
 
 	function onLoad()
@@ -117,6 +110,14 @@ class InventoryLists extends MovieClip
 		_ItemsList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
 		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
 		_ItemsList.addEventListener("sortChange",this,"onSortChange");
+		
+		_SearchWidget.addEventListener("inputChange",this,"onSearchInputChange");
+	}
+	
+	function onConfigLoad(event)
+	{
+		_config = event.config;
+		_searchKey = _config.SearchBox.hotkey;
 	}
 
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
@@ -126,34 +127,6 @@ class InventoryLists extends MovieClip
 		_CategoriesList.setPlatform(a_platform,a_bPS3Switch);
 		_ItemsList.setPlatform(a_platform,a_bPS3Switch);
 	}
-	
-	function TextSearch()
-    {          
-		_global.skse.Log("Entered TextSearch()");
-		PrevFocus = FocusHandler.instance.getFocus(0);
-		textInput.textField.text = "";
-		textInput.textField.type = "input";
-        textInput.textField.noTranslate = true;
-        textInput.textField.selectable = true;
-        Selection.setFocus(textInput.textField, 0);
-        Selection.setSelection(0, 0);
-		_global.skse.AllowTextInput(true);
-    }
-	
-	function EndTextSearch()
-    {
-		 _global.skse.Log("Entered EndTextSearch()");
-        textInput.textField.type = "dynamic";
-        textInput.textField.noTranslate = false;
-        textInput.textField.selectable = false;
-        textInput.textField.maxChars = null;
-        var _loc2 = PrevFocus.focusEnabled;
-        PrevFocus.focusEnabled = true;
-        Selection.setFocus(PrevFocus, 0);
-        PrevFocus.focusEnabled = _loc2;
-		_global.skse.AllowTextInput(false);
- 
-    }
 
 	function handleInput(details, pathToFocus)
 	{
@@ -161,7 +134,7 @@ class InventoryLists extends MovieClip
 
 		if (_currentState == TWO_PANELS) {
 			if (GlobalFunc.IsKeyPressed(details)) {
-				if (details.navEquivalent == _prevCategoryCode) {
+				if (details.navEquivalent == NavigationCode.LEFT) {
 					
 					if (_CategoriesList.selectedIndex == 0) {
 						// Required to trigger the closing when InventoryMenu catches this event
@@ -171,21 +144,14 @@ class InventoryLists extends MovieClip
 						bCaught = true;
 					}
 					
-				} else if (details.navEquivalent == _nextCategoryCode) {
+				} else if (details.navEquivalent == NavigationCode.RIGHT) {
 					_CategoriesList.moveSelectionRight();
 					bCaught = true;
-				}
-				// check textinput for keypress
-				if (details.navEquivalent == NavigationCode.ENTER && details.code != 32)
-           		 {
-					 _global.skse.Log("pressed enter in textInput");
-            	    _nameFilter.nameFilter = textInput.textField.text.toLowerCase();
-					this.EndTextSearch();
-           		 }
-				else if (details.navEquivalent == NavigationCode.TAB)
-				{
-					 _global.skse.Log("pressed tab in textInput");
-					this.EndTextSearch();
+				
+				// Search hotkey (default space)
+				} else if (details.code == _searchKey) {
+					bCaught = true;
+					_SearchWidget.startInput();
 				}
 			}
 			if (!bCaught) {
@@ -383,6 +349,11 @@ class InventoryLists extends MovieClip
 	function onSortChange(event)
 	{
 		_sortFilter.setSortBy(event.attributes, event.options);
+	}
+	
+	function onSearchInputChange(event)
+	{
+		_nameFilter.filterText = event.data;
 	}
 
 	// API - Called to initially set the category list

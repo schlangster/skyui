@@ -3,15 +3,16 @@
 
 class skyui.ItemNameFilter implements skyui.IFilter
 {
-	private var _nameFilter:String;
+	private var _filterText:String;
 
+	// Mixin
 	var dispatchEvent:Function;
 	var addEventListener:Function;
 
 	function ItemNameFilter()
 	{
 		EventDispatcher.initialize(this);
-		_nameFilter = "";
+		_filterText = "";
 	}
 
 	function EntryMatchesFunc(a_entry):Boolean
@@ -22,13 +23,13 @@ class skyui.ItemNameFilter implements skyui.IFilter
 		var seek = false;
 
 		for (var i = 0; i < searchStr.length; i++) {
-			if (searchStr.charAt(i) == _nameFilter.charAt(seekIndex)) {
+			if (searchStr.charAt(i) == _filterText.charAt(seekIndex)) {
 				if (!seek) {
 					seek = true;
 				}
 				seekIndex++;
 
-				if (seekIndex >= _nameFilter.length) {
+				if (seekIndex >= _filterText.length) {
 					return true;
 				}
 			} else if (seek) {
@@ -38,15 +39,17 @@ class skyui.ItemNameFilter implements skyui.IFilter
 		return false;
 	}
 
-	function get nameFilter():String
+	function get filterText():String
 	{
-		return _nameFilter;
+		return _filterText;
 	}
 
-	function set nameFilter(a_nameFilter:String)
+	function set filterText(a_filterText:String)
 	{
-		var changed = a_nameFilter != _nameFilter;
-		_nameFilter = a_nameFilter;
+		a_filterText = a_filterText.toLowerCase();
+		
+		var changed = a_filterText != _filterText;
+		_filterText = a_filterText;
 
 		if (changed == true) {
 			dispatchEvent({type:"filterChange"});
@@ -56,7 +59,7 @@ class skyui.ItemNameFilter implements skyui.IFilter
 
 	function process(a_filteredList:Array)
 	{
-		if (_nameFilter == undefined || _nameFilter == "") {
+		if (_filterText == undefined || _filterText == "") {
 			return;
 		}
 

@@ -62,8 +62,6 @@ class ItemMenu extends MovieClip
 			}
 		};
 	}
-
-	var debug;
 	
 	function onConfigLoad(event)
 	{
@@ -89,27 +87,43 @@ class ItemMenu extends MovieClip
 
 		var itemCardContainer = ItemCard_mc._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
+		var itemiconPosition = _config.ItemInfo.itemicon;
 		
 		var scaleMult = (rightEdge - panelEdge) / itemCardContainer._width;
 		
 		// Scale down if necessary
 		if (scaleMult < 1.0) {
 			itemCardContainer._width *= scaleMult;
+			itemCardContainer._height *= scaleMult;
+			itemiconPosition.scale *= scaleMult;
 		}
 		
 		if (itemcardPosition.align == "left") {
-			itemCardContainer._x = panelEdge + leftEdge + itemcardPosition.offset;
+			itemCardContainer._x = panelEdge + leftEdge + itemcardPosition.xOffset;
 		} else if (itemcardPosition.align == "right") {
-			itemCardContainer._x = rightEdge - itemCardContainer._width + itemcardPosition.offset;
+			itemCardContainer._x = rightEdge - itemCardContainer._width + itemcardPosition.xOffset;
 		} else {
-			itemCardContainer._x = panelEdge + itemcardPosition.offset + (Stage.visibleRect.x + Stage.visibleRect.width - panelEdge - itemCardContainer._width) / 2;
+			itemCardContainer._x = panelEdge + itemcardPosition.xOffset + (Stage.visibleRect.x + Stage.visibleRect.width - panelEdge - itemCardContainer._width) / 2;
 		}
+		itemCardContainer._y = itemCardContainer._y + itemcardPosition.yOffset;
 		
 		MovieClip(ExitMenuRect).Lock("TL");
 		ExitMenuRect._x = ExitMenuRect._x - Stage.safeRect.x;
 		ExitMenuRect._y = ExitMenuRect._y - Stage.safeRect.y;
-
-//		_global.skse.SetINISetting("fInventory3DItemPosScaleWide:Interface", 0.5);
+		
+		
+		var iconX = GlobalFunc.Lerp(0, 128, Stage.visibleRect.x, (Stage.visibleRect.x + Stage.visibleRect.width), (itemCardContainer._x + (itemCardContainer._width / 2)), 0);
+		iconX = -(iconX - 64)
+		
+		skse.SetINISetting("fInventory3DItemPosScaleWide:Interface", (itemiconPosition.scale));
+		skse.SetINISetting("fInventory3DItemPosXWide:Interface", (iconX + itemiconPosition.xOffset));
+		skse.SetINISetting("fInventory3DItemPosYWide:Interface", -500);
+		skse.SetINISetting("fInventory3DItemPosZWide:Interface", (12 + itemiconPosition.yOffset));
+		
+		skse.SetINISetting("fInventory3DItemPosScale:Interface", (itemiconPosition.scale));
+		skse.SetINISetting("fInventory3DItemPosX:Interface", (iconX + itemiconPosition.xOffset));
+		skse.SetINISetting("fInventory3DItemPosY:Interface", -500);
+		skse.SetINISetting("fInventory3DItemPosZ:Interface", (16 + itemiconPosition.yOffset));
 
 		if (MouseRotationRect != undefined) {
 			MovieClip(MouseRotationRect).Lock("T");

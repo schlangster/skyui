@@ -18,6 +18,7 @@ class skyui.SortedListHeader extends MovieClip
 
 	function SortedListHeader()
 	{
+		super();
 		EventDispatcher.initialize(this);
 		
 		_columns = new Array();
