@@ -29,6 +29,8 @@ class InventoryLists extends MovieClip
 	static var TRANSITIONING_TO_NO_PANELS = 3;
 	static var TRANSITIONING_TO_ONE_PANEL = 4;
 	static var TRANSITIONING_TO_TWO_PANELS = 5;
+	
+	private var _config;
 
 	private var _CategoriesList:HorizontalList;
 	private var _CategoryLabel:MovieClip;
@@ -55,8 +57,6 @@ class InventoryLists extends MovieClip
 	// Mixin
 	var dispatchEvent:Function;
 	var addEventListener:Function;
-	
-	private var _config;
 	
 
 	function InventoryLists()
@@ -113,6 +113,7 @@ class InventoryLists extends MovieClip
 
 		_SearchWidget.addEventListener("inputStart",this,"onSearchInputStart");
 		_SearchWidget.addEventListener("inputEnd",this,"onSearchInputEnd");
+		_SearchWidget.addEventListener("inputChange",this,"onSearchInputChange");
 	}
 	
 	function onConfigLoad(event)
@@ -356,7 +357,12 @@ class InventoryLists extends MovieClip
 	{
 		_CategoriesList.disableSelection = true;
 		_ItemsList.disableInput = true;
-//		_nameFilter.filterText = event.data;
+		_nameFilter.filterText = "";
+	}
+	
+	function onSearchInputChange(event)
+	{
+		_nameFilter.filterText = event.data;
 	}
 	
 	function onSearchInputEnd(event)

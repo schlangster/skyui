@@ -3,11 +3,21 @@ import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
+import skyui.Config;
+
 class skyui.SearchWidget extends MovieClip
 {
 	private var _previousFocus:Object;
 	private var _currentInput:String;
+	private var _lastInput:String;
 	private var _bActive:Boolean;
+	private var _bRestoreFocus:Boolean;
+	private var _bEnableAutoupdate:Boolean;
+	private var _updateDelay:Number;
+	
+	private var _updateTimerId:Number;
+	
+	private var _config;
 	
 	// Children
 	var textField:TextField;
@@ -23,33 +33,26 @@ class skyui.SearchWidget extends MovieClip
 		EventDispatcher.initialize(this);
 		
 		_currentInput = undefined;
+		_bRestoreFocus = false;
 		
 		textField.onKillFocus = function(a_newFocus:Object)
 		{
-			if (a_newFocus != _parent) {
-				_parent.endInput();
-			}
-		}
+			_parent.endInput();
+		};
+		
+		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+	}
+	
+	function onConfigLoad(event)
+	{
+		_config = event.config;
+		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
+		_updateDelay = _config.SearchBox.autoupdate.delay;
 	}
 	
 	function onPress(a_mouseIndex, a_keyboardOrMouse)
 	{
-		skse.Log("pressed textInput");
-		
-		if (!_bActive) {
-			startInput();
-		} else {
-			
-			// Check if the cancel button was pressed first
-			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
-				if (e == icon) {
-					endInput();
-					return;
-				}
-			}
-			
-			Selection.setFocus(textField,0);
-		}
+		startInput();
 	}
 
 	function startInput()
@@ -58,8 +61,9 @@ class skyui.SearchWidget extends MovieClip
 			return;
 		}
 		
-		skse.Log("Entered TextSearch()");
 		_previousFocus = FocusHandler.instance.getFocus(0);
+
+		_currentInput = _lastInput = undefined;
 		
 		textField.SetText("");
 		textField.type = "input";
@@ -71,9 +75,36 @@ class skyui.SearchWidget extends MovieClip
 		
 		_bActive = true;
 		skse.AllowTextInput(true);
-		icon.gotoAndStop("on");
 		
 		dispatchEvent({type: "inputStart"});
+		
+		this.onEnterFrame = function()
+		{
+			refreshInput();
+			
+			if (_currentInput != _lastInput) {
+				_lastInput = _currentInput;
+				
+				if (_updateTimerId != undefined) {
+					clearInterval(_updateTimerId);
+				}
+				_updateTimerId = setInterval(this, "updateInput", _updateDelay);
+			}
+		};
+	}
+	
+	function updateInput()
+	{
+		if (_updateTimerId != undefined) {
+			clearInterval(_updateTimerId);
+			_updateTimerId = undefined;
+			
+			if (_currentInput != undefined()) {
+				dispatchEvent({type: "inputChange", data: _currentInput});
+			} else {
+				dispatchEvent({type: "inputChange", data: ""});
+			}
+		}
 	}
 
 	function endInput()
@@ -82,7 +113,8 @@ class skyui.SearchWidget extends MovieClip
 			return;
 		}
 		
-		skse.Log("Entered EndTextSearch()");
+		delete this.onEnterFrame;
+		
 		textField.type = "dynamic";
 		textField.noTranslate = false;
 		textField.selectable = false;
@@ -95,7 +127,6 @@ class skyui.SearchWidget extends MovieClip
 
 		_bActive = false;
 		skse.AllowTextInput(false);
-		icon.gotoAndStop("off");
 
 		refreshInput();
 
@@ -114,16 +145,9 @@ class skyui.SearchWidget extends MovieClip
 		if (GlobalFunc.IsKeyPressed(details)) {
 			
 			if (details.navEquivalent == NavigationCode.ENTER && details.code != 32) {
-				skse.Log("pressed enter in textInput");
 				endInput();
 				
-			} else if (details.navEquivalent == NavigationCode.TAB) {
-				skse.Log("pressed tab in textInput");
-				clearText();
-				endInput();
-				
-			} else if (details.navEquivalent == NavigationCode.ESCAPE) {
-				skse.Log("pressed esc in textInput");
+			} else if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE) {
 				clearText();
 				endInput();
 			}
@@ -144,8 +168,6 @@ class skyui.SearchWidget extends MovieClip
 	function refreshInput()
 	{
 		var t =  GlobalFunc.StringTrim(textField.text);
-		
-		skse.Log("Processing: " + t);
 		
 		if (t != undefined && t != "" && t != "FILTER") {
 			_currentInput = t;
