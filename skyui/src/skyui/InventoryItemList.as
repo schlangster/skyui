@@ -86,31 +86,31 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						// Default without script extender
 						switch (a_entryObject.infoType) {
 							case InventoryDefines.ICT_WEAPON :
-								e.gotoAndStop("category_weapons");
+								e.gotoAndStop("default_weapon");
 								break;
 							case InventoryDefines.ICT_ARMOR :
-								e.gotoAndStop("category_armor");
+								e.gotoAndStop("default_armor");
 								break;
 							case InventoryDefines.ICT_POTION :
-								e.gotoAndStop("category_potions");
+								e.gotoAndStop("default_potion");
 								break;
 							case InventoryDefines.ICT_SPELL :
-								e.gotoAndStop("category_scrolls");
+								e.gotoAndStop("default_scroll");
 								break;
 							case InventoryDefines.ICT_FOOD :
-								e.gotoAndStop("category_food");
+								e.gotoAndStop("default_food");
 								break;
 							case InventoryDefines.ICT_INGREDIENT :
-								e.gotoAndStop("category_ingredients");
+								e.gotoAndStop("default_ingredient");
 								break;
 							case InventoryDefines.ICT_BOOK :
-								e.gotoAndStop("category_books");
+								e.gotoAndStop("default_book");
 								break;
 							case InventoryDefines.ICT_KEY :
-								e.gotoAndStop("category_keys");
+								e.gotoAndStop("default_key");
 								break;
 							default :
-								e.gotoAndStop("category_misc");
+								e.gotoAndStop("default_misc");
 						}
 					} else {
 						
@@ -145,28 +145,28 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 									e.gotoAndStop("weapon_staff");
 									break;
 								}
-								e.gotoAndStop("default_weapons");
+								e.gotoAndStop("default_weapon");
 								break;
 							case InventoryDefines.ICT_ARMOR :
 								e.gotoAndStop("default_armor");
 								break;
 							case InventoryDefines.ICT_POTION :
-								e.gotoAndStop("default_potions");
+								e.gotoAndStop("default_potion");
 								break;
 							case InventoryDefines.ICT_SPELL :
-								e.gotoAndStop("default_scrolls");
+								e.gotoAndStop("default_scroll");
 								break;
 							case InventoryDefines.ICT_FOOD :
 								e.gotoAndStop("default_food");
 								break;
 							case InventoryDefines.ICT_INGREDIENT :
-								e.gotoAndStop("default_ingredients");
+								e.gotoAndStop("default_ingredient");
 								break;
 							case InventoryDefines.ICT_BOOK :
-								e.gotoAndStop("default_books");
+								e.gotoAndStop("default_book");
 								break;
 							case InventoryDefines.ICT_KEY :
-								e.gotoAndStop("default_keys");
+								e.gotoAndStop("default_key");
 								break;
 							default :
 								if (a_entryObject.weaponType == Defines.FORMTYPE_SOULGEM) 

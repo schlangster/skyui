@@ -182,7 +182,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 			entryClip.textField.autoSize = "left";
 
-			var w = 5;
+			var w = 0;
 			if (entryClip.icon._visible) {
 				w = w + entryClip.icon._width;
 			}
@@ -254,7 +254,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 		var selectedClip = getClipByIndex(_selectedIndex);
 
-		_targetSelectorPos = selectedClip._x + selectedClip.buttonArea._width / 2 - selectorCenter._width / 2;
+		_targetSelectorPos = selectedClip._x + (selectedClip.buttonArea._width - selectorCenter._width) / 2;
 		
 		selectorCenter._visible = true;
 		selectorCenter._y = selectedClip._y + selectedClip.buttonArea._height;

@@ -9,6 +9,7 @@ class skyui.ItemNameFilter implements skyui.IFilter
 	var dispatchEvent:Function;
 	var addEventListener:Function;
 
+
 	function ItemNameFilter()
 	{
 		EventDispatcher.initialize(this);
@@ -33,7 +34,8 @@ class skyui.ItemNameFilter implements skyui.IFilter
 					return true;
 				}
 			} else if (seek) {
-				return false;
+				seek = false;
+				seekIndex = 0;
 			}
 		}
 		return false;
