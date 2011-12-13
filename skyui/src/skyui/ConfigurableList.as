@@ -12,7 +12,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	
 	// 1 .. n
 	private var _activeColumnState:Number;
-
+	
 	private var _bEnableItemIcon:Boolean;
 	private var _bEnableEquipIcon:Boolean;
 	
@@ -125,6 +125,21 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			
 			a_entryClip.border._width = a_entryClip.selectArea._width = _entryWidth;
 			a_entryClip.border._height = a_entryClip.selectArea._height =  _entryHeight;
+			
+			var iconY = _entryHeight * 0.25;
+			var iconSize = _entryHeight * 0.5;
+			
+			a_entryClip.bestIcon._height = a_entryClip.bestIcon._width = iconSize;
+			a_entryClip.favoriteIcon._height = a_entryClip.favoriteIcon._width = iconSize;
+			a_entryClip.poisonIcon._height = a_entryClip.poisonIcon._width = iconSize;
+			a_entryClip.stolenIcon._height = a_entryClip.stolenIcon._width = iconSize;
+			a_entryClip.enchIcon._height = a_entryClip.enchIcon._width = iconSize;
+			
+			a_entryClip.bestIcon._y = iconY;
+			a_entryClip.favIcon._y = iconY;
+			a_entryClip.poisonIcon._y = iconY;
+			a_entryClip.stolenIcon._y = iconY;
+			a_entryClip.enchIcon._y = iconY;
 		
 			for (var i=0; i<columns.length; i++) {
 				var e = a_entryClip[_columnNames[i]];
@@ -286,6 +301,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				// ITEM ICON + EQUIP ICON
 				case Config.COL_TYPE_ITEM_ICON:
 				case Config.COL_TYPE_EQUIP_ICON:
+								
 					if (columns[i].type == Config.COL_TYPE_ITEM_ICON) {
 						_columnNames[i] = "itemIcon";
 						_bEnableItemIcon = true;
@@ -450,7 +466,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				btn.label.SetText(columns[i].label.text);
 			}
 			
-			header.activeColumn = 2;
+			header.activeColumn = _activeColumnIndex;
 			header.positionButtons();
 		}
 		

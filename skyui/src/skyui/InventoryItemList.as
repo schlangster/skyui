@@ -34,6 +34,10 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 			_entryList[i].infoType = _itemInfo.type;
 			_entryList[i].infoPotionType = _itemInfo.potionType;
 			_entryList[i].infoWeightValue = _itemInfo.weight != 0 ?  Math.round(_itemInfo.value / _itemInfo.weight) : 0;
+			_entryList[i].infoIsPoisoned = (_itemInfo.poisoned > 0);
+			_entryList[i].infoIsStolen = (_itemInfo.stolen > 0);
+			_entryList[i].infoIsEnchanted = (_itemInfo.charge != undefined);
+			_entryList[i].infoIsEquipped = (_entryList[i].equipState > 0);
 		}
 
 		super.InvalidateData();
@@ -70,6 +74,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 			
 			// Process based on column type
 			switch (columns[i].type) {
+				
 				// Equip Icon
 				case Config.COL_TYPE_EQUIP_ICON:
 					if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
@@ -173,7 +178,6 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 									e.gotoAndStop("misc_soulgem");
 								else
 									e.gotoAndStop("default_misc");
-								
 						}
 					}
 					break;
@@ -209,10 +213,13 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						
 						// BestInClass icon
 						var iconPos = e._x + e._width + 5;
+						
+						// All icons have the same size
+						var iconSpace = a_entryClip.bestIcon._width * 1.25;
 				
 						if (a_entryObject.bestInClass == true) {
 							a_entryClip.bestIcon._x = iconPos;
-							iconPos = iconPos + 10;
+							iconPos = iconPos + iconSpace;
 				
 							a_entryClip.bestIcon.gotoAndStop("show");
 						} else {
@@ -222,9 +229,37 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						// Fav icon
 						if (a_entryObject.favorite == true) {
 							a_entryClip.favoriteIcon._x = iconPos;
+							iconPos = iconPos + iconSpace;
 							a_entryClip.favoriteIcon.gotoAndStop("show");
 						} else {
 							a_entryClip.favoriteIcon.gotoAndStop("hide");
+						}
+					
+						// Poisoned Icon
+						if (a_entryObject.infoIsPoisoned == true) {
+							a_entryClip.poisonIcon._x = iconPos;
+							iconPos = iconPos + iconSpace;
+							a_entryClip.poisonIcon.gotoAndStop("show");
+						} else {
+							a_entryClip.poisonIcon.gotoAndStop("hide");
+						}
+					
+						// Stolen Icon
+						if (a_entryObject.infoIsStolen == true) {
+							a_entryClip.stolenIcon._x = iconPos;
+							iconPos = iconPos + iconSpace;
+							a_entryClip.stolenIcon.gotoAndStop("show");
+						} else {
+							a_entryClip.stolenIcon.gotoAndStop("hide");
+						}
+					
+						// Enchanted Icon
+						if (a_entryObject.infoIsEnchanted == true) {
+							a_entryClip.enchIcon._x = iconPos;
+							iconPos = iconPos + iconSpace;
+							a_entryClip.enchIcon.gotoAndStop("show");
+						} else {
+							a_entryClip.enchIcon.gotoAndStop("hide");
 						}
 		
 					} else {
