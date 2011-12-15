@@ -27,7 +27,10 @@ dynamic class skyui.Config
 		TEXT: COL_TYPE_TEXT,
 		CAT_ALL: Defines.FLAG_ALL,
 		CAT_WEAPONS: Defines.FLAG_DAMAGE,
-		CAT_ARMOR: Defines.FLAG_ARMOR
+		CAT_ARMOR: Defines.FLAG_ARMOR,
+		CAT_SHOUTS: Defines.FLAG_SHOUTS,
+		CAT_POWERS: Defines.FLAG_POWERS,
+		CAT_ACTIVE_EFFECT: Defines.FLAG_ACTIVE_EFFECT
 	};
 	
 	// Mixin
