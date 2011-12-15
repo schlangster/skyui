@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.Globalization;
 
 class Script : FalloutNewVegasBaseScript {
-	const string title = "SkyUI Test Release";
+	const string title = "SkyUI";
 
 	static ASCIIEncoding encoding;
 
@@ -368,8 +368,8 @@ class Script : FalloutNewVegasBaseScript {
 
 	static void InitializeCommonImages()
     {	
-		imageChecked = GetImageFromFomod("fomod/radio_on.png");
-		imageUnchecked = GetImageFromFomod("fomod/radio_off.png");
+		imageChecked = GetImageFromFomod("InstallerChecked.png");
+		imageUnchecked = GetImageFromFomod("InstallerUnchecked.png");
 	}
 
     static void InitializeMainImages()
