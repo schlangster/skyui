@@ -123,7 +123,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						switch (a_entryObject.infoType) {
 							case InventoryDefines.ICT_WEAPON :
 								if (a_entryObject.formType == Defines.FORMTYPE_ARROW) {
-									e.gotoAndStop("type_arrow");
+									e.gotoAndStop("weapon_arrow");
 									break;
 								} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_DAGGER) {
 									e.gotoAndStop("weapon_dagger");
