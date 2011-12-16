@@ -145,7 +145,7 @@ GreatClone:
 
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
-	ToJKa, HellKnight, xporc, MadCat221, freesta, Cartrodus, TheCastle (in random order)
+	ToJKa, HellKnight, xporc, MadCat221, Ismelda, freesta, Cartrodus, TheCastle (in random order)
 
 Last but not least, thanks to the whole SKSE team, because without their Script Extender creating this mod wouldn't have been possible.
 
