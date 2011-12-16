@@ -137,12 +137,15 @@ class Script : FalloutNewVegasBaseScript {
 		if (Regex.Match(tmp, "map \"" + Regex.Escape("$") + "ListFont\" = ", RegexOptions.Singleline).Success == true)
 			return true;
 		
-		tmp += "\r\n"
-			+ "map \"$ListFont\" = \"Futura Condensed\" Normal";
+		string newString = "\r\nmap \"$ListFont\" = \"Futura Condensed\" Normal";
 		
-		data = Encoding.Unicode.GetBytes(tmp);
-			
-		GenerateDataFile(FONT_CONFIG_FILE, data);
+    	Byte[] data2 = Encoding.ASCII.GetBytes(newString);
+    	
+		byte[] concat = new byte[data.Length + data2.Length];
+		System.Buffer.BlockCopy (data, 0, concat, 0, data.Length);
+ 		System.Buffer.BlockCopy(data2, 0, concat, data.Length, data2.Length);
+ 			
+		GenerateDataFile(FONT_CONFIG_FILE, concat);
 		
 		return true;
 	}
