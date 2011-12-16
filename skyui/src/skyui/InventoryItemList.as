@@ -20,6 +20,11 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 				case InventoryDefines.ICT_WEAPON :
 					_entryList[i].infoDamage = _itemInfo.damage;
 					break;
+				case InventoryDefines.ICT_POTION :
+					 // if potion item has spellCost then it is a scroll
+					 if (_itemInfo.spellCost) 
+					 	_itemInfo.type = InventoryDefines.ICT_SPELL;
+					 break;
 				case InventoryDefines.ICT_SPELL :
 				case InventoryDefines.ICT_SHOUT :
 					_entryList[i].infoSpellCost = _itemInfo.spellCost.toString();
