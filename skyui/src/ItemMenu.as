@@ -15,6 +15,8 @@ class ItemMenu extends MovieClip
 	var MouseRotationRect:MovieClip;
 	var iPlatform:Number;
 	
+	var skseWarningMsg:MovieClip;
+	
 	private var _config;
 
 	function ItemMenu()
@@ -53,6 +55,11 @@ class ItemMenu extends MovieClip
 				_parent.onExitMenuRectClick();
 			}
 		};
+		
+		// Display SKSE warning if necessary
+		if (_global.skse == undefined) {
+			skseWarningMsg.gotoAndStop("show");
+		}
 	}
 	
 	function onConfigLoad(event)
@@ -131,6 +138,8 @@ class ItemMenu extends MovieClip
 			MouseRotationRect._width = ItemCard_mc._parent._width;
 			MouseRotationRect._height = 0.550000 * Stage.visibleRect.height;
 		}
+		
+		skseWarningMsg.Lock("TR");
 	}
 
 	function SetPlatform(aiPlatform, abPS3Switch)
