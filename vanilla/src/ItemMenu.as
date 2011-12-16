@@ -3,16 +3,16 @@
 class ItemMenu extends MovieClip
 {
     var InventoryLists_mc;
-	var ItemCardFadeHolder_mc;
-	var ItemCard_mc;
-	var BottomBar_mc;
-	var bFadedIn;
-	var ItemsListInputCatcher;
-	var RestoreCategoryRect;
-	var ExitMenuRect;
-	var MouseRotationRect;
-	var iPlatform;
-	
+    var ItemCardFadeHolder_mc;
+    var ItemCard_mc;
+    var BottomBar_mc;
+    var bFadedIn;
+    var ItemsListInputCatcher;
+    var RestoreCategoryRect;
+    var ExitMenuRect;
+    var MouseRotationRect;
+    var iPlatform;
+    
     function ItemMenu()
     {
         super();
@@ -22,7 +22,7 @@ class ItemMenu extends MovieClip
         bFadedIn = true;
         Mouse.addListener(this);
     }
-	
+    
     function InitExtensions(abPlayBladeSound)
     {
         GameDelegate.addCallBack("UpdatePlayerInfo", this, "UpdatePlayerInfo");
@@ -37,19 +37,19 @@ class ItemMenu extends MovieClip
         ItemCard_mc.addEventListener("quantitySelect", this, "onQuantityMenuSelect");
         ItemCard_mc.addEventListener("subMenuAction", this, "onItemCardSubMenuAction");
         
-		PositionElements();
+        PositionElements();
         InventoryLists_mc.ShowCategoriesList(abPlayBladeSound);
         ItemCard_mc._visible = false;
         BottomBar_mc.HideButtons();
         
-		ItemsListInputCatcher.onMouseDown = function ()
+        ItemsListInputCatcher.onMouseDown = function ()
         {
             if (_parent.bFadedIn == true && Mouse.getTopMostEntity() == this)
             {
                 _parent.onItemsListInputCatcherClick();
             }
         };
-		
+        
         RestoreCategoryRect.onRollOver = function ()
         {
             if (_parent.bFadedIn == true && _parent.InventoryLists_mc.currentState == InventoryLists.TWO_PANELS)
@@ -65,7 +65,7 @@ class ItemMenu extends MovieClip
             }
         };
     }
-	
+    
     function PositionElements()
     {
         Shared.GlobalFunc.SetLockFunction();
@@ -81,7 +81,7 @@ class ItemMenu extends MovieClip
         RestoreCategoryRect._x = ExitMenuRect._x + InventoryLists_mc.CategoriesList._parent._width;
         ItemsListInputCatcher._x = RestoreCategoryRect._x + RestoreCategoryRect._width;
         ItemsListInputCatcher._width = _root._width - ItemsListInputCatcher._x;
-		
+        
         if (MouseRotationRect != undefined)
         {
             (MovieClip)(MouseRotationRect).Lock("T");
@@ -90,7 +90,7 @@ class ItemMenu extends MovieClip
             MouseRotationRect._height = 0.550000 * Stage.visibleRect.height;
         }
     }
-	
+    
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         iPlatform = aiPlatform;
@@ -98,12 +98,12 @@ class ItemMenu extends MovieClip
         ItemCard_mc.SetPlatform(aiPlatform, abPS3Switch);
         BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
     }
-	
+    
     function GetInventoryItemList()
     {
-		return InventoryLists_mc.ItemsList;
+        return InventoryLists_mc.ItemsList;
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         if (bFadedIn)
@@ -116,10 +116,10 @@ class ItemMenu extends MovieClip
                 }
             }
         }
-		
+        
         return (true);
     }
-	
+    
     function onMouseWheel(delta)
     {
         for (var _loc2 = Mouse.getTopMostEntity(); _loc2 && _loc2 != undefined; _loc2 = _loc2._parent)
@@ -143,16 +143,16 @@ class ItemMenu extends MovieClip
             } // end if
         }
     }
-	
+    
     function onExitMenuRectClick()
     {
         GameDelegate.call("CloseMenu", []);
     }
-	
+    
     function onCategoryChange(event)
     {
     }
-	
+    
     function onItemHighlightChange(event)
     {
         if (event.index != -1)
@@ -165,7 +165,7 @@ class ItemMenu extends MovieClip
             onHideItemsList();
         }
     }
-	
+    
     function onShowItemsList(event)
     {
         if (event.index != -1)
@@ -176,14 +176,14 @@ class ItemMenu extends MovieClip
             BottomBar_mc.ShowButtons();
         }
     }
-	
+    
     function onHideItemsList(event)
     {
         GameDelegate.call("UpdateItem3D", [false]);
         ItemCard_mc.FadeOutCard();
         BottomBar_mc.HideButtons();
     }
-	
+    
     function onItemSelect(event)
     {
         if (event.entry.enabled)
@@ -202,23 +202,23 @@ class ItemMenu extends MovieClip
             GameDelegate.call("DisabledItemSelect", []);
         }
     }
-	
+    
     function onQuantityMenuSelect(event)
     {
         GameDelegate.call("ItemSelect", [event.amount]);
     }
-	
+    
     function UpdatePlayerInfo(aUpdateObj)
     {
         BottomBar_mc.UpdatePlayerInfo(aUpdateObj, ItemCard_mc.itemInfo);
     }
-	
+    
     function UpdateItemCardInfo(aUpdateObj)
     {
         ItemCard_mc.itemInfo = aUpdateObj;
         BottomBar_mc.UpdatePerItemInfo(aUpdateObj);
     }
-	
+    
     function onItemCardSubMenuAction(event)
     {
         if (event.opening == true)
@@ -236,11 +236,11 @@ class ItemMenu extends MovieClip
             InventoryLists_mc.CategoriesList.disableInput = false;
         }
     }
-	
+    
     function ShouldProcessItemsListInput(abCheckIfOverRect)
     {
         var _loc4 = bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.TWO_PANELS && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
-		
+        
         if (_loc4 && iPlatform == 0 && abCheckIfOverRect)
         {
             var _loc2 = Mouse.getTopMostEntity();
@@ -257,21 +257,21 @@ class ItemMenu extends MovieClip
         }
         return (_loc4);
     }
-	
+    
     function onMouseRotationStart()
     {
         GameDelegate.call("StartMouseRotation", []);
         InventoryLists_mc.CategoriesList.disableSelection = true;
         InventoryLists_mc.ItemsList.disableSelection = true;
     }
-	
+    
     function onMouseRotationStop()
     {
         GameDelegate.call("StopMouseRotation", []);
         InventoryLists_mc.CategoriesList.disableSelection = false;
         InventoryLists_mc.ItemsList.disableSelection = false;
     }
-	
+    
     function onItemsListInputCatcherClick()
     {
         if (ShouldProcessItemsListInput(false))
@@ -279,12 +279,12 @@ class ItemMenu extends MovieClip
             onItemSelect({entry: InventoryLists_mc.ItemsList.selectedEntry, keyboardOrMouse: 0});
         }
     }
-	
+    
     function onMouseRotationFastClick()
     {
         onItemsListInputCatcherClick();
     }
-	
+    
     function ToggleMenuFade()
     {
         if (bFadedIn)
@@ -301,16 +301,16 @@ class ItemMenu extends MovieClip
             _parent.gotoAndPlay("fadeIn");
         }
     }
-	
+    
     function SetFadedIn()
     {
         bFadedIn = true;
-		InventoryLists_mc.ItemsList.disableSelection = false;
+        InventoryLists_mc.ItemsList.disableSelection = false;
         InventoryLists_mc.ItemsList.disableInput = false;
-		InventoryLists_mc.CategoriesList.disableSelection = false;
-		InventoryLists_mc.CategoriesList.disableInput = false;
+        InventoryLists_mc.CategoriesList.disableSelection = false;
+        InventoryLists_mc.CategoriesList.disableInput = false;
     }
-	
+    
     function RestoreIndices()
     {
         InventoryLists_mc.CategoriesList.RestoreScrollPosition(arguments[0], true);
@@ -320,7 +320,7 @@ class ItemMenu extends MovieClip
         }
         InventoryLists_mc.CategoriesList.UpdateList();
     }
-	
+    
     function SaveIndices()
     {
         var _loc3 = new Array();

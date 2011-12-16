@@ -4,20 +4,20 @@ import gfx.ui.NavigationCode;
 class MagicMenu extends ItemMenu
 {
     var bMenuClosing;
-	var iHideButtonFlag;
-	var MagicButtonArt;
-	var ToggleMenuFade;
-	var SaveIndices;
-	var ShouldProcessItemsListInput;
+    var iHideButtonFlag;
+    var MagicButtonArt;
+    var ToggleMenuFade;
+    var SaveIndices;
+    var ShouldProcessItemsListInput;
     var bPCControlsReady = true;
-	
+    
     function MagicMenu()
     {
         super();
         bMenuClosing = false;
         iHideButtonFlag = 0;
     }
-	
+    
     function InitExtensions()
     {
         super.InitExtensions();
@@ -27,7 +27,7 @@ class MagicMenu extends ItemMenu
         MagicButtonArt = [{PCArt: "M1M2", XBoxArt: "360_LTRT", PS3Art: "PS3_LBRB"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}];
         BottomBar_mc.SetButtonsArt(MagicButtonArt);
     }
-	
+    
     function PositionElements()
     {
         super.PositionElements();
@@ -42,7 +42,7 @@ class MagicMenu extends ItemMenu
         ItemsListInputCatcher._x = ItemsListInputCatcher._x - Stage.safeRect.x;
         ItemsListInputCatcher._width = RestoreCategoryRect._x - Stage.visibleRect.x + 10;
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         if (bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
@@ -63,13 +63,13 @@ class MagicMenu extends ItemMenu
         } // end else if
         return (true);
     }
-	
+    
     function onExitMenuRectClick()
     {
         StartMenuFade();
         GameDelegate.call("ShowTweenMenu", []);
     }
-	
+    
     function StartMenuFade()
     {
         InventoryLists_mc.HideCategoriesList();
@@ -77,7 +77,7 @@ class MagicMenu extends ItemMenu
         SaveIndices();
         bMenuClosing = true;
     }
-	
+    
     function onFadeCompletion()
     {
         if (bMenuClosing)
@@ -85,43 +85,43 @@ class MagicMenu extends ItemMenu
             GameDelegate.call("CloseMenu", []);
         } // end if
     }
-	
+    
     function onShowItemsList(event)
     {
         super.onShowItemsList(event);
-		
+        
         if (event.index != -1)
         {
             UpdateButtonText();
         }
     }
-	
+    
     function onItemHighlightChange(event)
     {
         super.onItemHighlightChange(event);
-		
+        
         if (event.index != -1)
         {
             UpdateButtonText();
         }
     }
-	
+    
     function DragonSoulSpent()
     {
         ItemCard_mc.itemInfo.soulSpent = true;
         UpdateButtonText();
     }
-	
+    
     function get hideButtonFlag()
     {
         return (iHideButtonFlag);
     }
-	
+    
     function set hideButtonFlag(aiHideFlag)
     {
         iHideButtonFlag = aiHideFlag;
     }
-	
+    
     function UpdateButtonText()
     {
         if (InventoryLists_mc.ItemsList.selectedEntry != undefined)
@@ -138,13 +138,13 @@ class MagicMenu extends ItemMenu
             }
         }
     }
-	
+    
     function onHideItemsList(event)
     {
         super.onHideItemsList(event);
         BottomBar_mc.UpdatePerItemInfo({type: InventoryDefines.ICT_SPELL_DEFAULT});
     }
-	
+    
     function AttemptEquip(aiSlot)
     {
         if (ShouldProcessItemsListInput(true))
@@ -152,7 +152,7 @@ class MagicMenu extends ItemMenu
             GameDelegate.call("ItemSelect", [aiSlot]);
         } // end if
     }
-	
+    
     function onItemSelect(event)
     {
         if (event.entry.enabled)

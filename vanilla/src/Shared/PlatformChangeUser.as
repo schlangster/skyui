@@ -3,13 +3,13 @@
 class Shared.PlatformChangeUser extends MovieClip
 {
     static var PlatformChange;
-	
+    
     function PlatformChangeUser()
     {
         super();
         PlatformChange = new ButtonChange();
     }
-	
+    
     function RegisterPlatformChangeListener(aCrossPlatformButton)
     {
         PlatformChange.addEventListener("platformChange", aCrossPlatformButton, "SetPlatform");

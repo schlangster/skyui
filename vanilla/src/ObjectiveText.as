@@ -1,18 +1,18 @@
 ﻿class ObjectiveText extends MovieClip
 {
-	static var ClipCount:Number = 0;
+    static var ClipCount:Number = 0;
     static var ArraySize:Number = 0;
-	
+    
     var MovieClipsA:Array;
-	
+    
     static var ObjectiveLine_mc;
-	
+    
     function ObjectiveText()
     {
         super();
         MovieClipsA = new Array();
     }
-	
+    
     function UpdateObjectives(aObjectiveArrayA:Array)
     {
         if (ObjectiveText.ArraySize > 0)
@@ -27,7 +27,7 @@
             return (false);
         }
     }
-	
+    
     function DuplicateObjective(aObjectiveArrayA:Array)
     {
         var _loc2 = String(aObjectiveArrayA.shift());
@@ -45,7 +45,7 @@
             {
                 _loc5 = _loc2;
             }
-			
+            
             ObjectiveLine_mc = _parent.ObjectiveLineInstance;
             ClipCount = ++ObjectiveText.ClipCount;
             var _loc3 = ObjectiveText.ObjectiveLine_mc.duplicateMovieClip("objective" + ObjectiveText.ClipCount, _parent.GetDepth());
@@ -53,33 +53,33 @@
             _loc3.ObjectiveTextFieldInstance.TextFieldInstance.SetText(_loc5);
             MovieClipsA.push(_loc3);
         }
-		
+        
         ArraySize = --ObjectiveText.ArraySize;
         if (ObjectiveText.ArraySize == 0)
         {
             QuestNotification.RestartAnimations();
         }
     }
-	
+    
     function ShowObjectives(aCount, aObjectiveArrayA)
     {
         if (aObjectiveArrayA.length > 0)
         {
             gfx.io.GameDelegate.call("PlaySound", ["UIObjectiveNew"]);
         }
-		
+        
         while (MovieClipsA.length)
         {
             delete MovieClipsA.shift();
         }
-		
+        
         var _loc3 = Math.min(aObjectiveArrayA.length, Math.min(aCount, 3));
         ArraySize = aCount;
         for (var _loc2 = 0; _loc2 < _loc3; ++_loc2)
         {
             this.DuplicateObjective(aObjectiveArrayA);
         }
-		
+        
         MovieClipsA[0].gotoAndPlay("OutToPositionOne");
         MovieClipsA[1].gotoAndPlay("OutToPositionTwo");
         MovieClipsA[2].gotoAndPlay("OutToPositionThree");

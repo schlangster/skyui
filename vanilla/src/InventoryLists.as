@@ -5,26 +5,26 @@ import gfx.managers.FocusHandler;
 
 class InventoryLists extends MovieClip
 {
-	static var NO_PANELS = 0;
+    static var NO_PANELS = 0;
     static var ONE_PANEL = 1;
     static var TWO_PANELS = 2;
     static var TRANSITIONING_TO_NO_PANELS = 3;
     static var TRANSITIONING_TO_ONE_PANEL = 4;
     static var TRANSITIONING_TO_TWO_PANELS = 5;
-	
+    
     var CategoriesListHolder;
-	var _CategoriesList;
-	var ItemsListHolder;
-	var _ItemsList;
-	var strHideItemsCode;
-	var strShowItemsCode;
-	var iPlatform;
-	var iCurrentState:Number;
-	var iCurrCategoryIndex:Number;
-	
-	var dispatchEvent:Function;
-	
-	
+    var _CategoriesList;
+    var ItemsListHolder;
+    var _ItemsList;
+    var strHideItemsCode;
+    var strShowItemsCode;
+    var iPlatform;
+    var iCurrentState:Number;
+    var iCurrCategoryIndex:Number;
+    
+    var dispatchEvent:Function;
+    
+    
     function InventoryLists()
     {
         super();
@@ -37,7 +37,7 @@ class InventoryLists extends MovieClip
         strHideItemsCode = NavigationCode.LEFT;
         strShowItemsCode = NavigationCode.RIGHT;
     }
-	
+    
     function onLoad()
     {
         _CategoriesList.addEventListener("itemPress", this, "onCategoriesItemPress");
@@ -53,13 +53,13 @@ class InventoryLists extends MovieClip
         _ItemsList.addEventListener("listMovedDown", this, "onItemsListMoveDown");
         _ItemsList.addEventListener("selectionChange", this, "onItemsListMouseSelectionChange");
     }
-	
+    
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         iPlatform = aiPlatform;
         _CategoriesList.SetPlatform(aiPlatform, abPS3Switch);
         _ItemsList.SetPlatform(aiPlatform, abPS3Switch);
-		
+        
         if (iPlatform == 0)
         {
             CategoriesListHolder.ListBackground.gotoAndStop("Mouse");
@@ -71,11 +71,11 @@ class InventoryLists extends MovieClip
             ItemsListHolder.ListBackground.gotoAndStop("Gamepad");
         }
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         var _loc2 = false;
-		
+        
         if (iCurrentState == ONE_PANEL || iCurrentState == TWO_PANELS)
         {
             if (Shared.GlobalFunc.IsKeyPressed(details))
@@ -98,22 +98,22 @@ class InventoryLists extends MovieClip
         }
         return (_loc2);
     }
-	
+    
     function get CategoriesList()
     {
         return _CategoriesList;
     }
-	
+    
     function get ItemsList()
     {
         return _ItemsList;
     }
-	
+    
     function get currentState()
     {
         return iCurrentState;
     }
-	
+    
     function set currentState(aiNewState)
     {
         switch (aiNewState)
@@ -137,48 +137,48 @@ class InventoryLists extends MovieClip
             } 
         }
     }
-	
+    
     function RestoreCategoryIndex()
     {
         _CategoriesList.selectedIndex = iCurrCategoryIndex;
     }
-	
+    
     function ShowCategoriesList(abPlayBladeSound)
     {
         iCurrentState = TRANSITIONING_TO_ONE_PANEL;
         dispatchEvent({type: "categoryChange", index: _CategoriesList.selectedIndex});
         gotoAndPlay("Panel1Show");
-		
+        
         if (abPlayBladeSound != false)
         {
             GameDelegate.call("PlaySound", ["UIMenuBladeOpenSD"]);
         }
     }
-	
+    
     function HideCategoriesList()
     {
         iCurrentState = TRANSITIONING_TO_NO_PANELS;
         gotoAndPlay("Panel1Hide");
         GameDelegate.call("PlaySound", ["UIMenuBladeCloseSD"]);
     }
-	
+    
     function ShowItemsList(abPlayBladeSound, abPlayAnim)
     {
         if (abPlayAnim != false)
         {
             iCurrentState = TRANSITIONING_TO_TWO_PANELS;
         }
-		
+        
         if (_CategoriesList.selectedEntry != undefined)
-        {			
+        {            
             iCurrCategoryIndex = _CategoriesList.selectedIndex;
             _ItemsList.filterer.itemFilter = _CategoriesList.selectedEntry.flag;
             _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex, true);
         }
-		
+        
         _ItemsList.UpdateList();
         dispatchEvent({type: "showItemsList", index: _ItemsList.selectedIndex});
-		
+        
         if (abPlayAnim != false)
         {
             gotoAndPlay("Panel2Show");
@@ -189,7 +189,7 @@ class InventoryLists extends MovieClip
         }
         _ItemsList.disableInput = false;
     }
-	
+    
     function HideItemsList()
     {
         iCurrentState = TRANSITIONING_TO_ONE_PANEL;
@@ -199,7 +199,7 @@ class InventoryLists extends MovieClip
         GameDelegate.call("PlaySound", ["UIMenuBladeCloseSD"]);
         _ItemsList.disableInput = true;
     }
-	
+    
     function onCategoriesItemPress()
     {
         if (iCurrentState == ONE_PANEL)
@@ -211,17 +211,17 @@ class InventoryLists extends MovieClip
             ShowItemsList(true, false);
         }
     }
-	
+    
     function onCategoriesListPress()
     {
-		
+        
         if (iCurrentState == TWO_PANELS && !_ItemsList.disableSelection && !_ItemsList.disableInput)
         {
             HideItemsList();
             _CategoriesList.UpdateList();
         }
     }
-	
+    
     function onCategoriesListMoveUp(event)
     {
         doCategorySelectionChange(event);
@@ -230,7 +230,7 @@ class InventoryLists extends MovieClip
             _CategoriesList._parent.gotoAndPlay("moveUp");
         }
     }
-	
+    
     function onCategoriesListMoveDown(event)
     {
         doCategorySelectionChange(event);
@@ -239,7 +239,7 @@ class InventoryLists extends MovieClip
             _CategoriesList._parent.gotoAndPlay("moveDown");
         }
     }
-	
+    
     function onCategoriesListMouseSelectionChange(event)
     {
         if (event.keyboardOrMouse == 0)
@@ -247,7 +247,7 @@ class InventoryLists extends MovieClip
             doCategorySelectionChange(event);
         }
     }
-	
+    
     function onItemsListMoveUp(event)
     {
         this.doItemsSelectionChange(event);
@@ -256,7 +256,7 @@ class InventoryLists extends MovieClip
             _ItemsList._parent.gotoAndPlay("moveUp");
         }
     }
-	
+    
     function onItemsListMoveDown(event)
     {
         this.doItemsSelectionChange(event);
@@ -265,7 +265,7 @@ class InventoryLists extends MovieClip
             _ItemsList._parent.gotoAndPlay("moveDown");
         }
     }
-	
+    
     function onItemsListMouseSelectionChange(event)
     {
         if (event.keyboardOrMouse == 0)
@@ -273,37 +273,37 @@ class InventoryLists extends MovieClip
             doItemsSelectionChange(event);
         }
     }
-	
+    
     function doCategorySelectionChange(event)
     {
         dispatchEvent({type: "categoryChange", index: event.index});
-		
+        
         if (event.index != -1)
         {
             GameDelegate.call("PlaySound", ["UIMenuFocus"]);
         }
     }
-	
+    
     function doItemsSelectionChange(event)
     {
         _CategoriesList.selectedEntry.savedItemIndex = _ItemsList.scrollPosition;
         dispatchEvent({type: "itemHighlightChange", index: event.index});
-		
+        
         if (event.index != -1)
         {
             GameDelegate.call("PlaySound", ["UIMenuFocus"]);
         }
     }
-	
+    
     function SetCategoriesList()
     {
         var _loc12 = 0;
         var _loc13 = 1;
         var _loc5 = 2;
         var _loc11 = 3;
-		
+        
         _CategoriesList.clearList();
-		
+        
         for (var _loc3 = 0; _loc3 < arguments.length; _loc3 = _loc3 + _loc11)
         {
             var _loc4 = {text: arguments[_loc3 + _loc12], flag: arguments[_loc3 + _loc13], bDontHide: arguments[_loc3 + _loc5], savedItemIndex: 0, filterFlag: arguments[_loc3 + _loc5] == true ? (1) : (0)};
@@ -313,21 +313,21 @@ class InventoryLists extends MovieClip
             }
             _CategoriesList.entryList.push(_loc4);
         }
-		
+        
         _CategoriesList.InvalidateData();
         _ItemsList.filterer.itemFilter = _CategoriesList.selectedEntry.flag;
     }
-	
+    
     function InvalidateListData()
     {
         var _loc6 = _CategoriesList.centeredEntry;
         var _loc7 = _CategoriesList.selectedEntry.flag;
-		
+        
         for (var _loc3 = 0; _loc3 < _CategoriesList.entryList.length; ++_loc3)
         {
             _CategoriesList.entryList[_loc3].filterFlag = _CategoriesList.entryList[_loc3].bDontHide ? 1 : 0;
         }
-		
+        
         _ItemsList.InvalidateData();
         for (var _loc3 = 0; _loc3 < _ItemsList.entryList.length; ++_loc3)
         {
@@ -338,16 +338,16 @@ class InventoryLists extends MovieClip
                 {
                     continue;
                 }
-				
+                
                 if (_ItemsList.entryList[_loc3].filterFlag & _CategoriesList.entryList[_loc2].flag)
                 {
                     _CategoriesList.entryList[_loc2].filterFlag = 1;
                 }
             }
         }
-		
+        
         _CategoriesList.onFilterChange();
-		
+        
         var index = 0;
         for (var i = 0; i < _CategoriesList.entryList.length; ++i)
         {
@@ -360,21 +360,21 @@ class InventoryLists extends MovieClip
                 ++index;
             }
         }
-		
+        
         _CategoriesList.UpdateList();
-		
+        
         if (_CategoriesList.centeredEntry == undefined)
         {
             _CategoriesList.scrollPosition = _CategoriesList.scrollPosition - 1;
         }
-		
+        
         if (_loc7 != _CategoriesList.selectedEntry.flag)
         {
             _ItemsList.filterer.itemFilter = _CategoriesList.selectedEntry.flag;
             _ItemsList.UpdateList();
             dispatchEvent({type: "categoryChange", index: _CategoriesList.selectedIndex});
         }
-		
+        
         if (iCurrentState != TWO_PANELS && iCurrentState != TRANSITIONING_TO_TWO_PANELS)
         {
             _ItemsList.selectedIndex = -1;

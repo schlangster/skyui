@@ -7,11 +7,11 @@ class QuantitySlider extends gfx.controls.Slider
     {
         super();
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         var _loc4 = super.handleInput(details, pathToFocus);
-		
+        
         if (!_loc4)
         {
             if (GlobalFunc.IsKeyPressed(details))

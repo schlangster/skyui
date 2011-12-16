@@ -3,13 +3,13 @@
 class Components.Meter
 {
     var Empty:Number;
-	var Full:Number;
-	var CurrentPercent:Number;
-	var TargetPercent:Number;
-	var FillSpeed:Number;
-	var EmptySpeed:Number;
-	var meterMovieClip:MovieClip;
-	
+    var Full:Number;
+    var CurrentPercent:Number;
+    var TargetPercent:Number;
+    var FillSpeed:Number;
+    var EmptySpeed:Number;
+    var meterMovieClip:MovieClip;
+    
     function Meter(aMovieClip:MovieClip)
     {
         Empty = 0;
@@ -24,31 +24,31 @@ class Components.Meter
         meterMovieClip.gotoAndStop("Full");
         Full = meterMovieClip._currentframe;
     }
-	
+    
     function SetPercent(aPercent:Number)
     {
         CurrentPercent = Math.min(100, Math.max(aPercent, 0));
         TargetPercent = CurrentPercent;
-		
+        
         var frame = Math.floor(GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent));
         meterMovieClip.gotoAndStop(frame);
     }
-	
+    
     function SetTargetPercent(aPercent:Number)
     {
         TargetPercent = Math.min(100, Math.max(aPercent, 0));
     }
-	
+    
     function SetFillSpeed(aSpeed:Number)
     {
         FillSpeed = aSpeed;
     }
-	
+    
     function SetEmptySpeed(aSpeed:Number)
     {
         EmptySpeed = aSpeed;
     }
-	
+    
     function Update()
     {
         if (TargetPercent > 0 && TargetPercent > CurrentPercent)
@@ -67,7 +67,7 @@ class Components.Meter
         else if (TargetPercent <= CurrentPercent)
         {
             var _loc2 = CurrentPercent - TargetPercent > EmptySpeed;
-			
+            
             if (TargetPercent > 0 && _loc2 || CurrentPercent > EmptySpeed)
             {
                 if (_loc2)
@@ -78,7 +78,7 @@ class Components.Meter
                 {
                     CurrentPercent = TargetPercent;
                 }
-				
+                
                 var frame = GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
                 meterMovieClip.gotoAndStop(frame);
             }

@@ -5,20 +5,20 @@ import gfx.ui.NavigationCode;
 class InventoryMenu extends ItemMenu
 {
     var bMenuClosing;
-	var EquipButtonArt;
-	var AltButtonArt;
-	var ChargeButtonArt;
-	var ItemCardListButtonArt;
-	var PrevButtonArt;
-	var InventoryLists_mc;
-	var BottomBar_mc;
-	var ItemCard_mc;
-	var bFadedIn;
-	var ToggleMenuFade;
-	var SaveIndices;
-	var ShouldProcessItemsListInput;
-	var bPCControlsReady = true;
-	
+    var EquipButtonArt;
+    var AltButtonArt;
+    var ChargeButtonArt;
+    var ItemCardListButtonArt;
+    var PrevButtonArt;
+    var InventoryLists_mc;
+    var BottomBar_mc;
+    var ItemCard_mc;
+    var bFadedIn;
+    var ToggleMenuFade;
+    var SaveIndices;
+    var ShouldProcessItemsListInput;
+    var bPCControlsReady = true;
+    
     function InventoryMenu()
     {
         super();
@@ -29,7 +29,7 @@ class InventoryMenu extends ItemMenu
         ItemCardListButtonArt = [{PCArt: "Enter", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}];
         PrevButtonArt = undefined;
     }
-	
+    
     function InitExtensions()
     {
         super.InitExtensions();
@@ -42,7 +42,7 @@ class InventoryMenu extends ItemMenu
         GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
         ItemCard_mc.addEventListener("itemPress", this, "onItemCardListPress");
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         if (bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
@@ -63,13 +63,13 @@ class InventoryMenu extends ItemMenu
         }
         return true;
     }
-	
+    
     function onExitMenuRectClick()
     {
         StartMenuFade();
         GameDelegate.call("ShowTweenMenu", []);
     }
-	
+    
     function StartMenuFade()
     {
         InventoryLists_mc.HideCategoriesList();
@@ -77,7 +77,7 @@ class InventoryMenu extends ItemMenu
         SaveIndices();
         bMenuClosing = true;
     }
-	
+    
     function onFadeCompletion()
     {
         if (bMenuClosing)
@@ -85,7 +85,7 @@ class InventoryMenu extends ItemMenu
             GameDelegate.call("CloseMenu", []);
         }
     }
-	
+    
     function onShowItemsList(event)
     {
         super.onShowItemsList(event);
@@ -94,7 +94,7 @@ class InventoryMenu extends ItemMenu
             UpdateBottomBarButtons();
         }
     }
-	
+    
     function onItemHighlightChange(event)
     {
         super.onItemHighlightChange(event);
@@ -103,7 +103,7 @@ class InventoryMenu extends ItemMenu
             UpdateBottomBarButtons();
         }
     }
-	
+    
     function UpdateBottomBarButtons()
     {
         BottomBar_mc.SetButtonArt(AltButtonArt, 0);
@@ -137,7 +137,7 @@ class InventoryMenu extends ItemMenu
                 break;
             } 
         }
-		
+        
         BottomBar_mc.SetButtonText("$Drop", 1);
         if ((InventoryLists_mc.ItemsList.selectedEntry.filterFlag & InventoryLists_mc.CategoriesList.entryList[0].flag) != 0)
         {
@@ -147,7 +147,7 @@ class InventoryMenu extends ItemMenu
         {
             BottomBar_mc.SetButtonText("$Favorite", 2);
         }
-		
+        
         if (ItemCard_mc.itemInfo.charge != undefined && ItemCard_mc.itemInfo.charge < 100)
         {
             BottomBar_mc.SetButtonText("$Charge", 3);
@@ -157,13 +157,13 @@ class InventoryMenu extends ItemMenu
             BottomBar_mc.SetButtonText("", 3);
         }
     }
-	
+    
     function onHideItemsList(event)
     {
         super.onHideItemsList(event);
         BottomBar_mc.UpdatePerItemInfo({type: InventoryDefines.ICT_NONE});
     }
-	
+    
     function onItemSelect(event)
     {
         if (event.entry.enabled && event.keyboardOrMouse != 0)
@@ -171,7 +171,7 @@ class InventoryMenu extends ItemMenu
             GameDelegate.call("ItemSelect", []);
         }
     }
-	
+    
     function AttemptEquip(aiSlot, abCheckOverList)
     {
         var _loc2 = abCheckOverList != undefined ? (abCheckOverList) : (true);
@@ -201,22 +201,22 @@ class InventoryMenu extends ItemMenu
             GameDelegate.call("ShowSoulGemList", []);
         }
     }
-	
+    
     function onQuantityMenuSelect(event)
     {
         GameDelegate.call("ItemDrop", [event.amount]);
     }
-	
+    
     function onMouseRotationFastClick(aiMouseButton)
     {
         GameDelegate.call("CheckForMouseEquip", [aiMouseButton], this, "AttemptEquip");
     }
-	
+    
     function onItemCardListPress(event)
     {
         GameDelegate.call("ItemCardListCallback", [event.index]);
     }
-	
+    
     function onItemCardSubMenuAction(event)
     {
         super.onItemCardSubMenuAction(event);
@@ -238,7 +238,7 @@ class InventoryMenu extends ItemMenu
             }
         }
     }
-	
+    
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         InventoryLists_mc.ZoomButtonHolderInstance.gotoAndStop(1);
@@ -246,7 +246,7 @@ class InventoryMenu extends ItemMenu
         InventoryLists_mc.ZoomButtonHolderInstance.ZoomButton.SetPlatform(aiPlatform, abPS3Switch);
         super.SetPlatform(aiPlatform, abPS3Switch);
     }
-	
+    
     function ItemRotating()
     {
         InventoryLists_mc.ZoomButtonHolderInstance.PlayForward(InventoryLists_mc.ZoomButtonHolderInstance._currentframe);

@@ -7,58 +7,58 @@ import Shared.GlobalFunc;
 class ItemCard extends MovieClip
 {
     var QuantitySlider_mc;
-	var ButtonRect; 
-	var ButtonRect_mc;
-	var CardList_mc;
-	var ItemList;
-	var bFadedIn;
-	var InputHandler;
-	var bEditNameMode;
-	var ItemName;
-	var ItemText;
-	
-	var ItemCardMeters;
-	var LastUpdateObj;
-	var ApparelArmorValue;
-	var ApparelEnchantedLabel;
-	var SkillTextInstance;
-	var WeaponChargeMeter;
-	var PoisonInstance;
-	var WeaponDamageValue;
-	var WeaponEnchantedLabel;
-	var BookDescriptionLabel;
-	var PotionsLabel;
-	var MagicEffectsLabel;
-	var MagicCostValue; 
-	var MagicCostTimeValue;
-	var MagicCostLabel;
-	var MagicCostTimeLabel;
-	var MagicCostPerSec;
-	var SkillLevelText;
-	var ShoutEffectsLabel;
-	var ShoutCostValue;
-	var ActiveEffectTimeValue;
-	var SecsText;
-	var SoulLevel;
-	var ListChargeMeter;
-	var ChargeMeter_Default;
-	var TotalChargesValue;
-	var ChargeMeter_Weapon;
-	var ChargeMeter_SoulGem;
-	var ChargeMeter_Enchantment;
-	var EnchantmentLabel;
-	var Enchanting_Background;
-	var Enchanting_Slim_Background;
-	var ItemValueText;
-	var ItemWeightText;
-	var StolenTextInstance;
-	var EnchantingSlider_mc;
-	var PrevFocus;
-	var SliderValueText;
-	var MessageText;
-	
-	var dispatchEvent:Function;
-	
+    var ButtonRect; 
+    var ButtonRect_mc;
+    var CardList_mc;
+    var ItemList;
+    var bFadedIn;
+    var InputHandler;
+    var bEditNameMode;
+    var ItemName;
+    var ItemText;
+    
+    var ItemCardMeters;
+    var LastUpdateObj;
+    var ApparelArmorValue;
+    var ApparelEnchantedLabel;
+    var SkillTextInstance;
+    var WeaponChargeMeter;
+    var PoisonInstance;
+    var WeaponDamageValue;
+    var WeaponEnchantedLabel;
+    var BookDescriptionLabel;
+    var PotionsLabel;
+    var MagicEffectsLabel;
+    var MagicCostValue; 
+    var MagicCostTimeValue;
+    var MagicCostLabel;
+    var MagicCostTimeLabel;
+    var MagicCostPerSec;
+    var SkillLevelText;
+    var ShoutEffectsLabel;
+    var ShoutCostValue;
+    var ActiveEffectTimeValue;
+    var SecsText;
+    var SoulLevel;
+    var ListChargeMeter;
+    var ChargeMeter_Default;
+    var TotalChargesValue;
+    var ChargeMeter_Weapon;
+    var ChargeMeter_SoulGem;
+    var ChargeMeter_Enchantment;
+    var EnchantmentLabel;
+    var Enchanting_Background;
+    var Enchanting_Slim_Background;
+    var ItemValueText;
+    var ItemWeightText;
+    var StolenTextInstance;
+    var EnchantingSlider_mc;
+    var PrevFocus;
+    var SliderValueText;
+    var MessageText;
+    
+    var dispatchEvent:Function;
+    
     function ItemCard()
     {
         super();
@@ -73,12 +73,12 @@ class ItemCard extends MovieClip
         InputHandler = undefined;
         bEditNameMode = false;
     }
-	
+    
     function GetItemName()
     {
         return ItemName;
     }
-	
+    
     function SetupItemName(aPrevName)
     {
         ItemName = ItemText.ItemTextField;
@@ -89,7 +89,7 @@ class ItemCard extends MovieClip
             ItemName.selectable = false;
         }
     }
-	
+    
     function onLoad()
     {
         QuantitySlider_mc.addEventListener("change", this, "onSliderChange");
@@ -98,14 +98,14 @@ class ItemCard extends MovieClip
         ButtonRect_mc.AcceptMouseButton.SetPlatform(0, false);
         ButtonRect_mc.CancelMouseButton.SetPlatform(0, false);
     }
-	
+    
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         ButtonRect_mc.AcceptGamepadButton._visible = aiPlatform != 0;
         ButtonRect_mc.CancelGamepadButton._visible = aiPlatform != 0;
         ButtonRect_mc.AcceptMouseButton._visible = aiPlatform == 0;
         ButtonRect_mc.CancelMouseButton._visible = aiPlatform == 0;
-		
+        
         if (aiPlatform != 0)
         {
             ButtonRect_mc.AcceptGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
@@ -113,7 +113,7 @@ class ItemCard extends MovieClip
         }
         ItemList.SetPlatform(aiPlatform, abPS3Switch);
     }
-	
+    
     function onAcceptMouseClick()
     {
         if (ButtonRect_mc._alpha == 100 && ButtonRect_mc.AcceptMouseButton._visible == true && InputHandler != undefined)
@@ -122,7 +122,7 @@ class ItemCard extends MovieClip
             InputHandler(_loc2);
         }
     }
-	
+    
     function onCancelMouseClick()
     {
         if (ButtonRect_mc._alpha == 100 && ButtonRect_mc.CancelMouseButton._visible == true && InputHandler != undefined)
@@ -131,7 +131,7 @@ class ItemCard extends MovieClip
             InputHandler(_loc2);
         } // end if
     }
-	
+    
     function FadeInCard()
     {
         if (!bFadedIn)
@@ -141,7 +141,7 @@ class ItemCard extends MovieClip
             bFadedIn = true;
         }
     }
-	
+    
     function FadeOutCard()
     {
         if (bFadedIn)
@@ -150,22 +150,22 @@ class ItemCard extends MovieClip
             bFadedIn = false;
         }
     }
-	
+    
     function get quantitySlider()
     {
         return (QuantitySlider_mc);
     }
-	
+    
     function get weaponChargeMeter()
     {
         return (ItemCardMeters[InventoryDefines.ICT_WEAPON]);
     }
-	
+    
     function get itemInfo()
     {
         return (LastUpdateObj);
     }
-	
+    
     function set itemInfo(aUpdateObj)
     {
         ItemCardMeters = new Array();
@@ -236,7 +236,7 @@ class ItemCard extends MovieClip
             case InventoryDefines.ICT_SPELL_DEFAULT:
             {
                 var _loc11 = aUpdateObj.castTime == 0;
-				
+                
                 if (!_loc11)
                 {
                     gotoAndStop("Power_reg");
@@ -247,7 +247,7 @@ class ItemCard extends MovieClip
                 }
                 MagicEffectsLabel.SetText(aUpdateObj.effects, true);
                 MagicEffectsLabel.textAutoSize = "shrink";
-				
+                
                 if (aUpdateObj.spellCost <= 0)
                 {
                     MagicCostValue._alpha = 0;
@@ -349,7 +349,7 @@ class ItemCard extends MovieClip
                         this["ShoutTextInstance" + _loc3].gotoAndPlay("Learn");
                         continue;
                     }
-					
+                    
                     if (_loc5)
                     {
                         this["ShoutTextInstance" + _loc3].gotoAndStop("Known");
@@ -533,13 +533,13 @@ class ItemCard extends MovieClip
         StolenTextInstance._visible = aUpdateObj.stolen == true;
         LastUpdateObj = aUpdateObj;
     }
-	
+    
     function RoundDecimal(aNumber, aPrecision)
     {
         var _loc1 = Math.pow(10, aPrecision);
         return (Math.round(_loc1 * aNumber) / _loc1);
     }
-	
+    
     function PrepareInputElements(aActiveClip)
     {
         var _loc4 = 92;
@@ -547,7 +547,7 @@ class ItemCard extends MovieClip
         var _loc5 = 147.300000;
         var _loc2 = 130;
         var _loc7 = 166;
-		
+        
         if (aActiveClip == EnchantingSlider_mc)
         {
             QuantitySlider_mc._y = -100;
@@ -593,7 +593,7 @@ class ItemCard extends MovieClip
             CardList_mc._alpha = 0;
         }
     }
-	
+    
     function ShowEnchantingSlider(aiMaxValue, aiMinValue, aiCurrentValue)
     {
         gotoAndStop("Craft_Enchanting");
@@ -608,7 +608,7 @@ class ItemCard extends MovieClip
         InputHandler = HandleQuantityMenuInput;
         dispatchEvent({type: "subMenuAction", opening: true, menu: "quantity"});
     }
-	
+    
     function ShowQuantityMenu(aiMaxAmount)
     {
         gotoAndStop("Quantity");
@@ -622,7 +622,7 @@ class ItemCard extends MovieClip
         InputHandler = HandleQuantityMenuInput;
         dispatchEvent({type: "subMenuAction", opening: true, menu: "quantity"});
     }
-	
+    
     function HideQuantityMenu(aCanceled)
     {
         FocusHandler.instance.setFocus(PrevFocus, 0);
@@ -631,7 +631,7 @@ class ItemCard extends MovieClip
         InputHandler = undefined;
         dispatchEvent({type: "subMenuAction", opening: false, canceled: aCanceled, menu: "quantity"});
     }
-	
+    
     function OpenListMenu()
     {
         PrevFocus = FocusHandler.instance.getFocus(0);
@@ -645,7 +645,7 @@ class ItemCard extends MovieClip
         InputHandler = HandleListMenuInput;
         dispatchEvent({type: "subMenuAction", opening: true, menu: "list"});
     }
-	
+    
     function HideListMenu()
     {
         FocusHandler.instance.setFocus(PrevFocus, 0);
@@ -655,7 +655,7 @@ class ItemCard extends MovieClip
         InputHandler = undefined;
         dispatchEvent({type: "subMenuAction", opening: false, menu: "list"});
     }
-	
+    
     function ShowConfirmMessage(strMessage)
     {
         gotoAndStop("ConfirmMessage");
@@ -668,7 +668,7 @@ class ItemCard extends MovieClip
         InputHandler = HandleConfirmMessageInput;
         dispatchEvent({type: "subMenuAction", opening: true, menu: "message"});
     }
-	
+    
     function HideConfirmMessage()
     {
         FocusHandler.instance.setFocus(PrevFocus, 0);
@@ -676,7 +676,7 @@ class ItemCard extends MovieClip
         InputHandler = undefined;
         dispatchEvent({type: "subMenuAction", opening: false, menu: "message"});
     }
-	
+    
     function StartEditName(aInitialText, aMaxChars)
     {
         if (Selection.getFocus() != ItemName)
@@ -686,7 +686,7 @@ class ItemCard extends MovieClip
             {
                 ItemName.text = aInitialText;
             }
-			
+            
             ItemName.type = "input";
             ItemName.noTranslate = true;
             ItemName.selectable = true;
@@ -697,7 +697,7 @@ class ItemCard extends MovieClip
             bEditNameMode = true;
         }
     }
-	
+    
     function EndEditName()
     {
         ItemName.type = "dynamic";
@@ -711,7 +711,7 @@ class ItemCard extends MovieClip
         InputHandler = undefined;
         bEditNameMode = false;
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         var _loc2 = false;
@@ -725,7 +725,7 @@ class ItemCard extends MovieClip
         }
         return (_loc2);
     }
-	
+    
     function HandleQuantityMenuInput(details)
     {
         var _loc2 = false;
@@ -753,7 +753,7 @@ class ItemCard extends MovieClip
         }
         return (_loc2);
     }
-	
+    
     function HandleListMenuInput(details)
     {
         var _loc2 = false;
@@ -764,7 +764,7 @@ class ItemCard extends MovieClip
         }
         return (_loc2);
     }
-	
+    
     function HandleConfirmMessageInput(details)
     {
         var _loc2 = false;
@@ -786,7 +786,7 @@ class ItemCard extends MovieClip
         }
         return (_loc2);
     }
-	
+    
     function HandleEditNameInput(details)
     {
         Selection.setFocus(ItemName, 0);
@@ -803,13 +803,13 @@ class ItemCard extends MovieClip
         }
         return (true);
     }
-	
+    
     function onSliderChange()
     {
         var _loc3 = EnchantingSlider_mc._alpha > 0 ? (TotalChargesValue) : (SliderValueText);
         var _loc4 = Number(_loc3.text);
         var _loc2 = Math.floor(QuantitySlider_mc.value);
-		
+        
         if (_loc4 != _loc2)
         {
             _loc3.SetText(_loc2.toString());
@@ -817,13 +817,13 @@ class ItemCard extends MovieClip
             dispatchEvent({type: "sliderChange", value: _loc2});
         }
     }
-	
+    
     function onListItemPress(event)
     {
         dispatchEvent(event);
         HideListMenu();
     }
-	
+    
     function onListMouseSelectionChange(event)
     {
         if (event.keyboardOrMouse == 0)
@@ -831,7 +831,7 @@ class ItemCard extends MovieClip
             onListSelectionChange(event);
         }
     }
-	
+    
     function onListSelectionChange(event)
     {
         ItemCardMeters[InventoryDefines.ICT_LIST].SetDeltaPercent(ItemList.selectedEntry.chargeAdded + LastUpdateObj.currentCharge);

@@ -1,14 +1,14 @@
 ﻿class MouseRotationInputCatcher extends MovieClip
 {
-	static var PROCESS_ROTATION_DELAY = 150;
-	
-	var iProcessRotationDelayTimerID;
-	
+    static var PROCESS_ROTATION_DELAY = 150;
+    
+    var iProcessRotationDelayTimerID;
+    
     function MouseRotationInputCatcher()
     {
         super();
     }
-	
+    
     function onMouseDown()
     {
         var _loc2 = Mouse.getTopMostEntity() == this;
@@ -21,13 +21,13 @@
             iProcessRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", PROCESS_ROTATION_DELAY);
         } // end if
     }
-	
+    
     function onProcessDelayElapsed()
     {
         clearInterval(iProcessRotationDelayTimerID);
         iProcessRotationDelayTimerID = undefined;
     }
-	
+    
     function onMouseUp()
     {
         _parent.onMouseRotationStop();
@@ -38,7 +38,7 @@
         } // end if
         iProcessRotationDelayTimerID = undefined;
     }
-	
+    
     function onPressAux()
     {
         _parent.onMouseRotationFastClick(1);

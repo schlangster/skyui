@@ -1,19 +1,19 @@
 ﻿class Shared.CenteredList extends MovieClip
 {
     var TopHalf;
-	var SelectedEntry;
-	var BottomHalf;
-	var EntriesA;
-	var iSelectedIndex;
-	var fCenterY;
-	var bRepositionEntries;
-	var iMaxEntriesTopHalf;
-	var iMaxEntriesBottomHalf;
-	var bMultilineList;
-	var bToFitList;
-	
-	var dispatchEvent:Function;
-	
+    var SelectedEntry;
+    var BottomHalf;
+    var EntriesA;
+    var iSelectedIndex;
+    var fCenterY;
+    var bRepositionEntries;
+    var iMaxEntriesTopHalf;
+    var iMaxEntriesBottomHalf;
+    var bMultilineList;
+    var bToFitList;
+    
+    var dispatchEvent:Function;
+    
     function CenteredList()
     {
         super();
@@ -29,17 +29,17 @@
         for (iMaxEntriesTopHalf = 0; TopHalf["Entry" + iMaxEntriesTopHalf] != undefined; iMaxEntriesTopHalf++)
         {
         }
-		
+        
         for (iMaxEntriesBottomHalf = 0; BottomHalf["Entry" + iMaxEntriesBottomHalf] != undefined; iMaxEntriesBottomHalf++)
         {
         }
     }
-	
+    
     function ClearList()
     {
         EntriesA.splice(0, EntriesA.length);
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         var _loc2 = false;
@@ -63,7 +63,7 @@
         }
         return (_loc2);
     }
-	
+    
     function onMouseWheel(delta)
     {
         for (var _loc2 = Mouse.getTopMostEntity(); _loc2 && _loc2 != undefined && gfx.managers.FocusHandler.instance.getFocus(0) == this; _loc2 = _loc2._parent)
@@ -82,7 +82,7 @@
             } // end if
         } // end of for
     }
-	
+    
     function onPress(aiMouseIndex, aiKeyboardOrMouse)
     {
         for (var _loc2 = Mouse.getTopMostEntity(); _loc2 && _loc2 != undefined; _loc2 = _loc2._parent)
@@ -93,7 +93,7 @@
             } // end if
         } // end of for
     }
-	
+    
     function onPressAux(aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
     {
         if (aiButtonIndex == 1)
@@ -107,37 +107,37 @@
             } // end of for
         } // end if
     }
-	
+    
     function get selectedTextString()
     {
         return EntriesA[iSelectedIndex].text;
     }
-	
+    
     function get selectedIndex()
     {
         return iSelectedIndex;
     }
-	
+    
     function set selectedIndex(aiNewIndex)
     {
         iSelectedIndex = aiNewIndex;
     }
-	
+    
     function get selectedEntry()
     {
         return EntriesA[iSelectedIndex];
     }
-	
+    
     function get entryList()
     {
         return EntriesA;
     }
-	
+    
     function set entryList(anewArray)
     {
         EntriesA = anewArray;
     }
-	
+    
     function moveListUp()
     {
         if (iSelectedIndex < EntriesA.length - 1)
@@ -156,7 +156,7 @@
             dispatchEvent({type: "listMovedDown"});
         }
     }
-	
+    
     function UpdateList()
     {
         var _loc2;
@@ -180,7 +180,7 @@
         } // end else if
         RepositionEntries();
     }
-	
+    
     function UpdateTopHalf(aEntryArray)
     {
         for (var _loc2 = iMaxEntriesTopHalf - 1; _loc2 >= 0; --_loc2)
@@ -194,7 +194,7 @@
             SetEntry(TopHalf["Entry" + _loc2]);
         } // end of for
     }
-	
+    
     function UpdateBottomHalf(aTextArray)
     {
         for (var _loc2 = 0; _loc2 < iMaxEntriesBottomHalf; ++_loc2)
@@ -207,7 +207,7 @@
             SetEntry(BottomHalf["Entry" + _loc2]);
         } // end of for
     }
-	
+    
     function SetEntry(aEntryClip, aEntryObject)
     {
         if (bMultilineList == true)
@@ -234,7 +234,7 @@
             aEntryClip.textField.SetText(" ");
         } // end else if
     }
-	
+    
     function SetupMultilineList()
     {
         bMultilineList = true;
@@ -251,7 +251,7 @@
             SelectedEntry.textField.verticalAutoSize = "top";
         } // end if
     }
-	
+    
     function SetupToFitList()
     {
         bToFitList = true;
@@ -268,7 +268,7 @@
             SelectedEntry.textField.textAutoSize = "shrink";
         } // end if
     }
-	
+    
     function RepositionEntries()
     {
         if (bRepositionEntries)

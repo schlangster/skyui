@@ -4,23 +4,23 @@ import gfx.managers.FocusHandler;
 
 class DialogueMenu extends MovieClip
 {
-	static var ALLOW_PROGRESS_DELAY = 750;
+    static var ALLOW_PROGRESS_DELAY = 750;
     static var SHOW_GREETING = 0;
     static var TOPIC_LIST_SHOWN = 1;
     static var TOPIC_CLICKED = 2;
     static var TRANSITIONING = 3;
     static var iMouseDownExecutionCount = 0;
-	
+    
     var TopicListHolder;
-	var TopicList;
-	var SubtitleText;
-	var ExitButton;
-	var eMenuState;
-	var bFadedIn;
-	var bAllowProgress;
-	var SpeakerName;
-	var iAllowProgressTimerID;
-	
+    var TopicList;
+    var SubtitleText;
+    var ExitButton;
+    var eMenuState;
+    var bFadedIn;
+    var bAllowProgress;
+    var SpeakerName;
+    var iAllowProgressTimerID;
+    
     function DialogueMenu()
     {
         super();
@@ -32,7 +32,7 @@ class DialogueMenu extends MovieClip
         bFadedIn = true;
         bAllowProgress = false;
     }
-	
+    
     function InitExtensions()
     {
         Mouse.addListener(this);
@@ -64,23 +64,23 @@ class DialogueMenu extends MovieClip
         SpeakerName.verticalAutoSize = "top";
         SpeakerName.SetText(" ");
     }
-	
+    
     function AdjustForPALSD()
     {
         _root.DialogueMenu_mc._x = _root.DialogueMenu_mc._x - 35;
     }
-	
+    
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         ExitButton.SetPlatform(aiPlatform, abPS3Switch);
         TopicList.SetPlatform(aiPlatform, abPS3Switch);
     }
-	
+    
     function SetSpeakerName(strName)
     {
         SpeakerName.SetText(strName);
     }
-	
+    
     function handleInput(details, pathToFocus)
     {
         if (bFadedIn && Shared.GlobalFunc.IsKeyPressed(details))
@@ -96,77 +96,77 @@ class DialogueMenu extends MovieClip
         }
         return (true);
     }
-	
+    
     function get menuState()
     {
         return eMenuState;
     }
-	
+    
     function set menuState(aNewState)
     {
         eMenuState = aNewState;
     }
-	
+    
     function ShowDialogueText(astrText)
     {
         SubtitleText.SetText(astrText);
     }
-	
+    
     function OnVoiceReady()
     {
         StartProgressTimer();
     }
-	
+    
     function StartProgressTimer()
     {
         bAllowProgress = false;
         clearInterval(iAllowProgressTimerID);
         iAllowProgressTimerID = setInterval(this, "SetAllowProgress", DialogueMenu.ALLOW_PROGRESS_DELAY);
     }
-	
+    
     function HideDialogueText()
     {
         SubtitleText.SetText(" ");
     }
-	
+    
     function SetAllowProgress()
     {
         clearInterval(iAllowProgressTimerID);
         bAllowProgress = true;
     }
-	
+    
     function PopulateDialogueLists()
     {
         var _loc9 = 0;
         var _loc11 = 1;
         var _loc8 = 2;
         var _loc10 = 3;
-		
+        
         TopicList.ClearList();
-		
+        
         for (var _loc3 = 0; _loc3 < arguments.length - 1; _loc3 = _loc3 + _loc10)
         {
             var _loc4 = {text: arguments[_loc3 + _loc9], topicIsNew: arguments[_loc3 + _loc11], topicIndex: arguments[_loc3 + _loc8]};
             TopicList.entryList.push(_loc4);
         }
-		
+        
         if (arguments[arguments.length - 1] != -1)
         {
             TopicList.SetSelectedTopic(arguments[arguments.length - 1]);
         }
         TopicList.InvalidateData();
     }
-	
+    
     function DoShowDialogueList(abNewList, abHideExitButton)
     {
         if (eMenuState == TOPIC_CLICKED || eMenuState == SHOW_GREETING && TopicList.entryList.length > 0)
         {
             ShowDialogueList(abNewList, abNewList && eMenuState == TOPIC_CLICKED);
         }
-		
+        
         ExitButton._visible = !abHideExitButton;
     }
-	
+    
     function ShowDialogueList(abSlideAnim, abCopyVisible)
     {
         TopicListHolder._visible = true;
@@ -175,7 +175,7 @@ class DialogueMenu extends MovieClip
         TopicListHolder.TextCopy_mc._visible = abCopyVisible;
         TopicListHolder.PanelCopy_mc._visible = abCopyVisible;
     }
-	
+    
     function onItemSelect(event)
     {
         if (bAllowProgress && event.keyboardOrMouse != 0)
@@ -191,7 +191,7 @@ class DialogueMenu extends MovieClip
             bAllowProgress = false;
         }
     }
-	
+    
     function SkipText()
     {
         if (bAllowProgress)
@@ -200,7 +200,7 @@ class DialogueMenu extends MovieClip
             bAllowProgress = false;
         } // end if
     }
-	
+    
     function onMouseDown()
     {
         iMouseDownExecutionCount = ++DialogueMenu.iMouseDownExecutionCount;
@@ -210,7 +210,7 @@ class DialogueMenu extends MovieClip
         } // end if
         onItemSelect();
     }
-	
+    
     function onCancelPress()
     {
         if (eMenuState == SHOW_GREETING)
@@ -222,7 +222,7 @@ class DialogueMenu extends MovieClip
             StartHideMenu();
         } // end else if
     }
-	
+    
     function StartHideMenu()
     {
         SubtitleText._visible = false;
@@ -232,7 +232,7 @@ class DialogueMenu extends MovieClip
         _parent.gotoAndPlay("startFadeOut");
         GameDelegate.call("CloseMenu", []);
     }
-	
+    
     function playListUpAnim(aEvent)
     {
         if (aEvent.scrollChanged == true)
@@ -240,7 +240,7 @@ class DialogueMenu extends MovieClip
             aEvent.target._parent.gotoAndPlay("moveUp");
         }
     }
-	
+    
     function playListDownAnim(aEvent)
     {
         if (aEvent.scrollChanged == true)
@@ -248,29 +248,29 @@ class DialogueMenu extends MovieClip
             aEvent.target._parent.gotoAndPlay("moveDown");
         }
     }
-	
+    
     function onSelectionClick()
     {
         if (eMenuState == TOPIC_LIST_SHOWN)
         {
             eMenuState = TOPIC_CLICKED;
         }
-		
+        
         if (TopicList.scrollPosition != TopicList.selectedIndex)
         {
             TopicList.RestoreScrollPosition(TopicList.selectedIndex, true);
             TopicList.UpdateList();
         }
-		
+        
         TopicListHolder.gotoAndPlay("topicClicked");
         TopicListHolder.TextCopy_mc._visible = true;
         TopicListHolder.TextCopy_mc.textField.SetText(TopicListHolder.List_mc.selectedEntry.text);
-		
+        
         var _loc2 = TopicListHolder.TextCopy_mc._y - TopicListHolder.List_mc._y - TopicListHolder.List_mc.Entry4._y;
         TopicListHolder.TextCopy_mc.textField._y = 6.250000 - _loc2;
         GameDelegate.call("TopicClicked", [TopicList.selectedEntry.topicIndex]);
     }
-	
+    
     function onFadeOutCompletion()
     {
         GameDelegate.call("FadeDone", []);

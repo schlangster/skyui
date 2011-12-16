@@ -1,12 +1,12 @@
 ﻿class InventoryScrollingList extends Shared.CenteredScrollingList
 {
     var iMaxTextLength;
-	
+    
     function InventoryScrollingList()
     {
         super();
     }
-	
+    
     function SetEntryText(aEntryClip, aEntryObject)
     {
         var _loc5 = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];

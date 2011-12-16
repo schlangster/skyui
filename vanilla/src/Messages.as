@@ -1,17 +1,17 @@
 ﻿class Messages extends MovieClip
 {
-	static var MAX_SHOWN = 4;
+    static var MAX_SHOWN = 4;
     static var Y_SPACING = 15;
     static var END_ANIM_FRAME = 80;
     static var InstanceCounter = 0;
-	
+    
     var MessageArray:Array;
-	var ShownMessageArray:Array;
-	var ShownCount;
-	var bAnimating;
-	var getNextHighestDepth;
-	var ySpacing;
-	
+    var ShownMessageArray:Array;
+    var ShownCount;
+    var bAnimating;
+    var getNextHighestDepth;
+    var ySpacing;
+    
     function Messages()
     {
         super();
@@ -20,7 +20,7 @@
         ShownCount = 0;
         bAnimating = false;
     }
-	
+    
     function Update()
     {
         var bqueuedMessage = MessageArray.length > 0;
@@ -33,7 +33,7 @@
             ShownMessageArray[ShownMessageArray.length - 1].TextFieldClip.tf1.htmlText = MessageArray.shift();
             bAnimating = true;
             ySpacing = 0;
-			
+            
             this.onEnterFrame = function()
             {
                 if (ySpacing < Messages.Y_SPACING)
@@ -56,7 +56,7 @@
             }
             ++ShownCount;
         }
-		
+        
         for (var _loc2 = 0; _loc2 < ShownMessageArray.length; ++_loc2)
         {
             if (ShownMessageArray[_loc2]._currentFrame >= Messages.END_ANIM_FRAME)
@@ -67,7 +67,7 @@
                 bAnimating = false;
             }
         }
-		
+        
         if (!bqueuedMessage && !bAnimating && ShownMessageArray.length > 0)
         {
             bAnimating = true;

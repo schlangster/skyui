@@ -1,22 +1,22 @@
 ﻿class QuestNotification extends MovieClip
 {
     var ObjectivesA:Array;
-	var AnimatedLetter_mc;
-	var ShoutAnimatedLetter;
-	var ObjectiveLineInstance;
-	var ObjText;
-	var LevelMeterBaseInstance;
-	var LevelUpMeter;
-	var ObjectivesCount;
-	var getNextHighestDepth;
-	var ShowNotifications = true;
+    var AnimatedLetter_mc;
+    var ShoutAnimatedLetter;
+    var ObjectiveLineInstance;
+    var ObjText;
+    var LevelMeterBaseInstance;
+    var LevelUpMeter;
+    var ObjectivesCount;
+    var getNextHighestDepth;
+    var ShowNotifications = true;
     
-	static var Instance;
-	static var AnimLetter;
-	static var ShoutLetter;
-	static var LevelUpMeterIntervalIndex;
-	static var LevelUpMeterKillIntervalIndex;
-	static var QuestNotificationIntervalIndex = 0;
+    static var Instance;
+    static var AnimLetter;
+    static var ShoutLetter;
+    static var LevelUpMeterIntervalIndex;
+    static var LevelUpMeterKillIntervalIndex;
+    static var QuestNotificationIntervalIndex = 0;
     static var AnimationCount = 0;
     static var QUEST_UPDATE = 0;
     static var SKILL_LEVEL_UPDATE = 1;
@@ -24,7 +24,7 @@
     static var SHOUT_UPDATE = 3;
     static var bPlayerLeveled = false;
     static var PlayerLevel = 0;
-	
+    
     function QuestNotification()
     {
         super();
@@ -41,12 +41,12 @@
         LevelUpMeterIntervalIndex = 0;
         LevelUpMeterKillIntervalIndex = 0;
     }
-	
+    
     static function Update()
     {
         QuestNotification.Instance.ObjText.UpdateObjectives(QuestNotification.Instance.ObjectivesA);
     }
-	
+    
     function EvaluateNotifications()
     {
         if (QuestNotification.AnimationCount == 0 || QuestNotification.AnimationCount == QuestNotification.AnimLetter.QuestName.length)
@@ -56,7 +56,7 @@
             QuestNotificationIntervalIndex = 0;
         }
     }
-	
+    
     static function DecAnimCount()
     {
         AnimationCount = --QuestNotification.AnimationCount;
@@ -65,18 +65,18 @@
             QuestNotification.Instance.ShowObjectives(QuestNotification.Instance.ObjectivesCount);
         }
     }
-	
+    
     static function CheckContinue()
     {
         QuestNotification.Instance.EvaluateNotifications();
         return true;
     }
-	
+    
     function CanShowNotification()
     {
         return (ShowNotifications && QuestNotification.AnimationCount == 0);
     }
-	
+    
     function ShowNotification(aNotificationText, aStatus, aSoundID, aObjectiveCount, aNotificationType, aLevel, aStartPercent, aEndPercent, aDragonText)
     {
         ShowNotifications = false;
@@ -121,12 +121,12 @@
             }
         }
     }
-	
+    
     static function UpdateLevelUpMeter()
     {
         QuestNotification.Instance.LevelUpMeter.Update();
     }
-	
+    
     static function KillLevelUpMeter()
     {
         if (QuestNotification.AnimationCount == 0)
@@ -145,18 +145,18 @@
             }
         }
     }
-	
+    
     function ShowObjectives(aObjectiveCount)
     {
         ObjText.ShowObjectives(aObjectiveCount, ObjectivesA);
         ShowNotifications = true;
     }
-	
+    
     function GetDepth()
     {
         return getNextHighestDepth();
     }
-	
+    
     static function RestartAnimations()
     {
         var _loc1 = QuestNotification.Instance.AnimLetter._parent;

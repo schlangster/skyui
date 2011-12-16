@@ -2,23 +2,23 @@
 
 class AnimatedLetter extends MovieClip
 {
-	static var SpaceWidth:Number = 15;
-	
+    static var SpaceWidth:Number = 15;
+    
     var QuestName:String;
-	var AnimationBase_mc;
-	var LetterSpacing:Number = 0;
+    var AnimationBase_mc;
+    var LetterSpacing:Number = 0;
     var OldWidth:Number = 0;
     var QuestNameIndex:Number = 0;
     var Start:Number = 0;
     var EndPosition:Number = 104;
     
-	
+    
     function AnimatedLetter()
     {
         super();
         GlobalFunc.MaintainTextFormat();
     }
-	
+    
     function ShowQuestUpdate(aQuestName, aQuestStatus)
     {
         if (aQuestName.length > 0 && aQuestStatus.length > 0)
@@ -31,7 +31,7 @@ class AnimatedLetter extends MovieClip
         {
             QuestName = aQuestName;
         }
-		
+        
         Start = 0;
         for (var _loc2 = 0; _loc2 < QuestName.length; ++_loc2)
         {
@@ -39,7 +39,7 @@ class AnimatedLetter extends MovieClip
             var _loc3 = AnimationBase_mc.Letter_mc.LetterTextInstance.getLineMetrics(0).width - 5;
             Start = Start + (_loc3 > 0 ? (_loc3) : (AnimatedLetter.SpaceWidth));
         }
-		
+        
         Start = Start * -0.500000;
         Start = Start - EndPosition;
         QuestNameIndex = 0;
@@ -47,7 +47,7 @@ class AnimatedLetter extends MovieClip
         OldWidth = 0;
         AnimationBase_mc.onEnterFrame = AnimationBase_mc.ShowLetter;
     }
-	
+    
     function ShowLetter()
     {
         var _loc6 = QuestName.length;

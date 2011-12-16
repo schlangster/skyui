@@ -3,17 +3,17 @@
 class Shared.ButtonTextArtHolder extends MovieClip
 {
     var strButtonName:String;
-	
+    
     function ButtonTextArtHolder()
     {
         super();
     }
-	
+    
     function SetButtonName(aText:String)
     {
         strButtonName = aText;
     }
-	
+    
     function CreateButtonArt(aInputText)
     {
         var startIndex = aInputText.text.indexOf("[");
@@ -44,10 +44,10 @@ class Shared.ButtonTextArtHolder extends MovieClip
                 {
                     _loc7 = _loc7 + aInputText.text.substring(startIndex, len + 1);
                 }
-				
+                
                 var _loc4 = aInputText.text.indexOf("[", len);
                 var _loc9 = _loc4 != -1 ? (aInputText.text.indexOf("]", _loc4)) : (-1);
-				
+                
                 if (_loc4 != -1 && _loc9 != -1)
                 {
                     _loc7 = _loc7 + aInputText.text.substring(len + 1, _loc4);
@@ -56,7 +56,7 @@ class Shared.ButtonTextArtHolder extends MovieClip
                 {
                     _loc7 = _loc7 + aInputText.text.substr(len + 1);
                 }
-				
+                
                 startIndex = _loc4;
                 len = _loc9;
             }

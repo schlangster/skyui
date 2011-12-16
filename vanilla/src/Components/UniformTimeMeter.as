@@ -4,17 +4,17 @@
 class Components.UniformTimeMeter extends Components.Meter
 {
     var FinishSound;
-	var AnimClip;
-	var AnimStart;
-	var FrameNumber;
-	var CurrentPercent;
-	var bFinished;
-	var FrameCount;
-	var TargetPercent;
-	var Full;
-	var Empty;
-	var meterMovieClip;
-	
+    var AnimClip;
+    var AnimStart;
+    var FrameNumber;
+    var CurrentPercent;
+    var bFinished;
+    var FrameCount;
+    var TargetPercent;
+    var Full;
+    var Empty;
+    var meterMovieClip;
+    
     function UniformTimeMeter(aMovieClip:MovieClip, aFinishSound, aClip, aAnimStart)
     {
         super(aMovieClip);
@@ -23,14 +23,14 @@ class Components.UniformTimeMeter extends Components.Meter
         AnimStart = aAnimStart;
         FrameNumber = 48;
     }
-	
+    
     function SetTargetPercent(aPercent)
     {
         super.SetTargetPercent(aPercent);
         bFinished = aPercent >= 100 && CurrentPercent < 100;
         FrameCount = 0;
     }
-	
+    
     function Update()
     {
         if (FrameCount <= FrameNumber)

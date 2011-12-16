@@ -4,7 +4,7 @@
     {
         super(aMeterClip);
     }
-	
+    
     function Update()
     {
         super.Update();

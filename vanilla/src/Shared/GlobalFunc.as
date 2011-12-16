@@ -2,22 +2,22 @@
 {
     static var RegisteredTextFields = new Object();
     static var RegisteredMovieClips = new Object();
-	
-    var getTextFormat;
-	var htmlText;
-	var setTextFormat;
-	
-	var text;
-	var _parent;
-	var _y;
-	var _x;
-	var _currentframe;
-	var _name;
     
-	static function Lerp(aTargetMin:Number, aTargetMax:Number, aSourceMin:Number, aSourceMax:Number, aSource:Number, abClamp:Number):Number
+    var getTextFormat;
+    var htmlText;
+    var setTextFormat;
+    
+    var text;
+    var _parent;
+    var _y;
+    var _x;
+    var _currentframe;
+    var _name;
+    
+    static function Lerp(aTargetMin:Number, aTargetMax:Number, aSourceMin:Number, aSourceMax:Number, aSource:Number, abClamp:Number):Number
     {
         var _loc1:Number = aTargetMin + (aSource - aSourceMin) / (aSourceMax - aSourceMin) * (aTargetMax - aTargetMin);
-		
+        
         if (abClamp)
         {
             _loc1 = Math.min(Math.max(_loc1, aTargetMin), aTargetMax);
@@ -25,7 +25,7 @@
         return _loc1;
     }
     
-	static function IsKeyPressed(aInputInfo, abProcessKeyHeldDown)
+    static function IsKeyPressed(aInputInfo, abProcessKeyHeldDown)
     {
         if (abProcessKeyHeldDown == undefined)
         {
@@ -34,13 +34,13 @@
         return (aInputInfo.value == "keyDown" || abProcessKeyHeldDown && aInputInfo.value == "keyHold");
     }
     
-	static function RoundDecimal(aNumber:Number, aPrecision:Number):Number
+    static function RoundDecimal(aNumber:Number, aPrecision:Number):Number
     {
         var _loc1 = Math.pow(10, aPrecision);
         return Math.round(_loc1 * aNumber) / _loc1;
     }
     
-	static function MaintainTextFormat()
+    static function MaintainTextFormat()
     {
         TextField.prototype.SetText = function (aText, abHTMLText)
         {
@@ -48,7 +48,7 @@
             {
                 aText = " ";
             }
-			
+            
             if (abHTMLText)
             {
                 var _loc4 = this.getTextFormat();
@@ -68,17 +68,17 @@
             }
         };
     } 
-	
+    
     static function SetLockFunction()
     {
         MovieClip.prototype.Lock = function (aPosition)
         {
             var _loc4 = {x: Stage.visibleRect.x + Stage.safeRect.x, y: Stage.visibleRect.y + Stage.safeRect.y};
             var _loc3 = {x: Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
-			
+            
             _parent.globalToLocal(_loc4);
             _parent.globalToLocal(_loc3);
-			
+            
             if (aPosition == "T" || aPosition == "TL" || aPosition == "TR")
             {
                 _y = _loc4.y;
@@ -97,7 +97,7 @@
             }
         };
     }
-	
+    
     static function AddMovieExploreFunctions()
     {
         MovieClip.prototype.getMovieClips = function ()
@@ -110,7 +110,7 @@
                     _loc2.push(this[_loc3]);
                 } // end if
             }
-			
+            
             return (_loc2);
         };
         MovieClip.prototype.showMovieClips = function ()
@@ -125,7 +125,7 @@
             } // end of for...in
         };
     }
-	
+    
     static function AddReverseFunctions()
     {
         MovieClip.prototype.PlayReverse = function ()
@@ -161,7 +161,7 @@
             this.gotoAndPlay(aFrame);
         };
     }
-	
+    
     static function GetTextField(aParentClip, aName)
     {
         if (RegisteredTextFields[aName + aParentClip._name] != undefined)
@@ -173,7 +173,7 @@
             trace (aName + " is not registered a TextField name.");
         } // end else if
     }
-	
+    
     static function GetMovieClip(aParentClip, aName)
     {
         if (RegisteredMovieClips[aName + aParentClip._name] != undefined)
@@ -185,7 +185,7 @@
             trace (aName + " is not registered a MovieClip name.");
         } // end else if
     }
-	
+    
     static function AddRegisterTextFields()
     {
         TextField.prototype.RegisterTextField = function (aStartingClip)
@@ -196,7 +196,7 @@
             } // end if
         };
     }
-	
+    
     static function RegisterTextFields(aStartingClip)
     {
         for (var _loc2 in aStartingClip)
@@ -207,7 +207,7 @@
             } // end if
         } // end of for...in
     }
-	
+    
     static function RegisterAllTextFieldsInTimeline(aStartingClip)
     {
         for (var _loc2 = 1; aStartingClip._totalFrames && _loc2 <= aStartingClip._totalFrames; ++_loc2)
@@ -216,7 +216,7 @@
             RegisterTextFields(aStartingClip);
         } // end of for
     }
-	
+    
     static function AddRegisterMovieClips()
     {
         MovieClip.prototype.RegisterMovieClip = function (aStartingClip)
@@ -227,7 +227,7 @@
             } // end if
         };
     }
-	
+    
     static function RegisterMovieClips(aStartingClip)
     {
         for (var _loc2 in aStartingClip)
@@ -238,7 +238,7 @@
             } // end if
         } // end of for...in
     }
-	
+    
     static function RecursiveRegisterMovieClips(aStartingClip, aRootClip)
     {
         for (var _loc3 in aStartingClip)
@@ -253,7 +253,7 @@
             } // end if
         } // end of for...in
     }
-	
+    
     static function RegisterAllMovieClipsInTimeline(aStartingClip)
     {
         for (var _loc2 = 1; aStartingClip._totalFrames && _loc2 <= aStartingClip._totalFrames; ++_loc2)
@@ -262,7 +262,7 @@
             RegisterMovieClips(aStartingClip);
         } // end of for
     }
-	
+    
     static function StringTrim(astrText)
     {
         var _loc2 = 0;

@@ -2,11 +2,11 @@
 
 class ShoutMeter extends MovieClip
 {
-	var FlashClip:MovieClip;
+    var FlashClip:MovieClip;
     var ProgressClip:MovieClip;
-	var MeterEmtpy:Number;
-	var MeterFull:Number;
-	
+    var MeterEmtpy:Number;
+    var MeterFull:Number;
+    
     function ShoutMeter(aProgressClip, aFlashClip)
     {
         super();
@@ -19,7 +19,7 @@ class ShoutMeter extends MovieClip
         ProgressClip.gotoAndStop("Normal");
         FlashClip.gotoAndStop("Warning Start");
     }
-	
+    
     function SetPercent(aPercent:Number)
     {
         if (aPercent >= 100)
@@ -33,7 +33,7 @@ class ShoutMeter extends MovieClip
             ProgressClip.gotoAndStop(_loc3);
         } // end else if
     }
-	
+    
     function FlashMeter()
     {
         FlashClip.gotoAndPlay("Warning Start");

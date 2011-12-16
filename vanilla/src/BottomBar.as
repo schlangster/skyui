@@ -2,62 +2,62 @@
 
 class BottomBar extends MovieClip
 {
-	var Buttons:Array;
-	
+    var Buttons:Array;
+    
     var PlayerInfoCard_mc;
-	var iLastItemType;
-	
-	var HealthMeter:Meter;
-	var MagickaMeter:Meter;
-	var StaminaMeter:Meter;
-	var LevelMeter:Meter;
+    var iLastItemType;
+    
+    var HealthMeter:Meter;
+    var MagickaMeter:Meter;
+    var StaminaMeter:Meter;
+    var LevelMeter:Meter;
 
-	var iLeftOffset:Number;
-	var PlayerInfoObj;
-	
+    var iLeftOffset:Number;
+    var PlayerInfoObj;
+    
     function BottomBar()
     {
         super();
-		
+        
         PlayerInfoCard_mc = PlayerInfoCard_mc;
         iLastItemType = InventoryDefines.ICT_NONE;
         HealthMeter = new Meter(PlayerInfoCard_mc.HealthRect.MeterInstance.Meter_mc);
         MagickaMeter = new Meter(PlayerInfoCard_mc.MagickaRect.MeterInstance.Meter_mc);
         StaminaMeter = new Meter(PlayerInfoCard_mc.StaminaRect.MeterInstance.Meter_mc);
         LevelMeter = new Meter(PlayerInfoCard_mc.LevelMeterInstance.Meter_mc);
-		
+        
         var i = 0;
         Buttons = new Array();
-		
+        
         while (this["Button" + i] != undefined)
         {
             Buttons.push(this["Button" + i]);
             ++i;
         }
     }
-	
+    
     function PositionElements(aiLeftOffset:Number, aiRightOffset:Number)
     {
         iLeftOffset = aiLeftOffset;
         PositionButtons();
         PlayerInfoCard_mc._x = aiRightOffset - PlayerInfoCard_mc._width;
     }
-	
+    
     function ShowPlayerInfo()
     {
         PlayerInfoCard_mc._alpha = 100;
     }
-	
+    
     function HidePlayerInfo()
     {
         PlayerInfoCard_mc._alpha = 0;
     }
-	
+    
     function UpdatePerItemInfo(aItemUpdateObj)
     {
         var type = aItemUpdateObj.type;
         var isEquip = true;
-		
+        
         if (type != undefined)
         {
             iLastItemType = type;
@@ -70,7 +70,7 @@ class BottomBar extends MovieClip
                 aItemUpdateObj = {type: iLastItemType};
             }
         }
-		
+        
         if (PlayerInfoObj != undefined && aItemUpdateObj != undefined)
         {
             switch (type)
@@ -79,7 +79,7 @@ class BottomBar extends MovieClip
                 {
                     PlayerInfoCard_mc.gotoAndStop("Armor");
                     var armorStr = Math.floor(PlayerInfoObj.armor).toString();
-					
+                    
                     if (aItemUpdateObj.armorChange != undefined)
                     {
                         var armorChange = Math.round(aItemUpdateObj.armorChange);
@@ -92,7 +92,7 @@ class BottomBar extends MovieClip
                             armorStr = armorStr + " <font color=\'#FF0000\'>(" + armorChange.toString() + ")</font>";
                         }
                     }
-					
+                    
                     PlayerInfoCard_mc.ArmorRatingValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.ArmorRatingValue.html = true;
                     PlayerInfoCard_mc.ArmorRatingValue.SetText(armorStr, true);
@@ -102,7 +102,7 @@ class BottomBar extends MovieClip
                 {
                     PlayerInfoCard_mc.gotoAndStop("Weapon");
                     var dmgStr = Math.floor(PlayerInfoObj.damage).toString();
-					
+                    
                     if (aItemUpdateObj.damageChange != undefined)
                     {
                         var _loc6 = Math.round(aItemUpdateObj.damageChange);
@@ -115,7 +115,7 @@ class BottomBar extends MovieClip
                             dmgStr = dmgStr + " <font color=\'#FF0000\'>(" + _loc6.toString() + ")</font>";
                         }
                     }
-					
+                    
                     PlayerInfoCard_mc.DamageValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.DamageValue.html = true;
                     PlayerInfoCard_mc.DamageValue.SetText(dmgStr, true);
@@ -136,14 +136,14 @@ class BottomBar extends MovieClip
                     {
                         PlayerInfoCard_mc.gotoAndStop("HealthPotion");
                     }
-					
+                    
                     break;
                 } 
                 case InventoryDefines.ICT_BOOK:
                 case InventoryDefines.ICT_INGREDIENT:
                 case InventoryDefines.ICT_MISC:
                 case InventoryDefines.ICT_KEY:
-				{
+                {
                     PlayerInfoCard_mc.gotoAndStop("Default");
                     break;
                 } 
@@ -171,12 +171,12 @@ class BottomBar extends MovieClip
                     isEquip = false;
                     break;
                 }
-				default:
-				{
+                default:
+                {
                     PlayerInfoCard_mc.gotoAndStop("Default");
                 } 
             }
-			
+            
             if (isEquip)
             {
                 PlayerInfoCard_mc.CarryWeightValue.textAutoSize = "shrink";
@@ -185,7 +185,7 @@ class BottomBar extends MovieClip
                 PlayerInfoCard_mc.PlayerGoldLabel._x = PlayerInfoCard_mc.PlayerGoldValue._x + PlayerInfoCard_mc.PlayerGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldLabel._width;
                 PlayerInfoCard_mc.CarryWeightValue._x = PlayerInfoCard_mc.PlayerGoldLabel._x + PlayerInfoCard_mc.PlayerGoldLabel.getLineMetrics(0).x - PlayerInfoCard_mc.CarryWeightValue._width - 5;
                 PlayerInfoCard_mc.CarryWeightLabel._x = PlayerInfoCard_mc.CarryWeightValue._x + PlayerInfoCard_mc.CarryWeightValue.getLineMetrics(0).x - PlayerInfoCard_mc.CarryWeightLabel._width;
-				
+                
                 switch (type)
                 {
                     case InventoryDefines.ICT_ARMOR:
@@ -202,19 +202,19 @@ class BottomBar extends MovieClip
                     } 
                 }
             }
-			
+            
             UpdateStatMeter(PlayerInfoCard_mc.HealthRect, HealthMeter, PlayerInfoObj.health, PlayerInfoObj.maxHealth, PlayerInfoObj.healthColor);
             UpdateStatMeter(PlayerInfoCard_mc.MagickaRect, MagickaMeter, PlayerInfoObj.magicka, PlayerInfoObj.maxMagicka, PlayerInfoObj.magickaColor);
             UpdateStatMeter(PlayerInfoCard_mc.StaminaRect, StaminaMeter, PlayerInfoObj.stamina, PlayerInfoObj.maxStamina, PlayerInfoObj.staminaColor);
         }
     }
-	
+    
     function UpdatePlayerInfo(aPlayerUpdateObj, aItemUpdateObj)
     {
         PlayerInfoObj = aPlayerUpdateObj;
         UpdatePerItemInfo(aItemUpdateObj);
     }
-	
+    
     function UpdateSkillBar(aSkillName, aiLevelStart:Number, afLevelPercent:Number)
     {
         PlayerInfoCard_mc.SkillLevelLabel.SetText(aSkillName);
@@ -223,20 +223,20 @@ class BottomBar extends MovieClip
         PlayerInfoCard_mc.LevelMeterInstance.gotoAndStop("Pause");
         LevelMeter.SetPercent(afLevelPercent);
     }
-	
+    
     function UpdateCraftingInfo(aSkillName, aiLevelStart:Number, afLevelPercent:Number)
     {
         PlayerInfoCard_mc.gotoAndStop("Crafting");
         UpdateSkillBar(aSkillName, aiLevelStart, afLevelPercent);
     }
-	
+    
     function UpdateStatMeter(aMeterRect, aMeterObj, aiCurrValue:Number, aiMaxValue:Number, aColor)
     {
         if (aColor == undefined)
         {
             aColor = "#FFFFFF";
         }
-		
+        
         if (aMeterRect._alpha > 0)
         {
             if (aMeterRect.MeterText != undefined)
@@ -249,17 +249,17 @@ class BottomBar extends MovieClip
             aMeterObj.SetPercent(aiCurrValue / aiMaxValue * 100);
         }
     }
-	
+    
     function SetBarterInfo(aiPlayerGold:Number, aiVendorGold:Number, aiGoldDelta:Number, astrVendorName:String)
     {
         if (PlayerInfoCard_mc._currentframe == 1)
         {
             PlayerInfoCard_mc.gotoAndStop("Barter");
         }
-		
+        
         PlayerInfoCard_mc.PlayerGoldValue.textAutoSize = "shrink";
         PlayerInfoCard_mc.VendorGoldValue.textAutoSize = "shrink";
-		
+        
         if (aiGoldDelta == undefined)
         {
             PlayerInfoCard_mc.PlayerGoldValue.SetText(aiPlayerGold.toString(), true);
@@ -272,20 +272,20 @@ class BottomBar extends MovieClip
         {
             PlayerInfoCard_mc.PlayerGoldValue.SetText(aiPlayerGold.toString() + " <font color=\'#FF0000\'>(" + aiGoldDelta.toString() + ")</font>", true);
         }
-		
+        
         PlayerInfoCard_mc.VendorGoldValue.SetText(aiVendorGold.toString());
-		
+        
         if (astrVendorName != undefined)
         {
             PlayerInfoCard_mc.VendorGoldLabel.SetText("$Gold");
             PlayerInfoCard_mc.VendorGoldLabel.SetText(astrVendorName + " " + PlayerInfoCard_mc.VendorGoldLabel.text);
         }
-		
+        
         PlayerInfoCard_mc.VendorGoldLabel._x = PlayerInfoCard_mc.VendorGoldValue._x + PlayerInfoCard_mc.VendorGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.VendorGoldLabel._width - 5;
         PlayerInfoCard_mc.PlayerGoldValue._x = PlayerInfoCard_mc.VendorGoldLabel._x + PlayerInfoCard_mc.VendorGoldLabel.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldValue._width - 20;
         PlayerInfoCard_mc.PlayerGoldLabel._x = PlayerInfoCard_mc.PlayerGoldValue._x + PlayerInfoCard_mc.PlayerGoldValue.getLineMetrics(0).x - PlayerInfoCard_mc.PlayerGoldLabel._width - 5;
     }
-	
+    
     function SetBarterPerItemInfo(aItemUpdateObj, aPlayerInfoObj)
     {
         if (aItemUpdateObj != undefined)
@@ -308,7 +308,7 @@ class BottomBar extends MovieClip
                             _loc2 = _loc2 + " <font color=\'#FF0000\'>(" + _loc4.toString() + ")</font>";
                         } // end if
                     }
-					
+                    
                     PlayerInfoCard_mc.ArmorRatingValue.textAutoSize = "shrink";
                     PlayerInfoCard_mc.ArmorRatingValue.html = true;
                     PlayerInfoCard_mc.ArmorRatingValue.SetText(_loc2, true);
@@ -343,12 +343,12 @@ class BottomBar extends MovieClip
             }
         }
     }
-	
+    
     function SetGiftInfo(aiFavorPoints:Number)
     {
         PlayerInfoCard_mc.gotoAndStop("Gift");
     }
-	
+    
     function SetPlatform(aiPlatform, abPS3Switch)
     {
         for (var i = 0; i < Buttons.length; ++i)
@@ -356,7 +356,7 @@ class BottomBar extends MovieClip
             Buttons[i].SetPlatform(aiPlatform, abPS3Switch);
         }
     }
-	
+    
     function ShowButtons()
     {
         for (var i = 0; i < Buttons.length; ++i)
@@ -364,7 +364,7 @@ class BottomBar extends MovieClip
             Buttons[i]._visible = Buttons[i].label.length > 0;
         }
     }
-	
+    
     function HideButtons()
     {
         for (var i = 0; i < Buttons.length; ++i)
@@ -372,7 +372,7 @@ class BottomBar extends MovieClip
             Buttons[i]._visible = false;
         }
     }
-	
+    
     function SetButtonsText()
     {
         for (var i = 0; i < Buttons.length; ++i)
@@ -380,10 +380,10 @@ class BottomBar extends MovieClip
             Buttons[i].label = i < arguments.length ? (arguments[i]) : ("");
             Buttons[i]._visible = Buttons[i].label.length > 0;
         }
-		
+        
         PositionButtons();
     }
-	
+    
     function SetButtonText(aText, aIndex)
     {
         if (aIndex < Buttons.length)
@@ -393,7 +393,7 @@ class BottomBar extends MovieClip
             PositionButtons();
         }
     }
-	
+    
     function SetButtonsArt(aButtonArt)
     {
         for (var i = 0; i < aButtonArt.length; ++i)
@@ -401,7 +401,7 @@ class BottomBar extends MovieClip
             SetButtonArt(aButtonArt[i], i);
         }
     }
-	
+    
     function GetButtonsArt()
     {
         var a = new Array(Buttons.length);
@@ -409,10 +409,10 @@ class BottomBar extends MovieClip
         {
             a[i] = Buttons[i].GetArt();
         }
-		
+        
         return a;
     }
-	
+    
     function SetButtonArt(aPlatformArt, aIndex:Number)
     {
         if (aIndex < Buttons.length)
@@ -424,12 +424,12 @@ class BottomBar extends MovieClip
             button.RefreshArt();
         }
     }
-	
+    
     function PositionButtons()
     {
         var spacing = 10;
         var curPos = iLeftOffset;
-		
+        
         for (var i = 0; i < Buttons.length; ++i)
         {
             if (Buttons[i].label.length > 0)

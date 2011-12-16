@@ -11,22 +11,22 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     var ItemInfoArray:Array = new Array();
     var CompassMarkerList:Array = new Array();
     var METER_PAUSE_FRAME:Number = 40;
-	
-	var HudElements:Array;
-	var HUDModes:Array;
+    
+    var HudElements:Array;
+    var HUDModes:Array;
     
     var ArrowInfoInstance;
-	
+    
     var BottomLeftLockInstance;
     var BottomRightLockInstance;
-	
+    
     var BottomRightRefInstance;
     var BottomRightRefX;
     var BottomRightRefY;
-	var TopLeftRefInstance;
+    var TopLeftRefInstance;
     var TopLeftRefX;
     var TopLeftRefY;
-	
+    
     var CompassMarkerEnemy;
     var CompassMarkerLocations;
     var CompassMarkerPlayerSet;
@@ -38,23 +38,23 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     var CompassTargetDataA;
     var CompassThreeSixtyX;
     var CompassZeroX;
-	
-	var bCrosshairEnabled:Boolean;
+    
+    var bCrosshairEnabled:Boolean;
     var Crosshair;
     var CrosshairAlert;
     var CrosshairInstance;
-	
+    
     var EnemyHealthMeter;
     var EnemyHealth_mc;
-	
+    
     var FavorBackButtonBase;
     var FavorBackButton_mc;
     var FloatingQuestMarkerInstance;
     var FloatingQuestMarker_mc;
-	
+    
     var GrayBarInstance;
     
-	
+    
     
     
     var LocationLockBase;
@@ -65,7 +65,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     var MessagesInstance;
     var QuestUpdateBaseInstance;
     
-	
+    
     var ActivateButton_tf:TextField;
     var RolloverButton_tf:TextField;
     var RolloverGrayBar_mc;
@@ -74,25 +74,25 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     var RolloverNameInstance:TextField;
     var RolloverText:TextField;
     
-	var Health:MovieClip;
-	var HealthMeterAnim:MovieClip;
+    var Health:MovieClip;
+    var HealthMeterAnim:MovieClip;
     var Magica:MovieClip;
-	var MagickaMeterAnim:MovieClip;
+    var MagickaMeterAnim:MovieClip;
     var Stamina:MovieClip;
-	var StaminaMeterAnim:MovieClip;
-	
-	var HealthMeterLeft:BlinkOnEmptyMeter;
-	var MagickaMeter:BlinkOnDemandMeter;
+    var StaminaMeterAnim:MovieClip;
+    
+    var HealthMeterLeft:BlinkOnEmptyMeter;
+    var MagickaMeter:BlinkOnDemandMeter;
     var StaminaMeter:BlinkOnDemandMeter;
-	
-	var ShoutMeter_mc:ShoutMeter;
-	
-	var LeftChargeMeter:Meter;
-	var LeftChargeMeterAnim;
-	
-	var RightChargeMeter:Meter;
-	var RightChargeMeterAnim;
-	
+    
+    var ShoutMeter_mc:ShoutMeter;
+    
+    var LeftChargeMeter:Meter;
+    var LeftChargeMeterAnim;
+    
+    var RightChargeMeter:Meter;
+    var RightChargeMeterAnim;
+    
     
     var StealthMeterInstance;
     var SubtitleText;
@@ -103,7 +103,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     var TutorialLockInstance;
     var ValueTranslated:TextField;
     var WeightTranslated:TextField;
-	
+    
 
     function HUDMenu()
     {
@@ -115,23 +115,23 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
         HealthMeterLeft = new BlinkOnEmptyMeter(Health.HealthMeter_mc.HealthLeft);
         StaminaMeter = new BlinkOnDemandMeter(Stamina.StaminaMeter_mc, Stamina.StaminaFlashInstance);
         ShoutMeter_mc = new ShoutMeter(CompassShoutMeterHolder.ShoutMeterInstance, CompassShoutMeterHolder.ShoutWarningInstance);
-		
+        
         LeftChargeMeter = new Meter(BottomLeftLockInstance.LeftHandChargeMeterInstance.ChargeMeter_mc);
         RightChargeMeter = new Meter(BottomRightLockInstance.RightHandChargeMeterInstance.ChargeMeter_mc);
-		
+        
         MagickaMeterAnim = Magica;
         HealthMeterAnim = Health;
         StaminaMeterAnim = Stamina;
         LeftChargeMeterAnim = BottomLeftLockInstance.LeftHandChargeMeterInstance;
         RightChargeMeterAnim = BottomRightLockInstance.RightHandChargeMeterInstance;
-		
+        
         LeftChargeMeterAnim.gotoAndStop(1);
         RightChargeMeterAnim.gotoAndStop(1);
         MagickaMeterAnim.gotoAndStop(1);
         HealthMeterAnim.gotoAndStop(1);
         StaminaMeterAnim.gotoAndStop(1);
         ArrowInfoInstance.gotoAndStop(1);
-		
+        
         EnemyHealthMeter = new Meter(EnemyHealth_mc);
         EnemyHealth_mc.BracketsInstance.RolloverNameInstance.textAutoSize = "shrink";
         EnemyHealthMeter.SetPercent(0);
@@ -177,7 +177,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     {
         HudElements = new Array();
         HUDModes = new Array();
-		
+        
         HudElements.push(Health);
         HudElements.push(Magica);
         HudElements.push(Stamina);
@@ -202,7 +202,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
         HudElements.push(FloatingQuestMarker_mc);
         HudElements.push(LocationLockBase);
         HudElements.push(TutorialLockInstance);
-		
+        
         Health.All = true;
         Magica.All = true;
         Stamina.All = true;
@@ -382,7 +382,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     function CheckAgainstHudMode(aObj)
     {
         var __reg2 = "All";
-		
+        
         if (HUDModes.length > 0) 
         {
             __reg2 = String(HUDModes[HUDModes.length - 1]);
@@ -405,17 +405,17 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
         FavorBackButton_mc.Lock("BR");
         LocationLockBase.Lock("TR");
         LocationLockBase.LocationNameBase.gotoAndStop(1);
-		
+        
         var __reg2 = {x: TopLeftRefInstance.LocationRefInstance._x, y: TopLeftRefInstance.LocationRefInstance._y};
         TopLeftRefInstance.localToGlobal(__reg2);
         TopLeftRefX = __reg2.x;
         TopLeftRefY = __reg2.y;
-		
+        
         var __reg3 = {x: BottomRightRefInstance.LocationRefInstance._x, y: BottomRightRefInstance.LocationRefInstance._y};
         BottomRightRefInstance.localToGlobal(__reg3);
         BottomRightRefX = __reg3.x;
         BottomRightRefY = __reg3.y;
-		
+        
         CompassShoutMeterHolder.Lock("T");
         EnemyHealth_mc.Lock("T");
         MessagesBlock.Lock("TL");
@@ -427,7 +427,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
         SubtitleText.SetText(" ", true);
         RolloverText.verticalAutoSize = "top";
         RolloverText.html = true;
-		
+        
         GameDelegate.addCallBack("SetCrosshairTarget", this, "SetCrosshairTarget");
         GameDelegate.addCallBack("SetLoadDoorInfo", this, "SetLoadDoorInfo");
         GameDelegate.addCallBack("ShowMessage", this, "ShowMessage");
@@ -594,12 +594,12 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
     {
         var favorNoTargetLabel = abFavorMode ? "Favor" : "NoTarget";
         var favorTargetLabel = abFavorMode ? "Favor" : "Target";
-		
+        
         var currentCrosshair = _currentframe == 1 ? CrosshairInstance : CrosshairAlert;
-		
+        
         currentCrosshair._visible = CheckAgainstHudMode(currentCrosshair) && abShowCrosshair != false;
         currentCrosshair._alpha = bCrosshairEnabled ? 100 : 0;
-		
+        
         if (!abActivate && SavedRolloverText.length > 0) {
             currentCrosshair.gotoAndStop(favorNoTargetLabel);
             RolloverText.SetText(SavedRolloverText, true);
@@ -623,7 +623,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
             RolloverButton_tf._alpha = 0;
         }
         var newText = "";
-		
+        
         if (aCost != undefined) 
         {
             newText = ValueTranslated.text + " <font face=\'$EverywhereBoldFont\' size=\'24\' color=\'#FFFFFF\'>" + Math.round(aCost) + "</font>" + newText;
@@ -656,7 +656,7 @@ dynamic class HUDMenu extends Shared.PlatformChangeUser
             RolloverButton_tf.SetText(" ", true);
             return;
         }
-		
+        
         var bitmap = flash.display.BitmapData.loadBitmap(astrButtonName + ".png");
         if (bitmap != undefined && bitmap.height > 0) 
         {
