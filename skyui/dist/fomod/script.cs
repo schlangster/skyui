@@ -13,8 +13,6 @@ using System.Globalization;
 class Script : FalloutNewVegasBaseScript {
 	const string title = "SkyUI";
 
-	static ASCIIEncoding encoding;
-
 	static Form mainInstallForm;
 	static PictureBox logoPicture;
     static PictureBox exitButton;
@@ -63,8 +61,7 @@ class Script : FalloutNewVegasBaseScript {
 	static String FONT_CONFIG_FILE = "Interface/fontconfig.txt";
 
 	public static bool OnActivate() {
-		encoding = new ASCIIEncoding();	
-		
+	
 		setDefaults();
 		
 		InitializeComponents();
@@ -134,16 +131,16 @@ class Script : FalloutNewVegasBaseScript {
 		if (data == null)
 			return false;
 		
-		string tmp = encoding.GetString(data);
+		string tmp = Encoding.Unicode.GetString(data);
 		
-		// Include is already there?
+		// Font is already there?
 		if (Regex.Match(tmp, "map \"" + Regex.Escape("$") + "ListFont\" = ", RegexOptions.Singleline).Success == true)
 			return true;
 		
-		tmp += "\r\n\r\n"
+		tmp += "\r\n"
 			+ "map \"$ListFont\" = \"Futura Condensed\" Normal";
 		
-		data = encoding.GetBytes(tmp);
+		data = Encoding.Unicode.GetBytes(tmp);
 			
 		GenerateDataFile(FONT_CONFIG_FILE, data);
 		
@@ -369,8 +366,8 @@ class Script : FalloutNewVegasBaseScript {
 
 	static void InitializeCommonImages()
     {	
-		imageChecked = GetImageFromFomod("InstallerChecked.png");
-		imageUnchecked = GetImageFromFomod("InstallerUnchecked.png");
+		imageChecked = GetImageFromFomod("fomod/InstallerChecked.png");
+		imageUnchecked = GetImageFromFomod("fomod/InstallerUnchecked.png");
 	}
 
     static void InitializeMainImages()
@@ -510,7 +507,8 @@ class Script : FalloutNewVegasBaseScript {
         iconsForm.Close();
     }
 	
-	static bool IsPluginActive(String pluginName) {  	
+	static bool IsPluginActive(String pluginName)
+	{  	
 	    string[] loadOrder = GetActivePlugins();  
 	    for (int i = 0; i < loadOrder.Length; ++i) {  
 	        if (loadOrder[i].Equals(pluginName, StringComparison.InvariantCultureIgnoreCase)) {
@@ -521,7 +519,8 @@ class Script : FalloutNewVegasBaseScript {
 	    return false;  
 	}   
     
-    static Image GetImageFromFomod(string filename) {  
+    static Image GetImageFromFomod(string filename)
+	{  
         byte[] data = GetFileFromFomod(filename);  
         MemoryStream s = new MemoryStream(data);  
         Image img = Image.FromStream(s);  
