@@ -1,13 +1,13 @@
 dynamic class gfx.utils.Locale
 {
 
-    function Locale()
-    {
-    }
+	function Locale()
+	{
+	}
 
-    static function getTranslatedString(value)
-    {
-        return value;
-    }
+	static function getTranslatedString(value)
+	{
+		return value;
+	}
 
 }
