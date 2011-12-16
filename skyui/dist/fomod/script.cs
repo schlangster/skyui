@@ -52,6 +52,7 @@ class Script : FalloutNewVegasBaseScript {
 	static System.Media.SoundPlayer hoverPlayer;
 	static System.Media.SoundPlayer acceptPlayer;
 	static System.Media.SoundPlayer denyPlayer;
+	static System.Media.SoundPlayer selectPlayer;
 	
 	static bool install;
 	
@@ -399,10 +400,12 @@ class Script : FalloutNewVegasBaseScript {
     	hoverPlayer = new System.Media.SoundPlayer();
 		acceptPlayer = new System.Media.SoundPlayer();
 		denyPlayer = new System.Media.SoundPlayer();
+		selectPlayer = new System.Media.SoundPlayer();
     
-	    hoverPlayer.Stream = GetStreamFromFomod("fomod/mouse_over4.wav");
-		acceptPlayer.Stream = GetStreamFromFomod("fomod/blip11.wav");
-		denyPlayer.Stream = GetStreamFromFomod("fomod/electric_alert1.wav");
+	    hoverPlayer.Stream = GetStreamFromFomod("fomod/ui_menu_focus.wav");
+		acceptPlayer.Stream = GetStreamFromFomod("fomod/ui_menu_ok.wav");
+		denyPlayer.Stream = GetStreamFromFomod("fomod/ui_menu_cancel.wav");
+		selectPlayer.Stream = GetStreamFromFomod("fomod/ui_menu_prevnext.wav");
 	}
 	
 	static void installButton_MouseEnter(object sender, EventArgs e)
@@ -453,13 +456,13 @@ class Script : FalloutNewVegasBaseScript {
 
     static void exitButton_Click(object sender, EventArgs e)
     {
-    	acceptPlayer.Play();
+    	denyPlayer.Play();
         mainInstallForm.Close();
     }
     
     static void iconsButton1_Click(object sender, EventArgs e)
     {
-        acceptPlayer.Play();
+        selectPlayer.Play();
 
         iconsButton1.Image = imageChecked;
         iconsButton2.Image = imageUnchecked;
@@ -470,7 +473,7 @@ class Script : FalloutNewVegasBaseScript {
 
     static void iconsButton2_Click(object sender, EventArgs e)
     {
-        acceptPlayer.Play();
+        selectPlayer.Play();
 
         iconsButton1.Image = imageUnchecked;
         iconsButton2.Image = imageChecked;
@@ -481,7 +484,7 @@ class Script : FalloutNewVegasBaseScript {
 
     static void iconsButton3_Click(object sender, EventArgs e)
     {
-        acceptPlayer.Play();
+        selectPlayer.Play();
 
         iconsButton1.Image = imageUnchecked;
         iconsButton2.Image = imageUnchecked;
@@ -503,7 +506,7 @@ class Script : FalloutNewVegasBaseScript {
 
     static void closeIconsFormButton_Click(object sender, EventArgs e)
     {
-        acceptPlayer.Play();
+        denyPlayer.Play();
         iconsForm.Close();
     }
 	
