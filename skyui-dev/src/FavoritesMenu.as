@@ -7,9 +7,9 @@ class FavoritesMenu extends MovieClip
 {
     var bPCControlsReady:Boolean = true;
     var List_mc:MovieClip;
-	var ItemList:MovieClip;
-	var LeftPanel:MovieClip;
-	
+    var ItemList:MovieClip;
+    var LeftPanel:MovieClip;
+    
     function FavoritesMenu()
     {
         super();

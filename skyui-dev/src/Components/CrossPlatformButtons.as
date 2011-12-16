@@ -1,20 +1,20 @@
 ﻿class Components.CrossPlatformButtons extends gfx.controls.Button
 {
-	var CurrentPlatform;
-	var PS3Swapped;
-	var ButtonArt;
-	var PCButton;
-	var getNextHighestDepth;
-	var ButtonArt_mc;
-	var XBoxButton;
-	var PS3Button;
-	var border;
-	
+    var CurrentPlatform;
+    var PS3Swapped;
+    var ButtonArt;
+    var PCButton;
+    var getNextHighestDepth;
+    var ButtonArt_mc;
+    var XBoxButton;
+    var PS3Button;
+    var border;
+    
     function CrossPlatformButtons()
     {
         super();
     }
-	
+    
     function onLoad()
     {
         super.onLoad();
@@ -23,7 +23,7 @@
             _parent.onButtonLoad(this);
         }
     }
-	
+    
     function SetPlatform(aiPlatform, aSwapPS3)
     {
         if (aiPlatform != undefined)
@@ -36,14 +36,14 @@
         }
         RefreshArt();
     }
-	
+    
     function RefreshArt()
     {
         if (ButtonArt != undefined)
         {
             ButtonArt.removeMovieClip();
         }
-		
+        
         switch (CurrentPlatform)
         {
             case Shared.ButtonChange.PLATFORM_PC:
@@ -82,12 +82,12 @@
         ButtonArt_mc._y = (_height - ButtonArt_mc._height) / 2;
         border._visible = false;
     }
-	
+    
     function GetArt()
     {
         return ({PCArt: PCButton, XBoxArt: XBoxButton, PS3Art: PS3Button});
     }
-	
+    
     function SetArt(aPlatformArt)
     {
         this.PCArt = aPlatformArt.PCArt;
@@ -99,7 +99,7 @@
     {
         return null;
     }
-	
+    
     function set XBoxArt(aValue)
     {
         if (aValue != "")
@@ -111,7 +111,7 @@
     {
         return null;
     }
-	
+    
     function set PS3Art(aValue)
     {
         if (aValue != "")
@@ -119,12 +119,12 @@
             PS3Button = aValue;
         }
     }
-	
+    
     function get PCArt()
     {
         return null;
     }
-	
+    
     function set PCArt(aValue)
     {
         if (aValue != "")

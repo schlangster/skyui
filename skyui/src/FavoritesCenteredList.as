@@ -1,9 +1,9 @@
 ﻿class FavoritesCenteredList extends Shared.CenteredScrollingList
 {
     var iPlatform:Number; 
-	var iNumTopHalfEntries:Number;
-	var EntriesA:Array;
-	 
+    var iNumTopHalfEntries:Number;
+    var EntriesA:Array;
+     
     function FavoritesCenteredList()
     {
         super();

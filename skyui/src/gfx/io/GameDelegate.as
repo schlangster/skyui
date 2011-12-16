@@ -1,71 +1,55 @@
-﻿import flash.external.ExternalInterface;
+﻿//****************************************************************************
+//  Best guess from GFX documentation.
+//  https://developer.scaleform.com/doc/gfx/3.0/clik/gfx_io_GameDelegate.html
+//****************************************************************************
 
-class gfx.io.GameDelegate
-{
-	static var responseHash = {};
-    static var callBackHash = {};
-    static var nextID = 0;
-    static var initialized = false;
-	
-    function GameDelegate()
-    {
-    }
-	
-    static function call(methodName, params, scope, callBack)
-    {
-        if (!initialized)
-        {
-            initialize();
-        }
-		
+import flash.external.ExternalInterface;
+
+class gfx.io.GameDelegate {
+
+    static var responseHash:Object = {};
+    static var callBackHash:Object = {};
+    static var nextID:Number = 0;
+    static var initialized:Boolean = false;
+    
+    function GameDelegate() {}
+    
+    static function call(methodName:String, params:Array, scope:Object, callBack:String):Void {
+        if (!initialized) { initialize(); }
         nextID = ++nextID;
-        var _loc1 = nextID;
-        responseHash[_loc1] = [scope, callBack];
-        params.unshift(methodName, _loc1);
-        ExternalInterface.call.apply(null, params);
-        delete responseHash[_loc1];
+        var thisID = nextID;
+        responseHash[thisID] = [scope, callBack];
+        params.unshift(methodName, thisID);
+        flash.external.ExternalInterface.call.apply(null, params);
+        delete responseHash[thisID];
     }
-	
-    static function receiveResponse(uid)
-    {
-        var _loc2 = responseHash[uid];
-        if (_loc2 == null)
-        {
-            return;
-        } // end if
-        var _loc3 = _loc2[0];
-        var _loc4 = _loc2[1];
-        _loc3[_loc4].apply(_loc3, arguments.slice(1));
+    
+    static function receiveResponse(uid:Number):Void {
+        var thisResponse = responseHash[uid];
+        if (thisResponse == null) { return; }
+        var scope = thisResponse[0];
+        var callBack = thisResponse[1];
+        scope[callBack].apply(scope, arguments.slice(1));
     }
-	
-    static function addCallBack(methodName, scope, callBack)
-    {
-        if (!initialized)
-        {
-			initialize();
-        } // end if
-		callBackHash[methodName] = [scope, callBack];
+    
+    static function addCallBack(methodName:String, scope:Object, callBack:String):Void {
+        if (!initialized) { initialize(); }
+        callBackHash[methodName] = [scope, callBack];
     }
-	
-    static function removeCallBack(methodName)
-    {
+    
+    static function removeCallBack(methodName:String):Void {
         callBackHash[methodName] = null;
     }
-	
-    static function receiveCall(methodName)
-    {
-        var _loc2 = callBackHash[methodName];
-        if (_loc2 == null)
-        {
-            return;
-        }
-        var _loc3 = _loc2[0];
-        var _loc4 = _loc2[1];
-        _loc3[_loc4].apply(_loc3, arguments.slice(1));
+    
+    static function receiveCall(methodName:String):Void {
+        var thisCallBackHash = callBackHash[methodName];
+        if (thisCallBackHash == null) { return; }
+        var scope = thisCallBackHash[0];
+        var callBack = thisCallBackHash[1];
+        scope[callBack].apply(scope, arguments.slice(1));
     }
-	
-    static function initialize()
-    {
+    
+    static function initialize():Void {
         initialized = true;
         ExternalInterface.addCallback("call", GameDelegate, receiveCall);
         ExternalInterface.addCallback("respond", GameDelegate, receiveResponse);
