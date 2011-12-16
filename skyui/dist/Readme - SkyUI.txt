@@ -115,10 +115,12 @@ In case you want to use a custom icon theme:
 ------------------------------------------------------------
 Problem: [Missing new script extender]
 
-------------------------------------------------------------
-Problem: I changed something in the config, now everything is screwed up!
+Solution: TODO
 
-Solution: Just get the latest
+------------------------------------------------------------
+Problem: I changed something in skyui.cfg, now everything is screwed up!
+
+Solution: TODO
 
 
 ========================================================================================================================================
@@ -136,7 +138,7 @@ Gibbed:
 	Created the 'gibbed interface extensions' SKSE plugin, which makes more game data available for display in the inventory.
 
 Mardoxx:
-	Did a lot of 'groundwork' by reconstructing the decompiled interface files, so we can customize them later.
+	Did a lot of groundwork by reconstructing the decompiled interface files, so we can customize them later.
 
 GreatClone:
 	Created an amazing set of alternative category icons.
