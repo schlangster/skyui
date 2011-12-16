@@ -46,14 +46,6 @@ class ItemMenu extends MovieClip
 		InventoryLists_mc.ShowCategoriesList(abPlayBladeSound);
 		ItemCard_mc._visible = false;
 		BottomBar_mc.HideButtons();
-
-		// TODO: aha! might be why that wasn't working
-//		RestoreCategoryRect.onRollOver = function()
-//		{
-//			if (_parent.bFadedIn == true && _parent.InventoryLists_mc.currentState == InventoryLists.TWO_PANELS) {
-//				_parent.InventoryLists_mc.RestoreCategoryIndex();
-//			}
-//		};
 		
 		ExitMenuRect.onMouseDown = function()
 		{
@@ -117,23 +109,21 @@ class ItemMenu extends MovieClip
 		
 		skse.SetINISetting("fInventory3DItemPosScaleWide:Interface", (itemiconPosition.scale));
 		skse.SetINISetting("fInventory3DItemPosXWide:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fInventory3DItemPosYWide:Interface", -500);
 		skse.SetINISetting("fInventory3DItemPosZWide:Interface", (12 + itemiconPosition.yOffset));
 		
 		skse.SetINISetting("fInventory3DItemPosScale:Interface", (itemiconPosition.scale));
 		skse.SetINISetting("fInventory3DItemPosX:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fInventory3DItemPosY:Interface", -500);
 		skse.SetINISetting("fInventory3DItemPosZ:Interface", (16 + itemiconPosition.yOffset));
 		
-		skse.SetINISetting("fMagic3DItemPosScaleWide:Interface", (itemiconPosition.scale));
-		skse.SetINISetting("fMagic3DItemPosXWide:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fMagic3DItemPosYWide:Interface", -500);
-		skse.SetINISetting("fMagic3DItemPosZWide:Interface", (12 + itemiconPosition.yOffset));
-		
-		skse.SetINISetting("fMagic3DItemPosScale:Interface", (itemiconPosition.scale));
-		skse.SetINISetting("fMagic3DItemPosX:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fMagic3DItemPosY:Interface", -500);
-		skse.SetINISetting("fMagic3DItemPosZ:Interface", (16 + itemiconPosition.yOffset));
+//		skse.SetINISetting("fMagic3DItemPosScaleWide:Interface", (itemiconPosition.scale));
+//		skse.SetINISetting("fMagic3DItemPosXWide:Interface", (iconX + itemiconPosition.xOffset));
+//		skse.SetINISetting("fMagic3DItemPosYWide:Interface", -500);
+//		skse.SetINISetting("fMagic3DItemPosZWide:Interface", (12 + itemiconPosition.yOffset));
+//		
+//		skse.SetINISetting("fMagic3DItemPosScale:Interface", (itemiconPosition.scale));
+//		skse.SetINISetting("fMagic3DItemPosX:Interface", (iconX + itemiconPosition.xOffset));
+//		skse.SetINISetting("fMagic3DItemPosY:Interface", -500);
+//		skse.SetINISetting("fMagic3DItemPosZ:Interface", (16 + itemiconPosition.yOffset));
 
 		if (MouseRotationRect != undefined) {
 			MovieClip(MouseRotationRect).Lock("T");
@@ -261,7 +251,7 @@ class ItemMenu extends MovieClip
 
 	function ShouldProcessItemsListInput(abCheckIfOverRect)
 	{
-		var process = bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.TWO_PANELS && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
+		var process = bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.SHOW_PANEL && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
 
 		if (process && iPlatform == 0 && abCheckIfOverRect) {
 			var e = Mouse.getTopMostEntity();
@@ -321,10 +311,16 @@ class ItemMenu extends MovieClip
 		InventoryLists_mc.CategoriesList.disableSelection = false;
 		InventoryLists_mc.CategoriesList.disableInput = false;
 	}
-
+	
 	function RestoreIndices()
 	{
-		InventoryLists_mc.CategoriesList.RestoreScrollPosition(arguments[0],true);
+		if (arguments[0] != undefined && arguments[0] == -1) {
+			InventoryLists_mc.CategoriesList.restoreSelectedEntry(arguments[0]);
+		} else {
+			// ALL
+			InventoryLists_mc.CategoriesList.restoreSelectedEntry(1);
+		}
+		
 		for (var i = 1; i < arguments.length; i++) {
 			InventoryLists_mc.CategoriesList.entryList[i - 1].savedItemIndex = arguments[i];
 		}
@@ -334,10 +330,22 @@ class ItemMenu extends MovieClip
 	function SaveIndices()
 	{
 		var a = new Array();
-		a.push(InventoryLists_mc.CategoriesList.scrollPosition);
+		
+		a.push(InventoryLists_mc.CategoriesList.selectedIndex);
 		for (var i = 0; i < InventoryLists_mc.CategoriesList.entryList.length; i++) {
 			a.push(InventoryLists_mc.CategoriesList.entryList[i].savedItemIndex);
 		}
 		GameDelegate.call("SaveIndices",[a]);
+		
+		// TODO: Gets called when the menu closes, so I put that icon reset here. Still would be nice to find something more appropriate.
+		
+		// Restore to defaults for enchanting etc
+		skse.SetINISetting("fInventory3DItemPosScaleWide:Interface", 1.5000);
+		skse.SetINISetting("fInventory3DItemPosXWide:Interface", -22.0000);
+		skse.SetINISetting("fInventory3DItemPosZWide:Interface", 12.0000);
+				
+		skse.SetINISetting("fInventory3DItemPosScale:Interface", 1.8700);
+		skse.SetINISetting("fInventory3DItemPosX:Interface", -29.0000);
+		skse.SetINISetting("fInventory3DItemPosZ:Interface", 16.0000);
 	}
 }

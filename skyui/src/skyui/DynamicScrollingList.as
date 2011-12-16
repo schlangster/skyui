@@ -18,8 +18,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	// Children
 	var scrollbar:MovieClip;
 
-	var debug;
-
 	// Constructor
 	function DynamicScrollingList()
 	{
@@ -285,6 +283,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		updateScrollPosition(Math.floor(event.position + 0.500000));
 	}
 
+	// Don't think we need this for the new panel style. Resetting it to 0 is probably more convenient since we can search and stuff
 	function RestoreScrollPosition(a_newPosition)
 	{
 		scrollPosition = 0;

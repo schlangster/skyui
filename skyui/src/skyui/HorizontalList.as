@@ -28,7 +28,6 @@ class skyui.HorizontalList extends skyui.DynamicList
 	var selectorLeft:MovieClip;
 	var selectorRight:MovieClip;
 	
-	var debug;
 
 	function HorizontalList()
 	{
@@ -61,28 +60,12 @@ class skyui.HorizontalList extends skyui.DynamicList
 			_fillType = FILL_BORDER;
 		}
 	}
-
-// Somewhat working, but it's not that important and I'd rather do it properly later
-//
-//	// This menu doesnt really have/need scroll position anymore. Still, ItemMenu will try to save and restore it from the saved array index 0.
-//	// We can utilize this to remember the last selectedIndex (= last opened category)
-//	// <TODO> Just do this more transparently once ItemMenu.as is modified.
-//	function get scrollPosition():Number
-//	{
-//		return selectedIndex;
-//	}
-//	function RestoreScrollPosition(a_newIndex:Number)
-//	{
-//		debug.textField.SetText("Restoring " + a_newIndex);
-//		selectedIndex = a_newIndex;
-//	}
-//	// </TODO>
-//
-//	function InvalidateData()
-//	{
-//		super.InvalidateData();
-//		updateSelector();
-//	}
+	
+	function restoreSelectedEntry(a_newIndex:Number)
+	{
+		doSetSelectedIndex(a_newIndex,0);
+		onItemPress(1);
+	}
 
 	// Gets a clip, or if it doesn't exist, creates it.
 	function getClipByIndex(a_index):MovieClip
@@ -294,7 +277,6 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
 
-			//_parent._parent.debug.textField.SetText("ItemPress true" + counter);
 			updateSelector();
 			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
 		}

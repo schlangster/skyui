@@ -51,7 +51,7 @@ class InventoryMenu extends ItemMenu
         {
             if (GlobalFunc.IsKeyPressed(details))
             {
-                if (InventoryLists_mc.currentState == InventoryLists.ONE_PANEL && details.navEquivalent == NavigationCode.LEFT)
+                if (InventoryLists_mc.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.LEFT)
                 {
                     StartMenuFade();
                     GameDelegate.call("ShowTweenMenu", []);
