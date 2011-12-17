@@ -14,7 +14,7 @@ class ItemMenu extends MovieClip
 	var ExitMenuRect:MovieClip;
 	var MouseRotationRect:MovieClip;
 	var iPlatform:Number;
-	
+
 	private var _config;
 
 	function ItemMenu()
@@ -25,7 +25,7 @@ class ItemMenu extends MovieClip
 		BottomBar_mc = BottomBar_mc;
 		bFadedIn = true;
 		Mouse.addListener(this);
-		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
 	}
 
 	function InitExtensions(abPlayBladeSound)
@@ -48,21 +48,22 @@ class ItemMenu extends MovieClip
 		BottomBar_mc.HideButtons();
 
 		// TODO: aha! might be why that wasn't working
-//		RestoreCategoryRect.onRollOver = function()
-//		{
-//			if (_parent.bFadedIn == true && _parent.InventoryLists_mc.currentState == InventoryLists.TWO_PANELS) {
-//				_parent.InventoryLists_mc.RestoreCategoryIndex();
-//			}
-//		};
-		
+		//RestoreCategoryRect.onRollOver = function()
+		//{
+		//if (_parent.bFadedIn == true && _parent.InventoryLists_mc.currentState == InventoryLists.TWO_PANELS) {
+		//_parent.InventoryLists_mc.RestoreCategoryIndex();
+		//}
+		//};
+
 		ExitMenuRect.onMouseDown = function()
 		{
-			if (_parent.bFadedIn == true && Mouse.getTopMostEntity() == this) {
+			if (_parent.bFadedIn == true && Mouse.getTopMostEntity() == this)
+			{
 				_parent.onExitMenuRectClick();
 			}
 		};
 	}
-	
+
 	function onConfigLoad(event)
 	{
 		_config = event.config;
@@ -71,71 +72,77 @@ class ItemMenu extends MovieClip
 	function PositionElements()
 	{
 		GlobalFunc.SetLockFunction();
-		
+
 		InventoryLists_mc.Lock("L");
 		InventoryLists_mc._x = InventoryLists_mc._x - 20;
-		
+
 		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-		
+
 		var a = InventoryLists_mc.getContentBounds();
 		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
 		var panelEdge = InventoryLists_mc._x + a[0] + a[2] + 25;
-		
-		BottomBar_mc.PositionElements(leftEdge, rightEdge);
+
+		BottomBar_mc.PositionElements(leftEdge,rightEdge);
 
 
 		var itemCardContainer = ItemCard_mc._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
 		var itemiconPosition = _config.ItemInfo.itemicon;
-		
+
 		var scaleMult = (rightEdge - panelEdge) / itemCardContainer._width;
-		
+
 		// Scale down if necessary
-		if (scaleMult < 1.0) {
+		if (scaleMult < 1.0)
+		{
 			itemCardContainer._width *= scaleMult;
 			itemCardContainer._height *= scaleMult;
 			itemiconPosition.scale *= scaleMult;
 		}
-		
-		if (itemcardPosition.align == "left") {
+
+		if (itemcardPosition.align == "left")
+		{
 			itemCardContainer._x = panelEdge + leftEdge + itemcardPosition.xOffset;
-		} else if (itemcardPosition.align == "right") {
+		}
+		else if (itemcardPosition.align == "right")
+		{
 			itemCardContainer._x = rightEdge - itemCardContainer._width + itemcardPosition.xOffset;
-		} else {
+		}
+		else
+		{
 			itemCardContainer._x = panelEdge + itemcardPosition.xOffset + (Stage.visibleRect.x + Stage.visibleRect.width - panelEdge - itemCardContainer._width) / 2;
 		}
 		itemCardContainer._y = itemCardContainer._y + itemcardPosition.yOffset;
-		
+
 		MovieClip(ExitMenuRect).Lock("TL");
 		ExitMenuRect._x = ExitMenuRect._x - Stage.safeRect.x;
 		ExitMenuRect._y = ExitMenuRect._y - Stage.safeRect.y;
-		
-		
-		var iconX = GlobalFunc.Lerp(0, 128, Stage.visibleRect.x, (Stage.visibleRect.x + Stage.visibleRect.width), (itemCardContainer._x + (itemCardContainer._width / 2)), 0);
-		iconX = -(iconX - 64)
-		
-		skse.SetINISetting("fInventory3DItemPosScaleWide:Interface", (itemiconPosition.scale));
-		skse.SetINISetting("fInventory3DItemPosXWide:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fInventory3DItemPosYWide:Interface", -500);
-		skse.SetINISetting("fInventory3DItemPosZWide:Interface", (12 + itemiconPosition.yOffset));
-		
-		skse.SetINISetting("fInventory3DItemPosScale:Interface", (itemiconPosition.scale));
-		skse.SetINISetting("fInventory3DItemPosX:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fInventory3DItemPosY:Interface", -500);
-		skse.SetINISetting("fInventory3DItemPosZ:Interface", (16 + itemiconPosition.yOffset));
-		
-		skse.SetINISetting("fMagic3DItemPosScaleWide:Interface", (itemiconPosition.scale));
-		skse.SetINISetting("fMagic3DItemPosXWide:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fMagic3DItemPosYWide:Interface", -500);
-		skse.SetINISetting("fMagic3DItemPosZWide:Interface", (12 + itemiconPosition.yOffset));
-		
-		skse.SetINISetting("fMagic3DItemPosScale:Interface", (itemiconPosition.scale));
-		skse.SetINISetting("fMagic3DItemPosX:Interface", (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting("fMagic3DItemPosY:Interface", -500);
-		skse.SetINISetting("fMagic3DItemPosZ:Interface", (16 + itemiconPosition.yOffset));
 
-		if (MouseRotationRect != undefined) {
+
+		var iconX = GlobalFunc.Lerp(0, 128, Stage.visibleRect.x, (Stage.visibleRect.x + Stage.visibleRect.width), (itemCardContainer._x + (itemCardContainer._width / 2)), 0);
+		iconX = -(iconX - 64);
+		skse.SetINISetting("fInventory3DItemPosScaleWide:Interface",(itemiconPosition.scale));
+		skse.SetINISetting("fInventory3DItemPosXWide:Interface",(iconX + itemiconPosition.xOffset));
+		//skse.SetINISetting("fInventory3DItemPosYWide:Interface", -500);
+		skse.SetINISetting("fInventory3DItemPosZWide:Interface",(12 + itemiconPosition.yOffset));
+
+		skse.SetINISetting("fInventory3DItemPosScale:Interface",(itemiconPosition.scale));
+		skse.SetINISetting("fInventory3DItemPosX:Interface",(iconX + itemiconPosition.xOffset));
+		//skse.SetINISetting("fInventory3DItemPosY:Interface", -500);
+		skse.SetINISetting("fInventory3DItemPosZ:Interface",(16 + itemiconPosition.yOffset));
+
+		skse.SetINISetting("fMagic3DItemPosScaleWide:Interface",(itemiconPosition.scale));
+		skse.SetINISetting("fMagic3DItemPosXWide:Interface",(iconX + itemiconPosition.xOffset));
+		skse.SetINISetting("fMagic3DItemPosYWide:Interface",-500);
+		skse.SetINISetting("fMagic3DItemPosZWide:Interface",(12 + itemiconPosition.yOffset));
+
+		skse.SetINISetting("fMagic3DItemPosScale:Interface",(itemiconPosition.scale));
+		skse.SetINISetting("fMagic3DItemPosX:Interface",(iconX + itemiconPosition.xOffset));
+		skse.SetINISetting("fMagic3DItemPosY:Interface",-500);
+		skse.SetINISetting("fMagic3DItemPosZ:Interface",(16 + itemiconPosition.yOffset));
+
+		if (MouseRotationRect != undefined)
+		{
 			MovieClip(MouseRotationRect).Lock("T");
 			MouseRotationRect._x = ItemCard_mc._parent._x;
 			MouseRotationRect._width = ItemCard_mc._parent._width;
@@ -158,9 +165,12 @@ class ItemMenu extends MovieClip
 
 	function handleInput(details, pathToFocus)
 	{
-		if (bFadedIn) {
-			if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
-				if (GlobalFunc.IsKeyPressed(details) && details.navEquivalent == gfx.ui.NavigationCode.TAB) {
+		if (bFadedIn)
+		{
+			if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
+			{
+				if (GlobalFunc.IsKeyPressed(details) && details.navEquivalent == gfx.ui.NavigationCode.TAB)
+				{
 					GameDelegate.call("CloseMenu",[]);
 				}
 			}
@@ -171,8 +181,10 @@ class ItemMenu extends MovieClip
 
 	function onMouseWheel(delta)
 	{
-		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
-			if (e == MouseRotationRect && ShouldProcessItemsListInput(false) || !bFadedIn && delta == -1) {
+		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
+		{
+			if (e == MouseRotationRect && ShouldProcessItemsListInput(false) || !bFadedIn && delta == -1)
+			{
 				GameDelegate.call("ZoomItemModel",[delta]);
 				continue;
 			}
@@ -190,17 +202,21 @@ class ItemMenu extends MovieClip
 
 	function onItemHighlightChange(event)
 	{
-		if (event.index != -1) {
+		if (event.index != -1)
+		{
 			GameDelegate.call("UpdateItem3D",[true]);
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
-		} else {
+		}
+		else
+		{
 			onHideItemsList();
 		}
 	}
 
 	function onShowItemsList(event)
 	{
-		if (event.index != -1) {
+		if (event.index != -1)
+		{
 			GameDelegate.call("UpdateItem3D",[true]);
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
 			ItemCard_mc.FadeInCard();
@@ -217,13 +233,19 @@ class ItemMenu extends MovieClip
 
 	function onItemSelect(event)
 	{
-		if (event.entry.enabled) {
-			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT) {
+		if (event.entry.enabled)
+		{
+			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
+			{
 				ItemCard_mc.ShowQuantityMenu(event.entry.count);
-			} else {
+			}
+			else
+			{
 				onQuantityMenuSelect({amount:1});
 			}
-		} else {
+		}
+		else
+		{
 			GameDelegate.call("DisabledItemSelect",[]);
 		}
 	}
@@ -246,12 +268,15 @@ class ItemMenu extends MovieClip
 
 	function onItemCardSubMenuAction(event)
 	{
-		if (event.opening == true) {
+		if (event.opening == true)
+		{
 			InventoryLists_mc.ItemsList.disableSelection = true;
 			InventoryLists_mc.ItemsList.disableInput = true;
 			InventoryLists_mc.CategoriesList.disableSelection = true;
 			InventoryLists_mc.CategoriesList.disableInput = true;
-		} else if (event.opening == false) {
+		}
+		else if (event.opening == false)
+		{
 			InventoryLists_mc.ItemsList.disableSelection = false;
 			InventoryLists_mc.ItemsList.disableInput = false;
 			InventoryLists_mc.CategoriesList.disableSelection = false;
@@ -261,14 +286,16 @@ class ItemMenu extends MovieClip
 
 	function ShouldProcessItemsListInput(abCheckIfOverRect)
 	{
-		var process = bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.TWO_PANELS && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
+		var process = bFadedIn == true && InventoryLists_mc.currentState == InventoryLists.SHOW_PANEL && InventoryLists_mc.ItemsList.numUnfilteredItems > 0 && !InventoryLists_mc.ItemsList.disableSelection && !InventoryLists_mc.ItemsList.disableInput;
 
-		if (process && iPlatform == 0 && abCheckIfOverRect) {
+		if (process && iPlatform == 0 && abCheckIfOverRect)
+		{
 			var e = Mouse.getTopMostEntity();
 			var found = false;
 			while (!found && e && e != undefined)
 			{
-				if (e == InventoryLists_mc.ItemsList) {
+				if (e == InventoryLists_mc.ItemsList)
+				{
 					found = true;
 				}
 				e = e._parent;
@@ -294,21 +321,25 @@ class ItemMenu extends MovieClip
 
 	function onMouseRotationFastClick()
 	{
-		if (ShouldProcessItemsListInput(false)) {
+		if (ShouldProcessItemsListInput(false))
+		{
 			onItemSelect({entry:InventoryLists_mc.ItemsList.selectedEntry, keyboardOrMouse:0});
 		}
 	}
 
 	function ToggleMenuFade()
 	{
-		if (bFadedIn) {
+		if (bFadedIn)
+		{
 			_parent.gotoAndPlay("fadeOut");
 			bFadedIn = false;
 			InventoryLists_mc.ItemsList.disableSelection = true;
 			InventoryLists_mc.ItemsList.disableInput = true;
 			InventoryLists_mc.CategoriesList.disableSelection = true;
 			InventoryLists_mc.CategoriesList.disableInput = true;
-		} else {
+		}
+		else
+		{
 			_parent.gotoAndPlay("fadeIn");
 		}
 	}
@@ -324,8 +355,18 @@ class ItemMenu extends MovieClip
 
 	function RestoreIndices()
 	{
-		InventoryLists_mc.CategoriesList.RestoreScrollPosition(arguments[0],true);
-		for (var i = 1; i < arguments.length; i++) {
+		if (arguments[0] != undefined && arguments[0] != -1)
+		{
+			InventoryLists_mc.CategoriesList.restoreSelectedEntry(arguments[0]);
+		}
+		else
+		{
+			// ALL
+			InventoryLists_mc.CategoriesList.restoreSelectedEntry(1);
+		}
+
+		for (var i = 1; i < arguments.length; i++)
+		{
 			InventoryLists_mc.CategoriesList.entryList[i - 1].savedItemIndex = arguments[i];
 		}
 		InventoryLists_mc.CategoriesList.UpdateList();
@@ -334,10 +375,23 @@ class ItemMenu extends MovieClip
 	function SaveIndices()
 	{
 		var a = new Array();
-		a.push(InventoryLists_mc.CategoriesList.scrollPosition);
-		for (var i = 0; i < InventoryLists_mc.CategoriesList.entryList.length; i++) {
+
+		a.push(InventoryLists_mc.CategoriesList.selectedIndex);
+		for (var i = 0; i < InventoryLists_mc.CategoriesList.entryList.length; i++)
+		{
 			a.push(InventoryLists_mc.CategoriesList.entryList[i].savedItemIndex);
 		}
 		GameDelegate.call("SaveIndices",[a]);
+
+		// TODO: Gets called when the menu closes, so I put that icon reset here. Still would be nice to find something more appropriate.
+
+		// Restore to defaults for enchanting etc
+		skse.SetINISetting("fInventory3DItemPosScaleWide:Interface",1.5000);
+		skse.SetINISetting("fInventory3DItemPosXWide:Interface",-22.0000);
+		skse.SetINISetting("fInventory3DItemPosZWide:Interface",12.0000);
+
+		skse.SetINISetting("fInventory3DItemPosScale:Interface",1.8700);
+		skse.SetINISetting("fInventory3DItemPosX:Interface",-29.0000);
+		skse.SetINISetting("fInventory3DItemPosZ:Interface",16.0000);
 	}
 }

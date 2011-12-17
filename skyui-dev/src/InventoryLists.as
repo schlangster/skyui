@@ -17,18 +17,10 @@ import skyui.Util;
 
 class InventoryLists extends MovieClip
 {
-	// Pretend to the outside as if still using two panels for compatiblity.
-	// The internal transitions are
-	// NO_PANELS -> TRANSITIONING_TO_TWO_PANELS -> TWO_PANELS
-	// TWO_PANELS -> TRANSITIONING_TO_NO_PANELS -> NO_PANELS
-	// ONE_PANEL is skipped, only used to enable the menu closing with LEFT
-
-	static var NO_PANELS = 0;
-	static var ONE_PANEL = 1;
-	static var TWO_PANELS = 2;
-	static var TRANSITIONING_TO_NO_PANELS = 3;
-	static var TRANSITIONING_TO_ONE_PANEL = 4;
-	static var TRANSITIONING_TO_TWO_PANELS = 5;
+	static var HIDE_PANEL = 0;
+	static var SHOW_PANEL = 1;
+	static var TRANSITIONING_TO_HIDE_PANEL = 2;
+	static var TRANSITIONING_TO_SHOW_PANEL = 3;
 
 	private var _config;
 
@@ -39,8 +31,6 @@ class InventoryLists extends MovieClip
 
 	private var _platform:Number;
 	private var _currentState:Number;
-
-	private var _defaultCategoryIndex:Number;
 
 	private var _typeFilter:ItemTypeFilter;
 	private var _catTypeFilter:ItemTypeFilter;
@@ -83,7 +73,6 @@ class InventoryLists extends MovieClip
 		_nameFilter = new ItemNameFilter();
 		_sortFilter = new ItemSortingFilter();
 
-		_defaultCategoryIndex = 1;// ALL
 		_searchKey = undefined;
 
 		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
@@ -138,22 +127,21 @@ class InventoryLists extends MovieClip
 	{
 		var bCaught = false;
 
-		if (_currentState == TWO_PANELS)
+		if (_currentState == SHOW_PANEL)
 		{
 			if (GlobalFunc.IsKeyPressed(details))
 			{
 				if (details.navEquivalent == NavigationCode.LEFT)
 				{
-					// barter menu/enchanting do not exit to LEFT, this prevents lockup
-					if (_CategoriesList.selectedIndex == 0 && _CategoriesList.selectedEntry.flag != 1047552 && _CategoriesList.selectedEntry.flag != 10)
-					{
-						// Required to trigger the closing when InventoryMenu catches this event
-						currentState = ONE_PANEL;
-					}
-					else
+					//if (_CategoriesList.selectedIndex == 0 && _CategoriesList.selectedEntry.flag != 1047552 && _CategoriesList.selectedEntry.flag != 10)
+					if (_CategoriesList.selectedIndex > 0)
 					{
 						_CategoriesList.moveSelectionLeft();
 						bCaught = true;
+					}
+					else
+					{
+						_parent.onExitMenuRectClick();
 					}
 
 				}
@@ -201,7 +189,7 @@ class InventoryLists extends MovieClip
 
 	function set currentState(a_newState)
 	{
-		if (a_newState == TWO_PANELS)
+		if (a_newState == SHOW_PANEL)
 		{
 			FocusHandler.instance.setFocus(_ItemsList,0);
 		}
@@ -216,7 +204,7 @@ class InventoryLists extends MovieClip
 
 	function ShowCategoriesList(a_bPlayBladeSound:Boolean)
 	{
-		_currentState = TRANSITIONING_TO_TWO_PANELS;
+		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
 		dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
@@ -229,7 +217,7 @@ class InventoryLists extends MovieClip
 
 	function HideCategoriesList()
 	{
-		_currentState = TRANSITIONING_TO_NO_PANELS;
+		_currentState = TRANSITIONING_TO_HIDE_PANEL;
 		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
@@ -297,10 +285,7 @@ class InventoryLists extends MovieClip
 
 	function onCategoriesItemPress()
 	{
-		if (_currentState == TWO_PANELS)
-		{
-			showItemsList();
-		}
+		showItemsList();
 	}
 
 	function onCategoriesListPress()
@@ -422,11 +407,7 @@ class InventoryLists extends MovieClip
 			_CategoriesList.entryList.push(entry);
 		}
 
-		// Start with selected default category (ALL)
-		_CategoriesList.selectedIndex = _defaultCategoryIndex;
 		_CategoriesList.InvalidateData();
-
-		showItemsList();
 	}
 
 	// API - Called whenever the underlying entryList data is updated (using an item, equipping etc.)
@@ -442,16 +423,17 @@ class InventoryLists extends MovieClip
 		_ItemsList.InvalidateData();
 		for (var i = 0; i < _ItemsList.entryList.length; i++)
 		{
-			var _loc5 = _ItemsList.entryList[i].filterFlag;
 			for (var j = 0; j < _CategoriesList.entryList.length; ++j)
 			{
 				if (_CategoriesList.entryList[j].filterFlag != 0)
 				{
 					continue;
 				}
-
+				//_global.skse.Log("Item entry " + _ItemsList.entryList[i].text + ", filterFlag = " + _ItemsList.entryList[i].filterFlag); 
+				// if Barter and Player both share an item of same category then enable the category
 				if (_ItemsList.entryList[i].filterFlag & _CategoriesList.entryList[j].flag)
 				{
+					_global.skse.Log("setting category " + _CategoriesList.entryList[j].text + " filterFlag to 1");
 					_CategoriesList.entryList[j].filterFlag = 1;
 				}
 			}
@@ -467,7 +449,7 @@ class InventoryLists extends MovieClip
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 		}
-		// Probably not necessary anymore 
+		// Probably not necessary anymore  
 
 		//if (_currentState != TWO_PANELS && _currentState != TRANSITIONING_TO_TWO_PANELS) {
 		//_ItemsList.selectedIndex = -1;
