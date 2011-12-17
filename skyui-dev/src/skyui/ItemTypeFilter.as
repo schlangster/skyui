@@ -29,9 +29,15 @@ class skyui.ItemTypeFilter implements skyui.IFilter
 		var changed = _itemFilter != a_newFilter;
 		_itemFilter = a_newFilter;
 
-		if (changed == true) {
+		if (changed == true)
+		{
 			dispatchEvent({type:"filterChange"});
 		}
+	}
+
+	function categoryFilterChange()
+	{
+		dispatchEvent({type:"filterChange"});
 	}
 
 	function setPartitionedFilterMode(a_bPartition)
@@ -47,10 +53,14 @@ class skyui.ItemTypeFilter implements skyui.IFilter
 	function entryMatchesPartitionedFilter(a_entry)
 	{
 		var _loc3 = false;
-		if (a_entry != undefined) {
-			if (_itemFilter == 4294967295) {
+		if (a_entry != undefined)
+		{
+			if (_itemFilter == 4294967295)
+			{
 				_loc3 = true;
-			} else {
+			}
+			else
+			{
 				var _loc2 = a_entry.filterFlag;
 				var _loc4 = _loc2 & 255;
 				var _loc7 = (_loc2 & 65280) >>> 8;
@@ -64,8 +74,10 @@ class skyui.ItemTypeFilter implements skyui.IFilter
 
 	function process(a_filteredList:Array)
 	{
-		for (var i = 0; i < a_filteredList.length; i++) {
-			if (!entryMatchesFunc(a_filteredList[i])) {
+		for (var i = 0; i < a_filteredList.length; i++)
+		{
+			if (!entryMatchesFunc(a_filteredList[i]))
+			{
 				a_filteredList.splice(i,1);
 				i--;
 			}
