@@ -179,7 +179,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 								e.gotoAndStop("default_key");
 								break;
 							default :
-								if (a_entryObject.weaponType == Defines.FORMTYPE_SOULGEM) 
+								if (a_entryObject.formType == Defines.FORMTYPE_SOULGEM) 
 									e.gotoAndStop("misc_soulgem");
 								else
 									e.gotoAndStop("default_misc");
