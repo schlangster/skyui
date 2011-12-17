@@ -130,6 +130,8 @@ class InventoryLists extends MovieClip
 					if (_CategoriesList.selectedIndex > 0) {
 						_CategoriesList.moveSelectionLeft();
 						bCaught = true;
+					} else {
+						_parent.onExitMenuRectClick()
 					}
 					
 				} else if (details.navEquivalent == NavigationCode.RIGHT) {
