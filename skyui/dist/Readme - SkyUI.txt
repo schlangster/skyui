@@ -122,9 +122,7 @@ OR
 In case you want to use a custom icon theme:
 3.	Locate the Data/SkyUI Extras/ folder. In there, pick a theme subfolder and copy 'skyui_icons_cat.swf' to Data/Interface.
 
-4.	In the New Vegas Launcher, click on Data Files and select the plugins you want.
-
-5.	Done!
+4.	Done!
 
 
 ========================================================================================================================================
