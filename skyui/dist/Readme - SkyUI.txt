@@ -9,9 +9,9 @@ Team:			snakster, T3T, Kratos
 
 Contributors:	ianpatt, gibbed, Gopher, Mardoxx, GreatClone
 
-Version:		x
+Version:		1.0
 
-Download:		x
+Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 
 ########################################################################################################################################
 
