@@ -49,7 +49,26 @@ The following mods/utilities are required for SkyUI:
  1. Introduction
 ========================================================================================================================================
 
-Introduction
+SkyUI is mod that aims to improve Skyrim's User Interface by making it easier to use with mouse and keyboard,
+less wasteful of available screen space and nicer to look at.
+
+We do all that while keeping true to the style of the original UI, so new and old components are integrated seamlessly.
+It is not our goal to re-create the complete interface from scratch.
+Instead we try to identify and change areas that need improvement, while leaving the things that are already good alone.
+
+Further general objectives and design concepts are:
+
+* Finding a good balance between 'dumbed down' and 'information overkill'.
+
+* Easy installation and setup by providing a user-friendly installer through the Nexus Mod Manager.
+
+* Great customization support by using a seperate configuration file.
+
+* Blending features in as good as possible - players shouldn't feel reminded that they're using a mod.
+
+
+Since improving the whole UI is a big undertaking, we release one menu at a time as we make progress.
+The first menu we address is the Inventory. For a more detailed description, please see our mod description on SkyrimNexus.
 
 
 ========================================================================================================================================
@@ -113,14 +132,27 @@ In case you want to use a custom icon theme:
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: [Missing new script extender]
+Problem: There's a message on my screen, telling me that I'm missing the Skyrim Script Extender (SKSE). What do I have to do?
 
-Solution: TODO
+Solution: There are two things that can cause this:
+	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
+		Get it from http://skse.silverlock.org/ and follow the instructions there.
+		
+	2)	Everything was fine before, then Skyrim was patched to a new version and the message started appearing.
+		This is because each new patch also requires an update of SKSE. So just you'll just have to wait until that is released, then
+		get the new version and everything should be back to normal.
 
 ------------------------------------------------------------
-Problem: I changed something in skyui.cfg, now everything is screwed up!
+Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
 
-Solution: TODO
+Solution: This happens if you accidently removed Data/Interface/Translate_ENGLISH.txt. The downloaded SkyUI archive contains an
+	original version of that file in SkyUI Extras/. So just copy it from there back to Data/Interface/.
+		
+------------------------------------------------------------
+Problem: I changed something in skyui.cfg, now it's not working anymore.
+
+Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just revert back to the original config from the
+	downloaded SkyUI archive.
 
 
 ========================================================================================================================================
@@ -145,7 +177,7 @@ GreatClone:
 
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
-	ToJKa, HellKnight, xporc, MadCat221, Ismelda, freesta, Cartrodus, TheCastle (in random order)
+	ToJKa, HellKnight, xporc, MadCat221, Ismelda, Gribbles, freesta, Cartrodus, TheCastle (in random order)
 
 Last but not least, thanks to the whole SKSE team, because without their Script Extender creating this mod wouldn't have been possible.
 
