@@ -37,7 +37,6 @@ class skyui.DynamicList extends MovieClip
 	var dispatchEvent:Function;
 	var addEventListener:Function;
 
-	var debug;
 
 	// Constructor
 	function DynamicList()

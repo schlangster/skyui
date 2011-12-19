@@ -165,7 +165,7 @@ class ItemMenu extends MovieClip
 			}
 		}
 
-		return (true);
+		return true;
 	}
 
 	function onMouseWheel(delta)
