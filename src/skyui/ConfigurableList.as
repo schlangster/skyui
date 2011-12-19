@@ -212,6 +212,9 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	
 	function selectColumn(a_index:Number)
 	{
+		//Wrap around
+		a_index = a_index % currentView.columns.length;
+		
 		// Invalid column
 		if (currentView.columns[a_index] == undefined) {
 			return;
