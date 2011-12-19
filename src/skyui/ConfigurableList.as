@@ -252,7 +252,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				} else if (details.navEquivalent == NavigationCode.GAMEPAD_R1) {
 					selectColumn(_activeColumnIndex + 1);
 					processed = true;
-				} else if (details.navEquivalent == NavigationCode.GAMEPAD_L3) {
+				} else if (details.navEquivalent == NavigationCode.GAMEPAD_BACK) {
 					selectColumn(_activeColumnIndex);
 					processed = true;
 				}

@@ -123,39 +123,28 @@ class InventoryLists extends MovieClip
 	{
 		var bCaught = false;
 
-		if (_currentState == SHOW_PANEL)
-		{
-			if (GlobalFunc.IsKeyPressed(details))
-			{
-				if (details.navEquivalent == NavigationCode.LEFT)
-				{
+		if (_currentState == SHOW_PANEL) {
+			if (GlobalFunc.IsKeyPressed(details)) {
+				if (details.navEquivalent == NavigationCode.LEFT) {
 
-					if (_CategoriesList.selectedIndex > 0)
-					{
+					if (_CategoriesList.selectedIndex > 0) {
 						_CategoriesList.moveSelectionLeft();
 						bCaught = true;
-					}
-					else
-					{
+					} else {
 						_parent.onExitMenuRectClick();
 					}
 
-				}
-				else if (details.navEquivalent == NavigationCode.RIGHT)
-				{
+				} else if (details.navEquivalent == NavigationCode.RIGHT) {
 					_CategoriesList.moveSelectionRight();
 					bCaught = true;
 
 					// Search hotkey (default space)
-				}
-				else if (details.code == _searchKey)
-				{
+				} else if (details.code == _searchKey) {
 					bCaught = true;
 					_SearchWidget.startInput();
 				}
 			}
-			if (!bCaught)
-			{
+			if (!bCaught) {
 				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 			}
 		}
@@ -185,8 +174,7 @@ class InventoryLists extends MovieClip
 
 	function set currentState(a_newState)
 	{
-		if (a_newState == SHOW_PANEL)
-		{
+		if (a_newState == SHOW_PANEL) {
 			FocusHandler.instance.setFocus(_ItemsList,0);
 		}
 
@@ -205,8 +193,7 @@ class InventoryLists extends MovieClip
 
 		dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 
-		if (a_bPlayBladeSound != false)
-		{
+		if (a_bPlayBladeSound != false) {
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		}
 	}
@@ -245,8 +232,7 @@ class InventoryLists extends MovieClip
 		// Start with no selection
 		_ItemsList.selectedIndex = -1;
 
-		if (_CategoriesList.selectedEntry != undefined)
-		{
+		if (_CategoriesList.selectedEntry != undefined) {
 			// Set filter type before update
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 
@@ -255,9 +241,7 @@ class InventoryLists extends MovieClip
 
 
 			//  _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
-		}
-		else
-		{
+		} else {
 			_ItemsList.UpdateList();
 		}
 
@@ -301,8 +285,7 @@ class InventoryLists extends MovieClip
 
 	function onCategoriesListMouseSelectionChange(event)
 	{
-		if (event.keyboardOrMouse == 0)
-		{
+		if (event.keyboardOrMouse == 0) {
 			doCategorySelectionChange(event);
 		}
 	}
@@ -319,8 +302,7 @@ class InventoryLists extends MovieClip
 
 	function onItemsListMouseSelectionChange(event)
 	{
-		if (event.keyboardOrMouse == 0)
-		{
+		if (event.keyboardOrMouse == 0) {
 			doItemsSelectionChange(event);
 		}
 	}
@@ -329,8 +311,7 @@ class InventoryLists extends MovieClip
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 
-		if (event.index != -1)
-		{
+		if (event.index != -1) {
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 		}
 	}
@@ -339,22 +320,17 @@ class InventoryLists extends MovieClip
 	{
 		_CategoriesList.selectedEntry.savedItemIndex = _ItemsList.scrollPosition;
 
-		if (_bFirstSelectionFlag)
-		{
+		if (_bFirstSelectionFlag) {
 			_bFirstSelectionFlag = false;
 			dispatchEvent({type:"showItemsList", index:event.index});
-		}
-		else
-		{
-			if (event.index == -1)
-			{
+		} else {
+			if (event.index == -1) {
 				_bFirstSelectionFlag = true;
 			}
 			dispatchEvent({type:"itemHighlightChange", index:event.index});
 		}
 
-		if (event.index != -1)
-		{
+		if (event.index != -1) {
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 		}
 	}
@@ -393,8 +369,7 @@ class InventoryLists extends MovieClip
 
 		_CategoriesList.clearList();
 
-		for (var i = 0; i < arguments.length; i = i + len)
-		{
+		for (var i = 0; i < arguments.length; i = i + len) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
 			_CategoriesList.entryList.push(entry);
 		}
@@ -407,23 +382,18 @@ class InventoryLists extends MovieClip
 	{
 		var flag = _CategoriesList.selectedEntry.flag;
 
-		for (var i = 0; i < _CategoriesList.entryList.length; i++)
-		{
+		for (var i = 0; i < _CategoriesList.entryList.length; i++) {
 			_CategoriesList.entryList[i].filterFlag = _CategoriesList.entryList[i].bDontHide ? 1 : 0;
 		}
 
 		_ItemsList.InvalidateData();
-		for (var i = 0; i < _ItemsList.entryList.length; i++)
-		{
-			for (var j = 0; j < _CategoriesList.entryList.length; ++j)
-			{
-				if (_CategoriesList.entryList[j].filterFlag != 0)
-				{
+		for (var i = 0; i < _ItemsList.entryList.length; i++) {
+			for (var j = 0; j < _CategoriesList.entryList.length; ++j) {
+				if (_CategoriesList.entryList[j].filterFlag != 0) {
 					continue;
 				}
 
-				if (_ItemsList.entryList[i].filterFlag & _CategoriesList.entryList[j].flag)
-				{
+				if (_ItemsList.entryList[i].filterFlag & _CategoriesList.entryList[j].flag) {
 					_CategoriesList.entryList[j].filterFlag = 1;
 				}
 			}
@@ -431,20 +401,13 @@ class InventoryLists extends MovieClip
 
 		_CategoriesList.UpdateList();
 
-		if (flag != _CategoriesList.selectedEntry.flag)
-		{
+		if (flag != _CategoriesList.selectedEntry.flag) {
 			// Triggers an update if filter flag changed
 			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
 			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 		}
-		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data 
-		if (_currentState != SHOW_PANEL)
-		{
-			_ItemsList.selectedIndex = -1;
-		}
-		else
-		{
-			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
-		}
+		
+		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data   
+		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 	}
 }

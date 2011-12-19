@@ -1,68 +1,73 @@
-dynamic class gfx.io.GameDelegate
+﻿import flash.external.ExternalInterface;
+
+class gfx.io.GameDelegate
 {
 	static var responseHash = {};
 	static var callBackHash = {};
-	static var nextID: Number = 0;
-	static var initialized: Boolean = false;
-
+	static var nextID = 0;
+	static var initialized = false;
+	
 	function GameDelegate()
 	{
 	}
-
+	
 	static function call(methodName, params, scope, callBack)
 	{
-		if (!gfx.io.GameDelegate.initialized) 
+		if (!initialized)
 		{
-			gfx.io.GameDelegate.initialize();
+			initialize();
 		}
-		var __reg1 = gfx.io.GameDelegate.nextID++;
-		gfx.io.GameDelegate.responseHash[__reg1] = [scope, callBack];
-		params.unshift(methodName, __reg1);
-		flash.external.ExternalInterface.call.apply(null, params);
-		delete gfx.io.GameDelegate.responseHash[__reg1];
+		
+		nextID = ++nextID;
+		var _loc1 = nextID;
+		responseHash[_loc1] = [scope, callBack];
+		params.unshift(methodName, _loc1);
+		ExternalInterface.call.apply(null, params);
+		delete responseHash[_loc1];
 	}
-
+	
 	static function receiveResponse(uid)
 	{
-		var __reg2 = gfx.io.GameDelegate.responseHash[uid];
-		if (__reg2 != null) 
+		var _loc2 = responseHash[uid];
+		if (_loc2 == null)
 		{
-			var __reg3 = __reg2[0];
-			var __reg4 = __reg2[1];
-			__reg3[__reg4].apply(__reg3, arguments.slice(1));
-		}
+			return;
+		} // end if
+		var _loc3 = _loc2[0];
+		var _loc4 = _loc2[1];
+		_loc3[_loc4].apply(_loc3, arguments.slice(1));
 	}
-
+	
 	static function addCallBack(methodName, scope, callBack)
 	{
-		if (!gfx.io.GameDelegate.initialized) 
+		if (!initialized)
 		{
-			gfx.io.GameDelegate.initialize();
-		}
-		gfx.io.GameDelegate.callBackHash[methodName] = [scope, callBack];
+			initialize();
+		} // end if
+		callBackHash[methodName] = [scope, callBack];
 	}
-
+	
 	static function removeCallBack(methodName)
 	{
-		gfx.io.GameDelegate.callBackHash[methodName] = null;
+		callBackHash[methodName] = null;
 	}
-
+	
 	static function receiveCall(methodName)
 	{
-		var __reg2 = gfx.io.GameDelegate.callBackHash[methodName];
-		if (__reg2 != null) 
+		var _loc2 = callBackHash[methodName];
+		if (_loc2 == null)
 		{
-			var __reg3 = __reg2[0];
-			var __reg4 = __reg2[1];
-			__reg3[__reg4].apply(__reg3, arguments.slice(1));
+			return;
 		}
+		var _loc3 = _loc2[0];
+		var _loc4 = _loc2[1];
+		_loc3[_loc4].apply(_loc3, arguments.slice(1));
 	}
-
+	
 	static function initialize()
 	{
-		gfx.io.GameDelegate.initialized = true;
-		flash.external.ExternalInterface.addCallback("call", gfx.io.GameDelegate, gfx.io.GameDelegate.receiveCall);
-		flash.external.ExternalInterface.addCallback("respond", gfx.io.GameDelegate, gfx.io.GameDelegate.receiveResponse);
+		initialized = true;
+		ExternalInterface.addCallback("call", GameDelegate, receiveCall);
+		ExternalInterface.addCallback("respond", GameDelegate, receiveResponse);
 	}
-
 }
