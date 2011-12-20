@@ -14,6 +14,7 @@ class skyui.SearchWidget extends MovieClip
 	private var _bRestoreFocus:Boolean;
 	private var _bEnableAutoupdate:Boolean;
 	private var _updateDelay:Number;
+	private var _filterString:String;
 	
 	private var _updateTimerId:Number;
 	
@@ -48,6 +49,9 @@ class skyui.SearchWidget extends MovieClip
 		_config = event.config;
 		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
 		_updateDelay = _config.SearchBox.autoupdate.delay;
+		_filterString = _config.SearchBox.filterString;
+		
+		textField.SetText(_filterString);
 	}
 	
 	function onPress(a_mouseIndex, a_keyboardOrMouse)
@@ -122,10 +126,10 @@ class skyui.SearchWidget extends MovieClip
 		textField.selectable = false;
 		textField.maxChars = null;
 		
-		var _loc2 = _previousFocus.focusEnabled;
+		var bPrevEnabled = _previousFocus.focusEnabled;
 		_previousFocus.focusEnabled = true;
 		Selection.setFocus(_previousFocus,0);
-		_previousFocus.focusEnabled = _loc2;
+		_previousFocus.focusEnabled = bPrevEnabled;
 
 		_bActive = false;
 		skse.AllowTextInput(false);
@@ -135,7 +139,7 @@ class skyui.SearchWidget extends MovieClip
 		if (_currentInput != undefined()) {
 			dispatchEvent({type: "inputEnd", data: _currentInput});
 		} else {
-			textField.SetText("FILTER");
+			textField.SetText(_filterString);
 			dispatchEvent({type: "inputEnd", data: ""});
 		}
 	}
@@ -149,7 +153,7 @@ class skyui.SearchWidget extends MovieClip
 			if (details.navEquivalent == NavigationCode.ENTER && details.code != 32) {
 				endInput();
 				
-			} else if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE) {
+			} else if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE || details.navEquivalent == NavigationCode.GAMEPAD_BACK) {
 				clearText();
 				endInput();
 			}
@@ -171,7 +175,7 @@ class skyui.SearchWidget extends MovieClip
 	{
 		var t =  GlobalFunc.StringTrim(textField.text);
 		
-		if (t != undefined && t != "" && t != "FILTER") {
+		if (t != undefined && t != "" && t != _filterString) {
 			_currentInput = t;
 		} else {
 			_currentInput = undefined;

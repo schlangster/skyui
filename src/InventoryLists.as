@@ -138,7 +138,7 @@ class InventoryLists extends MovieClip
 					_CategoriesList.moveSelectionRight();
 					bCaught = true;
 
-					// Search hotkey (default space)
+				// Search hotkey (default space)
 				} else if (details.code == _searchKey) {
 					bCaught = true;
 					_SearchWidget.startInput();

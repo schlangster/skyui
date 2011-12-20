@@ -49,9 +49,6 @@ class InventoryMenu extends ItemMenu
 	{
 		if (bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
 			if (GlobalFunc.IsKeyPressed(details)) {
-				//if (InventoryLists_mc.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.LEFT && InventoryLists_mc.CategoriesList.selectedIndex == 0) {
-				//StartMenuFade();
-				//GameDelegate.call("ShowTweenMenu",[]);
 				if (details.navEquivalent == NavigationCode.TAB) {
 					StartMenuFade();
 					GameDelegate.call("CloseTweenMenu",[]);

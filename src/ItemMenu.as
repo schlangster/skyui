@@ -55,11 +55,6 @@ class ItemMenu extends MovieClip
 				_parent.onExitMenuRectClick();
 			}
 		};
-		
-		// Display SKSE warning if necessary
-		if (_global.skse == undefined) {
-			skseWarningMsg.gotoAndStop("show");
-		}
 	}
 	
 	function onConfigLoad(event)
@@ -329,10 +324,25 @@ class ItemMenu extends MovieClip
 			// ALL
 			InventoryLists_mc.CategoriesList.restoreSelectedEntry(1);
 		}
-		
-		for (var i = 1; i < arguments.length; i++) {
-			InventoryLists_mc.CategoriesList.entryList[i - 1].savedItemIndex = arguments[i];
+
+		var index;
+
+		// Saved category indices
+		for (index = 1; index < arguments.length && index < InventoryLists_mc.CategoriesList.entryList.length; index++) {
+			InventoryLists_mc.CategoriesList.entryList[index - 1].savedItemIndex = arguments[index];
 		}
+		
+		// Extra state information. Cleared after game restart.
+		var bRestarted = arguments[index] == undefined;
+		
+		if (bRestarted) {
+			// Display SKSE warning if necessary after restart
+			if (_global.skse == undefined) {
+				skseWarningMsg.gotoAndStop("show");
+			}			
+		}
+		
+		
 		InventoryLists_mc.CategoriesList.UpdateList();
 	}
 
@@ -344,6 +354,10 @@ class ItemMenu extends MovieClip
 		for (var i = 0; i < InventoryLists_mc.CategoriesList.entryList.length; i++) {
 			a.push(InventoryLists_mc.CategoriesList.entryList[i].savedItemIndex);
 		}
+		
+		// Restarted == false
+		a.push(1);
+		
 		GameDelegate.call("SaveIndices",[a]);
 		
 		// TODO: Gets called when the menu closes, so I put that icon reset here. Still would be nice to find something more appropriate.
