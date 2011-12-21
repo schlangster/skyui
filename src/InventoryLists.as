@@ -326,7 +326,7 @@ class InventoryLists extends MovieClip
 
 	function onSortChange(event)
 	{
-		_sortFilter.setSortBy(event.attributes,event.options);
+		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 
 	function onSearchInputStart(event)

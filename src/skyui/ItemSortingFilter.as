@@ -29,10 +29,6 @@ class skyui.ItemSortingFilter implements skyui.IFilter
 
 	function process(a_filteredList:Array)
 	{
-//		if (_sortBy == SORT_BY_NAME) {
-//			a_filteredList.sortOn(["equipState", attr], [Array.NUMERIC | Array.DESCENDING, opt]);
-//		} else {
-			a_filteredList.sortOn(_sortAttributes, _sortOptions);
-//		}
+		a_filteredList.sortOn(_sortAttributes, _sortOptions);
 	}
 }

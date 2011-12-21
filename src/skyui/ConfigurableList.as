@@ -507,6 +507,10 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
 		
 		updateSortParams();
+		
+		// sortChange might not always trigger an update, so we have to make sure the list is updated,
+		// even if that means we update it twice.
+		UpdateList();
 	}
 	
 	function updateSortParams()

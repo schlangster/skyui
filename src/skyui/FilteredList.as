@@ -7,6 +7,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	private var _filteredList:Array;
 	private var _filterChain:Array;
 
+	private var _curClipIndex:Number;
+	
 
 	function FilteredList()
 	{
@@ -14,6 +16,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		_filteredList = new Array();
 		_filterChain = new Array();
 		_maxTextLength = 512;
+		_curClipIndex = -1;
 	}
 
 	function addFilter(a_filter:IFilter)
@@ -112,6 +115,18 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	{
 		generateFilteredList();
 		super.InvalidateData();
+		
+		// Restore selection
+		if (_curClipIndex != undefined && _curClipIndex != -1 && _listIndex > 0) {
+			
+			if (_curClipIndex >= _listIndex) {
+				_curClipIndex = _listIndex - 1;
+			}
+			
+			var entryClip = getClipByIndex(_curClipIndex);
+			
+			doSetSelectedIndex(entryClip.itemIndex, 1);
+		}
 	}
 
 	function calculateMaxScrollPosition()
@@ -171,7 +186,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			_selectedIndex = a_newIndex;
 
 			if (oldIndex != -1) {
-				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex), _entryList[oldIndex]);
 			}
 
 			if (_selectedIndex != -1) {
@@ -182,8 +197,12 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 				} else {
 					setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
 				}
+				
+				_curClipIndex = _entryList[_selectedIndex].clipIndex;
+			} else {
+				_curClipIndex = -1;
 			}
-
+			
 			dispatchEvent({type:"selectionChange", index:_selectedIndex, keyboardOrMouse:a_keyboardOrMouse});
 		}
 	}
