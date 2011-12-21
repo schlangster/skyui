@@ -76,6 +76,21 @@ The first menu we address is the Inventory. For a more detailed description, ple
 ========================================================================================================================================
 
 ------------------------------------------------------------
+1.1:
+
+[InventoryMenu]
+- Updated gibbed's interface extensions plugin to support the latest Skyrim version 1.3.10.0.
+- Improved support for XBOX360 controller: LB/RB can now be used to change the active column, Left Stick changes the sorting order.
+- Made SKSE warning message less intrusive; it's only shown once after each game restart now.
+- Fixed LT/RT equip bug with XBOX360 controller.
+- Fixed bug where 3D model/item card would not update in certain situations (dropping an item, charging an item, etc.).
+- Removed custom fontconfig.txt to avoid font problems with other font mods, or with the Russian version of the game.
+- Optimized column layout so it only shows states and information that make sense for the active category.
+- Updated T3T's straight icon theme to include new inventory icons.
+- Updated GreatClone's icon theme to the latest version. Now includes inventory icons as well, and category icons have been improved.
+- Various minor tweaks and fixes.
+
+------------------------------------------------------------
 1.0:
 
 [InventoryMenu]
