@@ -1,11 +1,15 @@
 ﻿class skyui.Defines
 {
-	static var FLAG_ALL = 0;
-	static var FLAG_DAMAGE = 2;
-	static var FLAG_ARMOR = 4;
-	static var FLAG_SHOUTS = 64;
-	static var FLAG_POWERS = 128;
-	static var FLAG_ACTIVE_EFFECT = 256;
+	static var FLAG_INV_ALL = 1023;
+	static var FLAG_INV_WEAPONS = 2;
+	static var FLAG_INV_ARMOR = 4;
+	static var FLAG_INV_POTIONS = 8;
+	static var FLAG_INV_SCROLLS = 16;
+	static var FLAG_INV_FOOD = 32;
+	static var FLAG_INV_INGREDIENTS = 64;
+	static var FLAG_INV_BOOKS = 128;
+	static var FLAG_INV_KEYS = 256;
+	static var FLAG_INV_MISC = 512;
 	
 	static var FORMTYPE_SOULGEM = 52;
 	static var FORMTYPE_MISC = 33;
@@ -20,13 +24,4 @@
 	static var WEAPON_TYPE_HAMMER = 6;
 	static var WEAPON_TYPE_BOW = 7;
 	static var WEAPON_TYPE_STAFF = 8;
-	
-	static var MAGIC_ALTERATION = 0;
-	static var MAGIC_ILLUSION = 1;
-	static var MAGIC_DESTRUCTION = 2;
-	static var MAGIC_CONJURATION = 3;
-	static var MAGIC_RESTORATION = 4;
-	
-	static var MAGIC_TYPES:Array = ["Alteration", "Illusion", "Destruction", "Conjuration", "Restoration"];
-	static var SHOUT_TYPES:Array = ["Ice", "Fire", "Force", "Whirlwind"];
 }
