@@ -21,10 +21,13 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 					_entryList[i].infoDamage = _itemInfo.damage;
 					break;
 				case InventoryDefines.ICT_POTION :
-					 // if potion item has spellCost then it is a scroll
-					 if (_itemInfo.spellCost) 
-						 _itemInfo.type = InventoryDefines.ICT_SPELL;
-					 break;
+					// if potion item has spellCost then it is a scroll
+					if (_itemInfo.skillName) {
+						_itemInfo.type = InventoryDefines.ICT_BOOK;
+					} else if (_itemInfo.spellCost) {
+						_itemInfo.type = InventoryDefines.ICT_SPELL;
+					}
+					break;
 				case InventoryDefines.ICT_SPELL :
 				case InventoryDefines.ICT_SHOUT :
 					_entryList[i].infoSpellCost = _itemInfo.spellCost.toString();
@@ -38,7 +41,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 			_entryList[i].infoWeight = int(_itemInfo.weight * 100) / 100;
 			_entryList[i].infoType = _itemInfo.type;
 			_entryList[i].infoPotionType = _itemInfo.potionType;
-			_entryList[i].infoWeightValue = _itemInfo.weight != 0 ?  Math.round(_itemInfo.value / _itemInfo.weight) : 0;
+			_entryList[i].infoWeightValue = _itemInfo.weight != 0 ? Math.round(_itemInfo.value / _itemInfo.weight) : 0;
 			_entryList[i].infoIsPoisoned = (_itemInfo.poisoned > 0);
 			_entryList[i].infoIsStolen = (_itemInfo.stolen > 0);
 			_entryList[i].infoIsEnchanted = (_itemInfo.charge != undefined);
@@ -64,24 +67,23 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 	function setEntryText(a_entryClip:MovieClip, a_entryObject:Object)
 	{
 		var columns = currentView.columns;
-		
+
 		var states = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
-		for (var i=0; i<columns.length; i++) {
+		for (var i = 0; i < columns.length; i++) {
 			var e = a_entryClip[_columnNames[i]];
-			
+
 			// Substitute @variables by entryObject properties
 			if (_columnEntryValues[i] != undefined) {
 				if (_columnEntryValues[i].charAt(0) == "@") {
 					e.SetText(a_entryObject[_columnEntryValues[i].slice(1)]);
 				}
 			}
-			
-			// Process based on column type
+			// Process based on column type 
 			switch (columns[i].type) {
-				
-				// Equip Icon
-				case Config.COL_TYPE_EQUIP_ICON:
+
+					// Equip Icon
+				case Config.COL_TYPE_EQUIP_ICON :
 					if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
 						e.gotoAndStop(states[a_entryObject.equipState]);
 					} else {
@@ -89,10 +91,10 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 					}
 					break;
 
-				// Item Icon
-				case Config.COL_TYPE_ITEM_ICON:
+					// Item Icon
+				case Config.COL_TYPE_ITEM_ICON :
 					if (a_entryObject.extended == undefined) {
-			
+
 						// Default without script extender
 						switch (a_entryObject.infoType) {
 							case InventoryDefines.ICT_WEAPON :
@@ -123,7 +125,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 								e.gotoAndStop("default_misc");
 						}
 					} else {
-						
+
 						// With plugin-extended attributes
 						switch (a_entryObject.infoType) {
 							case InventoryDefines.ICT_WEAPON :
@@ -179,58 +181,59 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 								e.gotoAndStop("default_key");
 								break;
 							default :
-								if (a_entryObject.formType == Defines.FORMTYPE_SOULGEM) 
+								if (a_entryObject.formType == Defines.FORMTYPE_SOULGEM) {
 									e.gotoAndStop("misc_soulgem");
-								else
+								} else {
 									e.gotoAndStop("default_misc");
+								}
 						}
 					}
 					break;
-					
-				// Name
-				case Config.COL_TYPE_NAME:
+
+					// Name
+				case Config.COL_TYPE_NAME :
 					if (a_entryObject.text != undefined) {
-			
+
 						// Text
 						var text = a_entryObject.text;
 						if (a_entryObject.soulLVL != undefined) {
 							text = text + " (" + a_entryObject.soulLVL + ")";
 						}
-			
+
 						if (a_entryObject.count > 1) {
 							text = text + " (" + a_entryObject.count.toString() + ")";
 						}
-			
+
 						if (text.length > _maxTextLength) {
 							text = text.substr(0, _maxTextLength - 3) + "...";
 						}
-			
+
 						e.autoSize = "left";
 						e.textAutoSize = "shrink";
-//						e.SetText(text,true);
+						//e.SetText(text,true);
 						e.SetText(text);
-			
+
 						if (a_entryObject.negativeEffect == true || a_entryObject.isStealing == true) {
 							e.textColor = a_entryObject.enabled == false ? (8388608) : (16711680);
 						} else {
 							e.textColor = a_entryObject.enabled == false ? (5000268) : (16777215);
 						}
-						
+
 						// BestInClass icon
 						var iconPos = e._x + e._width + 5;
-						
+
 						// All icons have the same size
 						var iconSpace = a_entryClip.bestIcon._width * 1.25;
-				
+
 						if (a_entryObject.bestInClass == true) {
 							a_entryClip.bestIcon._x = iconPos;
 							iconPos = iconPos + iconSpace;
-				
+
 							a_entryClip.bestIcon.gotoAndStop("show");
 						} else {
 							a_entryClip.bestIcon.gotoAndStop("hide");
 						}
-				
+
 						// Fav icon
 						if (a_entryObject.favorite == true) {
 							a_entryClip.favoriteIcon._x = iconPos;
@@ -239,7 +242,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						} else {
 							a_entryClip.favoriteIcon.gotoAndStop("hide");
 						}
-					
+
 						// Poisoned Icon
 						if (a_entryObject.infoIsPoisoned == true) {
 							a_entryClip.poisonIcon._x = iconPos;
@@ -248,7 +251,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						} else {
 							a_entryClip.poisonIcon.gotoAndStop("hide");
 						}
-					
+
 						// Stolen Icon
 						if (a_entryObject.infoIsStolen == true) {
 							a_entryClip.stolenIcon._x = iconPos;
@@ -257,7 +260,7 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						} else {
 							a_entryClip.stolenIcon.gotoAndStop("hide");
 						}
-					
+
 						// Enchanted Icon
 						if (a_entryObject.infoIsEnchanted == true) {
 							a_entryClip.enchIcon._x = iconPos;
@@ -266,17 +269,17 @@ class skyui.InventoryItemList extends skyui.ConfigurableList
 						} else {
 							a_entryClip.enchIcon.gotoAndStop("hide");
 						}
-		
+
 					} else {
 						e.SetText(" ");
 					}
-					
+
 					break;
-					
-				// Rest
-				case Config.COL_TYPE_NUMBER:
-				case Config.COL_TYPE_TEXT:
-				default:
+
+					// Rest
+				case Config.COL_TYPE_NUMBER :
+				case Config.COL_TYPE_TEXT :
+				default :
 					// Do nothing. Those require no special formating and the value has already been set
 			}
 		}
