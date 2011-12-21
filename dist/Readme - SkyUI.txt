@@ -101,7 +101,7 @@ The first menu we address is the Inventory. For a more detailed description, ple
  3. Installation
 ========================================================================================================================================
 
-We recommend using the Nexus Mod Manager to install SkyUI. It easily lets you install and remove the mods, and you may even select the
+We recommend using the Nexus Mod Manager to install SkyUI. It easily lets you install and remove the mods, and you may even pick the
 icon theme in the installer.
 
 Basically, there are three ways to install SkyUI:
@@ -151,7 +151,7 @@ OR
 	Typically it's found at Program Files/Steam/steamapps/common/skyrim/Data/.
 
 2.	Extract the contents of the downloaded archive file to your Data/ folder.
-	If you are prompted to overwrite anything, click Yes to All.
+	If you are prompted to overwrite anything, click 'Yes to All'.
 
 In case you want to use a custom icon theme:
 3.	Locate the Data/SkyUI Extras/ folder. In there, pick a theme subfolder and copy
@@ -169,7 +169,7 @@ Problem: There's a message on my screen, telling me that I'm missing the Skyrim 
 
 Solution: There are two things that can cause this:
 	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
-		Get it from http://skse.silverlock.org/ and follow the instructions there.
+		Get it from http://skse.silverlock.org/ and follow the included instructions.
 		
 	2)	Everything was fine before, then Skyrim was patched to a new version and the message started appearing.
 		This is because each new patch also requires an update of SKSE. So just you'll just have to wait until that is released, then
