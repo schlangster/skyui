@@ -9,7 +9,7 @@ Team:			snakster, T3T, Kratos
 
 Contributors:	ianpatt, gibbed, Gopher, Mardoxx, GreatClone
 
-Version:		1.0
+Version:		1.1
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 
@@ -86,14 +86,33 @@ The first menu we address is the Inventory. For a more detailed description, ple
  3. Installation
 ========================================================================================================================================
 
-We recommend using the Nexus Mod Manager to install SkyUI.
-It will try not to interfere with any pre-installed font mods, and you'll be able to select the item theme you want to use from the
-installer.
+We recommend using the Nexus Mod Manager to install SkyUI. It easily lets you install and remove the mods, and you may even select the
+icon theme in the installer.
 
-So before you can get started, you have to choose whether you want to do the NMM installation (recommended) or a manual installation.
+Basically, there are three ways to install SkyUI:
+- Let NMM download and install the archive for you (recommended).
+- Download the archive manually and install it with NMM.
+- Download and install the archive manually.
+
+Pick one of them.
 
 ------------------------------------------------------------
- a) Installation with NMM
+ a) Automatic Download with NMM
+------------------------------------------------------------
+
+1.	Click the 'Download with manager' button on top of the file.
+
+2.	SkyUI will appear in in NMM's Mods list once it's downloaded. Double-click the SkyUI entry to activate it.
+
+3.	In the installer window, select a custom icon theme if you want to, then click Install.
+	If you are prompted to overwrite anything, click Yes to All.
+
+4.	Done!
+
+OR
+
+------------------------------------------------------------
+ b) Manual Download with NMM
 ------------------------------------------------------------
 
 1.	Start NMM and click on 'Mods'.
@@ -110,7 +129,7 @@ So before you can get started, you have to choose whether you want to do the NMM
 OR
 
 ------------------------------------------------------------
- b) Manual Installation
+ c) Manual Installation without NMM
 ------------------------------------------------------------
 
 1.	Locate the Data/ folder in your Skyrim installation directory.
@@ -120,7 +139,8 @@ OR
 	If you are prompted to overwrite anything, click Yes to All.
 
 In case you want to use a custom icon theme:
-3.	Locate the Data/SkyUI Extras/ folder. In there, pick a theme subfolder and copy 'skyui_icons_cat.swf' to Data/Interface.
+3.	Locate the Data/SkyUI Extras/ folder. In there, pick a theme subfolder and copy
+	'skyui_icons_cat.swf' and 'skyui_icons_inv.swf' to Data/Interface.
 
 4.	Done!
 
@@ -152,6 +172,11 @@ Problem: I changed something in skyui.cfg, now it's not working anymore.
 Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just revert back to the original config from the
 	downloaded SkyUI archive.
 
+------------------------------------------------------------	
+Problem: The Nexus Mod Manager crashes when trying to install SkyUI.
+
+Solution: This seems to be a common issue with NMM at the moment. Restart NMM and try again, it should work then.
+
 
 ========================================================================================================================================
  5. Credits & Acknowledgements
@@ -172,6 +197,9 @@ Mardoxx:
 
 GreatClone:
 	Created an amazing set of alternative category icons.
+	
+Ismelda:
+	Provided configs for very high resolutions used with multi-monitor setups.
 
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:

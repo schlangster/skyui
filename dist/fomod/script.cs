@@ -58,7 +58,6 @@ class Script : FalloutNewVegasBaseScript {
 	
 	static int DEFAULT_CATEGORY_ICON = 1;
 	
-	static String FONT_CONFIG_FILE = "Interface/fontconfig.txt";
 
 	public static bool OnActivate() {
 	
@@ -82,7 +81,6 @@ class Script : FalloutNewVegasBaseScript {
 	static void installFiles() {
 		installMainFiles();
 		installIconFiles();
-		installFontConfig();
 		installSKSEPlugin();
 	}	
 
@@ -100,54 +98,15 @@ class Script : FalloutNewVegasBaseScript {
 	
 	static void installIconFiles() {
 		if (categoryIconSelected == 1) {
-			CopyDataFile("SkyUI Extras/Category Icon Themes/Straight, by T3T/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Straight, by T3T/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Straight, by T3T/skyui_icons_inv.swf", "Interface/skyui_icons_inv.swf");
 		} else if (categoryIconSelected == 2) {
-			CopyDataFile("SkyUI Extras/Category Icon Themes/Curved, by T3T/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Curved, by T3T/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Curved, by T3T/skyui_icons_inv.swf", "Interface/skyui_icons_inv.swf");
 		} else {
-			CopyDataFile("SkyUI Extras/Category Icon Themes/Celtic, by GreatClone/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Celtic, by GreatClone/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Celtic, by GreatClone/skyui_icons_inv.swf", "Interface/skyui_icons_inv.swf");
 		}
-	}
-	
-	static bool installFontConfig() {		
-		if (! DataFileExists(FONT_CONFIG_FILE)) {
-			return InstallFileFromFomod(FONT_CONFIG_FILE);
-		} else {
-
-			bool editSuccess = UpdateFontConfig();
-		
-			if (! editSuccess) {
-				MessageBox("Failed to access " + FONT_CONFIG_FILE + ". Reinstall the mod with all other applications closed, or try a manual installation (see readme).", title);
-			}
-			
-			return editSuccess;
-		}
-	}
-
-	
-	static bool UpdateFontConfig()
-	{
-		byte[] data = GetExistingDataFile(FONT_CONFIG_FILE);
-		
-		if (data == null)
-			return false;
-		
-		string tmp = Encoding.Unicode.GetString(data);
-		
-		// Font is already there?
-		if (Regex.Match(tmp, "map \"" + Regex.Escape("$") + "ListFont\" = ", RegexOptions.Singleline).Success == true)
-			return true;
-		
-		string newString = "\r\nmap \"$ListFont\" = \"Futura Condensed\" Normal";
-		
-		Byte[] data2 = Encoding.ASCII.GetBytes(newString);
-		
-		byte[] concat = new byte[data.Length + data2.Length];
-		System.Buffer.BlockCopy (data, 0, concat, 0, data.Length);
- 		System.Buffer.BlockCopy(data2, 0, concat, data.Length, data2.Length);
- 			
-		GenerateDataFile(FONT_CONFIG_FILE, concat);
-		
-		return true;
 	}
 	
 	static void InitializeComponents()
@@ -175,6 +134,12 @@ class Script : FalloutNewVegasBaseScript {
 		mainInstallForm.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		mainInstallForm.BackColor = System.Drawing.Color.Black;
 		mainInstallForm.ClientSize = new System.Drawing.Size(684, 562);
+		
+        mainInstallForm.MaximizeBox = false;
+		mainInstallForm.MinimizeBox = false;
+        mainInstallForm.MaximumSize = new System.Drawing.Size(700, 600);
+        mainInstallForm.MinimumSize = new System.Drawing.Size(700, 600);
+		
 		mainInstallForm.Controls.Add(iconsButton);
 		mainInstallForm.Controls.Add(installButton);
 		mainInstallForm.Controls.Add(exitButton);
