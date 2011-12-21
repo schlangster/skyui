@@ -11,6 +11,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	private var _activeViewIndex:Number;
 	
 	private var _activeColumnIndex:Number;
+	private var _lastViewIndex:Number;
 	
 	// 1 .. n
 	private var _activeColumnState:Number;
@@ -62,6 +63,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_entryWidth = 525;
 		_entryHeight = 28;
 		_activeViewIndex = 0;
+		_lastViewIndex = -1;
 		_bEnableItemIcon = false;
 		_bEnableEquipIcon = false;
 		_activeColumnState = 1;
@@ -96,6 +98,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				_defaultEntryFormat[prop] = _config.ItemList.entry.format[prop];
 			}
 		}
+		
 		for (var prop in _config.ItemList.label.format) {
 			if (_defaultLabelFormat.hasOwnProperty(prop)) {
 				_defaultLabelFormat[prop] = _config.ItemList.label.format[prop];
@@ -178,21 +181,19 @@ class skyui.ConfigurableList extends skyui.FilteredList
 
 	function changeFilterFlag(a_flag:Number)
 	{
-		var newIndex = -1;
-		
 		// Find a match, or use last index
 		for (var i = 0; i < _views.length; i++) {
 			if (_views[i].category == a_flag || i == _views.length-1) {
-				newIndex = i;
+				_activeViewIndex = i;
 				break;
 			}
 		}
 		
-		if (_activeViewIndex == newIndex) {
+		if (_lastViewIndex == _activeViewIndex) {
 			return;
 		}
 		
-		_activeViewIndex = newIndex;
+		_lastViewIndex = _activeViewIndex;
 		_activeColumnState = 1;
 		_activeColumnIndex = _views[_activeViewIndex].columns.indexOf(_views[_activeViewIndex].primaryColumn);
 					

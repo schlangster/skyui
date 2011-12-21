@@ -194,6 +194,10 @@ class InventoryMenu extends ItemMenu
 	function onQuantityMenuSelect(event)
 	{
 		GameDelegate.call("ItemDrop",[event.amount]);
+		
+		// Bug Fix: ItemCard does not update when attempting to drop quest items through the quantity menu
+		//   so let's request an update even though it may be redundant.
+		GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
 	}
 
 	function onMouseRotationFastClick(aiMouseButton)
