@@ -6,6 +6,8 @@ import skyui.Config;
 
 class ItemMenu extends MovieClip
 {
+	private var _bItemCardFadedIn:Boolean;
+	
 	var InventoryLists_mc:MovieClip;
 	var ItemCardFadeHolder_mc:MovieClip;
 	var ItemCard_mc:MovieClip;
@@ -28,6 +30,8 @@ class ItemMenu extends MovieClip
 		bFadedIn = true;
 		Mouse.addListener(this);
 		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+		
+		_bItemCardFadedIn = false;
 	}
 
 	function InitExtensions(abPlayBladeSound)
@@ -185,21 +189,26 @@ class ItemMenu extends MovieClip
 	function onItemHighlightChange(event)
 	{
 		if (event.index != -1) {
+			
+			if (!_bItemCardFadedIn) {
+				_bItemCardFadedIn = true;
+				ItemCard_mc.FadeInCard();
+				BottomBar_mc.ShowButtons();
+			}
+			
 			GameDelegate.call("UpdateItem3D",[true]);
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
-		} else {
+			
+		} else if (_bItemCardFadedIn) {
+			_bItemCardFadedIn = false;
 			onHideItemsList();
 		}
 	}
 
+	// Might event might still be sent from somewhere else, so keep this for now.
 	function onShowItemsList(event)
 	{
-		if (event.index != -1) {
-			GameDelegate.call("UpdateItem3D",[true]);
-			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
-			ItemCard_mc.FadeInCard();
-			BottomBar_mc.ShowButtons();
-		}
+		onItemHighlightChange(event);
 	}
 
 	function onHideItemsList(event)

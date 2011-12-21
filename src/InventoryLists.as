@@ -37,7 +37,6 @@ class InventoryLists extends MovieClip
 	private var _sortFilter:ItemSortingFilter;
 
 	private var _currCategoryIndex:Number;
-	private var _bFirstSelectionFlag:Boolean;
 
 	private var _searchKey:Number;
 
@@ -138,7 +137,7 @@ class InventoryLists extends MovieClip
 					_CategoriesList.moveSelectionRight();
 					bCaught = true;
 
-				// Search hotkey (default space)
+					// Search hotkey (default space)
 				} else if (details.code == _searchKey) {
 					bCaught = true;
 					_SearchWidget.startInput();
@@ -223,8 +222,6 @@ class InventoryLists extends MovieClip
 		_currCategoryIndex = _CategoriesList.selectedIndex;
 
 		_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
-
-		_bFirstSelectionFlag = true;
 
 		// Let's do this more elegant at some point.. :)
 		// Changing the sort filter might already trigger an update, so the final UpdateList is redudant
@@ -320,15 +317,7 @@ class InventoryLists extends MovieClip
 	{
 		_CategoriesList.selectedEntry.savedItemIndex = _ItemsList.scrollPosition;
 
-		if (_bFirstSelectionFlag) {
-			_bFirstSelectionFlag = false;
-			dispatchEvent({type:"showItemsList", index:event.index});
-		} else {
-			if (event.index == -1) {
-				_bFirstSelectionFlag = true;
-			}
-			dispatchEvent({type:"itemHighlightChange", index:event.index});
-		}
+		dispatchEvent({type:"itemHighlightChange", index:event.index});
 
 		if (event.index != -1) {
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
@@ -407,7 +396,7 @@ class InventoryLists extends MovieClip
 			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
 		}
 		
-		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data   
+		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
 		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 	}
 }

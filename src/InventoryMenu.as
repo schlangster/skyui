@@ -210,6 +210,7 @@ class InventoryMenu extends ItemMenu
 	{
 		super.onItemCardSubMenuAction(event);
 		GameDelegate.call("QuantitySliderOpen",[event.opening]);
+		
 		if (event.menu == "list") {
 			if (event.opening == true) {
 				PrevButtonArt = BottomBar_mc.GetButtonsArt();
