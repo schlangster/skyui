@@ -88,6 +88,7 @@ The first menu we address is the Inventory. For a more detailed description, ple
 - Optimized column layout so it only shows states and information that make sense for the active category.
 - Updated T3T's straight icon theme to include new inventory icons.
 - Updated GreatClone's icon theme to the latest version. Now includes inventory icons as well, and category icons have been improved.
+- Fixed wrong inventory icon for spell tomes.
 - Various minor tweaks and fixes.
 
 ------------------------------------------------------------
@@ -109,7 +110,7 @@ Basically, there are three ways to install SkyUI:
 - Download the archive manually and install it with NMM.
 - Download and install the archive manually.
 
-Pick one of them.
+Choose one method:
 
 ------------------------------------------------------------
  a) Automatic Download with NMM
@@ -147,15 +148,15 @@ OR
  c) Manual Installation without NMM
 ------------------------------------------------------------
 
-1.	Locate the Data/ folder in your Skyrim installation directory.
-	Typically it's found at Program Files/Steam/steamapps/common/skyrim/Data/.
+1.	Locate the 'Data/' folder in your Skyrim installation directory.
+	Typically it's found at 'Program Files/Steam/steamapps/common/skyrim/Data/'.
 
 2.	Extract the contents of the downloaded archive file to your Data/ folder.
 	If you are prompted to overwrite anything, click 'Yes to All'.
 
 In case you want to use a custom icon theme:
-3.	Locate the Data/SkyUI Extras/ folder. In there, pick a theme subfolder and copy
-	'skyui_icons_cat.swf' and 'skyui_icons_inv.swf' to Data/Interface.
+3.	Locate the 'Data/SkyUI Extras/' folder. In there, pick a theme subfolder and copy
+	'skyui_icons_cat.swf' and 'skyui_icons_inv.swf' to 'Data/Interface'.
 
 4.	Done!
 
@@ -178,8 +179,9 @@ Solution: There are two things that can cause this:
 ------------------------------------------------------------
 Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
 
-Solution: This happens if you accidently removed Data/Interface/Translate_ENGLISH.txt. The downloaded SkyUI archive contains an
-	original version of that file in SkyUI Extras/. So just copy it from there back to Data/Interface/.
+Solution: This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'. The downloaded SkyUI archive contains the
+	original versions of these files in 'SkyUI Extras/Original Translates/'.
+	So just copy the file matching your language from there back to 'Data/Interface/'.
 		
 ------------------------------------------------------------
 Problem: I changed something in skyui.cfg, now it's not working anymore.
