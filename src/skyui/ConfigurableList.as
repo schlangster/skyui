@@ -89,7 +89,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	function onConfigLoad(event)
 	{
 		_config = event.config;
-
 	}
 	
 	// Has to be called before the list can be used
