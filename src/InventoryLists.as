@@ -6,7 +6,7 @@ import gfx.managers.FocusHandler;
 import Shared.GlobalFunc;
 
 import skyui.HorizontalList;
-import skyui.InventoryItemList;
+import skyui.FormattedItemList;
 import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
 import skyui.ItemSortingFilter;
@@ -15,6 +15,7 @@ import skyui.SearchWidget;
 import skyui.Config;
 import skyui.Util;
 
+
 class InventoryLists extends MovieClip
 {
 	static var HIDE_PANEL = 0;
@@ -22,11 +23,11 @@ class InventoryLists extends MovieClip
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
 
-	private var _config;
+	private var _config:Config;
 
 	private var _CategoriesList:HorizontalList;
 	private var _CategoryLabel:MovieClip;
-	private var _ItemsList:InventoryItemList;
+	private var _ItemsList:FormattedItemList;
 	private var _SearchWidget:SearchWidget;
 
 	private var _platform:Number;
@@ -91,7 +92,6 @@ class InventoryLists extends MovieClip
 		_CategoriesList.addEventListener("listMovedDown",this,"onCategoriesListMoveDown");
 		_CategoriesList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
 
-		_ItemsList.maxTextLength = 100;
 		_ItemsList.disableInput = false;
 
 		_ItemsList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
@@ -203,20 +203,7 @@ class InventoryLists extends MovieClip
 		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
-
-
-	/*Default reactions:
-	"showItemsList" with index == -1: Do nothing
-	"showItemsList" with index != -1: Fade in item card and bottom bar icons, update 3d icon
-	"itemHighlightChange" with index == -1: Fade out item card, hide bottom bar icons and 3d icon
-	"itemHighlightChange" with index != -1: Update item card, update 3d model
 	
-	showItemsList() is called to trigger an update of the item list.
-	it has to call itemHighlightChange with index -1 and set _bFirstSelectionFlag to true.
-	onItemsListMouseSelectionChange() then dispatches
-	"showItemsList" and sets _bFirstSelectionFlag=false, if _bFirstSelectionFlag was true
-	"itemHighlightChange", if _bFirstSelectionFlag was false
-	*/
 	function showItemsList()
 	{
 		_currCategoryIndex = _CategoriesList.selectedIndex;

@@ -15,20 +15,12 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		super();
 		_filteredList = new Array();
 		_filterChain = new Array();
-		_maxTextLength = 512;
 		_curClipIndex = -1;
 	}
 
 	function addFilter(a_filter:IFilter)
 	{
 		_filterChain.push(a_filter);
-	}
-
-	function set maxTextLength(a_length)
-	{
-		if (a_length > 3) {
-			_maxTextLength = a_length;
-		}
 	}
 
 	function getFilteredEntry(a_index:Number):Object
@@ -40,11 +32,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	function get numUnfilteredItems():Number
 	{
 		return _filteredList.length;
-	}
-
-	function get maxTextLength():Number
-	{
-		return _maxTextLength;
 	}
 
 	function generateFilteredList()

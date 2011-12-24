@@ -89,6 +89,12 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	function onConfigLoad(event)
 	{
 		_config = event.config;
+
+	}
+	
+	// Has to be called before the list can be used
+	function setConfigSection(a_section:String)
+	{
 		_views = _config.ItemList.views;
 		_entryWidth = _config.ItemList.entry.width;
 
@@ -104,8 +110,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				_defaultLabelFormat[prop] = _config.ItemList.label.format[prop];
 			}
 		}
-
-		updateView();
 	}
 
 	function createEntryClip(a_index:Number):MovieClip

@@ -16,6 +16,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 	private var _totalWidth:Number;
 	private var _selectorPos:Number;
 	private var _targetSelectorPos:Number;
+	
+	private var _iconArt:Array;
 
 	// Component settings
 	var buttonOption:String;
@@ -65,6 +67,11 @@ class skyui.HorizontalList extends skyui.DynamicList
 	{
 		doSetSelectedIndex(a_newIndex,0);
 		onItemPress(1);
+	}
+	
+	function setIconArt(a_iconArt:Array)
+	{
+		_iconArt = a_iconArt;
 	}
 
 	// Gets a clip, or if it doesn't exist, creates it.
@@ -124,8 +131,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 			}
 		};
 
-		if (!_bNoIcons && this["icon" + a_index] != undefined) {
-			entryClip.icon.gotoAndStop(this["icon" + a_index]);
+		if (!_bNoIcons && _iconArt[a_index] != undefined) {
+			entryClip.icon.gotoAndStop(_iconArt[a_index]);
 
 			if (_bNoText) {
 				entryClip.textField._visible = false;
