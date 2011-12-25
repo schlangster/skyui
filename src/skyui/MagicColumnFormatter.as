@@ -12,41 +12,35 @@ class skyui.MagicColumnFormatter extends InventoryColumnFormatter
 
 	function formatItemIcon(a_entryField:Object, a_entryObject:Object)
 	{
-		if (a_entryObject.extended == undefined) {
 
-			// Default without script extender
-			switch (a_entryObject.infoType) {
-				case Defines.MAGIC_ALTERATION :
-					a_entryField.gotoAndStop("category_alteration");
-					break;
-				case Defines.MAGIC_ILLUSION :
-					a_entryField.gotoAndStop("category_illusion");
-					break;
-				case Defines.MAGIC_DESTRUCTION :
-					a_entryField.gotoAndStop("category_destruction");
-					break;
-				case Defines.MAGIC_CONJURATION :
-					a_entryField.gotoAndStop("category_conjuration");
-					break;
-				case Defines.MAGIC_RESTORATION :
-					a_entryField.gotoAndStop("category_restoration");
-					break;
-				case InventoryDefines.ICT_SHOUT :
-					a_entryField.gotoAndStop("category_shouts");
-					break;
-				case InventoryDefines.ICT_ACTIVE_EFFECT :
-					a_entryField.gotoAndStop("category_activeeffects");
-					break;
-				case InventoryDefines.ICT_SPELL_DEFAULT :// Powers
-					a_entryField.gotoAndStop("category_powers");
-					break;
-				default :
-					a_entryField.gotoAndStop("category_misc");
-					break;
-			}
-		} else {
-			// Default without script extender
-			// unused for now
+		// Default without script extender
+		switch (a_entryObject.infoType) {
+			case Defines.MAGIC_ALTERATION :
+				a_entryField.gotoAndStop("default_alteration");
+				break;
+			case Defines.MAGIC_ILLUSION :
+				a_entryField.gotoAndStop("default_illusion");
+				break;
+			case Defines.MAGIC_DESTRUCTION :
+				a_entryField.gotoAndStop("default_destruction");
+				break;
+			case Defines.MAGIC_CONJURATION :
+				a_entryField.gotoAndStop("default_conjuration");
+				break;
+			case Defines.MAGIC_RESTORATION :
+				a_entryField.gotoAndStop("default_restoration");
+				break;
+			case InventoryDefines.ICT_SHOUT :
+				a_entryField.gotoAndStop("default_shout");
+				break;
+			case InventoryDefines.ICT_ACTIVE_EFFECT :
+				a_entryField.gotoAndStop("default_effect");
+				break;
+			case InventoryDefines.ICT_SPELL_DEFAULT :// Powers
+				a_entryField.gotoAndStop("default_power");
+				break;
+			default :
+				a_entryField.gotoAndStop("default_effect");
 		}
 	}
 
@@ -78,11 +72,6 @@ class skyui.MagicColumnFormatter extends InventoryColumnFormatter
 			} else {
 				a_entryClip.favoriteIcon.gotoAndStop("hide");
 			}
-			
-			a_entryClip.bestIcon.gotoAndStop("hide");
-			a_entryClip.poisonIcon.gotoAndStop("hide");
-			a_entryClip.stolenIcon.gotoAndStop("hide");
-			a_entryClip.enchIcon.gotoAndStop("hide");
 
 		} else {
 			a_entryField.SetText(" ");

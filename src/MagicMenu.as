@@ -1,5 +1,5 @@
-﻿import gfx.io.GameDelegate;
-import Shared.GlobalFunc;
+﻿import Shared.GlobalFunc;
+import gfx.io.GameDelegate;
 import gfx.ui.NavigationCode;
 
 import skyui.MagicColumnFormatter;
@@ -39,9 +39,9 @@ class MagicMenu extends ItemMenu
 						  {PCArt:"R",XBoxArt:"360_X", PS3Art:"PS3_X"},
 						  {PCArt:"Tab",XBoxArt:"360_B", PS3Art:"PS3_B"}];
 		
-		CategoryListIconArt = ["category_favorites", "category_all", "category_weapons", "category_armor",
-							   "category_potions", "category_scrolls", "category_food", "category_ingredients",
-							   "category_books", "category_keys", "category_misc"];
+		CategoryListIconArt = ["cat_favorites", "mag_all", "mag_alteration", "mag_illusion",
+							   "mag_destruction", "mag_conjuration", "mag_restoration", "mag_shouts",
+							   "mag_powers", "mag_activeeffects"];
 		
 		ColumnFormatter = new MagicColumnFormatter();
 		ColumnFormatter.maxTextLength = 80;
@@ -65,7 +65,7 @@ class MagicMenu extends ItemMenu
 		InventoryLists_mc.ItemsList.entryClassName = "ItemsListEntryMagic";
 		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
 		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
-		InventoryLists_mc.ItemsList.setConfigSection("ItemList");
+		InventoryLists_mc.ItemsList.setConfigSection("MagicList");
 	}
 
 	function handleInput(details,pathToFocus)

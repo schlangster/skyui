@@ -36,9 +36,9 @@ class InventoryMenu extends ItemMenu
 								 {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
 		PrevButtonArt = undefined;
 		
-		CategoryListIconArt = ["category_favorites", "category_all", "category_weapons", "category_armor",
-							   "category_potions", "category_scrolls", "category_food", "category_ingredients",
-							   "category_books", "category_keys", "category_misc"];
+		CategoryListIconArt = ["cat_favorites", "inv_all", "inv_weapons", "inv_armor",
+							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
+							   "inv_books", "inv_keys", "inv_misc"];
 		
 		ColumnFormatter = new InventoryColumnFormatter();
 		ColumnFormatter.maxTextLength = 80;
