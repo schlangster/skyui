@@ -5,7 +5,7 @@ import gfx.managers.FocusHandler;
 
 import Shared.GlobalFunc;
 
-import skyui.HorizontalList;
+import skyui.CategoryList;
 import skyui.FormattedItemList;
 import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
@@ -25,7 +25,7 @@ class InventoryLists extends MovieClip
 
 	private var _config:Config;
 
-	private var _CategoriesList:HorizontalList;
+	private var _CategoriesList:CategoryList;
 	private var _CategoryLabel:MovieClip;
 	private var _ItemsList:FormattedItemList;
 	private var _SearchWidget:SearchWidget;

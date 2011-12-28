@@ -72,7 +72,6 @@ class skyui.DynamicList extends MovieClip
 	
 	function createEntryClip(a_index:Number):MovieClip
 	{
-		trace(_entryClassName);
 		return attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
 	}
 

@@ -7,7 +7,6 @@ class skyui.TabBar extends MovieClip
 	static var LEFT_TAB = 1;
 	static var RIGHT_TAB = 2;
 	
-	private var _columns:Array;
 	private var _activeTab:Number;
 	
 	// Children
@@ -29,7 +28,7 @@ class skyui.TabBar extends MovieClip
 		super();
 		EventDispatcher.initialize(this);
 		
-		_activeTab = LEFT_TAB;
+		_activeTab = undefined;
 	}
 	
 	function tabPress(a_tabIndex:Number)
@@ -45,10 +44,24 @@ class skyui.TabBar extends MovieClip
 	function set activeTab(a_index:Number)
 	{
 		_activeTab = a_index;
+		
+		if (a_index == LEFT_TAB) {
+			leftIcon._alpha = 100;
+			leftLabel._alpha = 100;
+			rightIcon._alpha = 50;
+			rightLabel._alpha = 50;
+		} else {
+			leftIcon._alpha = 50;
+			leftLabel._alpha = 50;
+			rightIcon._alpha = 100;
+			rightLabel._alpha = 100;
+		}
 	}
 	
 	function onLoad()
 	{
+		activeTab = LEFT_TAB;
+		
 		// TODO - doesn't seem to be working
 		leftLabel.autoSize = "left";
 		rightLabel.autoSize = "left";
@@ -66,6 +79,22 @@ class skyui.TabBar extends MovieClip
 			_parent.tabPress(LEFT_TAB);
 		};
 		
+		leftButton.onRollOver = function()
+		{
+			if (_parent._activeTab != LEFT_TAB) {
+				_parent.leftIcon._alpha = 75;
+				_parent.leftLabel._alpha = 75;
+			}
+		};
+
+		leftButton.onRollOut = function()
+		{
+			if (_parent._activeTab != LEFT_TAB) {
+				_parent.leftIcon._alpha = 50;
+				_parent.leftLabel._alpha = 50;
+			}
+		};
+		
 		rightButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			_parent.columnPress(RIGHT_TAB);
@@ -74,6 +103,22 @@ class skyui.TabBar extends MovieClip
 		rightButton.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			_parent.columnPress(RIGHT_TAB);
+		};
+		
+		rightButton.onRollOver = function()
+		{
+			if (_parent._activeTab != RIGHT_TAB) {
+				_parent.rightIcon._alpha = 75;
+				_parent.rightLabel._alpha = 75;
+			}
+		};
+
+		rightButton.onRollOut = function()
+		{
+			if (_parent._activeTab != RIGHT_TAB) {
+				_parent.rightIcon._alpha = 50;
+				_parent.rightLabel._alpha = 50;
+			}
 		};
 		
 		positionElements();

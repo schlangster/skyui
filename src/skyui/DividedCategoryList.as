@@ -2,7 +2,7 @@
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-class skyui.HorizontalList extends skyui.DynamicList
+class skyui.DividedCategoryList extends skyui.CategoryList
 {
 	static var FILL_BORDER = 0;
 	static var FILL_PARENT = 1;
@@ -32,9 +32,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 	var selectorRight:MovieClip;
 	
 
-	
-
-	function HorizontalList()
+	function DividedCategoryList()
 	{
 		super();
 		
@@ -95,7 +93,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 		// How about proper closures? :(
 		entryClip.buttonArea.onRollOver = function()
 		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined) {
+			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined && _parent.enabled) {
 
 				if (_parent.itemIndex != _parent._parent._selectedIndex) {
 					_parent._alpha = 75;
@@ -106,7 +104,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 		
 		entryClip.buttonArea.onRollOut = function()
 		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined) {
+			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined && _parent.enabled) {
 
 				if (_parent.itemIndex != _parent._parent._selectedIndex) {
 					_parent._alpha = 50;
@@ -117,7 +115,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 		entryClip.buttonArea.onPress = function(aiMouseIndex, aiKeyboardOrMouse)
 		{
-			if (_parent.itemIndex != undefined && !_parent._parent.listAnimating && !_parent._parent._bDisableInput) {
+			if (_parent.itemIndex != undefined && !_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.enabled) {
 
 				_parent._parent.doSetSelectedIndex(_parent.itemIndex,0);
 				_parent._parent.onItemPress(aiKeyboardOrMouse);
@@ -130,7 +128,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 
 		entryClip.buttonArea.onPressAux = function(aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
 		{
-			if (_parent.itemIndex != undefined) {
+			if (_parent.itemIndex != undefined && _parent.enabled) {
 				_parent._parent.onItemPressAux(aiKeyboardOrMouse,aiButtonIndex);
 			}
 		};
@@ -325,13 +323,20 @@ class skyui.HorizontalList extends skyui.DynamicList
 	function moveSelectionLeft()
 	{
 		if (!_bDisableSelection) {
-			if (selectedIndex > 0) {
-				selectedIndex = selectedIndex - 1;
-			} else {
-				_bFastSwitch = true;
-				selectedIndex = _entryList.length - 1;
-				
-			}
+			var curIndex = _selectedIndex;
+			var startIndex = _selectedIndex;
+			
+			do {
+				if (_selectedIndex > 0) {
+					curIndex--;
+				} else {
+					_bFastSwitch = true;
+					curIndex = _entryList.length - 1;
+					
+				}
+			} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+			
+			doSetSelectedIndex(curIndex, 0);
 			onItemPress(0);
 		}
 	}
@@ -339,12 +344,19 @@ class skyui.HorizontalList extends skyui.DynamicList
 	function moveSelectionRight()
 	{
 		if (!_bDisableSelection) {
-			if (selectedIndex < _entryList.length - 1) {
-				selectedIndex = selectedIndex + 1;
-			} else {
-				_bFastSwitch = true;
-				selectedIndex = 0;
-			}
+			var curIndex = _selectedIndex;
+			var startIndex = _selectedIndex;
+			
+			do {
+				if (curIndex < _entryList.length - 1) {
+					curIndex++;
+				} else {
+					_bFastSwitch = true;
+					curIndex = 0;
+				}
+			} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+			
+			doSetSelectedIndex(curIndex, 0);
 			onItemPress(0);
 		}
 	}
@@ -352,10 +364,15 @@ class skyui.HorizontalList extends skyui.DynamicList
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
 		if (a_entryClip != undefined) {
-			if (a_entryObject == selectedEntry) {
+			if (a_entryObject.filterFlag == 0 && !a_entryObject.bDontHide) {
+				a_entryClip._alpha = 15;
+				a_entryClip.enabled = false;
+			} else if (a_entryObject == selectedEntry) {
 				a_entryClip._alpha = 100;
+				a_entryClip.enabled = true;
 			} else {
 				a_entryClip._alpha = 50;
+				a_entryClip.enabled = true;
 			}
 
 			setEntryText(a_entryClip,a_entryObject);
