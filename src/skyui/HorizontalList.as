@@ -16,6 +16,7 @@ class skyui.HorizontalList extends skyui.DynamicList
 	private var _totalWidth:Number;
 	private var _selectorPos:Number;
 	private var _targetSelectorPos:Number;
+	private var _bFastSwitch:Boolean;
 	
 	private var _iconArt:Array;
 
@@ -31,12 +32,15 @@ class skyui.HorizontalList extends skyui.DynamicList
 	var selectorRight:MovieClip;
 	
 
+	
+
 	function HorizontalList()
 	{
 		super();
 		
 		_selectorPos = 0;
 		_targetSelectorPos = 0;
+		_bFastSwitch = false;
 
 		if (borderWidth != undefined) {
 			_indent = borderWidth;
@@ -203,7 +207,12 @@ class skyui.HorizontalList extends skyui.DynamicList
 	
 	function onEnterFrame()
 	{
-		if (_selectorPos < _targetSelectorPos) {
+		if (_bFastSwitch && _selectorPos != _targetSelectorPos) {
+			_selectorPos = _targetSelectorPos;
+			_bFastSwitch = false;
+			refreshSelector();
+			
+		} else  if (_selectorPos < _targetSelectorPos) {
 			_selectorPos = _selectorPos + (_targetSelectorPos - _selectorPos) * 0.2 + 1;
 			
 			refreshSelector();
@@ -279,9 +288,8 @@ class skyui.HorizontalList extends skyui.DynamicList
 		}
 	}
 
-	function onItemPress(a_keyboardOrMouse)
+	function onItemPress(a_keyboardOrMouse:Number)
 	{
-
 		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
 
 			updateSelector();
@@ -319,8 +327,12 @@ class skyui.HorizontalList extends skyui.DynamicList
 		if (!_bDisableSelection) {
 			if (selectedIndex > 0) {
 				selectedIndex = selectedIndex - 1;
-				onItemPress(0);
+			} else {
+				_bFastSwitch = true;
+				selectedIndex = _entryList.length - 1;
+				
 			}
+			onItemPress(0);
 		}
 	}
 
@@ -329,8 +341,11 @@ class skyui.HorizontalList extends skyui.DynamicList
 		if (!_bDisableSelection) {
 			if (selectedIndex < _entryList.length - 1) {
 				selectedIndex = selectedIndex + 1;
-				onItemPress(0);
+			} else {
+				_bFastSwitch = true;
+				selectedIndex = 0;
 			}
+			onItemPress(0);
 		}
 	}
 	

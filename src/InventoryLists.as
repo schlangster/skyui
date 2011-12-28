@@ -125,19 +125,14 @@ class InventoryLists extends MovieClip
 		if (_currentState == SHOW_PANEL) {
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == NavigationCode.LEFT) {
-
-					if (_CategoriesList.selectedIndex > 0) {
-						_CategoriesList.moveSelectionLeft();
-						bCaught = true;
-					} else {
-						_parent.onExitMenuRectClick();
-					}
+					_CategoriesList.moveSelectionLeft();
+					bCaught = true;
 
 				} else if (details.navEquivalent == NavigationCode.RIGHT) {
 					_CategoriesList.moveSelectionRight();
 					bCaught = true;
 
-					// Search hotkey (default space)
+				// Search hotkey (default space)
 				} else if (details.code == _searchKey) {
 					bCaught = true;
 					_SearchWidget.startInput();
