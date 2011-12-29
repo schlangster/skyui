@@ -1,23 +1,22 @@
 ﻿import gfx.events.EventDispatcher;
 import skyui.ItemSortingFilter;
-import skyui.Defines;
 
 class skyui.TabBar extends MovieClip
 {
-	static var LEFT_TAB = 1;
-	static var RIGHT_TAB = 2;
-	
+	static var LEFT_TAB = 0;
+	static var RIGHT_TAB = 1;
+
 	private var _activeTab:Number;
-	
+
 	// Children
-	var backimage:MovieClip;
+	var image:MovieClip;
 	var leftLabel:TextField;
 	var rightLabel:TextField;
 	var leftIcon:MovieClip;
 	var rightIcon:MovieClip;
 	var leftButton:MovieClip;
 	var rightButton:MovieClip;
-	
+
 	//Mixin
 	var dispatchEvent:Function;
 	var addEventListener:Function;
@@ -27,48 +26,59 @@ class skyui.TabBar extends MovieClip
 	{
 		super();
 		EventDispatcher.initialize(this);
-		
+
 		_activeTab = undefined;
 	}
-	
+
+	function setLabelText(leftText:String, rightText:String)
+	{
+		leftLabel.SetText(leftText.toUpperCase());
+		rightLabel.SetText(rightText.toUpperCase());
+
+//		positionElements();
+	}
+
 	function tabPress(a_tabIndex:Number)
 	{
-		dispatchEvent({type:"tabPress", index: a_tabIndex});
+		
+		dispatchEvent({type:"tabPress", index:a_tabIndex});
 	}
-	
+
 	function get activeTab():Number
 	{
 		return _activeTab;
 	}
-	
+
 	function set activeTab(a_index:Number)
 	{
 		_activeTab = a_index;
-		
+
 		if (a_index == LEFT_TAB) {
 			leftIcon._alpha = 100;
 			leftLabel._alpha = 100;
 			rightIcon._alpha = 50;
 			rightLabel._alpha = 50;
+			image.gotoAndStop("left");
 		} else {
 			leftIcon._alpha = 50;
 			leftLabel._alpha = 50;
 			rightIcon._alpha = 100;
 			rightLabel._alpha = 100;
+			image.gotoAndStop("right");
 		}
 	}
-	
+
 	function onLoad()
 	{
 		activeTab = LEFT_TAB;
-		
+
 		// TODO - doesn't seem to be working
-		leftLabel.autoSize = "left";
-		rightLabel.autoSize = "left";
-		
+//		leftLabel.autoSize = "left";
+//		rightLabel.autoSize = "left";
+
 		leftLabel.SetText("BUY");
 		rightLabel.SetText("SELL");
-		
+
 		leftButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			_parent.tabPress(LEFT_TAB);
@@ -78,7 +88,7 @@ class skyui.TabBar extends MovieClip
 		{
 			_parent.tabPress(LEFT_TAB);
 		};
-		
+
 		leftButton.onRollOver = function()
 		{
 			if (_parent._activeTab != LEFT_TAB) {
@@ -94,7 +104,7 @@ class skyui.TabBar extends MovieClip
 				_parent.leftLabel._alpha = 50;
 			}
 		};
-		
+
 		rightButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			_parent.tabPress(RIGHT_TAB);
@@ -104,7 +114,7 @@ class skyui.TabBar extends MovieClip
 		{
 			_parent.tabPress(RIGHT_TAB);
 		};
-		
+
 		rightButton.onRollOver = function()
 		{
 			if (_parent._activeTab != RIGHT_TAB) {
@@ -120,28 +130,23 @@ class skyui.TabBar extends MovieClip
 				_parent.rightLabel._alpha = 50;
 			}
 		};
-		
-		positionElements();
+
+//		positionElements();
 	}
-	
-	function onEnterFrame()
-	{
-		positionElements();
-	}
-	
+
 	function positionElements()
 	{
 		// Left
 		var leftPos = leftButton._x + (leftButton._width - 5 - leftLabel._width - leftIcon._width) / 2;
 		leftIcon._x = leftPos;
-		
+
 		leftPos += leftIcon._width + 5;
 		leftLabel._x = leftPos;
-		
+
 		// Right
 		var rightPos = rightButton._x + (rightButton._width - 5 - rightLabel._width - rightIcon._width) / 2;
 		rightIcon._x = rightPos;
-		
+
 		rightPos += rightIcon._width + 5;
 		rightLabel._x = rightPos;
 	}

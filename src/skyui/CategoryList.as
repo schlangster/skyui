@@ -2,14 +2,15 @@
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
+
 class skyui.CategoryList extends skyui.DynamicList
 {
 	static var FILL_BORDER = 0;
 	static var FILL_PARENT = 1;
 	static var FILL_STAGE = 2;
 	
-	static var LEFT_SEGMENT = 1;
-	static var RIGHT_SEGMENT = 2;
+	static var LEFT_SEGMENT = 0;
+	static var RIGHT_SEGMENT = 1;
 
 	private var _bNoIcons:Boolean;
 	private var _bNoText:Boolean;
@@ -74,28 +75,49 @@ class skyui.CategoryList extends skyui.DynamicList
 		}
 
 		_activeSegment = LEFT_SEGMENT;
-		_dividerIndex = undefined;
-		_segmentOffset = undefined;
-		_segmentLength = undefined;
+		_dividerIndex = -1;
+		_segmentOffset = 0;
+		_segmentLength = 0;
+	}
+	
+	function set dividerIndex(a_index:Number)
+	{
+		_dividerIndex = a_index;
+	}
+	
+	function get dividerIndex():Number
+	{
+		return _dividerIndex;
 	}
 	
 	function set activeSegment(a_segment:Number)
 	{
-		if (a_segment == LEFT_SEGMENT) {
-			_activeSegment = LEFT_SEGMENT;
-			calculateSegmentParams();
+		if (a_segment == _activeSegment) {
 			return;
 		}
-		if (a_segment == RIGHT_SEGMENT) {
-			_activeSegment = RIGHT_SEGMENT;
-			calculateSegmentParams();
-			return;
+		
+		_activeSegment = a_segment;
+		
+		calculateSegmentParams();
+		
+		if (a_segment == LEFT_SEGMENT && _selectedIndex > _dividerIndex) {
+			doSetSelectedIndex(_selectedIndex - _dividerIndex - 1, 0);
+		} else if (a_segment == RIGHT_SEGMENT && _selectedIndex < _dividerIndex) {
+			doSetSelectedIndex(_selectedIndex + _dividerIndex + 1, 0);
 		}
+		
+		UpdateList();
 	}
 	
-	function get activeSegment()
+	function get activeSegment():Number
 	{
 		return _activeSegment;
+	}
+	
+	function clearList()
+	{
+		super.clearList();
+		_dividerIndex = -1;
 	}
 	
 	function restoreSelectedEntry(a_newIndex:Number)
@@ -182,15 +204,7 @@ class skyui.CategoryList extends skyui.DynamicList
 	
 	function InvalidateData()
 	{
-		_dividerIndex = -1;
-		for (var i=0; i < _entryList.length; i++) {
-			if (_entryList[i].flag == 0) {
-				_dividerIndex = i;
-				continue;
-			}
-		}
 		calculateSegmentParams();
-		
 		super.InvalidateData();
 	}
 	
@@ -218,8 +232,6 @@ class skyui.CategoryList extends skyui.DynamicList
 		var cw = _indent * 2;
 		var tw = 0;
 		var xOffset = 0;
-		
-		skse.Log("Updating. Seg len: " + _segmentLength + " offset: " + _segmentOffset + " div:" + _dividerIndex);
 
 		if (_fillType == FILL_PARENT) {
 			xOffset = _parent._x;
@@ -317,7 +329,7 @@ class skyui.CategoryList extends skyui.DynamicList
 			return;
 		}
 
-		var selectedClip = getClipByIndex(_selectedIndex);
+		var selectedClip = getClipByIndex(_selectedIndex - _segmentOffset);
 
 		_targetSelectorPos = selectedClip._x + (selectedClip.buttonArea._width - selectorCenter._width) / 2;
 		
@@ -340,7 +352,7 @@ class skyui.CategoryList extends skyui.DynamicList
 	function refreshSelector()
 	{
 		selectorCenter._visible = true;
-		var selectedClip = getClipByIndex(_selectedIndex);
+		var selectedClip = getClipByIndex(_selectedIndex - _segmentOffset);
 
 		selectorCenter._x = _selectorPos;
 
@@ -395,11 +407,11 @@ class skyui.CategoryList extends skyui.DynamicList
 			var startIndex = _selectedIndex;
 			
 			do {
-				if (_selectedIndex > 0) {
+				if (curIndex > _segmentOffset) {
 					curIndex--;
 				} else {
 					_bFastSwitch = true;
-					curIndex = _entryList.length - 1;
+					curIndex = _segmentOffset + _segmentLength - 1;
 					
 				}
 			} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
@@ -416,11 +428,11 @@ class skyui.CategoryList extends skyui.DynamicList
 			var startIndex = _selectedIndex;
 			
 			do {
-				if (curIndex < _entryList.length - 1) {
+				if (curIndex < _segmentOffset + _segmentLength - 1) {
 					curIndex++;
 				} else {
 					_bFastSwitch = true;
-					curIndex = 0;
+					curIndex = _segmentOffset;
 				}
 			} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
 			

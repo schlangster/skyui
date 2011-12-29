@@ -49,7 +49,7 @@ class skyui.SearchWidget extends MovieClip
 		_config = event.config;
 		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
 		_updateDelay = _config.SearchBox.autoupdate.delay;
-		_filterString = _config.SearchBox.filterString;
+		_filterString = _config.Strings.filter;
 		
 		textField.SetText(_filterString);
 	}

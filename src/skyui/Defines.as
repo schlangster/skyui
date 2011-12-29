@@ -1,5 +1,5 @@
 ﻿class skyui.Defines
-{
+{	
 	// Category filterflags
 	static var FLAG_CATEGORY_DIVIDER = 0;
 	

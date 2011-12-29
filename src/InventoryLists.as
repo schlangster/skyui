@@ -12,6 +12,7 @@ import skyui.ItemNameFilter;
 import skyui.ItemSortingFilter;
 import skyui.SortedListHeader;
 import skyui.SearchWidget;
+import skyui.TabBar;
 import skyui.Config;
 import skyui.Util;
 
@@ -29,6 +30,7 @@ class InventoryLists extends MovieClip
 	private var _CategoryLabel:MovieClip;
 	private var _ItemsList:FormattedItemList;
 	private var _SearchWidget:SearchWidget;
+	private var _TabBar:TabBar;
 
 	private var _platform:Number;
 	private var _currentState:Number;
@@ -59,6 +61,7 @@ class InventoryLists extends MovieClip
 		_CategoryLabel = panelContainer.CategoryLabel;
 		_ItemsList = panelContainer.itemsList;
 		_SearchWidget = panelContainer.searchWidget;
+		_TabBar = panelContainer.tabBar;
 
 		EventDispatcher.initialize(this);
 
@@ -102,6 +105,10 @@ class InventoryLists extends MovieClip
 		_SearchWidget.addEventListener("inputStart",this,"onSearchInputStart");
 		_SearchWidget.addEventListener("inputEnd",this,"onSearchInputEnd");
 		_SearchWidget.addEventListener("inputChange",this,"onSearchInputChange");
+		
+		if (_TabBar != undefined) {
+			_TabBar.addEventListener("tabPress",this,"onTabPress");
+		}
 	}
 
 	function onConfigLoad(event)
@@ -251,6 +258,18 @@ class InventoryLists extends MovieClip
 	function onCategoriesListPress()
 	{
 	}
+	
+	function onTabPress(event)
+	{
+		if (event.index == TabBar.LEFT_TAB) {
+			_TabBar.activeTab = TabBar.LEFT_TAB;
+			_CategoriesList.activeSegment = CategoryList.LEFT_SEGMENT;
+		} else if (event.index == TabBar.RIGHT_TAB) {
+			_TabBar.activeTab = TabBar.RIGHT_TAB;
+			_CategoriesList.activeSegment = CategoryList.RIGHT_SEGMENT;
+		}
+		showItemsList();
+	}
 
 	function onCategoriesListMoveUp(event)
 	{
@@ -340,9 +359,21 @@ class InventoryLists extends MovieClip
 
 		_CategoriesList.clearList();
 
-		for (var i = 0; i < arguments.length; i = i + len) {
+		for (var i = 0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
 			_CategoriesList.entryList.push(entry);
+
+			if (entry.flag == 0) {
+				_CategoriesList.dividerIndex = index;
+			}
+		}
+		
+		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
+		if (_TabBar != undefined) {
+			if (_CategoriesList.dividerIndex != -1) {
+				 _TabBar.setLabelText(_CategoriesList.entryList[0].text, _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text);
+				 _CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = _config.Strings.all;
+			}
 		}
 
 		_CategoriesList.InvalidateData();
