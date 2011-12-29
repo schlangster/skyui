@@ -357,6 +357,7 @@ class InventoryLists extends MovieClip
 			_CategoriesList.entryList[i].filterFlag = _CategoriesList.entryList[i].bDontHide ? 1 : 0;
 		}
 
+		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
 		_ItemsList.InvalidateData();
 		for (var i = 0; i < _ItemsList.entryList.length; i++) {
 			for (var j = 0; j < _CategoriesList.entryList.length; ++j) {

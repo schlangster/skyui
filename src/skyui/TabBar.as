@@ -97,12 +97,12 @@ class skyui.TabBar extends MovieClip
 		
 		rightButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			_parent.columnPress(RIGHT_TAB);
+			_parent.tabPress(RIGHT_TAB);
 		};
 
 		rightButton.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			_parent.columnPress(RIGHT_TAB);
+			_parent.tabPress(RIGHT_TAB);
 		};
 		
 		rightButton.onRollOver = function()

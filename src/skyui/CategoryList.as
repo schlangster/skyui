@@ -7,6 +7,9 @@ class skyui.CategoryList extends skyui.DynamicList
 	static var FILL_BORDER = 0;
 	static var FILL_PARENT = 1;
 	static var FILL_STAGE = 2;
+	
+	static var LEFT_SEGMENT = 1;
+	static var RIGHT_SEGMENT = 2;
 
 	private var _bNoIcons:Boolean;
 	private var _bNoText:Boolean;
@@ -19,6 +22,12 @@ class skyui.CategoryList extends skyui.DynamicList
 	private var _bFastSwitch:Boolean;
 	
 	private var _iconArt:Array;
+	
+	private var _dividerIndex:Number;
+
+	private var _activeSegment:Number;
+	private var _segmentOffset:Number;
+	private var _segmentLength:Number;
 
 	// Component settings
 	var buttonOption:String;
@@ -63,6 +72,30 @@ class skyui.CategoryList extends skyui.DynamicList
 		} else {
 			_fillType = FILL_BORDER;
 		}
+
+		_activeSegment = LEFT_SEGMENT;
+		_dividerIndex = undefined;
+		_segmentOffset = undefined;
+		_segmentLength = undefined;
+	}
+	
+	function set activeSegment(a_segment:Number)
+	{
+		if (a_segment == LEFT_SEGMENT) {
+			_activeSegment = LEFT_SEGMENT;
+			calculateSegmentParams();
+			return;
+		}
+		if (a_segment == RIGHT_SEGMENT) {
+			_activeSegment = RIGHT_SEGMENT;
+			calculateSegmentParams();
+			return;
+		}
+	}
+	
+	function get activeSegment()
+	{
+		return _activeSegment;
 	}
 	
 	function restoreSelectedEntry(a_newIndex:Number)
@@ -146,12 +179,47 @@ class skyui.CategoryList extends skyui.DynamicList
 
 		return entryClip;
 	}
+	
+	function InvalidateData()
+	{
+		_dividerIndex = -1;
+		for (var i=0; i < _entryList.length; i++) {
+			if (_entryList[i].flag == 0) {
+				_dividerIndex = i;
+				continue;
+			}
+		}
+		calculateSegmentParams();
+		
+		super.InvalidateData();
+	}
+	
+	function calculateSegmentParams()
+	{
+		// Divided
+		if (_dividerIndex != undefined && _dividerIndex != -1) {
+			if (_activeSegment == LEFT_SEGMENT) {
+				_segmentOffset = 0;
+				_segmentLength = _dividerIndex;
+			} else {
+				_segmentOffset = _dividerIndex + 1;
+				_segmentLength = _entryList.length - _segmentOffset;
+			}
+		
+		// Default for non-divided lists
+		} else {
+			_segmentOffset = 0;
+			_segmentLength = _entryList.length;
+		}
+	}
 
 	function UpdateList()
 	{
 		var cw = _indent * 2;
 		var tw = 0;
 		var xOffset = 0;
+		
+		skse.Log("Updating. Seg len: " + _segmentLength + " offset: " + _segmentOffset + " div:" + _dividerIndex);
 
 		if (_fillType == FILL_PARENT) {
 			xOffset = _parent._x;
@@ -164,13 +232,13 @@ class skyui.CategoryList extends skyui.DynamicList
 			tw = border._width;
 		}
 
-		for (var i = 0; i < _entryList.length; i++) {
+		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);
 
-			setEntry(entryClip,_entryList[i]);
+			setEntry(entryClip,_entryList[i + _segmentOffset]);
 
-			_entryList[i].clipIndex = i;
-			entryClip.itemIndex = i;
+			_entryList[i + _segmentOffset].clipIndex = i;
+			entryClip.itemIndex = i + _segmentOffset;
 
 			entryClip.textField.autoSize = "left";
 
@@ -188,11 +256,11 @@ class skyui.CategoryList extends skyui.DynamicList
 		_contentWidth = cw;
 		_totalWidth = tw;
 
-		var spacing = (_totalWidth - _contentWidth) / (_entryList.length + 1);
+		var spacing = (_totalWidth - _contentWidth) / (_segmentLength + 1);
 
 		var xPos = xOffset + _indent + spacing;
 
-		for (var i = 0; i < _entryList.length; i++) {
+		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);
 			entryClip._x = xPos;
 

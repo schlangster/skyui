@@ -1,5 +1,8 @@
 ﻿import gfx.io.GameDelegate;
 
+import skyui.InventoryColumnFormatter;
+import skyui.InventoryDataFetcher;
+
 class ContainerMenu extends ItemMenu
 {
 	static var NULL_HAND:Number = -1;
@@ -13,6 +16,10 @@ class ContainerMenu extends ItemMenu
 
 	var ContainerButtonArt:Object;
 	var InventoryButtonArt:Object;
+	var CategoryListIconArt:Array;
+	
+	var ColumnFormatter:InventoryColumnFormatter;
+	var DataFetcher:InventoryDataFetcher;
 
 	// ?
 	var bPCControlsReady:Boolean = true;
@@ -31,11 +38,28 @@ class ContainerMenu extends ItemMenu
 		_bNPCMode = false;
 		_bShowEquipButtonHelp = true;
 		_equipHand = undefined;
+
+		CategoryListIconArt = ["inv_all", "inv_weapons", "inv_armor",
+							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
+							   "inv_books", "inv_keys", "inv_misc"];
+		
+		ColumnFormatter = new InventoryColumnFormatter();
+		ColumnFormatter.maxTextLength = 80;
+		
+		DataFetcher = new InventoryDataFetcher();
 	}
 
 	function InitExtensions()
 	{
 		super.InitExtensions(false);
+		
+		InventoryLists_mc.CategoriesList.setIconArt(CategoryListIconArt);
+		
+		InventoryLists_mc.ItemsList.entryClassName = "ItemsListEntryInv";
+		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
+		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
+		InventoryLists_mc.ItemsList.setConfigSection("ItemList");
+		
 		GameDelegate.addCallBack("AttemptEquip",this,"AttemptEquip");
 		GameDelegate.addCallBack("XButtonPress",this,"onXButtonPress");
 		ItemCardFadeHolder_mc.StealTextInstance._visible = false;
