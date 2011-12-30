@@ -3,7 +3,6 @@ import skyui.IFilter;
 
 class skyui.FilteredList extends skyui.DynamicScrollingList
 {
-	private var _maxTextLength:Number;
 	private var _filteredList:Array;
 	private var _filterChain:Array;
 

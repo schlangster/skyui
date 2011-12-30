@@ -27,7 +27,7 @@
 		}
 
 		a_entryObject.infoValue = Math.round(a_itemInfo.value);
-		a_entryObject.infoWeight = int(a_itemInfo.weight * 100) / 100;
+		a_entryObject.infoWeight = int(a_itemInfo.weight * 10) / 10;
 		a_entryObject.infoType = a_itemInfo.type;
 		a_entryObject.infoPotionType = a_itemInfo.potionType;
 		a_entryObject.infoWeightValue = a_itemInfo.weight != 0 ? Math.round(a_itemInfo.value / a_itemInfo.weight) : 0;

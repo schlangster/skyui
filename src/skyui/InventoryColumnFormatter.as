@@ -8,12 +8,13 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 
 	private var _maxTextLength:Number;
 	
+	
 	function InventoryColumnFormatter()
 	{
 		_maxTextLength = 50;
 	}
 	
-	function set maxTextLength(a_length)
+	function set maxTextLength(a_length:Number)
 	{
 		if (a_length > 3) {
 			_maxTextLength = a_length;

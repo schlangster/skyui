@@ -28,6 +28,7 @@ class skyui.SearchWidget extends MovieClip
 	var dispatchEvent:Function;
 	var addEventListener:Function;
 	
+	
 	function SearchWidget()
 	{
 		super();
@@ -153,7 +154,8 @@ class skyui.SearchWidget extends MovieClip
 			if (details.navEquivalent == NavigationCode.ENTER && details.code != 32) {
 				endInput();
 				
-			} else if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE || details.navEquivalent == NavigationCode.GAMEPAD_BACK) {
+			} else if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE
+					   || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8)) {
 				clearText();
 				endInput();
 			}

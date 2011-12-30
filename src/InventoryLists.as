@@ -42,6 +42,7 @@ class InventoryLists extends MovieClip
 	private var _currCategoryIndex:Number;
 
 	private var _searchKey:Number;
+	private var _tabToggleKey:Number;
 
 	// Children
 	var panelContainer:MovieClip;
@@ -75,6 +76,7 @@ class InventoryLists extends MovieClip
 		_sortFilter = new ItemSortingFilter();
 
 		_searchKey = undefined;
+		_tabToggleKey = undefined;
 
 		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
 	}
@@ -114,7 +116,8 @@ class InventoryLists extends MovieClip
 	function onConfigLoad(event)
 	{
 		_config = event.config;
-		_searchKey = _config.SearchBox.hotkey;
+		_searchKey = _config.Hotkeys.search;
+		_tabToggleKey = _config.Hotkeys.tabToggle;
 	}
 
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
@@ -131,6 +134,7 @@ class InventoryLists extends MovieClip
 
 		if (_currentState == SHOW_PANEL) {
 			if (GlobalFunc.IsKeyPressed(details)) {
+				
 				if (details.navEquivalent == NavigationCode.LEFT) {
 					_CategoriesList.moveSelectionLeft();
 					bCaught = true;
@@ -143,6 +147,12 @@ class InventoryLists extends MovieClip
 				} else if (details.code == _searchKey) {
 					bCaught = true;
 					_SearchWidget.startInput();
+					
+				// Toggle tab (default ALT)
+				} else if (_TabBar != undefined && details.code == _tabToggleKey) {
+					
+					bCaught = true;
+					_TabBar.tabToggle();
 				}
 			}
 			if (!bCaught) {
@@ -262,7 +272,7 @@ class InventoryLists extends MovieClip
 	
 	function onTabPress(event)
 	{
-		if (_CategoriesList.disableSelection) {
+		if (_CategoriesList.disableSelection || _CategoriesList.disableInput || _ItemsList.disableSelection || _ItemsList.disableInput) {
 			return;
 		}
 		
@@ -274,6 +284,7 @@ class InventoryLists extends MovieClip
 			_CategoriesList.activeSegment = CategoryList.RIGHT_SEGMENT;
 		}
 		
+		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		showItemsList();
 	}
 
