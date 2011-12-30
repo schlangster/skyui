@@ -73,21 +73,33 @@ class BarterMenu extends ItemMenu
 	function onShowItemsList(event)
 	{
 		_selectedCategory = InventoryLists_mc.CategoriesList.selectedIndex;
+		
 		if (IsViewingVendorItems()) {
 			// adjust item values to buy multiplier
 			InventoryLists_mc.ItemsList.dataFetcher._barterMult = _buyMult;
 			// invalidate data to apply new values
 //			InventoryLists_mc.ItemsList.InvalidateData();
-			BottomBar_mc.SetButtonsText("$Buy","$Exit");
 		} else {
 			// adjust item values to sell multiplier
 			InventoryLists_mc.ItemsList.dataFetcher._barterMult = _sellMult;
 			// invalidate data to apply new values
 //			InventoryLists_mc.ItemsList.InvalidateData();
-			BottomBar_mc.SetButtonsText("$Sell","$Exit");
 		}
 
 		super.onShowItemsList(event);
+	}
+	
+	function onItemHighlightChange(event)
+	{
+		if (event.index != -1) {
+			if (IsViewingVendorItems()) {
+				BottomBar_mc.SetButtonsText("$Buy","$Exit");
+			} else {
+				BottomBar_mc.SetButtonsText("$Sell","$Exit");
+			}
+		}
+
+		super.onItemHighlightChange(event);
 	}
 
 	function onHideItemsList(event)
