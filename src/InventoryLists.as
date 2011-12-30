@@ -231,7 +231,8 @@ class InventoryLists extends MovieClip
 			_ItemsList.UpdateList();
 		}
 
-		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
+//		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 
 		_ItemsList.disableInput = false;
 		GameDelegate.call("PlaySound",["UIMenuFocus"]);
@@ -261,6 +262,10 @@ class InventoryLists extends MovieClip
 	
 	function onTabPress(event)
 	{
+		if (_CategoriesList.disableSelection) {
+			return;
+		}
+		
 		if (event.index == TabBar.LEFT_TAB) {
 			_TabBar.activeTab = TabBar.LEFT_TAB;
 			_CategoriesList.activeSegment = CategoryList.LEFT_SEGMENT;
@@ -268,6 +273,7 @@ class InventoryLists extends MovieClip
 			_TabBar.activeTab = TabBar.RIGHT_TAB;
 			_CategoriesList.activeSegment = CategoryList.RIGHT_SEGMENT;
 		}
+		
 		showItemsList();
 	}
 
@@ -374,6 +380,9 @@ class InventoryLists extends MovieClip
 				 _TabBar.setLabelText(_CategoriesList.entryList[0].text, _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text);
 				 _CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = _config.Strings.all;
 			}
+			
+			// Restore 0 as default index for tabbed lists
+			_CategoriesList.selectedIndex = 0;
 		}
 
 		_CategoriesList.InvalidateData();
@@ -411,6 +420,6 @@ class InventoryLists extends MovieClip
 		}
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
-		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
 	}
 }

@@ -3,6 +3,7 @@
 import skyui.InventoryColumnFormatter;
 import skyui.InventoryDataFetcher;
 
+
 class ContainerMenu extends ItemMenu
 {
 	static var NULL_HAND:Number = -1;
@@ -12,7 +13,7 @@ class ContainerMenu extends ItemMenu
 	private var _bNPCMode:Boolean;
 	private var _bShowEquipButtonHelp:Boolean;
 	private var _equipHand:Number;
-	private var _selectedCategory;
+	private var _selectedCategory:Number;
 
 	var ContainerButtonArt:Object;
 	var InventoryButtonArt:Object;
@@ -68,7 +69,7 @@ class ContainerMenu extends ItemMenu
 
 	function ShowItemsList()
 	{
-		InventoryLists_mc.ShowItemsList(false);
+		InventoryLists_mc.showItemsList();
 	}
 
 	function handleInput(details,pathToFocus)
@@ -213,7 +214,7 @@ class ContainerMenu extends ItemMenu
 	{
 		var bCheckOverList = a_bCheckOverList == undefined ? true : a_bCheckOverList;
 
-		if (ShouldProcessItemsListInput(bCheckOverList)) {
+		if (ShouldProcessItemsListInput(bCheckOverList) && ConfirmSelectedEntry()) {
 			if (_platform == 0) {
 				if (!isViewingContainer() || _bShowEquipButtonHelp) {
 					StartItemEquip(a_slot);

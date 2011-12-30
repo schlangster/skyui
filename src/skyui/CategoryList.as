@@ -243,6 +243,8 @@ class skyui.CategoryList extends skyui.DynamicList
 			xOffset = border._x;
 			tw = border._width;
 		}
+		
+		skse.Log("Len: " + _segmentLength + " Off: " + _segmentOffset);
 
 		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);

@@ -156,7 +156,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 			a_entryField.textAutoSize = "shrink";
 			a_entryField.SetText(text);
 
-			if (a_entryObject.negativeEffect == true || a_entryObject.isStealing == true) {
+			if (a_entryObject.negativeEffect == true) {
 				a_entryField.textColor = a_entryObject.enabled == false ? (8388608) : (16711680);
 			} else {
 				a_entryField.textColor = a_entryObject.enabled == false ? (5000268) : (16777215);
@@ -196,7 +196,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 			}
 
 			// Stolen Icon
-			if (a_entryObject.infoIsStolen == true) {
+			if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing) {
 				a_entryClip.stolenIcon._x = iconPos;
 				iconPos = iconPos + iconSpace;
 				a_entryClip.stolenIcon.gotoAndStop("show");

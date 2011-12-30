@@ -241,7 +241,6 @@ class ItemMenu extends MovieClip
 		}
 	}
 
-	// Might event might still be sent from somewhere else, so keep this for now.
 	function onShowItemsList(event)
 	{
 		onItemHighlightChange(event);
@@ -385,7 +384,7 @@ class ItemMenu extends MovieClip
 			InventoryLists_mc.CategoriesList.restoreSelectedEntry(arguments[0]);
 		} else {
 			// ALL
-			InventoryLists_mc.CategoriesList.restoreSelectedEntry(1);
+			InventoryLists_mc.CategoriesList.restoreSelectedEntry(0);
 		}
 
 		var index;

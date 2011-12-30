@@ -1,5 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 import skyui.ItemSortingFilter;
+import gfx.ui.NavigationCode;
+import Shared.GlobalFunc;
 
 class skyui.TabBar extends MovieClip
 {
@@ -27,15 +29,13 @@ class skyui.TabBar extends MovieClip
 		super();
 		EventDispatcher.initialize(this);
 
-		_activeTab = undefined;
+		activeTab = LEFT_TAB;
 	}
 
 	function setLabelText(leftText:String, rightText:String)
 	{
 		leftLabel.SetText(leftText.toUpperCase());
 		rightLabel.SetText(rightText.toUpperCase());
-
-//		positionElements();
 	}
 
 	function tabPress(a_tabIndex:Number)
@@ -70,15 +70,6 @@ class skyui.TabBar extends MovieClip
 
 	function onLoad()
 	{
-		activeTab = LEFT_TAB;
-
-		// TODO - doesn't seem to be working
-//		leftLabel.autoSize = "left";
-//		rightLabel.autoSize = "left";
-
-		leftLabel.SetText("BUY");
-		rightLabel.SetText("SELL");
-
 		leftButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			_parent.tabPress(LEFT_TAB);
@@ -130,24 +121,24 @@ class skyui.TabBar extends MovieClip
 				_parent.rightLabel._alpha = 50;
 			}
 		};
-
-//		positionElements();
 	}
-
-	function positionElements()
+	
+	function handleInput(details, pathToFocus)
 	{
-		// Left
-		var leftPos = leftButton._x + (leftButton._width - 5 - leftLabel._width - leftIcon._width) / 2;
-		leftIcon._x = leftPos;
+		var bCaught = false;
 
-		leftPos += leftIcon._width + 5;
-		leftLabel._x = leftPos;
+		if (GlobalFunc.IsKeyPressed(details)) {
+			
+			if (details.navEquivalent == NavigationCode.SHIFT_TAB) {
+				tabPress(_activeTab == LEFT_TAB ? RIGHT_TAB : LEFT_TAB);
+				bCaught = true;
+			}
 
-		// Right
-		var rightPos = rightButton._x + (rightButton._width - 5 - rightLabel._width - rightIcon._width) / 2;
-		rightIcon._x = rightPos;
-
-		rightPos += rightIcon._width + 5;
-		rightLabel._x = rightPos;
+			if (!bCaught) {
+				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+			}
+		}
+		
+		return bCaught;
 	}
 }
