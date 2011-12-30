@@ -8,7 +8,6 @@ class skyui.TabBar extends MovieClip
 	static var LEFT_TAB = 0;
 	static var RIGHT_TAB = 1;
 
-	private var _maxTextLength:Number;
 	private var _activeTab:Number;
 
 	// Children
@@ -31,31 +30,10 @@ class skyui.TabBar extends MovieClip
 		EventDispatcher.initialize(this);
 
 		activeTab = LEFT_TAB;
-		_maxTextLength = 15;
-	}
-	
-	function set maxTextLength(a_length:Number)
-	{
-		if (a_length > 3) {
-			_maxTextLength = a_length;
-		}
-	}
-
-	function get maxTextLength():Number
-	{
-		return _maxTextLength;
 	}
 
 	function setLabelText(leftText:String, rightText:String)
 	{
-		if (leftText.length > _maxTextLength) {
-			leftText = leftText.substr(0, _maxTextLength - 3) + "...";
-		}
-		
-		if (rightText.length > _maxTextLength) {
-			rightText = rightText.substr(0, _maxTextLength - 3) + "...";
-		}
-		
 		leftLabel.SetText(leftText.toUpperCase());
 		rightLabel.SetText(rightText.toUpperCase());
 	}
@@ -97,6 +75,10 @@ class skyui.TabBar extends MovieClip
 
 	function onLoad()
 	{
+		leftLabel.textAutoSize = "shrink";
+		rightLabel.textAutoSize = "shrink";
+		
+		
 		leftButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			_parent.tabPress(LEFT_TAB);
