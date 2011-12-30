@@ -148,7 +148,7 @@ class ContainerMenu extends ItemMenu
 		updateEquipButtonText();
 
 		if (isViewingContainer()) {
-			BottomBar_mc.SetButtonText("$Take",1);
+			BottomBar_mc.SetButtonText("$Take", 1);
 		} else {
 			BottomBar_mc.SetButtonText(_bShowEquipButtonHelp ? "":InventoryDefines.GetEquipText(ItemCard_mc.itemInfo.type),1);
 		}
