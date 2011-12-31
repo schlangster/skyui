@@ -141,6 +141,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 
 			// Text
 			var text = a_entryObject.text;
+			
 			if (a_entryObject.soulLVL != undefined) {
 				text = text + " (" + a_entryObject.soulLVL + ")";
 			}
@@ -154,7 +155,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 			}
 
 			a_entryField.autoSize = "left";
-			a_entryField.textAutoSize = "shrink";
+//			a_entryField.textAutoSize = "shrink";
 			a_entryField.SetText(text);
 
 			if (a_entryObject.negativeEffect == true) {

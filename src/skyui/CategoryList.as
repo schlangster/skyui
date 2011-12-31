@@ -122,7 +122,7 @@ class skyui.CategoryList extends skyui.DynamicList
 	
 	function restoreSelectedEntry(a_newIndex:Number)
 	{
-		doSetSelectedIndex(a_newIndex,0);
+		doSetSelectedIndex(a_newIndex,1);
 		onItemPress(1);
 	}
 	

@@ -59,10 +59,12 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_defaultEntryFormat = new TextFormat(); 
 		_defaultLabelFormat = new TextFormat();
 		
+		_config = undefined;
+		
 		// Reasonable defaults, will be overridden later
 		_entryWidth = 525;
 		_entryHeight = 28;
-		_activeViewIndex = 0;
+		_activeViewIndex = -1;
 		_lastViewIndex = -1;
 		_bEnableItemIcon = false;
 		_bEnableEquipIcon = false;
@@ -120,19 +122,21 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 		entryClip["itemIcon"]._visible = false;
 		entryClip["equipIcon"]._visible = false;
+		
+		entryClip.viewIndex = -1;
 
 		return entryClip;
 	}
 	
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
-		if (a_entryClip.viewIndex != _activeViewIndex) {
+		if (_activeViewIndex != -1 && a_entryClip.viewIndex != _activeViewIndex) {
 			a_entryClip.viewIndex = _activeViewIndex;
 			
 			var columns = currentView.columns;
 			
 			a_entryClip.border._width = a_entryClip.selectArea._width = _entryWidth;
-			a_entryClip.border._height = a_entryClip.selectArea._height =  _entryHeight;
+			a_entryClip.border._height = a_entryClip.selectArea._height = _entryHeight;
 			
 			var iconY = _entryHeight * 0.25;
 			var iconSize = _entryHeight * 0.5;
@@ -192,7 +196,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			}
 		}
 		
-		if (_lastViewIndex == _activeViewIndex) {
+		if (_activeViewIndex == -1 || _lastViewIndex == _activeViewIndex) {
 			return;
 		}
 		
@@ -519,7 +523,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	
 	function updateSortParams()
 	{
-
 		var columns = currentView.columns;
 		var sortAttributes = columns[_activeColumnIndex].sortAttributes;
 		var sortOptions = columns[_activeColumnIndex].sortOptions;
