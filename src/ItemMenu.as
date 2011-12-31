@@ -305,7 +305,7 @@ class ItemMenu extends MovieClip
 			var e = Mouse.getTopMostEntity();
 			var found = false;
 			
-			while (!found && e && e != undefined)
+			while (!found && e != undefined)
 			{
 				if (e == InventoryLists_mc.ItemsList) {
 					found = true;

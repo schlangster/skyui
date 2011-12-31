@@ -69,7 +69,7 @@ class ContainerMenu extends ItemMenu
 
 	function ShowItemsList()
 	{
-		InventoryLists_mc.showItemsList();
+		//InventoryLists_mc.showItemsList();
 	}
 
 	function handleInput(details,pathToFocus)
@@ -120,8 +120,9 @@ class ContainerMenu extends ItemMenu
 	{
 		_selectedCategory = InventoryLists_mc.CategoriesList.selectedIndex;
 		updateButtons();
+		InventoryLists_mc.showItemsList();
 
-		super.onShowItemsList(event);
+		//super.onShowItemsList(event);
 	}
 
 	function onHideItemsList(event)

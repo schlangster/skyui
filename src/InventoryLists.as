@@ -241,8 +241,8 @@ class InventoryLists extends MovieClip
 			_ItemsList.UpdateList();
 		}
 
-		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
-//		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+//		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
+		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 
 		_ItemsList.disableInput = false;
 		GameDelegate.call("PlaySound",["UIMenuFocus"]);

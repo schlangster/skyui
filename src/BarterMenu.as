@@ -65,29 +65,20 @@ class BarterMenu extends ItemMenu
 	{
 		_buyMult = a_buyMult;
 		_sellMult = a_sellMult;
-		// set initial multiplier for datafetcher
-		InventoryLists_mc.ItemsList.dataFetcher.barterMult = _buyMult;
+		InventoryLists_mc.ItemsList.dataFetcher.barterSellMult = a_sellMult;
+		InventoryLists_mc.ItemsList.dataFetcher.barterBuyMult = a_buyMult;
 		BottomBar_mc.SetButtonsText("","$Exit");
 	}
-
+	
+	
 	function onShowItemsList(event)
 	{
 		_selectedCategory = InventoryLists_mc.CategoriesList.selectedIndex;
-		
-		if (IsViewingVendorItems()) {
-			// adjust item values to buy multiplier
-			InventoryLists_mc.ItemsList.dataFetcher._barterMult = _buyMult;
-			// invalidate data to apply new values
-//			InventoryLists_mc.ItemsList.InvalidateData();
-		} else {
-			// adjust item values to sell multiplier
-			InventoryLists_mc.ItemsList.dataFetcher._barterMult = _sellMult;
-			// invalidate data to apply new values
-//			InventoryLists_mc.ItemsList.InvalidateData();
-		}
+		InventoryLists_mc.showItemsList();
 
-		super.onShowItemsList(event);
+		//super.onShowItemsList(event);
 	}
+
 	
 	function onItemHighlightChange(event)
 	{
