@@ -116,8 +116,8 @@ class InventoryLists extends MovieClip
 	function onConfigLoad(event)
 	{
 		_config = event.config;
-		_searchKey = _config.Hotkeys.search;
-		_tabToggleKey = _config.Hotkeys.tabToggle;
+		_searchKey = _config.Input.hotkey.search;
+		_tabToggleKey = _config.Input.hotkey.tabToggle;
 	}
 
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)

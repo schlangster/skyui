@@ -26,7 +26,7 @@
 	static var FLAG_BARTER_KEYS = 262144;
 	static var FLAG_BARTER_MISC = 524288;
 
-	static var FLAG_MAGIC_ALL = 1023;
+	static var FLAG_MAGIC_ALL = -257;
 	static var FLAG_MAGIC_FAVORITES = 1;
 	static var FLAG_MAGIC_ALTERATION = 2;
 	static var FLAG_MAGIC_ILLUSION = 4;
@@ -42,13 +42,11 @@
 	static var FLAG_ENCHANTING_ENCHANTMENT = 48;
 	static var FLAG_ENCHANTING_SOULGEM = 64;
 
-
 	// Form types
 	static var FORMTYPE_SOULGEM = 52;
 	static var FORMTYPE_MISC = 33;
 	static var FORMTYPE_ARROW = 42;
 	static var FORMTYPE_WEAPON = 43;
-
 
 	// Weapon types
 	static var WEAPON_TYPE_LONGSWORD = 1;
@@ -60,11 +58,9 @@
 	static var WEAPON_TYPE_BOW = 7;
 	static var WEAPON_TYPE_STAFF = 8;
 
-
 	// Magic types
-	static var MAGIC_ALTERATION = 0;
-	static var MAGIC_ILLUSION = 1;
-	static var MAGIC_DESTRUCTION = 2;
-	static var MAGIC_CONJURATION = 3;
-	static var MAGIC_RESTORATION = 4;
+	static var MAGIC_TYPE_SPELL = 7;
+	static var MAGIC_TYPE_SHOUT = 10;
+	static var MAGIC_TYPE_ACTIVEEFFECT = 11;
+	static var MAGIC_TYPE_POWER = 13;
 }
