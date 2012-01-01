@@ -49,7 +49,7 @@ class skyui.MagicColumnFormatter extends InventoryColumnFormatter
 		if (a_entryObject.text != undefined) {
 
 			// Text
-			var text = a_entryObject.text;
+			var text = a_entryObject.text + " " + a_entryObject.formType + " " + a_entryObject.subType;
 
 			if (text.length > _maxTextLength) {
 				text = text.substr(0, _maxTextLength - 3) + "...";

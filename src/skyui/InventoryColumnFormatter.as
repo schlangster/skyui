@@ -76,28 +76,28 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 					if (a_entryObject.formType == Defines.FORMTYPE_ARROW) {
 						a_entryField.gotoAndStop("weapon_arrow");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_DAGGER) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_DAGGER) {
 						a_entryField.gotoAndStop("weapon_dagger");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_BOW) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_BOW) {
 						a_entryField.gotoAndStop("weapon_bow");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_GREATSWORD) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_GREATSWORD) {
 						a_entryField.gotoAndStop("weapon_greatsword");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_WARAXE) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_WARAXE) {
 						a_entryField.gotoAndStop("weapon_waraxe");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_MACE) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_MACE) {
 						a_entryField.gotoAndStop("weapon_mace");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_LONGSWORD) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_LONGSWORD) {
 						a_entryField.gotoAndStop("weapon_sword");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_HAMMER) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_HAMMER) {
 						a_entryField.gotoAndStop("weapon_hammer");
 						break;
-					} else if (a_entryObject.weaponType == Defines.WEAPON_TYPE_STAFF) {
+					} else if (a_entryObject.subType == Defines.WEAPON_TYPE_STAFF) {
 						a_entryField.gotoAndStop("weapon_staff");
 						break;
 					}
@@ -155,13 +155,12 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 			}
 
 			a_entryField.autoSize = "left";
-//			a_entryField.textAutoSize = "shrink";
 			a_entryField.SetText(text);
 
 			if (a_entryObject.negativeEffect == true) {
-				a_entryField.textColor = a_entryObject.enabled == false ? (8388608) : (16711680);
+				a_entryField.textColor = a_entryObject.enabled == false ? 0x800000 : 0xFF0000;
 			} else {
-				a_entryField.textColor = a_entryObject.enabled == false ? (5000268) : (16777215);
+				a_entryField.textColor = a_entryObject.enabled == false ? 0x4C4C4C : 0xFFFFFF;
 			}
 
 			// BestInClass icon
