@@ -11,7 +11,6 @@ class ContainerMenu extends ItemMenu
 	static var RIGHT_HAND:Number = 0;
 	static var LEFT_HAND:Number = 1;
 
-	private var _bNPCMode:Boolean;
 	private var _bShowEquipButtonHelp:Boolean;
 	private var _equipHand:Number;
 	private var _equipHelpArt:Object;
@@ -26,6 +25,9 @@ class ContainerMenu extends ItemMenu
 
 	// ?
 	var bPCControlsReady:Boolean = true;
+	
+	// API
+	var bNPCMode:Boolean;
 
 
 	function ContainerMenu()
@@ -36,7 +38,7 @@ class ContainerMenu extends ItemMenu
 		_defaultEquipArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
 		_equipHelpArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"};
 
-		_bNPCMode = false;
+		bNPCMode = false;
 		_bShowEquipButtonHelp = true;
 		_equipHand = undefined;
 
@@ -67,12 +69,6 @@ class ContainerMenu extends ItemMenu
 		InventoryLists_mc.TabBar.setIcons("take","give");
 	}
 
-	// API
-	function set bNPCMode(abNPCMode:Boolean)
-	{
-		_bNPCMode = abNPCMode;
-	}
-
 	function ShowItemsList()
 	{
 		// Not necessary anymore. Now handled in onShowItemsList for consistency reasons.
@@ -95,7 +91,7 @@ class ContainerMenu extends ItemMenu
 
 	function onXButtonPress()
 	{
-		if (isViewingContainer() && !_bNPCMode) {
+		if (isViewingContainer() && !bNPCMode) {
 			GameDelegate.call("TakeAllItems",[]);
 			return;
 		}
@@ -185,7 +181,7 @@ class ContainerMenu extends ItemMenu
 			// Button 0
 			BottomBar_mc.SetButtonText("$Take",0);
 			// Button 1
-			BottomBar_mc.SetButtonText(_bNPCMode ? "" : "$Take All",1);
+			BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",1);
 			// Button 2
 			BottomBar_mc.SetButtonText("$Exit",3);
 
@@ -193,7 +189,7 @@ class ContainerMenu extends ItemMenu
 			// Button 0
 			BottomBar_mc.SetButtonText(InventoryDefines.GetEquipText(ItemCard_mc.itemInfo.type),0);
 			// Button 1
-			BottomBar_mc.SetButtonText(_bNPCMode ? "$Give" : "$Store",1);
+			BottomBar_mc.SetButtonText(bNPCMode ? "$Give" : "$Store",1);
 			// Button 2
 			BottomBar_mc.SetButtonText(ItemCard_mc.itemInfo.favorite ? "$Unfavorite" : "$Favorite",2);
 			// Button 3

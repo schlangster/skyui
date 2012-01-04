@@ -70,7 +70,7 @@ class MagicMenu extends ItemMenu
 
 	function handleInput(details,pathToFocus)
 	{
-		if (_bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
+		if (bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
 			if (Shared.GlobalFunc.IsKeyPressed(details)) {
 				if (InventoryLists_mc.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.RIGHT) {
 					StartMenuFade();
