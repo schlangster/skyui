@@ -161,7 +161,7 @@ class MagicMenu extends ItemMenu
 
 	function AttemptEquip(aiSlot)
 	{
-		if (ShouldProcessItemsListInput(true)) {
+		if (ShouldProcessItemsListInput(true) && ConfirmSelectedEntry()) {
 			GameDelegate.call("ItemSelect",[aiSlot]);
 		}
 	}

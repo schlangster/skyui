@@ -10,7 +10,6 @@ class BarterMenu extends ItemMenu
 	private var _buyMult:Number;
 	private var _sellMult:Number;
 	private var _confirmAmount:Number;
-	private var _selectedCategory:Number;
 	private var _playerGold:Number;
 	private var _vendorGold:Number;
 
@@ -78,7 +77,6 @@ class BarterMenu extends ItemMenu
 	
 	function onShowItemsList(event)
 	{
-		_selectedCategory = InventoryLists_mc.CategoriesList.selectedIndex;
 		InventoryLists_mc.showItemsList();
 
 		//super.onShowItemsList(event);
@@ -106,8 +104,7 @@ class BarterMenu extends ItemMenu
 
 	function IsViewingVendorItems()
 	{
-		var dividerIndex = InventoryLists_mc.CategoriesList.dividerIndex;
-		return dividerIndex != undefined && _selectedCategory < dividerIndex;
+		return (InventoryLists_mc.CategoriesList.activeSegment == 0);
 	}
 
 	function onQuantityMenuSelect(event)
