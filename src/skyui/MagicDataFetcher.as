@@ -1,40 +1,84 @@
 ﻿class skyui.MagicDataFetcher implements skyui.IDataFetcher
 {
-	static var MAGIC_TYPES = ["Alteration", "Illusion", "Destruction", "Conjuration", "Restoration"];
-	static var SHOUT_TYPES = ["Ice", "Fire", "Force", "Whirlwind"];
-	
 	function processEntry(a_entryObject:Object, a_itemInfo:Object)
 	{
 		switch (a_itemInfo.type) {
-			case InventoryDefines.ICT_SPELL_DEFAULT :
-				a_entryObject.infoSpellCost = "-";
-				a_entryObject.infoCastTime = "-";
-				a_entryObject.infoType = a_itemInfo["type"];
-				break;
+			// Spell
 			case InventoryDefines.ICT_SPELL :
 				a_entryObject.infoSpellCost = a_itemInfo["spellCost"];
-//				a_entryObject.infoType = MAGIC_TYPES.indexOf(a_itemInfo["magicSchoolName"]);
-				a_entryObject.infoCastTime = a_itemInfo["castTime"];
+				
+				if (a_itemInfo["spellCost"] == 0) {
+					a_entryObject.infoSpellCostStr = "-";
+				} else if (a_itemInfo["castTime"] == 0) {
+					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost + "/s";
+				} else {
+					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost;
+				}
+				
+				a_entryObject.infoSchoolName = a_itemInfo["magicSchoolName"];
 				break;
-			case InventoryDefines.ICT_SHOUT :
-				a_entryObject.infoSpellCost = "-";
-				a_entryObject.infoRecharge = a_itemInfo["spellCost"];
-				a_entryObject.infoCastTime = "-";
-				a_entryObject.infoShoutType = SHOUT_TYPES.indexOf(a_itemInfo["word0"]);
-				break;
-			case InventoryDefines.ICT_ACTIVE_EFFECT :
+			
+			// Power
+			case InventoryDefines.ICT_SPELL_DEFAULT :
 			default :
-				a_entryObject.infoSpellCost = "-";
+				a_entryObject.infoSpellCost = a_itemInfo["spellCost"];
+
+				if (a_itemInfo["spellCost"] == 0) {
+					a_entryObject.infoSpellCostStr = "-";
+				} else if (a_itemInfo["castTime"] == 0) {
+					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost + "/s";
+				} else {
+					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost;
+				}
+				
+				a_entryObject.infoSchoolName = "-";
+				break;
+				
+			// Shout
+			case InventoryDefines.ICT_SHOUT :
+				a_entryObject.infoSpellCost = 0;
+				a_entryObject.infoSpellCostStr = "-";
 				a_entryObject.infoCastTime = "-";
-				a_entryObject.infoTimeRemaining = a_itemInfo["timeRemaining"];
-				a_entryObject.infoNegativeEffect = a_itemInfo["negativeEffect"];
+				a_entryObject.infoSchoolName = "-";
+				
+				a_entryObject.infoRecharge = a_itemInfo["spellCost"];
+				break;
+			
+			// Active Effect
+			case InventoryDefines.ICT_ACTIVE_EFFECT :
 				a_entryObject.infoItem = a_itemInfo["name"];
+				a_entryObject.infoTimeRemaining = Math.round(a_itemInfo["timeRemaining"]);
+				
+				if (! a_entryObject.infoTimeRemaining) {
+					a_entryObject.infoTimeRemainingStr = "-";
+				} else {
+					var s = parseInt(a_entryObject.infoTimeRemaining);
+					var m = 0;
+					var h = 0;
+					var d = 0;
+					
+					if (s >= 60) {
+						m = Math.floor(s / 60);
+						s = s % 60;
+					}
+					if  (m >= 60) {
+						h = Math.floor(m / 60);
+						m = m % 60;
+					}
+					if  (h >= 60) {
+						d = Math.floor(h / 24);
+						h = h % 24;
+					}
+					
+					a_entryObject.infoTimeRemainingStr = (d != 0 ? (d + "d ") : "") +
+														 (h != 0 ? (h + "h ") : "") +
+														 (m != 0 ? (m + "m ") : "") +
+														 (s != 0 ? (s + "s ") : "");
+				}
+
 				break;
 		}
 		
 		a_entryObject.infoType = a_itemInfo["type"];
-		a_entryObject.infoSchoolName = a_itemInfo["magicSchoolName"];
-		a_entryObject.infoSchoolLevel = a_itemInfo["magicSchoolLevel"];
-		a_entryObject.infoSchoolPct = a_itemInfo["magicSchoolPct"];
 	}
 }

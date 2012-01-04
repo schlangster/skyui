@@ -65,6 +65,8 @@ class ContainerMenu extends ItemMenu
 		GameDelegate.addCallBack("XButtonPress",this,"onXButtonPress");
 		ItemCardFadeHolder_mc.StealTextInstance._visible = false;
 		updateButtons();
+		
+		InventoryLists_mc.TabBar.setIcons("take", "give");
 	}
 
 	function ShowItemsList()

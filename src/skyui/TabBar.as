@@ -7,7 +7,7 @@ class skyui.TabBar extends MovieClip
 {
 	static var LEFT_TAB = 0;
 	static var RIGHT_TAB = 1;
-
+	
 	private var _activeTab:Number;
 
 	// Children
@@ -31,11 +31,17 @@ class skyui.TabBar extends MovieClip
 
 		activeTab = LEFT_TAB;
 	}
-
-	function setLabelText(leftText:String, rightText:String)
+	
+	function setIcons(a_leftName:String, a_rightName:String)
 	{
-		leftLabel.SetText(leftText.toUpperCase());
-		rightLabel.SetText(rightText.toUpperCase());
+		leftIcon.gotoAndStop(a_leftName);
+		rightIcon.gotoAndStop(a_rightName);
+	}
+
+	function setLabelText(a_leftText:String, a_rightText:String)
+	{
+		leftLabel.SetText(a_leftText.toUpperCase());
+		rightLabel.SetText(a_rightText.toUpperCase());
 	}
 
 	function tabPress(a_tabIndex:Number)

@@ -177,6 +177,11 @@ class InventoryLists extends MovieClip
 	{
 		return _ItemsList;
 	}
+	
+	function get TabBar()
+	{
+		return _TabBar;
+	}
 
 	function get currentState()
 	{

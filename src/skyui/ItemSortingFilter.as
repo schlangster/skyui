@@ -16,13 +16,17 @@ class skyui.ItemSortingFilter implements skyui.IFilter
 	}
 
 	// Set both at once so we don't create 2 filter change events
-	function setSortBy(a_sortAttributes:Array, a_sortOptions:Array)
+	function setSortBy(a_sortAttributes:Array, a_sortOptions:Array, a_bNoUpdate:Boolean)
 	{
+		if (a_bNoUpdate == undefined) {
+			a_bNoUpdate = false;
+		}
+		
 		var changed = _sortAttributes != a_sortAttributes || _sortOptions != a_sortOptions;
 		_sortAttributes = a_sortAttributes;
 		_sortOptions = a_sortOptions;
 
-		if (changed) {
+		if (changed && !a_bNoUpdate) {
 			dispatchEvent({type:"filterChange"});
 		}
 	}

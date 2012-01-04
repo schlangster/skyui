@@ -35,6 +35,8 @@ class BarterMenu extends ItemMenu
 		ColumnFormatter.maxTextLength = 80;
 
 		DataFetcher = new BarterDataFetcher();
+		
+
 	}
 
 	function InitExtensions()
@@ -50,10 +52,13 @@ class BarterMenu extends ItemMenu
 
 		InventoryLists_mc.CategoriesList.setIconArt(CategoryListIconArt);
 
+
 		InventoryLists_mc.ItemsList.entryClassName = "ItemsListEntryInv";
 		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
 		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
 		InventoryLists_mc.ItemsList.setConfigSection("ItemList");
+		
+		InventoryLists_mc.TabBar.setIcons("buy", "sell");
 	}
 
 	function onExitButtonPress()

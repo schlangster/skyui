@@ -72,6 +72,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_activeColumnIndex = 0;
 
 		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+		
+		Util.addArrayFunctions();
 	}
 	
 	function onLoad()
@@ -190,7 +192,13 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	{
 		// Find a match, or use last index
 		for (var i = 0; i < _views.length; i++) {
-			if (_views[i].category == a_flag || i == _views.length-1) {
+			
+			// Wrap in list if necessary
+			if (! ((_views[i].category) instanceof Array)) {
+				_views[i].category = [_views[i].category];
+			}
+			
+			if (_views[i].category.indexOf(a_flag) != undefined || i == _views.length-1) {
 				_activeViewIndex = i;
 				break;
 			}
@@ -274,7 +282,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		
 		var columns = currentView.columns;
 
-		var weightedWidth = _entryWidth;
+		// Subtract arrow tip width
+		var weightedWidth = _entryWidth - 12;
 		var weightSum = 0;
 		var maxHeight = 0;
 		
@@ -321,7 +330,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			columns[i].sortOptions = stateData.sortOptions;
 		}
 
-		// Subtract fixed widths to get weighted width & summ up weights & already set as much as possible
+		// Subtract fixed widths to get weighted width & sum up weights & already set as much as possible
 		for (var i = 0; i < columns.length; i++) {
 			
 			if (columns[i].weight != undefined) {
