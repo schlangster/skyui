@@ -149,7 +149,7 @@ class InventoryLists extends MovieClip
 					_SearchWidget.startInput();
 					
 				// Toggle tab (default ALT)
-				} else if (_TabBar != undefined && details.code == _tabToggleKey) {
+				} else if (_TabBar != undefined && (details.code == _tabToggleKey || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8))) {
 					
 					bCaught = true;
 					_TabBar.tabToggle();
