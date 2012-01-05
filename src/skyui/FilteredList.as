@@ -40,6 +40,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		for (var i = 0; i < _entryList.length; i++) {
 			_entryList[i].unfilteredIndex = i;
 			_entryList[i].filteredIndex = undefined;
+			_entryList[i].clipIndex = undefined;
 			_filteredList[i] = _entryList[i];
 		}
 
@@ -80,6 +81,10 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			h = h + _entryHeight;
 
 			_listIndex++;
+		}
+		
+		for (var i = _scrollPosition + _listIndex; i < _filteredList.length; i++) {
+			_filteredList[i].clipIndex = undefined;
 		}
 
 		for (var i = _listIndex; i < _maxListIndex; i++) {
@@ -171,7 +176,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			var oldIndex = _selectedIndex;
 			_selectedIndex = a_newIndex;
 
-			if (oldIndex != -1) {
+			if (oldIndex != -1 && _entryList[oldIndex].clipIndex != undefined) {
 				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex), _entryList[oldIndex]);
 			}
 

@@ -382,8 +382,10 @@ class ItemMenu extends MovieClip
 	
 	function RestoreIndices()
 	{
-		if (arguments[0] != undefined && arguments[0] != -1) {
+		if (arguments[0] != undefined && arguments[0] != -1 && arguments.length != 1) {
 			InventoryLists_mc.CategoriesList.restoreSelectedEntry(arguments[0]);
+		} else {
+			InventoryLists_mc.CategoriesList.restoreSelectedEntry(1); // ALL
 		}
 
 		var index;
