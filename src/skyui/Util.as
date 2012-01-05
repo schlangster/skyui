@@ -1,7 +1,5 @@
 ﻿class skyui.Util
 {
-	static var INVALID_CHAR = 0x20;
-	
 	static function extract(a_str:String,a_startChar:String,a_endChar:String):String
 	{
 		return a_str.slice(a_str.indexOf(a_startChar) + 1,a_str.lastIndexOf(a_endChar));
@@ -42,30 +40,13 @@
 		};
 	}
 
+	// Maps Unicode inputted character code to it's CP819/CP1251 character code
 	static function mapUnicodeChar(a_charCode:Number):Number
 	{
-		// Maps Unicode inputted character code to it's CP819/CP1251 character code
-		// If it's an invalid character it returns 0x20, a space.
-
 		if (0x0020 <= a_charCode && a_charCode <= 0x007F) {
-			switch (a_charCode) {
-				//QUOTATION MARK, DELETE
-				case 0x0022 :
-				case 0x007F :
-					return INVALID_CHAR;
-			}
-
 			return a_charCode;
 
 		} else if (0x00A0 <= a_charCode && a_charCode <= 0x00FF) {
-			switch (a_charCode) {
-				//NOT SIGN, SOFT HYPHEN, PLUS-MINUS SIGN, MICRO SIGN
-				case 0x00AC :
-				case 0x00AD :
-				case 0x00B1 :
-				case 0x00B5 :
-					return INVALID_CHAR;
-			}
 			return a_charCode;
 
 		//NUMERO SIGN
@@ -128,8 +109,8 @@
 						return a_charCode - 0x0350;
 					}
 			}
-			return INVALID_CHAR;
+			return a_charCode;
 		}
-		return INVALID_CHAR;
+		return a_charCode;
 	}
 }
