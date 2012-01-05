@@ -43,17 +43,11 @@
 	// Maps Unicode inputted character code to it's CP819/CP1251 character code
 	static function mapUnicodeChar(a_charCode:Number):Number
 	{
-		if (0x0020 <= a_charCode && a_charCode <= 0x007F) {
-			return a_charCode;
-
-		} else if (0x00A0 <= a_charCode && a_charCode <= 0x00FF) {
-			return a_charCode;
-
 		//NUMERO SIGN
-		} else if (a_charCode == 0x2116) {
+		if (a_charCode == 0x2116) {
 			return 0xB9;
-
-		} else if (0x0401 <= a_charCode && a_charCode <= 0x0491) {
+			
+		} else if (0x0401 >= a_charCode && a_charCode <= 0x0491) {
 			switch (a_charCode) {
 				//CYRILLIC CAPITAL LETTER IO
 				case 0x0401 :
