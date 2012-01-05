@@ -103,7 +103,6 @@
 						return a_charCode - 0x0350;
 					}
 			}
-			return a_charCode;
 		}
 		return a_charCode;
 	}
