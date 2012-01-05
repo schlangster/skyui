@@ -9,13 +9,19 @@
 				
 				if (a_itemInfo["spellCost"] == 0) {
 					a_entryObject.infoSpellCostStr = "-";
+					a_entryObject.infoSpellCostValid = 0;
 				} else if (a_itemInfo["castTime"] == 0) {
 					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost + "/s";
+					a_entryObject.infoSpellCostValid = 1;
 				} else {
 					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost;
+					a_entryObject.infoSpellCostValid = 1;
 				}
 				
 				a_entryObject.infoSchoolName = a_itemInfo["magicSchoolName"];
+				a_entryObject.infoSchoolNameValid = 1;
+				a_entryObject.infoSkillLevel = a_itemInfo["castLevel"].toString();
+				a_entryObject.infoSkillLevelValid = 1;
 				break;
 			
 			// Power
@@ -25,23 +31,65 @@
 
 				if (a_itemInfo["spellCost"] == 0) {
 					a_entryObject.infoSpellCostStr = "-";
+					a_entryObject.infoSpellCostValid = 0;
 				} else if (a_itemInfo["castTime"] == 0) {
 					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost + "/s";
+					a_entryObject.infoSpellCostValid = 1;
 				} else {
 					a_entryObject.infoSpellCostStr = a_entryObject.infoSpellCost;
+					a_entryObject.infoSpellCostValid = 1;
 				}
 				
 				a_entryObject.infoSchoolName = "-";
+				a_entryObject.infoSchoolNameValid = 0;
+				a_entryObject.infoSkillLevel = "-";
+				a_entryObject.infoSkillLevelValid = 0;
 				break;
 				
 			// Shout
 			case InventoryDefines.ICT_SHOUT :
 				a_entryObject.infoSpellCost = 0;
 				a_entryObject.infoSpellCostStr = "-";
-				a_entryObject.infoCastTime = "-";
+				a_entryObject.infoSpellCostValid = 0;
 				a_entryObject.infoSchoolName = "-";
+				a_entryObject.infoSchoolNameValid = 0;
+				a_entryObject.infoSkillLevel = "-";
+				a_entryObject.infoSkillLevelValid = 0;
+
+
 				
-				a_entryObject.infoRecharge = a_itemInfo["spellCost"];
+				var recharge = a_itemInfo["spellCost"].split(" , ");
+				
+				if (a_itemInfo["word0"]) {
+					a_entryObject.infoWord1 = a_itemInfo["word0"] + " (" + recharge[0] + ")";
+					a_entryObject.infoRecharge1 = recharge[0];
+					a_entryObject.infoWord1Valid = 1;
+				} else {
+					a_entryObject.infoWord1 = "-";
+					a_entryObject.infoRecharge1 = "-";
+					a_entryObject.infoWord1Valid = 0;
+				}
+				
+				if (a_itemInfo["word1"]) {
+					a_entryObject.infoWord2 = a_itemInfo["word1"] + " (" + recharge[1] + ")";;
+					a_entryObject.infoRecharge2 = recharge[1];
+					a_entryObject.infoWord2Valid = 1;
+				} else {
+					a_entryObject.infoWord2 = "-";
+					a_entryObject.infoRecharge2 = "-";
+					a_entryObject.infoWord2Valid = 0;
+				}
+				
+				if (a_itemInfo["word2"]) {
+					a_entryObject.infoWord3 = a_itemInfo["word2"] + " (" + recharge[2] + ")";;
+					a_entryObject.infoRecharge3 = recharge[2];
+					a_entryObject.infoWord3Valid = 1;
+				} else {
+					a_entryObject.infoWord3 = "-";
+					a_entryObject.infoRecharge3 = "-";
+					a_entryObject.infoWord3Valid = 0;
+				}
+				
 				break;
 			
 			// Active Effect
@@ -51,7 +99,9 @@
 				
 				if (! a_entryObject.infoTimeRemaining) {
 					a_entryObject.infoTimeRemainingStr = "-";
+					a_entryObject.infoTimeRemainingValid = 0;
 				} else {
+					a_entryObject.infoTimeRemainingValid = 1;
 					var s = parseInt(a_entryObject.infoTimeRemaining);
 					var m = 0;
 					var h = 0;
