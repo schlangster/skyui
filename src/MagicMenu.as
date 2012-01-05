@@ -147,9 +147,9 @@ class MagicMenu extends ItemMenu
 			
 			if (InventoryLists_mc.ItemsList.selectedEntry.filterFlag & _hideButtonFlag != 0) {
 				BottomBar_mc.HideButtons();
-				return;
+			} else {
+				BottomBar_mc.SetButtonsText("$Equip", favStr, unlockStr);
 			}
-			BottomBar_mc.SetButtonsText("$Equip", favStr, unlockStr);
 		}
 	}
 

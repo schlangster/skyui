@@ -67,6 +67,10 @@ class ContainerMenu extends ItemMenu
 		ItemCardFadeHolder_mc.StealTextInstance._visible = false;
 		updateButtons();
 
+		// Hide buttons that are not needed while items are not selected.
+		BottomBar_mc.SetButtonText("", 0);
+		BottomBar_mc.SetButtonText("", 2);
+
 		InventoryLists_mc.TabBar.setIcons("take","give");
 	}
 
@@ -203,20 +207,6 @@ class ContainerMenu extends ItemMenu
 		GameDelegate.call("CheckForMouseEquip",[a_mouseButton],this,"AttemptEquip");
 	}
 
-	function updateEquipButtonText()
-	{
-		BottomBar_mc.SetButtonText(_bShowEquipButtonHelp ? InventoryDefines.GetEquipText(ItemCard_mc.itemInfo.type) : "",0);
-	}
-
-	function updateFavoriteText()
-	{
-		if (!isViewingContainer()) {
-			BottomBar_mc.SetButtonText(ItemCard_mc.itemInfo.favorite ? "$Unfavorite" : "$Favorite",3);
-		} else {
-			BottomBar_mc.SetButtonText("",3);
-		}
-	}
-
 	function isViewingContainer()
 	{
 		return (InventoryLists_mc.CategoriesList.activeSegment == 0);
@@ -308,10 +298,6 @@ class ContainerMenu extends ItemMenu
 		_platform = a_platform;
 		_bShowEquipButtonHelp = a_platform != 0;
 		updateButtons();
-		
-		// Hide buttons that are not needed while items are not selected.
-		BottomBar_mc.SetButtonText("",0);
-		BottomBar_mc.SetButtonText("",2);
 	}
 
 }
