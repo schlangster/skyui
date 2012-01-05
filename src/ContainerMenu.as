@@ -33,6 +33,7 @@ class ContainerMenu extends ItemMenu
 	function ContainerMenu()
 	{
 		super();
+		
 		ContainerButtonArt = [{PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"}, {PCArt:"R", XBoxArt:"360_X", PS3Art:"PS3_X"}, {PCArt:"F", XBoxArt:"360_Y", PS3Art:"PS3_Y"}, {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
 
 		_defaultEquipArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
