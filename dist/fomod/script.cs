@@ -89,11 +89,15 @@ class Script : FalloutNewVegasBaseScript {
 	}
 	
 	static void installMainFiles() {
+		InstallFileFromFomod("Interface/bartermenu.swf");
+		InstallFileFromFomod("Interface/containermenu.swf");
 		InstallFileFromFomod("Interface/inventorymenu.swf");
-		InstallFileFromFomod("Interface/skyui_icons_inv.swf");
+		InstallFileFromFomod("Interface/magicmenu.swf");
+		InstallFileFromFomod("Interface/skyui_icons_magic.swf");
 		InstallFileFromFomod("Interface/skyui.cfg");
 		
 		InstallFileFromFomod("Interface/skyui/inventorylists.swf");
+		InstallFileFromFomod("Interface/skyui/tabbedinventorylists.swf");
 	}
 	
 	static void installIconFiles() {

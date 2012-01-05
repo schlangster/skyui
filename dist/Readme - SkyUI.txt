@@ -7,9 +7,9 @@
 
 Team:			snakster, T3T, Kratos
 
-Contributors:	ianpatt, gibbed, Gopher, Mardoxx, GreatClone
+Contributors:	ianpatt, gibbed, Gopher, Mardoxx, GreatClone, Indie
 
-Version:		1.1
+Version:		2.0
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 
@@ -74,6 +74,27 @@ The first menu we address is the Inventory. For a more detailed description, ple
 ========================================================================================================================================
  2. Changelog
 ========================================================================================================================================
+
+------------------------------------------------------------
+2.0:
+
+[InventoryMenu]
+- Fixed enchantment mini-icon so it's no longer displayed for enchanted weapons only.
+- Fixed missing sort options for name field in the favorites category.
+- Fixed backspace canceling the search.
+- Fixed searching for non-English languages (i.e. Russian).
+- Improved sorting system. Null/invalid values are now always at the bottom.
+- Empty categories are greyed out and no longer selectable by mouse or during keyboard/controller navigation.
+
+[MagicMenu]
+- Initial release
+
+[BarterMenu]
+- Initial release
+
+[ContainerMenu]
+- Initial release
+
 
 ------------------------------------------------------------
 1.1:
@@ -156,7 +177,7 @@ OR
 
 In case you want to use a custom icon theme:
 3.	Locate the 'Data/SkyUI Extras/' folder. In there, pick a theme subfolder and copy
-	'skyui_icons_cat.swf' and 'skyui_icons_inv.swf' to 'Data/Interface'.
+	'skyui_icons_cat.swf', 'skyui_icons_inv.swf' and 'skyui_icons_magic.swf' to 'Data/Interface'.
 
 4.	Done!
 
@@ -217,6 +238,9 @@ GreatClone:
 	
 Ismelda:
 	Provided configs for very high resolutions used with multi-monitor setups.
+	
+Indie:
+	Created our trailer and helps with QA and user support.
 
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
