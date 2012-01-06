@@ -436,6 +436,10 @@ class InventoryLists extends MovieClip
 		}
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
-		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
+		if (_ItemsList.selectedIndex == -1) {
+			dispatchEvent({type:"showItemsList", index: -1});
+		} else {
+			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+		}
 	}
 }
