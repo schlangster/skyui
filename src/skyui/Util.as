@@ -47,7 +47,7 @@
 		if (a_charCode == 0x2116) {
 			return 0xB9;
 			
-		} else if (0x0401 >= a_charCode && a_charCode <= 0x0491) {
+		} else if (0x0401 <= a_charCode && a_charCode <= 0x0491) {
 			switch (a_charCode) {
 				//CYRILLIC CAPITAL LETTER IO
 				case 0x0401 :

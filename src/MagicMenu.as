@@ -142,10 +142,10 @@ class MagicMenu extends ItemMenu
 	function UpdateButtonText()
 	{
 		if (InventoryLists_mc.ItemsList.selectedEntry != undefined) {
-			var favStr = InventoryLists_mc.ItemsList.selectedEntry.filterFlag & InventoryLists_mc.CategoriesList.entryList[0].flag == 0 ? "$Favorite":"$Unfavorite";
-			var unlockStr = ItemCard_mc.itemInfo.showUnlocked == true ? "$Unlock":"";
+			var favStr = (InventoryLists_mc.ItemsList.selectedEntry.filterFlag & InventoryLists_mc.CategoriesList.entryList[0].flag) != 0 ? "$Unfavorite" : "$Favorite";
+			var unlockStr = ItemCard_mc.itemInfo.showUnlocked ? "$Unlock":"";
 			
-			if (InventoryLists_mc.ItemsList.selectedEntry.filterFlag & _hideButtonFlag != 0) {
+			if ((InventoryLists_mc.ItemsList.selectedEntry.filterFlag & _hideButtonFlag) != 0) {
 				BottomBar_mc.HideButtons();
 			} else {
 				BottomBar_mc.SetButtonsText("$Equip", favStr, unlockStr);
@@ -156,6 +156,7 @@ class MagicMenu extends ItemMenu
 	function onHideItemsList(event)
 	{
 		super.onHideItemsList(event);
+		
 		BottomBar_mc.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
 	}
 
