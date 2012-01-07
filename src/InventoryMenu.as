@@ -116,6 +116,13 @@ class InventoryMenu extends ItemMenu
 		super.onItemHighlightChange(event);
 		if (event.index != -1) {
 			UpdateBottomBarButtons();
+			
+		} else {
+			if (!bFadedIn) {
+				GameDelegate.call("CloseTweenMenu", []);
+			  	GameDelegate.call("CloseMenu",[]);
+				return;
+			}
 		}
 	}
 

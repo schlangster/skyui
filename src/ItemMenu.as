@@ -227,7 +227,6 @@ class ItemMenu extends MovieClip
 	function onItemHighlightChange(event)
 	{
 		if (event.index != -1) {
-			
 			if (!_bItemCardFadedIn) {
 				_bItemCardFadedIn = true;
 				ItemCard_mc.FadeInCard();
@@ -238,12 +237,6 @@ class ItemMenu extends MovieClip
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
 			
 		} else {
-			if (!bFadedIn) {
-			  	GameDelegate.call("ZoomItemModel",[-1]);
-				ToggleMenuFade();
-				_bItemCardFadedIn = true;
-			}
-			
 			if (_bItemCardFadedIn) {
 				_bItemCardFadedIn = false;
 				onHideItemsList();

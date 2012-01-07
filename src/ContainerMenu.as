@@ -13,7 +13,6 @@ class ContainerMenu extends ItemMenu
 	static var LEFT_HAND:Number = 1;
 
 	private var _bShowEquipButtonHelp:Boolean;
-	private var _bShowTakeAll:Boolean;
 	private var _equipHand:Number;
 	private var _equipHelpArt:Object;
 	private var _defaultEquipArt:Object;
@@ -44,7 +43,6 @@ class ContainerMenu extends ItemMenu
 		bNPCMode = false;
 		_bShowEquipButtonHelp = true;
 		_equipHand = undefined;
-		_bShowTakeAll = false;
 
 		CategoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 
@@ -93,36 +91,13 @@ class ContainerMenu extends ItemMenu
 				updateButtons();
 			}
 		}
-		
-		// Handle input for TakeAll.
-		if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 16) && isViewingContainer()) {
-			_bShowTakeAll = details.value != "keyUp";
-			if (InventoryLists_mc.ItemsList.selectedIndex != -1) {
-				updateButtons();
-			} else {
-				BottomBar_mc.SetButtonText("$Take All",1);
-			}
-
-			if (!_bShowTakeAll) {
-				BottomBar_mc.SetButtonText("",1);
-			}
-		}		
 
 		return true;
 	}
 
 	function onXButtonPress()
-	{				
-		/*
-			If on PC and shift is held, allow TakeAll.
-			If on PC and shift is not held, prevent TakeAll.
-			If using controller and Y is pressed, allow TakeAll.
-			If using controller and Y is not pressed, prevent TakeAll.
-		*/
+	{
 		if (isViewingContainer() && !bNPCMode) {
-			if (!_bShowTakeAll)
-				return;
-				
 			GameDelegate.call("TakeAllItems",[]);
 			return;
 		}
@@ -212,8 +187,7 @@ class ContainerMenu extends ItemMenu
 			// Button 0
 			BottomBar_mc.SetButtonText("$Take",0);
 			// Button 1
-			// If on PC and shift is not held, hide TakeAll button.
-			BottomBar_mc.SetButtonText((bNPCMode || !_bShowTakeAll) ? "" : "$Take All",1);
+			BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",1);
 			// Button 3
 			BottomBar_mc.SetButtonText("$Exit",3);
 
