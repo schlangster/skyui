@@ -159,7 +159,7 @@ class ItemMenu extends MovieClip
 			MovieClip(MouseRotationRect).Lock("T");
 			MouseRotationRect._x = ItemCard_mc._parent._x;
 			MouseRotationRect._width = ItemCard_mc._parent._width;
-			MouseRotationRect._height = 0.550000 * Stage.visibleRect.height;
+			MouseRotationRect._height = 0.55 * Stage.visibleRect.height;
 		}
 		
 		if (skseWarningMsg != undefined) {
@@ -237,9 +237,17 @@ class ItemMenu extends MovieClip
 			GameDelegate.call("UpdateItem3D",[true]);
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
 			
-		} else if (_bItemCardFadedIn) {
-			_bItemCardFadedIn = false;
-			onHideItemsList();
+		} else {
+			if (!bFadedIn) {
+			  	GameDelegate.call("ZoomItemModel",[-1]);
+				ToggleMenuFade();
+				_bItemCardFadedIn = true;
+			}
+			
+			if (_bItemCardFadedIn) {
+				_bItemCardFadedIn = false;
+				onHideItemsList();
+			}
 		}
 	}
 
