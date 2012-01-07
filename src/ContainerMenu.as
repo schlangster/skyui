@@ -1,4 +1,5 @@
 ﻿import gfx.io.GameDelegate;
+import gfx.ui.NavigationCode;
 
 import skyui.InventoryColumnFormatter;
 import skyui.InventoryDataFetcher;
@@ -12,6 +13,7 @@ class ContainerMenu extends ItemMenu
 	static var LEFT_HAND:Number = 1;
 
 	private var _bShowEquipButtonHelp:Boolean;
+	private var _bShowTakeAll:Boolean;
 	private var _equipHand:Number;
 	private var _equipHelpArt:Object;
 	private var _defaultEquipArt:Object;
@@ -42,6 +44,7 @@ class ContainerMenu extends ItemMenu
 		bNPCMode = false;
 		_bShowEquipButtonHelp = true;
 		_equipHand = undefined;
+		_bShowTakeAll = false;
 
 		CategoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 
@@ -90,13 +93,36 @@ class ContainerMenu extends ItemMenu
 				updateButtons();
 			}
 		}
+		
+		// Handle input for TakeAll.
+		if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 16) && isViewingContainer()) {
+			_bShowTakeAll = details.value != "keyUp";
+			if (InventoryLists_mc.ItemsList.selectedIndex != -1) {
+				updateButtons();
+			} else {
+				BottomBar_mc.SetButtonText("$Take All",1);
+			}
+
+			if (!_bShowTakeAll) {
+				BottomBar_mc.SetButtonText("",1);
+			}
+		}		
 
 		return true;
 	}
 
 	function onXButtonPress()
-	{
+	{				
+		/*
+			If on PC and shift is held, allow TakeAll.
+			If on PC and shift is not held, prevent TakeAll.
+			If using controller and Y is pressed, allow TakeAll.
+			If using controller and Y is not pressed, prevent TakeAll.
+		*/
 		if (isViewingContainer() && !bNPCMode) {
+			if (!_bShowTakeAll)
+				return;
+				
 			GameDelegate.call("TakeAllItems",[]);
 			return;
 		}
@@ -186,8 +212,9 @@ class ContainerMenu extends ItemMenu
 			// Button 0
 			BottomBar_mc.SetButtonText("$Take",0);
 			// Button 1
-			BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",1);
-			// Button 2
+			// If on PC and shift is not held, hide TakeAll button.
+			BottomBar_mc.SetButtonText((bNPCMode || !_bShowTakeAll) ? "" : "$Take All",1);
+			// Button 3
 			BottomBar_mc.SetButtonText("$Exit",3);
 
 		} else {
@@ -258,17 +285,19 @@ class ContainerMenu extends ItemMenu
 
 	function StartItemTransfer()
 	{
-		if (ItemCard_mc.itemInfo.weight == 0 && isViewingContainer()) {
-			onQuantityMenuSelect({amount:InventoryLists_mc.ItemsList.selectedEntry.count});
-			return;
-		}
+		if (InventoryLists_mc.ItemsList.selectedEntry.enabled) {
+			if (ItemCard_mc.itemInfo.weight == 0 && isViewingContainer()) {
+				onQuantityMenuSelect({amount:InventoryLists_mc.ItemsList.selectedEntry.count});
+				return;
+			}
 
-		if (InventoryLists_mc.ItemsList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT) {
-			onQuantityMenuSelect({amount:1});
-			return;
-		}
+			if (InventoryLists_mc.ItemsList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT) {
+				onQuantityMenuSelect({amount:1});
+				return;
+			}
 
-		ItemCard_mc.ShowQuantityMenu(InventoryLists_mc.ItemsList.selectedEntry.count);
+			ItemCard_mc.ShowQuantityMenu(InventoryLists_mc.ItemsList.selectedEntry.count);
+		}
 	}
 
 	function StartItemEquip(a_equipHand)
@@ -297,7 +326,6 @@ class ContainerMenu extends ItemMenu
 
 		_platform = a_platform;
 		_bShowEquipButtonHelp = a_platform != 0;
-		updateButtons();
 	}
 
 }
