@@ -187,6 +187,10 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 
 	function formatText(a_entryField:Object, a_entryObject:Object)
 	{
-		// Do nothing. Those require no special formating and the value has already been set
+		if (a_entryObject.negativeEffect == true) {
+			a_entryField.textColor = a_entryObject.enabled == false ? 0x800000 : 0xFF0000;
+		} else {
+			a_entryField.textColor = a_entryObject.enabled == false ? 0x4C4C4C : 0xFFFFFF;
+		}
 	}
 }
