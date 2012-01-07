@@ -97,7 +97,7 @@
 				a_entryObject.infoItem = a_itemInfo["name"];
 				a_entryObject.infoTimeRemaining = Math.round(a_itemInfo["timeRemaining"]);
 				
-				if (! a_entryObject.infoTimeRemaining) {
+				if (! a_entryObject.infoTimeRemaining || a_entryObject.infoTimeRemaining <= 0) {
 					a_entryObject.infoTimeRemainingStr = "-";
 					a_entryObject.infoTimeRemainingValid = 0;
 				} else {
