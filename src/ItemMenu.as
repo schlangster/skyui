@@ -223,9 +223,11 @@ class ItemMenu extends MovieClip
 	function onCategoryChange(event)
 	{
 	}
-
+	
 	function onItemHighlightChange(event)
 	{
+		super.onItemHighlightChange(event);
+		
 		if (event.index != -1) {
 			if (!_bItemCardFadedIn) {
 				_bItemCardFadedIn = true;
@@ -237,11 +239,27 @@ class ItemMenu extends MovieClip
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
 			
 		} else {
+			if (!bFadedIn) {
+				resetMenu();
+			}
+			
 			if (_bItemCardFadedIn) {
 				_bItemCardFadedIn = false;
 				onHideItemsList();
 			}
 		}
+	}
+	
+	/*
+		This method is only used for the InventoryMenu Favorites Category.
+		It prevents a lockup when unfavoriting the last item from favorites list by
+		resetting the menu.
+	*/
+	function resetMenu()
+	{
+		SaveIndices();
+		GameDelegate.call("CloseMenu",[]);
+		skse.OpenMenu("Inventory Menu");
 	}
 
 	function onShowItemsList(event)

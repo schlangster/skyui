@@ -97,6 +97,10 @@ class ContainerMenu extends ItemMenu
 
 	function onXButtonPress()
 	{
+		// If we are zoomed into an item, do nothing
+		if (!bFadedIn)
+			return;
+		
 		if (isViewingContainer() && !bNPCMode) {
 			GameDelegate.call("TakeAllItems",[]);
 			return;

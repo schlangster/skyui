@@ -117,12 +117,6 @@ class InventoryMenu extends ItemMenu
 		if (event.index != -1) {
 			UpdateBottomBarButtons();
 			
-		} else {
-			if (!bFadedIn) {
-				GameDelegate.call("CloseTweenMenu", []);
-			  	GameDelegate.call("CloseMenu",[]);
-				return;
-			}
 		}
 	}
 
