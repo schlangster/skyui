@@ -23,6 +23,16 @@ The following mods/utilities are required for SkyUI:
 * The Nexus Mod Manager (NMM) is recommended for properly installing and setting up SkyUI.
 	http://skyrimnexus.com/content/modmanager/
 	
+
+	
+If you're using GreatClone's Celtic Icon theme that comes with SkyUI, you can get the latest version directly from the author:
+* GreatClone Celtic Icons, by GreatClone
+	http://www.skyrimnexus.com/downloads/file.php?id=3979
+	
+Since version 2.0, SkyUI comes with a bundled version of Gibbed's Container Categorization plugin. For the latest version, visit:
+* Container Categorization, by Gibbed
+	http://www.skyrimnexus.com/downloads/file.php?id=1227
+	
 ########################################################################################################################################
 
 
@@ -85,6 +95,7 @@ The first menu we address is the Inventory. For a more detailed description, ple
 - Fixed searching for non-English languages (i.e. Russian).
 - Improved sorting system. Null/invalid values are now always at the bottom.
 - Empty categories are greyed out and no longer selectable by mouse or during keyboard/controller navigation.
+- Included a bundled version of Gibbed's Container Categorization SKSE plugin. Thanks for giving us permission to use it!
 
 [MagicMenu]
 - Initial release
@@ -229,6 +240,7 @@ ianpatt:
 
 Gibbed:
 	Created the 'gibbed interface extensions' SKSE plugin, which makes more game data available for display in the inventory.
+	Also allowed us to bundle his container categorization plugin.
 
 Mardoxx:
 	Did a lot of groundwork by reconstructing the decompiled interface files, so we can customize them later.
