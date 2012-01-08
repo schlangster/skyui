@@ -86,6 +86,7 @@ class Script : FalloutNewVegasBaseScript {
 
 	static void installSKSEPlugin() {
 		InstallFileFromFomod("SKSE/Plugins/gibbed_interface_extensions.dll");
+		InstallFileFromFomod("SKSE/Plugins/container_categorization_1_3_10.dll");
 	}
 	
 	static void installMainFiles() {
