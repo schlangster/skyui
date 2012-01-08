@@ -23,13 +23,13 @@ The following mods/utilities are required for SkyUI:
 * The Nexus Mod Manager (NMM) is recommended for properly installing and setting up SkyUI.
 	http://skyrimnexus.com/content/modmanager/
 	
-
+------------------------------------------------------------
 	
 If you're using GreatClone's Celtic Icon theme that comes with SkyUI, you can get the latest version directly from the author:
 * GreatClone Celtic Icons, by GreatClone
 	http://www.skyrimnexus.com/downloads/file.php?id=3979
 	
-Since version 2.0, SkyUI comes with a bundled version of Gibbed's Container Categorization plugin. For the latest version, visit:
+SkyUI comes with a bundled version of Gibbed's Container Categorization SKSE plugin. The standalone version can be found here:
 * Container Categorization, by Gibbed
 	http://www.skyrimnexus.com/downloads/file.php?id=1227
 	
@@ -77,8 +77,10 @@ Further general objectives and design concepts are:
 * Blending features in as good as possible - players shouldn't feel reminded that they're using a mod.
 
 
-Since improving the whole UI is a big undertaking, we release one menu at a time as we make progress.
-The first menu we address is the Inventory. For a more detailed description, please see our mod description on SkyrimNexus.
+Since improving the whole UI is a big undertaking, we release only single menus at a time as we make progress.
+The first menu we addressed was the Inventory. In version 2.0, we included new Barter, Container and Magic menus.
+
+For a more detailed description, please see our mod description on SkyrimNexus.
 
 
 ========================================================================================================================================
