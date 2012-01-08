@@ -78,10 +78,23 @@ class MagicMenu extends ItemMenu
 				} else if (details.navEquivalent == NavigationCode.TAB) {
 					StartMenuFade();
 					GameDelegate.call("CloseTweenMenu",[]);
+				} else if (!InventoryLists_mc.ItemsList.disableInput)  {
+					if (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8 && _platform != 0) {
+						openInventoryMenu();
+					}
 				}
 			}
 		}
 		return true;
+	}
+	
+	// currently only used for controller users when pressing the BACK button
+	function openInventoryMenu()
+	{
+			SaveIndices();
+			GameDelegate.call("CloseMenu",[]);
+			GameDelegate.call("CloseTweenMenu",[]);
+			_global.skse.OpenMenu("Inventory Menu");
 	}
 
 	function onExitMenuRectClick()

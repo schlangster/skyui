@@ -35,7 +35,8 @@ class ContainerMenu extends ItemMenu
 	{
 		super();
 		
-		ContainerButtonArt = [{PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"}, {PCArt:"R", XBoxArt:"360_X", PS3Art:"PS3_X"}, {PCArt:"F", XBoxArt:"360_Y", PS3Art:"PS3_Y"}, {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
+		ContainerButtonArt = [{PCArt: "M1M2", XBoxArt: "360_LTRT", PS3Art: "PS3_LBRB"}, {PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}, {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
+		InventoryButtonArt = [{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
 
 		_defaultEquipArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
 		_equipHelpArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"};
@@ -67,10 +68,6 @@ class ContainerMenu extends ItemMenu
 		GameDelegate.addCallBack("XButtonPress",this,"onXButtonPress");
 		ItemCardFadeHolder_mc.StealTextInstance._visible = false;
 		updateButtons();
-
-		// Hide buttons that are not needed while items are not selected.
-		BottomBar_mc.SetButtonText("", 0);
-		BottomBar_mc.SetButtonText("", 2);
 
 		InventoryLists_mc.TabBar.setIcons("take","give");
 	}
@@ -131,15 +128,6 @@ class ContainerMenu extends ItemMenu
 	function onItemHighlightChange(event)
 	{
 		updateButtons();
-		
-		if (event.index == -1) {
-			if (!isViewingContainer()) {
-				BottomBar_mc.SetButtonText("",1);
-			}
-			BottomBar_mc.SetButtonText("",0);
-			BottomBar_mc.SetButtonText("",2);
-		}
-
 		super.onItemHighlightChange(event);
 	}
 
@@ -153,56 +141,59 @@ class ContainerMenu extends ItemMenu
 	{
 		super.onHideItemsList(event);
 		updateButtons();
-		
-		// Hide buttons that are not needed while items are not selected.
-		if (!isViewingContainer())
-			BottomBar_mc.SetButtonText("",1);
-			
-		BottomBar_mc.SetButtonText("",0);
-		BottomBar_mc.SetButtonText("",2);
-		BottomBar_mc.UpdatePerItemInfo({type:InventoryDefines.ICT_NONE});
 	}
 
 	function hideButtons()
 	{
-		BottomBar_mc.SetButtonText("",0);
-		BottomBar_mc.SetButtonText("",1);
-		BottomBar_mc.SetButtonText("",2);
-		BottomBar_mc.SetButtonText("",3);
+		if (isViewingContainer()) {
+			BottomBar_mc.SetButtonText("",0);
+			BottomBar_mc.SetButtonText("",1);
+			BottomBar_mc.SetButtonText("$Take All",2);
+			BottomBar_mc.SetButtonText("$Exit",3);
+		}
+		else {
+			BottomBar_mc.SetButtonText("",0);
+			BottomBar_mc.SetButtonText("",1);
+			BottomBar_mc.SetButtonText("",2);
+			BottomBar_mc.SetButtonText("$Exit",3);
+		}
 	}
 
 	function updateButtons()
 	{
-		BottomBar_mc.SetButtonsArt(ContainerButtonArt);
 		
-		if (InventoryLists_mc.currentState != InventoryLists.TRANSITIONING_TO_SHOW_PANEL && InventoryLists_mc.currentState != InventoryLists.SHOW_PANEL) {
+		if (isViewingContainer()) {
+			BottomBar_mc.SetButtonsArt(ContainerButtonArt);
+		} else {
+			BottomBar_mc.SetButtonsArt(InventoryButtonArt);
+		}
+		
+		if (InventoryLists_mc.ItemsList.selectedIndex == -1 || InventoryLists_mc.currentState != InventoryLists.SHOW_PANEL)
+		{
 			hideButtons();
 			return;
 		}
-		/*
-		  bShowEquipButtonHelp is only meant for PC
-		  It's primary purpose is to inform players that M1/M2 can equip left and right weapons
-		  
-		  If Shift is pressed, show equip help art(M1M2) for Button 0
-		*/
-		BottomBar_mc.SetButtonArt(_bShowEquipButtonHelp ? _equipHelpArt : _defaultEquipArt,0);
 
 		if (isViewingContainer()) {
-			// Button 0
-			BottomBar_mc.SetButtonText("$Take",0);
-			// Button 1
-			BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",1);
-			// Button 3
+			
+			if (_bShowEquipButtonHelp) {
+				BottomBar_mc.SetButtonText(InventoryDefines.GetEquipText(ItemCard_mc.itemInfo.type),0);
+				BottomBar_mc.SetButtonText("$Take",1);
+				BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",2);
+			}
+			else {
+				BottomBar_mc.SetButtonText("",0);
+				BottomBar_mc.SetButtonText("$Take",1);
+				BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",2);
+			}
 			BottomBar_mc.SetButtonText("$Exit",3);
+			
 
 		} else {
-			// Button 0
+			BottomBar_mc.SetButtonArt(_bShowEquipButtonHelp ? _equipHelpArt : _defaultEquipArt,0);
 			BottomBar_mc.SetButtonText(InventoryDefines.GetEquipText(ItemCard_mc.itemInfo.type),0);
-			// Button 1
 			BottomBar_mc.SetButtonText(bNPCMode ? "$Give" : "$Store",1);
-			// Button 2
 			BottomBar_mc.SetButtonText(ItemCard_mc.itemInfo.favorite ? "$Unfavorite" : "$Favorite",2);
-			// Button 3
 			BottomBar_mc.SetButtonText("$Exit",3);
 		}
 	}
