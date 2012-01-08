@@ -148,10 +148,9 @@ class ContainerMenu extends ItemMenu
 		if (isViewingContainer()) {
 			BottomBar_mc.SetButtonText("",0);
 			BottomBar_mc.SetButtonText("",1);
-			BottomBar_mc.SetButtonText("$Take All",2);
+			BottomBar_mc.SetButtonText(bNPCMode ? "" : "$Take All",2);
 			BottomBar_mc.SetButtonText("$Exit",3);
-		}
-		else {
+		} else {
 			BottomBar_mc.SetButtonText("",0);
 			BottomBar_mc.SetButtonText("",1);
 			BottomBar_mc.SetButtonText("",2);
