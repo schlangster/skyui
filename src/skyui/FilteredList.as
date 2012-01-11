@@ -172,7 +172,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{
-		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
+		if (!_bDisableSelection && a_newIndex != _selectedIndex && _entryList[a_newIndex].filteredIndex != undefined) {
 			var oldIndex = _selectedIndex;
 			_selectedIndex = a_newIndex;
 

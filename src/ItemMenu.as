@@ -16,13 +16,6 @@ class ItemMenu extends MovieClip
 	private var _3DIconWideZSettingStr:String;
 	private var _3DIconWideScaleSettingStr:String;
 	
-	private var _3DIconXDefault:Number;
-	private var _3DIconZDefault:Number;
-	private var _3DIconScaleDefault:Number;
-	private var _3DIconWideXDefault:Number;
-	private var _3DIconWideZDefault:Number;
-	private var _3DIconWideScaleDefault:Number;
-	
 	private var _config;
 	
 	var InventoryLists_mc:MovieClip;
@@ -140,13 +133,6 @@ class ItemMenu extends MovieClip
 		
 		var iconX = GlobalFunc.Lerp(0, 128, Stage.visibleRect.x, (Stage.visibleRect.x + Stage.visibleRect.width), (itemCardContainer._x + (itemCardContainer._width / 2)), 0);
 		iconX = -(iconX - 64);
-	
-		_3DIconWideScaleDefault = skse.GetINISetting(_3DIconWideScaleSettingStr);
-		_3DIconWideXDefault = skse.GetINISetting(_3DIconWideXSettingStr);
-		_3DIconWideZDefault = skse.GetINISetting(_3DIconWideZSettingStr);
-		_3DIconScaleDefault = skse.GetINISetting(_3DIconScaleSettingStr);
-		_3DIconXDefault = skse.GetINISetting(_3DIconXSettingStr);
-		_3DIconZDefault = skse.GetINISetting(_3DIconZSettingStr);
 		
 		skse.SetINISetting(_3DIconWideScaleSettingStr, (itemiconPosition.scale));
 		skse.SetINISetting(_3DIconWideXSettingStr, (iconX + itemiconPosition.xOffset));
@@ -165,17 +151,6 @@ class ItemMenu extends MovieClip
 		if (skseWarningMsg != undefined) {
 			skseWarningMsg.Lock("TR");
 		}
-	}
-
-	// Restore to defaults for enchanting etc
-	function ResetElements()
-	{
-		skse.SetINISetting(_3DIconWideScaleSettingStr, _3DIconWideScaleDefault);
-		skse.SetINISetting(_3DIconWideXSettingStr, _3DIconWideXDefault);
-		skse.SetINISetting(_3DIconWideZSettingStr, _3DIconWideZDefault);
-		skse.SetINISetting(_3DIconScaleSettingStr, _3DIconScaleDefault);
-		skse.SetINISetting(_3DIconXSettingStr, _3DIconXDefault);
-		skse.SetINISetting(_3DIconZSettingStr, _3DIconZDefault);
 	}
 
 	function SetPlatform(a_platform, a_bPS3Switch)
@@ -440,7 +415,5 @@ class ItemMenu extends MovieClip
 		a.push(1);
 		
 		GameDelegate.call("SaveIndices", [a]);
-		
-		ResetElements();
 	}
 }
