@@ -1,4 +1,5 @@
 ﻿import skyui.Config;
+import skyui.Translator;
 import skyui.Util;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
@@ -513,7 +514,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 					btn.label.setTextFormat(_defaultLabelFormat);
 				}
 				
-				btn.label.SetText(columns[i].label.text);
+				btn.label.SetText(Translator.translate(columns[i].label.text));
 			}
 			
 			header.activeColumn = _activeColumnIndex;

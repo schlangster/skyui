@@ -4,6 +4,7 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
 import skyui.Config;
+import skyui.Translator;
 
 class skyui.SearchWidget extends MovieClip
 {
@@ -18,7 +19,7 @@ class skyui.SearchWidget extends MovieClip
 	
 	private var _updateTimerId:Number;
 	
-	private var _config;
+	private var _translator:Translator;
 	
 	// Children
 	var textField:TextField;
@@ -42,16 +43,12 @@ class skyui.SearchWidget extends MovieClip
 			_parent.endInput();
 		};
 		
-		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+		Translator.instance.addEventListener("translatorLoad", this, "onTranslatorLoad");
 	}
 	
-	function onConfigLoad(event)
+	function onTranslatorLoad()
 	{
-		_config = event.config;
-		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
-		_updateDelay = _config.SearchBox.autoupdate.delay;
-		_filterString = _config.Strings.filter;
-		
+		_filterString = Translator.translate("$FILTER");
 		textField.SetText(_filterString);
 	}
 	
