@@ -550,7 +550,7 @@ class Script : FalloutNewVegasBaseScript {
 		optionsLabel3.TabIndex = 16;
 		optionsLabel3.Text = optionsRatio[selectedRatio];
 		optionsLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-		optionsLabel3.Click += new System.EventHandler(optionsLangNext_Click);
+		optionsLabel3.Click += new System.EventHandler(optionsRatioNext_Click);
 		
 		optionsSelector3Left = new System.Windows.Forms.PictureBox();
 		optionsSelector3Left.Image = imageSelectorLeft;
