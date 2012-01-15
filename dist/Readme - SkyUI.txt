@@ -190,7 +190,7 @@ OR
 
 In case you want to use a custom icon theme:
 3.	Locate the 'Data/SkyUI Extras/' folder. In there, pick a theme subfolder and copy
-	'skyui_icons_cat.swf', 'skyui_icons_inv.swf' and 'skyui_icons_magic.swf' to 'Data/Interface'.
+	'skyui_icons_cat.swf' and 'skyui_icons_inv.swf' to 'Data/Interface'.
 
 4.	Done!
 
