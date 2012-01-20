@@ -15,7 +15,6 @@ import skyui.SearchWidget;
 import skyui.TabBar;
 import skyui.Config;
 import skyui.Util;
-import skyui.Translator;
 
 
 class InventoryLists extends MovieClip
@@ -81,7 +80,6 @@ class InventoryLists extends MovieClip
 		_tabToggleKey = undefined;
 
 		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
-		Translator.instance.addEventListener("translatorLoad",this,"onTranslatorLoad");
 	}
 
 	function onLoad()
@@ -121,13 +119,6 @@ class InventoryLists extends MovieClip
 		_config = event.config;
 		_searchKey = _config.Input.hotkey.search;
 		_tabToggleKey = _config.Input.hotkey.tabToggle;
-		
-		Translator.loadLanguage(_config.General.language); 
-	}
-	
-	function onTranslatorLoad()
-	{
-		_allString = Translator.translate("$ALL");
 	}
 
 	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
@@ -403,8 +394,8 @@ class InventoryLists extends MovieClip
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
 		if (_TabBar != undefined) {
 			if (_CategoriesList.dividerIndex != -1) {
-				 _TabBar.setLabelText(_CategoriesList.entryList[0].text, _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text);
-				 _CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = _allString;
+				_TabBar.setLabelText(_CategoriesList.entryList[0].text, _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text);
+				_CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = "$ALL";
 			}
 			
 			// Restore 0 as default index for tabbed lists

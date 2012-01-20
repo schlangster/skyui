@@ -93,7 +93,7 @@ class InventoryMenu extends ItemMenu
 			SaveIndices();
 			GameDelegate.call("CloseMenu",[]);
 			GameDelegate.call("CloseTweenMenu",[]);
-			_global.skse.OpenMenu("Magic Menu");
+			skse.OpenMenu("Magic Menu");
 	}
 
 	function onExitMenuRectClick()
