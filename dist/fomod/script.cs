@@ -35,15 +35,12 @@ class Script : FalloutNewVegasBaseScript {
 	// Options dialog
 	static Form optionsForm;
 	static PictureBox optionsLabelImage;
-	static Label optionsLabel1;
 	static Label optionsLabel2;
 	static Label optionsLabel3;
 	static Label optionsLabel4;
-	static PictureBox optionsSelector1Left;
 	static PictureBox optionsSelector2Left;
 	static PictureBox optionsSelector3Left;
 	static PictureBox optionsSelector4Left;
-	static PictureBox optionsSelector1Right;
 	static PictureBox optionsSelector2Right;
 	static PictureBox optionsSelector3Right;
 	static PictureBox optionsSelector4Right;
@@ -87,10 +84,6 @@ class Script : FalloutNewVegasBaseScript {
 	static int categoryIconSelected = 1;
 	
 	// Options state
-	//static string[] optionsLang = {"Czech", "English", "French", "German", "Italian", "Polish", "Russian", "Spanish"};
-	static string[] optionsLang = {"Czech", "English", "French", "German", "Italian", "Russian"};
-	static int selectedLang = 1;
-	
 	static string[] optionsFontSize = {"Small", "Normal", "Large"};
 	static int selectedFontSize = 1;
 	
@@ -117,28 +110,33 @@ class Script : FalloutNewVegasBaseScript {
 	
 	static void installFiles()
 	{
-		installMainFiles();
-		installIconFiles();
-		installSKSEPlugin();
+		string[] excludes = new string[] {
+			"skyui.cfg",
+		};
+	
+		installMainFiles(excludes);
 		installConfig();
-	}	
-
-	static void installSKSEPlugin()
-	{
-		InstallFileFromFomod("SKSE/Plugins/gibbed_interface_extensions.dll");
-		InstallFileFromFomod("SKSE/Plugins/container_categorization_1_3_10.dll");
 	}
 	
-	static void installMainFiles()
+	static void installMainFiles(string[] excludes)
 	{
-		InstallFileFromFomod("Interface/bartermenu.swf");
-		InstallFileFromFomod("Interface/containermenu.swf");
-		InstallFileFromFomod("Interface/inventorymenu.swf");
-		InstallFileFromFomod("Interface/magicmenu.swf");
-		InstallFileFromFomod("Interface/skyui_icons_magic.swf");
+		foreach (string file in GetFomodFileList()) {
 		
-		InstallFileFromFomod("Interface/skyui/inventorylists.swf");
-		InstallFileFromFomod("Interface/skyui/tabbedinventorylists.swf");
+			// Ignore fomod/ folder
+			if (file.StartsWith("fomod", true, null))
+				continue;
+				
+			if (file.StartsWith("SkyUI Extras", true, null))
+				continue;
+				
+			foreach (string exclude in excludes) {
+				if (file.EndsWith(exclude, true, null) || file.StartsWith(exclude, true, null)) {
+					continue;
+				}
+			}
+
+			InstallFileFromFomod(file);
+		}
 	}
 	
 	static void installConfig()
@@ -159,9 +157,6 @@ class Script : FalloutNewVegasBaseScript {
 		string s = Encoding.ASCII.GetString(data);
 		
 		// Might be slightly ineffecient doing it like that ...
-		
-		// Language
-		s = s.Replace("%T_LANGUAGE%", optionsLang[selectedLang]);
 		
 		// Font size
 		if (selectedFontSize == 0) {
@@ -472,47 +467,15 @@ class Script : FalloutNewVegasBaseScript {
 		optionsLabelImage.Image = imageOptionLabels;
 		optionsLabelImage.Location = new System.Drawing.Point(12, 12);
 		optionsLabelImage.Name = "optionsLabelImage";
-		optionsLabelImage.Size = new System.Drawing.Size(300, 200);
+		optionsLabelImage.Size = new System.Drawing.Size(300, 150);
 		optionsLabelImage.TabIndex = 29;
-		optionsLabelImage.TabStop = false;
-
-		// Language Option
-		optionsLabel1 = new System.Windows.Forms.Label();
-		optionsLabel1.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-		optionsLabel1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-		optionsLabel1.Location = new System.Drawing.Point(409, 19);
-		optionsLabel1.Name = "optionsLabel1";
-		optionsLabel1.Size = new System.Drawing.Size(150, 27);
-		optionsLabel1.TabIndex = 16;
-		optionsLabel1.Text = optionsLang[selectedLang];
-		optionsLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-		optionsLabel1.Click += new System.EventHandler(optionsLangNext_Click);
-		
-		optionsSelector1Left = new System.Windows.Forms.PictureBox();
-		optionsSelector1Left.Image = imageSelectorLeft;
-		optionsSelector1Left.Location = new System.Drawing.Point(355, 12);
-		optionsSelector1Left.Name = "optionsSelector1Left";
-		optionsSelector1Left.Size = new System.Drawing.Size(33, 41);
-		optionsSelector1Left.TabIndex = 14;
-		optionsSelector1Left.Click += new System.EventHandler(optionsLangPrev_Click);
-		optionsSelector1Left.MouseEnter += new System.EventHandler(leftSelector_MouseEnter);
-		optionsSelector1Left.MouseLeave += new System.EventHandler(leftSelector_MouseLeave);	
-		
-		optionsSelector1Right = new System.Windows.Forms.PictureBox();
-		optionsSelector1Right.Image = imageSelectorRight;
-		optionsSelector1Right.Location = new System.Drawing.Point(565, 12);
-		optionsSelector1Right.Name = "optionsSelector1Right";
-		optionsSelector1Right.Size = new System.Drawing.Size(48, 39);
-		optionsSelector1Right.TabIndex = 15;
-		optionsSelector1Right.Click += new System.EventHandler(optionsLangNext_Click);
-		optionsSelector1Right.MouseEnter += new System.EventHandler(rightSelector_MouseEnter);
-		optionsSelector1Right.MouseLeave += new System.EventHandler(rightSelector_MouseLeave);	
+		optionsLabelImage.TabStop = false;	
 		
 		// Font Size Option
 		optionsLabel2 = new System.Windows.Forms.Label();
 		optionsLabel2.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 		optionsLabel2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-		optionsLabel2.Location = new System.Drawing.Point(409, 69);
+		optionsLabel2.Location = new System.Drawing.Point(409, 19);
 		optionsLabel2.Name = "optionsLabel2";
 		optionsLabel2.Size = new System.Drawing.Size(150, 27);
 		optionsLabel2.TabIndex = 16;
@@ -522,7 +485,7 @@ class Script : FalloutNewVegasBaseScript {
 		
 		optionsSelector2Left = new System.Windows.Forms.PictureBox();
 		optionsSelector2Left.Image = imageSelectorLeft;
-		optionsSelector2Left.Location = new System.Drawing.Point(355, 62);
+		optionsSelector2Left.Location = new System.Drawing.Point(355, 12);
 		optionsSelector2Left.Name = "optionsSelector2Left";
 		optionsSelector2Left.Size = new System.Drawing.Size(33, 41);
 		optionsSelector2Left.TabIndex = 14;
@@ -532,7 +495,7 @@ class Script : FalloutNewVegasBaseScript {
 		
 		optionsSelector2Right = new System.Windows.Forms.PictureBox();
 		optionsSelector2Right.Image = imageSelectorRight;
-		optionsSelector2Right.Location = new System.Drawing.Point(565, 62);
+		optionsSelector2Right.Location = new System.Drawing.Point(565, 12);
 		optionsSelector2Right.Name = "optionsSelector2Right";
 		optionsSelector2Right.Size = new System.Drawing.Size(48, 39);
 		optionsSelector2Right.TabIndex = 15;
@@ -544,7 +507,7 @@ class Script : FalloutNewVegasBaseScript {
 		optionsLabel3 = new System.Windows.Forms.Label();
 		optionsLabel3.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 		optionsLabel3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-		optionsLabel3.Location = new System.Drawing.Point(409, 119);
+		optionsLabel3.Location = new System.Drawing.Point(409, 69);
 		optionsLabel3.Name = "optionsLabel3";
 		optionsLabel3.Size = new System.Drawing.Size(150, 27);
 		optionsLabel3.TabIndex = 16;
@@ -554,7 +517,7 @@ class Script : FalloutNewVegasBaseScript {
 		
 		optionsSelector3Left = new System.Windows.Forms.PictureBox();
 		optionsSelector3Left.Image = imageSelectorLeft;
-		optionsSelector3Left.Location = new System.Drawing.Point(355, 112);
+		optionsSelector3Left.Location = new System.Drawing.Point(355, 62);
 		optionsSelector3Left.Name = "optionsSelector3Left";
 		optionsSelector3Left.Size = new System.Drawing.Size(33, 41);
 		optionsSelector3Left.TabIndex = 14;
@@ -564,7 +527,7 @@ class Script : FalloutNewVegasBaseScript {
 		
 		optionsSelector3Right = new System.Windows.Forms.PictureBox();
 		optionsSelector3Right.Image = imageSelectorRight;
-		optionsSelector3Right.Location = new System.Drawing.Point(565, 112);
+		optionsSelector3Right.Location = new System.Drawing.Point(565, 62);
 		optionsSelector3Right.Name = "optionsSelector3Right";
 		optionsSelector3Right.Size = new System.Drawing.Size(48, 39);
 		optionsSelector3Right.TabIndex = 15;
@@ -576,7 +539,7 @@ class Script : FalloutNewVegasBaseScript {
 		optionsLabel4 = new System.Windows.Forms.Label();
 		optionsLabel4.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 		optionsLabel4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-		optionsLabel4.Location = new System.Drawing.Point(409, 169);
+		optionsLabel4.Location = new System.Drawing.Point(409, 119);
 		optionsLabel4.Name = "optionsLabel4";
 		optionsLabel4.Size = new System.Drawing.Size(150, 27);
 		optionsLabel4.TabIndex = 16;
@@ -586,7 +549,7 @@ class Script : FalloutNewVegasBaseScript {
 		
 		optionsSelector4Left = new System.Windows.Forms.PictureBox();
 		optionsSelector4Left.Image = imageSelectorLeft;
-		optionsSelector4Left.Location = new System.Drawing.Point(355, 162);
+		optionsSelector4Left.Location = new System.Drawing.Point(355, 112);
 		optionsSelector4Left.Name = "optionsSelector3Left";
 		optionsSelector4Left.Size = new System.Drawing.Size(33, 41);
 		optionsSelector4Left.TabIndex = 14;
@@ -596,7 +559,7 @@ class Script : FalloutNewVegasBaseScript {
 		
 		optionsSelector4Right = new System.Windows.Forms.PictureBox();
 		optionsSelector4Right.Image = imageSelectorRight;
-		optionsSelector4Right.Location = new System.Drawing.Point(565, 162);
+		optionsSelector4Right.Location = new System.Drawing.Point(565, 112);
 		optionsSelector4Right.Name = "optionsSelector3Right";
 		optionsSelector4Right.Size = new System.Drawing.Size(48, 39);
 		optionsSelector4Right.TabIndex = 15;
@@ -607,7 +570,7 @@ class Script : FalloutNewVegasBaseScript {
 		// Back button
 		optionsBackButton = new System.Windows.Forms.PictureBox();
 		optionsBackButton.Image = imageBack;
-		optionsBackButton.Location = new System.Drawing.Point(253, 244);
+		optionsBackButton.Location = new System.Drawing.Point(253, 194);
 		optionsBackButton.Name = "optionsBackButton";
 		optionsBackButton.Size = new System.Drawing.Size(119, 22);
 		optionsBackButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -627,11 +590,8 @@ class Script : FalloutNewVegasBaseScript {
 		optionsForm.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 		optionsForm.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		optionsForm.BackColor = System.Drawing.Color.Black;
-		optionsForm.ClientSize = new System.Drawing.Size(625, 278);
+		optionsForm.ClientSize = new System.Drawing.Size(625, 228);
 		optionsForm.Controls.Add(optionsLabelImage);
-		optionsForm.Controls.Add(optionsLabel1);
-		optionsForm.Controls.Add(optionsSelector1Left);
-		optionsForm.Controls.Add(optionsSelector1Right);
 		optionsForm.Controls.Add(optionsLabel2);
 		optionsForm.Controls.Add(optionsSelector2Left);
 		optionsForm.Controls.Add(optionsSelector2Right);
@@ -802,30 +762,6 @@ class Script : FalloutNewVegasBaseScript {
 	static void rightSelector_MouseLeave(object sender, EventArgs e)
 	{
 		((PictureBox)sender).Image = imageSelectorRight;
-	}
-	
-	static void optionsLangPrev_Click(object sender, EventArgs e)
-	{
-		selectPlayer.Play();
-
-		if (selectedLang > 0)
-			selectedLang--;
-		else
-			selectedLang = optionsLang.Length-1;
-		
-		optionsLabel1.Text = optionsLang[selectedLang];
-	}
-	
-	static void optionsLangNext_Click(object sender, EventArgs e)
-	{
-		selectPlayer.Play();
-
-		if (selectedLang < optionsLang.Length-1)
-			selectedLang++;
-		else
-			selectedLang = 0;
-		
-		optionsLabel1.Text = optionsLang[selectedLang];
 	}
 	
 	static void optionsFontSizePrev_Click(object sender, EventArgs e)

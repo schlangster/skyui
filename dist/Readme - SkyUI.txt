@@ -2,14 +2,14 @@
 	_______ _     _ __   __ _     _ _____
 	|______ |____/    \_/   |     |   |  
 	______| |    \_    |    |_____| __|__
-			
+
 ########################################################################################################################################
 
-Team:			snakster, T3T, Kratos
+Team:			snakster, T3T, Kratos, Mardoxx
 
-Contributors:	ianpatt, gibbed, Gopher, Mardoxx, GreatClone, Indie
+Contributors:	ianpatt, behippo, Indie, gibbed, GreatClone, Gopher
 
-Version:		2.0
+Version:		2.1
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 
@@ -49,7 +49,7 @@ SkyUI comes with a bundled version of Gibbed's Container Categorization SKSE plu
 	6. Contact
 	
 	7. Permissions
-	
+
 
 ########################################################################################################################################
 
@@ -240,21 +240,27 @@ ianpatt:
 	Added lots of new functions to the Skyrim Script Extender, that greatly helped us during development and enabled new features that
 	would otherwise be impossible.
 
+behippo:
+	Helped improving/advancing the interface extensions plugin by decoding the game classes and giving us access to them through SKSE.
+
 Gibbed:
 	Created the 'gibbed interface extensions' SKSE plugin, which makes more game data available for display in the inventory.
 	Also allowed us to bundle his container categorization plugin.
 
-Mardoxx:
-	Did a lot of groundwork by reconstructing the decompiled interface files, so we can customize them later.
+Indie:
+	Created our trailer and helps with QA and user support.
 
 GreatClone:
 	Created an amazing set of alternative category icons.
-	
+
+Gopher:
+	Did most of the work on the NMM installer, created an installation tutorial video and promoted SkyUI on his YouTube channel.
+
 Ismelda:
 	Provided configs for very high resolutions used with multi-monitor setups.
-	
-Indie:
-	Created our trailer and helps with QA and user support.
+
+Wakeupbrandon:
+	His mock-up inspired the overall layout of the new inventory.
 
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
