@@ -209,6 +209,10 @@ class InventoryMenu extends ItemMenu
 
 	function AttemptChargeItem()
 	{
+		if (InventoryLists_mc.ItemsList.selectedIndex == -1) {
+			return;
+		}
+		
 		if (ShouldProcessItemsListInput(false) && ItemCard_mc.itemInfo.charge != undefined && ItemCard_mc.itemInfo.charge < 100) {
 			GameDelegate.call("ShowSoulGemList", []);
 		}

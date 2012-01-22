@@ -24,15 +24,18 @@ class skyui.ItemTypeFilter implements skyui.IFilter
 	{
 		return _itemFilter;
 	}
-
-	function set itemFilter(a_newFilter:Number)
+	
+	function changeFilterFlag(a_newFilter:Number, a_bDoNotUpdate:Boolean)
 	{
-		if (_itemFilter == a_newFilter) {
-			return;
+		if (a_bDoNotUpdate == undefined) {
+			a_bDoNotUpdate = false;
 		}
-
+		
 		_itemFilter = a_newFilter;
-		dispatchEvent({type:"filterChange"});
+		
+		if (!a_bDoNotUpdate) {
+			dispatchEvent({type:"filterChange"});
+		}
 	}
 
 	function setPartitionedFilterMode(a_bPartition:Boolean)

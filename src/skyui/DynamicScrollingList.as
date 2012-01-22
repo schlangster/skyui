@@ -132,7 +132,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	function set scrollPosition(a_newPosition:Number)
 	{
 		if (a_newPosition != _scrollPosition && a_newPosition >= 0 && a_newPosition <= _maxScrollPosition) {
-
 			if (scrollbar != undefined) {
 				scrollbar.position = a_newPosition;
 			} else {
@@ -152,6 +151,19 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 		if (scrollbar != undefined) {
 			scrollbar._visible = _maxScrollPosition > 0;
 			scrollbar.setScrollProperties(_maxListIndex,0,_maxScrollPosition);
+		}
+	}
+
+	function calculateMaxScrollPosition()
+	{
+		var t = _entryList.length - _maxListIndex;
+
+		_maxScrollPosition = t > 0 ? t : 0;
+
+		updateScrollbar();
+
+		if (_scrollPosition > _maxScrollPosition) {
+			scrollPosition = _maxScrollPosition;
 		}
 	}
 
@@ -190,21 +202,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	function InvalidateData()
 	{
 		calculateMaxScrollPosition();
-
 		super.InvalidateData();
-	}
-
-	function calculateMaxScrollPosition()
-	{
-		var t = _entryList.length - _maxListIndex;
-
-		_maxScrollPosition = t > 0 ? t : 0;
-
-		if (_scrollPosition > _maxScrollPosition) {
-			scrollPosition = _maxScrollPosition;
-		}
-
-		updateScrollbar();
 	}
 
 	function moveSelectionUp(a_bNextPage:Boolean)
@@ -281,18 +279,5 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 	function onScroll(event)
 	{
 		updateScrollPosition(Math.floor(event.position + 0.500000));
-	}
-
-	// Don't think we need this for the new panel style. Resetting it to 0 is probably more convenient since we can search and stuff
-	function RestoreScrollPosition(a_newPosition)
-	{
-		scrollPosition = 0;
-//		if (a_newPosition < 0) {
-//			a_newPosition = 0;
-//		} else if (a_newPosition > _maxScrollPosition) {
-//			a_newPosition = _maxScrollPosition;
-//		}
-//		
-//		scrollPosition = a_newPosition;
 	}
 }

@@ -225,29 +225,21 @@ class InventoryLists extends MovieClip
 	function showItemsList()
 	{
 		_currCategoryIndex = _CategoriesList.selectedIndex;
-
+		
 		_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
-
-		// Let's do this more elegant at some point.. :)
-		// Changing the sort filter might already trigger an update, so the final UpdateList is redudant
 
 		// Start with no selection
 		_ItemsList.selectedIndex = -1;
+		_ItemsList.scrollPosition = 0;
 
 		if (_CategoriesList.selectedEntry != undefined) {
-			// Set filter type before update
-			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-
-			_currCategoryIndex = _CategoriesList.selectedIndex;
+			// Set filter type
+			_typeFilter.changeFilterFlag(_CategoriesList.selectedEntry.flag);
 			_ItemsList.changeFilterFlag(_CategoriesList.selectedEntry.flag);
-
-
-			//  _ItemsList.RestoreScrollPosition(_CategoriesList.selectedEntry.savedItemIndex);
 		} else {
 			_ItemsList.UpdateList();
 		}
-
-//		dispatchEvent({type:"showItemsList", index:_ItemsList.selectedIndex});
+		
 		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 
 		_ItemsList.disableInput = false;

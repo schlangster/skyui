@@ -1,5 +1,7 @@
 ﻿import Shared.ListFilterer;
 import skyui.IFilter;
+import Shared.GlobalFunc;
+
 
 class skyui.FilteredList extends skyui.DynamicScrollingList
 {
@@ -109,7 +111,6 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		
 		// Restore selection
 		if (_curClipIndex != undefined && _curClipIndex != -1 && _listIndex > 0) {
-			
 			if (_curClipIndex >= _listIndex) {
 				_curClipIndex = _listIndex - 1;
 			}
@@ -121,15 +122,15 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 	}
 
 	function calculateMaxScrollPosition()
-	{
+ 	{
 		var t = _filteredList.length - _maxListIndex;
 		_maxScrollPosition = (t > 0) ? t : 0;
+
+		updateScrollbar();
 
 		if (_scrollPosition > _maxScrollPosition) {
 			scrollPosition = _maxScrollPosition;
 		}
-
-		updateScrollbar();
 	}
 
 	function moveSelectionUp(a_bScrollPage:Boolean)
@@ -172,7 +173,13 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)
 	{
-		if (!_bDisableSelection && a_newIndex != _selectedIndex && _entryList[a_newIndex].filteredIndex != undefined) {
+		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
+			
+			// Invalid selection, ignore
+			if (a_newIndex != -1 && _entryList[a_newIndex].filteredIndex == undefined) {
+				return;
+			}
+			
 			var oldIndex = _selectedIndex;
 			_selectedIndex = a_newIndex;
 
@@ -180,6 +187,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex), _entryList[oldIndex]);
 			}
 
+			// Select valid entry
 			if (_selectedIndex != -1) {
 				if (selectedEntry.filteredIndex < _scrollPosition) {
 					scrollPosition = selectedEntry.filteredIndex;
@@ -190,6 +198,8 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 				}
 				
 				_curClipIndex = _entryList[_selectedIndex].clipIndex;
+			
+			// Unselect
 			} else {
 				_curClipIndex = -1;
 			}
