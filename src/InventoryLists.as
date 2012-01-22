@@ -331,8 +331,6 @@ class InventoryLists extends MovieClip
 
 	function doItemsSelectionChange(event)
 	{
-		_CategoriesList.selectedEntry.savedItemIndex = _ItemsList.scrollPosition;
-
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
 
 		if (event.index != -1) {

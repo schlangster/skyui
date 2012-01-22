@@ -128,7 +128,7 @@ class skyui.DynamicList extends MovieClip
 
 	function set selectedIndex(a_newIndex)
 	{
-		doSetSelectedIndex(a_newIndex);
+		doSetSelectedIndex(a_newIndex, 0);
 	}
 
 	function doSetSelectedIndex(a_newIndex:Number, a_keyboardOrMouse:Number)

@@ -18,7 +18,7 @@ class ItemMenu extends MovieClip
 	private var _3DIconWideZSettingStr:String;
 	private var _3DIconWideScaleSettingStr:String;
 	
-	private var _config;
+	private var _config:Config;
 	
 	var InventoryLists_mc:MovieClip;
 	var ItemCardFadeHolder_mc:MovieClip;
@@ -427,9 +427,6 @@ class ItemMenu extends MovieClip
 		a.push(InventoryLists_mc.CategoriesList.selectedIndex);
 		a.push(InventoryLists_mc.ItemsList.selectedIndex);
 		a.push(InventoryLists_mc.ItemsList.scrollPosition);
-		
-		skse.Log("Saving " + InventoryLists_mc.ItemsList.getRelativeScrollPosition());
-
 		
 		GameDelegate.call("SaveIndices", [a]);
 	}
