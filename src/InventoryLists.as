@@ -243,7 +243,6 @@ class InventoryLists extends MovieClip
 		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
 
 		_ItemsList.disableInput = false;
-		GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
 	// Not needed anymore, items list always visible
