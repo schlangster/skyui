@@ -38,6 +38,25 @@
 			}
 			return undefined;
 		};
+		
+		
+		Array.prototype.equals = function (a:Array):Boolean 
+		{
+			if (a == undefined) {
+				return false;
+			}
+			
+	    	if (this.length != a.length) {
+	        	return false;
+	    	}
+			
+	    	for (var i = 0; i < a.length; i++) {
+	        	if (a[i] !== this[i]) {
+					return false;
+				}
+        	}
+	    	return true;
+    	};
 	}
 
 	// Maps Unicode inputted character code to it's CP819/CP1251 character code

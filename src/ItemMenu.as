@@ -6,7 +6,7 @@ import gfx.ui.NavigationCode;
 
 class ItemMenu extends MovieClip
 {
-	private var SKSE_REQ_VERSION = {major:1, minor:4, beta:4};
+	private var SKSE_REQ_RELEASE_IDX = 6;
 	
 	private var _platform:Number;
 	private var _bItemCardFadedIn:Boolean;
@@ -97,15 +97,13 @@ class ItemMenu extends MovieClip
 					+ "\n"
 					+ "For more information, refer to the Readme.";
 					
-			} else if (_global.skse.version.major < SKSE_REQ_VERSION.major ||
-						(_global.skse.version.major == SKSE_REQ_VERSION.major && _global.skse.version.minor < SKSE_REQ_VERSION.minor) ||
-						(_global.skse.version.major == SKSE_REQ_VERSION.major && _global.skse.version.minor == SKSE_REQ_VERSION.minor && _global.skse.version.beta < SKSE_REQ_VERSION.beta)) {
+			} else if (_global.skse.version.releaseIdx < SKSE_REQ_RELEASE_IDX) {
 				skseWarning._visible = true;
 				skseWarning.message.text = "Your Skyrim Script Extender (SKSE) is outdated.\n"
 					+ "SkyUI will not work correctly!\n"
 					+ "\n"
 					+ "Installed version: " + _global.skse.version.major + "." + _global.skse.version.minor + "." + _global.skse.version.beta + "\n"
-					+ "Required version: " + SKSE_REQ_VERSION.major + "." + SKSE_REQ_VERSION.minor + "." + SKSE_REQ_VERSION.beta + "\n"
+					+ "Required version: 1.4.5\n"
 					+ "\n"
 					+ "For more information, refer to the Readme.";
 					

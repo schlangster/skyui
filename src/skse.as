@@ -1,4 +1,4 @@
-﻿dynamic intrinsic class skse
+﻿intrinsic class skse
 {
 	static function Log(a_string:String):Void;
 	static function AllowTextInput(a_flag:Boolean):Void;

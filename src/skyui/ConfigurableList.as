@@ -13,6 +13,9 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	private var _activeColumnIndex:Number;
 	private var _lastViewIndex:Number;
 	
+	// viewIndex, columnIndex, stateIndex
+	private var _prefData:Object;
+	
 	// 1 .. n
 	private var _activeColumnState:Number;
 	
@@ -60,6 +63,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_defaultLabelFormat = new TextFormat();
 		
 		_config = undefined;
+		
+		//_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
 		
 		// Reasonable defaults, will be overridden later
 		_entryWidth = 525;
@@ -190,7 +195,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 
 	function changeFilterFlag(a_flag:Number)
 	{
-		// Find a match, or use last index
+		// Find a matching view, or use last index
 		for (var i = 0; i < _views.length; i++) {
 			
 			// Wrap in list if necessary
@@ -209,14 +214,61 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 		
 		_lastViewIndex = _activeViewIndex;
-		_activeColumnState = 1;
-		_activeColumnIndex = _views[_activeViewIndex].columns.indexOf(_views[_activeViewIndex].primaryColumn);
-					
-		if (_activeColumnIndex == undefined) {
-			_activeColumnIndex = 0;
+		
+		// Restoring a previous state was not necessary or failed? Then use default
+		if (! restorePrefState()) {
+			_activeColumnIndex = _views[_activeViewIndex].columns.indexOf(_views[_activeViewIndex].primaryColumn);
+			if (_activeColumnIndex == undefined) {
+				_activeColumnIndex = 0;
+			}
+			_activeColumnState = 1;
+		}
+
+		updateView();
+	}
+	
+	function restorePrefState():Boolean 
+	{
+		// No preference to restore yet
+		if (_prefData == undefined) {
+			return false;
+		}
+
+		// First check if current view contains preferred column
+		var prefColumn = _views[_prefData.viewIndex].columns[_prefData.columnIndex];
+		
+		var index = _views[_activeViewIndex].columns.indexOf(prefColumn);
+		if (prefColumn != undefined && index != undefined) {
+			_activeColumnIndex = index;
+			_activeColumnState = _prefData.stateIndex;
+			return true;
 		}
 		
-		updateView();
+		// Next, try to search all columns for a similar state by comparing text, sort options and sort attributes
+		var prefState = _views[_prefData.viewIndex].columns[_prefData.columnIndex]["state" + _prefData.stateIndex];
+		
+		for (var i=0; i<_views[_activeViewIndex].columns.length; i++) {
+			var col = _views[_activeViewIndex].columns[i];
+			if ( col.states == undefined) {
+				continue;
+			}
+				
+			for (var j=1; j <=  col.states; j++) {
+				var st = col["state" + j];
+				if (st.entry.text != prefState.entry.text) {
+					continue;
+				}
+				
+				if (st.sortAttributes.equals(prefState.sortAttributes) && st.sortOptions.equals(prefState.sortOptions) && st.label.arrowDown == prefState.label.arrowDown) {
+					_activeColumnIndex = i;
+					_activeColumnState = j;
+					return true;
+				}
+			}
+		}
+
+		// Found no match
+		return false;
 	}
 	
 	function onColumnPress(event)
@@ -248,6 +300,9 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				_activeColumnState = 1;
 			}
 		}
+		
+		// Save as preferred state
+		_prefData = {viewIndex: _activeViewIndex, columnIndex: _activeColumnIndex, stateIndex: _activeColumnState};
 			
 		updateView();
 	}

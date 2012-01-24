@@ -66,14 +66,9 @@ class skyui.MagicColumnFormatter extends InventoryColumnFormatter
 			}
 
 			a_entryField.autoSize = "left";
-			a_entryField.textAutoSize = "shrink";
 			a_entryField.SetText(text);
 
-			if (a_entryObject.negativeEffect == true || a_entryObject.isStealing == true) {
-				a_entryField.textColor = a_entryObject.enabled == false ? 0x800000 : 0xFF0000;
-			} else {
-				a_entryField.textColor = a_entryObject.enabled == false ? 0x4C4C4C : 0xFFFFFF;
-			}
+			formatColor(a_entryField, a_entryObject);
 
 			// Fav icon
 			if (a_entryObject.favorite == true) {
