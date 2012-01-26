@@ -64,7 +64,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		
 		_config = undefined;
 		
-		//_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
+		_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
 		
 		// Reasonable defaults, will be overridden later
 		_entryWidth = 525;
@@ -230,7 +230,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	function restorePrefState():Boolean 
 	{
 		// No preference to restore yet
-		if (_prefData == undefined) {
+		if (_prefData == undefined || _prefData.viewIndex == -1) {
 			return false;
 		}
 
@@ -267,7 +267,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			}
 		}
 
-		// Found no match
+		// Found no match, reset prefData and return false
+		_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
 		return false;
 	}
 	
