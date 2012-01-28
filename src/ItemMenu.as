@@ -57,6 +57,8 @@ class ItemMenu extends MovieClip
 
 	function InitExtensions(a_bPlayBladeSound)
 	{
+		skse.ExtendData(true);
+		
 		GameDelegate.addCallBack("UpdatePlayerInfo",this,"UpdatePlayerInfo");
 		GameDelegate.addCallBack("UpdateItemCardInfo",this,"UpdateItemCardInfo");
 		GameDelegate.addCallBack("ToggleMenuFade",this,"ToggleMenuFade");

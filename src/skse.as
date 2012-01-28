@@ -6,4 +6,5 @@
 	static function GetINISetting(a_key:String):Number;
 	static function OpenMenu(a_menu:String):Void;
 	static function CloseMenu(a_menu:String):Void;
+	static function ExtendData(enable:Boolean):Void;
 }
