@@ -22,17 +22,17 @@ The following mods/utilities are required for SkyUI:
 
 * The Nexus Mod Manager (NMM) is recommended for properly installing and setting up SkyUI.
 	http://skyrimnexus.com/content/modmanager/
-	
+
 ------------------------------------------------------------
-	
+
 If you're using GreatClone's Celtic Icon theme that comes with SkyUI, you can get the latest version directly from the author:
 * GreatClone Celtic Icons, by GreatClone
 	http://www.skyrimnexus.com/downloads/file.php?id=3979
-	
+
 SkyUI comes with a bundled version of Gibbed's Container Categorization SKSE plugin. The standalone version can be found here:
 * Container Categorization, by Gibbed
 	http://www.skyrimnexus.com/downloads/file.php?id=1227
-	
+
 ########################################################################################################################################
 
 
@@ -88,6 +88,30 @@ For a more detailed description, please see our mod description on SkyrimNexus.
 ========================================================================================================================================
 
 ------------------------------------------------------------
+2.1:
+
+[General]
+- Added compatiblity for the latest Skyrim version.
+- Added multi-language support for Czech, English, French, German, Italian, Polish, Russian and Spanish.
+- Added several options to the installer (font size, separate V/W column, special resolution).
+- Fixed a bug where selling/dropping/storing stacked items could cause the selected entry to jump to the bottom of the list.
+- The last selected category, entry and scroll position are now saved and restored when re-opening the inventory/magic menu.
+- Sorting parameters are now preserved when switching through categories.
+- Improved the SKSE version check so it will also display a warning when using outdated versions.
+- Most features of our SKSE plugins have been reworked and are now integrated to SKSE itself.
+- Various other tweaks and minor fixes.
+
+[InventoryMenu]
+- Fixed a rare bug that could cause crashes after recharging an item.
+
+[MagicMenu]
+- Fixed skill level sorting.
+- Added 'Favorite' as a sort option.
+
+[ContainerMenu]
+- Fixed stealing text for Russian game version.
+
+------------------------------------------------------------
 2.0:
 
 [InventoryMenu]
@@ -107,7 +131,6 @@ For a more detailed description, please see our mod description on SkyrimNexus.
 
 [ContainerMenu]
 - Initial release
-
 
 ------------------------------------------------------------
 1.1:
@@ -223,11 +246,6 @@ Problem: I changed something in skyui.cfg, now it's not working anymore.
 Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just revert back to the original config from the
 	downloaded SkyUI archive.
 
-------------------------------------------------------------	
-Problem: The Nexus Mod Manager crashes when trying to install SkyUI.
-
-Solution: This seems to be a common issue with NMM at the moment. Restart NMM and try again, it should work then.
-
 
 ========================================================================================================================================
  5. Credits & Acknowledgements
@@ -245,7 +263,8 @@ behippo:
 
 Gibbed:
 	Created the 'gibbed interface extensions' SKSE plugin, which makes more game data available for display in the inventory.
-	Also allowed us to bundle his container categorization plugin.
+	Also allowed us to bundle his container categorization plugin. As of version 2.1, both these plugins have been included in SKSE
+	itself.
 
 Indie:
 	Created our trailer and helps with QA and user support.
