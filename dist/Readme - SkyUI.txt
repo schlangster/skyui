@@ -5,9 +5,9 @@
 
 ########################################################################################################################################
 
-Team:			snakster, T3T, Kratos, Mardoxx
+Team:			snakster, T3T, Mardoxx
 
-Contributors:	ianpatt, behippo, Indie, gibbed, GreatClone, Gopher
+Contributors:	ianpatt, behippo, Indie, gibbed, GreatClone, Gopher, Kratos
 
 Version:		2.1
 
@@ -17,7 +17,7 @@ Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE)
+* The Skyrim Script Extender (SKSE), version 1.4.8 or newer
 	http://skse.silverlock.org/
 
 * The Nexus Mod Manager (NMM) is recommended for properly installing and setting up SkyUI.
@@ -28,10 +28,6 @@ The following mods/utilities are required for SkyUI:
 If you're using GreatClone's Celtic Icon theme that comes with SkyUI, you can get the latest version directly from the author:
 * GreatClone Celtic Icons, by GreatClone
 	http://www.skyrimnexus.com/downloads/file.php?id=3979
-
-SkyUI comes with a bundled version of Gibbed's Container Categorization SKSE plugin. The standalone version can be found here:
-* Container Categorization, by Gibbed
-	http://www.skyrimnexus.com/downloads/file.php?id=1227
 
 ########################################################################################################################################
 
@@ -253,6 +249,9 @@ Solution: If you made a mistake in the config, SkyUI may stop working. In this c
 
 Besides the SkyUI team itself, there are other people as well who helped significantly to make this mod a reality.
 In the following they are listed by name, including a list of their contributions.
+
+Kratos:
+	Was a core member of the SkyUI team until version 2.1 and as such contributed significantly to the project in various areas.
 
 ianpatt:
 	Added lots of new functions to the Skyrim Script Extender, that greatly helped us during development and enabled new features that

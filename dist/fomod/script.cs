@@ -93,8 +93,6 @@ class Script : FalloutNewVegasBaseScript {
 	static bool showVWColumn = false;
 	
 	
-
-	
 	public static bool OnActivate()
 	{
 		InitializeComponents();
@@ -112,10 +110,13 @@ class Script : FalloutNewVegasBaseScript {
 	{
 		string[] excludes = new string[] {
 			"skyui.cfg",
+			"Interface/skyui_icons_cat.swf",
+			"Interface/skyui_icons_inv.swf"
 		};
-	
+		
 		installMainFiles(excludes);
 		installConfig();
+		installIconFiles();
 	}
 	
 	static void installMainFiles(string[] excludes)
