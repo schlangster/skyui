@@ -6,7 +6,7 @@ import gfx.ui.NavigationCode;
 
 class ItemMenu extends MovieClip
 {
-	private var SKSE_REQ_RELEASE_IDX = 6;
+	private var SKSE_REQ_RELEASE_IDX = 9;
 	
 	private var _platform:Number;
 	private var _bItemCardFadedIn:Boolean;
@@ -58,6 +58,7 @@ class ItemMenu extends MovieClip
 	function InitExtensions(a_bPlayBladeSound)
 	{
 		skse.ExtendData(true);
+		skse.ForceContainerCategorization(true);
 		
 		GameDelegate.addCallBack("UpdatePlayerInfo",this,"UpdatePlayerInfo");
 		GameDelegate.addCallBack("UpdateItemCardInfo",this,"UpdateItemCardInfo");
@@ -105,7 +106,7 @@ class ItemMenu extends MovieClip
 					+ "SkyUI will not work correctly!\n"
 					+ "\n"
 					+ "Installed version: " + _global.skse.version.major + "." + _global.skse.version.minor + "." + _global.skse.version.beta + "\n"
-					+ "Required version: 1.4.5\n"
+					+ "Required version: 1.4.8\n"
 					+ "\n"
 					+ "For more information, refer to the Readme.";
 					

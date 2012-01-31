@@ -322,6 +322,10 @@ class InventoryLists extends MovieClip
 	function doCategorySelectionChange(event)
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
+		
+		if (event.index != -1) {
+			GameDelegate.call("PlaySound",["UIMenuFocus"]);
+		}
 	}
 
 	function doItemsSelectionChange(event)
