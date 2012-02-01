@@ -87,14 +87,15 @@ For a more detailed description, please see our mod description on SkyrimNexus.
 2.1:
 
 [General]
-- Added compatiblity for the latest Skyrim version.
+- Added compatiblity for the Skyrim version 1.4.21.
 - Added multi-language support for Czech, English, French, German, Italian, Polish, Russian and Spanish.
 - Added several options to the installer (font size, separate V/W column, special resolution).
+- Added a BAIN Conversion File (BCF) including an installation wizard for better Wyre Bash support. Thanks to Lojack!
 - Fixed a bug where selling/dropping/storing stacked items could cause the selected entry to jump to the bottom of the list.
 - The last selected category, entry and scroll position are now saved and restored when re-opening the inventory/magic menu.
-- Sorting parameters are now preserved when switching through categories.
+- Sorting parameters are now preserved as good as possible when switching through categories.
 - Improved the SKSE version check so it will also display a warning when using outdated versions.
-- Most features of our SKSE plugins have been reworked and are now integrated to SKSE itself.
+- Most features of our SKSE plugins have been reworked and are now integrated in SKSE itself.
 - Various other tweaks and minor fixes.
 
 [InventoryMenu]
@@ -273,6 +274,10 @@ GreatClone:
 
 Gopher:
 	Did most of the work on the NMM installer, created an installation tutorial video and promoted SkyUI on his YouTube channel.
+
+Lojack:
+	Created a BCF (including an installation wizard) for SkyUI to improve the installation experience for Wyre Bash users.
+	Also added an auto-conversion feature to Wyre Bash itself so this BCF is automatically applied.
 
 Ismelda:
 	Provided configs for very high resolutions used with multi-monitor setups.
