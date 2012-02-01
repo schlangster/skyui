@@ -93,7 +93,7 @@ For a more detailed description, please see our mod description on SkyrimNexus.
 - Added a BAIN Conversion File (BCF) including an installation wizard for better Wyre Bash support. Thanks to Lojack!
 - Fixed a bug where selling/dropping/storing stacked items could cause the selected entry to jump to the bottom of the list.
 - The last selected category, entry and scroll position are now saved and restored when re-opening the inventory/magic menu.
-- Sorting parameters are now preserved as good as possible when switching through categories.
+- Sorting parameters are now preserved if possible when switching through categories.
 - Improved the SKSE version check so it will also display a warning when using outdated versions.
 - Most features of our SKSE plugins have been reworked and are now integrated in SKSE itself.
 - Various other tweaks and minor fixes.
@@ -107,6 +107,7 @@ For a more detailed description, please see our mod description on SkyrimNexus.
 
 [ContainerMenu]
 - Fixed stealing text for Russian game version.
+- Fixed overlapping of to steal/to place text for large itemcards.
 
 ------------------------------------------------------------
 2.0:
