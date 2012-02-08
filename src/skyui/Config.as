@@ -76,7 +76,7 @@ dynamic class skyui.Config
 		_instance = new Config();
 		var lv = new LoadVars();
 		lv.onData = parseData;
-		lv.load("skyui.cfg");
+		lv.load("skyui_cfg.txt");
 		
 		return true;
 	}

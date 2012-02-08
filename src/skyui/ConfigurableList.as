@@ -52,12 +52,12 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	{
 		super();
 
-		_columnPositions = new Array();
-		_columnSizes = new Array();
-		_columnNames = new Array();
-		_hiddenColumnNames = new Array();
-		_columnEntryValues = new Array();
-		_customEntryFormats = new Array();
+		_columnPositions = [];
+		_columnSizes = [];
+		_columnNames = [];
+		_hiddenColumnNames = [];
+		_columnEntryValues = [];
+		_customEntryFormats = [];
 		
 		_defaultEntryFormat = new TextFormat(); 
 		_defaultLabelFormat = new TextFormat();
