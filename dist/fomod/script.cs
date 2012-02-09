@@ -109,9 +109,9 @@ class Script : FalloutNewVegasBaseScript {
 	static void installFiles()
 	{
 		string[] excludes = new string[] {
-			"skyui.cfg",
-			"Interface/skyui_icons_cat.swf",
-			"Interface/skyui_icons_inv.swf"
+			"skyui_cfg.txt",
+			"Interface/skyui/skyui_icons_cat.swf",
+			"Interface/skyui/skyui_icons_inv.swf"
 		};
 		
 		installMainFiles(excludes);
@@ -144,13 +144,13 @@ class Script : FalloutNewVegasBaseScript {
 	{
 		// Install default config if generation failed
 		if (! generateConfig()) {
-			InstallFileFromFomod("Interface/skyui.cfg");
+			InstallFileFromFomod("Interface/skyui_cfg.txt");
 		}
 	}
 	
 	static bool generateConfig()
 	{
-		byte[] data = GetFileFromFomod("fomod/template.cfg");
+		byte[] data = GetFileFromFomod("fomod/template_cfg.txt");
                 
 		if (data == null)            
 			return false;
@@ -225,7 +225,7 @@ class Script : FalloutNewVegasBaseScript {
 		}
 		
 		Byte[] newData = Encoding.ASCII.GetBytes(s);
-		GenerateDataFile("Interface/skyui.cfg", newData);
+		GenerateDataFile("Interface/skyui_cfg.txt", newData);
 		
 		return true;
 	}
@@ -233,14 +233,14 @@ class Script : FalloutNewVegasBaseScript {
 	static void installIconFiles()
 	{
 		if (categoryIconSelected == 1) {
-			CopyDataFile("SkyUI Extras/Icon Themes/Straight, by T3T/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
-			CopyDataFile("SkyUI Extras/Icon Themes/Straight, by T3T/skyui_icons_inv.swf", "Interface/skyui_icons_inv.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Straight, by T3T/skyui_icons_cat.swf", "Interface/skyui/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Straight, by T3T/skyui_icons_inv.swf", "Interface/skyui/skyui_icons_inv.swf");
 		} else if (categoryIconSelected == 2) {
-			CopyDataFile("SkyUI Extras/Icon Themes/Curved, by T3T/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
-			CopyDataFile("SkyUI Extras/Icon Themes/Curved, by T3T/skyui_icons_inv.swf", "Interface/skyui_icons_inv.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Curved, by T3T/skyui_icons_cat.swf", "Interface/skyui/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Curved, by T3T/skyui_icons_inv.swf", "Interface/skyui/skyui_icons_inv.swf");
 		} else {
-			CopyDataFile("SkyUI Extras/Icon Themes/Celtic, by GreatClone/skyui_icons_cat.swf", "Interface/skyui_icons_cat.swf");
-			CopyDataFile("SkyUI Extras/Icon Themes/Celtic, by GreatClone/skyui_icons_inv.swf", "Interface/skyui_icons_inv.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Celtic, by GreatClone/skyui_icons_cat.swf", "Interface/skyui/skyui_icons_cat.swf");
+			CopyDataFile("SkyUI Extras/Icon Themes/Celtic, by GreatClone/skyui_icons_inv.swf", "Interface/skyui/skyui_icons_inv.swf");
 		}
 	}
 	
