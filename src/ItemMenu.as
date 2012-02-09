@@ -98,7 +98,7 @@ class ItemMenu extends MovieClip
 					+ "This message may also appear if a new Skyrim Patch has been released.\n"
 					+ "In this case, wait until SKSE has been updated, then install the new version.\n"
 					+ "\n"
-					+ "For more information, refer to the Readme.";
+					+ "For more information, see the mod description.";
 					
 			} else if (_global.skse.version.releaseIdx < SKSE_REQ_RELEASE_IDX) {
 				skseWarning._visible = true;
@@ -108,7 +108,7 @@ class ItemMenu extends MovieClip
 					+ "Installed version: " + _global.skse.version.major + "." + _global.skse.version.minor + "." + _global.skse.version.beta + "\n"
 					+ "Required version: 1.4.8\n"
 					+ "\n"
-					+ "For more information, refer to the Readme.";
+					+ "For more information, see the mod description.";
 					
 			} else {
 				skseWarning._visible = false;
