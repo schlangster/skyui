@@ -15,6 +15,7 @@ import skyui.SearchWidget;
 import skyui.TabBar;
 import skyui.Config;
 import skyui.Util;
+import skyui.Translator;
 
 
 class InventoryLists extends MovieClip
@@ -384,7 +385,7 @@ class InventoryLists extends MovieClip
 		if (_TabBar != undefined) {
 			if (_CategoriesList.dividerIndex != -1) {
 				_TabBar.setLabelText(_CategoriesList.entryList[0].text, _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text);
-				_CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = "$ALL";
+				_CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = Translator.translate("$ALL");
 			}
 			
 			// Restore 0 as default index for tabbed lists

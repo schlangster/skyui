@@ -4,6 +4,7 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
 import skyui.Config;
+import skyui.Translator;
 
 
 class skyui.SearchWidget extends MovieClip
@@ -44,6 +45,7 @@ class skyui.SearchWidget extends MovieClip
 		};
 
 		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
+		Translator.instance.addEventListener("translationLoad", this, "onTranslationLoad");
 	}
 	
 	function onConfigLoad(event)
@@ -51,7 +53,12 @@ class skyui.SearchWidget extends MovieClip
 		_config = event.config;
 		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
 		_updateDelay = _config.SearchBox.autoupdate.delay;
-		_filterString = textField.text;
+	}
+	
+	function onTranslationLoad(event)
+	{
+		_filterString = Translator.translate("$FILTER");
+		textField.SetText(_filterString);
 	}
 	
 	function onPress(a_mouseIndex, a_keyboardOrMouse)
@@ -139,7 +146,7 @@ class skyui.SearchWidget extends MovieClip
 		if (_currentInput != undefined()) {
 			dispatchEvent({type: "inputEnd", data: _currentInput});
 		} else {
-			textField.SetText(_filterString);
+			textField.SetText(Translator.translate("$FILTER"));
 			dispatchEvent({type: "inputEnd", data: ""});
 		}
 	}

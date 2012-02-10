@@ -1,8 +1,13 @@
-﻿class skyui.Translator
+﻿import gfx.events.EventDispatcher;
+
+class skyui.Translator
 {
 	private static var _translator:TextField;
 	private static var _initialized:Boolean = initialize();
-	private static var _language = "english";
+	private static var _language:String;
+	
+	// The instance is only used for the EventDispatcher
+	static private var _instance:Translator;
 
 	// This is used to cache the native translated strings
 	private static var _cache = {};
@@ -10,17 +15,65 @@
 	// This holds custom translated strings from the config. Takes priority over native translations
 	private static var _dict = {};
 	
+	// Mixin
+	var dispatchEvent:Function;
+	var addEventListener:Function;
+	
 	
 	static function initialize():Boolean
 	{
 		_translator = _root.createTextField("_translator", _root.getNextHighestDepth(), 0, 0, 1, 1);
 		_translator._visible = false;
 
+
+		// Can't think of a better non-SKSE way to determine the language.
+		// Non-SKSE because the functions are not registerd in the static initializer yet.
+		var testStr = translate("$VALUE");
+		
+		if (testStr == "CENA") {
+			_language = "czech";
+			
+		} else if (testStr == "VALUE") {
+			_language = "english";
+			
+		} else if (testStr == "VALEUR") {
+			_language = "french";
+			
+		} else if (testStr == "WERT") {
+			_language = "german";
+			
+		} else if (testStr == "VALORE") {
+			_language = "italian";
+			
+		} else if (testStr == "WARTOŚĆ") {
+			_language = "polish";
+			
+		} else if (testStr == "Стоимость") {
+			_language = "russian";
+			
+		} else if (testStr == "VALOR") {
+			_language = "spanish";
+			
+		} else {
+			_language = "english";
+		}
+
+		_instance = new Translator();
 		var lv = new LoadVars();
 		lv.onData = parseData;
 		lv.load("skyui_translate.txt");
 		
 		return true;
+	}
+	
+	static function get instance():Translator
+	{
+		return _instance;
+	}
+
+	private function Translator()
+	{
+		EventDispatcher.initialize(this);
 	}
 	
 	static function parseData(a_data:String)
@@ -54,6 +107,8 @@
 				_dict[lang][a[0]] = a[1];
 			}
 		}
+		
+		_instance.dispatchEvent({type:"translationLoad"});
 	}
 	
 	static function translate(a_str:String):String
@@ -70,7 +125,7 @@
 			return _cache[a_str];
 		}
 		
-		_translator.SetText(a_str);
+		_translator.text = a_str;
 		_cache[a_str] = _translator.text;
 		
 		return _translator.text;
