@@ -4,6 +4,7 @@ import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import skyui.Translator;
 
+
 class skyui.ConfigurableList extends skyui.FilteredList
 {
 	private var _config:Config;
@@ -20,9 +21,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	// 1 .. n
 	private var _activeColumnState:Number;
 	
-	private var _bEnableItemIcon:Boolean;
-	private var _bEnableEquipIcon:Boolean;
-	
 	// Preset in config
 	private var _entryWidth:Number;
 	
@@ -35,8 +33,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	private var _columnSizes:Array;
 	
 	// These are the names like textField0, equipIcon etc used when positioning, not the names as defined in the config
-	private var _columnNames:Array;
-	private var _hiddenColumnNames:Array;
+	private var _cellNames:Array;
+	private var _hiddenCellNames:Array;
 	
 	// Only used for textfield-based columns
 	private var _columnEntryValues:Array;
@@ -55,8 +53,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 
 		_columnPositions = [];
 		_columnSizes = [];
-		_columnNames = [];
-		_hiddenColumnNames = [];
+		_cellNames = [];
+		_hiddenCellNames = [];
 		_columnEntryValues = [];
 		_customEntryFormats = [];
 		
@@ -72,8 +70,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		_entryHeight = 28;
 		_activeViewIndex = -1;
 		_lastViewIndex = -1;
-		_bEnableItemIcon = false;
-		_bEnableEquipIcon = false;
 		_activeColumnState = 1;
 		_activeColumnIndex = 0;
 
@@ -121,9 +117,10 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 	}
 
+	// override skyui.DynamicList
 	function createEntryClip(a_index:Number):MovieClip
 	{
-		var entryClip = attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
+		var entryClip = super.createEntryClip(a_index);
 
 		for (var i = 0; entryClip["textField" + i] != undefined; i++) {
 			entryClip["textField" + i]._visible = false;
@@ -132,6 +129,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		entryClip["equipIcon"]._visible = false;
 		
 		entryClip.viewIndex = -1;
+		
+		entryClip.itemIcon.loadMovie("skyui_icons_celtic.swf");
 
 		return entryClip;
 	}
@@ -162,7 +161,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			a_entryClip.enchIcon._y = iconY;
 		
 			for (var i=0; i<columns.length; i++) {
-				var e = a_entryClip[_columnNames[i]];
+				var e = a_entryClip[_cellNames[i]];
 				e._visible = true;
 			
 				e._x = _columnPositions[i*2];
@@ -185,8 +184,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				}
 			}
 			
-			for (var i=0; i<_hiddenColumnNames.length; i++) {
-				var e = a_entryClip[_hiddenColumnNames[i]];
+			for (var i=0; i<_hiddenCellNames.length; i++) {
+				var e = a_entryClip[_hiddenCellNames[i]];
 				e._visible = false;
 			}
 		}
@@ -331,11 +330,11 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		return processed;
 	}
 
-	/* Calculate new column positions and widths for current view */
+	// Calculate new column positions and widths for current view
 	function updateView()
 	{
-		_bEnableItemIcon = false;
-		_bEnableEquipIcon = false;
+		var bEnableItemIcon = false;
+		var bEnableEquipIcon = false;
 		
 		var columns = currentView.columns;
 
@@ -348,8 +347,8 @@ class skyui.ConfigurableList extends skyui.FilteredList
 
 		_columnPositions.splice(0);
 		_columnSizes.splice(0);
-		_columnNames.splice(0);
-		_hiddenColumnNames.splice(0);
+		_cellNames.splice(0);
+		_hiddenCellNames.splice(0);
 		_columnEntryValues.splice(0);
 		_customEntryFormats.splice(0);
 		
@@ -410,11 +409,11 @@ class skyui.ConfigurableList extends skyui.FilteredList
 				case Config.COL_TYPE_EQUIP_ICON:
 								
 					if (columns[i].type == Config.COL_TYPE_ITEM_ICON) {
-						_columnNames[i] = "itemIcon";
-						_bEnableItemIcon = true;
+						_cellNames[i] = "itemIcon";
+						bEnableItemIcon = true;
 					} else if (columns[i].type == Config.COL_TYPE_EQUIP_ICON) {
-						_columnNames[i] = "equipIcon";
-						_bEnableEquipIcon = true;
+						_cellNames[i] = "equipIcon";
+						bEnableEquipIcon = true;
 					}
 					
 					if (columns[i].icon.size != undefined) {
@@ -429,7 +428,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 
 				// REST
 				default:
-					_columnNames[i] = "textField" + textFieldIndex++;
+					_cellNames[i] = "textField" + textFieldIndex++;
 					
 					if (columns[i].entry.width != undefined) {
 						_columnSizes[i*2] = columns[i].entry.width;
@@ -510,15 +509,15 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 		
 		while (textFieldIndex < 10) {
-			_hiddenColumnNames.push("textField" + textFieldIndex++);
+			_hiddenCellNames.push("textField" + textFieldIndex++);
 		}
 		
-		if (!_bEnableItemIcon) {
-			_hiddenColumnNames.push("itemIcon");
+		if (!bEnableItemIcon) {
+			_hiddenCellNames.push("itemIcon");
 		}
 		
-		if (!_bEnableEquipIcon) {
-			_hiddenColumnNames.push("equipIcon");
+		if (!bEnableEquipIcon) {
+			_hiddenCellNames.push("equipIcon");
 		}
 		
 		// Set up header

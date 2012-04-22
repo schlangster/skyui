@@ -81,7 +81,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		return _maxTextLength;
 	}
 
-	function formatEquipIcon(a_entryField:Object, a_entryObject:Object)
+	function formatEquipIcon(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
 	{
 		if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
 			a_entryField.gotoAndStop(STATES[a_entryObject.equipState]);
@@ -90,70 +90,79 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		}
 	}
 
-	function formatItemIcon(a_entryField:Object, a_entryObject:Object)
+	function formatItemIcon(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
 	{
+		var iconLabel:String;
+		
 		switch (a_entryObject.infoType) {
 			case InventoryDefines.ICT_WEAPON :
 				if (a_entryObject.formType == Defines.FORMTYPE_ARROW) {
-					a_entryField.gotoAndStop("weapon_arrow");
+					iconLabel = "weapon_arrow";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_DAGGER) {
-					a_entryField.gotoAndStop("weapon_dagger");
+					iconLabel = "weapon_dagger";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_BOW) {
-					a_entryField.gotoAndStop("weapon_bow");
+					iconLabel = "weapon_bow";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_GREATSWORD) {
-					a_entryField.gotoAndStop("weapon_greatsword");
+					iconLabel = "weapon_greatsword";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_WARAXE) {
-					a_entryField.gotoAndStop("weapon_waraxe");
+					iconLabel = "weapon_waraxe";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_MACE) {
-					a_entryField.gotoAndStop("weapon_mace");
+					iconLabel = "weapon_mace";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_LONGSWORD) {
-					a_entryField.gotoAndStop("weapon_sword");
+					iconLabel = "weapon_sword";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_HAMMER) {
-					a_entryField.gotoAndStop("weapon_hammer");
+					iconLabel = "weapon_hammer";
 					break;
 				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_STAFF) {
-					a_entryField.gotoAndStop("weapon_staff");
+					iconLabel = "weapon_staff";
 					break;
 				}
 
-				a_entryField.gotoAndStop("default_weapon");
+				iconLabel = "default_weapon";
 				break;
 			case InventoryDefines.ICT_ARMOR :
-				a_entryField.gotoAndStop("default_armor");
+				iconLabel = "default_armor";
 				break;
 			case InventoryDefines.ICT_POTION :
-				a_entryField.gotoAndStop("default_potion");
+				iconLabel = "default_potion";
 				break;
 			case InventoryDefines.ICT_SPELL :
-				a_entryField.gotoAndStop("default_scroll");
+				iconLabel = "default_scroll";
 				break;
 			case InventoryDefines.ICT_FOOD :
-				a_entryField.gotoAndStop("default_food");
+				iconLabel = "default_food";
 				break;
 			case InventoryDefines.ICT_INGREDIENT :
-				a_entryField.gotoAndStop("default_ingredient");
+				iconLabel = "default_ingredient";
 				break;
 			case InventoryDefines.ICT_BOOK :
-				a_entryField.gotoAndStop("default_book");
+				iconLabel = "default_book";
 				break;
 			case InventoryDefines.ICT_KEY :
-				a_entryField.gotoAndStop("default_key");
+				iconLabel = "default_key";
 				break;
 			case InventoryDefines.ICT_MISC :
 			default :
 				if (a_entryObject.formType == Defines.FORMTYPE_SOULGEM) {
-					a_entryField.gotoAndStop("misc_soulgem");
+					iconLabel = "misc_soulgem";
 				} else {
-					a_entryField.gotoAndStop("default_misc");
+					iconLabel = "default_misc";
 				}
 		}
+		
+		// The icon clip is loaded at runtime from a seperate .swf. So two scenarios are possible:
+		// 1. The clip has been loaded, gotoAndStop will set it to the new label
+		// 2. Loading is not done yet, so gotoAndStop will fail. In this case, the loaded clip will fetch the current label from
+		//    the its parent (entryclip.iconLabel) as soon as it's done.
+		a_entryClip.iconLabel = iconLabel;
+		a_entryField.gotoAndStop(iconLabel);
 	}
 
 	function formatName(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
@@ -252,7 +261,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		}	
 	}
 
-	function formatText(a_entryField:Object, a_entryObject:Object)
+	function formatText(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
 	{
 		formatColor(a_entryField, a_entryObject);
 	}

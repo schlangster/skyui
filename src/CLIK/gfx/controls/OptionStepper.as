@@ -1,17 +1,20 @@
-dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
+﻿class gfx.controls.OptionStepper extends gfx.core.UIComponent
 {
 	var soundMap = {theme: "default", focusIn: "focusIn", focusOut: "focusOut", change: "change"};
-	var _selectedIndex: Number = 0;
-	var _labelField: String = "label";
-	var __height;
-	var __width;
+	
+	var _selectedIndex:Number = 0;
+	var _labelField:String = "label";
+	
+	var __height:Number;
+	var __width:Number;
+
 	var _dataProvider;
 	var _disabled;
 	var _focused;
-	var _height;
+
 	var _labelFunction;
 	var _name;
-	var _width;
+
 	var constraints;
 	var dispatchEvent;
 	var focusEnabled;
@@ -29,27 +32,27 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 	function OptionStepper()
 	{
 		super();
-		this.tabChildren = false;
-		this.focusEnabled = this.tabEnabled = !this._disabled;
-		this.dataProvider = [];
+		tabChildren = false;
+		focusEnabled = tabEnabled = !_disabled;
+		dataProvider = [];
 	}
 
 	function get disabled()
 	{
-		return this._disabled;
+		return _disabled;
 	}
 
 	function set disabled(value)
 	{
-		if (this._disabled != value) 
+		if (_disabled != value) 
 		{
 			super.disabled = value;
-			this.focusEnabled = this.tabEnabled = !this._disabled;
-			this.gotoAndPlay(this._disabled ? "disabled" : (this._focused ? "focused" : "default"));
-			if (this.initialized) 
+			focusEnabled = tabEnabled = !_disabled;
+			gotoAndPlay(_disabled ? "disabled" : (_focused ? "focused" : "default"));
+			if (initialized) 
 			{
-				this.updateAfterStateChange();
-				this.prevBtn.disabled = this.nextBtn.__set__disabled(this._disabled);
+				updateAfterStateChange();
+				prevBtn.disabled = nextBtn.__set__disabled(_disabled);
 				return;
 			}
 		}
@@ -57,31 +60,31 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 
 	function get dataProvider()
 	{
-		return this._dataProvider;
+		return _dataProvider;
 	}
 
 	function set dataProvider(value)
 	{
-		if (value != this._dataProvider) 
+		if (value != _dataProvider) 
 		{
-			if (this._dataProvider != null) 
+			if (_dataProvider != null) 
 			{
-				this._dataProvider.removeEventListener("change", this, "onDataChange");
+				_dataProvider.removeEventListener("change", this, "onDataChange");
 			}
-			this._dataProvider = value;
-			this.selectedItem = null;
-			if (this._dataProvider != null) 
+			_dataProvider = value;
+			selectedItem = null;
+			if (_dataProvider != null) 
 			{
 				if (value instanceof Array && !value.isDataProvider) 
 				{
-					gfx.data.DataProvider.initialize(this._dataProvider);
+					gfx.data.DataProvider.initialize(_dataProvider);
 				}
-				else if (this._dataProvider.initialize != null) 
+				else if (_dataProvider.initialize != null) 
 				{
-					this._dataProvider.initialize(this);
+					_dataProvider.initialize(this);
 				}
-				this._dataProvider.addEventListener("change", this, "onDataChange");
-				this.updateSelectedItem();
+				_dataProvider.addEventListener("change", this, "onDataChange");
+				updateSelectedItem();
 				return;
 			}
 		}
@@ -89,40 +92,40 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 
 	function get selectedIndex()
 	{
-		return this._selectedIndex;
+		return _selectedIndex;
 	}
 
 	function set selectedIndex(value)
 	{
-		var __reg2 = Math.max(0, Math.min(this._dataProvider.length - 1, value));
-		if (__reg2 != this._selectedIndex) 
+		var __reg2 = Math.max(0, Math.min(_dataProvider.length - 1, value));
+		if (__reg2 != _selectedIndex) 
 		{
-			this._selectedIndex = __reg2;
-			this.updateSelectedItem();
+			_selectedIndex = __reg2;
+			updateSelectedItem();
 			return;
 		}
 	}
 
 	function get labelField()
 	{
-		return this._labelField;
+		return _labelField;
 	}
 
 	function set labelField(value)
 	{
-		this._labelField = value;
-		this.updateLabel();
+		_labelField = value;
+		updateLabel();
 	}
 
 	function get labelFunction()
 	{
-		return this._labelFunction;
+		return _labelFunction;
 	}
 
 	function set labelFunction(value)
 	{
-		this._labelFunction = value;
-		this.updateLabel();
+		_labelFunction = value;
+		updateLabel();
 	}
 
 	function itemToLabel(item)
@@ -131,23 +134,23 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 		{
 			return "";
 		}
-		if (this._labelFunction == null) 
+		if (_labelFunction == null) 
 		{
-			if (this._labelField != null && item[this._labelField] != null) 
+			if (_labelField != null && item[_labelField] != null) 
 			{
-				return item[this._labelField];
+				return item[_labelField];
 			}
 		}
 		else 
 		{
-			return this._labelFunction(item);
+			return _labelFunction(item);
 		}
 		return item.toString();
 	}
 
 	function invalidateData()
 	{
-		this._dataProvider.requestItemAt(this._selectedIndex, this, "populateText");
+		_dataProvider.requestItemAt(_selectedIndex, this, "populateText");
 	}
 
 	function handleInput(details, pathToFocus)
@@ -155,22 +158,22 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 		var __reg2 = details.value == "keyDown" || details.value == "keyHold";
 		if ((__reg0 = details.navEquivalent) === gfx.ui.NavigationCode.RIGHT) 
 		{
-			if (this._selectedIndex < this._dataProvider.length - 1) 
+			if (_selectedIndex < _dataProvider.length - 1) 
 			{
 				if (__reg2) 
 				{
-					this.onNext();
+					onNext();
 				}
 				return true;
 			}
 		}
 		else if (__reg0 === gfx.ui.NavigationCode.LEFT) 
 		{
-			if (this._selectedIndex > 0) 
+			if (_selectedIndex > 0) 
 			{
 				if (__reg2) 
 				{
-					this.onPrev();
+					onPrev();
 				}
 				return true;
 			}
@@ -179,7 +182,7 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 		{
 			if (!__reg2) 
 			{
-				this.selectedIndex = 0;
+				selectedIndex = 0;
 			}
 			return true;
 		}
@@ -187,7 +190,7 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 		{
 			if (!__reg2) 
 			{
-				this.selectedIndex = this._dataProvider.length - 1;
+				selectedIndex = _dataProvider.length - 1;
 			}
 			return true;
 		}
@@ -196,91 +199,91 @@ dynamic class gfx.controls.OptionStepper extends gfx.core.UIComponent
 
 	function toString()
 	{
-		return "[Scaleform OptionStepper " + this._name + "]";
+		return "[Scaleform OptionStepper " + _name + "]";
 	}
 
 	function configUI()
 	{
 		super.configUI();
-		this.nextBtn.addEventListener("click", this, "onNext");
-		this.prevBtn.addEventListener("click", this, "onPrev");
-		this.prevBtn.focusTarget = this.nextBtn.focusTarget = this;
-		this.prevBtn.tabEnabled = this.nextBtn.tabEnabled = false;
-		this.prevBtn.autoRepeat = this.nextBtn.autoRepeat = true;
-		this.prevBtn.disabled = this.nextBtn.__set__disabled(this._disabled);
-		this.constraints = new gfx.utils.Constraints(this, true);
-		this.constraints.addElement(this.textField, gfx.utils.Constraints.ALL);
-		this.updateAfterStateChange();
+		nextBtn.addEventListener("click", this, "onNext");
+		prevBtn.addEventListener("click", this, "onPrev");
+		prevBtn.focusTarget = nextBtn.focusTarget = this;
+		prevBtn.tabEnabled = nextBtn.tabEnabled = false;
+		prevBtn.autoRepeat = nextBtn.autoRepeat = true;
+		prevBtn.disabled = nextBtn.__set__disabled(_disabled);
+		constraints = new gfx.utils.Constraints(this, true);
+		constraints.addElement(textField, gfx.utils.Constraints.ALL);
+		updateAfterStateChange();
 	}
 
 	function draw()
 	{
-		if (this.sizeIsInvalid) 
+		if (sizeIsInvalid) 
 		{
-			this._width = this.__width;
-			this._height = this.__height;
+			_width = __width;
+			_height = __height;
 		}
 		super.draw();
-		if (this.constraints != null) 
+		if (constraints != null) 
 		{
-			this.constraints.update(this.__width, this.__height);
+			constraints.update(__width, __height);
 		}
 	}
 
 	function changeFocus()
 	{
-		this.gotoAndPlay(this._disabled ? "disabled" : (this._focused ? "focused" : "default"));
-		this.updateAfterStateChange();
-		this.prevBtn.displayFocus = this.nextBtn.__set__displayFocus(this._focused != 0);
+		gotoAndPlay(_disabled ? "disabled" : (_focused ? "focused" : "default"));
+		updateAfterStateChange();
+		prevBtn.displayFocus = nextBtn.__set__displayFocus(_focused != 0);
 	}
 
 	function updateAfterStateChange()
 	{
-		this.validateNow();
-		this.updateLabel();
-		if (this.constraints != null) 
+		validateNow();
+		updateLabel();
+		if (constraints != null) 
 		{
-			this.constraints.update(this.__width, this.__height);
+			constraints.update(__width, __height);
 		}
-		this.dispatchEvent({type: "stateChange", state: this._disabled ? "disabled" : (this._focused ? "focused" : "default")});
+		dispatchEvent({type: "stateChange", state: _disabled ? "disabled" : (_focused ? "focused" : "default")});
 	}
 
 	function updateLabel()
 	{
-		if (this.selectedItem != null) 
+		if (selectedItem != null) 
 		{
-			if (this.textField != null) 
+			if (textField != null) 
 			{
-				this.textField.text = this.itemToLabel(this.selectedItem);
+				textField.text = itemToLabel(selectedItem);
 			}
 		}
 	}
 
 	function updateSelectedItem()
 	{
-		this.invalidateData();
+		invalidateData();
 	}
 
 	function populateText(item)
 	{
-		this.selectedItem = item;
-		this.updateLabel();
-		this.dispatchEvent({type: "change"});
+		selectedItem = item;
+		updateLabel();
+		dispatchEvent({type: "change"});
 	}
 
 	function onNext(evtObj)
 	{
-		this.selectedIndex = this.selectedIndex + 1;
+		selectedIndex = selectedIndex + 1;
 	}
 
 	function onPrev(evtObj)
 	{
-		this.selectedIndex = this.selectedIndex - 1;
+		selectedIndex = selectedIndex - 1;
 	}
 
 	function onDataChange(event)
 	{
-		this.invalidateData();
+		invalidateData();
 	}
 
 }

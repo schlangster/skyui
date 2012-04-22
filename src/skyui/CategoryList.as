@@ -5,17 +5,10 @@ import Shared.GlobalFunc;
 
 class skyui.CategoryList extends skyui.DynamicList
 {
-	static var FILL_BORDER = 0;
-	static var FILL_PARENT = 1;
-	static var FILL_STAGE = 2;
-	
 	static var LEFT_SEGMENT = 0;
 	static var RIGHT_SEGMENT = 1;
-
-	private var _bNoIcons:Boolean;
-	private var _bNoText:Boolean;
+	
 	private var _xOffset:Number;
-	private var _fillType:Number;
 	private var _contentWidth:Number;
 	private var _totalWidth:Number;
 	private var _selectorPos:Number;
@@ -31,10 +24,8 @@ class skyui.CategoryList extends skyui.DynamicList
 	private var _segmentLength:Number;
 
 	// Component settings
-	var buttonOption:String;
-	var fillOption:String;
-	var borderWidth:Number;
-	// iconX holds label name for iconX
+	var iconIndent:Number;
+	var iconSize:Number;
 
 	// Children
 	var selectorCenter:MovieClip;
@@ -50,28 +41,8 @@ class skyui.CategoryList extends skyui.DynamicList
 		_targetSelectorPos = 0;
 		_bFastSwitch = false;
 
-		if (borderWidth != undefined) {
-			_indent = borderWidth;
-		}
-
-		if (buttonOption == "text and icons") {
-			_bNoIcons = false;
-
-			_bNoText = false;
-		} else if (buttonOption == "icons only") {
-			_bNoIcons = false;
-			_bNoText = true;
-		} else {
-			_bNoIcons = true;
-			_bNoText = false;
-		}
-
-		if (fillOption == "parent") {
-			_fillType = FILL_PARENT;
-		} else if (fillOption == "stage") {
-			_fillType = FILL_STAGE;
-		} else {
-			_fillType = FILL_BORDER;
+		if (iconIndent != undefined) {
+			_indent = iconIndent;
 		}
 
 		_activeSegment = LEFT_SEGMENT;
@@ -130,77 +101,63 @@ class skyui.CategoryList extends skyui.DynamicList
 	{
 		_iconArt = a_iconArt;
 	}
-
-	// Gets a clip, or if it doesn't exist, creates it.
-	function getClipByIndex(a_index):MovieClip
+	
+	// override skyui.DynamicList
+	function createEntryClip(a_index:Number):MovieClip
 	{
-		var entryClip = this["Entry" + a_index];
-
-		if (entryClip != undefined) {
-			return entryClip;
+		var entryClip = attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
+		
+		if (_iconArt[a_index] != undefined) {
+			entryClip.iconLabel = _iconArt[a_index];
+			entryClip.icon.loadMovie("skyui_icons_celtic.swf");
 		}
 		
-		// Create on-demand	 
-		entryClip = attachMovie(_entryClassName, "Entry" + a_index, a_index);
-
-		entryClip.clipIndex = a_index;
-
-		entryClip.buttonArea.onRollOver = function()
+		entryClip.onRollOver = function()
 		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined && _parent.enabled) {
+			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined && this.enabled) {
 
-				if (_parent.itemIndex != _parent._parent._selectedIndex) {
-					_parent._alpha = 75;
+				if (this.itemIndex != _parent._selectedIndex) {
+					this._alpha = 75;
 				}
-				_parent._parent._bMouseDrivenNav = true;
+				_parent._bMouseDrivenNav = true;
 			}
 		};
 		
-		entryClip.buttonArea.onRollOut = function()
+		entryClip.onRollOut = function()
 		{
-			if (!_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.itemIndex != undefined && _parent.enabled) {
+			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined && this.enabled) {
 
-				if (_parent.itemIndex != _parent._parent._selectedIndex) {
-					_parent._alpha = 50;
+				if (this.itemIndex != _parent._selectedIndex) {
+					this._alpha = 50;
 				}
-				_parent._parent._bMouseDrivenNav = true;
+				_parent._bMouseDrivenNav = true;
 			}
 		};
-
-		entryClip.buttonArea.onPress = function(aiMouseIndex, aiKeyboardOrMouse)
+		
+		entryClip.onPress = function(a_mouseIndex, a_keyboardOrMouse)
 		{
-			if (_parent.itemIndex != undefined && !_parent._parent.listAnimating && !_parent._parent._bDisableInput && _parent.enabled) {
+			if (this.itemIndex != undefined && !_parent.listAnimating && !_parent._bDisableInput && this.enabled) {
 
-				_parent._parent.doSetSelectedIndex(_parent.itemIndex,0);
-				_parent._parent.onItemPress(aiKeyboardOrMouse);
+				_parent.doSetSelectedIndex(this.itemIndex,0);
+				_parent.onItemPress(a_keyboardOrMouse);
 
-				if (!_parent._parent._bDisableInput && _parent.onMousePress != undefined) {
-					_parent.onMousePress();
+				if (!_parent._bDisableInput && this.onMousePress != undefined) {
+					onMousePress();
 				}
 			}
 		};
-
-		entryClip.buttonArea.onPressAux = function(aiMouseIndex, aiKeyboardOrMouse, aiButtonIndex)
+		
+		entryClip.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			if (_parent.itemIndex != undefined && _parent.enabled) {
-				_parent._parent.onItemPressAux(aiKeyboardOrMouse,aiButtonIndex);
+			if (this.itemIndex != undefined && this.enabled) {
+				_parent.onItemPressAux(a_keyboardOrMouse, a_buttonIndex);
 			}
 		};
-
-		if (!_bNoIcons && _iconArt[a_index] != undefined) {
-			entryClip.icon.gotoAndStop(_iconArt[a_index]);
-
-			if (_bNoText) {
-				entryClip.textField._visible = false;
-			}
-		} else {
-			entryClip.icon._visible = false;
-			entryClip.textField._x = 0;
-		}
-
+		
 		return entryClip;
 	}
 	
+	// override skyui.DynamicList
 	function InvalidateData()
 	{
 		calculateSegmentParams();
@@ -226,22 +183,12 @@ class skyui.CategoryList extends skyui.DynamicList
 		}
 	}
 
+	// override skyui.DynamicList
 	function UpdateList()
 	{
 		var cw = _indent * 2;
-		var tw = 0;
-		var xOffset = 0;
-
-		if (_fillType == FILL_PARENT) {
-			xOffset = _parent._x;
-			tw = _parent._width;
-		} else if (_fillType == FILL_STAGE) {
-			xOffset = 0;
-			tw = Stage.visibleRect.width;
-		} else {
-			xOffset = border._x;
-			tw = border._width;
-		}
+		var tw = border._width;
+		var xOffset = border._x;
 
 		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);
@@ -251,17 +198,7 @@ class skyui.CategoryList extends skyui.DynamicList
 			_entryList[i + _segmentOffset].clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;
 
-			entryClip.textField.autoSize = "left";
-
-			var w = 0;
-			if (entryClip.icon._visible) {
-				w = w + entryClip.icon._width;
-			}
-			if (entryClip.textField._visible) {
-				w = w + entryClip.textField._width;
-			}
-			entryClip.buttonArea._width = w;
-			cw = cw + w;
+			cw = cw + iconSize;
 		}
 
 		_contentWidth = cw;
@@ -365,10 +302,10 @@ class skyui.CategoryList extends skyui.DynamicList
 		}
 	}
 
+	// override skyui.DynamicList
 	function onItemPress(a_keyboardOrMouse:Number)
 	{
 		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
-
 			updateSelector();
 			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
 		}
@@ -440,6 +377,7 @@ class skyui.CategoryList extends skyui.DynamicList
 		}
 	}
 	
+	// override skyui.DynamicList
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
 		if (a_entryClip != undefined) {

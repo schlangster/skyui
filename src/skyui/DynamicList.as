@@ -10,6 +10,11 @@ class skyui.DynamicList extends MovieClip
 	static var TEXT_OPTION_SHRINK_TO_FIT = 1;
 	static var TEXT_OPTION_MULTILINE = 2;
 
+	// Abstract
+	var onEntryRollOver:Function;
+	var onEntryPress:Function;
+	var onEntryPressAux:Function;
+
 	private var _entryList:Array;
 
 	private var _platform:Number;
@@ -60,7 +65,7 @@ class skyui.DynamicList extends MovieClip
 		_entryClassName = a_className;
 	}
 
-	function get entryClassName()
+	function get entryClassName():String
 	{
 		return _entryClassName;
 	}
@@ -72,26 +77,8 @@ class skyui.DynamicList extends MovieClip
 	
 	function createEntryClip(a_index:Number):MovieClip
 	{
-		return attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
-	}
-
-	function getClipByIndex(a_index:Number)
-	{
-		if (a_index < 0) {
-			return undefined;
-		}
+		var entryClip = attachMovie(_entryClassName, "Entry" + a_index, getNextHighestDepth());
 		
-		var entryClip = this["Entry" + a_index];
-
-		if (entryClip != undefined) {
-			return entryClip;
-		}
-		
-		// Create on-demand
-		entryClip = createEntryClip(a_index);
-
-		entryClip.clipIndex = a_index;
-
 		entryClip.onRollOver = function()
 		{
 			if (!_parent.listAnimating && !_parent._bDisableInput && this.itemIndex != undefined) {
@@ -117,16 +104,34 @@ class skyui.DynamicList extends MovieClip
 				_parent.onItemPressAux(a_keyboardOrMouse,a_buttonIndex);
 			}
 		};
-
+		
 		return entryClip;
 	}
 
-	function get selectedIndex()
+	function getClipByIndex(a_index:Number)
+	{
+		if (a_index < 0) {
+			return undefined;
+		}
+		
+		var entryClip = this["Entry" + a_index];
+
+		if (entryClip != undefined) {
+			return entryClip;
+		}
+		
+		// Create on-demand
+		entryClip = createEntryClip(a_index);
+		entryClip.clipIndex = a_index;
+		return entryClip;
+	}
+
+	function get selectedIndex():Number
 	{
 		return _selectedIndex;
 	}
 
-	function set selectedIndex(a_newIndex)
+	function set selectedIndex(a_newIndex:Number)
 	{
 		doSetSelectedIndex(a_newIndex, 0);
 	}
@@ -169,7 +174,7 @@ class skyui.DynamicList extends MovieClip
 		return _entryList;
 	}
 
-	function set entryList(a_newArray)
+	function set entryList(a_newArray:Array)
 	{
 		_entryList = a_newArray;
 	}
@@ -238,7 +243,7 @@ class skyui.DynamicList extends MovieClip
 		}
 	}
 
-	function onItemPress(a_keyboardOrMouse)
+	function onItemPress(a_keyboardOrMouse:Number)
 	{
 		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
 			dispatchEvent({type:"itemPress", index:_selectedIndex, entry:_entryList[_selectedIndex], keyboardOrMouse:a_keyboardOrMouse});
@@ -255,13 +260,7 @@ class skyui.DynamicList extends MovieClip
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{
 		if (a_entryClip != undefined) {
-			if (a_entryObject == selectedEntry) {
-				
-				a_entryClip.selectArea._alpha = 40;
-			} else {
-				a_entryClip.selectArea._alpha = 0;
-			}
-
+			a_entryClip.selectArea._alpha = a_entryObject == selectedEntry ? 40 : 0;
 			setEntryText(a_entryClip,a_entryObject);
 		}
 	}

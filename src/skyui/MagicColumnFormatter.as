@@ -10,48 +10,57 @@ class skyui.MagicColumnFormatter extends InventoryColumnFormatter
 		super();
 	}
 
-	function formatItemIcon(a_entryField:Object, a_entryObject:Object)
+	function formatItemIcon(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
 	{
+		var iconLabel:String;
+		
 		switch (a_entryObject.infoType) {
 			
 			// Spell
 			case InventoryDefines.ICT_SPELL :
 				switch (a_entryObject.subType) {
 					case Defines.SPELL_TYPE_ALTERATION :
-						a_entryField.gotoAndStop("default_alteration");
+						iconLabel = "default_alteration";
 						break;
 					case Defines.SPELL_TYPE_ILLUSION :
-						a_entryField.gotoAndStop("default_illusion");
+						iconLabel = "default_illusion";
 						break;
 					case Defines.SPELL_TYPE_DESTRUCTION :
-						a_entryField.gotoAndStop("default_destruction");
+						iconLabel = "default_destruction";
 						break;
 					case Defines.SPELL_TYPE_CONJURATION :
-						a_entryField.gotoAndStop("default_conjuration");
+						iconLabel = "default_conjuration";
 						break;
 					case Defines.SPELL_TYPE_RESTORATION :
-						a_entryField.gotoAndStop("default_restoration");
+						iconLabel = "default_restoration";
 						break;
 					default:
-						a_entryField.gotoAndStop("default_power");
+						iconLabel = "default_power";
 				}
 				break;
 			
 			// Power
 			case InventoryDefines.ICT_SPELL_DEFAULT :
-				a_entryField.gotoAndStop("default_power");
+				iconLabel = "default_power";
 				break;
 			
 			// Shout
 			case InventoryDefines.ICT_SHOUT :
-				a_entryField.gotoAndStop("default_shout");
+				iconLabel = "default_shout";
 				break;
 			
 			// Active Effect
 			case InventoryDefines.ICT_ACTIVE_EFFECT :
 			default:
-				a_entryField.gotoAndStop("default_effect");			
+				iconLabel = "default_effect";			
 		}
+		
+		// The icon clip is loaded at runtime from a seperate .swf. So two scenarios are possible:
+		// 1. The clip has been loaded, gotoAndStop will set it to the new label
+		// 2. Loading is not done yet, so gotoAndStop will fail. In this case, the loaded clip will fetch the current label from
+		//    the its parent (entryclip.iconLabel) as soon as it's done.
+		a_entryClip.iconLabel = iconLabel;
+		a_entryField.gotoAndStop(iconLabel);
 	}
 
 	function formatName(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)

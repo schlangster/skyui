@@ -69,7 +69,7 @@ class skyui.FormattedItemList extends skyui.ConfigurableList
 		var columns = currentView.columns;
 
 		for (var i = 0; i < columns.length; i++) {
-			var e = a_entryClip[_columnNames[i]];
+			var e = a_entryClip[_cellNames[i]];
 
 			// Substitute @variables by entryObject properties
 			if (_columnEntryValues[i] != undefined) {
@@ -81,11 +81,11 @@ class skyui.FormattedItemList extends skyui.ConfigurableList
 			// Process based on column type 
 			switch (columns[i].type) {
 				case Config.COL_TYPE_EQUIP_ICON :
-					_columnFormatter.formatEquipIcon(e, a_entryObject);
+					_columnFormatter.formatEquipIcon(e, a_entryObject, a_entryClip);
 					break;
 
 				case Config.COL_TYPE_ITEM_ICON :
-					_columnFormatter.formatItemIcon(e, a_entryObject);
+					_columnFormatter.formatItemIcon(e, a_entryObject, a_entryClip);
 					break;
 
 				case Config.COL_TYPE_NAME :
@@ -94,7 +94,7 @@ class skyui.FormattedItemList extends skyui.ConfigurableList
 
 				case Config.COL_TYPE_TEXT :
 				default :
-					_columnFormatter.formatText(e, a_entryObject);
+					_columnFormatter.formatText(e, a_entryObject, a_entryClip);
 			}
 		}
 	}
