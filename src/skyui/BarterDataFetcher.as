@@ -1,19 +1,15 @@
 ﻿class skyui.BarterDataFetcher extends skyui.InventoryDataFetcher
 {
+  /* PROPERTIES */
+  
 	private var _barterSellMult:Number;
-	private var _barterBuyMult:Number;
-	
-	function BarterDataFetcher()
-	{
-		super();
-		_barterSellMult = 1.0;
-		_barterBuyMult = 1.0;
-	}
 	
 	function set barterSellMult(a_mult:Number)
 	{
 		_barterSellMult = a_mult;
 	}
+	
+	private var _barterBuyMult:Number;
 	
 	function get barterSellMult():Number
 	{
@@ -39,5 +35,15 @@
 		} else {
 			a_entryObject.infoValue = Math.round(a_itemInfo.value * _barterBuyMult);
 		}
+	}
+	
+	
+  /* CONSTRUCTORS */
+	
+	function BarterDataFetcher()
+	{
+		super();
+		_barterSellMult = 1.0;
+		_barterBuyMult = 1.0;
 	}
 }

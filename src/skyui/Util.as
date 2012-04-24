@@ -1,6 +1,8 @@
 ﻿class skyui.Util
 {
-	static function extract(a_str:String,a_startChar:String,a_endChar:String):String
+  /* PUBLIC FUNCTIONS */
+	
+	public static function extract(a_str:String,a_startChar:String,a_endChar:String):String
 	{
 		return a_str.slice(a_str.indexOf(a_startChar) + 1,a_str.lastIndexOf(a_endChar));
 	}
@@ -8,65 +10,56 @@
 	// Remove comments and leading/trailing white space
 	static function clean(a_str:String):String
 	{
-		if (a_str.indexOf(";") > 0) {
+		if (a_str.indexOf(";") > 0)
 			a_str = a_str.slice(0,a_str.indexOf(";"));
-		}
 
 		var i = 0;
 		while (a_str.charAt(i) == " " || a_str.charAt(i) == "\t")
-		{
 			i++;
-		}
 
 		var j = a_str.length - 1;
 		while (a_str.charAt(j) == " " || a_str.charAt(j) == "\t")
-		{
 			j--;
-		}
 
 		return a_str.slice(i,j + 1);
 	}
 
-	static function addArrayFunctions()
+	public static function addArrayFunctions()
 	{
 		Array.prototype.indexOf = function (a_element):Number
 		{
-			for (var i=0; i<this.length; i++) { 
-				if (this[i] == a_element) { 
+			for (var i=0; i<this.length; i++)
+				if (this[i] == a_element)
 					return i;
-				}
-			}
+					
 			return undefined;
 		};
 		
 		
 		Array.prototype.equals = function (a:Array):Boolean 
 		{
-			if (a == undefined) {
+			if (a == undefined)
 				return false;
-			}
 			
-	    	if (this.length != a.length) {
+	    	if (this.length != a.length)
 	        	return false;
-	    	}
 			
-	    	for (var i = 0; i < a.length; i++) {
-	        	if (a[i] !== this[i]) {
+	    	for (var i = 0; i < a.length; i++)
+	        	if (a[i] !== this[i])
 					return false;
-				}
-        	}
+					
 	    	return true;
     	};
 	}
 
 	// Maps Unicode inputted character code to it's CP819/CP1251 character code
-	static function mapUnicodeChar(a_charCode:Number):Number
+	public static function mapUnicodeChar(a_charCode:Number):Number
 	{
 		//NUMERO SIGN
-		if (a_charCode == 0x2116) {
+		if (a_charCode == 0x2116)
 			return 0xB9;
 			
-		} else if (0x0401 <= a_charCode && a_charCode <= 0x0491) {
+		else if (0x0401 <= a_charCode && a_charCode <= 0x0491) {
 			switch (a_charCode) {
 				//CYRILLIC CAPITAL LETTER IO
 				case 0x0401 :
@@ -118,9 +111,8 @@
 					return 0xA4;
 				//Standard Cyrillic characters
 				default :
-					if (0x040F <= a_charCode && a_charCode <= 0x044F) {
+					if (0x040F <= a_charCode && a_charCode <= 0x044F)
 						return a_charCode - 0x0350;
-					}
 			}
 		}
 		return a_charCode;

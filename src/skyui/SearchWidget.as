@@ -9,29 +9,31 @@ import skyui.Translator;
 
 class skyui.SearchWidget extends MovieClip
 {
-	private var _previousFocus:Object;
-	private var _currentInput:String;
-	private var _lastInput:String;
-	private var _bActive:Boolean;
-	private var _bRestoreFocus:Boolean;
-	private var _bEnableAutoupdate:Boolean;
-	private var _updateDelay:Number;
-	private var _filterString:String;
+  /* PRIVATE VARIABLES */
+  
+	private var _previousFocus: Object;
+	private var _currentInput: String;
+	private var _lastInput: String;
+	private var _bActive: Boolean;
+	private var _bRestoreFocus: Boolean;
+	private var _bEnableAutoupdate: Boolean;
+	private var _updateDelay: Number;
+	private var _filterString: String;
 	
-	private var _updateTimerId:Number;
+	private var _updateTimerId: Number;
 	
-	private var _config:Config;
-	
-	// Children
-	var textField:TextField;
-	var icon:MovieClip;
-	
-	//Mixin
-	var dispatchEvent:Function;
-	var addEventListener:Function;
+	private var _config: Config;
 	
 	
-	function SearchWidget()
+  /* STAGE ELEMENTS */
+  
+	public var textField: TextField;
+	public var icon: MovieClip;
+	
+	
+  /* CONSTRUCTORS */
+	
+	public function SearchWidget()
 	{
 		super();
 		EventDispatcher.initialize(this);
@@ -39,7 +41,7 @@ class skyui.SearchWidget extends MovieClip
 		_currentInput = undefined;
 		_bRestoreFocus = false;
 		
-		textField.onKillFocus = function(a_newFocus:Object)
+		textField.onKillFocus = function(a_newFocus: Object)
 		{
 			_parent.endInput();
 		};
@@ -48,25 +50,34 @@ class skyui.SearchWidget extends MovieClip
 		Translator.instance.addEventListener("translationLoad", this, "onTranslationLoad");
 	}
 	
-	function onConfigLoad(event)
+	
+  /* PUBLIC FUNCTIONS */
+
+	// mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	
+	// mixin by gfx.events.EventDispatcher
+	public var addEventListener: Function;
+	
+	public function onConfigLoad(event): Void
 	{
 		_config = event.config;
 		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
 		_updateDelay = _config.SearchBox.autoupdate.delay;
 	}
 	
-	function onTranslationLoad(event)
+	public function onTranslationLoad(event): Void
 	{
 		_filterString = Translator.translate("$FILTER");
 		textField.SetText(_filterString);
 	}
 	
-	function onPress(a_mouseIndex, a_keyboardOrMouse)
+	public function onPress(a_mouseIndex, a_keyboardOrMouse)
 	{
 		startInput();
 	}
 
-	function startInput()
+	public function startInput(): Void
 	{
 		if (_bActive) {
 			return;
@@ -106,7 +117,7 @@ class skyui.SearchWidget extends MovieClip
 		}
 	}
 	
-	function updateInput()
+	public function updateInput()
 	{
 		if (_updateTimerId != undefined) {
 			clearInterval(_updateTimerId);
@@ -120,11 +131,10 @@ class skyui.SearchWidget extends MovieClip
 		}
 	}
 
-	function endInput()
+	public function endInput(): Void
 	{
-		if (!_bActive) {
+		if (!_bActive)
 			return;
-		}
 
 		delete this.onEnterFrame;
 		
@@ -143,15 +153,16 @@ class skyui.SearchWidget extends MovieClip
 
 		refreshInput();
 
-		if (_currentInput != undefined()) {
+		if (_currentInput != undefined())
 			dispatchEvent({type: "inputEnd", data: _currentInput});
-		} else {
+		else {
 			textField.SetText(Translator.translate("$FILTER"));
 			dispatchEvent({type: "inputEnd", data: ""});
 		}
 	}
 
-	function handleInput(details, pathToFocus)
+	// GFx
+	public function handleInput(details, pathToFocus)
 	{
 		var bCaught = false;
 
@@ -173,12 +184,12 @@ class skyui.SearchWidget extends MovieClip
 		return bCaught;
 	}
 	
-	function clearText()
+	public function clearText(): Void
 	{
 		textField.SetText("");
 	}
 	
-	function refreshInput()
+	public function refreshInput(): Void
 	{
 		var t =  GlobalFunc.StringTrim(textField.text);
 		

@@ -4,19 +4,46 @@ import skyui.Defines;
 
 class skyui.SortedListHeader extends MovieClip
 {
+  /* PRIVATE VARIABLES */
+	
 	private var _columns:Array;
+	
+	
+  /* STAGE ELEMENTS */
+  
+	public var sortIcon:MovieClip;
+	
+	
+  /* PROPERTIES */
+
 	private var _activeColumnIndex:Number;
+	
+	public function get activeColumnIndex():Number
+	{
+		return _activeColumnIndex;
+	}
+	
+	public function set activeColumnIndex(a_index:Number)
+	{
+		_activeColumnIndex = a_index;
+	}
+	
 	private var _bArrowDown:Boolean;
 	
-	// Children
-	var sortIcon:MovieClip;
+	public function get isArrowDown():Boolean
+	{
+		return _bArrowDown;
+	}
 	
-	//Mixin
-	var dispatchEvent:Function;
-	var addEventListener:Function;
+	public function set isArrowDown(a_bArrowDown:Boolean)
+	{
+		_bArrowDown = a_bArrowDown;
+	}
+	
 
+  /* CONSTRUCTORS */
 
-	function SortedListHeader()
+	public function SortedListHeader()
 	{
 		super();
 		EventDispatcher.initialize(this);
@@ -26,40 +53,29 @@ class skyui.SortedListHeader extends MovieClip
 		_bArrowDown = false;
 	}
 	
-	function columnPress(a_columnIndex:Number)
+	
+  /* PUBLIC FUNCTIONS */
+
+	// mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	
+	// mixin by gfx.events.EventDispatcher
+	public var addEventListener: Function;
+	
+	public function columnPress(a_columnIndex:Number)
 	{
 		dispatchEvent({type:"columnPress", index: a_columnIndex});
 	}
 	
-	/* Hides all columns (but doesn't delete them since they can be re-used later */
-	function clearColumns()
+	// Hides all columns (but doesn't delete them since they can be re-used later).
+	public function clearColumns()
 	{
 		for (var i=0; i< _columns.length; i++) {
 			_columns[i]._visible = false;
 		}
 	}
-	
-	function get activeColumnIndex():Number
-	{
-		return _activeColumnIndex;
-	}
-	
-	function set activeColumnIndex(a_index:Number)
-	{
-		_activeColumnIndex = a_index;
-	}
-	
-	function get isArrowDown():Boolean
-	{
-		return _bArrowDown;
-	}
-	
-	function set isArrowDown(a_bArrowDown:Boolean)
-	{
-		_bArrowDown = a_bArrowDown;
-	}
-	
-	function addColumn(a_index:Number)
+  
+	public function addColumn(a_index:Number)
 	{
 		if (a_index < 0) {
 			return undefined;
@@ -96,8 +112,8 @@ class skyui.SortedListHeader extends MovieClip
 		return columnButton;
 	}
 	
-	/* Places the buttonAreas around textfields and the sort indicator */
-	function positionButtons()
+	// Places the buttonAreas around textfields and the sort indicator.
+	public function positionButtons()
 	{
 		for (var i=0; i<_columns.length; i++) {
 			var e = _columns[i];

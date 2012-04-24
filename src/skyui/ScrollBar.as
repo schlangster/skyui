@@ -12,12 +12,12 @@
 	var back:MovieClip;
 	var fill:MovieClip;
 	
-	function ScrollBar()
+	public function ScrollBar()
 	{
 		
 	}
 	
-	function setParameters(a_height:Number, a_entryCount:Number, a_currentIndex:Number, a_maxIndex:Number)
+	function setParameters(a_height:Number, a_entryCount:Number, a_currentIndex:Number, a_maxIndex:Number): Void
 	{
 		if (a_maxIndex <= 0 || a_height <= 0 || a_maxIndex <= 0) {
 			return;

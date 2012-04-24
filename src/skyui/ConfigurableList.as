@@ -116,25 +116,6 @@ class skyui.ConfigurableList extends skyui.FilteredList
 			}
 		}
 	}
-
-	// override skyui.DynamicList
-	function createEntryClip(a_index:Number):MovieClip
-	{
-		var entryClip = this.createEntryClip(a_index);
-
-		for (var i = 0; entryClip["textField" + i] != undefined; i++) {
-			entryClip["textField" + i]._visible = false;
-		}
-		
-		entryClip.itemIcon.loadMovie("skyui_icons_celtic.swf");
-		
-		entryClip.itemIcon._visible = false;
-		entryClip.equipIcon._visible = false;
-		
-		entryClip.viewIndex = -1;
-
-		return entryClip;
-	}
 	
 	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
 	{

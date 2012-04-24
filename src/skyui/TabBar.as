@@ -5,62 +5,33 @@ import Shared.GlobalFunc;
 
 class skyui.TabBar extends MovieClip
 {
-	static var LEFT_TAB = 0;
-	static var RIGHT_TAB = 1;
+  /* CONSTANTS */
+  
+	public static var LEFT_TAB = 0;
+	public static var RIGHT_TAB = 1;
+
+
+  /* STAGE ELEMENTS */
+  
+	public var image: MovieClip;
+	public var leftLabel: TextField;
+	public var rightLabel: TextField;
+	public var leftIcon: MovieClip;
+	public var rightIcon: MovieClip;
+	public var leftButton: MovieClip;
+	public var rightButton: MovieClip;
 	
-	private var _activeTab:Number;
 
-	// Children
-	var image:MovieClip;
-	var leftLabel:TextField;
-	var rightLabel:TextField;
-	var leftIcon:MovieClip;
-	var rightIcon:MovieClip;
-	var leftButton:MovieClip;
-	var rightButton:MovieClip;
+  /* PROPERTIES */
 
-	//Mixin
-	var dispatchEvent:Function;
-	var addEventListener:Function;
+	private var _activeTab: Number;
 
-
-	function TabBar()
-	{
-		super();
-		EventDispatcher.initialize(this);
-
-		activeTab = LEFT_TAB;
-	}
-	
-	function setIcons(a_leftName:String, a_rightName:String)
-	{
-		leftIcon.gotoAndStop(a_leftName);
-		rightIcon.gotoAndStop(a_rightName);
-	}
-
-	function setLabelText(a_leftText:String, a_rightText:String)
-	{
-		leftLabel.SetText(a_leftText.toUpperCase());
-		rightLabel.SetText(a_rightText.toUpperCase());
-	}
-
-	function tabPress(a_tabIndex:Number)
-	{
-		
-		dispatchEvent({type:"tabPress", index:a_tabIndex});
-	}
-	
-	function tabToggle()
-	{
-		tabPress(_activeTab == LEFT_TAB ? RIGHT_TAB : LEFT_TAB);
-	}
-
-	function get activeTab():Number
+	public function get activeTab(): Number
 	{
 		return _activeTab;
 	}
 
-	function set activeTab(a_index:Number)
+	public function set activeTab(a_index: Number)
 	{
 		_activeTab = a_index;
 
@@ -78,8 +49,52 @@ class skyui.TabBar extends MovieClip
 			image.gotoAndStop("right");
 		}
 	}
+	
+	
+  /* CONSTRUCTORS */
 
-	function onLoad()
+	public function TabBar()
+	{
+		super();
+		EventDispatcher.initialize(this);
+
+		activeTab = LEFT_TAB;
+	}
+
+
+  /* PUBLIC FUNCTIONS */
+
+	// mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	
+	// mixin by gfx.events.EventDispatcher
+	public var addEventListener: Function;
+	
+	public function setIcons(a_leftName: String, a_rightName: String): Void
+	{
+		leftIcon.gotoAndStop(a_leftName);
+		rightIcon.gotoAndStop(a_rightName);
+	}
+
+	public function setLabelText(a_leftText: String, a_rightText: String): Void
+	{
+		leftLabel.SetText(a_leftText.toUpperCase());
+		rightLabel.SetText(a_rightText.toUpperCase());
+	}
+
+	public function tabPress(a_tabIndex: Number): Void
+	{
+		
+		dispatchEvent({type:"tabPress", index:a_tabIndex});
+	}
+	
+	public function tabToggle(): Void
+	{
+		tabPress(_activeTab == LEFT_TAB ? RIGHT_TAB : LEFT_TAB);
+	}
+
+	// override MovieClip
+	public function onLoad()
 	{
 		leftLabel.textAutoSize = "shrink";
 		rightLabel.textAutoSize = "shrink";

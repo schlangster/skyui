@@ -161,44 +161,43 @@ class skyui.CategoryList extends skyui.BasicList
 	// Moves the selection left to the next element. Wraps around.
 	public function moveSelectionLeft()
 	{
-		if (!_bDisableSelection) {
-			var curIndex = _selectedIndex;
-			var startIndex = _selectedIndex;
+		if (_bDisableSelection)
+			return;
+
+		var curIndex = _selectedIndex;
+		var startIndex = _selectedIndex;
 			
-			do {
-				if (curIndex > _segmentOffset) {
-					curIndex--;
-				} else {
-					_bFastSwitch = true;
-					curIndex = _segmentOffset + _segmentLength - 1;
-					
-				}
-			} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+		do {
+			if (curIndex > _segmentOffset) {
+				curIndex--;
+			} else {
+				_bFastSwitch = true;
+				curIndex = _segmentOffset + _segmentLength - 1;					
+			}
+		} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
 			
-			doSetSelectedIndex(curIndex, 0);
-			onItemPress(0);
-		}
+		onItemPress(curIndex, 0);
 	}
 
 	// Moves the selection right to the next element. Wraps around.
 	public function moveSelectionRight()
 	{
-		if (!_bDisableSelection) {
-			var curIndex = _selectedIndex;
-			var startIndex = _selectedIndex;
+		if (_bDisableSelection)
+			return;
 			
-			do {
-				if (curIndex < _segmentOffset + _segmentLength - 1) {
-					curIndex++;
-				} else {
-					_bFastSwitch = true;
-					curIndex = _segmentOffset;
-				}
-			} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+		var curIndex = _selectedIndex;
+		var startIndex = _selectedIndex;
 			
-			doSetSelectedIndex(curIndex, 0);
-			onItemPress(0);
-		}
+		do {
+			if (curIndex < _segmentOffset + _segmentLength - 1) {
+				curIndex++;
+			} else {
+				_bFastSwitch = true;
+				curIndex = _segmentOffset;
+			}
+		} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+			
+		onItemPress(curIndex, 0);
 	}
 	
 	// GFx
@@ -240,28 +239,57 @@ class skyui.CategoryList extends skyui.BasicList
 			
 			refreshSelector();
 			
-			if (_selectorPos > _targetSelectorPos) {
+			if (_selectorPos > _targetSelectorPos)
 				_selectorPos = _targetSelectorPos;
-			}
 			
 		} else if (_selectorPos > _targetSelectorPos) {
 			_selectorPos = _selectorPos - (_selectorPos - _targetSelectorPos) * 0.2 - 1;
 			
 			refreshSelector();
 			
-			if (_selectorPos < _targetSelectorPos) {
+			if (_selectorPos < _targetSelectorPos)
 				_selectorPos = _targetSelectorPos;
-			}
 		}
 	}
 	
-	// override skyui.DynamicList
-	public function onItemPress(a_keyboardOrMouse: Number)
+	// override skyui.BasicList
+	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1) {
-			updateSelector();
-			dispatchEvent({type: "itemPress", index: _selectedIndex, entry: _entryList[_selectedIndex], keyboardOrMouse: a_keyboardOrMouse});
-		}
+		if (_bDisableInput || _bDisableSelection || a_index == -1)
+			return;
+			
+		doSetSelectedIndex(a_index, a_keyboardOrMouse);
+		updateSelector();
+		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: _entryList[_selectedIndex], keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	public function onItemRollOver(a_index: Number): Void
+	{
+		if (_bDisableInput || _bDisableSelection)
+			return;
+			
+		_bMouseDrivenNav = true;
+		
+		if (a_index == _selectedIndex)
+			return;
+			
+		var entryClip = _entryClipManager.getClipByIndex(a_index);
+		entryClip._alpha = 75;
+	}
+	
+	public function onItemRollOut(a_index: Number): Void
+	{
+
+		if (_bDisableInput || _bDisableSelection)
+			return;
+			
+		_bMouseDrivenNav = true;
+		
+		if (a_index == _selectedIndex)
+			return;
+			
+		var entryClip = _entryClipManager.getClipByIndex(a_index);
+		entryClip._alpha = 50;
 	}
 
 

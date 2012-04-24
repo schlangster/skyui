@@ -18,8 +18,6 @@ class skyui.BasicList extends skyui.BSList
 	
 	
   /* PRIVATE VARIABLES */
-  
-	private var _bMouseDrivenNav: Boolean;
 
 	private var _entryClipManager: EntryClipManager;
 
@@ -37,6 +35,18 @@ class skyui.BasicList extends skyui.BSList
 	{
 		_platform = a_platform;
 		_bMouseDrivenNav = _platform == 0;
+	}
+	
+	private var _bMouseDrivenNav: Boolean;
+	
+	function get isMouseDrivenNav(): Boolean
+	{
+		return _bMouseDrivenNav;
+	}
+
+	function set isMouseDrivenNav(a_bFlag: Boolean)
+	{
+		_bMouseDrivenNav = a_bFlag;
 	}
 	
 	private var _bListAnimating: Boolean;
@@ -106,10 +116,10 @@ class skyui.BasicList extends skyui.BSList
 	
   /* PUBLIC FUNCTIONS */
   
-     // mixin by gfx.events.EventDispatcher
+	// mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
 	
-    // mixin by gfx.events.EventDispatcher
+	// mixin by gfx.events.EventDispatcher
 	public var addEventListener: Function;
 	
 	// override skyui.BSList
