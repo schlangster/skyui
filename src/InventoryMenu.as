@@ -54,9 +54,8 @@ class InventoryMenu extends ItemMenu
 		InventoryLists_mc.ZoomButtonHolderInstance.gotoAndStop(1);
 		BottomBar_mc.SetButtonArt(ChargeButtonArt, 3);
 
-		InventoryLists_mc.CategoriesList.setIconArt(CategoryListIconArt);
+		InventoryLists_mc.CategoriesList.iconArt = CategoryListIconArt;
 
-		InventoryLists_mc.ItemsList.entryClassName = "ItemsListEntryInv";
 		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
 		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
 		InventoryLists_mc.ItemsList.setConfigSection("ItemList");

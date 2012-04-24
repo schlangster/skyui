@@ -1,4 +1,5 @@
 ﻿interface skyui.IFilter
 {
-	function process(filteredList:Array);
+	// Apply filter on the given array
+	public function process(filteredList: Array): Void;
 }

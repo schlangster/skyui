@@ -4,8 +4,12 @@ import Shared.GlobalFunc;
 
 import skyui.ScrollBar;
 
-class skyui.DynamicScrollingList extends skyui.DynamicList
+class skyui.DynamicScrollingList extends skyui.BasicList
 {
+	//tmpfix
+	var border;
+	var _indent;
+	
 	private var _scrollPosition:Number;
 	private var _maxScrollPosition:Number;
 
@@ -48,7 +52,7 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 			return undefined;
 		}
 
-		return super.getClipByIndex(a_index);
+		return _entryClipManager.getClipByIndex(a_index);
 	}
 
 	function handleInput(details, pathToFocus):Boolean
@@ -253,25 +257,6 @@ class skyui.DynamicScrollingList extends skyui.DynamicList
 				if (lastClip.itemIndex != undefined) {
 					doSetSelectedIndex(lastClip.itemIndex, 0);
 				}
-			}
-		}
-	}
-
-	function setEntryText(a_entryClip:MovieClip, a_entryObject:Object)
-	{
-		if (a_entryClip.textField != undefined) {
-			if (textOption == TEXT_OPTION_SHRINK_TO_FIT) {
-				a_entryClip.textField.textAutoSize = "shrink";
-			} else if (textOption == TEXT_OPTION_MULTILINE) {
-				a_entryClip.textField.verticalAutoSize = "top";
-			}
-
-			if (a_entryObject.enabled != undefined) {
-				a_entryClip.textField.textColor = a_entryObject.enabled == false ? (6316128) : (16777215);
-			}
-
-			if (a_entryObject.disabled != undefined) {
-				a_entryClip.textField.textColor = a_entryObject.disabled == true ? (6316128) : (16777215);
 			}
 		}
 	}

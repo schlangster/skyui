@@ -62,7 +62,7 @@ class skyui.ItemNameFilter implements skyui.IFilter
 
 	}
 
-	function process(a_filteredList:Array)
+	function process(a_filteredList:Array): Void
 	{
 		if (_filterText == undefined || _filterText == "") {
 			return;

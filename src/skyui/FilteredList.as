@@ -5,13 +5,16 @@ import Shared.GlobalFunc;
 
 class skyui.FilteredList extends skyui.DynamicScrollingList
 {
+  /* PRIVATE VARIABLES */
+	
 	private var _filteredList:Array;
 	private var _filterChain:Array;
 
 	private var _curClipIndex:Number;
 	
+  /* CONSTRUCTORS */
 
-	function FilteredList()
+	public function FilteredList()
 	{
 		super();
 		_filteredList = new Array();
@@ -19,47 +22,26 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		_curClipIndex = -1;
 	}
 
-	function addFilter(a_filter:IFilter)
+
+  /* PUBLIC FUNCTIONS */
+
+	public function addFilter(a_filter:IFilter)
 	{
 		_filterChain.push(a_filter);
 	}
 
-	function getFilteredEntry(a_index:Number):Object
+	public function getFilteredEntry(a_index:Number):Object
 	{
 		return _filteredList[a_index];
 	}
 
 	// Did you mean: numFilteredItems() ?
-	function get numUnfilteredItems():Number
+	public function get numUnfilteredItems():Number
 	{
 		return _filteredList.length;
 	}
 
-	function generateFilteredList()
-	{
-		_filteredList.splice(0);
-
-		for (var i = 0; i < _entryList.length; i++) {
-			_entryList[i].unfilteredIndex = i;
-			_entryList[i].filteredIndex = undefined;
-			_entryList[i].clipIndex = undefined;
-			_filteredList[i] = _entryList[i];
-		}
-
-		for (var i = 0; i < _filterChain.length; i++) {
-			_filterChain[i].process(_filteredList);
-		}
-
-		for (var i = 0; i < _filteredList.length; i++) {
-			_filteredList[i].filteredIndex = i;
-		}
-
-		if (selectedEntry.filteredIndex == undefined) {
-			_selectedIndex = -1;
-		}
-	}
-
-	function UpdateList()
+	public function UpdateList()
 	{
 		var yStart = _indent;
 		var h = 0;
@@ -104,7 +86,7 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 		}
 	}
 
-	function InvalidateData()
+	public function InvalidateData()
 	{
 		generateFilteredList();
 		super.InvalidateData();
@@ -120,8 +102,36 @@ class skyui.FilteredList extends skyui.DynamicScrollingList
 			doSetSelectedIndex(entryClip.itemIndex, 1);
 		}
 	}
+	
 
-	function calculateMaxScrollPosition()
+  /* PRIVATE FUNCTIONS */
+
+	private function generateFilteredList()
+	{
+		_filteredList.splice(0);
+
+		for (var i = 0; i < _entryList.length; i++) {
+			_entryList[i].unfilteredIndex = i;
+			_entryList[i].filteredIndex = undefined;
+			_entryList[i].clipIndex = undefined;
+			_filteredList[i] = _entryList[i];
+		}
+
+		for (var i = 0; i < _filterChain.length; i++) {
+			_filterChain[i].process(_filteredList);
+		}
+
+		for (var i = 0; i < _filteredList.length; i++) {
+			_filteredList[i].filteredIndex = i;
+		}
+
+		if (selectedEntry.filteredIndex == undefined) {
+			_selectedIndex = -1;
+		}
+	}
+	
+
+	private function calculateMaxScrollPosition()
  	{
 		var t = _filteredList.length - _maxListIndex;
 		_maxScrollPosition = (t > 0) ? t : 0;

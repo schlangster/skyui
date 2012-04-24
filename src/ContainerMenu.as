@@ -59,7 +59,6 @@ class ContainerMenu extends ItemMenu
 
 		InventoryLists_mc.CategoriesList.setIconArt(CategoryListIconArt);
 
-		InventoryLists_mc.ItemsList.entryClassName = "ItemsListEntryInv";
 		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
 		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
 		InventoryLists_mc.ItemsList.setConfigSection("ItemList");

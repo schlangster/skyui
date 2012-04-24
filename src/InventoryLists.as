@@ -9,7 +9,7 @@ import skyui.CategoryList;
 import skyui.FormattedItemList;
 import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
-import skyui.ItemSortingFilter;
+import skyui.ItemSorter;
 import skyui.SortedListHeader;
 import skyui.SearchWidget;
 import skyui.TabBar;
@@ -38,7 +38,7 @@ class InventoryLists extends MovieClip
 
 	private var _typeFilter:ItemTypeFilter;
 	private var _nameFilter:ItemNameFilter;
-	private var _sortFilter:ItemSortingFilter;
+	private var _sortFilter:ItemSorter;
 
 	private var _currCategoryIndex:Number;
 
@@ -75,7 +75,7 @@ class InventoryLists extends MovieClip
 
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
-		_sortFilter = new ItemSortingFilter();
+		_sortFilter = new ItemSorter();
 
 		_searchKey = undefined;
 		_tabToggleKey = undefined;
@@ -87,7 +87,8 @@ class InventoryLists extends MovieClip
 	{
 		_ItemsList.addFilter(_typeFilter);
 		_ItemsList.addFilter(_nameFilter);
-		_ItemsList.addFilter(_sortFilter);
+		// TODO FIXME
+//		_ItemsList.addFilter(_sortFilter);
 
 		_typeFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 		_nameFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
@@ -126,8 +127,8 @@ class InventoryLists extends MovieClip
 	{
 		_platform = a_platform;
 
-		_CategoriesList.setPlatform(a_platform,a_bPS3Switch);
-		_ItemsList.setPlatform(a_platform,a_bPS3Switch);
+		_CategoriesList.platform = a_platform;
+		_ItemsList.platform = a_platform;
 	}
 
 	function handleInput(details, pathToFocus)
