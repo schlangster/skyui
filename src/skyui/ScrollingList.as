@@ -1,0 +1,473 @@
+﻿import gfx.events.EventDispatcher;
+import gfx.ui.NavigationCode;
+import Shared.GlobalFunc;
+import skyui.EntryClipManager;
+import skyui.InventoryEntryFactory;
+import skyui.BasicEnumeration;
+import skyui.FilteredEnumeration;
+import skyui.IFilter;
+
+
+class skyui.ScrollingList extends skyui.BasicList
+{
+  /* PRIVATE VARIABLES */  
+
+	private var _listIndex:Number;
+	private var _maxListIndex:Number;
+	private var _listHeight:Number;
+	
+	private var _entryHeight:Number;
+
+	private var _curClipIndex:Number;
+	
+	// FIXME
+	private var _listEnumeration: FilteredEnumeration;
+	
+	
+  /* STAGE ELEMENTS */
+  
+	public var scrollbar:MovieClip;
+
+
+  /* PROPERTIES */
+
+	private var _scrollPosition: Number;
+	
+	public function get scrollPosition()
+	{
+		return _scrollPosition;
+	}
+
+	public function set scrollPosition(a_newPosition:Number)
+	{
+		if (a_newPosition == _scrollPosition || a_newPosition < 0 || a_newPosition > _maxScrollPosition)
+			return;
+			
+		if (scrollbar != undefined)
+			scrollbar.position = a_newPosition;
+		else
+			updateScrollPosition(a_newPosition);
+	}
+	
+	private var _maxScrollPosition: Number;
+
+	public function get maxScrollPosition()
+	{
+		return _maxScrollPosition;
+	}
+
+
+  /* CONSTRUCTORS */
+	
+	public function ScrollingList()
+	{
+		super();
+
+		_scrollPosition = 0;
+		_maxScrollPosition = 0;
+		_listIndex = 0;
+
+		_entryHeight = 28;
+		_listHeight = anchorEntriesBegin._y + anchorEntriesEnd._y;
+		
+		_maxListIndex = Math.floor(_listHeight / _entryHeight);
+		
+		_curClipIndex = -1;
+	}
+	
+	
+  /* PUBLIC FUNCTIONS */
+
+	// @override MovieClip
+	public function onLoad()
+	{
+		if (scrollbar != undefined) {
+			scrollbar.position = 0;
+			scrollbar.addEventListener("scroll", this, "onScroll");
+			scrollbar._y = anchorEntriesBegin._y;
+			scrollbar.height = _listHeight;
+		}
+	}
+
+	// GFx
+	public function handleInput(details, pathToFocus):Boolean
+	{
+		var processed = false;
+
+		if (_bDisableInput)
+			return false;
+
+		var entry = getClipByIndex(selectedIndex - scrollPosition);
+		var processed = entry != undefined && entry.handleInput != undefined && entry.handleInput(details, pathToFocus.slice(1));
+
+		if (!processed && GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.UP || details.navEquivalent == NavigationCode.PAGE_UP) {
+				moveSelectionUp(details.navEquivalent == NavigationCode.PAGE_UP);
+				processed = true;
+			} else if (details.navEquivalent == NavigationCode.DOWN || details.navEquivalent == NavigationCode.PAGE_DOWN) {
+				moveSelectionDown(details.navEquivalent == NavigationCode.PAGE_DOWN);
+				processed = true;
+			} else if (!_bDisableSelection && details.navEquivalent == NavigationCode.ENTER) {
+				onItemPress();
+				processed = true;
+			}
+		}
+		return processed;
+	}
+
+	// GFx
+	public function onMouseWheel(delta)
+	{
+		if (_bDisableInput)
+			return;
+			
+		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
+			if (target == this) {
+				if (delta < 0)
+					scrollPosition = scrollPosition + 1;
+				else if (delta > 0)
+					scrollPosition = scrollPosition - 1;
+			}
+		}
+		
+		_bMouseDrivenNav = true;
+	}
+
+	// @override skyui.BasicList
+	public function UpdateList(): Void
+	{
+		var yStart = anchorEntriesBegin._y;
+		var h = 0;
+
+		skse.Log("Updating, size is " + _listEnumeration.size());
+
+		// Clear clipIndex for everything before the selected list portion
+		for (var i = 0; i < _listEnumeration.size() && i < _scrollPosition ; i++)
+			_listEnumeration.at(i).clipIndex = undefined;
+
+		_listIndex = 0;
+		
+		// Display the selected list portion of the list
+		for (var i = _scrollPosition; i < _listEnumeration.size() && _listIndex < _maxListIndex; i++) {
+			var entryClip = getClipByIndex(_listIndex);
+			var entryItem = _listEnumeration.at(i);
+
+			entryClip.itemIndex = entryItem.unfilteredIndex;
+			entryItem.clipIndex = _listIndex;
+			
+			setEntry(entryClip, entryItem);
+			
+			entryClip._y = yStart + h;
+			entryClip._visible = true;
+
+			h = h + _entryHeight;
+
+			++_listIndex;
+		}
+		
+		// Clear clipIndex for everything after the selected list portion
+		for (var i = _scrollPosition + _listIndex; i < _listEnumeration.size(); i++)
+			_listEnumeration.at(i).clipIndex = undefined;
+		
+		// If the list is not completely filled, hide unused entries.
+		for (var i = _listIndex; i < _maxListIndex; i++) {
+			var entryClip = getClipByIndex(i);
+			entryClip._visible = false;
+			entryClip.itemIndex = undefined;
+		}
+		
+		// Select entry under the cursor for mouse-driven navigation
+		if (_bMouseDrivenNav)
+			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
+				if (e._parent == this && e._visible && e.itemIndex != undefined)
+					doSetSelectedIndex(e.itemIndex, SELECT_MOUSE);
+	}
+
+	// @override skyui.BasicList
+	public function InvalidateData(): Void
+	{
+		skse.Log("created");
+		
+		invalidateFilterData();
+		
+		calculateMaxScrollPosition();		
+		
+		super.InvalidateData();
+		
+		// Restore selection
+		if (_curClipIndex != undefined && _curClipIndex != -1 && _listIndex > 0) {
+			if (_curClipIndex >= _listIndex)
+				_curClipIndex = _listIndex - 1;
+			
+			var entryClip = getClipByIndex(_curClipIndex);
+			
+			doSetSelectedIndex(entryClip.itemIndex, SELECT_KEYBOARD);
+		}
+	}
+	
+	public function moveSelectionUp(a_bScrollPage: Boolean): Void
+	{
+		if (!_bDisableSelection && !a_bScrollPage) {
+			if (_selectedIndex == -1) {
+				selectDefaultIndex(false);
+			} else if (selectedEntry.filteredIndex > 0) {
+				doSetSelectedIndex(getPredecessorEntryIndex(), SELECT_KEYBOARD);
+				_bMouseDrivenNav = false;
+				dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged: true});
+			}
+		} else if (a_bScrollPage) {
+			var t = scrollPosition - _listIndex;
+			scrollPosition = t > 0 ? t : 0;
+			doSetSelectedIndex(-1, SELECT_MOUSE);
+		} else {
+			scrollPosition = scrollPosition - 1;
+		}
+	}
+
+	public function moveSelectionDown(a_bScrollPage: Boolean): Void
+	{
+		if (!_bDisableSelection && !a_bScrollPage) {
+			if (_selectedIndex == -1) {
+				selectDefaultIndex(true);
+			} else if (selectedEntry.filteredIndex < _listEnumeration.size() - 1) {
+				doSetSelectedIndex(getSuccessorEntryIndex(), SELECT_KEYBOARD);
+				_bMouseDrivenNav = false;
+				dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged: true});
+			}
+		} else if (a_bScrollPage) {
+			var t = scrollPosition + _listIndex;
+			scrollPosition = t < _maxScrollPosition ? t : _maxScrollPosition;
+			doSetSelectedIndex(-1, SELECT_MOUSE);
+		} else {
+			scrollPosition = scrollPosition + 1;
+		}
+	}
+
+	public function selectDefaultIndex(a_bBottom: Boolean): Void
+	{
+		if (_listIndex <= 0)
+			return;
+			
+		if (a_bBottom) {
+			var firstClip = getClipByIndex(0);
+			if (firstClip.itemIndex != undefined)
+				selectedIndex = firstClip.itemIndex;
+		} else {
+			var lastClip = getClipByIndex(_listIndex - 1);
+			if (lastClip.itemIndex != undefined)
+				selectedIndex = lastClip.itemIndex;
+		}
+	}
+
+	public function onScroll(event)
+	{
+		updateScrollPosition(Math.floor(event.position + 0.500000));
+	}
+	
+	// @override skyui.BasicList
+	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
+	{
+		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1)
+			dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+
+	// @override skyui.BasicList
+	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
+	{
+		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1 && a_buttonIndex == 1)
+			dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	// @override skyui.BasicList
+	public function onItemRollOver(a_index: Number): Void
+	{
+		if (_bListAnimating || _bDisableInput)
+			return;
+			
+		doSetSelectedIndex(a_index, SELECT_MOUSE);
+		_bMouseDrivenNav = true;
+	}
+
+	// @override skyui.BasicList
+	public function onItemRollOut(a_index: Number): Void
+	{
+		// not needed
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+
+  	// @override skyui.BasicList
+	private function initComponents(): Void
+	{
+		_entryClipManager = new EntryClipManager(new InventoryEntryFactory(this));
+		_listEnumeration = new FilteredEnumeration(_entryList);
+	}
+  
+  	// @override skyui.BasicList
+	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
+	{
+		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
+			var oldIndex = _selectedIndex;
+			_selectedIndex = a_newIndex;
+
+			if (oldIndex != -1)
+				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+
+			if (_selectedIndex != -1) {
+				if (_platform != 0) {
+					if (_selectedIndex < _scrollPosition)
+						scrollPosition = _selectedIndex;
+					else if (_selectedIndex >= _scrollPosition + _listIndex)
+						scrollPosition = Math.min(_selectedIndex - _listIndex + 1, _maxScrollPosition);
+					else
+						setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+						
+				} else {
+					setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+				}
+			}
+			dispatchEvent({type:"selectionChange", index:_selectedIndex, keyboardOrMouse:a_keyboardOrMouse});
+		}
+	}
+	
+	// filtered
+	function _doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
+	{
+		if (!_bDisableSelection || a_newIndex != _selectedIndex)
+			return;
+			
+		// Invalid selection, ignore
+		if (a_newIndex != -1 && _entryList[a_newIndex].filteredIndex == undefined)
+			return;
+			
+		var oldIndex = _selectedIndex;
+		var oldEntry = selectedEntry;
+		
+		_selectedIndex = a_newIndex;
+
+		// Reset the old entry if it's currently displayed
+		if (oldIndex != -1 && oldEntry.clipIndex != undefined)
+			setEntry(getClipByIndex(oldEntry.clipIndex), oldEntry);
+
+		// Select valid entry
+		if (_selectedIndex != -1) {
+			if (selectedEntry.filteredIndex < _scrollPosition)
+				scrollPosition = selectedEntry.filteredIndex;
+			else if (selectedEntry.filteredIndex >= _scrollPosition + _listIndex)
+				scrollPosition = Math.min(selectedEntry.filteredIndex - _listIndex + 1, _maxScrollPosition);
+			else
+				setEntry(getClipByIndex(selectedEntry.clipIndex), selectedEntry);
+				
+			_curClipIndex = selectedEntry.clipIndex;
+			
+		// Unselect
+		} else {
+			_curClipIndex = -1;
+		}
+			
+		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	private function calculateMaxScrollPosition(): Void
+ 	{
+		var t = _listEnumeration.size() - _maxListIndex;
+		_maxScrollPosition = (t > 0) ? t : 0;
+
+		updateScrollbar();
+
+		if (_scrollPosition > _maxScrollPosition)
+			scrollPosition = _maxScrollPosition;
+	}
+	
+	// Helper
+	private function getClipByIndex(a_index: Number): MovieClip
+	{
+		if (a_index < 0 || a_index >= _maxListIndex)
+			return undefined;
+
+		return _entryClipManager.getClipByIndex(a_index);
+	}
+	
+	private function updateScrollPosition(a_position:Number): Void
+	{
+		_scrollPosition = a_position;
+		UpdateList();
+	}
+
+	private function updateScrollbar(): Void
+	{
+		if (scrollbar != undefined) {
+			scrollbar._visible = _maxScrollPosition > 0;
+			scrollbar.setScrollProperties(_maxListIndex,0,_maxScrollPosition);
+		}
+	}
+	
+	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
+	{
+		if (a_entryClip != undefined) {
+			a_entryClip.selectArea._alpha = a_entryObject == selectedEntry ? 40 : 0;
+			setEntryText(a_entryClip,a_entryObject);
+		}
+	}
+
+	private function setEntryText(a_entryClip: MovieClip, a_entryObject: Object)
+	{
+		if (a_entryClip.textField != undefined) {
+			a_entryClip.textField.textAutoSize = "shrink";
+
+			if (a_entryObject.text != undefined)
+				a_entryClip.textField.SetText(a_entryObject.text);
+			else
+				a_entryClip.textField.SetText(" ");
+
+			if (a_entryObject.enabled != undefined)
+				a_entryClip.textField.textColor = a_entryObject.enabled == false ? 0x606060 : 0xFFFFFF;
+
+			if (a_entryObject.disabled != undefined)
+				a_entryClip.textField.textColor = a_entryObject.disabled == true ? 0x606060 : 0xFFFFFF;
+		}
+	}
+	
+	function onFilterChange()
+	{
+		invalidateFilterData();
+		
+		calculateMaxScrollPosition();
+		
+		UpdateList();
+	}
+	
+	// Did you mean: numFilteredItems() ?
+	public function get numUnfilteredItems():Number
+	{
+		return _listEnumeration.size();
+	}
+	
+	private function invalidateFilterData()
+	{
+		// Set up helper attributes for easy mapping between original list, filtered list and entry clips
+		for (var i = 0; i < _entryList.length; i++)
+			_entryList[i].clipIndex = undefined;
+				
+		_listEnumeration.invalidate();
+
+		if (_listEnumeration.lookupEnumIndex(_selectedIndex) == undefined)
+			_selectedIndex = -1;
+	}
+	
+	private function getPredecessorEntryIndex(): Number
+	{
+		return _listEnumeration.at(selectedEntry.filteredIndex - 1).unfilteredIndex;
+	}
+	
+	private function getSuccessorEntryIndex(): Number
+	{
+		return _listEnumeration.at(selectedEntry.filteredIndex + 1).unfilteredIndex;
+	}
+	
+	public function addFilter(a_filter:IFilter): Void
+	{
+		_listEnumeration.addFilter(a_filter);
+	}
+}

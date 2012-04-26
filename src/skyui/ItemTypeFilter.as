@@ -63,7 +63,7 @@ class skyui.ItemTypeFilter implements skyui.IFilter
 		return matched;
 	}
 
-	function process(a_filteredList:Array): Void
+	function applyFilter(a_filteredList:Array): Void
 	{
 		for (var i = 0; i < a_filteredList.length; i++) {
 			if (!_matcherFunc(a_filteredList[i])) {

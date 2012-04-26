@@ -3,6 +3,7 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 import skyui.EntryClipManager;
 import skyui.CategoryEntryFactory;
+import skyui.BasicEnumeration;
 
 
 class skyui.CategoryList extends skyui.BasicList
@@ -56,19 +57,17 @@ class skyui.CategoryList extends skyui.BasicList
 	
 	public function set activeSegment(a_segment: Number)
 	{
-		if (a_segment == _activeSegment) {
+		if (a_segment == _activeSegment)
 			return;
-		}
 		
 		_activeSegment = a_segment;
 		
 		calculateSegmentParams();
 		
-		if (a_segment == LEFT_SEGMENT && _selectedIndex > dividerIndex) {
-			doSetSelectedIndex(_selectedIndex - dividerIndex - 1, 0);
-		} else if (a_segment == RIGHT_SEGMENT && _selectedIndex < dividerIndex) {
-			doSetSelectedIndex(_selectedIndex + dividerIndex + 1, 0);
-		}
+		if (a_segment == LEFT_SEGMENT && _selectedIndex > dividerIndex)
+			doSetSelectedIndex(_selectedIndex - dividerIndex - 1, SELECT_MOUSE);
+		else if (a_segment == RIGHT_SEGMENT && _selectedIndex < dividerIndex)
+			doSetSelectedIndex(_selectedIndex + dividerIndex + 1, SELECT_MOUSE);
 		
 		UpdateList();
 	}
@@ -84,8 +83,6 @@ class skyui.CategoryList extends skyui.BasicList
 	public function CategoryList()
 	{
 		super();
-		
-		_entryClipManager = new EntryClipManager(new CategoryEntryFactory(this));
 		
 		_selectorPos = 0;
 		_targetSelectorPos = 0;
@@ -113,28 +110,32 @@ class skyui.CategoryList extends skyui.BasicList
 	// Switch to given category index to restore the last selection.
 	public function restoreCategory(a_newIndex: Number)
 	{
-		doSetSelectedIndex(a_newIndex,1);
-		onItemPress(1);
+		onItemPress(a_newIndex, SELECT_KEYBOARD);
 	}
 	
-	// override skyui.DynamicList
+	// @override skyui.BasicList
 	function InvalidateData()
 	{
+		_listEnumeration.invalidate();
 		calculateSegmentParams();
-		super.InvalidateData();
+		
+		if (_selectedIndex >= _listEnumeration.size())
+			_selectedIndex = _listEnumeration.size() - 1;
+
+		UpdateList();
 	}
 	
-	// override skyui.DynamicList
+	// @override skyui.BasicList
 	public function UpdateList()
 	{
 		var cw = 0;
 
 		for (var i = 0; i < _segmentLength; i++) {
-			var entryClip = _entryClipManager.getClipByIndex(i);
+			var entryClip = getClipByIndex(i);
 
-			setEntry(entryClip,_entryList[i + _segmentOffset]);
+			setEntry(entryClip, _listEnumeration.at(i + _segmentOffset));
 
-			_entryList[i + _segmentOffset].clipIndex = i;
+			_listEnumeration.at(i + _segmentOffset).clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;
 
 			cw = cw + iconSize;
@@ -148,7 +149,7 @@ class skyui.CategoryList extends skyui.BasicList
 		var xPos = anchorEntriesBegin._x + spacing;
 
 		for (var i = 0; i < _segmentLength; i++) {
-			var entryClip = _entryClipManager.getClipByIndex(i);
+			var entryClip = getClipByIndex(i);
 			entryClip._x = xPos;
 
 			xPos = xPos + iconSize + spacing;
@@ -174,7 +175,7 @@ class skyui.CategoryList extends skyui.BasicList
 				_bFastSwitch = true;
 				curIndex = _segmentOffset + _segmentLength - 1;					
 			}
-		} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+		} while (curIndex != startIndex && _listEnumeration.at(curIndex).filterFlag == 0 && !_listEnumeration.at(curIndex).bDontHide);
 			
 		onItemPress(curIndex, 0);
 	}
@@ -195,7 +196,7 @@ class skyui.CategoryList extends skyui.BasicList
 				_bFastSwitch = true;
 				curIndex = _segmentOffset;
 			}
-		} while (curIndex != startIndex && _entryList[curIndex].filterFlag == 0 && !_entryList[curIndex].bDontHide);
+		} while (curIndex != startIndex && _listEnumeration.at(curIndex).filterFlag == 0 && !_listEnumeration.at(curIndex).bDontHide);
 			
 		onItemPress(curIndex, 0);
 	}
@@ -206,7 +207,7 @@ class skyui.CategoryList extends skyui.BasicList
 		var processed = false;
 
 		if (!_bDisableInput) {
-			var entry = _entryClipManager.getClipByIndex(selectedIndex);
+			var entry = getClipByIndex(selectedIndex);
 
 			processed = entry != undefined && entry.handleInput != undefined && entry.handleInput(details, pathToFocus.slice(1));
 
@@ -226,7 +227,7 @@ class skyui.CategoryList extends skyui.BasicList
 		return processed;
 	}
 	
-	// override MovieClip
+	// @override MovieClip
 	public function onEnterFrame()
 	{
 		if (_bFastSwitch && _selectorPos != _targetSelectorPos) {
@@ -252,7 +253,7 @@ class skyui.CategoryList extends skyui.BasicList
 		}
 	}
 	
-	// override skyui.BasicList
+	// @override skyui.BasicList
 	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
 		if (_bDisableInput || _bDisableSelection || a_index == -1)
@@ -260,9 +261,10 @@ class skyui.CategoryList extends skyui.BasicList
 			
 		doSetSelectedIndex(a_index, a_keyboardOrMouse);
 		updateSelector();
-		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: _entryList[_selectedIndex], keyboardOrMouse: a_keyboardOrMouse});
+		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
+	// @override skyui.BasicList
 	public function onItemRollOver(a_index: Number): Void
 	{
 		if (_bDisableInput || _bDisableSelection)
@@ -273,13 +275,13 @@ class skyui.CategoryList extends skyui.BasicList
 		if (a_index == _selectedIndex)
 			return;
 			
-		var entryClip = _entryClipManager.getClipByIndex(a_index);
+		var entryClip = getClipByIndex(a_index);
 		entryClip._alpha = 75;
 	}
-	
+
+	// @override skyui.BasicList
 	public function onItemRollOut(a_index: Number): Void
 	{
-
 		if (_bDisableInput || _bDisableSelection)
 			return;
 			
@@ -288,12 +290,36 @@ class skyui.CategoryList extends skyui.BasicList
 		if (a_index == _selectedIndex)
 			return;
 			
-		var entryClip = _entryClipManager.getClipByIndex(a_index);
+		var entryClip = getClipByIndex(a_index);
 		entryClip._alpha = 50;
 	}
 
 
   /* PRIVATE FUNCTIONS */
+  
+	private function initComponents(): Void
+	{
+		_entryClipManager = new EntryClipManager(new CategoryEntryFactory(this));
+		_listEnumeration = new BasicEnumeration(_entryList);
+	}
+  
+  	// @override skyui.BasicList
+	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number)
+	{
+		if (_bDisableSelection || a_newIndex == _selectedIndex)
+			return;
+			
+		var oldIndex = _selectedIndex;
+		_selectedIndex = a_newIndex;
+
+		if (oldIndex != -1)
+			setEntry(_entryClipManager.getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+
+		if (_selectedIndex != -1)
+			setEntry(_entryClipManager.getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+
+		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
+	}
 	
 	private function calculateSegmentParams()
 	{
@@ -304,13 +330,13 @@ class skyui.CategoryList extends skyui.BasicList
 				_segmentLength = dividerIndex;
 			} else {
 				_segmentOffset = dividerIndex + 1;
-				_segmentLength = _entryList.length - _segmentOffset;
+				_segmentLength = _listEnumeration.size() - _segmentOffset;
 			}
 		
 		// Default for non-divided lists
 		} else {
 			_segmentOffset = 0;
-			_segmentLength = _entryList.length;
+			_segmentLength = _listEnumeration.size();
 		}
 	}
 	
@@ -370,7 +396,7 @@ class skyui.CategoryList extends skyui.BasicList
 		}
 	}
 	
-	// override skyui.DynamicList
+	// @override skyui.BasicList
 	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
 	{
 		if (a_entryClip != undefined) {
@@ -384,8 +410,6 @@ class skyui.CategoryList extends skyui.BasicList
 				a_entryClip._alpha = 50;
 				a_entryClip.enabled = true;
 			}
-
-			setEntryText(a_entryClip,a_entryObject);
 		}
 	}
 }

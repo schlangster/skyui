@@ -4,11 +4,18 @@ import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 import skyui.Config;
 import skyui.EntryClipManager;
+import skyui.BasicEntryFactory;
+import skyui.BasicEnumeration;
 
 
 class skyui.BasicList extends skyui.BSList
 {
   /* CONSTANTS */
+	public static var PLATFORM_PC = 0;
+
+	public static var SELECT_MOUSE = 0;
+	public static var SELECT_KEYBOARD = 1;
+
 	
 	
   /* STAGE ELEMENTS */
@@ -20,7 +27,9 @@ class skyui.BasicList extends skyui.BSList
   /* PRIVATE VARIABLES */
 
 	private var _entryClipManager: EntryClipManager;
-
+	
+	private var _listEnumeration: BasicEnumeration;
+	
 
   /* PROPERTIES */
   
@@ -34,7 +43,7 @@ class skyui.BasicList extends skyui.BSList
 	public function set platform(a_platform: Number)
 	{
 		_platform = a_platform;
-		_bMouseDrivenNav = _platform == 0;
+		_bMouseDrivenNav = _platform == PLATFORM_PC;
 	}
 	
 	private var _bMouseDrivenNav: Boolean;
@@ -85,16 +94,16 @@ class skyui.BasicList extends skyui.BSList
 		_bDisableSelection = a_bFlag;
 	}
 
-	// override skyui.BSList
+	// @override skyui.BSList
 	public function get selectedIndex(): Number
 	{
 		return _selectedIndex;
 	}
 	
-	// override skyui.BSList
+	// @override skyui.BSList
 	function set selectedIndex(a_newIndex: Number)
 	{
-		doSetSelectedIndex(a_newIndex, 0);
+		doSetSelectedIndex(a_newIndex, SELECT_MOUSE);
 	}
 	
 	
@@ -107,10 +116,12 @@ class skyui.BasicList extends skyui.BSList
 		_bDisableSelection = false;
 		_bDisableInput = false;
 		_bMouseDrivenNav = false;
-		_platform = 1;
+		_platform = PLATFORM_PC;
 
 		EventDispatcher.initialize(this);
 		Mouse.addListener(this);
+		
+		initComponents();
 	}
 
 	
@@ -122,92 +133,60 @@ class skyui.BasicList extends skyui.BSList
 	// mixin by gfx.events.EventDispatcher
 	public var addEventListener: Function;
 	
-	// override skyui.BSList
+	// @override skyui.BSList
 	public function InvalidateData(): Void
 	{
-		if (_selectedIndex >= _entryList.length)
-			_selectedIndex = _entryList.length - 1;
+		_listEnumeration.invalidate();
+		
+		if (_selectedIndex >= _listEnumeration.size())
+			_selectedIndex = _listEnumeration.size() - 1;
 
 		UpdateList();
 	}
 
-	// override skyui.BSList
+	// @override skyui.BSList
 	public function UpdateList(): Void
 	{
-		var xStart = anchorEntriesBegin._x;
-		var yStart = anchorEntriesBegin._y;
+		// abstract
+	}
+	
+	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
+	{
+		// abstract
+	}
 
-		var yOffset = 0;
-
-		for (var i = 0; i < _entryList.length; ++i) {
-			var entryClip = _entryClipManager.getClipByIndex(i);
-
-			setEntry(entryClip,_entryList[i]);
-			_entryList[i].clipIndex = i;
-			entryClip.itemIndex = i;
-
-			entryClip._x = xStart;
-			entryClip._y = yStart + yOffset;
-			entryClip._visible = true;
-
-			yOffset = yOffset + entryClip._height;
-		}
+	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
+	{
+		// abstract
+	}
+	
+	public function onItemRollOver(a_index: Number): Void
+	{
+		// abstract
+	}
+	
+	public function onItemRollOut(a_index: Number): Void
+	{
+		// abstract
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+	private function initComponents(): Void
+	{
+		_entryClipManager = new EntryClipManager(new BasicEntryFactory(this));
+		_listEnumeration = new BasicEnumeration(_entryList);
+	}
 
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number)
 	{
-		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
-			var oldIndex = _selectedIndex;
-			_selectedIndex = a_newIndex;
-
-			if (oldIndex != -1)
-				setEntry(_entryClipManager.getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
-
-			if (_selectedIndex != -1)
-				setEntry(_entryClipManager.getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
-
-			dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
-		}
+		// abstract
 	}
-
-	private function onItemPress(a_keyboardOrMouse: Number)
+	
+	// Helper
+	private function getClipByIndex(a_index: Number): MovieClip
 	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1)
-			dispatchEvent({type: "itemPress", index: _selectedIndex, entry: _entryList[_selectedIndex], keyboardOrMouse: a_keyboardOrMouse});
-	}
-
-	private function onItemPressAux(a_keyboardOrMouse, a_buttonIndex)
-	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1 && a_buttonIndex == 1)
-			dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: _entryList[_selectedIndex], keyboardOrMouse: a_keyboardOrMouse});
-	}
-
-	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		if (a_entryClip != undefined) {
-			a_entryClip.selectArea._alpha = a_entryObject == selectedEntry ? 40 : 0;
-			setEntryText(a_entryClip,a_entryObject);
-		}
-	}
-
-	private function setEntryText(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		if (a_entryClip.textField != undefined) {
-			a_entryClip.textField.textAutoSize = "shrink";
-
-			if (a_entryObject.text != undefined)
-				a_entryClip.textField.SetText(a_entryObject.text);
-			else
-				a_entryClip.textField.SetText(" ");
-
-			if (a_entryObject.enabled != undefined)
-				a_entryClip.textField.textColor = a_entryObject.enabled == false ? 0x606060 : 0xFFFFFF;
-
-			if (a_entryObject.disabled != undefined)
-				a_entryClip.textField.textColor = a_entryObject.disabled == true ? 0x606060 : 0xFFFFFF;
-		}
+		return _entryClipManager.getClipByIndex(a_index);
 	}
 }

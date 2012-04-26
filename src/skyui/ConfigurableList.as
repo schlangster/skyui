@@ -5,46 +5,46 @@ import gfx.ui.NavigationCode;
 import skyui.Translator;
 
 
-class skyui.ConfigurableList extends skyui.FilteredList
+class skyui.ConfigurableList extends skyui.ScrollingList
 {
-	private var _config:Config;
+	private var _config: Config;
 
-	private var _views:Array;
-	private var _activeViewIndex:Number;
+	private var _views: Array;
+	private var _activeViewIndex: Number;
 	
-	private var _activeColumnIndex:Number;
-	private var _lastViewIndex:Number;
+	private var _activeColumnIndex: Number;
+	private var _lastViewIndex: Number;
 	
 	// viewIndex, columnIndex, stateIndex
-	private var _prefData:Object;
+	private var _prefData: Object;
 	
 	// 1 .. n
-	private var _activeColumnState:Number;
+	private var _activeColumnState: Number;
 	
 	// Preset in config
-	private var _entryWidth:Number;
+	private var _entryWidth: Number;
 	
 	// --- Store lots of pre-calculated values in memory so we don't have to recalculate them for each entry
 	
 	// [c1.x, c1.y, c2.x, c2.y, ...] - (x,y) Offset of column fields in a row (relative to the entry clip)
-	private var _columnPositions:Array;
+	private var _columnPositions: Array;
 	
 	// [c1.width, c1.height, c2.width, c2.height, ...]
-	private var _columnSizes:Array;
+	private var _columnSizes: Array;
 	
 	// These are the names like textField0, equipIcon etc used when positioning, not the names as defined in the config
-	private var _cellNames:Array;
-	private var _hiddenCellNames:Array;
+	private var _cellNames: Array;
+	private var _hiddenCellNames: Array;
 	
 	// Only used for textfield-based columns
-	private var _columnEntryValues:Array;
+	private var _columnEntryValues: Array;
 
-	private var _customEntryFormats:Array;
-	private var _defaultEntryFormat:TextFormat;
-	private var _defaultLabelFormat:TextFormat;
+	private var _customEntryFormats: Array;
+	private var _defaultEntryFormat: TextFormat;
+	private var _defaultLabelFormat: TextFormat;
 	
 	// Children
-	var header:MovieClip;
+	var header: MovieClip;
 
 
 	function ConfigurableList()
@@ -98,7 +98,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 	}
 	
 	// Has to be called before the list can be used
-	function setConfigSection(a_section:String)
+	function setConfigSection(a_section: String)
 	{
 		_views = _config[a_section].views;
 		_entryWidth = _config[a_section].entry.width;
@@ -117,7 +117,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 	}
 	
-	function setEntry(a_entryClip:MovieClip, a_entryObject:Object)
+	function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
 	{
 		if (_activeViewIndex != -1 && a_entryClip.viewIndex != _activeViewIndex) {
 			a_entryClip.viewIndex = _activeViewIndex;
@@ -175,7 +175,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		super.setEntry(a_entryClip, a_entryObject);
 	}
 
-	function changeFilterFlag(a_flag:Number)
+	function changeFilterFlag(a_flag: Number)
 	{
 		// Find a matching view, or use last index
 		for (var i = 0; i < _views.length; i++) {
@@ -209,7 +209,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		updateView();
 	}
 	
-	function restorePrefState():Boolean 
+	function restorePrefState(): Boolean
 	{
 		// No preference to restore yet
 		if (_prefData == undefined || _prefData.viewIndex == -1) {
@@ -261,7 +261,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 	}
 	
-	function selectColumn(a_index:Number)
+	function selectColumn(a_index: Number)
 	{
 		// Invalid column
 		if (currentView.columns[a_index] == undefined) {
@@ -269,19 +269,17 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		}
 		
 		// Don't process for passive columns
-		if (currentView.columns[a_index].passive) {
+		if (currentView.columns[a_index].passive)
 			return;
-		}
 			
 		if (_activeColumnIndex != a_index) {
 			_activeColumnIndex = a_index;
 			_activeColumnState = 1;
 		} else {
-			if (_activeColumnState < currentView.columns[_activeColumnIndex].states) {
+			if (_activeColumnState < currentView.columns[_activeColumnIndex].states)
 				_activeColumnState++;
-			} else {
+			else
 				_activeColumnState = 1;
-			}
 		}
 		
 		// Save as preferred state
@@ -290,7 +288,7 @@ class skyui.ConfigurableList extends skyui.FilteredList
 		updateView();
 	}
 	
-	function handleInput(details, pathToFocus):Boolean
+	function handleInput(details, pathToFocus): Boolean
 	{
 		var processed = super.handleInput(details, pathToFocus);;
 

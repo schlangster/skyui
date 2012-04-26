@@ -4,6 +4,7 @@ class skyui.CategoryEntryFactory extends skyui.BasicEntryFactory
 {
   /* PRIVATE VARIABLES */
   
+   	// override skyui.BasicEntryFactory
 	private var _list: CategoryList;
 	
 	
@@ -18,7 +19,7 @@ class skyui.CategoryEntryFactory extends skyui.BasicEntryFactory
 	
   /* PUBLIC FUNCTIONS */
   
-  	// override skyui.IEntryClipFactory
+  	// override skyui.BasicEntryFactory
 	public function createEntryClip(a_index: Number): MovieClip
 	{
 		var entryClip = super.createEntryClip(a_index);
