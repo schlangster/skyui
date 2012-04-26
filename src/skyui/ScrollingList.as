@@ -139,18 +139,16 @@ class skyui.ScrollingList extends skyui.BasicList
 		var yStart = anchorEntriesBegin._y;
 		var h = 0;
 
-		skse.Log("Updating, size is " + _listEnumeration.size());
-
 		// Clear clipIndex for everything before the selected list portion
-		for (var i = 0; i < _listEnumeration.size() && i < _scrollPosition ; i++)
-			_listEnumeration.at(i).clipIndex = undefined;
+		for (var i = 0; i < getListEnumSize() && i < _scrollPosition ; i++)
+			getListEnumEntry(i).clipIndex = undefined;
 
 		_listIndex = 0;
 		
 		// Display the selected list portion of the list
-		for (var i = _scrollPosition; i < _listEnumeration.size() && _listIndex < _maxListIndex; i++) {
+		for (var i = _scrollPosition; i < getListEnumSize() && _listIndex < _maxListIndex; i++) {
 			var entryClip = getClipByIndex(_listIndex);
-			var entryItem = _listEnumeration.at(i);
+			var entryItem = getListEnumEntry(i);
 
 			entryClip.itemIndex = entryItem.unfilteredIndex;
 			entryItem.clipIndex = _listIndex;
@@ -166,8 +164,8 @@ class skyui.ScrollingList extends skyui.BasicList
 		}
 		
 		// Clear clipIndex for everything after the selected list portion
-		for (var i = _scrollPosition + _listIndex; i < _listEnumeration.size(); i++)
-			_listEnumeration.at(i).clipIndex = undefined;
+		for (var i = _scrollPosition + _listIndex; i < getListEnumSize(); i++)
+			getListEnumEntry(i).clipIndex = undefined;
 		
 		// If the list is not completely filled, hide unused entries.
 		for (var i = _listIndex; i < _maxListIndex; i++) {
@@ -210,10 +208,10 @@ class skyui.ScrollingList extends skyui.BasicList
 		if (!_bDisableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(false);
-			} else if (selectedEntry.filteredIndex > 0) {
-				doSetSelectedIndex(getPredecessorEntryIndex(), SELECT_KEYBOARD);
+			} else if (getSelectedListEnumIndex() > 0) {
+				doSetSelectedIndex(getListEnumPredecessorIndex(), SELECT_KEYBOARD);
 				_bMouseDrivenNav = false;
-				dispatchEvent({type:"listMovedUp", index:_selectedIndex, scrollChanged: true});
+				dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: true});
 			}
 		} else if (a_bScrollPage) {
 			var t = scrollPosition - _listIndex;
@@ -229,10 +227,10 @@ class skyui.ScrollingList extends skyui.BasicList
 		if (!_bDisableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(true);
-			} else if (selectedEntry.filteredIndex < _listEnumeration.size() - 1) {
-				doSetSelectedIndex(getSuccessorEntryIndex(), SELECT_KEYBOARD);
+			} else if (getSelectedListEnumIndex() < getListEnumSize() - 1) {
+				doSetSelectedIndex(getListEnumSuccessorIndex(), SELECT_KEYBOARD);
 				_bMouseDrivenNav = false;
-				dispatchEvent({type:"listMovedDown", index:_selectedIndex, scrollChanged: true});
+				dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 			}
 		} else if (a_bScrollPage) {
 			var t = scrollPosition + _listIndex;
@@ -294,6 +292,26 @@ class skyui.ScrollingList extends skyui.BasicList
 		// not needed
 	}
 	
+	public function onFilterChange()
+	{
+		invalidateFilterData();
+		
+		calculateMaxScrollPosition();
+		
+		UpdateList();
+	}
+	
+	// Did you mean: numFilteredItems() ?
+	public function get numUnfilteredItems():Number
+	{
+		return getListEnumSize();
+	}
+	
+	public function addFilter(a_filter:IFilter): Void
+	{
+		_listEnumeration.addFilter(a_filter);
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
 
@@ -307,55 +325,36 @@ class skyui.ScrollingList extends skyui.BasicList
   	// @override skyui.BasicList
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (!_bDisableSelection && a_newIndex != _selectedIndex) {
-			var oldIndex = _selectedIndex;
-			_selectedIndex = a_newIndex;
-
-			if (oldIndex != -1)
-				setEntry(getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
-
-			if (_selectedIndex != -1) {
-				if (_platform != 0) {
-					if (_selectedIndex < _scrollPosition)
-						scrollPosition = _selectedIndex;
-					else if (_selectedIndex >= _scrollPosition + _listIndex)
-						scrollPosition = Math.min(_selectedIndex - _listIndex + 1, _maxScrollPosition);
-					else
-						setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
-						
-				} else {
-					setEntry(getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
-				}
-			}
-			dispatchEvent({type:"selectionChange", index:_selectedIndex, keyboardOrMouse:a_keyboardOrMouse});
-		}
-	}
-	
-	// filtered
-	function _doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
-	{
-		if (!_bDisableSelection || a_newIndex != _selectedIndex)
+		if (_bDisableSelection || a_newIndex == _selectedIndex)
 			return;
 			
-		// Invalid selection, ignore
-		if (a_newIndex != -1 && _entryList[a_newIndex].filteredIndex == undefined)
+		// Selection is not contained in current entry enumeration, ignore
+		if (a_newIndex != -1 && getListEnumIndex(a_newIndex) == undefined)
 			return;
 			
-		var oldIndex = _selectedIndex;
 		var oldEntry = selectedEntry;
 		
 		_selectedIndex = a_newIndex;
 
-		// Reset the old entry if it's currently displayed
-		if (oldIndex != -1 && oldEntry.clipIndex != undefined)
+		// Old entry was mapped to a clip? Then clear with setEntry now that selectedIndex has been updated
+		if (oldEntry.clipIndex != undefined)
 			setEntry(getClipByIndex(oldEntry.clipIndex), oldEntry);
-
+			
+			
 		// Select valid entry
 		if (_selectedIndex != -1) {
-			if (selectedEntry.filteredIndex < _scrollPosition)
-				scrollPosition = selectedEntry.filteredIndex;
-			else if (selectedEntry.filteredIndex >= _scrollPosition + _listIndex)
-				scrollPosition = Math.min(selectedEntry.filteredIndex - _listIndex + 1, _maxScrollPosition);
+			
+			var enumIndex = getSelectedListEnumIndex();
+			
+			// New entry before visible portion, move scroll window up
+			if (enumIndex < _scrollPosition)
+				scrollPosition = enumIndex;
+				
+			// New entry below visible portion, move scroll window down
+			else if (enumIndex >= _scrollPosition + _listIndex)
+				scrollPosition = Math.min(enumIndex - _listIndex + 1, _maxScrollPosition);
+				
+			// No need to change the scroll window, just select new entry
 			else
 				setEntry(getClipByIndex(selectedEntry.clipIndex), selectedEntry);
 				
@@ -365,28 +364,19 @@ class skyui.ScrollingList extends skyui.BasicList
 		} else {
 			_curClipIndex = -1;
 		}
-			
-		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
+
+		dispatchEvent({type:"selectionChange", index:_selectedIndex, keyboardOrMouse:a_keyboardOrMouse});
 	}
 	
 	private function calculateMaxScrollPosition(): Void
  	{
-		var t = _listEnumeration.size() - _maxListIndex;
+		var t = getListEnumSize() - _maxListIndex;
 		_maxScrollPosition = (t > 0) ? t : 0;
 
 		updateScrollbar();
 
 		if (_scrollPosition > _maxScrollPosition)
 			scrollPosition = _maxScrollPosition;
-	}
-	
-	// Helper
-	private function getClipByIndex(a_index: Number): MovieClip
-	{
-		if (a_index < 0 || a_index >= _maxListIndex)
-			return undefined;
-
-		return _entryClipManager.getClipByIndex(a_index);
 	}
 	
 	private function updateScrollPosition(a_position:Number): Void
@@ -429,21 +419,6 @@ class skyui.ScrollingList extends skyui.BasicList
 		}
 	}
 	
-	function onFilterChange()
-	{
-		invalidateFilterData();
-		
-		calculateMaxScrollPosition();
-		
-		UpdateList();
-	}
-	
-	// Did you mean: numFilteredItems() ?
-	public function get numUnfilteredItems():Number
-	{
-		return _listEnumeration.size();
-	}
-	
 	private function invalidateFilterData()
 	{
 		// Set up helper attributes for easy mapping between original list, filtered list and entry clips
@@ -456,18 +431,48 @@ class skyui.ScrollingList extends skyui.BasicList
 			_selectedIndex = -1;
 	}
 	
-	private function getPredecessorEntryIndex(): Number
+	// Wrapper
+	private function getClipByIndex(a_index: Number): MovieClip
 	{
-		return _listEnumeration.at(selectedEntry.filteredIndex - 1).unfilteredIndex;
+		if (a_index < 0 || a_index >= _maxListIndex)
+			return undefined;
+
+		return _entryClipManager.getClipByIndex(a_index);
 	}
 	
-	private function getSuccessorEntryIndex(): Number
+	// Helper
+	private function getSelectedListEnumIndex(): Number
 	{
-		return _listEnumeration.at(selectedEntry.filteredIndex + 1).unfilteredIndex;
+		return _listEnumeration.lookupEnumIndex(_selectedIndex);
 	}
 	
-	public function addFilter(a_filter:IFilter): Void
+	// Helper
+	private function getListEnumIndex(a_index: Number): Number
 	{
-		_listEnumeration.addFilter(a_filter);
+		return _listEnumeration.lookupEnumIndex(a_index);
+	}
+	
+	// Helper
+	private function getListEnumSize(): Number
+	{
+		return _listEnumeration.size();
+	}
+	
+	// Helper
+	private function getListEnumEntry(a_index: Number): Object
+	{
+		return _listEnumeration.at(a_index);
+	}
+	
+	// Helper
+	private function getListEnumPredecessorIndex(): Number
+	{
+		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() - 1);
+	}
+	
+	// Helper
+	private function getListEnumSuccessorIndex(): Number
+	{
+		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + 1);
 	}
 }

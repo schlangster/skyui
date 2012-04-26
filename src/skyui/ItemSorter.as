@@ -1,11 +1,13 @@
 ﻿import gfx.events.EventDispatcher;
+import skyui.IFilter;
 
-class skyui.ItemSorter
+class skyui.ItemSorter implements skyui.IFilter
 {
   /* PRIVATE VARIABLES */
   
 	private var _sortAttributes: Array;
 	private var _sortOptions: Array;
+
 
   /* CONSTRUCTORS */
 
@@ -14,12 +16,13 @@ class skyui.ItemSorter
 		EventDispatcher.initialize(this);
 	}
 	
+	
   /* PUBLIC FUNCTIONS */
   
-    // mixin by gfx.events.EventDispatcher
+    // @mixin gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
 	
-    // mixin by gfx.events.EventDispatcher
+    // @mixin gfx.events.EventDispatcher
 	public var addEventListener: Function;
 
 	// Change the filter attributes and options and trigger an update if necessary (and not supressed).
@@ -39,8 +42,8 @@ class skyui.ItemSorter
 		}
 	}
 
-	// override skyui.IFilter
-	public function process(a_filteredList: Array)
+	// @override skyui.IFilter
+	public function applyFilter(a_filteredList: Array): Void
 	{
 		a_filteredList.sortOn(_sortAttributes, _sortOptions);
 	}

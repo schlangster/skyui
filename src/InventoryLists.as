@@ -87,8 +87,7 @@ class InventoryLists extends MovieClip
 	{
 		_ItemsList.addFilter(_typeFilter);
 		_ItemsList.addFilter(_nameFilter);
-		// TODO FIXME
-//		_ItemsList.addFilter(_sortFilter);
+		_ItemsList.addFilter(_sortFilter);
 
 		_typeFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
 		_nameFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
