@@ -1,8 +1,8 @@
 ﻿import gfx.events.EventDispatcher;
 import skyui.ItemSortingFilter;
 import skyui.Defines;
-import skyui.Config;
 import gfx.io.GameDelegate;
+import skyui.ListLayout;
 
 import skyui.IColumnFormatter;
 import skyui.IDataFetcher;
@@ -80,19 +80,19 @@ class skyui.FormattedItemList extends skyui.ConfigurableList
 			
 			// Process based on column type 
 			switch (columns[i].type) {
-				case Config.COL_TYPE_EQUIP_ICON :
+				case ListLayout.COL_TYPE_EQUIP_ICON :
 					_columnFormatter.formatEquipIcon(e, a_entryObject, a_entryClip);
 					break;
 
-				case Config.COL_TYPE_ITEM_ICON :
+				case ListLayout.COL_TYPE_ITEM_ICON :
 					_columnFormatter.formatItemIcon(e, a_entryObject, a_entryClip);
 					break;
 
-				case Config.COL_TYPE_NAME :
+				case ListLayout.COL_TYPE_NAME :
 					_columnFormatter.formatName(e, a_entryObject, a_entryClip);
 					break;
 
-				case Config.COL_TYPE_TEXT :
+				case ListLayout.COL_TYPE_TEXT :
 				default :
 					_columnFormatter.formatText(e, a_entryObject, a_entryClip);
 			}

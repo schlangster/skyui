@@ -1,13 +1,14 @@
-﻿import skyui.Config;
+﻿import skyui.ConfigLoader;
 import skyui.Util;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import skyui.Translator;
+import skyui.ListLayout;
 
 
 class skyui.ConfigurableList extends skyui.ScrollingList
 {
-	private var _config: Config;
+	private var _config: Object;
 
 	private var _views: Array;
 	private var _activeViewIndex: Number;
@@ -73,8 +74,7 @@ class skyui.ConfigurableList extends skyui.ScrollingList
 		_activeColumnState = 1;
 		_activeColumnIndex = 0;
 
-		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
-		
+		ConfigLoader.registerCallback(this, "onConfigLoad");		
 		Util.addArrayFunctions();
 	}
 	
@@ -385,13 +385,13 @@ class skyui.ConfigurableList extends skyui.ScrollingList
 			
 			switch (columns[i].type) {
 				// ITEM ICON + EQUIP ICON
-				case Config.COL_TYPE_ITEM_ICON:
-				case Config.COL_TYPE_EQUIP_ICON:
+				case ListLayout.COL_TYPE_ITEM_ICON:
+				case ListLayout.COL_TYPE_EQUIP_ICON:
 								
-					if (columns[i].type == Config.COL_TYPE_ITEM_ICON) {
+					if (columns[i].type == ListLayout.COL_TYPE_ITEM_ICON) {
 						_cellNames[i] = "itemIcon";
 						bEnableItemIcon = true;
-					} else if (columns[i].type == Config.COL_TYPE_EQUIP_ICON) {
+					} else if (columns[i].type == ListLayout.COL_TYPE_EQUIP_ICON) {
 						_cellNames[i] = "equipIcon";
 						bEnableEquipIcon = true;
 					}

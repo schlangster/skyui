@@ -1,16 +1,16 @@
 ﻿import skyui.IColumnFormatter;
 import skyui.Defines;
-import skyui.Config;
+import skyui.ConfigLoader;
 
 
 class skyui.InventoryColumnFormatter implements IColumnFormatter
 {
 	private static var STATES = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
-	private var _maxTextLength:Number;
+	private var _maxTextLength: Number;
 
 	// icon vars
-	private var _bShowStolenIcon:Boolean;
+	private var _bShowStolenIcon: Boolean;
 
 	// color vars
 	private var _defaultEnabledColor;
@@ -20,7 +20,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 	private var _stolenEnabledColor;
 	private var _stolenDisabledColor;
 
-	private var _config:Config;
+	private var _config: Object;
 
 	function InventoryColumnFormatter()
 	{
@@ -35,7 +35,7 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		_stolenEnabledColor = 0xffffff;
 		_stolenDisabledColor = 0x4c4c4c;
 
-		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
+		ConfigLoader.registerCallback(this, "onConfigLoad");
 	}
 
 	function onConfigLoad(event)

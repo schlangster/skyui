@@ -3,7 +3,7 @@ import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-import skyui.Config;
+import skyui.ConfigLoader;
 import skyui.Translator;
 
 
@@ -22,7 +22,7 @@ class skyui.SearchWidget extends MovieClip
 	
 	private var _updateTimerId: Number;
 	
-	private var _config: Config;
+	private var _config: Object;
 	
 	
   /* STAGE ELEMENTS */
@@ -46,8 +46,8 @@ class skyui.SearchWidget extends MovieClip
 			_parent.endInput();
 		};
 
-		Config.instance.addEventListener("configLoad", this, "onConfigLoad");
-		Translator.instance.addEventListener("translationLoad", this, "onTranslationLoad");
+		ConfigLoader.registerCallback(this, "onConfigLoad");
+		Translator.registerCallback(this, "onTranslationLoad");
 	}
 	
 	

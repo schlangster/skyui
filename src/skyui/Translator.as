@@ -5,6 +5,8 @@ class skyui.Translator
 {
   /* PRIVATE VARIABLES */
   
+	private static var _eventDummy: Object;
+	
 	private static var _translator:TextField;
 	private static var _language:String;
 
@@ -16,6 +18,7 @@ class skyui.Translator
 	
 	
   /* STATIC INITIALIZER */
+  
 	private static var _initialized = initialize();
 	
 	private static function initialize():Boolean
@@ -47,7 +50,9 @@ class skyui.Translator
 		else
 			_language = "english";
 
-		_instance = new Translator();
+		_eventDummy = {};
+		EventDispatcher.initialize(_eventDummy);
+		
 		var lv = new LoadVars();
 		lv.onData = parseData;
 		lv.load("skyui_translate.txt");
@@ -57,6 +62,7 @@ class skyui.Translator
 	
 	
   /* PROPERTIES */
+  
 	static private var _instance:Translator;
 	
 	static function get instance():Translator
@@ -65,22 +71,12 @@ class skyui.Translator
 	}
 	
 	
-  /* CONSTRUCTORS */
-  
-	private function Translator()
-	{
-		EventDispatcher.initialize(this);
-	}
-	
-	
   /* PUBLIC FUNCTIONS */
 	
-	// mixin by gfx.events.EventDispatcher
-	public var dispatchEvent: Function;
-	
-	// mixin by gfx.events.EventDispatcher
-	public var addEventListener: Function;
-	
+	public static function registerCallback(scope: Object, callBack: String)
+	{
+		_eventDummy.addEventListener("translationLoad", scope, callBack);
+	}
   
 	public static function translate(a_str:String):String
 	{
@@ -131,6 +127,6 @@ class skyui.Translator
 				_dict[lang][a[0]] = a[1];
 		}
 		
-		_instance.dispatchEvent({type:"translationLoad"});
+		_eventDummy.dispatchEvent({type:"translationLoad"});
 	}
 }
