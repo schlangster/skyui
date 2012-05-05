@@ -1,4 +1,7 @@
-﻿interface skyui.IDataFetcher
+﻿import skyui.BasicList;
+
+
+interface skyui.IDataFetcher
 {
-	function processEntry(a_entryObject:Object, a_itemInfo:Object);
+	function processEntries(a_list: BasicList): Void;
 }

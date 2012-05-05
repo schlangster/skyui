@@ -70,9 +70,8 @@ class skyui.MagicColumnFormatter extends InventoryColumnFormatter
 			// Text
 			var text = a_entryObject.text;
 
-			if (text.length > _maxTextLength) {
+			if (text.length > _maxTextLength)
 				text = text.substr(0, _maxTextLength - 3) + "...";
-			}
 
 			a_entryField.autoSize = "left";
 			a_entryField.SetText(text);

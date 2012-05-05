@@ -4,6 +4,7 @@ import Shared.GlobalFunc;
 import skyui.EntryClipManager;
 import skyui.CategoryEntryFactory;
 import skyui.BasicEnumeration;
+import skyui.AlphaEntryFormatter;
 
 
 class skyui.CategoryList extends skyui.BasicList
@@ -95,6 +96,9 @@ class skyui.CategoryList extends skyui.BasicList
 		
 		if (iconSize == undefined)
 			iconSize = 32;
+		
+		// Not needed for a category list
+		_dataFetcher = null;
 	}
 	
 	
@@ -297,14 +301,8 @@ class skyui.CategoryList extends skyui.BasicList
 
   /* PRIVATE FUNCTIONS */
   
-	private function initComponents(): Void
-	{
-		_entryClipManager = new EntryClipManager(new CategoryEntryFactory(this));
-		_listEnumeration = new BasicEnumeration(_entryList);
-	}
-  
   	// @override skyui.BasicList
-	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number)
+	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
 	{
 		if (_bDisableSelection || a_newIndex == _selectedIndex)
 			return;
@@ -321,7 +319,7 @@ class skyui.CategoryList extends skyui.BasicList
 		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
-	private function calculateSegmentParams()
+	private function calculateSegmentParams(): Void
 	{
 		// Divided
 		if (dividerIndex != undefined && dividerIndex != -1) {
@@ -340,7 +338,7 @@ class skyui.CategoryList extends skyui.BasicList
 		}
 	}
 	
-	private function updateSelector()
+	private function updateSelector(): Void
 	{
 		if (selectorCenter == undefined) {
 			return;
@@ -379,7 +377,7 @@ class skyui.CategoryList extends skyui.BasicList
 		}
 	}
 
-	private function refreshSelector()
+	private function refreshSelector(): Void
 	{
 		selectorCenter._visible = true;
 		var selectedClip = _entryClipManager.getClipByIndex(_selectedIndex - _segmentOffset);
@@ -393,23 +391,6 @@ class skyui.CategoryList extends skyui.BasicList
 		if (selectorRight != undefined) {
 			selectorRight._x = selectorCenter._x + selectorCenter._width;
 			selectorRight._width = _totalWidth - selectorRight._x;
-		}
-	}
-	
-	// @override skyui.BasicList
-	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		if (a_entryClip != undefined) {
-			if (a_entryObject.filterFlag == 0 && !a_entryObject.bDontHide) {
-				a_entryClip._alpha = 15;
-				a_entryClip.enabled = false;
-			} else if (a_entryObject == selectedEntry) {
-				a_entryClip._alpha = 100;
-				a_entryClip.enabled = true;
-			} else {
-				a_entryClip._alpha = 50;
-				a_entryClip.enabled = true;
-			}
 		}
 	}
 }

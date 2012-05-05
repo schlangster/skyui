@@ -75,7 +75,6 @@ class skyui.FilteredEnumeration extends skyui.BasicEnumeration
 		for (var i = 0; i < _filterChain.length; i++)
 			_filterChain[i].applyFilter(_filteredData);
 
-
 		for (var i = 0; i < _filteredData.length; i++)
 			_filteredData[i].filteredIndex = i;
 	}

@@ -56,10 +56,10 @@ class skyui.SortedListHeader extends MovieClip
 	
   /* PUBLIC FUNCTIONS */
 
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
 	
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var addEventListener: Function;
 	
 	public function columnPress(a_columnIndex:Number)
@@ -70,16 +70,14 @@ class skyui.SortedListHeader extends MovieClip
 	// Hides all columns (but doesn't delete them since they can be re-used later).
 	public function clearColumns()
 	{
-		for (var i=0; i< _columns.length; i++) {
+		for (var i=0; i< _columns.length; i++)
 			_columns[i]._visible = false;
-		}
 	}
   
 	public function addColumn(a_index:Number)
 	{
-		if (a_index < 0) {
+		if (a_index < 0)
 			return undefined;
-		}
 		
 		var columnButton = this["Column" + a_index];
 

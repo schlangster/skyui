@@ -5,16 +5,23 @@ class skyui.EntryClipManager
 { 
   /* PRIVATE VARIABLES */
   
+	private var _entryClips: Array;
+	
+	
+  /* PROPERTIES */
+
 	private var _entryClipFactory: IEntryClipFactory;
 	
-	private var _entryClips: Array;
+	public function set entryClipFactory(a_entryClipFactory: IEntryClipFactory)
+	{
+		_entryClipFactory = a_entryClipFactory;
+	}
 	
 	
   /* CONSTRUCTORS */
   
-	public function EntryClipManager(a_entryClipFactory: IEntryClipFactory)
+	public function EntryClipManager()
 	{
-		_entryClipFactory = a_entryClipFactory;
 		_entryClips = [];
 	}
   

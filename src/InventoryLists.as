@@ -6,53 +6,98 @@ import gfx.managers.FocusHandler;
 import Shared.GlobalFunc;
 
 import skyui.CategoryList;
-import skyui.FormattedItemList;
+import skyui.TabularList;
 import skyui.ItemTypeFilter;
 import skyui.ItemNameFilter;
 import skyui.ItemSorter;
 import skyui.SortedListHeader;
 import skyui.SearchWidget;
 import skyui.TabBar;
-import skyui.Config;
+import skyui.ConfigLoader;
 import skyui.Util;
 import skyui.Translator;
 
 
 class InventoryLists extends MovieClip
 {
+  /* CONSTANTS */
+	
 	static var HIDE_PANEL = 0;
 	static var SHOW_PANEL = 1;
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
+	
+	
+  /* STAGE ELEMENTS */
+  
+	var panelContainer: MovieClip;
+	var zoomButtonHolder: MovieClip;
 
-	private var _config:Config;
 
-	private var _CategoriesList:CategoryList;
-	private var _CategoryLabel:MovieClip;
-	private var _ItemsList:FormattedItemList;
-	private var _SearchWidget:SearchWidget;
-	private var _TabBar:TabBar;
+  /* PRIVATE VARIABLES */
 
-	private var _platform:Number;
-	private var _currentState:Number;
+	private var _config: Object;
 
-	private var _typeFilter:ItemTypeFilter;
-	private var _nameFilter:ItemNameFilter;
-	private var _sortFilter:ItemSorter;
+	private var _searchWidget: SearchWidget;
+	
+	private var _categoryLabel: MovieClip;
 
-	private var _currCategoryIndex:Number;
+	private var _typeFilter: ItemTypeFilter;
+	
+	private var _nameFilter: ItemNameFilter;
+	
+	private var _sortFilter: ItemSorter;
+	
+	private var _platform: Number;
+	
+	private var _currCategoryIndex: Number;
 
-	private var _searchKey:Number;
-	private var _tabToggleKey:Number;
-	private var _allString:String;
+	private var _searchKey: Number;
+	private var _tabToggleKey: Number;
+	private var _allString: String;
 
-	// Children
-	var panelContainer:MovieClip;
 
-	// Mixin
-	var dispatchEvent:Function;
-	var addEventListener:Function;
+  /* PROPERTIES */
 
+	private var _itemList: TabularList;
+	
+	function get itemList(): TabularList
+	{
+		return _itemList;
+	}
+	
+	private var _categoryList: CategoryList;
+	
+	function get categoryList(): CategoryList
+	{
+		return _categoryList;
+	}
+	
+	private var _tabBar: TabBar;
+	
+	function get tabBar(): TabBar
+	{
+		return _tabBar;
+	}
+	
+	private var _currentState: Number;
+	
+	public function get currentState()
+	{
+		return _currentState;
+	}
+
+	public function set currentState(a_newState)
+	{
+		if (a_newState == SHOW_PANEL) {
+			FocusHandler.instance.setFocus(_itemList,0);
+		}
+
+		_currentState = a_newState;
+	}
+
+
+  /* CONSTRUCTORS */
 
 	function InventoryLists()
 	{
@@ -60,18 +105,18 @@ class InventoryLists extends MovieClip
 
 		Util.addArrayFunctions();
 
-		_CategoriesList = panelContainer.categoriesList;
-		_CategoryLabel = panelContainer.CategoryLabel;
-		_ItemsList = panelContainer.itemsList;
-		_SearchWidget = panelContainer.searchWidget;
-		_TabBar = panelContainer.tabBar;
+		_categoryList = panelContainer.categoryList;
+		_categoryLabel = panelContainer.categoryLabel;
+		_itemList = panelContainer.itemList;
+		_searchWidget = panelContainer.searchWidget;
+		_tabBar = panelContainer.tabBar;
 
 		EventDispatcher.initialize(this);
 
 		gotoAndStop("NoPanels");
 
-		GameDelegate.addCallBack("SetCategoriesList",this,"SetCategoriesList");
-		GameDelegate.addCallBack("InvalidateListData",this,"InvalidateListData");
+		GameDelegate.addCallBack("SetCategoriesList", this, "SetCategoriesList");
+		GameDelegate.addCallBack("InvalidateListData", this, "InvalidateListData");
 
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
@@ -80,57 +125,68 @@ class InventoryLists extends MovieClip
 		_searchKey = undefined;
 		_tabToggleKey = undefined;
 
-		Config.instance.addEventListener("configLoad",this,"onConfigLoad");
+		ConfigLoader.registerCallback(this, "onConfigLoad");
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 
-	function onLoad()
-	{
-		_ItemsList.addFilter(_typeFilter);
-		_ItemsList.addFilter(_nameFilter);
-		_ItemsList.addFilter(_sortFilter);
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	
+	// @mixin by gfx.events.EventDispatcher
+	public var addEventListener: Function;
+	
+	// @mixin by gfx.events.EventDispatcher
+	public var Lock: Function;
 
-		_typeFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
-		_nameFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
-		_sortFilter.addEventListener("filterChange",_ItemsList,"onFilterChange");
+	public function onLoad()
+	{		
+		_itemList.addFilter(_typeFilter);
+		_itemList.addFilter(_nameFilter);
+		_itemList.addFilter(_sortFilter);
 
-		_CategoriesList.addEventListener("itemPress",this,"onCategoriesItemPress");
-		_CategoriesList.addEventListener("listPress",this,"onCategoriesListPress");
-		_CategoriesList.addEventListener("listMovedUp",this,"onCategoriesListMoveUp");
-		_CategoriesList.addEventListener("listMovedDown",this,"onCategoriesListMoveDown");
-		_CategoriesList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
+		_typeFilter.addEventListener("filterChange",_itemList,"onFilterChange");
+		_nameFilter.addEventListener("filterChange",_itemList,"onFilterChange");
+		_sortFilter.addEventListener("filterChange",_itemList,"onFilterChange");
 
-		_ItemsList.disableInput = false;
+		_categoryList.addEventListener("itemPress",this,"onCategoriesItemPress");
+		_categoryList.addEventListener("listPress",this,"onCategoriesListPress");
+		_categoryList.addEventListener("listMovedUp",this,"onCategoriesListMoveUp");
+		_categoryList.addEventListener("listMovedDown",this,"onCategoriesListMoveDown");
+		_categoryList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
 
-		_ItemsList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
-		_ItemsList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
-		_ItemsList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
-		_ItemsList.addEventListener("sortChange",this,"onSortChange");
+		_itemList.disableInput = false;
 
-		_SearchWidget.addEventListener("inputStart",this,"onSearchInputStart");
-		_SearchWidget.addEventListener("inputEnd",this,"onSearchInputEnd");
-		_SearchWidget.addEventListener("inputChange",this,"onSearchInputChange");
+		_itemList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
+		_itemList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
+		_itemList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
+		_itemList.addEventListener("sortChange",this,"onSortChange");
+
+		_searchWidget.addEventListener("inputStart",this,"onSearchInputStart");
+		_searchWidget.addEventListener("inputEnd",this,"onSearchInputEnd");
+		_searchWidget.addEventListener("inputChange",this,"onSearchInputChange");
 		
-		if (_TabBar != undefined) {
-			_TabBar.addEventListener("tabPress",this,"onTabPress");
-		}
+		if (_tabBar != undefined)
+			_tabBar.addEventListener("tabPress",this,"onTabPress");
 	}
 
-	function onConfigLoad(event)
+	public function onConfigLoad(event)
 	{
 		_config = event.config;
 		_searchKey = _config.Input.hotkey.search;
 		_tabToggleKey = _config.Input.hotkey.tabToggle;
 	}
 
-	function SetPlatform(a_platform:Number, a_bPS3Switch:Boolean)
+	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean)
 	{
 		_platform = a_platform;
 
-		_CategoriesList.platform = a_platform;
-		_ItemsList.platform = a_platform;
+		_categoryList.platform = a_platform;
+		_itemList.platform = a_platform;
 	}
 
-	function handleInput(details, pathToFocus)
+	public function handleInput(details, pathToFocus): Boolean
 	{
 		var bCaught = false;
 
@@ -138,82 +194,51 @@ class InventoryLists extends MovieClip
 			if (GlobalFunc.IsKeyPressed(details)) {
 				
 				if (details.navEquivalent == NavigationCode.LEFT) {
-					_CategoriesList.moveSelectionLeft();
+					_categoryList.moveSelectionLeft();
 					bCaught = true;
 
 				} else if (details.navEquivalent == NavigationCode.RIGHT) {
-					_CategoriesList.moveSelectionRight();
+					_categoryList.moveSelectionRight();
 					bCaught = true;
 
 				// Search hotkey (default space)
 				} else if (details.code == _searchKey) {
 					bCaught = true;
-					_SearchWidget.startInput();
+					_searchWidget.startInput();
 					
 				// Toggle tab (default ALT)
-				} else if (_TabBar != undefined && (details.code == _tabToggleKey || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8))) {
+				} else if (_tabBar != undefined && (details.code == _tabToggleKey || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8))) {
 					
 					bCaught = true;
-					_TabBar.tabToggle();
+					_tabBar.tabToggle();
 				}
 			}
-			if (!bCaught) {
+			if (!bCaught)
 				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
-			}
 		}
 		return bCaught;
 	}
 
-	function getContentBounds():Array
+	public function getContentBounds():Array
 	{
 		var lb = panelContainer.ListBackground;
 		return [lb._x, lb._y, lb._width, lb._height];
 	}
 
-	function get CategoriesList()
-	{
-		return _CategoriesList;
-	}
-
-	function get ItemsList()
-	{
-		return _ItemsList;
-	}
-	
-	function get TabBar()
-	{
-		return _TabBar;
-	}
-
-	function get currentState()
-	{
-		return _currentState;
-	}
-
-	function set currentState(a_newState)
-	{
-		if (a_newState == SHOW_PANEL) {
-			FocusHandler.instance.setFocus(_ItemsList,0);
-		}
-
-		_currentState = a_newState;
-	}
-
 	function RestoreCategoryIndex()
 	{
-		_CategoriesList.selectedIndex = _currCategoryIndex;
+		_categoryList.selectedIndex = _currCategoryIndex;
 	}
 
-	function ShowCategoriesList(a_bPlayBladeSound:Boolean)
+	function ShowCategoriesList(a_bPlayBladeSound: Boolean)
 	{
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
-		dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
+		dispatchEvent({type:"categoryChange", index:_categoryList.selectedIndex});
 
-		if (a_bPlayBladeSound != false) {
+		if (a_bPlayBladeSound != false)
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-		}
 	}
 
 	function HideCategoriesList()
@@ -225,25 +250,25 @@ class InventoryLists extends MovieClip
 	
 	function showItemsList()
 	{
-		_currCategoryIndex = _CategoriesList.selectedIndex;
+		_currCategoryIndex = _categoryList.selectedIndex;
 		
-		_CategoryLabel.textField.SetText(_CategoriesList.selectedEntry.text);
+		_categoryLabel.textField.SetText(_categoryList.selectedEntry.text);
 
 		// Start with no selection
-		_ItemsList.selectedIndex = -1;
-		_ItemsList.scrollPosition = 0;
+		_itemList.selectedIndex = -1;
+		_itemList.scrollPosition = 0;
 
-		if (_CategoriesList.selectedEntry != undefined) {
+		if (_categoryList.selectedEntry != undefined) {
 			// Set filter type
-			_typeFilter.changeFilterFlag(_CategoriesList.selectedEntry.flag);
-			_ItemsList.changeFilterFlag(_CategoriesList.selectedEntry.flag);
+			_typeFilter.changeFilterFlag(_categoryList.selectedEntry.flag);
+			_itemList.layout.changeFilterFlag(_categoryList.selectedEntry.flag);
 		} else {
-			_ItemsList.UpdateList();
+			_itemList.UpdateList();
 		}
 		
-		dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+		dispatchEvent({type:"itemHighlightChange", index:_itemList.selectedIndex});
 
-		_ItemsList.disableInput = false;
+		_itemList.disableInput = false;
 	}
 
 	// Not needed anymore, items list always visible
@@ -251,11 +276,11 @@ class InventoryLists extends MovieClip
 	{
 		/*
 		_currentState = TRANSITIONING_TO_ONE_PANEL;
-		dispatchEvent({type:"hideItemsList", index:_ItemsList.selectedIndex});
-		_ItemsList.selectedIndex = -1;
+		dispatchEvent({type:"hideItemsList", index:_itemList.selectedIndex});
+		_itemList.selectedIndex = -1;
 		gotoAndPlay("Panel2Hide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-		_ItemsList.disableInput = true;
+		_itemList.disableInput = true;
 		*/
 	}
 
@@ -270,16 +295,15 @@ class InventoryLists extends MovieClip
 	
 	function onTabPress(event)
 	{
-		if (_CategoriesList.disableSelection || _CategoriesList.disableInput || _ItemsList.disableSelection || _ItemsList.disableInput) {
+		if (_categoryList.disableSelection || _categoryList.disableInput || _itemList.disableSelection || _itemList.disableInput)
 			return;
-		}
 		
 		if (event.index == TabBar.LEFT_TAB) {
-			_TabBar.activeTab = TabBar.LEFT_TAB;
-			_CategoriesList.activeSegment = CategoryList.LEFT_SEGMENT;
+			_tabBar.activeTab = TabBar.LEFT_TAB;
+			_categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
 		} else if (event.index == TabBar.RIGHT_TAB) {
-			_TabBar.activeTab = TabBar.RIGHT_TAB;
-			_CategoriesList.activeSegment = CategoryList.RIGHT_SEGMENT;
+			_tabBar.activeTab = TabBar.RIGHT_TAB;
+			_categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
 		}
 		
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
@@ -298,9 +322,8 @@ class InventoryLists extends MovieClip
 
 	function onCategoriesListMouseSelectionChange(event)
 	{
-		if (event.keyboardOrMouse == 0) {
+		if (event.keyboardOrMouse == 0)
 			doCategorySelectionChange(event);
-		}
 	}
 
 	function onItemsListMoveUp(event)
@@ -315,27 +338,24 @@ class InventoryLists extends MovieClip
 
 	function onItemsListMouseSelectionChange(event)
 	{
-		if (event.keyboardOrMouse == 0) {
+		if (event.keyboardOrMouse == 0)
 			doItemsSelectionChange(event);
-		}
 	}
 
 	function doCategorySelectionChange(event)
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
-		if (event.index != -1) {
+		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
-		}
 	}
 
 	function doItemsSelectionChange(event)
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
 
-		if (event.index != -1) {
+		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
-		}
 	}
 
 	function onSortChange(event)
@@ -345,8 +365,8 @@ class InventoryLists extends MovieClip
 
 	function onSearchInputStart(event)
 	{
-		_CategoriesList.disableSelection = true;
-		_ItemsList.disableInput = true;
+		_categoryList.disableSelection = true;
+		_itemList.disableInput = true;
 		_nameFilter.filterText = "";
 	}
 
@@ -357,8 +377,8 @@ class InventoryLists extends MovieClip
 
 	function onSearchInputEnd(event)
 	{
-		_CategoriesList.disableSelection = false;
-		_ItemsList.disableInput = false;
+		_categoryList.disableSelection = false;
+		_itemList.disableInput = false;
 		_nameFilter.filterText = event.data;
 	}
 
@@ -370,67 +390,67 @@ class InventoryLists extends MovieClip
 		var bDontHideOffset = 2;
 		var len = 3;
 
-		_CategoriesList.clearList();
+		_categoryList.clearList();
 
 		for (var i = 0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
-			_CategoriesList.entryList.push(entry);
+			_categoryList.entryList.push(entry);
 
 			if (entry.flag == 0) {
-				_CategoriesList.dividerIndex = index;
+				_categoryList.dividerIndex = index;
 			}
 		}
 		
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
-		if (_TabBar != undefined) {
-			if (_CategoriesList.dividerIndex != -1) {
-				_TabBar.setLabelText(_CategoriesList.entryList[0].text, _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text);
-				_CategoriesList.entryList[0].text = _CategoriesList.entryList[_CategoriesList.dividerIndex + 1].text = Translator.translate("$ALL");
+		if (_tabBar != undefined) {
+			if (_categoryList.dividerIndex != -1) {
+				_tabBar.setLabelText(_categoryList.entryList[0].text, _categoryList.entryList[_categoryList.dividerIndex + 1].text);
+				_categoryList.entryList[0].text = _categoryList.entryList[_categoryList.dividerIndex + 1].text = Translator.translate("$ALL");
 			}
 			
 			// Restore 0 as default index for tabbed lists
-			_CategoriesList.selectedIndex = 0;
+			_categoryList.selectedIndex = 0;
 		}
 
-		_CategoriesList.InvalidateData();
+		_categoryList.InvalidateData();
 	}
 
 	// API - Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	function InvalidateListData()
 	{
-		var flag = _CategoriesList.selectedEntry.flag;
+		var flag = _categoryList.selectedEntry.flag;
 
-		for (var i = 0; i < _CategoriesList.entryList.length; i++) {
-			_CategoriesList.entryList[i].filterFlag = _CategoriesList.entryList[i].bDontHide ? 1 : 0;
+		for (var i = 0; i < _categoryList.entryList.length; i++) {
+			_categoryList.entryList[i].filterFlag = _categoryList.entryList[i].bDontHide ? 1 : 0;
 		}
 
 		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
-		_ItemsList.InvalidateData();
-		for (var i = 0; i < _ItemsList.entryList.length; i++) {
-			for (var j = 0; j < _CategoriesList.entryList.length; ++j) {
-				if (_CategoriesList.entryList[j].filterFlag != 0) {
+		_itemList.InvalidateData();
+		for (var i = 0; i < _itemList.entryList.length; i++) {
+			for (var j = 0; j < _categoryList.entryList.length; ++j) {
+				if (_categoryList.entryList[j].filterFlag != 0) {
 					continue;
 				}
 
-				if (_ItemsList.entryList[i].filterFlag & _CategoriesList.entryList[j].flag) {
-					_CategoriesList.entryList[j].filterFlag = 1;
+				if (_itemList.entryList[i].filterFlag & _categoryList.entryList[j].flag) {
+					_categoryList.entryList[j].filterFlag = 1;
 				}
 			}
 		}
 
-		_CategoriesList.UpdateList();
+		_categoryList.UpdateList();
 
-		if (flag != _CategoriesList.selectedEntry.flag) {
+		if (flag != _categoryList.selectedEntry.flag) {
 			// Triggers an update if filter flag changed
-			_typeFilter.itemFilter = _CategoriesList.selectedEntry.flag;
-			dispatchEvent({type:"categoryChange", index:_CategoriesList.selectedIndex});
+			_typeFilter.itemFilter = _categoryList.selectedEntry.flag;
+			dispatchEvent({type:"categoryChange", index:_categoryList.selectedIndex});
 		}
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
-		if (_ItemsList.selectedIndex == -1) {
+		if (_itemList.selectedIndex == -1) {
 			dispatchEvent({type:"showItemsList", index: -1});
 		} else {
-			dispatchEvent({type:"itemHighlightChange", index:_ItemsList.selectedIndex});
+			dispatchEvent({type:"itemHighlightChange", index:_itemList.selectedIndex});
 		}
 	}
 }

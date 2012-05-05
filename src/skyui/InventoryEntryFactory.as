@@ -4,11 +4,11 @@ class skyui.InventoryEntryFactory extends skyui.BasicEntryFactory
 {
   /* PRIVATE VARIABLES */
 	
-	// override skyui.BasicEntryFactory
+	// @override skyui.BasicEntryFactory
 	private var _list: ScrollingList;
 	
 	
-  /* CONSTRUCTORS */	
+  /* CONSTRUCTORS */
 
 	public function InventoryEntryFactory(a_list: ScrollingList, a_iconThemeName: String)
 	{
@@ -19,7 +19,7 @@ class skyui.InventoryEntryFactory extends skyui.BasicEntryFactory
 	
   /* PUBLIC FUNCTIONS */
   
-  	// override skyui.BasicEntryFactory
+  	// @override skyui.BasicEntryFactory
 	public function createEntryClip(a_index: Number): MovieClip
 	{
 		var entryClip = super.createEntryClip(a_index);

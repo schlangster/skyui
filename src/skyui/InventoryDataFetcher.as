@@ -1,6 +1,40 @@
-﻿class skyui.InventoryDataFetcher implements skyui.IDataFetcher
-{
-	function processEntry(a_entryObject:Object, a_itemInfo:Object)
+﻿import skyui.BasicList;
+import gfx.io.GameDelegate;
+
+
+class skyui.InventoryDataFetcher implements skyui.IDataFetcher
+{	
+	public function InventoryDataFetcher(a_list: BasicList)
+	{
+		// Hack to inject functions for itemcard info retrieval
+		a_list["_itemInfo"] = null;
+
+		a_list["requestItemInfo"] = function(a_index: Number): Void
+		{
+			var oldIndex = this._selectedIndex;
+			this._selectedIndex = a_index;
+			GameDelegate.call("RequestItemCardInfo", [], this, "updateItemInfo");
+			this._selectedIndex = oldIndex;
+		};
+
+		a_list["updateItemInfo"] = function(a_updateObj: Object): Void
+		{
+			this._itemInfo = a_updateObj;
+		};
+	}
+	
+  	// @override skyui.IDataFetcher
+	public function processEntries(a_list: BasicList): Void
+	{
+		var entryList = a_list.entryList;
+		
+		for (var i = 0; i < entryList.length; i++) {
+			a_list["requestItemInfo"](i);
+			processEntry(entryList[i], a_list["_itemInfo"]);
+		}
+	}
+	
+	public function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
 		switch (a_itemInfo.type) {
 			case InventoryDefines.ICT_ARMOR :
@@ -33,11 +67,10 @@
 				
 			case InventoryDefines.ICT_POTION :
 				// if potion item has spellCost then it is a scroll
-				if (a_itemInfo.skillName) {
+				if (a_itemInfo.skillName)
 					a_itemInfo.type = InventoryDefines.ICT_BOOK;
-				} else if (a_itemInfo.spellCost) {
+				else if (a_itemInfo.spellCost)
 					a_itemInfo.type = InventoryDefines.ICT_SPELL;
-				}
 				// Fall through
 				
 			default:

@@ -1,18 +1,21 @@
-﻿import skyui.IColumnFormatter;
+﻿import skyui.LayoutEntryFormatter;
+import skyui.TabularList;
+import skyui.ListLayout;
 import skyui.Defines;
 import skyui.ConfigLoader;
 
 
-class skyui.InventoryColumnFormatter implements IColumnFormatter
+class skyui.InventoryEntryFormatter extends LayoutEntryFormatter
 {
+  /* CONSTANTS */
+  
 	private static var STATES = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
-	private var _maxTextLength: Number;
 
-	// icon vars
+  /* PRIVATE VARIABLES */
+	
 	private var _bShowStolenIcon: Boolean;
 
-	// color vars
 	private var _defaultEnabledColor;
 	private var _defaultDisabledColor;
 	private var _negativeEnabledColor;
@@ -21,9 +24,31 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 	private var _stolenDisabledColor;
 
 	private var _config: Object;
+	
+	
+  /* PROPERTIES */
+	
+	private var _maxTextLength: Number;
 
-	function InventoryColumnFormatter()
+	public function set maxTextLength(a_length:Number)
 	{
+		if (a_length > 3) {
+			_maxTextLength = a_length;
+		}
+	}
+
+	public function get maxTextLength():Number
+	{
+		return _maxTextLength;
+	}
+
+
+  /* CONSTRUCTORS */
+	
+	function InventoryEntryFormatter(a_list: TabularList)
+	{
+		super(a_list, a_list.layout);
+		
 		_maxTextLength = 50;
 		_bShowStolenIcon = true;
 		_defaultEnabledColor = 0xffffff;
@@ -37,8 +62,30 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 
 		ConfigLoader.registerCallback(this, "onConfigLoad");
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
+	
+  	// @override skyui.LayoutEntryFormatter
+	public function setSpecificEntryLayout(a_entryClip: MovieClip, a_entryObject: Object): Void
+	{
+		var iconY = _layout.entryHeight * 0.25;
+		var iconSize = _layout.entryHeight * 0.5;
+			
+		a_entryClip.bestIcon._height = a_entryClip.bestIcon._width = iconSize;
+		a_entryClip.favoriteIcon._height = a_entryClip.favoriteIcon._width = iconSize;
+		a_entryClip.poisonIcon._height = a_entryClip.poisonIcon._width = iconSize;
+		a_entryClip.stolenIcon._height = a_entryClip.stolenIcon._width = iconSize;
+		a_entryClip.enchIcon._height = a_entryClip.enchIcon._width = iconSize;
+			
+		a_entryClip.bestIcon._y = iconY;
+		a_entryClip.favIcon._y = iconY;
+		a_entryClip.poisonIcon._y = iconY;
+		a_entryClip.stolenIcon._y = iconY;
+		a_entryClip.enchIcon._y = iconY;
+	}
 
-	function onConfigLoad(event)
+	public function onConfigLoad(event)
 	{
 		_config = event.config;
 		
@@ -69,19 +116,8 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		}
 	}
 
-	function set maxTextLength(a_length:Number)
-	{
-		if (a_length > 3) {
-			_maxTextLength = a_length;
-		}
-	}
-
-	function get maxTextLength():Number
-	{
-		return _maxTextLength;
-	}
-
-	function formatEquipIcon(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
+  	// @override skyui.LayoutEntryFormatter
+	public function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
 			a_entryField.gotoAndStop(STATES[a_entryObject.equipState]);
@@ -90,7 +126,8 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		}
 	}
 
-	function formatItemIcon(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
+  	// @override skyui.LayoutEntryFormatter
+	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		var iconLabel:String;
 		
@@ -165,7 +202,8 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		a_entryField.gotoAndStop(iconLabel);
 	}
 
-	function formatName(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
+  	// @override skyui.LayoutEntryFormatter
+	public function formatName(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		if (a_entryObject.text != undefined) {
 
@@ -245,24 +283,24 @@ class skyui.InventoryColumnFormatter implements IColumnFormatter
 		}
 	}
 	
-	function formatColor(a_entryField:Object, a_entryObject:Object)
+  	// @override skyui.LayoutEntryFormatter
+	public function formatText(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
+	{
+		formatColor(a_entryField, a_entryObject);
+	}
+	
+	public function formatColor(a_entryField: Object, a_entryObject: Object): Void
 	{
 		// Negative Effect
-		if (a_entryObject.negativeEffect == true) {
+		if (a_entryObject.negativeEffect == true)
 			a_entryField.textColor = a_entryObject.enabled == false ? _negativeDisabledColor : _negativeEnabledColor;
 			
 		// Stolen
-		} else if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true) {
+		else if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true)
 			a_entryField.textColor = a_entryObject.enabled == false ? _stolenDisabledColor : _stolenEnabledColor;
 			
 		// Default
-		} else {
+		else
 			a_entryField.textColor = a_entryObject.enabled == false ? _defaultDisabledColor : _defaultEnabledColor;
-		}	
-	}
-
-	function formatText(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
-	{
-		formatColor(a_entryField, a_entryObject);
 	}
 }

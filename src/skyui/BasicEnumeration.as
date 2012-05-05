@@ -7,7 +7,6 @@
 	public function set entryData(a_data: Array)
 	{
 		_entryData = a_data;
-		invalidate();
 	}
 	
 	public function get entryData(): Array
@@ -39,20 +38,20 @@
 	}
 	
 	// @override skyui.IEntryEnumeration
-	public function lookupEntryIndex(a_enumIndex: Number)
+	public function lookupEntryIndex(a_enumIndex: Number): Number
 	{
 		return a_enumIndex;
 	}
 	
 	// @override skyui.IEntryEnumeration
-	public function lookupEnumIndex(a_entryIndex: Number)
+	public function lookupEnumIndex(a_entryIndex: Number): Number
 	{
 		return a_entryIndex;
 	}
 	
-	// The underlying entryData has been modified externally, so regenerate the enumeration.
+	// @override skyui.IEntryEnumeration
 	public function invalidate(): Void
 	{
-		// Abstract
+		// Do nothing.
 	}
 }

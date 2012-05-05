@@ -4,13 +4,18 @@ import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 import skyui.Config;
 import skyui.EntryClipManager;
+import skyui.IEntryClipFactory;
 import skyui.BasicEntryFactory;
+import skyui.IEntryEnumeration;
 import skyui.BasicEnumeration;
-
+import skyui.IEntryFormatter;
+import skyui.IDataFetcher;
+import skyui.IListComponentInitializer;
 
 class skyui.BasicList extends skyui.BSList
 {
   /* CONSTANTS */
+  
 	public static var PLATFORM_PC = 0;
 
 	public static var SELECT_MOUSE = 0;
@@ -20,15 +25,39 @@ class skyui.BasicList extends skyui.BSList
 	
   /* STAGE ELEMENTS */
 
-	public var anchorEntriesBegin:MovieClip;
-	public var anchorEntriesEnd:MovieClip;
+	public var anchorEntriesBegin: MovieClip;
+	public var anchorEntriesEnd: MovieClip;
 	
 	
   /* PRIVATE VARIABLES */
 
 	private var _entryClipManager: EntryClipManager;
 	
-	private var _listEnumeration: BasicEnumeration;
+	public function set entryClipFactory(a_factory: IEntryClipFactory)
+	{
+		_entryClipManager.entryClipFactory = a_factory;
+	}
+	
+	private var _listEnumeration: IEntryEnumeration;
+	
+	public function set listEnumeration(a_enumeration: IEntryEnumeration)
+	{
+		_listEnumeration = a_enumeration;
+	}
+	
+	private var _entryFormatter: IEntryFormatter;
+	
+	public function set entryFormatter(a_entryFormatter: IEntryFormatter)
+	{
+		_entryFormatter = a_entryFormatter;
+	}
+	
+	private var _dataFetcher: IDataFetcher;
+	
+	public function set dataFetcher(a_dataFetcher: IDataFetcher)
+	{
+		_dataFetcher = a_dataFetcher;
+	}
 	
 
   /* PROPERTIES */
@@ -117,25 +146,28 @@ class skyui.BasicList extends skyui.BSList
 		_bDisableInput = false;
 		_bMouseDrivenNav = false;
 		_platform = PLATFORM_PC;
+		
+		_entryClipManager = new EntryClipManager();
 
 		EventDispatcher.initialize(this);
 		Mouse.addListener(this);
-		
-		initComponents();
 	}
 
 	
   /* PUBLIC FUNCTIONS */
   
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
 	
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var addEventListener: Function;
 	
 	// @override skyui.BSList
 	public function InvalidateData(): Void
 	{
+		if (_dataFetcher)
+			_dataFetcher.processEntries(this);
+		
 		_listEnumeration.invalidate();
 		
 		if (_selectedIndex >= _listEnumeration.size())
@@ -172,21 +204,23 @@ class skyui.BasicList extends skyui.BSList
 	
 	
   /* PRIVATE FUNCTIONS */
-  
-	private function initComponents(): Void
-	{
-		_entryClipManager = new EntryClipManager(new BasicEntryFactory(this));
-		_listEnumeration = new BasicEnumeration(_entryList);
-	}
 
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number)
 	{
 		// abstract
 	}
 	
-	// Helper
 	private function getClipByIndex(a_index: Number): MovieClip
 	{
-		return _entryClipManager.getClipByIndex(a_index);
+
+		
+		var result = _entryClipManager.getClipByIndex(a_index);
+				skse.Log("INVALIDATE " + _entryClipManager);
+		return result;
+	}
+	
+	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
+	{
+		_entryFormatter.setEntry(a_entryClip, a_entryObject);
 	}
 }

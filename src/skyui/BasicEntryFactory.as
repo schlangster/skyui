@@ -46,7 +46,7 @@ class skyui.BasicEntryFactory implements skyui.IEntryClipFactory
 	
   /* PUBLIC FUNCTIONS */
   
-  	// override skyui.IEntryClipFactory
+  	// @override skyui.IEntryClipFactory
 	public function createEntryClip(a_index: Number): MovieClip
 	{
 		var entryClip = _list.attachMovie(_entryClassName, _entryClassName + a_index, _list.getNextHighestDepth());

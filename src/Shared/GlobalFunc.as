@@ -65,7 +65,7 @@
 
 	static function SetLockFunction()
 	{
-		MovieClip.prototype.Lock = function(aPosition:String)
+		MovieClip.prototype.Lock = function(aPosition: String): Void
 		{
 			var topLeft = {x:Stage.visibleRect.x + Stage.safeRect.x, y:Stage.visibleRect.y + Stage.safeRect.y};
 			var bottomRight = {x:Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y:Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
@@ -73,18 +73,18 @@
 			_parent.globalToLocal(topLeft);
 			_parent.globalToLocal(bottomRight);
 
-			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR") {
+			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR")
 				_y = topLeft.y;
-			}
-			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR") {
+
+			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR")
 				_y = bottomRight.y;
-			}
-			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL") {
+
+			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL")
 				_x = topLeft.x;
-			}
-			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR") {
+
+			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR")
 				_x = bottomRight.x;
-			}
+
 		};
 	}
 

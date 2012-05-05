@@ -2,8 +2,16 @@
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 
-import skyui.InventoryColumnFormatter;
+import skyui.CategoryList;
+import skyui.TabularList;
+import skyui.CategoryEntryFactory;
+import skyui.InventoryEntryFactory;
+import skyui.BasicEnumeration;
+import skyui.FilteredEnumeration;
+import skyui.InventoryEntryFormatter;
+import skyui.AlphaEntryFormatter;
 import skyui.InventoryDataFetcher;
+
 
 class InventoryMenu extends ItemMenu
 {
@@ -15,9 +23,6 @@ class InventoryMenu extends ItemMenu
 	var PrevButtonArt:Object;
 	var ItemCardListButtonArt:Array;
 	var CategoryListIconArt:Array;
-	
-	var ColumnFormatter:InventoryColumnFormatter;
-	var DataFetcher:InventoryDataFetcher;
 
 	// ?
 	var bPCControlsReady = true;
@@ -40,10 +45,7 @@ class InventoryMenu extends ItemMenu
 							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
 							   "inv_books", "inv_keys", "inv_misc"];
 		
-		ColumnFormatter = new InventoryColumnFormatter();
-		ColumnFormatter.maxTextLength = 80;
-		
-		DataFetcher = new InventoryDataFetcher();
+
 	}
 
 	function InitExtensions()
@@ -51,14 +53,37 @@ class InventoryMenu extends ItemMenu
 		super.InitExtensions();
 
 		GlobalFunc.AddReverseFunctions();
-		InventoryLists_mc.ZoomButtonHolderInstance.gotoAndStop(1);
+		inventoryLists.zoomButtonHolder.gotoAndStop(1);
 		BottomBar_mc.SetButtonArt(ChargeButtonArt, 3);
 
-		InventoryLists_mc.CategoriesList.iconArt = CategoryListIconArt;
+		inventoryLists.categoryList.iconArt = CategoryListIconArt;
 
-		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
-		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
-		InventoryLists_mc.ItemsList.setConfigSection("ItemList");
+		// Initialize category list components
+		var categoryList: CategoryList = inventoryLists.categoryList;
+		
+		categoryList.entryClipFactory = new CategoryEntryFactory(categoryList);
+		
+		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
+		
+		categoryList.entryFormatter = new AlphaEntryFormatter(categoryList);
+		
+		categoryList.iconArt = CategoryListIconArt;
+		
+		// Initialize item list components
+		var itemList: TabularList = inventoryLists.itemList;
+		
+		itemList.entryClipFactory = new InventoryEntryFactory(itemList);
+		
+		itemList.listEnumeration = new FilteredEnumeration(itemList.entryList);
+		
+		var entryFormatter = new InventoryEntryFormatter(itemList);
+		entryFormatter.maxTextLength = 80;
+		itemList.entryFormatter = entryFormatter;
+		
+		itemList.dataFetcher = new InventoryDataFetcher();
+
+		// TODO
+//		inventoryLists.itemList.setConfigSection("ItemList");
 		
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
 		GameDelegate.addCallBack("DropItem", this, "DropItem");
@@ -76,7 +101,7 @@ class InventoryMenu extends ItemMenu
 					StartMenuFade();
 					GameDelegate.call("CloseTweenMenu", []);
 				}
-			} else if (!InventoryLists_mc.ItemsList.disableInput) {
+			} else if (!inventoryLists.itemList.disableInput) {
 				if (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8 && _platform != 0) {
 					openMagicMenu();
 				}
@@ -103,7 +128,7 @@ class InventoryMenu extends ItemMenu
 
 	function StartMenuFade()
 	{
-		InventoryLists_mc.HideCategoriesList();
+		inventoryLists.HideCategoriesList();
 		ToggleMenuFade();
 		SaveIndices();
 		_bMenuClosing = true;
@@ -161,7 +186,7 @@ class InventoryMenu extends ItemMenu
 
 
 		BottomBar_mc.SetButtonText("$Drop", 1);
-		if (InventoryLists_mc.ItemsList.selectedEntry.filterFlag & InventoryLists_mc.CategoriesList.entryList[0].flag != 0) {
+		if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0) {
 			BottomBar_mc.SetButtonText("$Unfavorite", 2);
 		} else {
 			BottomBar_mc.SetButtonText("$Favorite", 2);
@@ -197,18 +222,18 @@ class InventoryMenu extends ItemMenu
 
 	function DropItem()
 	{
-		if (ShouldProcessItemsListInput(false) && InventoryLists_mc.ItemsList.selectedEntry != undefined) {
-			if (InventoryLists_mc.ItemsList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT) {
+		if (ShouldProcessItemsListInput(false) && inventoryLists.itemList.selectedEntry != undefined) {
+			if (inventoryLists.itemList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT) {
 				onQuantityMenuSelect({amount:1});
 			} else {
-				ItemCard_mc.ShowQuantityMenu(InventoryLists_mc.ItemsList.selectedEntry.count);
+				ItemCard_mc.ShowQuantityMenu(inventoryLists.itemList.selectedEntry.count);
 			}
 		}
 	}
 
 	function AttemptChargeItem()
 	{
-		if (InventoryLists_mc.ItemsList.selectedIndex == -1) {
+		if (inventoryLists.itemList.selectedIndex == -1) {
 			return;
 		}
 		
@@ -257,14 +282,14 @@ class InventoryMenu extends ItemMenu
 
 	function SetPlatform(a_platform, a_bPS3Switch)
 	{
-		InventoryLists_mc.ZoomButtonHolderInstance.gotoAndStop(1);
-		InventoryLists_mc.ZoomButtonHolderInstance.ZoomButton._visible = a_platform != 0;
-		InventoryLists_mc.ZoomButtonHolderInstance.ZoomButton.SetPlatform(a_platform, a_bPS3Switch);
+		inventoryLists.zoomButtonHolder.gotoAndStop(1);
+		inventoryLists.zoomButtonHolder.ZoomButton._visible = a_platform != 0;
+		inventoryLists.zoomButtonHolder.ZoomButton.SetPlatform(a_platform, a_bPS3Switch);
 		super.SetPlatform(a_platform, a_bPS3Switch);
 	}
 
 	function ItemRotating()
 	{
-		InventoryLists_mc.ZoomButtonHolderInstance.PlayForward(InventoryLists_mc.ZoomButtonHolderInstance._currentframe);
+		inventoryLists.zoomButtonHolder.PlayForward(inventoryLists.zoomButtonHolder._currentframe);
 	}
 }
