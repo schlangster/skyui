@@ -23,18 +23,109 @@ class skyui.ListLayout
 	private var _layoutData: Object;
 	private var _defaultsData: Object;
 
-	private var _entryWidth: Number;
-	private var _entryHeight: Number;
-
-	private var _lastViewIndex: Number;
+	private var _lastViewIndex: Number = -1;
 	
 	// viewIndex, columnIndex, stateIndex
-	private var _prefData: Object;
+	private var _prefData: Object = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
 	
 	// 1 .. n
-	private var _activeColumnState: Number;
+	private var _activeColumnState: Number = 0;
 	
-	private var _customEntryTextFormats:Array;
+	
+  /* PROPERTIES */
+
+	private var _views: Array;
+
+	public function get views(): Array
+	{
+		return _views;
+	}
+	
+	private var _activeViewIndex: Number = -1;
+	
+	public function get activeViewIndex(): Number
+	{
+		return _activeViewIndex;
+	}
+	
+	public function get currentView(): Object
+	{
+		return _views[_activeViewIndex];
+	}
+	
+	private var _activeColumnIndex: Number = 0;
+	
+	public function get activeColumnIndex(): Number
+	{
+		return _activeColumnIndex;
+	}
+	
+	public function get columnCount(): Number
+	{
+		return _views[_activeViewIndex].columns.length;
+	}
+	
+	private var _columnTypes: Array = [];
+	
+	public function get columnTypes(): Array
+	{
+		return _columnTypes;
+	}
+	
+	// [c1.x, c1.y, c2.x, c2.y, ...] - (x,y) Offset of column fields in a row (relative to the entry clip)
+	private var _columnPositions: Array = [];
+	
+	public function get columnPositions(): Array
+	{
+		return _columnPositions;
+	}
+	
+	// [c1.width, c1.height, c2.width, c2.height, ...]
+	private var _columnSizes: Array = [];
+		
+	public function get columnSizes(): Array
+	{
+		return _columnSizes;
+	}
+	
+	// These are the names like textField0, equipIcon etc used when positioning, not the names as defined in the config
+	private var _columnNames: Array = [];
+	
+	public function get columnNames(): Array
+	{
+		return _columnNames;
+	}
+	
+	private var _hiddenColumnNames: Array = [];
+	
+	public function get hiddenColumnNames(): Array
+	{
+		return _hiddenColumnNames;
+	}
+	
+	// Only used for textfield-based columns
+	private var _columnEntryValues: Array = [];
+	
+	public function get columnEntryValues(): Array
+	{
+		return _columnEntryValues;
+	}
+	
+	private var _entryWidth: Number;
+	
+	public function get entryWidth(): Number
+	{
+		return _entryWidth;
+	}
+
+	private var _entryHeight: Number;
+
+	public function get entryHeight(): Number
+	{
+		return _entryHeight;
+	}
+	
+	private var _customEntryTextFormats: Array = [];
 	
 	public function get customEntryTextFormats(): Array
 	{
@@ -48,102 +139,11 @@ class skyui.ListLayout
 		return _defaultEntryTextFormat;
 	}
 	
-	
 	private var _defaultLabelTextFormat: TextFormat;
 	
 	public function get defaultLabelTextFormat(): TextFormat
 	{
 		return _defaultLabelTextFormat;
-	}
-	
-	
-  /* PROPERTIES */
-
-	private var _views: Array;
-
-	public function get views(): Array
-	{
-		return _views;
-	}
-	
-	private var _activeViewIndex: Number;
-	
-	public function get activeViewIndex(): Number
-	{
-		return _activeViewIndex;
-	}
-	
-	public function get currentView(): Object
-	{
-		return _views[_activeViewIndex];
-	}
-	
-	private var _activeColumnIndex: Number;
-	
-	public function get activeColumnIndex(): Number
-	{
-		return _activeColumnIndex;
-	}
-	
-	public function get columnCount(): Number
-	{
-		return _views[_activeViewIndex].columns.length;
-	}
-	
-	private var _columnTypes: Array;
-	
-	public function get columnTypes(): Array
-	{
-		return _columnTypes;
-	}
-	
-	// [c1.x, c1.y, c2.x, c2.y, ...] - (x,y) Offset of column fields in a row (relative to the entry clip)
-	private var _columnPositions: Array;
-	
-	public function get columnPositions(): Array
-	{
-		return _columnPositions;
-	}
-	
-	// [c1.width, c1.height, c2.width, c2.height, ...]
-	private var _columnSizes: Array;
-		
-	public function get columnSizes(): Array
-	{
-		return _columnSizes;
-	}
-	
-	// These are the names like textField0, equipIcon etc used when positioning, not the names as defined in the config
-	private var _columnNames: Array;
-	
-	public function get columnNames(): Array
-	{
-		return _columnNames;
-	}
-	
-	private var _hiddenColumnNames: Array;
-	
-	public function get hiddenColumnNames(): Array
-	{
-		return _hiddenColumnNames;
-	}
-	
-	// Only used for textfield-based columns
-	private var _columnEntryValues: Array;
-	
-	public function get columnEntryValues(): Array
-	{
-		return _columnEntryValues;
-	}
-	
-	public function get entryWidth(): Number
-	{
-		return _entryWidth;
-	}
-	
-	public function get entryHeight(): Number
-	{
-		return _entryHeight;
 	}
 	
 	
@@ -161,23 +161,6 @@ class skyui.ListLayout
 		
 		// For quick access
 		_views = _layoutData.views;
-
-		// Defaults, will be overridden later
-		_activeViewIndex = -1;
-		_entryHeight = 28;
-		_lastViewIndex = -1;
-		_activeColumnState = 1;
-		_activeColumnIndex = 0;
-		
-		_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
-		
-		_columnTypes = [];
-		_columnPositions = [];
-		_columnSizes = [];
-		_columnNames = [];
-		_hiddenColumnNames = [];
-		_columnEntryValues = [];
-		_customEntryTextFormats = [];
 		
 		// Initial textformats
 		_defaultEntryTextFormat = new TextFormat(); 
@@ -238,7 +221,7 @@ class skyui.ListLayout
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	public function update()
+	private function update(): Void
 	{
 		var columns = currentView.columns;
 
@@ -256,8 +239,37 @@ class skyui.ListLayout
 		// Set bit at position i if column is weighted
 		var weightedFlags = 0;
 		
+		// Move some data from current state to root of the column so we can access single- and multi-state columns in the same manner.
+		// So this is a merge of defaults, column root and current state.
+		for (var i = 0; i < columns.length; i++) {				
+			// Single-state
+			if (columns[i].states == undefined || columns[i].states < 2)
+				continue;
+				
+			// Non-active columns always use state 1
+			var stateData;
+			if (i == _activeColumnIndex)
+				stateData = columns[i]["state" + _activeColumnState];
+			else
+				stateData = columns[i]["state1"];
+
+			// Might have to create parents nodes first
+			if (columns[i].label == undefined)
+				columns[i].label = {};
+				
+			if (columns[i].entry == undefined)
+				columns[i].entry = {};
+
+			columns[i].label.text = stateData.label.text;
+			columns[i].label.arrowDown = stateData.label.arrowDown;
+			columns[i].entry.text = stateData.entry.text;
+			columns[i].sortAttributes = stateData.sortAttributes;
+			columns[i].sortOptions = stateData.sortOptions;
+		}
+		
 		// Subtract arrow tip width
 		var weightedWidth = _entryWidth - 12;
+		skse.Log("weightedWidth: " + weightedWidth);
 		
 		var weightSum = 0;
 
@@ -307,16 +319,17 @@ class skyui.ListLayout
 				default:
 					_columnNames[i] = "textField" + textFieldIndex++;
 					
-					if (col.entry.width != undefined) {
+					if (col.width != undefined) {
 						// Width >= 1 for absolute width, < 1 for percentage width
-						_columnSizes[i*2] = col.entry.width < 1 ? col.entry.width * _entryWidth : col.entry.width;
-						weightedWidth -= col.entry.width;
-					} else
+						_columnSizes[i*2] = col.width < 1 ? (col.width * _entryWidth) : col.width;
+						weightedWidth -= _columnSizes[i*2];
+					} else {
 						_columnSizes[i*2] = 0;
+					}
 					
-					if (col.entry.height != undefined)
+					if (col.height != undefined)
 						// Height >= 1 for absolute height, < 1 for percentage height
-						_columnSizes[i*2+1] = col.entry.height < 1 ? col.entry.height * _entryWidth : col.entry.height;
+						_columnSizes[i*2+1] = col.height < 1 ? (col.height * _entryWidth) : col.height;
 					else
 						_columnSizes[i*2+1] = 0;
 					
@@ -342,21 +355,32 @@ class skyui.ListLayout
 				weightedWidth -= col.border[0] + col.border[1];
 				curHeight += col.border[2] + col.border[3];
 				_columnPositions[i*2+1] = col.border[2];
-			} else
+			} else {
 				_columnPositions[i*2+1] = 0;
+			}
 			
 			if (curHeight > maxHeight)
 				maxHeight = curHeight;
 		}
 		
 		// Calculate the widths
+		skse.Log("a weightedSum: " + weightSum);
+		skse.Log("a weightedWidth: " + weightedWidth);
+		
 		if (weightSum > 0 && weightedWidth > 0 && weightedFlags != 0) {
 			for (var i=columns.length-1; i>=0; i--) {
+				var col = columns[i];
+				
 				if ((weightedFlags >>>= 1) & 1) {
+					skse.Log("a old: " + _columnSizes[i*2]);
+					skse.Log("a col.weight: " + _columnSizes[i*2]);
+					
 					if (col.border != undefined)
 						_columnSizes[i*2] += ((col.weight / weightSum) * weightedWidth) - col.border[0] - col.border[1];
 					else
 						_columnSizes[i*2] += (col.weight / weightSum) * weightedWidth;
+
+					skse.Log("a result: " + _columnSizes[i*2]);
 				}
 			}
 		}
@@ -388,9 +412,8 @@ class skyui.ListLayout
 		
 		if (!bEnableEquipIcon)
 			_hiddenColumnNames.push("equipIcon");
-// TODO			
+		
 		_entryHeight = maxHeight;
-//		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
 		
 		updateSortParams();
 		

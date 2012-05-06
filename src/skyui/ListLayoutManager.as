@@ -58,7 +58,9 @@ class skyui.ListLayoutManager
 		// Otherwise create
 		for (var i = 0; i < _layoutData.layouts.length; i++) {
 			if (_layoutData.layouts[i].name == a_name) {
-				_layouts[a_name] = new ListLayout(_layoutData.layouts[i], _layoutData.defaults, _layoutData.list.entryWidth, _layoutData.list.entryHeight);
+				_layouts[a_name] = new ListLayout(_layoutData.layouts[i],
+												  _layoutData.defaults,
+												  _layoutData.list.entryWidth);
 				return _layouts[a_name];
 			}
 		}

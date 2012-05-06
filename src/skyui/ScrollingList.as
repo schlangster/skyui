@@ -12,13 +12,12 @@ class skyui.ScrollingList extends skyui.BasicList
 {
   /* PRIVATE VARIABLES */  
 
-	private var _listIndex:Number;
+	private var _listIndex:Number = 0;
+	private var _entryHeight:Number = 28;
+	private var _curClipIndex:Number = -1;
+	
 	private var _maxListIndex:Number;
 	private var _listHeight:Number;
-	
-	private var _entryHeight:Number;
-
-	private var _curClipIndex:Number;
 	
 	// FIXME
 	
@@ -30,7 +29,7 @@ class skyui.ScrollingList extends skyui.BasicList
 
   /* PROPERTIES */
 
-	private var _scrollPosition: Number;
+	private var _scrollPosition: Number = 0;
 	
 	public function get scrollPosition()
 	{
@@ -48,7 +47,7 @@ class skyui.ScrollingList extends skyui.BasicList
 			updateScrollPosition(a_newPosition);
 	}
 	
-	private var _maxScrollPosition: Number;
+	private var _maxScrollPosition: Number = 0;
 
 	public function get maxScrollPosition()
 	{
@@ -61,17 +60,10 @@ class skyui.ScrollingList extends skyui.BasicList
 	public function ScrollingList()
 	{
 		super();
-
-		_scrollPosition = 0;
-		_maxScrollPosition = 0;
-		_listIndex = 0;
-
-		_entryHeight = 28;
+		
 		_listHeight = anchorEntriesBegin._y + anchorEntriesEnd._y;
 		
 		_maxListIndex = Math.floor(_listHeight / _entryHeight);
-		
-		_curClipIndex = -1;
 	}
 	
 	

@@ -6,10 +6,10 @@ class skyui.InventoryDataFetcher implements skyui.IDataFetcher
 {	
 	public function InventoryDataFetcher(a_list: BasicList)
 	{
-		// Hack to inject functions for itemcard info retrieval
-		a_list["_itemInfo"] = null;
+		// Hack to inject functions for itemcard info retrieval		
+		Object(a_list)._itemInfo = null;
 
-		a_list["requestItemInfo"] = function(a_index: Number): Void
+		Object(a_list).requestItemInfo = function(a_index: Number): Void
 		{
 			var oldIndex = this._selectedIndex;
 			this._selectedIndex = a_index;
@@ -17,7 +17,7 @@ class skyui.InventoryDataFetcher implements skyui.IDataFetcher
 			this._selectedIndex = oldIndex;
 		};
 
-		a_list["updateItemInfo"] = function(a_updateObj: Object): Void
+		Object(a_list).updateItemInfo = function(a_updateObj: Object): Void
 		{
 			this._itemInfo = a_updateObj;
 		};
@@ -29,7 +29,7 @@ class skyui.InventoryDataFetcher implements skyui.IDataFetcher
 		var entryList = a_list.entryList;
 		
 		for (var i = 0; i < entryList.length; i++) {
-			a_list["requestItemInfo"](i);
+			Object(a_list).requestItemInfo(i);
 			processEntry(entryList[i], a_list["_itemInfo"]);
 		}
 	}

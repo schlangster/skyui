@@ -23,6 +23,8 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 	{
 		var layout = _list.layout;
 		
+		skse.Log("layout: " + layout);
+		
 		if (a_entryClip == undefined)
 			return;
 			
@@ -35,9 +37,13 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 		var columnEntryValues = layout.columnEntryValues;
 		var columnTypes = layout.columnTypes;
 		
+		skse.Log("columnCount: " + columnCount);
+		
 		// View changed? Update the columns positions etc.
 		if (activeViewIndex != -1 && a_entryClip.viewIndex != activeViewIndex) {
 			a_entryClip.viewIndex = activeViewIndex;
+			
+			skse.Log("view index changed: " + activeViewIndex);
 			
 			setEntryLayout(a_entryClip, a_entryObject);
 			setSpecificEntryLayout(a_entryClip, a_entryObject);
@@ -92,16 +98,25 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 		// Set up all visible elements in this entry
 		for (var i=0; i<columnCount; i++) {
 			var e = a_entryClip[columnNames[i]];
+			
+			skse.Log("setting: " + columnNames[i]);
+			
 			e._visible = true;
 		
 			e._x = columnPositions[i*2];
 			e._y = columnPositions[i*2+1];
+			
+			skse.Log("x: " + e._x);
+			skse.Log("y: " + e._y);
 		
 			if (columnSizes[i*2] > 0)
 				e._width = columnSizes[i*2];
 		
 			if (columnSizes[i*2+1] > 0)
 				e._height = columnSizes[i*2+1];
+				
+			skse.Log("w: " + e._width);
+			skse.Log("h: " + e._height);
 			
 			if (e instanceof TextField)
 				e.setTextFormat(customEntryTextFormats[i] ? customEntryTextFormats[i] : defaultEntryTextFormat);
@@ -110,8 +125,10 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 		// Hide any unused elements
 		var hiddenColumnNames = layout.hiddenColumnNames;
 		
-		for (var i=0; i<hiddenColumnNames.length; i++)
+		for (var i=0; i<hiddenColumnNames.length; i++) {
+			skse.Log("hiding: " + hiddenColumnNames[i]);
 			a_entryClip[hiddenColumnNames[i]]._visible = false;
+		}
 	}
 	
 	// Do any clip-specific tasks when the view was changed for this entry.
@@ -119,14 +136,14 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 	public function setSpecificEntryLayout(a_entryClip: MovieClip, a_entryObject: Object): Void {}
 
 	// @abstract
-	function formatName(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip) {}
+	public function formatName(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void {}
 	
 	// @abstract
-	function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip) {}
+	public function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void {}
 
 	// @abstract
-	function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip) {}
+	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void {}
 	
 	// @abstract
-	function formatText(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip) {}
+	public function formatText(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void {}
 }

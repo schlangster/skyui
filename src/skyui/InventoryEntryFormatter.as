@@ -205,81 +205,80 @@ class skyui.InventoryEntryFormatter extends TabularEntryFormatter
   	// @override skyui.LayoutEntryFormatter
 	public function formatName(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
-		if (a_entryObject.text != undefined) {
-
-			// Text
-			var text = a_entryObject.text;
-
-			if (a_entryObject.soulLVL != undefined) {
-				text = text + " (" + a_entryObject.soulLVL + ")";
-			}
-
-			if (a_entryObject.count > 1) {
-				text = text + " (" + a_entryObject.count.toString() + ")";
-			}
-
-			if (text.length > _maxTextLength) {
-				text = text.substr(0, _maxTextLength - 3) + "...";
-			}
-
-			a_entryField.autoSize = "left";
-			a_entryField.SetText(text);
-			
-			formatColor(a_entryField, a_entryObject);
-
-			// BestInClass icon
-			var iconPos = a_entryField._x + a_entryField._width + 5;
-
-			// All icons have the same size
-			var iconSpace = a_entryClip.bestIcon._width * 1.25;
-
-			if (a_entryObject.bestInClass == true) {
-				a_entryClip.bestIcon._x = iconPos;
-				iconPos = iconPos + iconSpace;
-
-				a_entryClip.bestIcon.gotoAndStop("show");
-			} else {
-				a_entryClip.bestIcon.gotoAndStop("hide");
-			}
-
-			// Fav icon
-			if (a_entryObject.favorite == true) {
-				a_entryClip.favoriteIcon._x = iconPos;
-				iconPos = iconPos + iconSpace;
-				a_entryClip.favoriteIcon.gotoAndStop("show");
-			} else {
-				a_entryClip.favoriteIcon.gotoAndStop("hide");
-			}
-
-			// Poisoned Icon
-			if (a_entryObject.infoIsPoisoned == true) {
-				a_entryClip.poisonIcon._x = iconPos;
-				iconPos = iconPos + iconSpace;
-				a_entryClip.poisonIcon.gotoAndStop("show");
-			} else {
-				a_entryClip.poisonIcon.gotoAndStop("hide");
-			}
-
-			// Stolen Icon
-			if ((a_entryObject.infoIsStolen == true || a_entryObject.isStealing) && _bShowStolenIcon != false) {
-				a_entryClip.stolenIcon._x = iconPos;
-				iconPos = iconPos + iconSpace;
-				a_entryClip.stolenIcon.gotoAndStop("show");
-			} else {
-				a_entryClip.stolenIcon.gotoAndStop("hide");
-			}
-
-			// Enchanted Icon
-			if (a_entryObject.infoIsEnchanted == true) {
-				a_entryClip.enchIcon._x = iconPos;
-				iconPos = iconPos + iconSpace;
-				a_entryClip.enchIcon.gotoAndStop("show");
-			} else {
-				a_entryClip.enchIcon.gotoAndStop("hide");
-			}
-
-		} else {
+		if (a_entryObject.text == undefined) {
 			a_entryField.SetText(" ");
+			return;
+		}
+
+		// Text
+		var text = a_entryObject.text;
+
+		if (a_entryObject.soulLVL != undefined) {
+			text = text + " (" + a_entryObject.soulLVL + ")";
+		}
+
+		if (a_entryObject.count > 1) {
+			text = text + " (" + a_entryObject.count.toString() + ")";
+		}
+
+		if (text.length > _maxTextLength) {
+			text = text.substr(0, _maxTextLength - 3) + "...";
+		}
+
+		a_entryField.autoSize = "left";
+		a_entryField.SetText(text);
+		
+		formatColor(a_entryField, a_entryObject);
+
+		// BestInClass icon
+		var iconPos = a_entryField._x + a_entryField._width + 5;
+
+		// All icons have the same size
+		var iconSpace = a_entryClip.bestIcon._width * 1.25;
+
+		if (a_entryObject.bestInClass == true) {
+			a_entryClip.bestIcon._x = iconPos;
+			iconPos = iconPos + iconSpace;
+
+			a_entryClip.bestIcon.gotoAndStop("show");
+		} else {
+			a_entryClip.bestIcon.gotoAndStop("hide");
+		}
+
+		// Fav icon
+		if (a_entryObject.favorite == true) {
+			a_entryClip.favoriteIcon._x = iconPos;
+			iconPos = iconPos + iconSpace;
+			a_entryClip.favoriteIcon.gotoAndStop("show");
+		} else {
+			a_entryClip.favoriteIcon.gotoAndStop("hide");
+		}
+
+		// Poisoned Icon
+		if (a_entryObject.infoIsPoisoned == true) {
+			a_entryClip.poisonIcon._x = iconPos;
+			iconPos = iconPos + iconSpace;
+			a_entryClip.poisonIcon.gotoAndStop("show");
+		} else {
+			a_entryClip.poisonIcon.gotoAndStop("hide");
+		}
+
+		// Stolen Icon
+		if ((a_entryObject.infoIsStolen == true || a_entryObject.isStealing) && _bShowStolenIcon != false) {
+			a_entryClip.stolenIcon._x = iconPos;
+			iconPos = iconPos + iconSpace;
+			a_entryClip.stolenIcon.gotoAndStop("show");
+		} else {
+			a_entryClip.stolenIcon.gotoAndStop("hide");
+		}
+
+		// Enchanted Icon
+		if (a_entryObject.infoIsEnchanted == true) {
+			a_entryClip.enchIcon._x = iconPos;
+			iconPos = iconPos + iconSpace;
+			a_entryClip.enchIcon.gotoAndStop("show");
+		} else {
+			a_entryClip.enchIcon.gotoAndStop("hide");
 		}
 	}
 	

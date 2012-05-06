@@ -61,6 +61,12 @@ class skyui.TabularList extends skyui.ScrollingList
 	
 	public function onLayoutChange(event)
 	{
+		_entryHeight = _layout.entryHeight;
+		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
+		
+		skse.Log("_entryHeight: " + _entryHeight);
+		skse.Log("_maxListIndex: " + _maxListIndex);
+		
 		UpdateList();
 	}
 	
