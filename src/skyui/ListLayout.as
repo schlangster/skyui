@@ -198,20 +198,17 @@ class skyui.ListLayout
 		// Find a matching view, or use last index
 		for (var i = 0; i < _views.length; i++) {
 			
-			// Wrap in list if necessary
-			if (! ((_views[i].category) instanceof Array)) {
-				_views[i].category = [_views[i].category];
-			}
+			// Wrap in array for single category
+			var categories = ((views[i].category) instanceof Array) ? views[i].category : [views[i].category];
 			
-			if (_views[i].category.indexOf(a_flag) != undefined || i == _views.length-1) {
+			if (categories.indexOf(a_flag) != undefined || i == _views.length-1) {
 				_activeViewIndex = i;
 				break;
 			}
 		}
 		
-		if (_activeViewIndex == -1 || _lastViewIndex == _activeViewIndex) {
+		if (_activeViewIndex == -1 || _lastViewIndex == _activeViewIndex)
 			return;
-		}
 		
 		_lastViewIndex = _activeViewIndex;
 		
@@ -224,6 +221,8 @@ class skyui.ListLayout
 			_activeColumnState = 1;
 		}
 
+		skse.Log("Updating " + _activeViewIndex);
+
 		update();
 	}
 	
@@ -232,9 +231,12 @@ class skyui.ListLayout
 	
 	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// @mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	public function update()
 	{
@@ -422,7 +424,7 @@ class skyui.ListLayout
 		if (! sortOptions instanceof Array)
 			sortOptions = [sortOptions];
 			
-		dispatchEvent({type: "sortChange", sortAttributes: sortAttributes, sortOptions: sortOptions});
+		dispatchEvent({type:"sortChange", attributes: sortAttributes, options: sortOptions});
 	}
 	
 	private function restorePrefState(): Boolean

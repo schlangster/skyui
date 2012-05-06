@@ -2,6 +2,7 @@
  *  Basic list API expected by the game.
  */
 
+// @abstract
 class skyui.BSList extends MovieClip
 {
   /* PROPERTIES */
@@ -54,14 +55,9 @@ class skyui.BSList extends MovieClip
   /* PUBLIC FUNCTIONS */
 	
 	// Indicates that entryList has been updated.
-	public function InvalidateData(): Void
-	{
-		// abstract
-	}
+	// @abstract
+	public function InvalidateData(): Void { }
 	
 	// Redraws the list.
-	public function UpdateList(): Void
-	{
-		// abstract
-	}
+	public function UpdateList(): Void { }
 }

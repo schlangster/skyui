@@ -19,27 +19,25 @@ class skyui.ItemSorter implements skyui.IFilter
 	
   /* PUBLIC FUNCTIONS */
   
-    // @mixin gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-    // @mixin gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 
-	// Change the filter attributes and options and trigger an update if necessary (and not supressed).
-	public function setSortBy(a_sortAttributes: Array, a_sortOptions: Array, a_bNoUpdate: Boolean)
+	// Change the filter attributes and options and trigger an update if necessary.
+	public function setSortBy(a_sortAttributes: Array, a_sortOptions: Array)
 	{
-		if (a_bNoUpdate == undefined) {
-			a_bNoUpdate = false;
-		}
-
-		// Set attributes and options at once so we don't create 2 filter change events.
-		var changed = _sortAttributes != a_sortAttributes || _sortOptions != a_sortOptions;
+		if (_sortAttributes == a_sortAttributes && _sortOptions == a_sortOptions)
+			return;
+			
 		_sortAttributes = a_sortAttributes;
 		_sortOptions = a_sortOptions;
-
-		if (changed && !a_bNoUpdate) {
-			dispatchEvent({type: "filterChange"});
-		}
+		
+		dispatchEvent({type: "filterChange"});
 	}
 
 	// @override skyui.IFilter

@@ -21,7 +21,6 @@ class skyui.ScrollingList extends skyui.BasicList
 	private var _curClipIndex:Number;
 	
 	// FIXME
-	private var _listEnumeration: FilteredEnumeration;
 	
 	
   /* STAGE ELEMENTS */
@@ -184,8 +183,6 @@ class skyui.ScrollingList extends skyui.BasicList
 	// @override skyui.BasicList
 	public function InvalidateData(): Void
 	{
-		skse.Log("created");
-		
 		invalidateFilterData();
 		
 		calculateMaxScrollPosition();		
@@ -301,26 +298,27 @@ class skyui.ScrollingList extends skyui.BasicList
 		UpdateList();
 	}
 	
-	// Did you mean: numFilteredItems() ?
-	public function get numUnfilteredItems():Number
+	public function get filteredItemsCount(): Number
 	{
 		return getListEnumSize();
 	}
 	
-	public function addFilter(a_filter:IFilter): Void
+	public function addFilter(a_filter: IFilter): Void
 	{
 		_listEnumeration.addFilter(a_filter);
 	}
 	
+	// @override skyui.BasicList
+	private var _listEnumeration: FilteredEnumeration;
+	
+	// @override skyui.BasicList
+	public function set listEnumeration(a_enumeration: FilteredEnumeration)
+	{
+		_listEnumeration = a_enumeration;
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
-
-  	// @override skyui.BasicList
-	private function initComponents(): Void
-	{
-		_entryClipManager = new EntryClipManager(new InventoryEntryFactory(this));
-		_listEnumeration = new FilteredEnumeration(_entryList);
-	}
   
   	// @override skyui.BasicList
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
@@ -393,45 +391,20 @@ class skyui.ScrollingList extends skyui.BasicList
 		}
 	}
 	
-	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		if (a_entryClip != undefined) {
-			a_entryClip.selectArea._alpha = a_entryObject == selectedEntry ? 40 : 0;
-			setEntryText(a_entryClip,a_entryObject);
-		}
-	}
-
-	private function setEntryText(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		if (a_entryClip.textField != undefined) {
-			a_entryClip.textField.textAutoSize = "shrink";
-
-			if (a_entryObject.text != undefined)
-				a_entryClip.textField.SetText(a_entryObject.text);
-			else
-				a_entryClip.textField.SetText(" ");
-
-			if (a_entryObject.enabled != undefined)
-				a_entryClip.textField.textColor = a_entryObject.enabled == false ? 0x606060 : 0xFFFFFF;
-
-			if (a_entryObject.disabled != undefined)
-				a_entryClip.textField.textColor = a_entryObject.disabled == true ? 0x606060 : 0xFFFFFF;
-		}
-	}
-	
 	private function invalidateFilterData()
 	{
 		// Set up helper attributes for easy mapping between original list, filtered list and entry clips
 		for (var i = 0; i < _entryList.length; i++)
 			_entryList[i].clipIndex = undefined;
-				
+			
+		_listEnumeration.entryData = _entryList;
 		_listEnumeration.invalidate();
 
 		if (_listEnumeration.lookupEnumIndex(_selectedIndex) == undefined)
 			_selectedIndex = -1;
 	}
 	
-	// Wrapper
+	// @override skyui.BSList
 	private function getClipByIndex(a_index: Number): MovieClip
 	{
 		if (a_index < 0 || a_index >= _maxListIndex)
@@ -440,37 +413,31 @@ class skyui.ScrollingList extends skyui.BasicList
 		return _entryClipManager.getClipByIndex(a_index);
 	}
 	
-	// Helper
 	private function getSelectedListEnumIndex(): Number
 	{
 		return _listEnumeration.lookupEnumIndex(_selectedIndex);
 	}
 	
-	// Helper
 	private function getListEnumIndex(a_index: Number): Number
 	{
 		return _listEnumeration.lookupEnumIndex(a_index);
 	}
 	
-	// Helper
 	private function getListEnumSize(): Number
 	{
 		return _listEnumeration.size();
 	}
 	
-	// Helper
 	private function getListEnumEntry(a_index: Number): Object
 	{
 		return _listEnumeration.at(a_index);
 	}
 	
-	// Helper
 	private function getListEnumPredecessorIndex(): Number
 	{
 		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() - 1);
 	}
 	
-	// Helper
 	private function getListEnumSuccessorIndex(): Number
 	{
 		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + 1);

@@ -16,6 +16,11 @@ import skyui.TabBar;
 import skyui.ConfigLoader;
 import skyui.Util;
 import skyui.Translator;
+import skyui.CategoryEntryFactory;
+import skyui.InventoryEntryFactory;
+import skyui.BasicEnumeration;
+import skyui.FilteredEnumeration;
+import skyui.AlphaEntryFormatter;
 
 
 class InventoryLists extends MovieClip
@@ -30,8 +35,8 @@ class InventoryLists extends MovieClip
 	
   /* STAGE ELEMENTS */
   
-	var panelContainer: MovieClip;
-	var zoomButtonHolder: MovieClip;
+	public var panelContainer: MovieClip;
+	public var zoomButtonHolder: MovieClip;
 
 
   /* PRIVATE VARIABLES */
@@ -105,18 +110,12 @@ class InventoryLists extends MovieClip
 
 		Util.addArrayFunctions();
 
-		_categoryList = panelContainer.categoryList;
-		_categoryLabel = panelContainer.categoryLabel;
-		_itemList = panelContainer.itemList;
-		_searchWidget = panelContainer.searchWidget;
-		_tabBar = panelContainer.tabBar;
-
 		EventDispatcher.initialize(this);
 
 		gotoAndStop("NoPanels");
 
-		GameDelegate.addCallBack("SetCategoriesList", this, "SetCategoriesList");
-		GameDelegate.addCallBack("InvalidateListData", this, "InvalidateListData");
+		GameDelegate.addCallBack("SetCategoriesList", this, "setCategoriesList");
+		GameDelegate.addCallBack("InvalidateListData", this, "invalidateListData");
 
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
@@ -133,42 +132,61 @@ class InventoryLists extends MovieClip
 
 	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// @mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
-	// @mixin by gfx.events.EventDispatcher
+	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
 
+	// Apparently it's not safe to use stage elements in the constructor (as it doesn't work).
+	// That's why they are initialized in onLoad.
 	public function onLoad()
-	{		
-		_itemList.addFilter(_typeFilter);
-		_itemList.addFilter(_nameFilter);
-		_itemList.addFilter(_sortFilter);
+	{
+		_categoryList = panelContainer.categoryList;
+		_categoryLabel = panelContainer.categoryLabel;
+		_itemList = panelContainer.itemList;
+		_searchWidget = panelContainer.searchWidget;
+		_tabBar = panelContainer.tabBar;
+		
+		_categoryList.entryClipFactory = new CategoryEntryFactory(_categoryList);
+		_categoryList.listEnumeration = new BasicEnumeration(_categoryList.entryList);
+		_categoryList.entryFormatter = new AlphaEntryFormatter(_categoryList);
 
-		_typeFilter.addEventListener("filterChange",_itemList,"onFilterChange");
-		_nameFilter.addEventListener("filterChange",_itemList,"onFilterChange");
-		_sortFilter.addEventListener("filterChange",_itemList,"onFilterChange");
+		_itemList.entryClipFactory = new InventoryEntryFactory(_itemList);
+		var listEnumeration = new FilteredEnumeration(_itemList.entryList);
+		listEnumeration.addFilter(_typeFilter);
+		listEnumeration.addFilter(_nameFilter);
+		listEnumeration.addFilter(_sortFilter);
+		_itemList.listEnumeration = listEnumeration;
+		// entry formatter and data fetcher are initialized by the top-level menu since they differ in each case
 
-		_categoryList.addEventListener("itemPress",this,"onCategoriesItemPress");
-		_categoryList.addEventListener("listPress",this,"onCategoriesListPress");
-		_categoryList.addEventListener("listMovedUp",this,"onCategoriesListMoveUp");
-		_categoryList.addEventListener("listMovedDown",this,"onCategoriesListMoveDown");
-		_categoryList.addEventListener("selectionChange",this,"onCategoriesListMouseSelectionChange");
+		_typeFilter.addEventListener("filterChange", _itemList, "onFilterChange");
+		_nameFilter.addEventListener("filterChange", _itemList, "onFilterChange");
+		_sortFilter.addEventListener("filterChange", _itemList, "onFilterChange");
+
+		_categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
+		_categoryList.addEventListener("listPress", this, "onCategoriesListPress");
+		_categoryList.addEventListener("listMovedUp", this, "onCategoriesListMoveUp");
+		_categoryList.addEventListener("listMovedDown", this, "onCategoriesListMoveDown");
+		_categoryList.addEventListener("selectionChange", this, "onCategoriesListMouseSelectionChange");
 
 		_itemList.disableInput = false;
 
-		_itemList.addEventListener("listMovedUp",this,"onItemsListMoveUp");
-		_itemList.addEventListener("listMovedDown",this,"onItemsListMoveDown");
-		_itemList.addEventListener("selectionChange",this,"onItemsListMouseSelectionChange");
-		_itemList.addEventListener("sortChange",this,"onSortChange");
+		_itemList.addEventListener("listMovedUp", this, "onItemsListMoveUp");
+		_itemList.addEventListener("listMovedDown", this, "onItemsListMoveDown");
+		_itemList.addEventListener("selectionChange", this, "onItemsListMouseSelectionChange");
+		_itemList.addEventListener("sortChange", this, "onSortChange");
 
-		_searchWidget.addEventListener("inputStart",this,"onSearchInputStart");
-		_searchWidget.addEventListener("inputEnd",this,"onSearchInputEnd");
-		_searchWidget.addEventListener("inputChange",this,"onSearchInputChange");
+		_searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
+		_searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
+		_searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
 		if (_tabBar != undefined)
-			_tabBar.addEventListener("tabPress",this,"onTabPress");
+			_tabBar.addEventListener("tabPress", this, "onTabPress");
 	}
 
 	public function onConfigLoad(event)
@@ -178,7 +196,7 @@ class InventoryLists extends MovieClip
 		_tabToggleKey = _config.Input.hotkey.tabToggle;
 	}
 
-	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean)
+	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean)
 	{
 		_platform = a_platform;
 
@@ -186,6 +204,7 @@ class InventoryLists extends MovieClip
 		_itemList.platform = a_platform;
 	}
 
+	// GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
 		var bCaught = false;
@@ -225,12 +244,12 @@ class InventoryLists extends MovieClip
 		return [lb._x, lb._y, lb._width, lb._height];
 	}
 
-	function RestoreCategoryIndex()
+	public function restoreCategoryIndex()
 	{
 		_categoryList.selectedIndex = _currCategoryIndex;
 	}
 
-	function ShowCategoriesList(a_bPlayBladeSound: Boolean)
+	public function showCategoriesList(a_bPlayBladeSound: Boolean)
 	{
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
@@ -241,14 +260,14 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 	}
 
-	function HideCategoriesList()
+	public function hideCategoriesList()
 	{
 		_currentState = TRANSITIONING_TO_HIDE_PANEL;
 		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 	
-	function showItemsList()
+	public function showItemsList()
 	{
 		_currCategoryIndex = _categoryList.selectedIndex;
 		
@@ -272,7 +291,7 @@ class InventoryLists extends MovieClip
 	}
 
 	// Not needed anymore, items list always visible
-	function hideItemsList()
+	function hideItemsList(): Void
 	{
 		/*
 		_currentState = TRANSITIONING_TO_ONE_PANEL;
@@ -284,16 +303,16 @@ class InventoryLists extends MovieClip
 		*/
 	}
 
-	function onCategoriesItemPress()
+	public function onCategoriesItemPress(): Void
 	{
 		showItemsList();
 	}
 
-	function onCategoriesListPress()
+	public function onCategoriesListPress(): Void
 	{
 	}
 	
-	function onTabPress(event)
+	public function onTabPress(event): Void
 	{
 		if (_categoryList.disableSelection || _categoryList.disableInput || _itemList.disableSelection || _itemList.disableInput)
 			return;
@@ -310,39 +329,39 @@ class InventoryLists extends MovieClip
 		showItemsList();
 	}
 
-	function onCategoriesListMoveUp(event)
+	public function onCategoriesListMoveUp(event)
 	{
 		doCategorySelectionChange(event);
 	}
 
-	function onCategoriesListMoveDown(event)
+	public function onCategoriesListMoveDown(event)
 	{
 		doCategorySelectionChange(event);
 	}
 
-	function onCategoriesListMouseSelectionChange(event)
+	public function onCategoriesListMouseSelectionChange(event)
 	{
 		if (event.keyboardOrMouse == 0)
 			doCategorySelectionChange(event);
 	}
 
-	function onItemsListMoveUp(event)
+	public function onItemsListMoveUp(event)
 	{
 		this.doItemsSelectionChange(event);
 	}
 
-	function onItemsListMoveDown(event)
+	public function onItemsListMoveDown(event)
 	{
 		this.doItemsSelectionChange(event);
 	}
 
-	function onItemsListMouseSelectionChange(event)
+	public function onItemsListMouseSelectionChange(event)
 	{
 		if (event.keyboardOrMouse == 0)
 			doItemsSelectionChange(event);
 	}
 
-	function doCategorySelectionChange(event)
+	public function doCategorySelectionChange(event)
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
@@ -350,7 +369,7 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	function doItemsSelectionChange(event)
+	public function doItemsSelectionChange(event)
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
 
@@ -358,24 +377,24 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	function onSortChange(event)
+	public function onSortChange(event)
 	{
 		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 
-	function onSearchInputStart(event)
+	public function onSearchInputStart(event)
 	{
 		_categoryList.disableSelection = true;
 		_itemList.disableInput = true;
 		_nameFilter.filterText = "";
 	}
 
-	function onSearchInputChange(event)
+	public function onSearchInputChange(event)
 	{
 		_nameFilter.filterText = event.data;
 	}
 
-	function onSearchInputEnd(event)
+	public function onSearchInputEnd(event)
 	{
 		_categoryList.disableSelection = false;
 		_itemList.disableInput = false;
@@ -383,7 +402,7 @@ class InventoryLists extends MovieClip
 	}
 
 	// API - Called to initially set the category list
-	function SetCategoriesList()
+	function setCategoriesList()
 	{
 		var textOffset = 0;
 		var flagOffset = 1;
@@ -416,7 +435,7 @@ class InventoryLists extends MovieClip
 	}
 
 	// API - Called whenever the underlying entryList data is updated (using an item, equipping etc.)
-	function InvalidateListData()
+	function invalidateListData()
 	{
 		var flag = _categoryList.selectedEntry.flag;
 

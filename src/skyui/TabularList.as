@@ -5,6 +5,8 @@ import gfx.ui.NavigationCode;
 import skyui.Translator;
 import skyui.ListLayout;
 import skyui.SortedListHeader;
+import skyui.FilteredEnumeration;
+import skyui.IFilter;
 
 
 class skyui.TabularList extends skyui.ScrollingList
@@ -25,7 +27,11 @@ class skyui.TabularList extends skyui.ScrollingList
 	
 	public function set layout(a_layout: ListLayout)
 	{
+		if (_layout)
+			_layout.removeEventListener("layoutChange", this, "onLayoutChange");
+			
 		_layout = a_layout;
+		_layout.addEventListener("layoutChange", this, "onLayoutChange");
 	}
 
 
@@ -53,6 +59,12 @@ class skyui.TabularList extends skyui.ScrollingList
 			_layout.selectColumn(event.index);
 	}
 	
+	public function onLayoutChange(event)
+	{
+		UpdateList();
+	}
+	
+	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
 		var processed = super.handleInput(details, pathToFocus);;

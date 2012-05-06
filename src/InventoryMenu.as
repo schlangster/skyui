@@ -4,13 +4,9 @@ import gfx.ui.NavigationCode;
 
 import skyui.CategoryList;
 import skyui.TabularList;
-import skyui.CategoryEntryFactory;
-import skyui.InventoryEntryFactory;
-import skyui.BasicEnumeration;
-import skyui.FilteredEnumeration;
 import skyui.InventoryEntryFormatter;
-import skyui.AlphaEntryFormatter;
 import skyui.InventoryDataFetcher;
+import skyui.ListLayoutManager;
 
 
 class InventoryMenu extends ItemMenu
@@ -45,7 +41,10 @@ class InventoryMenu extends ItemMenu
 							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
 							   "inv_books", "inv_keys", "inv_misc"];
 		
-
+		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
+		GameDelegate.addCallBack("DropItem", this, "DropItem");
+		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
+		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
 
 	function InitExtensions()
@@ -55,40 +54,17 @@ class InventoryMenu extends ItemMenu
 		GlobalFunc.AddReverseFunctions();
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
 		BottomBar_mc.SetButtonArt(ChargeButtonArt, 3);
-
-		inventoryLists.categoryList.iconArt = CategoryListIconArt;
-
-		// Initialize category list components
+	
+		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
-		
-		categoryList.entryClipFactory = new CategoryEntryFactory(categoryList);
-		
-		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
-		
-		categoryList.entryFormatter = new AlphaEntryFormatter(categoryList);
-		
 		categoryList.iconArt = CategoryListIconArt;
 		
-		// Initialize item list components
-		var itemList: TabularList = inventoryLists.itemList;
-		
-		itemList.entryClipFactory = new InventoryEntryFactory(itemList);
-		
-		itemList.listEnumeration = new FilteredEnumeration(itemList.entryList);
-		
+		var itemList: TabularList = inventoryLists.itemList;		
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		
 		itemList.dataFetcher = new InventoryDataFetcher();
-
-		// TODO
-//		inventoryLists.itemList.setConfigSection("ItemList");
-		
-		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
-		GameDelegate.addCallBack("DropItem", this, "DropItem");
-		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
-		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
+		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 
 		ItemCard_mc.addEventListener("itemPress", this, "onItemCardListPress");
 	}
@@ -128,7 +104,7 @@ class InventoryMenu extends ItemMenu
 
 	function StartMenuFade()
 	{
-		inventoryLists.HideCategoriesList();
+		inventoryLists.hideCategoriesList();
 		ToggleMenuFade();
 		SaveIndices();
 		_bMenuClosing = true;

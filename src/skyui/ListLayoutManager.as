@@ -2,16 +2,35 @@
 import skyui.ListLayout;
 
 
-/*
- *  Encapsulates the list layout configuration.
- */
 class skyui.ListLayoutManager
 {
+  /* SINGLETON */
+  
+  	static private var _initialized = initialize();
+	
+	static private function initialize(): Boolean
+	{
+		_instance = new ListLayoutManager;
+		return true;
+	}
+	
+	static private var _instance: ListLayoutManager;
+	
+	static public function get instance()
+	{
+		return _instance;
+	}
+	
+	
+  /* PRIVATE VARIABLES */
+	
 	private var _layoutData: Object;
 	
 	// Store created layouts
 	private var _layouts: Object;
 	
+	
+  /* CONSTRUCTORS */
 	
 	public function ListLayoutManager()
 	{
@@ -19,6 +38,9 @@ class skyui.ListLayoutManager
 		ConfigLoader.registerCallback(this, "onConfigLoad");
 	}
 	
+	
+  /* PUBLIC FUNCTIONS */
+  
 	public function onConfigLoad(event)
 	{
 		if (event.config == undefined)
@@ -36,31 +58,11 @@ class skyui.ListLayoutManager
 		// Otherwise create
 		for (var i = 0; i < _layoutData.layouts.length; i++) {
 			if (_layoutData.layouts[i].name == a_name) {
-				_layouts[a_name] =
-					ListLayout(_layoutData.layouts[i], _layoutData.defaults, _layoutData.list.entryWidth, _layoutData.list.entryHeight);
+				_layouts[a_name] = new ListLayout(_layoutData.layouts[i], _layoutData.defaults, _layoutData.list.entryWidth, _layoutData.list.entryHeight);
 				return _layouts[a_name];
 			}
 		}
 				
 		return undefined;
 	}
-
-	private function getMatchingView(a_flag: Number): Number
-	{
-		var views = activeLayout.views;
-		
-		// Find a matching view, or use last index
-		for (var i = 0; i < views.length; i++) {
-
-			// Wrap in array for single category
-			var categories = ((views[i].category) instanceof Array) ? views[i].category : [views[i].category];
-			
-			// Either found a matching category, or the last inded has to be used.
-			if (categories.indexOf(a_flag) != undefined || i == views.length-1)
-				return i;
-		}
-		
-		return undefined;
-	}
-
 }

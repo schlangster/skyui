@@ -8,7 +8,7 @@ class skyui.ConfigLoader
 {
   /* CONSTANTS */
   
-	private static var _constantTable:Object = {
+	private static var _constantTable: Object = {
 		
 		ITEM_ICON: ListLayout.COL_TYPE_ITEM_ICON,
 		EQUIP_ICON: ListLayout.COL_TYPE_EQUIP_ICON,

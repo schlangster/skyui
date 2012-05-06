@@ -78,7 +78,7 @@ class ItemMenu extends MovieClip
 
 		PositionElements();
 		
-		inventoryLists.ShowCategoriesList(a_bPlayBladeSound);
+		inventoryLists.showCategoriesList(a_bPlayBladeSound);
 		
 		ItemCard_mc._visible = false;
 		BottomBar_mc.HideButtons();
@@ -192,7 +192,7 @@ class ItemMenu extends MovieClip
 	function SetPlatform(a_platform, a_bPS3Switch)
 	{
 		_platform = a_platform;
-		inventoryLists.SetPlatform(a_platform,a_bPS3Switch);
+		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
 		ItemCard_mc.SetPlatform(a_platform,a_bPS3Switch);
 		BottomBar_mc.SetPlatform(a_platform,a_bPS3Switch);
 	}
@@ -331,7 +331,7 @@ class ItemMenu extends MovieClip
 
 	function ShouldProcessItemsListInput(abCheckIfOverRect)
 	{
-		var process = bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.numUnfilteredItems > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
+		var process = bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.filteredItemsCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
 
 		if (process && _platform == 0 && abCheckIfOverRect) {
 			var e = Mouse.getTopMostEntity();

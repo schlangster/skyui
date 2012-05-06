@@ -1,11 +1,11 @@
-﻿import skyui.LayoutEntryFormatter;
+﻿import skyui.TabularEntryFormatter;
 import skyui.TabularList;
 import skyui.ListLayout;
 import skyui.Defines;
 import skyui.ConfigLoader;
 
 
-class skyui.InventoryEntryFormatter extends LayoutEntryFormatter
+class skyui.InventoryEntryFormatter extends TabularEntryFormatter
 {
   /* CONSTANTS */
   
@@ -45,9 +45,9 @@ class skyui.InventoryEntryFormatter extends LayoutEntryFormatter
 
   /* CONSTRUCTORS */
 	
-	function InventoryEntryFormatter(a_list: TabularList)
+	public function InventoryEntryFormatter(a_list: TabularList)
 	{
-		super(a_list, a_list.layout);
+		super(a_list);
 		
 		_maxTextLength = 50;
 		_bShowStolenIcon = true;
@@ -69,8 +69,8 @@ class skyui.InventoryEntryFormatter extends LayoutEntryFormatter
   	// @override skyui.LayoutEntryFormatter
 	public function setSpecificEntryLayout(a_entryClip: MovieClip, a_entryObject: Object): Void
 	{
-		var iconY = _layout.entryHeight * 0.25;
-		var iconSize = _layout.entryHeight * 0.5;
+		var iconY = _list.layout.entryHeight * 0.25;
+		var iconSize = _list.layout.entryHeight * 0.5;
 			
 		a_entryClip.bestIcon._height = a_entryClip.bestIcon._width = iconSize;
 		a_entryClip.favoriteIcon._height = a_entryClip.favoriteIcon._width = iconSize;
@@ -129,7 +129,7 @@ class skyui.InventoryEntryFormatter extends LayoutEntryFormatter
   	// @override skyui.LayoutEntryFormatter
 	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
-		var iconLabel:String;
+		var iconLabel: String;
 		
 		switch (a_entryObject.infoType) {
 			case InventoryDefines.ICT_WEAPON :

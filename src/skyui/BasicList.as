@@ -12,6 +12,7 @@ import skyui.IEntryFormatter;
 import skyui.IDataFetcher;
 import skyui.IListComponentInitializer;
 
+// @abstract
 class skyui.BasicList extends skyui.BSList
 {
   /* CONSTANTS */
@@ -158,9 +159,12 @@ class skyui.BasicList extends skyui.BSList
   
 	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// @mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	// @override skyui.BSList
 	public function InvalidateData(): Void
@@ -177,46 +181,30 @@ class skyui.BasicList extends skyui.BSList
 	}
 
 	// @override skyui.BSList
-	public function UpdateList(): Void
-	{
-		// abstract
-	}
+	// @abstract
+	public function UpdateList(): Void { }
 	
-	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
-	{
-		// abstract
-	}
+	// @abstract
+	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void { }
 
-	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
-	{
-		// abstract
-	}
+	// @abstract
+	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void { }
 	
-	public function onItemRollOver(a_index: Number): Void
-	{
-		// abstract
-	}
+	// @abstract
+	public function onItemRollOver(a_index: Number): Void { }
 	
-	public function onItemRollOut(a_index: Number): Void
-	{
-		// abstract
-	}
+	// @abstract
+	public function onItemRollOut(a_index: Number): Void { }
 	
 	
   /* PRIVATE FUNCTIONS */
 
-	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number)
-	{
-		// abstract
-	}
+	// @abstract
+	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number) { }
 	
 	private function getClipByIndex(a_index: Number): MovieClip
 	{
-
-		
-		var result = _entryClipManager.getClipByIndex(a_index);
-				skse.Log("INVALIDATE " + _entryClipManager);
-		return result;
+		return _entryClipManager.getClipByIndex(a_index);
 	}
 	
 	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
