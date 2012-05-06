@@ -64,8 +64,8 @@ class skyui.TabularList extends skyui.ScrollingList
 		_entryHeight = _layout.entryHeight;
 		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
 		
-		skse.Log("_entryHeight: " + _entryHeight);
-		skse.Log("_maxListIndex: " + _maxListIndex);
+		if (header)
+			updateHeader();
 		
 		UpdateList();
 	}
@@ -91,5 +91,32 @@ class skyui.TabularList extends skyui.ScrollingList
 			}
 		}
 		return processed;
+	}
+	
+	private function updateHeader(): Void
+	{
+		header.clearColumns();
+		header.activeColumnIndex = _layout.activeColumnIndex;
+// TODO
+//		if (columns[_activeColumnIndex].label.arrowDown == true)
+//			header.isArrowDown = true;
+//		else
+//			header.isArrowDown = false;
+			
+		for (var i = 0; i < _layout.columnCount; i++) {
+			var columnLayoutData = _layout.columnLayoutData[i];
+			var btn = header.addColumn(i);
+
+			btn.label._x = 0;
+
+			btn._x = columnLayoutData.labelX;
+			
+			btn.label._width = columnLayoutData.labelWidth;
+			btn.label.setTextFormat(columnLayoutData.labelTextFormat);
+			
+			btn.label.SetText(Translator.translate(columnLayoutData.labelValue));
+		}
+		
+		header.positionButtons();
 	}
 }

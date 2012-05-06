@@ -1,5 +1,6 @@
 ﻿import skyui.BSList;
-import skyui.IEntryClipFactory;
+import skyui.IEntryClipBuilder;
+
 
 class skyui.EntryClipManager
 { 
@@ -10,11 +11,11 @@ class skyui.EntryClipManager
 	
   /* PROPERTIES */
 
-	private var _entryClipFactory: IEntryClipFactory;
+	private var _entryClipBuilder: IEntryClipBuilder;
 	
-	public function set entryClipFactory(a_entryClipFactory: IEntryClipFactory)
+	public function set entryClipBuilder(a_entryClipBuilder: IEntryClipBuilder)
 	{
-		_entryClipFactory = a_entryClipFactory;
+		_entryClipBuilder = a_entryClipBuilder;
 	}
 	
 	
@@ -37,7 +38,7 @@ class skyui.EntryClipManager
 			return _entryClips[a_index];
 		
 		// Create on-demand
-		_entryClips[a_index] = _entryClipFactory.createEntryClip(a_index);
+		_entryClips[a_index] = _entryClipBuilder.createEntryClip(a_index);
 		_entryClips[a_index].clipIndex = a_index;
 		return _entryClips[a_index];
 	}

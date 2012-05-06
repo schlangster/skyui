@@ -4,7 +4,7 @@ import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 import skyui.Config;
 import skyui.EntryClipManager;
-import skyui.IEntryClipFactory;
+import skyui.IEntryClipBuilder;
 import skyui.BasicEntryFactory;
 import skyui.IEntryEnumeration;
 import skyui.BasicEnumeration;
@@ -34,9 +34,9 @@ class skyui.BasicList extends skyui.BSList
 
 	private var _entryClipManager: EntryClipManager;
 	
-	public function set entryClipFactory(a_factory: IEntryClipFactory)
+	public function set entryClipBuilder(a_factory: IEntryClipBuilder)
 	{
-		_entryClipManager.entryClipFactory = a_factory;
+		_entryClipManager.entryClipBuilder = a_factory;
 	}
 	
 	private var _listEnumeration: IEntryEnumeration;

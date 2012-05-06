@@ -16,8 +16,8 @@ import skyui.TabBar;
 import skyui.ConfigLoader;
 import skyui.Util;
 import skyui.Translator;
-import skyui.CategoryEntryFactory;
-import skyui.InventoryEntryFactory;
+import skyui.CategoryEntryBuilder;
+import skyui.InventoryEntryBuilder;
 import skyui.BasicEnumeration;
 import skyui.FilteredEnumeration;
 import skyui.AlphaEntryFormatter;
@@ -152,11 +152,11 @@ class InventoryLists extends MovieClip
 		_searchWidget = panelContainer.searchWidget;
 		_tabBar = panelContainer.tabBar;
 		
-		_categoryList.entryClipFactory = new CategoryEntryFactory(_categoryList);
+		_categoryList.entryClipBuilder = new CategoryEntryBuilder(_categoryList);
 		_categoryList.listEnumeration = new BasicEnumeration(_categoryList.entryList);
 		_categoryList.entryFormatter = new AlphaEntryFormatter(_categoryList);
 
-		_itemList.entryClipFactory = new InventoryEntryFactory(_itemList);
+		_itemList.entryClipBuilder = new InventoryEntryBuilder(_itemList);
 		var listEnumeration = new FilteredEnumeration(_itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
 		listEnumeration.addFilter(_nameFilter);

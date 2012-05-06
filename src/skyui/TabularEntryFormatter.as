@@ -1,5 +1,7 @@
 ﻿import skyui.TabularList;
 import skyui.ListLayout;
+import skyui.ColumnLayoutData;
+
 
 // @abstract
 class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
@@ -21,9 +23,8 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 	
 	public function setEntry(a_entryClip: MovieClip, a_entryObject: Object): Void
 	{
-		var layout = _list.layout;
+		var layout: ListLayout = _list.layout;
 		
-		skse.Log("layout: " + layout);
 		
 		if (a_entryClip == undefined)
 			return;
@@ -32,34 +33,27 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 		a_entryClip.selectArea._alpha = a_entryObject == _list.selectedEntry ? 40 : 0;
 		
 		var activeViewIndex = layout.activeViewIndex;
-		var columnCount = layout.columnCount;
-		var columnNames = layout.columnNames;
-		var columnEntryValues = layout.columnEntryValues;
-		var columnTypes = layout.columnTypes;
-		
-		skse.Log("columnCount: " + columnCount);
 		
 		// View changed? Update the columns positions etc.
 		if (activeViewIndex != -1 && a_entryClip.viewIndex != activeViewIndex) {
 			a_entryClip.viewIndex = activeViewIndex;
-			
-			skse.Log("view index changed: " + activeViewIndex);
 			
 			setEntryLayout(a_entryClip, a_entryObject);
 			setSpecificEntryLayout(a_entryClip, a_entryObject);
 		}
 		
 		// Format the actual entry contents. Do this with every upate.
-		for (var i = 0; i < columnCount; i++) {
-			var e = a_entryClip[columnNames[i]];
+		for (var i = 0; i < layout.columnCount; i++) {
+			var columnLayoutData: ColumnLayoutData = layout.columnLayoutData[i];
+			var e = a_entryClip[columnLayoutData.stageName];
 
 			// Substitute @variables by entryObject properties
-			if (columnEntryValues[i] != undefined)
-				if (columnEntryValues[i].charAt(0) == "@")
-					e.SetText(a_entryObject[columnEntryValues[i].slice(1)]);
+			if (columnLayoutData.entryValue != undefined)
+				if (columnLayoutData.entryValue.charAt(0) == "@")
+					e.SetText(a_entryObject[columnLayoutData.entryValue.slice(1)]);
 			
 			// Process based on column type 
-			switch (columnTypes[i]) {
+			switch (columnLayoutData.type) {
 				case ListLayout.COL_TYPE_EQUIP_ICON :
 					formatEquipIcon(e, a_entryObject, a_entryClip);
 					break;
@@ -81,54 +75,37 @@ class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
 	
 	public function setEntryLayout(a_entryClip: MovieClip, a_entryObject: Object): Void
 	{
-		var layout = _list.layout;
-		
-		var columnCount = layout.columnCount;
-		var columnNames = layout.columnNames;
-		var columnPositions = layout.columnPositions;
-		var columnSizes = layout.columnSizes;
-		var entryWidth = layout.entryWidth;
-		var entryHeight = layout.entryHeight;
-		var customEntryTextFormats = layout.customEntryTextFormats;
-		var defaultEntryTextFormat = layout.defaultEntryTextFormat;
+		var layout: ListLayout = _list.layout;
 			
-		a_entryClip.border._width = a_entryClip.selectArea._width = entryWidth;
-		a_entryClip.border._height = a_entryClip.selectArea._height = entryHeight;
+		a_entryClip.border._width = a_entryClip.selectArea._width = layout.entryWidth;
+		a_entryClip.border._height = a_entryClip.selectArea._height = layout.entryHeight;
 	
 		// Set up all visible elements in this entry
-		for (var i=0; i<columnCount; i++) {
-			var e = a_entryClip[columnNames[i]];
-			
-			skse.Log("setting: " + columnNames[i]);
+		for (var i=0; i<layout.columnCount; i++) {
+			var columnLayoutData: ColumnLayoutData = layout.columnLayoutData[i];
+			var e = a_entryClip[columnLayoutData.stageName];
 			
 			e._visible = true;
 		
-			e._x = columnPositions[i*2];
-			e._y = columnPositions[i*2+1];
-			
-			skse.Log("x: " + e._x);
-			skse.Log("y: " + e._y);
+			e._x = columnLayoutData.x;
+			e._y = columnLayoutData.y;
 		
-			if (columnSizes[i*2] > 0)
-				e._width = columnSizes[i*2];
+			if (columnLayoutData.width > 0)
+				e._width = columnLayoutData.width;
 		
-			if (columnSizes[i*2+1] > 0)
-				e._height = columnSizes[i*2+1];
-				
-			skse.Log("w: " + e._width);
-			skse.Log("h: " + e._height);
+			if (columnLayoutData.height > 0)
+				e._height = columnLayoutData.height;
 			
 			if (e instanceof TextField)
-				e.setTextFormat(customEntryTextFormats[i] ? customEntryTextFormats[i] : defaultEntryTextFormat);
+				e.setTextFormat(columnLayoutData.textFormat);
 		}
 		
 		// Hide any unused elements
-		var hiddenColumnNames = layout.hiddenColumnNames;
+		var hiddenStageNames = layout.hiddenStageNames;
 		
-		for (var i=0; i<hiddenColumnNames.length; i++) {
-			skse.Log("hiding: " + hiddenColumnNames[i]);
-			a_entryClip[hiddenColumnNames[i]]._visible = false;
-		}
+		for (var i=0; i<hiddenStageNames.length; i++)
+			a_entryClip[hiddenStageNames]._visible = false;
+
 	}
 	
 	// Do any clip-specific tasks when the view was changed for this entry.

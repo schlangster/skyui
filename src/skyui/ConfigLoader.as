@@ -60,6 +60,10 @@ class skyui.ConfigLoader
 	
 	private static var _eventDummy: Object;
 	
+	private static var _loaded: Boolean;
+	
+	private static var _config: Object;
+	
 	
   /* STATIC INITIALIZER */
   
@@ -85,7 +89,14 @@ class skyui.ConfigLoader
   
 	public static function registerCallback(scope: Object, callBack: String)
 	{
-		_eventDummy.addEventListener("configLoad", scope, callBack);
+		// Not loaded yet
+		if (!_loaded) {
+			_eventDummy.addEventListener("configLoad", scope, callBack);
+			return;
+		}
+		
+		// Already loaded, generate event instantly.
+		scope[callBack]({type: "configLoad", config: _config});
 	}
 
 
@@ -93,7 +104,7 @@ class skyui.ConfigLoader
 
 	private static function parseData(a_data:Array)
 	{
-		var config = {};
+		_config = {};
 		
 		var lines = a_data.split("\r\n");
 		if (lines.length == 1)
@@ -112,8 +123,8 @@ class skyui.ConfigLoader
 				section = lines[i].slice(1, lines[i].lastIndexOf("]"));
 //				trace("Section: [" + section + "]");
 				
-				if (config[section] == undefined)
-					config[section] = {};
+				if (_config[section] == undefined)
+					_config[section] = {};
 					
 				continue;
 			}
@@ -128,7 +139,7 @@ class skyui.ConfigLoader
 				
 			// Prepare key subsections
 			var a = key.split(".");
-			var loc = config[section];
+			var loc = _config[section];
 			for (var j=0; j<a.length-1; j++) {
 				if (loc[a[j]] == undefined)
 					loc[a[j]] = {};
@@ -136,7 +147,7 @@ class skyui.ConfigLoader
 			}
 
 			// Detect value type & extract
-			var val = parseValueString(Util.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _constantTable, config[section]);
+			var val = parseValueString(Util.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _constantTable, _config[section]);
 			
 			if (val == undefined)
 				continue;
@@ -147,7 +158,9 @@ class skyui.ConfigLoader
 			loc[a[a.length-1]] = val;
 		}
 		
-		_eventDummy.dispatchEvent({type: "configLoad", config: config});
+		_loaded = true;
+		
+		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
 	
 	private static function parseValueString(a_str: String, a_constantTable: Object, a_root: Object): Object

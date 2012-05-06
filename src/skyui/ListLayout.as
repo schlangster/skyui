@@ -2,6 +2,8 @@
 import skyui.Translator;
 import skyui.Util;
 import gfx.events.EventDispatcher;
+import skyui.ColumnLayoutData;
+
 
 /*
  *  Encapsulates the list layout configuration.
@@ -11,6 +13,11 @@ class skyui.ListLayout
   /* CONSTANTS */
   
 	private static var MAX_TEXTFIELD_INDEX = 10;
+	
+	private static var LEFT = 0;
+	private static var RIGHT = 1;
+	private static var TOP = 2;
+	private static var BOTTOM = 3;
   
 	public static var COL_TYPE_ITEM_ICON = 0;
 	public static var COL_TYPE_EQUIP_ICON = 1;
@@ -30,6 +37,9 @@ class skyui.ListLayout
 	
 	// 1 .. n
 	private var _activeColumnState: Number = 0;
+	
+	private var _defaultEntryTextFormat: TextFormat;
+	private var _defaultLabelTextFormat: TextFormat;
 	
 	
   /* PROPERTIES */
@@ -60,55 +70,25 @@ class skyui.ListLayout
 		return _activeColumnIndex;
 	}
 	
+	private var _columnCount: Number = 0;
+	
 	public function get columnCount(): Number
 	{
-		return _views[_activeViewIndex].columns.length;
+		return _columnCount;
 	}
 	
-	private var _columnTypes: Array = [];
+	private var _columnLayoutData: Array = [];
 	
-	public function get columnTypes(): Array
+	public function get columnLayoutData(): Array
 	{
-		return _columnTypes;
+		return _columnLayoutData;
 	}
 	
-	// [c1.x, c1.y, c2.x, c2.y, ...] - (x,y) Offset of column fields in a row (relative to the entry clip)
-	private var _columnPositions: Array = [];
+	private var _hiddenStageNames: Array = [];
 	
-	public function get columnPositions(): Array
+	public function get hiddenStageNames(): Array
 	{
-		return _columnPositions;
-	}
-	
-	// [c1.width, c1.height, c2.width, c2.height, ...]
-	private var _columnSizes: Array = [];
-		
-	public function get columnSizes(): Array
-	{
-		return _columnSizes;
-	}
-	
-	// These are the names like textField0, equipIcon etc used when positioning, not the names as defined in the config
-	private var _columnNames: Array = [];
-	
-	public function get columnNames(): Array
-	{
-		return _columnNames;
-	}
-	
-	private var _hiddenColumnNames: Array = [];
-	
-	public function get hiddenColumnNames(): Array
-	{
-		return _hiddenColumnNames;
-	}
-	
-	// Only used for textfield-based columns
-	private var _columnEntryValues: Array = [];
-	
-	public function get columnEntryValues(): Array
-	{
-		return _columnEntryValues;
+		return _hiddenStageNames;
 	}
 	
 	private var _entryWidth: Number;
@@ -123,27 +103,6 @@ class skyui.ListLayout
 	public function get entryHeight(): Number
 	{
 		return _entryHeight;
-	}
-	
-	private var _customEntryTextFormats: Array = [];
-	
-	public function get customEntryTextFormats(): Array
-	{
-		return _customEntryTextFormats;
-	}
-	
-	private var _defaultEntryTextFormat: TextFormat;
-	
-	public function get defaultEntryTextFormat(): TextFormat
-	{
-		return _defaultEntryTextFormat;
-	}
-	
-	private var _defaultLabelTextFormat: TextFormat;
-	
-	public function get defaultLabelTextFormat(): TextFormat
-	{
-		return _defaultLabelTextFormat;
 	}
 	
 	
@@ -174,6 +133,7 @@ class skyui.ListLayout
 		for (var prop in _defaultsData.label.textFormat)
 			if (_defaultLabelTextFormat.hasOwnProperty(prop))
 				_defaultLabelTextFormat[prop] = _defaultsData.label.textFormat[prop];
+				
 	}
 	
 	function changeFilterFlag(a_flag: Number)
@@ -204,8 +164,6 @@ class skyui.ListLayout
 			_activeColumnState = 1;
 		}
 
-		skse.Log("Updating " + _activeViewIndex);
-
 		update();
 	}
 	
@@ -228,20 +186,23 @@ class skyui.ListLayout
 		var maxHeight = 0;
 		var textFieldIndex = 0;
 
-		_columnTypes.splice(0);
-		_columnPositions.splice(0);
-		_columnSizes.splice(0);
-		_columnNames.splice(0);
-		_hiddenColumnNames.splice(0);
-		_columnEntryValues.splice(0);
-		_customEntryTextFormats.splice(0);
+		_hiddenStageNames.splice(0);
+		_columnCount = 0;
 		
 		// Set bit at position i if column is weighted
 		var weightedFlags = 0;
+
 		
 		// Move some data from current state to root of the column so we can access single- and multi-state columns in the same manner.
 		// So this is a merge of defaults, column root and current state.
-		for (var i = 0; i < columns.length; i++) {				
+		for (var i = 0; i < columns.length; i++) {
+			_columnCount++
+			
+			if (_columnLayoutData[i])
+				_columnLayoutData[i].clear();
+			else
+				_columnLayoutData[i] = new ColumnLayoutData();
+			
 			// Single-state
 			if (columns[i].states == undefined || columns[i].states < 2)
 				continue;
@@ -269,7 +230,6 @@ class skyui.ListLayout
 		
 		// Subtract arrow tip width
 		var weightedWidth = _entryWidth - 12;
-		skse.Log("weightedWidth: " + weightedWidth);
 		
 		var weightSum = 0;
 
@@ -283,8 +243,9 @@ class skyui.ListLayout
 			if (col.weight != undefined) {
 				weightSum += col.weight;
 				weightedFlags = (weightedFlags | 1) << 1;
-			} else
+			} else {
 				weightedFlags = (weightedFlags | 0) << 1;
+			}
 			
 			if (col.indent != undefined)
 				weightedWidth -= col.indent;
@@ -292,7 +253,8 @@ class skyui.ListLayout
 			// Height including borders for maxHeight
 			var curHeight = 0;
 			
-			_columnTypes[i] = col.type;
+			_columnLayoutData[i].type = col.type;
+			_columnLayoutData[i].labelValue = columns[i].label.text
 			
 			switch (col.type) {
 				// ITEM ICON + EQUIP ICON
@@ -300,40 +262,39 @@ class skyui.ListLayout
 				case ListLayout.COL_TYPE_EQUIP_ICON:
 								
 					if (col.type == ListLayout.COL_TYPE_ITEM_ICON) {
-						_columnNames[i] = "itemIcon";
+						_columnLayoutData[i].stageName = "itemIcon";
 						bEnableItemIcon = true;
 					} else {
-						_columnNames[i] = "equipIcon";
+						_columnLayoutData[i].stageName = "equipIcon";
 						bEnableEquipIcon = true;
 					}
 					
-					_columnSizes[i*2] = col.icon.size;
+					_columnLayoutData[i].width = _columnLayoutData[i].height = col.icon.size;
 					weightedWidth -= col.icon.size;
 						
-					_columnSizes[i*2+1] = col.icon.size;
 					curHeight += col.icon.size;
 					
 					break;
 
 				// REST
 				default:
-					_columnNames[i] = "textField" + textFieldIndex++;
+					_columnLayoutData[i].stageName = "textField" + textFieldIndex++;
 					
 					if (col.width != undefined) {
 						// Width >= 1 for absolute width, < 1 for percentage width
-						_columnSizes[i*2] = col.width < 1 ? (col.width * _entryWidth) : col.width;
-						weightedWidth -= _columnSizes[i*2];
+						_columnLayoutData[i].width = col.width < 1 ? (col.width * _entryWidth) : col.width;
+						weightedWidth -= _columnLayoutData[i].width;
 					} else {
-						_columnSizes[i*2] = 0;
+						_columnLayoutData[i].width = 0;
 					}
 					
 					if (col.height != undefined)
 						// Height >= 1 for absolute height, < 1 for percentage height
-						_columnSizes[i*2+1] = col.height < 1 ? (col.height * _entryWidth) : col.height;
+						_columnLayoutData[i].height = col.height < 1 ? (col.height * _entryWidth) : col.height;
 					else
-						_columnSizes[i*2+1] = 0;
+						_columnLayoutData[i].height = 0;
 					
-					_columnEntryValues[i] = col.entry.text;
+					_columnLayoutData[i].entryValue = col.entry.text;
 					
 					if (col.entry.format != undefined) {
 						var customTextFormat = new TextFormat();
@@ -347,16 +308,35 @@ class skyui.ListLayout
 							if (customTextFormat.hasOwnProperty(prop))
 								customTextFormat[prop] = col.entry.format[prop];
 						
-						_customEntryTextFormats[i] = customTextFormat;
+						_columnLayoutData[i].textFormat = customTextFormat;
+					} else {
+						_columnLayoutData[i].textFormat = _defaultEntryTextFormat;
+					}
+					
+					if (columns[i].entry.format != undefined) {
+						var customTextFormat = new TextFormat();
+
+						// First clone default format
+						for (var prop in _defaultLabelTextFormat)
+							customTextFormat[prop] = _defaultLabelTextFormat[prop];
+					
+						// Then override if necessary
+						for (var prop in columns[i].label.format)
+							if (customTextFormat.hasOwnProperty(prop))
+								customTextFormat[prop] = columns[i].label.format[prop];
+								
+						_columnLayoutData[i].labelTextFormat = customTextFormat;
+					} else {
+						_columnLayoutData[i].labelTextFormat = _defaultLabelTextFormat;
 					}
 			}
 			
 			if (col.border != undefined) {
-				weightedWidth -= col.border[0] + col.border[1];
-				curHeight += col.border[2] + col.border[3];
-				_columnPositions[i*2+1] = col.border[2];
+				weightedWidth -= col.border[LEFT] + col.border[RIGHT];
+				curHeight += col.border[TOP] + col.border[BOTTOM];
+				_columnLayoutData[i].y = col.border[TOP];
 			} else {
-				_columnPositions[i*2+1] = 0;
+				_columnLayoutData[i].y = 0;
 			}
 			
 			if (curHeight > maxHeight)
@@ -364,28 +344,20 @@ class skyui.ListLayout
 		}
 		
 		// Calculate the widths
-		skse.Log("a weightedSum: " + weightSum);
-		skse.Log("a weightedWidth: " + weightedWidth);
-		
 		if (weightSum > 0 && weightedWidth > 0 && weightedFlags != 0) {
 			for (var i=columns.length-1; i>=0; i--) {
 				var col = columns[i];
 				
 				if ((weightedFlags >>>= 1) & 1) {
-					skse.Log("a old: " + _columnSizes[i*2]);
-					skse.Log("a col.weight: " + _columnSizes[i*2]);
-					
 					if (col.border != undefined)
-						_columnSizes[i*2] += ((col.weight / weightSum) * weightedWidth) - col.border[0] - col.border[1];
+						_columnLayoutData[i].width += ((col.weight / weightSum) * weightedWidth) - col.border[LEFT] - col.border[RIGHT];
 					else
-						_columnSizes[i*2] += (col.weight / weightSum) * weightedWidth;
-
-					skse.Log("a result: " + _columnSizes[i*2]);
+						_columnLayoutData[i].width += (col.weight / weightSum) * weightedWidth;
 				}
 			}
 		}
 		
-		// Set x positions based on calculated widths
+		// Set x positions based on calculated widths, and set label data
 		var xPos = 0;
 		
 		for (var i=0; i<columns.length; i++) {
@@ -394,24 +366,29 @@ class skyui.ListLayout
 			if (col.indent != undefined)
 				xPos += col.indent;
 
+			_columnLayoutData[i].labelX = xPos;
+
 			if (col.border != undefined) {
-				xPos += col.border[0];
-				_columnPositions[i*2] = xPos;
-				xPos += col.border[1] + _columnSizes[i*2];
+				_columnLayoutData[i].labelWidth = _columnLayoutData[i].width + col.border[LEFT] + col.border[RIGHT];
+				_columnLayoutData[i].x = xPos;
+				xPos += col.border[LEFT];
+				_columnLayoutData[i].x = xPos;
+				xPos += col.border[RIGHT] + _columnLayoutData[i].width;
 			} else {
-				_columnPositions[i*2] = xPos;
-				xPos += _columnSizes[i*2];
+				_columnLayoutData[i].labelWidth = _columnLayoutData[i].width;
+				_columnLayoutData[i].x = xPos;
+				xPos += _columnLayoutData[i].width;
 			}
 		}
 		
 		while (textFieldIndex < MAX_TEXTFIELD_INDEX)
-			_hiddenColumnNames.push("textField" + textFieldIndex++);
+			_hiddenStageNames.push("textField" + textFieldIndex++);
 		
 		if (!bEnableItemIcon)
-			_hiddenColumnNames.push("itemIcon");
+			_hiddenStageNames.push("itemIcon");
 		
 		if (!bEnableEquipIcon)
-			_hiddenColumnNames.push("equipIcon");
+			_hiddenStageNames.push("equipIcon");
 		
 		_entryHeight = maxHeight;
 		
@@ -433,9 +410,8 @@ class skyui.ListLayout
 		
 		// No attribute(s) set? Try to use entry value
 		if (sortAttributes == undefined)
-			if (_columnEntryValues[_activeColumnIndex] != undefined)
-				if (_columnEntryValues[_activeColumnIndex].charAt(0) == "@")
-					sortAttributes = [_columnEntryValues[_activeColumnIndex].slice(1)];
+			if (_columnLayoutData[_activeColumnIndex].entryValue.charAt(0) == "@")
+				sortAttributes = [ _columnLayoutData[_activeColumnIndex].entryValue.slice(1) ];
 		
 		if (sortAttributes == undefined)
 			return;
@@ -516,56 +492,5 @@ class skyui.ListLayout
 		_prefData = {viewIndex: _activeViewIndex, columnIndex: _activeColumnIndex, stateIndex: _activeColumnState};
 			
 		update();
-	}
-	
-	private function updateHeader()
-	{
-		var a_header;
-		var columns = currentView.columns;
-		
-		a_header.clearColumns();
-		a_header.activeColumnIndex = _activeColumnIndex;
-			
-		if (columns[_activeColumnIndex].label.arrowDown == true)
-			a_header.isArrowDown = true;
-		else
-			a_header.isArrowDown = false;
-			
-		for (var i = 0; i < columns.length; i++) {
-			var btn = a_header.addColumn(i);
-
-			btn.label._x = 0;
-
-			if (columns[i].border != undefined) {
-				btn._x = _columnPositions[i*2] - columns[i].border[0];
-				btn.label._width = _columnSizes[i*2] + columns[i].border[0] + columns[i].border[1];
-
-			} else {
-				btn._x = _columnPositions[i*2];
-				btn.label._width = _columnSizes[i*2];
-			}
-			
-			if (columns[i].entry.format != undefined) {
-				var customTextFormat = new TextFormat();
-
-				// Duplicate default format
-				for (var prop in _defaultLabelTextFormat)
-					customTextFormat[prop] = _defaultLabelTextFormat[prop];
-					
-				// Overrides
-				for (var prop in columns[i].label.format) {
-					if (customTextFormat.hasOwnProperty(prop))
-						customTextFormat[prop] = columns[i].label.format[prop];
-				}
-					
-				btn.label.setTextFormat(customTextFormat);
-			} else {
-				btn.label.setTextFormat(_defaultLabelTextFormat);
-			}
-			
-			btn.label.SetText(Translator.translate(columns[i].label.text));
-		}
-		
-		a_header.positionButtons();
 	}
 }

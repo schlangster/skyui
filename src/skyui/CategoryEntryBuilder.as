@@ -1,6 +1,6 @@
 ﻿import skyui.CategoryList;
 
-class skyui.CategoryEntryFactory extends skyui.BasicEntryFactory
+class skyui.CategoryEntryBuilder extends skyui.BasicEntryBuilder
 {
   /* PRIVATE VARIABLES */
   
@@ -10,7 +10,7 @@ class skyui.CategoryEntryFactory extends skyui.BasicEntryFactory
 	
   /* CONSTRUCTORS */	
 
-	public function CategoryEntryFactory(a_list: CategoryList, a_iconThemeName: String)
+	public function CategoryEntryBuilder(a_list: CategoryList, a_iconThemeName: String)
 	{
 		super(a_list, "CategoryListEntry", "skyui_icons_celtic.swf");
 		_list = a_list;

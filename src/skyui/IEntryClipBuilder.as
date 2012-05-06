@@ -1,6 +1,6 @@
 ﻿import skyui.BSList;
 
-interface skyui.IEntryClipFactory
+interface skyui.IEntryClipBuilder
 {
 	public function createEntryClip(a_index: Number): MovieClip;
 }

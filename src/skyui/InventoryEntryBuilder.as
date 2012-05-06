@@ -1,6 +1,6 @@
 ﻿import skyui.ScrollingList;
 
-class skyui.InventoryEntryFactory extends skyui.BasicEntryFactory
+class skyui.InventoryEntryBuilder extends skyui.BasicEntryBuilder
 {
   /* PRIVATE VARIABLES */
 	
@@ -10,7 +10,7 @@ class skyui.InventoryEntryFactory extends skyui.BasicEntryFactory
 	
   /* CONSTRUCTORS */
 
-	public function InventoryEntryFactory(a_list: ScrollingList, a_iconThemeName: String)
+	public function InventoryEntryBuilder(a_list: ScrollingList, a_iconThemeName: String)
 	{
 		super(a_list, "ItemsListEntry", "skyui_icons_celtic.swf");
 		_list = a_list;

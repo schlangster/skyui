@@ -1,6 +1,7 @@
 ﻿import skyui.BasicList;
 
-class skyui.BasicEntryFactory implements skyui.IEntryClipFactory
+
+class skyui.BasicEntryBuilder implements skyui.IEntryClipBuilder
 {
   /* PRIVATE VARIABLES */
   
@@ -36,7 +37,7 @@ class skyui.BasicEntryFactory implements skyui.IEntryClipFactory
 	
   /* CONSTRUCTORS */
 	
-	public function BasicEntryFactory(a_list: BasicList, a_entryClassName: String, a_iconThemeName: String)
+	public function BasicEntryBuilder(a_list: BasicList, a_entryClassName: String, a_iconThemeName: String)
 	{
 		_list = a_list;
 		_entryClassName = a_entryClassName;
