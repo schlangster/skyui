@@ -1,8 +1,9 @@
 ﻿import gfx.events.EventDispatcher;
-import skyui.Util;
+
+import skyui.util.GlobalFunctions;
 
 
-class skyui.ItemNameFilter implements skyui.IFilter
+class skyui.filter.ItemNameFilter implements skyui.filter.IFilter
 {
   /* PROPERTIES */
   
@@ -16,14 +17,12 @@ class skyui.ItemNameFilter implements skyui.IFilter
 	public function set filterText(a_filterText: String)
 	{
 		a_filterText = a_filterText.toLowerCase();
-		
-		var changed = a_filterText != _filterText;
+
+		if (a_filterText == _filterText)
+			return;
+			
 		_filterText = a_filterText;
-
-		if (changed == true) {
-			dispatchEvent({type:"filterChange"});
-		}
-
+		dispatchEvent({type:"filterChange"});
 	}
 	
 	
@@ -52,11 +51,14 @@ class skyui.ItemNameFilter implements skyui.IFilter
 		}
 	}
   
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 
 
   /* PRIVATE FUNCTIONS */
@@ -69,7 +71,7 @@ class skyui.ItemNameFilter implements skyui.IFilter
 		var seek = false;
 
 		for (var i = 0; i < searchStr.length; i++) {
-			var charCode = Util.mapUnicodeChar(_filterText.charCodeAt(seekIndex));
+			var charCode = GlobalFunctions.mapUnicodeChar(_filterText.charCodeAt(seekIndex));
 			
 			if (searchStr.charCodeAt(i) == charCode) {
 				if (!seek)

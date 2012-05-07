@@ -1,9 +1,11 @@
 ﻿import gfx.events.EventDispatcher;
-import skyui.ItemSortingFilter;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-class skyui.TabBar extends MovieClip
+import skyui.filter.ItemSortingFilter;
+
+
+class skyui.components.TabBar extends MovieClip
 {
   /* CONSTANTS */
   
@@ -64,11 +66,14 @@ class skyui.TabBar extends MovieClip
 
   /* PUBLIC FUNCTIONS */
 
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	public function setIcons(a_leftName: String, a_rightName: String): Void
 	{

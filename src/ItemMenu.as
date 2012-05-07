@@ -1,7 +1,8 @@
 ﻿import gfx.io.GameDelegate;
 import Shared.GlobalFunc;
-import skyui.ConfigLoader;
 import gfx.ui.NavigationCode;
+
+import skyui.util.ConfigLoader;
 
 
 class ItemMenu extends MovieClip

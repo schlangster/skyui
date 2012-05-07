@@ -1,6 +1,8 @@
 ﻿import skyui.CategoryList;
+import skyui.components.list.BasicEntryBuilder;
 
-class skyui.CategoryEntryBuilder extends skyui.BasicEntryBuilder
+
+class skyui.CategoryEntryBuilder extends BasicEntryBuilder
 {
   /* PRIVATE VARIABLES */
   

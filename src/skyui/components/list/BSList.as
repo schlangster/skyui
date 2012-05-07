@@ -3,7 +3,7 @@
  */
 
 // @abstract
-class skyui.BSList extends MovieClip
+class skyui.components.list.BSList extends MovieClip
 {
   /* PROPERTIES */
   

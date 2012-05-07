@@ -1,7 +1,8 @@
-﻿import skyui.IFilter;
+﻿import skyui.filter.IFilter;
+import skyui.components.list.BasicEnumeration;
 
 
-class skyui.FilteredEnumeration extends skyui.BasicEnumeration
+class skyui.components.list.FilteredEnumeration extends BasicEnumeration
 {
   /* PRIVATE VARIABLES */
   

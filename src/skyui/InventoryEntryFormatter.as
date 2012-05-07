@@ -1,8 +1,8 @@
-﻿import skyui.TabularEntryFormatter;
-import skyui.TabularList;
-import skyui.ListLayout;
-import skyui.Defines;
-import skyui.ConfigLoader;
+﻿import skyui.components.list.TabularEntryFormatter;
+import skyui.components.list.TabularList;
+import skyui.components.list.ListLayout;
+import skyui.util.Defines;
+import skyui.util.ConfigLoader;
 
 
 class skyui.InventoryEntryFormatter extends TabularEntryFormatter

@@ -1,4 +1,4 @@
-﻿class skyui.ColumnLayoutData
+﻿class skyui.components.list.ColumnLayoutData
 {
 	public var type: Number = -1;
 

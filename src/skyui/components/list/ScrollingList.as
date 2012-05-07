@@ -1,14 +1,15 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
-import skyui.EntryClipManager;
-import skyui.InventoryEntryFactory;
-import skyui.BasicEnumeration;
-import skyui.FilteredEnumeration;
-import skyui.IFilter;
+
+import skyui.components.list.EntryClipManager;
+import skyui.components.list.BasicEnumeration;
+import skyui.components.list.FilteredEnumeration;
+import skyui.components.list.BasicList;
+import skyui.filter.IFilter;
 
 
-class skyui.ScrollingList extends skyui.BasicList
+class skyui.components.list.ScrollingList extends BasicList
 {
   /* PRIVATE VARIABLES */  
 
@@ -18,8 +19,6 @@ class skyui.ScrollingList extends skyui.BasicList
 	
 	private var _maxListIndex:Number;
 	private var _listHeight:Number;
-	
-	// FIXME
 	
 	
   /* STAGE ELEMENTS */

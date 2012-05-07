@@ -1,4 +1,4 @@
-﻿class skyui.Util
+﻿class skyui.util.GlobalFunctions
 {
   /* PUBLIC FUNCTIONS */
 	

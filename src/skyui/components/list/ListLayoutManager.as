@@ -1,8 +1,8 @@
-﻿import skyui.ConfigLoader;
-import skyui.ListLayout;
+﻿import skyui.util.ConfigLoader;
+import skyui.components.list.ListLayout;
 
 
-class skyui.ListLayoutManager
+class skyui.components.list.ListLayoutManager
 {
   /* SINGLETON */
   

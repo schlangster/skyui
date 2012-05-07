@@ -1,14 +1,14 @@
-﻿import skyui.SortedListHeader;
-import skyui.Translator;
-import skyui.Util;
-import gfx.events.EventDispatcher;
-import skyui.ColumnLayoutData;
+﻿import gfx.events.EventDispatcher;
+
+import skyui.components.list.ColumnLayoutData;
+import skyui.util.GlobalFunctions;
+import skyui.util.Translator;
 
 
 /*
  *  Encapsulates the list layout configuration.
  */
-class skyui.ListLayout
+class skyui.components.list.ListLayout
 {
   /* CONSTANTS */
   
@@ -110,7 +110,7 @@ class skyui.ListLayout
 	
 	public function ListLayout(a_layoutData: Object, a_defaultsData: Object, a_entryWidth: Number)
 	{
-		Util.addArrayFunctions();
+		GlobalFunctions.addArrayFunctions();
 		
 		EventDispatcher.initialize(this);
 		

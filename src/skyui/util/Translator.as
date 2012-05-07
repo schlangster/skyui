@@ -1,7 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 
 
-class skyui.Translator
+class skyui.util.Translator
 {
   /* PRIVATE VARIABLES */
   

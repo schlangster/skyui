@@ -1,8 +1,10 @@
 ﻿import gfx.events.EventDispatcher;
-import skyui.ItemSortingFilter;
-import skyui.Defines;
 
-class skyui.SortedListHeader extends MovieClip
+import skyui.filter.ItemSortingFilter;
+import skyui.util.Defines;
+
+
+class skyui.components.list.SortedListHeader extends MovieClip
 {
   /* PRIVATE VARIABLES */
 	
@@ -58,9 +60,12 @@ class skyui.SortedListHeader extends MovieClip
 
 	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// @mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	public function columnPress(a_columnIndex:Number)
 	{

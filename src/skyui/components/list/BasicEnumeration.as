@@ -1,4 +1,7 @@
-﻿class skyui.BasicEnumeration implements skyui.IEntryEnumeration
+﻿import skyui.components.list.IEntryEnumeration;
+
+
+class skyui.components.list.BasicEnumeration implements IEntryEnumeration
 {
   /* PROPERTIES */
   

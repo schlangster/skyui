@@ -1,6 +1,8 @@
-﻿import skyui.ScrollingList;
+﻿import skyui.components.list.ScrollingList;
+import skyui.components.list.BasicEntryBuilder;
 
-class skyui.InventoryEntryBuilder extends skyui.BasicEntryBuilder
+
+class skyui.InventoryEntryBuilder extends BasicEntryBuilder
 {
   /* PRIVATE VARIABLES */
 	

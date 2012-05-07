@@ -2,25 +2,24 @@
 import gfx.ui.NavigationCode;
 import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
-
 import Shared.GlobalFunc;
 
+import skyui.components.SearchWidget;
+import skyui.components.TabBar;
+import skyui.components.list.AlphaEntryFormatter;
+import skyui.components.list.FilteredEnumeration;
+import skyui.components.list.BasicEnumeration;
+import skyui.components.list.TabularList;
+import skyui.components.list.SortedListHeader;
+import skyui.filter.ItemTypeFilter;
+import skyui.filter.ItemNameFilter;
+import skyui.filter.ItemSorter;
+import skyui.util.ConfigLoader;
+import skyui.util.GlobalFunctions;
+import skyui.util.Translator;
 import skyui.CategoryList;
-import skyui.TabularList;
-import skyui.ItemTypeFilter;
-import skyui.ItemNameFilter;
-import skyui.ItemSorter;
-import skyui.SortedListHeader;
-import skyui.SearchWidget;
-import skyui.TabBar;
-import skyui.ConfigLoader;
-import skyui.Util;
-import skyui.Translator;
 import skyui.CategoryEntryBuilder;
 import skyui.InventoryEntryBuilder;
-import skyui.BasicEnumeration;
-import skyui.FilteredEnumeration;
-import skyui.AlphaEntryFormatter;
 
 
 class InventoryLists extends MovieClip
@@ -108,7 +107,7 @@ class InventoryLists extends MovieClip
 	{
 		super();
 
-		Util.addArrayFunctions();
+		GlobalFunctions.addArrayFunctions();
 
 		EventDispatcher.initialize(this);
 

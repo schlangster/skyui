@@ -1,13 +1,14 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
-import skyui.EntryClipManager;
-import skyui.CategoryEntryFactory;
-import skyui.BasicEnumeration;
-import skyui.AlphaEntryFormatter;
+
+import skyui.components.list.EntryClipManager;
+import skyui.components.list.BasicEnumeration;
+import skyui.components.list.AlphaEntryFormatter;
+import skyui.components.list.BasicList;
 
 
-class skyui.CategoryList extends skyui.BasicList
+class skyui.CategoryList extends BasicList
 {
   /* CONSTANTS */
 	

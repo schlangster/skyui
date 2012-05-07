@@ -2,7 +2,7 @@
  *  An enumeration of list entries.
  */
 
-interface skyui.IEntryEnumeration
+interface skyui.components.list.IEntryEnumeration
 {
 	// Returns the number of entries the enumeration contains.
 	public function size(): Number;

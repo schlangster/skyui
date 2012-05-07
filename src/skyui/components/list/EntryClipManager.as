@@ -1,8 +1,8 @@
-﻿import skyui.BSList;
-import skyui.IEntryClipBuilder;
+﻿import skyui.components.list.BSList;
+import skyui.components.list.IEntryClipBuilder;
 
 
-class skyui.EntryClipManager
+class skyui.components.list.EntryClipManager
 { 
   /* PRIVATE VARIABLES */
   
@@ -29,7 +29,7 @@ class skyui.EntryClipManager
   
   /* PUBLIC FUNCTIONS */
   
-	public function getClipByIndex(a_index: Number)
+	public function getClipByIndex(a_index: Number): MovieClip
 	{
 		if (a_index < 0)
 			return undefined;

@@ -1,15 +1,17 @@
-﻿import skyui.ConfigLoader;
-import skyui.Util;
-import Shared.GlobalFunc;
+﻿import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
-import skyui.Translator;
-import skyui.ListLayout;
-import skyui.SortedListHeader;
-import skyui.FilteredEnumeration;
-import skyui.IFilter;
+
+import skyui.util.ConfigLoader;
+import skyui.util.GlobalFunctions;
+import skyui.util.Translator;
+import skyui.components.list.ListLayout;
+import skyui.components.list.SortedListHeader;
+import skyui.components.list.FilteredEnumeration;
+import skyui.components.list.ScrollingList;
+import skyui.filter.IFilter;
 
 
-class skyui.TabularList extends skyui.ScrollingList
+class skyui.components.list.TabularList extends ScrollingList
 {
   /* STAGE ELEMENTS */
   

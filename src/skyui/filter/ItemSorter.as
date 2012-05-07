@@ -1,7 +1,9 @@
 ﻿import gfx.events.EventDispatcher;
-import skyui.IFilter;
 
-class skyui.ItemSorter implements skyui.IFilter
+import skyui.filter.IFilter;
+
+
+class skyui.filter.ItemSorter implements skyui.filter.IFilter
 {
   /* PRIVATE VARIABLES */
   

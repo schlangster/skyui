@@ -1,7 +1,8 @@
-﻿import skyui.BasicList;
+﻿import skyui.components.list.BasicList;
+import skyui.components.list.IEntryClipBuilder;
 
 
-class skyui.BasicEntryBuilder implements skyui.IEntryClipBuilder
+class skyui.components.list.BasicEntryBuilder implements IEntryClipBuilder
 {
   /* PRIVATE VARIABLES */
   

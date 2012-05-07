@@ -2,11 +2,11 @@
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 
+import skyui.components.list.ListLayoutManager;
+import skyui.components.list.TabularList;
 import skyui.CategoryList;
-import skyui.TabularList;
 import skyui.InventoryEntryFormatter;
 import skyui.InventoryDataFetcher;
-import skyui.ListLayoutManager;
 
 
 class InventoryMenu extends ItemMenu

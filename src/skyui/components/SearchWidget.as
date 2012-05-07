@@ -3,11 +3,11 @@ import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-import skyui.ConfigLoader;
-import skyui.Translator;
+import skyui.util.ConfigLoader;
+import skyui.util.Translator;
 
 
-class skyui.SearchWidget extends MovieClip
+class skyui.components.SearchWidget extends MovieClip
 {
   /* PRIVATE VARIABLES */
   
@@ -53,11 +53,14 @@ class skyui.SearchWidget extends MovieClip
 	
   /* PUBLIC FUNCTIONS */
 
-	// mixin by gfx.events.EventDispatcher
+	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
-	
-	// mixin by gfx.events.EventDispatcher
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
 	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	public function onConfigLoad(event): Void
 	{

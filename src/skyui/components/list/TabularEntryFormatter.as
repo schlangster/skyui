@@ -1,10 +1,11 @@
-﻿import skyui.TabularList;
-import skyui.ListLayout;
-import skyui.ColumnLayoutData;
+﻿import skyui.components.list.TabularList;
+import skyui.components.list.ListLayout;
+import skyui.components.list.ColumnLayoutData;
+import skyui.components.list.IEntryFormatter;
 
 
 // @abstract
-class skyui.TabularEntryFormatter implements skyui.IEntryFormatter
+class skyui.components.list.TabularEntryFormatter implements IEntryFormatter
 {
   /* PRIVATE VARIABLES */
   

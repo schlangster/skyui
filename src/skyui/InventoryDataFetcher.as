@@ -1,8 +1,10 @@
-﻿import skyui.BasicList;
-import gfx.io.GameDelegate;
+﻿import gfx.io.GameDelegate;
+
+import skyui.components.list.BasicList;
+import skyui.components.list.IDataFetcher;
 
 
-class skyui.InventoryDataFetcher implements skyui.IDataFetcher
+class skyui.InventoryDataFetcher implements IDataFetcher
 {	
 	public function InventoryDataFetcher(a_list: BasicList)
 	{

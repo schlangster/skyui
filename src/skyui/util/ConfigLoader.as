@@ -1,10 +1,11 @@
 ﻿import gfx.events.EventDispatcher;
-import skyui.Util;
-import skyui.Defines;
-import skyui.ListLayout;
+
+import skyui.components.list.ListLayout;
+import skyui.util.Defines;
+import skyui.util.GlobalFunctions;
 
 
-class skyui.ConfigLoader
+class skyui.util.ConfigLoader
 {
   /* CONSTANTS */
   
@@ -133,7 +134,7 @@ class skyui.ConfigLoader
 				continue;
 			
 			// Get raw key string
-			var key = Util.clean(lines[i].slice(0, lines[i].indexOf("=")));
+			var key = GlobalFunctions.clean(lines[i].slice(0, lines[i].indexOf("=")));
 			if (key == undefined)
 				continue;
 				
@@ -147,7 +148,7 @@ class skyui.ConfigLoader
 			}
 
 			// Detect value type & extract
-			var val = parseValueString(Util.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _constantTable, _config[section]);
+			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _constantTable, _config[section]);
 			
 			if (val == undefined)
 				continue;
@@ -182,7 +183,7 @@ class skyui.ConfigLoader
 			
 		// Explicit String?
 		} else if (a_str.charAt(0) == "'") {
-			return Util.extract(a_str, "'", "'");
+			return GlobalFunctions.extract(a_str, "'", "'");
 			
 		// Entry property? - substituted later
 		} else if (a_str.charAt(0) == "@") {
@@ -190,18 +191,18 @@ class skyui.ConfigLoader
 			
 		// List?
 		} else if (a_str.charAt(0) == "<") {
-			var values = Util.extract(a_str, "<", ">").split(",");
+			var values = GlobalFunctions.extract(a_str, "<", ">").split(",");
 			for (var i=0; i<values.length; i++)
-				values[i] = parseValueString(Util.clean(values[i]), a_constantTable, a_root);
+				values[i] = parseValueString(GlobalFunctions.clean(values[i]), a_constantTable, a_root);
 				
 			return values;
 			
 		// Flags?
 		} else if (a_str.charAt(0) == "{") {
-			var values = Util.extract(a_str, "{", "}").split("|");
+			var values = GlobalFunctions.extract(a_str, "{", "}").split("|");
 			var flags = 0;
 			for (var i=0; i<values.length; i++) {
-				var t = parseValueString(Util.clean(values[i]), a_constantTable, a_root);
+				var t = parseValueString(GlobalFunctions.clean(values[i]), a_constantTable, a_root);
 				if (isNaN(t)) {
 					return undefined;
 				}

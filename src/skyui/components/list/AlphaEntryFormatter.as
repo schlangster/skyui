@@ -1,7 +1,8 @@
-﻿import skyui.BasicList;
+﻿import skyui.components.list.BasicList;
+import skyui.components.list.IEntryFormatter;
 
 
-class skyui.AlphaEntryFormatter implements skyui.IEntryFormatter
+class skyui.components.list.AlphaEntryFormatter implements IEntryFormatter
 {
   /* PRIVATE VARIABLES */
   

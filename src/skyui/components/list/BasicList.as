@@ -2,18 +2,20 @@
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
-import skyui.Config;
-import skyui.EntryClipManager;
-import skyui.IEntryClipBuilder;
-import skyui.BasicEntryFactory;
-import skyui.IEntryEnumeration;
-import skyui.BasicEnumeration;
-import skyui.IEntryFormatter;
-import skyui.IDataFetcher;
-import skyui.IListComponentInitializer;
+
+import skyui.components.list.EntryClipManager;
+import skyui.components.list.IEntryClipBuilder;
+import skyui.components.list.BasicEntryFactory;
+import skyui.components.list.IEntryEnumeration;
+import skyui.components.list.BasicEnumeration;
+import skyui.components.list.IEntryFormatter;
+import skyui.components.list.IDataFetcher;
+import skyui.components.list.IListComponentInitializer;
+import skyui.components.list.BSList;
+
 
 // @abstract
-class skyui.BasicList extends skyui.BSList
+class skyui.components.list.BasicList extends BSList
 {
   /* CONSTANTS */
   
