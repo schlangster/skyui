@@ -71,7 +71,7 @@ class InventoryMenu extends ItemMenu
 
 	function handleInput(details, pathToFocus)
 	{
-		if (bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
+		if (_bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == NavigationCode.TAB) {
 					StartMenuFade();

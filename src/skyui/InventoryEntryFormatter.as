@@ -2,7 +2,7 @@
 import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
 import skyui.util.Defines;
-import skyui.util.ConfigLoader;
+import skyui.util.ConfigManager;
 
 
 class skyui.InventoryEntryFormatter extends TabularEntryFormatter
@@ -60,7 +60,7 @@ class skyui.InventoryEntryFormatter extends TabularEntryFormatter
 		_stolenEnabledColor = 0xffffff;
 		_stolenDisabledColor = 0x4c4c4c;
 
-		ConfigLoader.registerCallback(this, "onConfigLoad");
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
 	
 	

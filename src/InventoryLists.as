@@ -2,6 +2,7 @@
 import gfx.ui.NavigationCode;
 import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
+import gfx.controls.Button;
 import Shared.GlobalFunc;
 
 import skyui.components.SearchWidget;
@@ -14,7 +15,7 @@ import skyui.components.list.SortedListHeader;
 import skyui.filter.ItemTypeFilter;
 import skyui.filter.ItemNameFilter;
 import skyui.filter.ItemSorter;
-import skyui.util.ConfigLoader;
+import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 import skyui.CategoryList;
@@ -55,10 +56,16 @@ class InventoryLists extends MovieClip
 	private var _platform: Number;
 	
 	private var _currCategoryIndex: Number;
+	
+	private var _customizeButton: Button;
+	
+	private var _customizePanel: MovieClip;
 
 	private var _searchKey: Number;
 	private var _tabToggleKey: Number;
 	private var _allString: String;
+	
+	private var _savedSelectionIndex: Number = -1;
 
 
   /* PROPERTIES */
@@ -122,8 +129,16 @@ class InventoryLists extends MovieClip
 
 		_searchKey = undefined;
 		_tabToggleKey = undefined;
+		
+		_categoryList = panelContainer.categoryList;
+		_categoryLabel = panelContainer.categoryLabel;
+		_itemList = panelContainer.itemList;
+		_searchWidget = panelContainer.searchWidget;
+		_tabBar = panelContainer.tabBar;
+		_customizeButton = panelContainer.customizeButton;
+		_customizePanel = panelContainer.customizePanel;
 
-		ConfigLoader.registerCallback(this, "onConfigLoad");
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
 	
 	
@@ -145,12 +160,6 @@ class InventoryLists extends MovieClip
 	// That's why they are initialized in onLoad.
 	public function onLoad()
 	{
-		_categoryList = panelContainer.categoryList;
-		_categoryLabel = panelContainer.categoryLabel;
-		_itemList = panelContainer.itemList;
-		_searchWidget = panelContainer.searchWidget;
-		_tabBar = panelContainer.tabBar;
-		
 		_categoryList.entryClipBuilder = new CategoryEntryBuilder(_categoryList);
 		_categoryList.listEnumeration = new BasicEnumeration(_categoryList.entryList);
 		_categoryList.entryFormatter = new AlphaEntryFormatter(_categoryList);
@@ -184,8 +193,31 @@ class InventoryLists extends MovieClip
 		_searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
 		_searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
+		_customizeButton.addEventListener("press", this, "onCustomizeButtonPress");
+		
 		if (_tabBar != undefined)
 			_tabBar.addEventListener("tabPress", this, "onTabPress");
+	}
+	
+	var _visvis = false;
+	
+	public function onCustomizeButtonPress(event): Void
+	{
+		_visvis = !_visvis;
+		_customizePanel._visible = _visvis;
+		if (_visvis) {
+			_savedSelectionIndex = _itemList.selectedIndex;
+			_itemList.selectedIndex = -1;
+		} else {
+			_itemList.selectedIndex = _savedSelectionIndex;
+		}
+			
+		_categoryList.disableSelection = _visvis;
+		_categoryList.disableInput = _visvis;
+		_itemList.disableSelection = _visvis;
+		_itemList.disableInput = _visvis;
+		_searchWidget.disabled = _visvis;
+
 	}
 
 	public function onConfigLoad(event)
@@ -383,8 +415,8 @@ class InventoryLists extends MovieClip
 
 	public function onSearchInputStart(event)
 	{
-		_categoryList.disableSelection = true;
-		_itemList.disableInput = true;
+		_categoryList.disableSelection = _categoryList.disableInput = true;
+		_itemList.disableSelection = _itemList.disableInput = true
 		_nameFilter.filterText = "";
 	}
 
@@ -395,8 +427,8 @@ class InventoryLists extends MovieClip
 
 	public function onSearchInputEnd(event)
 	{
-		_categoryList.disableSelection = false;
-		_itemList.disableInput = false;
+		_categoryList.disableSelection = _categoryList.disableInput = false;
+		_itemList.disableSelection = _itemList.disableInput = false;
 		_nameFilter.filterText = event.data;
 	}
 

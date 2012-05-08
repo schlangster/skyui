@@ -5,16 +5,11 @@ import skyui.util.Defines;
 import skyui.util.GlobalFunctions;
 
 
-class skyui.util.ConfigLoader
+class skyui.util.ConfigManager
 {
   /* CONSTANTS */
   
 	private static var _constantTable: Object = {
-		
-		ITEM_ICON: ListLayout.COL_TYPE_ITEM_ICON,
-		EQUIP_ICON: ListLayout.COL_TYPE_EQUIP_ICON,
-		NAME: ListLayout.COL_TYPE_NAME,
-		TEXT: ListLayout.COL_TYPE_TEXT,
 		
 		ASCENDING: 0,
 		DESCENDING: Array.DESCENDING,
@@ -88,16 +83,56 @@ class skyui.util.ConfigLoader
 	
   /* PUBLIC FUNCTIONS */
   
-	public static function registerCallback(scope: Object, callBack: String)
+	public static function registerLoadCallback(a_scope: Object, a_callBack: String)
 	{
 		// Not loaded yet
 		if (!_loaded) {
-			_eventDummy.addEventListener("configLoad", scope, callBack);
+			_eventDummy.addEventListener("configLoad", a_scope, a_callBack);
 			return;
 		}
 		
 		// Already loaded, generate event instantly.
-		scope[callBack]({type: "configLoad", config: _config});
+		a_scope[a_callBack]({type: "configLoad", config: _config});
+	}
+	
+	public static function registerUpdateCallback(a_scope: Object, a_callBack: String)
+	{
+		_eventDummy.addEventListener("configUpdate", a_scope, a_callBack);
+	}
+	
+	public static function setConstant(a_name: String, a_value)
+	{
+		var type = typeof(a_value);
+		if (type != "number" && type != "boolean" && type != "string")
+			return;
+		
+		_constantTable[a_name] = a_value;
+	}
+	
+	public static function setOverride(a_section: String, a_key: String, a_value): Void
+	{
+		// Allow to add new sections
+		if (_config[a_section])
+			_config[a_section] = {};
+		
+		// Detect value type & extract
+		var val = parseValueString(a_value, _constantTable, _config[a_section]);
+		if (val == undefined)
+			return;
+		
+		// Prepare key subsections
+		var a = a_key.split(".");
+		var loc = _config[a_section];
+		for (var j=0; j<a.length-1; j++) {
+			if (loc[a[j]] == undefined)
+				loc[a[j]] = {};
+			loc = loc[a[j]];
+		}
+
+		// Store value
+		loc[a[a.length-1]] = val;
+		
+		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 	}
 
 
@@ -203,9 +238,9 @@ class skyui.util.ConfigLoader
 			var flags = 0;
 			for (var i=0; i<values.length; i++) {
 				var t = parseValueString(GlobalFunctions.clean(values[i]), a_constantTable, a_root);
-				if (isNaN(t)) {
+				if (isNaN(t))
 					return undefined;
-				}
+					
 				flags = flags | t;
 			}
 			return flags;
@@ -213,10 +248,13 @@ class skyui.util.ConfigLoader
 		// Constant?
 		} else if (a_constantTable[a_str] != undefined) {
 			return a_constantTable[a_str];
-			
+
+		// No longer used. Lookup is done at runtime now. Otherwise the names of the top level elements would no longer be available,
+		// which is a problem because it's needed to create the column descriptors for overrides.
+		//
 		// Top-level property?
-		} else if (a_root[a_str] != undefined) {
-			return a_root[a_str];
+		//} else if (a_root[a_str] != undefined) {
+		//	return a_root[a_str];
 		}
 		
 		// Default String

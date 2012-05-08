@@ -2,24 +2,34 @@
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 
-import skyui.util.ConfigLoader;
+import skyui.util.ConfigManager;
 
 
 class ItemMenu extends MovieClip
 {
+  /* CONSTANTS */
+  
 	private var SKSE_REQ_RELEASE_IDX = 9;
+
+
+  /* PRIVATE VARIABLES */
+  
+	private var _platform: Number;
+	private var _bItemCardFadedIn: Boolean;
 	
-	private var _platform:Number;
-	private var _bItemCardFadedIn:Boolean;
-	
-	private var _3DIconXSettingStr:String;
-	private var _3DIconZSettingStr:String;
-	private var _3DIconScaleSettingStr:String;
-	private var _3DIconWideXSettingStr:String;
-	private var _3DIconWideZSettingStr:String;
-	private var _3DIconWideScaleSettingStr:String;
+	private var _3DIconXSettingStr: String;
+	private var _3DIconZSettingStr: String;
+	private var _3DIconScaleSettingStr: String;
+	private var _3DIconWideXSettingStr: String;
+	private var _3DIconWideZSettingStr: String;
+	private var _3DIconWideScaleSettingStr: String;
 	
 	private var _config: Object;
+	
+	private var _bFadedIn: Boolean;
+	
+	
+  /* STAGE ELEMENTS */
 	
 	public var inventoryLists: InventoryLists;
 	
@@ -27,12 +37,11 @@ class ItemMenu extends MovieClip
 	var ItemCard_mc:MovieClip;
 	var BottomBar_mc:MovieClip;
 	
-	var MouseRotationRect:MovieClip;
-	var ExitMenuRect:MovieClip;
-	var skseWarning:MovieClip;
+	var MouseRotationRect: MovieClip;
+	var ExitMenuRect: MovieClip;
+	var skseWarning: MovieClip;
 
-	// API
-	var bFadedIn:Boolean;
+
 	
 
 	function ItemMenu()
@@ -44,9 +53,9 @@ class ItemMenu extends MovieClip
 		BottomBar_mc = BottomBar_mc;
 		
 		Mouse.addListener(this);
-		ConfigLoader.registerCallback(this, "onConfigLoad");
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		
-		bFadedIn = true;
+		_bFadedIn = true;
 		_bItemCardFadedIn = false;
 		
 		_3DIconXSettingStr = "fInventory3DItemPosX:Interface";
@@ -57,6 +66,7 @@ class ItemMenu extends MovieClip
 		_3DIconWideScaleSettingStr = "fInventory3DItemPosScaleWide:Interface";
 	}
 
+	// @API
 	function InitExtensions(a_bPlayBladeSound)
 	{
 		skse.ExtendData(true);
@@ -77,7 +87,7 @@ class ItemMenu extends MovieClip
 		ItemCard_mc.addEventListener("quantitySelect",this,"onQuantityMenuSelect");
 		ItemCard_mc.addEventListener("subMenuAction",this,"onItemCardSubMenuAction");
 
-		PositionElements();
+		positionElements();
 		
 		inventoryLists.showCategoriesList(a_bPlayBladeSound);
 		
@@ -86,9 +96,8 @@ class ItemMenu extends MovieClip
 		
 		ExitMenuRect.onMouseDown = function()
 		{
-			if (_parent.bFadedIn == true && Mouse.getTopMostEntity() == this) {
+			if (_parent._bFadedIn == true && Mouse.getTopMostEntity() == this)
 				_parent.onExitMenuRectClick();
-			}
 		};
 		
 		if (skseWarning != undefined) {
@@ -120,12 +129,12 @@ class ItemMenu extends MovieClip
 		}
 	}
 	
-	function onConfigLoad(event)
+	public function onConfigLoad(event): Void
 	{
 		_config = event.config;
 	}
 
-	function PositionElements()
+	private function positionElements(): Void
 	{
 		GlobalFunc.SetLockFunction();
 		
@@ -154,13 +163,13 @@ class ItemMenu extends MovieClip
 			itemiconPosition.scale *= scaleMult;
 		}
 		
-		if (itemcardPosition.align == "left") {
+		if (itemcardPosition.align == "left")
 			itemCardContainer._x = panelEdge + leftEdge + itemcardPosition.xOffset;
-		} else if (itemcardPosition.align == "right") {
+		else if (itemcardPosition.align == "right")
 			itemCardContainer._x = rightEdge - itemCardContainer._width + itemcardPosition.xOffset;
-		} else {
+		else
 			itemCardContainer._x = panelEdge + itemcardPosition.xOffset + (Stage.visibleRect.x + Stage.visibleRect.width - panelEdge - itemCardContainer._width) / 2;
-		}
+
 		itemCardContainer._y = itemCardContainer._y + itemcardPosition.yOffset;
 		
 		MovieClip(ExitMenuRect).Lock("TL");
@@ -185,9 +194,8 @@ class ItemMenu extends MovieClip
 			MouseRotationRect._height = 0.55 * Stage.visibleRect.height;
 		}
 		
-		if (skseWarning != undefined) {
+		if (skseWarning != undefined)
 			skseWarning.Lock("TR");
-		}
 	}
 
 	function SetPlatform(a_platform, a_bPS3Switch)
@@ -204,15 +212,13 @@ class ItemMenu extends MovieClip
 		return inventoryLists.itemList;
 	}
 
+	// GFx
 	function handleInput(details, pathToFocus)
 	{
-		if (bFadedIn) {
-			if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
-				if (GlobalFunc.IsKeyPressed(details) && details.navEquivalent == NavigationCode.TAB) {
+		if (_bFadedIn)
+			if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
+				if (GlobalFunc.IsKeyPressed(details) && details.navEquivalent == NavigationCode.TAB)
 					GameDelegate.call("CloseMenu",[]);
-				}
-			}
-		}
 
 		return true;
 	}
@@ -220,7 +226,7 @@ class ItemMenu extends MovieClip
 	function onMouseWheel(delta)
 	{
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
-			if (e == MouseRotationRect && ShouldProcessItemsListInput(false) || !bFadedIn && delta == -1) {
+			if (e == MouseRotationRect && ShouldProcessItemsListInput(false) || !_bFadedIn && delta == -1) {
 				GameDelegate.call("ZoomItemModel",[delta]);
 				continue;
 			}
@@ -251,9 +257,8 @@ class ItemMenu extends MovieClip
 			GameDelegate.call("RequestItemCardInfo",[],this,"UpdateItemCardInfo");
 			
 		} else {
-			if (!bFadedIn) {
+			if (!_bFadedIn)
 				resetMenu();
-			}
 			
 			if (_bItemCardFadedIn) {
 				_bItemCardFadedIn = false;
@@ -289,11 +294,10 @@ class ItemMenu extends MovieClip
 	function onItemSelect(event)
 	{
 		if (event.entry.enabled) {
-			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT) {
+			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
 				ItemCard_mc.ShowQuantityMenu(event.entry.count);
-			} else {
+			else
 				onQuantityMenuSelect({amount:1});
-			}
 		} else {
 			GameDelegate.call("DisabledItemSelect",[]);
 		}
@@ -332,17 +336,16 @@ class ItemMenu extends MovieClip
 
 	function ShouldProcessItemsListInput(abCheckIfOverRect)
 	{
-		var process = bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.filteredItemsCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
+		var process = _bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.filteredItemsCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
 
 		if (process && _platform == 0 && abCheckIfOverRect) {
 			var e = Mouse.getTopMostEntity();
 			var found = false;
 			
-			while (!found && e != undefined)
-			{
-				if (e == inventoryLists.itemList) {
+			while (!found && e != undefined) {
+				if (e == inventoryLists.itemList)
 					found = true;
-				}
+					
 				e = e._parent;
 			}
 			
@@ -355,15 +358,13 @@ class ItemMenu extends MovieClip
 	function ConfirmSelectedEntry():Boolean
 	{
 		// only confirm when using mouse
-		if (_platform != 0) {
+		if (_platform != 0)
 			return true;
-		}
 		
-		for (var e = Mouse.getTopMostEntity(); e && e != undefined; e = e._parent) {
-			if (e.itemIndex == inventoryLists.itemList.selectedIndex) {
+		for (var e = Mouse.getTopMostEntity(); e && e != undefined; e = e._parent)
+			if (e.itemIndex == inventoryLists.itemList.selectedIndex)
 				return true;
-			}
-		}
+				
 		return false;
 	}
 
@@ -383,16 +384,15 @@ class ItemMenu extends MovieClip
 
 	function onMouseRotationFastClick()
 	{
-		if (ShouldProcessItemsListInput(false)) {
+		if (ShouldProcessItemsListInput(false))
 			onItemSelect({entry:inventoryLists.itemList.selectedEntry, keyboardOrMouse:0});
-		}
 	}
 
 	function ToggleMenuFade()
 	{
-		if (bFadedIn) {
+		if (_bFadedIn) {
 			_parent.gotoAndPlay("fadeOut");
-			bFadedIn = false;
+			_bFadedIn = false;
 			inventoryLists.itemList.disableSelection = true;
 			inventoryLists.itemList.disableInput = true;
 			inventoryLists.categoryList.disableSelection = true;
@@ -402,9 +402,10 @@ class ItemMenu extends MovieClip
 		}
 	}
 
+	// API
 	function SetFadedIn()
 	{
-		bFadedIn = true;
+		_bFadedIn = true;
 		inventoryLists.itemList.disableSelection = false;
 		inventoryLists.itemList.disableInput = false;
 		inventoryLists.categoryList.disableSelection = false;

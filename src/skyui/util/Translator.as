@@ -73,7 +73,7 @@ class skyui.util.Translator
 	
   /* PUBLIC FUNCTIONS */
 	
-	public static function registerCallback(scope: Object, callBack: String)
+	public static function registerLoadCallback(scope: Object, callBack: String)
 	{
 		_eventDummy.addEventListener("translationLoad", scope, callBack);
 	}

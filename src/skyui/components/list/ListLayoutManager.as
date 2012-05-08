@@ -1,4 +1,4 @@
-﻿import skyui.util.ConfigLoader;
+﻿import skyui.util.ConfigManager;
 import skyui.components.list.ListLayout;
 
 
@@ -24,7 +24,10 @@ class skyui.components.list.ListLayoutManager
 	
   /* PRIVATE VARIABLES */
 	
-	private var _layoutData: Object;
+	private var _sectionData: Object;
+	private var _viewData: Object;
+	private var _columnData: Object;
+	private var _defaultsData: Object;
 	
 	// Store created layouts
 	private var _layouts: Object;
@@ -35,7 +38,13 @@ class skyui.components.list.ListLayoutManager
 	public function ListLayoutManager()
 	{
 		_layouts = {};
-		ConfigLoader.registerCallback(this, "onConfigLoad");
+		
+		ConfigManager.setConstant("ITEM_ICON", ListLayout.COL_TYPE_ITEM_ICON);
+		ConfigManager.setConstant("EQUIP_ICON", ListLayout.COL_TYPE_EQUIP_ICON);
+		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
+		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
+		
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
 	
 	
@@ -46,9 +55,13 @@ class skyui.components.list.ListLayoutManager
 		if (event.config == undefined)
 			return;
 			
-		_layoutData = event.config["ListLayout"];
+		_sectionData = event.config["ListLayout"];
+		_viewData = _sectionData.views;
+		_columnData = _sectionData.columns;
+		_defaultsData = _sectionData.defaults;
 	}
 	
+	// Create on-demand and cache
 	public function getLayoutByName(a_name: String)
 	{
 		// Exists?
@@ -56,11 +69,12 @@ class skyui.components.list.ListLayoutManager
 			return _layouts[a_name];
 		
 		// Otherwise create
-		for (var i = 0; i < _layoutData.layouts.length; i++) {
-			if (_layoutData.layouts[i].name == a_name) {
-				_layouts[a_name] = new ListLayout(_layoutData.layouts[i],
-												  _layoutData.defaults,
-												  _layoutData.list.entryWidth);
+		for (var t in _sectionData.layouts) {
+			skse.Log("t " + t);
+			
+			var layoutData = _sectionData.layouts[t];
+			if (layoutData.name == a_name) {
+				_layouts[a_name] = new ListLayout(layoutData, _viewData, _columnData, _defaultsData);
 				return _layouts[a_name];
 			}
 		}

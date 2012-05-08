@@ -3,7 +3,7 @@ import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-import skyui.util.ConfigLoader;
+import skyui.util.ConfigManager;
 import skyui.util.Translator;
 
 
@@ -15,20 +15,32 @@ class skyui.components.SearchWidget extends MovieClip
 	private var _currentInput: String;
 	private var _lastInput: String;
 	private var _bActive: Boolean;
-	private var _bRestoreFocus: Boolean;
+	private var _bRestoreFocus: Boolean = false;
 	private var _bEnableAutoupdate: Boolean;
 	private var _updateDelay: Number;
 	private var _filterString: String;
 	
 	private var _updateTimerId: Number;
 	
-	private var _config: Object;
-	
 	
   /* STAGE ELEMENTS */
   
 	public var textField: TextField;
 	public var icon: MovieClip;
+	
+  /* PROPERTIES */
+	
+	private var _bDisabled: Boolean = false;
+	
+	public function get disabled(): Boolean
+	{
+		return _bDisabled;
+	}
+	
+	public function set disabled(a_bDisabled: Boolean)
+	{
+		_bDisabled = a_bDisabled;
+	}
 	
 	
   /* CONSTRUCTORS */
@@ -38,16 +50,13 @@ class skyui.components.SearchWidget extends MovieClip
 		super();
 		EventDispatcher.initialize(this);
 		
-		_currentInput = undefined;
-		_bRestoreFocus = false;
-		
 		textField.onKillFocus = function(a_newFocus: Object)
 		{
 			_parent.endInput();
 		};
 
-		ConfigLoader.registerCallback(this, "onConfigLoad");
-		Translator.registerCallback(this, "onTranslationLoad");
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
+		Translator.registerLoadCallback(this, "onTranslationLoad");
 	}
 	
 	
@@ -64,9 +73,9 @@ class skyui.components.SearchWidget extends MovieClip
 	
 	public function onConfigLoad(event): Void
 	{
-		_config = event.config;
-		_bEnableAutoupdate = _config.SearchBox.autoupdate.enable;
-		_updateDelay = _config.SearchBox.autoupdate.delay;
+		var config = event.config;
+		_bEnableAutoupdate = config.SearchBox.autoupdate.enable;
+		_updateDelay = config.SearchBox.autoupdate.delay;
 	}
 	
 	public function onTranslationLoad(event): Void
@@ -82,9 +91,8 @@ class skyui.components.SearchWidget extends MovieClip
 
 	public function startInput(): Void
 	{
-		if (_bActive) {
+		if (_bActive || _bDisabled)
 			return;
-		}
 		
 		_previousFocus = FocusHandler.instance.getFocus(0);
 
@@ -95,7 +103,7 @@ class skyui.components.SearchWidget extends MovieClip
 		textField.noTranslate = true;
 		textField.selectable = true;
 		
-		Selection.setFocus(textField,0);
+		Selection.setFocus(textField);
 		Selection.setSelection(0,0);
 		
 		_bActive = true;
