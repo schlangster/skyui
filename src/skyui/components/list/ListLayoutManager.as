@@ -10,6 +10,11 @@ class skyui.components.list.ListLayoutManager
 	
 	static private function initialize(): Boolean
 	{
+		ConfigManager.setConstant("ITEM_ICON", ListLayout.COL_TYPE_ITEM_ICON);
+		ConfigManager.setConstant("EQUIP_ICON", ListLayout.COL_TYPE_EQUIP_ICON);
+		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
+		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
+		
 		_instance = new ListLayoutManager;
 		return true;
 	}
@@ -39,18 +44,14 @@ class skyui.components.list.ListLayoutManager
 	{
 		_layouts = {};
 		
-		ConfigManager.setConstant("ITEM_ICON", ListLayout.COL_TYPE_ITEM_ICON);
-		ConfigManager.setConstant("EQUIP_ICON", ListLayout.COL_TYPE_EQUIP_ICON);
-		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
-		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
-		
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
+		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
   
-	public function onConfigLoad(event)
+	public function onConfigLoad(event): Void
 	{
 		if (event.config == undefined)
 			return;
@@ -59,6 +60,15 @@ class skyui.components.list.ListLayoutManager
 		_viewData = _sectionData.views;
 		_columnData = _sectionData.columns;
 		_defaultsData = _sectionData.defaults;
+	}
+	
+	public function onConfigUpdate(event): Void
+	{
+		skse.Log("Updateee");
+		
+		// Otherwise create
+		for (var k in _layouts)
+			_layouts[k].refresh();
 	}
 	
 	// Create on-demand and cache
@@ -70,8 +80,6 @@ class skyui.components.list.ListLayoutManager
 		
 		// Otherwise create
 		for (var t in _sectionData.layouts) {
-			skse.Log("t " + t);
-			
 			var layoutData = _sectionData.layouts[t];
 			if (layoutData.name == a_name) {
 				_layouts[a_name] = new ListLayout(layoutData, _viewData, _columnData, _defaultsData);

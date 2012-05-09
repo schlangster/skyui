@@ -1,6 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 
 import skyui.components.list.ColumnLayoutData;
+import skyui.components.list.ColumnDescriptor;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 
@@ -48,6 +49,15 @@ class skyui.components.list.ListLayout
 	
 	// List of columns for the current view (updated when the view changes
 	private var _columnList: Array = [];
+	
+	private var _columnDescriptors: Array = [];
+	
+	public function get columnDescriptors(): Array
+	{
+		return _columnDescriptors;
+	}
+	
+	private var _lastFilterFlag: Number = -1;
 	
 	
   /* PROPERTIES */
@@ -118,9 +128,28 @@ class skyui.components.list.ListLayout
 	private function updateColumnList(): Void
 	{
 		_columnList.splice(0);
-		var columnNames = _viewList[_activeViewIndex].columns;
-		for (var i=0; i<columnNames.length; i++)
-			_columnList.push(_columnData[columnNames[i]]);
+		_columnDescriptors.splice(0);
+		
+		var columnNames = currentView.columns;
+		
+		for (var i=0; i<columnNames.length; i++) {
+			var col = _columnData[columnNames[i]];
+			var cd = new ColumnDescriptor();
+			cd.hidden = col.hidden;
+			cd.name = columnNames[i];
+			cd.longName = col.name;
+			cd.type = col.type;
+			
+			_columnList.push(col);
+			_columnDescriptors.push(cd);
+		}
+	}
+	
+	public function refresh(): Void
+	{
+		updateViewList();
+		_lastViewIndex = -1;
+		changeFilterFlag(_lastFilterFlag);
 	}
 	
 	public function ListLayout(a_layoutData: Object, a_viewData: Object, a_columnData: Object, a_defaultsData)
@@ -156,6 +185,8 @@ class skyui.components.list.ListLayout
 	
 	public function changeFilterFlag(a_flag: Number): Void
 	{
+		_lastFilterFlag = a_flag;
+		
 		// Find a matching view, or use last index
 		for (var i = 0; i < _viewList.length; i++) {
 			
@@ -197,9 +228,34 @@ class skyui.components.list.ListLayout
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
+	public function selectColumn(a_index: Number)
+	{
+		// Invalid column
+		if (currentView.columns[a_index] == undefined)
+			return;
+		
+		// Don't process for passive columns
+		if (currentView.columns[a_index].passive)
+			return;
+			
+		if (_activeColumnIndex != a_index) {
+			_activeColumnIndex = a_index;
+			_activeColumnState = 1;
+		} else {
+			if (_activeColumnState < currentView.columns[_activeColumnIndex].states)
+				_activeColumnState++;
+			else
+				_activeColumnState = 1;
+		}
+		
+		// Save as preferred state
+		_prefData = {viewIndex: _activeViewIndex, columnIndex: _activeColumnIndex, stateIndex: _activeColumnState};
+			
+		updateLayout();
+	}
 	
 
-	
+  /* PRIVATE FUNCTIONS */
 	
 	private function updateLayout(): Void
 	{
@@ -441,7 +497,7 @@ class skyui.components.list.ListLayout
 		dispatchEvent({type: "layoutChange"});
 	}
 	
-	function updateSortParams()
+	private function updateSortParams(): Void
 	{
 		var columns = currentView.columns;
 		var sortAttributes = columns[_activeColumnIndex].sortAttributes;
@@ -508,31 +564,5 @@ class skyui.components.list.ListLayout
 		// Found no match, reset prefData and return false
 		_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
 		return false;
-	}
-	
-	public function selectColumn(a_index: Number)
-	{
-		// Invalid column
-		if (currentView.columns[a_index] == undefined)
-			return;
-		
-		// Don't process for passive columns
-		if (currentView.columns[a_index].passive)
-			return;
-			
-		if (_activeColumnIndex != a_index) {
-			_activeColumnIndex = a_index;
-			_activeColumnState = 1;
-		} else {
-			if (_activeColumnState < currentView.columns[_activeColumnIndex].states)
-				_activeColumnState++;
-			else
-				_activeColumnState = 1;
-		}
-		
-		// Save as preferred state
-		_prefData = {viewIndex: _activeViewIndex, columnIndex: _activeColumnIndex, stateIndex: _activeColumnState};
-			
-		updateLayout();
 	}
 }

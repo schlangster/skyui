@@ -112,13 +112,8 @@ class skyui.util.ConfigManager
 	public static function setOverride(a_section: String, a_key: String, a_value): Void
 	{
 		// Allow to add new sections
-		if (_config[a_section])
+		if (_config[a_section] == undefined)
 			_config[a_section] = {};
-		
-		// Detect value type & extract
-		var val = parseValueString(a_value, _constantTable, _config[a_section]);
-		if (val == undefined)
-			return;
 		
 		// Prepare key subsections
 		var a = a_key.split(".");
@@ -130,7 +125,7 @@ class skyui.util.ConfigManager
 		}
 
 		// Store value
-		loc[a[a.length-1]] = val;
+		loc[a[a.length-1]] = a_value;
 		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 	}

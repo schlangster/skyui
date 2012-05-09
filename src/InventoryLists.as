@@ -217,7 +217,8 @@ class InventoryLists extends MovieClip
 		_itemList.disableSelection = _visvis;
 		_itemList.disableInput = _visvis;
 		_searchWidget.disabled = _visvis;
-
+		
+		ConfigManager.setOverride("ListLayout", "columns.valueWeightColumn.hidden", false);
 	}
 
 	public function onConfigLoad(event)
