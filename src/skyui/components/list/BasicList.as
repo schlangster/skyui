@@ -33,34 +33,8 @@ class skyui.components.list.BasicList extends BSList
 	
 	
   /* PRIVATE VARIABLES */
-
-	private var _entryClipManager: EntryClipManager;
-	
-	public function set entryClipBuilder(a_factory: IEntryClipBuilder)
-	{
-		_entryClipManager.entryClipBuilder = a_factory;
-	}
-	
-	private var _listEnumeration: IEntryEnumeration;
-	
-	public function set listEnumeration(a_enumeration: IEntryEnumeration)
-	{
-		_listEnumeration = a_enumeration;
-	}
-	
-	private var _entryFormatter: IEntryFormatter;
-	
-	public function set entryFormatter(a_entryFormatter: IEntryFormatter)
-	{
-		_entryFormatter = a_entryFormatter;
-	}
-	
-	private var _dataFetcher: IDataFetcher;
-	
-	public function set dataFetcher(a_dataFetcher: IDataFetcher)
-	{
-		_dataFetcher = a_dataFetcher;
-	}
+  
+  	private var _bUpdateRequested: Boolean = false;
 	
 
   /* PROPERTIES */
@@ -125,17 +99,52 @@ class skyui.components.list.BasicList extends BSList
 	{
 		_bDisableSelection = a_bFlag;
 	}
+	
+	private var _entryRenderer: String;
+	
+	public function set entryRenderer(a_entryRenderer: String)
+	{
+		_entryRenderer = a_entryRenderer;
+	}
+	
+	public function get entryRenderer(): String
+	{
+		return _entryRenderer;
+	}
 
-	// @override skyui.BSList
+	// @override skyui.components.list.BSList
 	public function get selectedIndex(): Number
 	{
 		return _selectedIndex;
 	}
 	
-	// @override skyui.BSList
-	function set selectedIndex(a_newIndex: Number)
+	// @override skyui.components.list.BSList
+	public function set selectedIndex(a_newIndex: Number)
 	{
 		doSetSelectedIndex(a_newIndex, SELECT_MOUSE);
+	}
+	
+	private var _entryClipManager: EntryClipManager;
+	
+	private var _listEnumeration: IEntryEnumeration;
+	
+	public function set listEnumeration(a_enumeration: IEntryEnumeration)
+	{
+		_listEnumeration = a_enumeration;
+	}
+	
+	private var _entryFormatter: IEntryFormatter;
+	
+	public function set entryFormatter(a_entryFormatter: IEntryFormatter)
+	{
+		_entryFormatter = a_entryFormatter;
+	}
+	
+	private var _dataFetcher: IDataFetcher;
+	
+	public function set dataFetcher(a_dataFetcher: IDataFetcher)
+	{
+		_dataFetcher = a_dataFetcher;
 	}
 	
 	
@@ -150,7 +159,7 @@ class skyui.components.list.BasicList extends BSList
 		_bMouseDrivenNav = false;
 		_platform = PLATFORM_PC;
 		
-		_entryClipManager = new EntryClipManager();
+		_entryClipManager = new EntryClipManager(this);
 
 		EventDispatcher.initialize(this);
 		Mouse.addListener(this);
@@ -168,7 +177,30 @@ class skyui.components.list.BasicList extends BSList
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	// @override skyui.BSList
+	// Queue an update for the next frame to avoid multiple updates in this one.
+	// If timing is imporant (like for scrolling), use UpdateList() directly.
+	public function requestUpdate()
+	{
+		_bUpdateRequested = true;
+	}
+	
+	var updateCount = 0;
+	
+	// @override MovieClip
+	public function onEnterFrame(): Void
+	{
+		if (updateCount>0)
+			skse.Log("Update count was " + updateCount);
+		updateCount = 0;
+		
+		if (!_bUpdateRequested)
+			return;
+			
+		_bUpdateRequested = false;
+		UpdateList();
+	}
+	
+	// @override BSList
 	public function InvalidateData(): Void
 	{
 		if (_dataFetcher)
@@ -179,24 +211,38 @@ class skyui.components.list.BasicList extends BSList
 		if (_selectedIndex >= _listEnumeration.size())
 			_selectedIndex = _listEnumeration.size() - 1;
 
-		UpdateList();
+		requestUpdate();
 	}
 
-	// @override skyui.BSList
+	// @override BSList
 	// @abstract
 	public function UpdateList(): Void { }
 	
-	// @abstract
-	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void { }
+	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
+	{
+		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1)
+			dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
+	{
+		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1 && a_buttonIndex == 1)
+			dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	public function onItemRollOver(a_index: Number): Void
+	{
+		if (_bListAnimating || _bDisableSelection)
+			return;
+			
+		doSetSelectedIndex(a_index, SELECT_MOUSE);
+		_bMouseDrivenNav = true;
+	}
 
-	// @abstract
-	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void { }
-	
-	// @abstract
-	public function onItemRollOver(a_index: Number): Void { }
-	
-	// @abstract
-	public function onItemRollOut(a_index: Number): Void { }
+	public function onItemRollOut(a_index: Number): Void
+	{
+		// empty
+	}
 	
 	
   /* PRIVATE FUNCTIONS */
@@ -212,5 +258,50 @@ class skyui.components.list.BasicList extends BSList
 	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
 	{
 		_entryFormatter.setEntry(a_entryClip, a_entryObject);
+	}
+	
+	private function getSelectedListEnumIndex(): Number
+	{
+		return _listEnumeration.lookupEnumIndex(_selectedIndex);
+	}
+	
+	private function getListEnumIndex(a_index: Number): Number
+	{
+		return _listEnumeration.lookupEnumIndex(a_index);
+	}
+	
+	private function getListEntryIndex(a_index: Number): Number
+	{
+		return _listEnumeration.lookupEntryIndex(a_index);
+	}
+	
+	private function getListEnumSize(): Number
+	{
+		return _listEnumeration.size();
+	}
+	
+	private function getListEnumEntry(a_index: Number): Object
+	{
+		return _listEnumeration.at(a_index);
+	}
+	
+	private function getListEnumPredecessorIndex(): Number
+	{
+		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() - 1);
+	}
+	
+	private function getListEnumSuccessorIndex(): Number
+	{
+		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + 1);
+	}
+	
+	private function getListEnumFirstIndex(): Number
+	{
+		return _listEnumeration.lookupEntryIndex(0);
+	}
+	
+	private function getListEnumLastIndex(): Number
+	{
+		return _listEnumeration.lookupEntryIndex(getListEnumSize() -1);
 	}
 }

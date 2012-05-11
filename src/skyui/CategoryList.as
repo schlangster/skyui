@@ -118,7 +118,7 @@ class skyui.CategoryList extends BasicList
 		onItemPress(a_newIndex, SELECT_KEYBOARD);
 	}
 	
-	// @override skyui.BasicList
+	// @override BasicList
 	function InvalidateData()
 	{
 		_listEnumeration.invalidate();
@@ -130,7 +130,7 @@ class skyui.CategoryList extends BasicList
 		UpdateList();
 	}
 	
-	// @override skyui.BasicList
+	// @override BasicList
 	public function UpdateList()
 	{
 		var cw = 0;
@@ -232,9 +232,11 @@ class skyui.CategoryList extends BasicList
 		return processed;
 	}
 	
-	// @override MovieClip
-	public function onEnterFrame()
+	// @override BasicList
+	public function onEnterFrame(): Void
 	{
+		super.onEnterFrame();
+		
 		if (_bFastSwitch && _selectorPos != _targetSelectorPos) {
 			_selectorPos = _targetSelectorPos;
 			_bFastSwitch = false;
@@ -258,7 +260,7 @@ class skyui.CategoryList extends BasicList
 		}
 	}
 	
-	// @override skyui.BasicList
+	// @override BasicList
 	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
 		if (_bDisableInput || _bDisableSelection || a_index == -1)
@@ -269,7 +271,18 @@ class skyui.CategoryList extends BasicList
 		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
-	// @override skyui.BasicList
+	// @override BasicList
+	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
+	{
+		if (_bDisableInput || _bDisableSelection || a_index == -1 || a_buttonIndex != 1)
+			return;
+		
+		doSetSelectedIndex(a_index, a_keyboardOrMouse);
+		updateSelector();
+		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	// @override BasicList
 	public function onItemRollOver(a_index: Number): Void
 	{
 		if (_bDisableInput || _bDisableSelection)
@@ -284,7 +297,7 @@ class skyui.CategoryList extends BasicList
 		entryClip._alpha = 75;
 	}
 
-	// @override skyui.BasicList
+	// @override BasicList
 	public function onItemRollOut(a_index: Number): Void
 	{
 		if (_bDisableInput || _bDisableSelection)
@@ -302,7 +315,7 @@ class skyui.CategoryList extends BasicList
 
   /* PRIVATE FUNCTIONS */
   
-  	// @override skyui.BasicList
+  	// @override BasicList
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
 	{
 		if (_bDisableSelection || a_newIndex == _selectedIndex)

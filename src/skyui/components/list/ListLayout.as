@@ -74,7 +74,7 @@ class skyui.components.list.ListLayout
 		return _viewList[_activeViewIndex];
 	}
 	
-	private var _activeColumnIndex: Number = 0;
+	private var _activeColumnIndex: Number = -1;
 	
 	public function get activeColumnIndex(): Number
 	{
@@ -112,6 +112,25 @@ class skyui.components.list.ListLayout
 	public function get entryHeight(): Number
 	{
 		return _entryHeight;
+	}
+	
+	private var _layoutUpdateCount: Number = 1;
+	
+	public function get layoutUpdateCount(): Number
+	{
+		return _layoutUpdateCount;
+	}
+	
+	// columnLayoutData index (no hidden columns) -> columnList index (all columns for this view)
+	private function toColumnListIndex(a_index): Number
+	{
+		for (var i = 0, c = 0; i < _columnList.length; i++) {
+			if (_columnList[i].hidden == true)
+				continue;
+			if (c == a_index)
+				return i;
+			c++;
+		}
 	}
 	
 	
@@ -152,7 +171,7 @@ class skyui.components.list.ListLayout
 		changeFilterFlag(_lastFilterFlag);
 	}
 	
-	public function ListLayout(a_layoutData: Object, a_viewData: Object, a_columnData: Object, a_defaultsData)
+	public function ListLayout(a_layoutData: Object, a_viewData: Object, a_columnData: Object, a_defaultsData: Object)
 	{
 		GlobalFunctions.addArrayFunctions();
 		
@@ -182,6 +201,9 @@ class skyui.components.list.ListLayout
 				_defaultLabelTextFormat[prop] = _defaultsData.label.textFormat[prop];
 				
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 	
 	public function changeFilterFlag(a_flag: Number): Void
 	{
@@ -216,9 +238,6 @@ class skyui.components.list.ListLayout
 		updateLayout();
 	}
 	
-	
-  /* PUBLIC FUNCTIONS */
-	
 	// @mixin by gfx.events.EventDispatcher
 	public var dispatchEvent: Function;
 	public var dispatchQueue: Function;
@@ -230,19 +249,19 @@ class skyui.components.list.ListLayout
 	
 	public function selectColumn(a_index: Number)
 	{
-		// Invalid column
-		if (currentView.columns[a_index] == undefined)
-			return;
 		
-		// Don't process for passive columns
-		if (currentView.columns[a_index].passive)
+		var listIndex = toColumnListIndex(a_index);
+		// Invalid column
+		if (_columnList[listIndex] == undefined)
 			return;
+			
+
 			
 		if (_activeColumnIndex != a_index) {
 			_activeColumnIndex = a_index;
 			_activeColumnState = 1;
 		} else {
-			if (_activeColumnState < currentView.columns[_activeColumnIndex].states)
+			if (_activeColumnState < _columnList[listIndex].states)
 				_activeColumnState++;
 			else
 				_activeColumnState = 1;
@@ -259,6 +278,8 @@ class skyui.components.list.ListLayout
 	
 	private function updateLayout(): Void
 	{
+		_layoutUpdateCount++;
+		
 		updateColumnList();
 
 		var maxHeight = 0;
@@ -337,7 +358,8 @@ class skyui.components.list.ListLayout
 			var curHeight = 0;
 			
 			columnLayoutData.type = col.type;
-			columnLayoutData.labelValue = col.label.text
+			columnLayoutData.labelArrowDown = col.label.arrowDown;
+			columnLayoutData.labelValue = col.label.text;
 			
 			switch (col.type) {
 				// ITEM ICON + EQUIP ICON

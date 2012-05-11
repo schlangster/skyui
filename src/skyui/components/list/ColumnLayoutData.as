@@ -23,9 +23,14 @@
 	public var labelX: Number = 0;
 	
 	public var labelWidth: Number = 0;
-	
+
+	public var labelArrowDown: Boolean = false;
+
 	public var labelValue: String;
+
 	public var labelTextFormat: TextFormat;
+	
+
 	
 	public function clear(): Void
 	{
@@ -33,6 +38,7 @@
 		x = y = width = height = labelX = labelWidth = 0;
 		stageName = entryValue = labelValue = null;
 		textFormat = labelTextFormat = null;
+		labelArrowDown = false;
 	}
 	
 	public function dump()
@@ -47,5 +53,6 @@
 		skse.Log("labelX: " + labelX);
 		skse.Log("labelWidth: " + labelWidth);
 		skse.Log("labelValue: " + labelValue);
+		skse.Log("labelArrowDown: " + labelArrowDown);
 	}
 }

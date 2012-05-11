@@ -3,7 +3,6 @@ import gfx.ui.NavigationCode;
 
 import skyui.util.ConfigLoader;
 import skyui.util.GlobalFunctions;
-import skyui.util.Translator;
 import skyui.components.list.ListLayout;
 import skyui.components.list.SortedListHeader;
 import skyui.components.list.FilteredEnumeration;
@@ -31,9 +30,11 @@ class skyui.components.list.TabularList extends ScrollingList
 	{
 		if (_layout)
 			_layout.removeEventListener("layoutChange", this, "onLayoutChange");
-			
 		_layout = a_layout;
 		_layout.addEventListener("layoutChange", this, "onLayoutChange");
+		
+		if (header)
+			header.layout = a_layout;
 	}
 
 
@@ -43,31 +44,14 @@ class skyui.components.list.TabularList extends ScrollingList
 	{
 		super();
 	}
-	
-	public function onLoad()
-	{
-		super.onLoad();
-		
-		if (header != 0)
-			header.addEventListener("columnPress", this, "onColumnPress");
-	}
 
 
   /* PUBLIC FUNCTIONS */
-	
-	public function onColumnPress(event)
-	{
-		if (event.index != undefined)
-			_layout.selectColumn(event.index);
-	}
 	
 	public function onLayoutChange(event)
 	{
 		_entryHeight = _layout.entryHeight;
 		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
-		
-		if (header)
-			updateHeader();
 		
 		UpdateList();
 	}
@@ -93,32 +77,5 @@ class skyui.components.list.TabularList extends ScrollingList
 			}
 		}
 		return processed;
-	}
-	
-	private function updateHeader(): Void
-	{
-		header.clearColumns();
-		header.activeColumnIndex = _layout.activeColumnIndex;
-// TODO
-//		if (columns[_activeColumnIndex].label.arrowDown == true)
-//			header.isArrowDown = true;
-//		else
-//			header.isArrowDown = false;
-			
-		for (var i = 0; i < _layout.columnCount; i++) {
-			var columnLayoutData = _layout.columnLayoutData[i];
-			var btn = header.addColumn(i);
-
-			btn.label._x = 0;
-
-			btn._x = columnLayoutData.labelX;
-			
-			btn.label._width = columnLayoutData.labelWidth;
-			btn.label.setTextFormat(columnLayoutData.labelTextFormat);
-			
-			btn.label.SetText(Translator.translate(columnLayoutData.labelValue));
-		}
-		
-		header.positionButtons();
 	}
 }

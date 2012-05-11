@@ -1,7 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 
-import skyui.filter.ItemSortingFilter;
-import skyui.util.Defines;
+import skyui.components.list.ListLayout
+import skyui.util.Translator;
 
 
 class skyui.components.list.SortedListHeader extends MovieClip
@@ -15,31 +15,22 @@ class skyui.components.list.SortedListHeader extends MovieClip
   
 	public var sortIcon:MovieClip;
 	
+  
+  /* PROPERTIES */ 
+  
+	private var _layout: ListLayout;
 	
-  /* PROPERTIES */
-
-	private var _activeColumnIndex:Number;
-	
-	public function get activeColumnIndex():Number
+	public function get layout(): ListLayout
 	{
-		return _activeColumnIndex;
+		return _layout;
 	}
 	
-	public function set activeColumnIndex(a_index:Number)
+	public function set layout(a_layout: ListLayout)
 	{
-		_activeColumnIndex = a_index;
-	}
-	
-	private var _bArrowDown:Boolean;
-	
-	public function get isArrowDown():Boolean
-	{
-		return _bArrowDown;
-	}
-	
-	public function set isArrowDown(a_bArrowDown:Boolean)
-	{
-		_bArrowDown = a_bArrowDown;
+		if (_layout)
+			_layout.removeEventListener("layoutChange", this, "onLayoutChange");
+		_layout = a_layout;
+		_layout.addEventListener("layoutChange", this, "onLayoutChange");
 	}
 	
 
@@ -48,38 +39,29 @@ class skyui.components.list.SortedListHeader extends MovieClip
 	public function SortedListHeader()
 	{
 		super();
-		EventDispatcher.initialize(this);
 		
 		_columns = new Array();
-		_activeColumnIndex = 0;
-		_bArrowDown = false;
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
-
-	// @mixin by gfx.events.EventDispatcher
-	public var dispatchEvent: Function;
-	public var dispatchQueue: Function;
-	public var hasEventListener: Function;
-	public var addEventListener: Function;
-	public var removeEventListener: Function;
-	public var removeAllEventListeners: Function;
-	public var cleanUpEvents: Function;
 	
-	public function columnPress(a_columnIndex:Number)
+	public function columnPress(a_columnIndex: Number): Void
 	{
-		dispatchEvent({type:"columnPress", index: a_columnIndex});
+		_layout.selectColumn(a_columnIndex);
 	}
 	
+	
+  /* PRIVATE FUNCTIONS */
+	
 	// Hides all columns (but doesn't delete them since they can be re-used later).
-	public function clearColumns()
+	private function clearColumns(): Void
 	{
 		for (var i=0; i< _columns.length; i++)
 			_columns[i]._visible = false;
 	}
   
-	public function addColumn(a_index:Number)
+	private function addColumn(a_index: Number): MovieClip
 	{
 		if (a_index < 0)
 			return undefined;
@@ -94,6 +76,8 @@ class skyui.components.list.SortedListHeader extends MovieClip
 		
 		// Create on-demand
 		columnButton = attachMovie("HeaderColumn", "Column" + a_index, getNextHighestDepth());
+
+
 
 		columnButton.columnIndex = a_index;
 
@@ -115,9 +99,35 @@ class skyui.components.list.SortedListHeader extends MovieClip
 		return columnButton;
 	}
 	
-	// Places the buttonAreas around textfields and the sort indicator.
-	public function positionButtons()
+	public function onLayoutChange(event): Void
 	{
+		clearColumns();
+		var activeIndex = _layout.activeColumnIndex;
+			
+		for (var i = 0; i < _layout.columnCount; i++) {
+			var columnLayoutData = _layout.columnLayoutData[i];
+			var btn = addColumn(i);
+
+			btn.label._x = 0;
+
+			btn._x = columnLayoutData.labelX;
+			
+			btn.label._width = columnLayoutData.labelWidth;
+			btn.label.setTextFormat(columnLayoutData.labelTextFormat);
+			
+			btn.label.SetText(Translator.translate(columnLayoutData.labelValue));
+			
+			if (activeIndex == i)
+				sortIcon.gotoAndStop(columnLayoutData.labelArrowDown ? "desc" : "asc");
+		}
+		
+		positionButtons();
+	}
+	
+	// Places the buttonAreas around textfields and the sort indicator.
+	private function positionButtons(): Void
+	{
+		var activeIndex = _layout.activeColumnIndex;
 		for (var i=0; i<_columns.length; i++) {
 			var e = _columns[i];
 			e.label._y = -e.label._height;
@@ -127,10 +137,9 @@ class skyui.components.list.SortedListHeader extends MovieClip
 			e.buttonArea._y = e.label._y - 2;
 			e.buttonArea._height = e.label._height + 2;
 			
-			if (_activeColumnIndex == i) {
+			if (activeIndex == i) {
 				sortIcon._x = e._x + e.buttonArea._x + e.buttonArea._width + 2;
 				sortIcon._y = -e._height + ((e._height - sortIcon._height) / 2);
-				sortIcon.gotoAndStop(_bArrowDown? "desc" : "asc");
 			}
 		}
 	}

@@ -26,18 +26,17 @@ class skyui.components.list.TabularEntryFormatter implements IEntryFormatter
 	{
 		var layout: ListLayout = _list.layout;
 		
-		
 		if (a_entryClip == undefined)
 			return;
 			
 		// Show select area if this is the current entry
-		a_entryClip.selectArea._alpha = a_entryObject == _list.selectedEntry ? 40 : 0;
+		a_entryClip.selectIndicator._visible = (a_entryObject == _list.selectedEntry);
 		
-		var activeViewIndex = layout.activeViewIndex;
+		var layoutUpdateCount = layout.layoutUpdateCount;
 		
-		// View changed? Update the columns positions etc.
-		if (activeViewIndex != -1 && a_entryClip.viewIndex != activeViewIndex) {
-			a_entryClip.viewIndex = activeViewIndex;
+		// Has the view update sequence number changed? Then Update the columns positions etc.
+		if (a_entryClip.layoutUpdateCount != layoutUpdateCount) {
+			a_entryClip.layoutUpdateCount = layoutUpdateCount;
 			
 			setEntryLayout(a_entryClip, a_entryObject);
 			setSpecificEntryLayout(a_entryClip, a_entryObject);
@@ -78,8 +77,8 @@ class skyui.components.list.TabularEntryFormatter implements IEntryFormatter
 	{
 		var layout: ListLayout = _list.layout;
 			
-		a_entryClip.border._width = a_entryClip.selectArea._width = layout.entryWidth;
-		a_entryClip.border._height = a_entryClip.selectArea._height = layout.entryHeight;
+		a_entryClip.buttonArea._width = a_entryClip.selectIndicator._width = layout.entryWidth;
+		a_entryClip.buttonArea._height = a_entryClip.selectIndicator._height = layout.entryHeight;
 	
 		// Set up all visible elements in this entry
 		for (var i=0; i<layout.columnCount; i++) {
@@ -105,7 +104,7 @@ class skyui.components.list.TabularEntryFormatter implements IEntryFormatter
 		var hiddenStageNames = layout.hiddenStageNames;
 		
 		for (var i=0; i<hiddenStageNames.length; i++)
-			a_entryClip[hiddenStageNames]._visible = false;
+			a_entryClip[hiddenStageNames[i]]._visible = false;
 
 	}
 	
