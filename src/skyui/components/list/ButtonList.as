@@ -6,12 +6,17 @@ import skyui.components.list.BasicList;
 /*
  *  A simple, general-purpose button list.
  */
-
 class skyui.components.list.ButtonList extends BasicList
 {
-  /* PRIVATE VARIABLES */
+  /* CONSTANTS */
   
-	private var _listIndex:Number = 0;
+	public var ALIGN_LEFT = 0;
+	public var ALIGN_RIGHT = 1;
+	
+	
+  /* STAGE ELEMENTS */
+  
+	public var background: MovieClip;
 	
 	
   /* PROPERTIES */
@@ -28,6 +33,40 @@ class skyui.components.list.ButtonList extends BasicList
 		_bAutoScale = a_bAutoScale;
 	}
 	
+	private var _minButtonWidth: Number = 10;
+	
+	public function get minButtonWidth(): Number
+	{
+		return _minButtonWidth;
+	}
+	
+	public function set minButtonWidth(a_minButtonWidth: Number)
+	{
+		_minButtonWidth = a_minButtonWidth;
+	}
+	
+	private var _buttonWidth: Number = 0;
+	
+	public function get buttonWidth(): Number
+	{
+		return _buttonWidth;
+	}
+	
+	public var topBorder: Number = 0;
+	public var bottomBorder: Number = 0;
+	public var leftBorder: Number = 0;
+	public var rightBorder: Number = 0;
+
+	private var _align: Number = ALIGN_RIGHT;
+	
+	public function set align(a_align: String)
+	{
+		if (align == "LEFT")
+			_align = ALIGN_LEFT;
+		else if (align == "RIGHT")
+			_align = ALIGN_RIGHT;
+	}
+	
 	
   /* CONSTRUCTORS */
 	
@@ -42,40 +81,46 @@ class skyui.components.list.ButtonList extends BasicList
 	// @override BasicList
 	public function UpdateList(): Void
 	{
-		var yStart = 0;
-		var h = 0;
-		var listIndex = 0;
+		setClipCount(getListEnumSize());
 		
-		// Display the selected list portion of the list
+		var h = 0;
+
+		_buttonWidth = 4;
+
+		// Set entries
 		for (var i = 0; i < getListEnumSize(); i++) {
 			var entryClip = getClipByIndex(i);
 			var entryItem = getListEnumEntry(i);
 
-			entryClip.itemIndex = entryItem.unfilteredIndex;
+			entryClip.itemIndex = i;
 			entryItem.clipIndex = i;
 			
 			setEntry(entryClip, entryItem);
-			
-			entryClip._y = yStart + h;
+
+
+			entryClip._y = topBorder + h;
 			entryClip._visible = true;
+			
+			if (_buttonWidth < entryClip._width)
+				_buttonWidth = entryClip._width + 4;
 
 			h = h + entryClip._height;
+		}
+		
+		for (var i = 0; i < getListEnumSize(); i++) {
+			entryClip._x = (_align == ALIGN_LEFT) ? leftBorder : -(buttonWidth + rightBorder);
 			
-			listIndex++;
-		}
-		
-		// If the list is not completely filled, hide unused entries.
-		for (var i = listIndex; i <= _entryClipManager.maxIndex; i++) {
 			var entryClip = getClipByIndex(i);
-			entryClip._visible = false;
-			entryClip.itemIndex = undefined;
+			entryClip.selectIndicator._width = _buttonWidth;
+			entryClip.buttonArea._width = _buttonWidth;
 		}
 		
-		// Select entry under the cursor for mouse-driven navigation
-		if (_bMouseDrivenNav)
-			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
-				if (e._parent == this && e._visible && e.itemIndex != undefined)
-					doSetSelectedIndex(e.itemIndex, SELECT_MOUSE);
+		background._width = leftBorder + _buttonWidth + rightBorder;
+		background._height = topBorder + h + bottomBorder;
+
+		background._x = (_align == ALIGN_LEFT) ? 0 : -background._width;
+
+
 	}
 	
 	// @GFx
@@ -113,9 +158,9 @@ class skyui.components.list.ButtonList extends BasicList
 		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
 			if (target == this) {
 				if (delta < 0)
-					moveSelectionUp();
-				else if (delta > 0)
 					moveSelectionDown();
+				else if (delta > 0)
+					moveSelectionUp();
 			}
 		}
 		

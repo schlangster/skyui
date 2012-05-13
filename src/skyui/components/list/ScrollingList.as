@@ -13,11 +13,16 @@ class skyui.components.list.ScrollingList extends BasicList
 {
   /* PRIVATE VARIABLES */  
 
+	// This serves as the actual size of the list as its incremented during updating
 	private var _listIndex:Number = 0;
+	
 	private var _entryHeight:Number = 28;
+	
 	private var _curClipIndex:Number = -1;
 	
+	// The maximum allowed size. Actual size might be smaller if the list is not filled completely.
 	private var _maxListIndex:Number;
+	
 	private var _listHeight:Number;
 	
 	
@@ -128,6 +133,9 @@ class skyui.components.list.ScrollingList extends BasicList
 	{
 		updateCount++;
 		
+		// Prepare clips
+		setClipCount(_maxListIndex);
+		
 		var yStart = anchorEntriesBegin._y;
 		var h = 0;
 
@@ -158,13 +166,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		// Clear clipIndex for everything after the selected list portion
 		for (var i = _scrollPosition + _listIndex; i < getListEnumSize(); i++)
 			getListEnumEntry(i).clipIndex = undefined;
-		
-		// If the list is not completely filled, hide unused entries.
-		for (var i = _listIndex; i < _maxListIndex; i++) {
-			var entryClip = getClipByIndex(i);
-			entryClip._visible = false;
-			entryClip.itemIndex = undefined;
-		}
 		
 		// Select entry under the cursor for mouse-driven navigation
 		if (_bMouseDrivenNav)
@@ -371,6 +372,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (a_index < 0 || a_index >= _maxListIndex)
 			return undefined;
 
-		return _entryClipManager.getClipByIndex(a_index);
+		return _entryClipManager.getClip(a_index);
 	}
 }

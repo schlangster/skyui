@@ -18,9 +18,8 @@ import skyui.filter.ItemSorter;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
+import skyui.util.DialogManager;
 import skyui.CategoryList;
-import skyui.CategoryEntryBuilder;
-import skyui.InventoryEntryBuilder;
 
 
 class InventoryLists extends MovieClip
@@ -98,11 +97,10 @@ class InventoryLists extends MovieClip
 		return _currentState;
 	}
 
-	public function set currentState(a_newState)
+	public function set currentState(a_newState: Number)
 	{
-		if (a_newState == SHOW_PANEL) {
+		if (a_newState == SHOW_PANEL)
 			FocusHandler.instance.setFocus(_itemList,0);
-		}
 
 		_currentState = a_newState;
 	}
@@ -160,11 +158,9 @@ class InventoryLists extends MovieClip
 	// That's why they are initialized in onLoad.
 	public function onLoad()
 	{
-		_categoryList.entryClipBuilder = new CategoryEntryBuilder(_categoryList);
 		_categoryList.listEnumeration = new BasicEnumeration(_categoryList.entryList);
 		_categoryList.entryFormatter = new AlphaEntryFormatter(_categoryList);
 
-		_itemList.entryClipBuilder = new InventoryEntryBuilder(_itemList);
 		var listEnumeration = new FilteredEnumeration(_itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
 		listEnumeration.addFilter(_nameFilter);
@@ -201,10 +197,16 @@ class InventoryLists extends MovieClip
 	
 	var _visvis = false;
 	
-	public function onCustomizeButtonPress(event): Void
+	public function onCustomizeButtonPress(event: Object): Void
 	{
 		_visvis = !_visvis;
-		_customizePanel._visible = _visvis;
+		
+		if (_visvis) {
+			DialogManager.createDialog(panelContainer, "ColumnSelectDialog", 554, 35);
+		} else {
+			DialogManager.closeDialog();
+		}
+		
 		if (_visvis) {
 			_savedSelectionIndex = _itemList.selectedIndex;
 			_itemList.selectedIndex = -1;
@@ -218,10 +220,10 @@ class InventoryLists extends MovieClip
 		_itemList.disableInput = _visvis;
 		_searchWidget.disabled = _visvis;
 		
-		ConfigManager.setOverride("ListLayout", "columns.valueWeightColumn.hidden", false);
+//		ConfigManager.setOverride("ListLayout", "columns.valueWeightColumn.hidden", false);
 	}
 
-	public function onConfigLoad(event)
+	public function onConfigLoad(event: Object)
 	{
 		_config = event.config;
 		_searchKey = _config.Input.hotkey.search;
@@ -236,7 +238,7 @@ class InventoryLists extends MovieClip
 		_itemList.platform = a_platform;
 	}
 
-	// GFx
+	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
 		var bCaught = false;
@@ -344,7 +346,7 @@ class InventoryLists extends MovieClip
 	{
 	}
 	
-	public function onTabPress(event): Void
+	public function onTabPress(event: Object): Void
 	{
 		if (_categoryList.disableSelection || _categoryList.disableInput || _itemList.disableSelection || _itemList.disableInput)
 			return;
@@ -361,39 +363,39 @@ class InventoryLists extends MovieClip
 		showItemsList();
 	}
 
-	public function onCategoriesListMoveUp(event)
+	public function onCategoriesListMoveUp(event: Object)
 	{
 		doCategorySelectionChange(event);
 	}
 
-	public function onCategoriesListMoveDown(event)
+	public function onCategoriesListMoveDown(event: Object)
 	{
 		doCategorySelectionChange(event);
 	}
 
-	public function onCategoriesListMouseSelectionChange(event)
+	public function onCategoriesListMouseSelectionChange(event: Object)
 	{
 		if (event.keyboardOrMouse == 0)
 			doCategorySelectionChange(event);
 	}
 
-	public function onItemsListMoveUp(event)
+	public function onItemsListMoveUp(event: Object)
 	{
 		this.doItemsSelectionChange(event);
 	}
 
-	public function onItemsListMoveDown(event)
+	public function onItemsListMoveDown(event: Object)
 	{
 		this.doItemsSelectionChange(event);
 	}
 
-	public function onItemsListMouseSelectionChange(event)
+	public function onItemsListMouseSelectionChange(event: Object)
 	{
 		if (event.keyboardOrMouse == 0)
 			doItemsSelectionChange(event);
 	}
 
-	public function doCategorySelectionChange(event)
+	public function doCategorySelectionChange(event: Object)
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
@@ -401,7 +403,7 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	public function doItemsSelectionChange(event)
+	public function doItemsSelectionChange(event: Object)
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
 
@@ -409,24 +411,24 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	public function onSortChange(event)
+	public function onSortChange(event: Object)
 	{
 		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 
-	public function onSearchInputStart(event)
+	public function onSearchInputStart(event: Object)
 	{
 		_categoryList.disableSelection = _categoryList.disableInput = true;
 		_itemList.disableSelection = _itemList.disableInput = true
 		_nameFilter.filterText = "";
 	}
 
-	public function onSearchInputChange(event)
+	public function onSearchInputChange(event: Object)
 	{
 		_nameFilter.filterText = event.data;
 	}
 
-	public function onSearchInputEnd(event)
+	public function onSearchInputEnd(event: Object)
 	{
 		_categoryList.disableSelection = _categoryList.disableInput = false;
 		_itemList.disableSelection = _itemList.disableInput = false;

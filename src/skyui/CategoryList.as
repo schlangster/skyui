@@ -133,6 +133,8 @@ class skyui.CategoryList extends BasicList
 	// @override BasicList
 	public function UpdateList()
 	{
+		setClipCount(_segmentLength);
+
 		var cw = 0;
 
 		for (var i = 0; i < _segmentLength; i++) {
@@ -314,24 +316,6 @@ class skyui.CategoryList extends BasicList
 
 
   /* PRIVATE FUNCTIONS */
-  
-  	// @override BasicList
-	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
-	{
-		if (_bDisableSelection || a_newIndex == _selectedIndex)
-			return;
-			
-		var oldIndex = _selectedIndex;
-		_selectedIndex = a_newIndex;
-
-		if (oldIndex != -1)
-			setEntry(_entryClipManager.getClipByIndex(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
-
-		if (_selectedIndex != -1)
-			setEntry(_entryClipManager.getClipByIndex(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
-
-		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
-	}
 	
 	private function calculateSegmentParams(): Void
 	{
@@ -371,7 +355,7 @@ class skyui.CategoryList extends BasicList
 			return;
 		}
 
-		var selectedClip = _entryClipManager.getClipByIndex(_selectedIndex - _segmentOffset);
+		var selectedClip = _entryClipManager.getClip(_selectedIndex - _segmentOffset);
 
 		_targetSelectorPos = selectedClip._x + (selectedClip.buttonArea._width - selectorCenter._width) / 2;
 		
@@ -394,7 +378,7 @@ class skyui.CategoryList extends BasicList
 	private function refreshSelector(): Void
 	{
 		selectorCenter._visible = true;
-		var selectedClip = _entryClipManager.getClipByIndex(_selectedIndex - _segmentOffset);
+		var selectedClip = _entryClipManager.getClip(_selectedIndex - _segmentOffset);
 
 		selectorCenter._x = _selectorPos;
 

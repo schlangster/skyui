@@ -39,7 +39,7 @@ class skyui.components.list.BasicList extends BSList
 
   /* PROPERTIES */
   
-	private var _platform: Number;
+	private var _platform: Number = PLATFORM_PC;
 	
 	public function get platform(): Number
 	{
@@ -52,7 +52,7 @@ class skyui.components.list.BasicList extends BSList
 		_bMouseDrivenNav = _platform == PLATFORM_PC;
 	}
 	
-	private var _bMouseDrivenNav: Boolean;
+	private var _bMouseDrivenNav: Boolean = false;
 	
 	function get isMouseDrivenNav(): Boolean
 	{
@@ -64,7 +64,7 @@ class skyui.components.list.BasicList extends BSList
 		_bMouseDrivenNav = a_bFlag;
 	}
 	
-	private var _bListAnimating: Boolean;
+	private var _bListAnimating: Boolean = false;
 	
 	function get listAnimating(): Boolean
 	{
@@ -76,7 +76,7 @@ class skyui.components.list.BasicList extends BSList
 		_bListAnimating = a_bFlag;
 	}
 
-	private var _bDisableInput: Boolean;
+	private var _bDisableInput: Boolean = false;
 
 	function get disableInput()
 	{
@@ -88,7 +88,7 @@ class skyui.components.list.BasicList extends BSList
 		_bDisableInput = a_bFlag;
 	}
 	
-	private var _bDisableSelection: Boolean;
+	private var _bDisableSelection: Boolean = false;
 	
 	function get disableSelection(): Boolean
 	{
@@ -153,11 +153,6 @@ class skyui.components.list.BasicList extends BSList
 	public function BasicList()
 	{
 		super();
-
-		_bDisableSelection = false;
-		_bDisableInput = false;
-		_bMouseDrivenNav = false;
-		_platform = PLATFORM_PC;
 		
 		_entryClipManager = new EntryClipManager(this);
 
@@ -220,19 +215,23 @@ class skyui.components.list.BasicList extends BSList
 	
 	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1)
-			dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+		if (_bDisableInput || _bDisableSelection || _selectedIndex == -1)
+			return;
+			
+		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
 	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
 	{
-		if (!_bDisableInput && !_bDisableSelection && _selectedIndex != -1 && a_buttonIndex == 1)
-			dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+		if (_bDisableInput || _bDisableSelection || _selectedIndex == -1 || a_buttonIndex != 1)
+			return;
+		
+		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
 	public function onItemRollOver(a_index: Number): Void
 	{
-		if (_bListAnimating || _bDisableSelection)
+		if (_bListAnimating || _bDisableSelection || _bDisableInput)
 			return;
 			
 		doSetSelectedIndex(a_index, SELECT_MOUSE);
@@ -247,12 +246,35 @@ class skyui.components.list.BasicList extends BSList
 	
   /* PRIVATE FUNCTIONS */
 
-	// @abstract
-	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number) { }
+	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
+	{
+		if (_bDisableSelection || a_newIndex == _selectedIndex)
+			return;
+			
+		// Selection is not contained in current entry enumeration, ignore
+		if (a_newIndex != -1 && getListEnumIndex(a_newIndex) == undefined)
+			return;
+			
+		var oldIndex = _selectedIndex;
+		_selectedIndex = a_newIndex;
+
+		if (oldIndex != -1)
+			setEntry(_entryClipManager.getClip(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+
+		if (_selectedIndex != -1)
+			setEntry(_entryClipManager.getClip(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+
+		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
+	}
 	
 	private function getClipByIndex(a_index: Number): MovieClip
 	{
-		return _entryClipManager.getClipByIndex(a_index);
+		return _entryClipManager.getClip(a_index);
+	}
+	
+	private function setClipCount(a_count: Number)
+	{
+		_entryClipManager.clipCount = a_count;
 	}
 	
 	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)

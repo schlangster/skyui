@@ -47,6 +47,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 			list.onItemPressAux(itemIndex, a_keyboardOrMouse, a_buttonIndex);
 	}
 	
+	// This is called after the object is added to the stage since the constructor does not accept any parameters.
 	public function initialize(a_index: Number, a_list: BasicList): Void
 	{
 		// Do nothing.

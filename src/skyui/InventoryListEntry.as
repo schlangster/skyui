@@ -28,5 +28,10 @@ class skyui.InventoryListEntry extends BasicListEntry
 			this["textField" + i]._visible = false;
 	}
 	
+	public function reset(): Void
+	{
+		// Do nothing.
+	}
+	
 	
 }
