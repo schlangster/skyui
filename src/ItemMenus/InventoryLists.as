@@ -55,9 +55,9 @@ class InventoryLists extends MovieClip
 	
 	private var _currCategoryIndex: Number;
 	
-	private var _customizeButton: Button;
+	private var _columnSelectButton: Button;
 	
-	private var _customizePanel: MovieClip;
+	private var _columnSelectDialog: MovieClip;
 
 	private var _searchKey: Number;
 	private var _tabToggleKey: Number;
@@ -132,8 +132,7 @@ class InventoryLists extends MovieClip
 		_itemList = panelContainer.itemList;
 		_searchWidget = panelContainer.searchWidget;
 		_tabBar = panelContainer.tabBar;
-		_customizeButton = panelContainer.customizeButton;
-		_customizePanel = panelContainer.customizePanel;
+		_columnSelectButton = panelContainer.columnSelectButton;
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
@@ -188,41 +187,47 @@ class InventoryLists extends MovieClip
 		_searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
 		_searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
-		_customizeButton.addEventListener("press", this, "onCustomizeButtonPress");
+		_columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 		
 		if (_tabBar != undefined)
 			_tabBar.addEventListener("tabPress", this, "onTabPress");
 	}
 	
-	var _visvis = false;
-	
-	public function onCustomizeButtonPress(event: Object): Void
+	public function onColumnSelectButtonPress(event: Object): Void
 	{
-		_visvis = !_visvis;
-		
-		if (_visvis) {
-			DialogManager.createDialog(panelContainer, "ColumnSelectDialog", 554, 35);
-		} else {
+		if (_columnSelectDialog) {
 			DialogManager.closeDialog();
-		}
-		
-		if (_visvis) {
+		} else {			
 			_savedSelectionIndex = _itemList.selectedIndex;
 			_itemList.selectedIndex = -1;
-		} else {
-			_itemList.selectedIndex = _savedSelectionIndex;
-		}
+		
+			_categoryList.disableSelection = true;
+			_categoryList.disableInput = true;
+			_itemList.disableSelection = true;
+			_itemList.disableInput = true;
+			_searchWidget.disabled = true;
 			
-		_categoryList.disableSelection = _visvis;
-		_categoryList.disableInput = _visvis;
-		_itemList.disableSelection = _visvis;
-		_itemList.disableInput = _visvis;
-		_searchWidget.disabled = _visvis;
+			_columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", 554, 35);
+			_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
+		}
 		
 //		ConfigManager.setOverride("ListLayout", "columns.valueWeightColumn.hidden", false);
 	}
+	
+	public function onColumnSelectDialogClosed(event: Object): Void
+	{
+		skse.Log("COCAINE");
+		
+		_categoryList.disableSelection = false;
+		_categoryList.disableInput = false;
+		_itemList.disableSelection = false;
+		_itemList.disableInput = false;
+		_searchWidget.disabled = false;
+		
+		_itemList.selectedIndex = _savedSelectionIndex;
+	}
 
-	public function onConfigLoad(event: Object)
+	public function onConfigLoad(event: Object): Void
 	{
 		_config = event.config;
 		_searchKey = _config.Input.hotkey.search;

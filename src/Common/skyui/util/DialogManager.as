@@ -1,4 +1,5 @@
 ﻿import gfx.managers.FocusHandler;
+import gfx.events.EventDispatcher;
 
 
 class skyui.util.DialogManager
@@ -13,10 +14,10 @@ class skyui.util.DialogManager
 	
   /* PRIVATE VARIABLES */
   
-	// There can only be one at a time.
+	// There can only be one open dialog at a time.
 	private static var _activeDialog: MovieClip;
-	
 	private static var _previousFocus: Object;
+	private static var _closeCallback: Function;
 	
 	
   /* PUBLIC FUNCTIONS */
@@ -29,6 +30,8 @@ class skyui.util.DialogManager
 		_previousFocus = FocusHandler.instance.getFocus(0);
 
 		_activeDialog = a_target.attachMovie("ColumnSelectDialog", "dialog", a_target.getNextHighestDepth(), {_x: a_x, _y: a_y});
+		
+		EventDispatcher.initialize(_activeDialog);
 		
 		_activeDialog._dialogState = -1;
 		
@@ -46,6 +49,7 @@ class skyui.util.DialogManager
 			} else if (a_newState == OPEN) {
 				if (this.onDialogOpen)
 					this.onDialogOpen();
+				this.dispatchEvent({type: "dialogOpen"});
 
 			} else if (a_newState == CLOSING) {
 				if (this.onDialogClosing)
@@ -54,6 +58,7 @@ class skyui.util.DialogManager
 			} else if (a_newState == CLOSED) {
 				if (this.onDialogClosed)
 					this.onDialogClosed();
+				this.dispatchEvent({type: "dialogClosed"});
 				
 				this.removeMovieClip();
 			}
@@ -69,7 +74,6 @@ class skyui.util.DialogManager
 	
 	public static function closeDialog(): Void
 	{
-		skse.Log("Restoring focus to " + _previousFocus);
 		FocusHandler.instance.setFocus(_previousFocus, 0);
 		
 		_activeDialog.setDialogState(CLOSING);

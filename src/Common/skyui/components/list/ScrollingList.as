@@ -14,21 +14,21 @@ class skyui.components.list.ScrollingList extends BasicList
   /* PRIVATE VARIABLES */  
 
 	// This serves as the actual size of the list as its incremented during updating
-	private var _listIndex:Number = 0;
+	private var _listIndex: Number = 0;
 	
-	private var _entryHeight:Number = 28;
+	private var _entryHeight: Number = 28;
 	
-	private var _curClipIndex:Number = -1;
+	private var _curClipIndex: Number = -1;
 	
 	// The maximum allowed size. Actual size might be smaller if the list is not filled completely.
-	private var _maxListIndex:Number;
+	private var _maxListIndex: Number;
 	
-	private var _listHeight:Number;
+	private var _listHeight: Number;
 	
 	
   /* STAGE ELEMENTS */
   
-	public var scrollbar:MovieClip;
+	public var scrollbar: MovieClip;
 
 
   /* PROPERTIES */
@@ -40,7 +40,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		return _scrollPosition;
 	}
 
-	public function set scrollPosition(a_newPosition:Number)
+	public function set scrollPosition(a_newPosition: Number)
 	{
 		if (a_newPosition == _scrollPosition || a_newPosition < 0 || a_newPosition > _maxScrollPosition)
 			return;
@@ -53,9 +53,18 @@ class skyui.components.list.ScrollingList extends BasicList
 	
 	private var _maxScrollPosition: Number = 0;
 
-	public function get maxScrollPosition()
+	public function get maxScrollPosition(): Number
 	{
 		return _maxScrollPosition;
+	}
+	
+	// @override BasicList
+	private var _listEnumeration: FilteredEnumeration;
+	
+	// @override BasicList
+	public function set listEnumeration(a_enumeration: FilteredEnumeration)
+	{
+		_listEnumeration = a_enumeration;
 	}
 
 
@@ -74,7 +83,7 @@ class skyui.components.list.ScrollingList extends BasicList
   /* PUBLIC FUNCTIONS */
 
 	// @override MovieClip
-	public function onLoad()
+	public function onLoad(): Void
 	{
 		if (scrollbar != undefined) {
 			scrollbar.position = 0;
@@ -85,7 +94,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	}
 
 	// GFx
-	public function handleInput(details, pathToFocus):Boolean
+	public function handleInput(details, pathToFocus): Boolean
 	{
 		var processed = false;
 
@@ -111,7 +120,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	}
 
 	// GFx
-	public function onMouseWheel(delta)
+	public function onMouseWheel(delta: Number): Void
 	{
 		if (_bDisableInput)
 			return;
@@ -248,12 +257,12 @@ class skyui.components.list.ScrollingList extends BasicList
 		}
 	}
 
-	public function onScroll(event)
+	public function onScroll(event: Object): Void
 	{
 		updateScrollPosition(Math.floor(event.position + 0.500000));
 	}
 	
-	public function onFilterChange()
+	public function onFilterChange(): Void
 	{
 		invalidateFilterData();
 		calculateMaxScrollPosition();
@@ -268,15 +277,6 @@ class skyui.components.list.ScrollingList extends BasicList
 	public function addFilter(a_filter: IFilter): Void
 	{
 		_listEnumeration.addFilter(a_filter);
-	}
-	
-	// @override BasicList
-	private var _listEnumeration: FilteredEnumeration;
-	
-	// @override BasicList
-	public function set listEnumeration(a_enumeration: FilteredEnumeration)
-	{
-		_listEnumeration = a_enumeration;
 	}
 	
 	
@@ -353,7 +353,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		}
 	}
 	
-	private function invalidateFilterData()
+	private function invalidateFilterData(): Void
 	{
 		// Set up helper attributes for easy mapping between original list, filtered list and entry clips
 		for (var i = 0; i < _entryList.length; i++)
@@ -366,7 +366,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			_selectedIndex = -1;
 	}
 	
-	// @override BSList
+	// @override BasicList
 	private function getClipByIndex(a_index: Number): MovieClip
 	{
 		if (a_index < 0 || a_index >= _maxListIndex)
