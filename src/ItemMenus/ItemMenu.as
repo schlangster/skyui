@@ -42,7 +42,14 @@ class ItemMenu extends MovieClip
 	var skseWarning: MovieClip;
 
 
-	
+	function onLoad()
+	{
+		trace("INIT extensions");
+		InitExtensions();
+		trace("INIT extensions done");
+		
+		GetInventoryItemList();
+	}
 
 	function ItemMenu()
 	{
@@ -50,7 +57,7 @@ class ItemMenu extends MovieClip
 		
 //		inventoryLists = inventoryLists;
 		ItemCard_mc = ItemCardFadeHolder_mc.ItemCard_mc;
-		BottomBar_mc = BottomBar_mc;
+//		BottomBar_mc = BottomBar_mc;
 		
 		Mouse.addListener(this);
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
@@ -209,6 +216,10 @@ class ItemMenu extends MovieClip
 	// API
 	function GetInventoryItemList()
 	{
+		skse.Log("CALLED ME SOON DEAD SAD " + inventoryLists);
+		skse.Log("CALLED ME SOON DEAD SAD " + inventoryLists.itemList);
+		trace("CALLED ME SOON DEAD SAD " + inventoryLists);
+		trace("CALLED ME SOON DEAD SAD " + inventoryLists.itemList);
 		return inventoryLists.itemList;
 	}
 

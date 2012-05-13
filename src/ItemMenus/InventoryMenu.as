@@ -4,9 +4,6 @@ import gfx.ui.NavigationCode;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
-import skyui.CategoryList;
-import skyui.InventoryEntryFormatter;
-import skyui.InventoryDataFetcher;
 
 
 class InventoryMenu extends ItemMenu

@@ -19,7 +19,6 @@ import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 import skyui.util.DialogManager;
-import skyui.CategoryList;
 
 
 class InventoryLists extends MovieClip
@@ -244,18 +243,11 @@ class InventoryLists extends MovieClip
 		var bCaught = false;
 
 		if (_currentState == SHOW_PANEL) {
+			
 			if (GlobalFunc.IsKeyPressed(details)) {
-				
-				if (details.navEquivalent == NavigationCode.LEFT) {
-					_categoryList.moveSelectionLeft();
-					bCaught = true;
-
-				} else if (details.navEquivalent == NavigationCode.RIGHT) {
-					_categoryList.moveSelectionRight();
-					bCaught = true;
 
 				// Search hotkey (default space)
-				} else if (details.code == _searchKey) {
+				if (details.code == _searchKey) {
 					bCaught = true;
 					_searchWidget.startInput();
 					
@@ -266,6 +258,10 @@ class InventoryLists extends MovieClip
 					_tabBar.tabToggle();
 				}
 			}
+			
+			if (!bCaught)
+				bCaught = _categoryList.handleInput(details, pathToFocus);
+			
 			if (!bCaught)
 				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}

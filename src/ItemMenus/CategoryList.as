@@ -8,7 +8,7 @@ import skyui.components.list.AlphaEntryFormatter;
 import skyui.components.list.BasicList;
 
 
-class skyui.CategoryList extends BasicList
+class CategoryList extends BasicList
 {
   /* CONSTANTS */
 	
@@ -214,19 +214,12 @@ class skyui.CategoryList extends BasicList
 		var processed = false;
 
 		if (!_bDisableInput) {
-			var entry = getClipByIndex(selectedIndex);
-
-			processed = entry != undefined && entry.handleInput != undefined && entry.handleInput(details, pathToFocus.slice(1));
-
-			if (!processed && GlobalFunc.IsKeyPressed(details)) {
+			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == NavigationCode.LEFT) {
 					moveSelectionLeft();
 					processed = true;
 				} else if (details.navEquivalent == NavigationCode.RIGHT) {
 					moveSelectionRight();
-					processed = true;
-				} else if (!_bDisableSelection && details.navEquivalent == NavigationCode.ENTER) {
-					onItemPress(0);
 					processed = true;
 				}
 			}

@@ -1,4 +1,4 @@
-﻿class skyui.BarterDataFetcher extends skyui.InventoryDataFetcher
+﻿class BarterDataFetcher extends skyui.InventoryDataFetcher
 {
   /* PROPERTIES */
   

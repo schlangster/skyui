@@ -69,6 +69,7 @@ class skyui.util.DialogManager
 	
 	public static function closeDialog(): Void
 	{
+		skse.Log("Restoring focus to " + _previousFocus);
 		FocusHandler.instance.setFocus(_previousFocus, 0);
 		
 		_activeDialog.setDialogState(CLOSING);

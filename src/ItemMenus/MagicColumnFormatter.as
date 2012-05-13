@@ -3,7 +3,7 @@ import skyui.InventoryColumnFormatter;
 import skyui.Defines;
 
 
-class skyui.MagicColumnFormatter extends InventoryColumnFormatter
+class MagicColumnFormatter extends InventoryColumnFormatter
 {
 	function MagicColumnFormatter()
 	{

@@ -5,7 +5,7 @@ import skyui.util.Defines;
 import skyui.util.ConfigManager;
 
 
-class skyui.InventoryEntryFormatter extends TabularEntryFormatter
+class InventoryEntryFormatter extends TabularEntryFormatter
 {
   /* CONSTANTS */
   

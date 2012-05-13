@@ -1,8 +1,7 @@
 ﻿import skyui.components.list.BasicListEntry;
-import skyui.CategoryList;
 
 
-class skyui.CategoryListEntry extends BasicListEntry
+class CategoryListEntry extends BasicListEntry
 {
   /* PROPERTIES */
 	

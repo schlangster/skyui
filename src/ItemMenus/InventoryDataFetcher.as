@@ -4,7 +4,7 @@ import skyui.components.list.BasicList;
 import skyui.components.list.IDataFetcher;
 
 
-class skyui.InventoryDataFetcher implements IDataFetcher
+class InventoryDataFetcher implements IDataFetcher
 {	
 	public function InventoryDataFetcher(a_list: BasicList)
 	{

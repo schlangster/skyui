@@ -2,7 +2,7 @@
 import skyui.components.list.BasicListEntry;
 
 
-class skyui.InventoryListEntry extends BasicListEntry
+class InventoryListEntry extends BasicListEntry
 {
   /* PROPERTIES */
 	

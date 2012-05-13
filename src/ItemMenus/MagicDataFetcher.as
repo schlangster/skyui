@@ -1,4 +1,4 @@
-﻿class skyui.MagicDataFetcher implements skyui.IDataFetcher
+﻿class MagicDataFetcher implements skyui.IDataFetcher
 {
 	function processEntry(a_entryObject:Object, a_itemInfo:Object)
 	{
