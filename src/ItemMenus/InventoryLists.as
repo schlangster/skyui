@@ -176,7 +176,7 @@ class InventoryLists extends MovieClip
 		_categoryList.addEventListener("listMovedDown", this, "onCategoriesListMoveDown");
 		_categoryList.addEventListener("selectionChange", this, "onCategoriesListMouseSelectionChange");
 
-		_itemList.disableInput = false;
+//		_itemList.disableInput = false;
 
 		_itemList.addEventListener("listMovedUp", this, "onItemsListMoveUp");
 		_itemList.addEventListener("listMovedDown", this, "onItemsListMoveDown");
@@ -207,7 +207,7 @@ class InventoryLists extends MovieClip
 			_itemList.disableInput = true;
 			_searchWidget.disabled = true;
 			
-			_columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", 554, 35);
+			_columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: _itemList.layout});
 			_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 		}
 		
@@ -216,8 +216,6 @@ class InventoryLists extends MovieClip
 	
 	public function onColumnSelectDialogClosed(event: Object): Void
 	{
-		skse.Log("COCAINE");
-		
 		_categoryList.disableSelection = false;
 		_categoryList.disableInput = false;
 		_itemList.disableSelection = false;

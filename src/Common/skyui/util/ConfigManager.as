@@ -111,6 +111,8 @@ class skyui.util.ConfigManager
 	
 	public static function setOverride(a_section: String, a_key: String, a_value): Void
 	{
+		skse.Log("settingOverride " + a_section + " " + a_key + " " + a_value);
+		
 		// Allow to add new sections
 		if (_config[a_section] == undefined)
 			_config[a_section] = {};

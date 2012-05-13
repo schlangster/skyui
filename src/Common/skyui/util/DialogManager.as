@@ -22,14 +22,14 @@ class skyui.util.DialogManager
 	
   /* PUBLIC FUNCTIONS */
 	
-	public static function createDialog(a_target: MovieClip, a_linkageID: String, a_x: Number, a_y: Number): MovieClip
+	public static function createDialog(a_target: MovieClip, a_linkageID: String, a_init: Object): MovieClip
 	{
 		if (_activeDialog)
 			closeDialog();
 		
 		_previousFocus = FocusHandler.instance.getFocus(0);
 
-		_activeDialog = a_target.attachMovie("ColumnSelectDialog", "dialog", a_target.getNextHighestDepth(), {_x: a_x, _y: a_y});
+		_activeDialog = a_target.attachMovie("ColumnSelectDialog", "dialog", a_target.getNextHighestDepth(), a_init);
 		
 		EventDispatcher.initialize(_activeDialog);
 		
@@ -60,6 +60,7 @@ class skyui.util.DialogManager
 					this.onDialogClosed();
 				this.dispatchEvent({type: "dialogClosed"});
 				
+				this.removeAllEventListeners();
 				this.removeMovieClip();
 			}
 		};

@@ -153,10 +153,10 @@ class skyui.components.list.ListLayout
 		
 		for (var i=0; i<columnNames.length; i++) {
 			var col = _columnData[columnNames[i]];
-			var cd = new ColumnDescriptor();
+			var cd : ColumnDescriptor = new ColumnDescriptor();
 			cd.hidden = col.hidden;
-			cd.name = columnNames[i];
-			cd.longName = col.name;
+			cd.identifier = columnNames[i];
+			cd.longName = Translator.translate(col.name);
 			cd.type = col.type;
 			
 			_columnList.push(col);

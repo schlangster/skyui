@@ -51,7 +51,7 @@ class skyui.components.list.ListLayoutManager
 	
   /* PUBLIC FUNCTIONS */
   
-	public function onConfigLoad(event): Void
+	public function onConfigLoad(event: Object): Void
 	{
 		if (event.config == undefined)
 			return;
@@ -62,10 +62,8 @@ class skyui.components.list.ListLayoutManager
 		_defaultsData = _sectionData.defaults;
 	}
 	
-	public function onConfigUpdate(event): Void
+	public function onConfigUpdate(event: Object): Void
 	{
-		skse.Log("Updateee");
-		
 		// Otherwise create
 		for (var k in _layouts)
 			_layouts[k].refresh();

@@ -179,6 +179,11 @@ class skyui.components.list.BasicList extends BSList
 		_bUpdateRequested = true;
 	}
 	
+	public function clearList()
+	{
+		_entryList.splice(0);
+	}
+	
 	var updateCount = 0;
 	
 	// @override MovieClip

@@ -101,6 +101,9 @@ class skyui.components.list.ButtonList extends BasicList
 			entryClip._y = topBorder + h;
 			entryClip._visible = true;
 			
+			entryClip.selectIndicator._width = 4;
+			entryClip.buttonArea._width = 4;
+			
 			if (_buttonWidth < entryClip._width)
 				_buttonWidth = entryClip._width + 4;
 
