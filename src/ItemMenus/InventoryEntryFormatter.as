@@ -32,9 +32,8 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 
 	public function set maxTextLength(a_length:Number)
 	{
-		if (a_length > 3) {
+		if (a_length > 3)
 			_maxTextLength = a_length;
-		}
 	}
 
 	public function get maxTextLength():Number

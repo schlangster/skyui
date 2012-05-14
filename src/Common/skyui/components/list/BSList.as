@@ -9,18 +9,12 @@ class skyui.components.list.BSList extends MovieClip
   
   	// Entries of the list, represented by dynamic objects.
 	// When the internal representation of the entry list, changes are pushed directly into entryList.
-	// As such, this list should be treated as read-only.
-	// NOTE: To push the entryList, the game doesn't necessarily use the setter, so don't expect it to be executed.
+	// As such, the order of this array should not be modified for certain lists.
 	private var _entryList: Array;
 	
 	public function get entryList(): Array
 	{
 		return _entryList;
-	}
-
-	public function set entryList(a_newArray: Array)
-	{
-		_entryList = a_newArray;
 	}
 
 	// Indicates the selected index and is read by the game directly.
@@ -59,5 +53,6 @@ class skyui.components.list.BSList extends MovieClip
 	public function InvalidateData(): Void { }
 	
 	// Redraws the list.
+	// @abstract
 	public function UpdateList(): Void { }
 }

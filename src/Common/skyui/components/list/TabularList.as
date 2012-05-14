@@ -48,7 +48,7 @@ class skyui.components.list.TabularList extends ScrollingList
 
   /* PUBLIC FUNCTIONS */
 	
-	public function onLayoutChange(event)
+	public function onLayoutChange(event: Object): Void
 	{
 		_entryHeight = _layout.entryHeight;
 		_maxListIndex = Math.floor((_listHeight / _entryHeight) + 0.05);
@@ -61,7 +61,7 @@ class skyui.components.list.TabularList extends ScrollingList
 	{
 		var processed = super.handleInput(details, pathToFocus);;
 
-		if (!_bDisableInput && !processed && _platform != 0) {
+		if (!disableInput && !processed && _platform != 0) {
 
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == NavigationCode.GAMEPAD_L1) {

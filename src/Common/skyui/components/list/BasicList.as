@@ -36,6 +36,8 @@ class skyui.components.list.BasicList extends BSList
   
   	private var _bUpdateRequested: Boolean = false;
 	
+	private var _entryClipManager: EntryClipManager;
+	
 
   /* PROPERTIES */
   
@@ -45,72 +47,20 @@ class skyui.components.list.BasicList extends BSList
 	{
 		return _platform;
 	}
-  
+	
 	public function set platform(a_platform: Number)
 	{
 		_platform = a_platform;
-		_bMouseDrivenNav = _platform == PLATFORM_PC;
+		isMouseDrivenNav = _platform == PLATFORM_PC;
 	}
 	
-	private var _bMouseDrivenNav: Boolean = false;
+	public var isMouseDrivenNav: Boolean = false;
 	
-	function get isMouseDrivenNav(): Boolean
-	{
-		return _bMouseDrivenNav;
-	}
-
-	function set isMouseDrivenNav(a_bFlag: Boolean)
-	{
-		_bMouseDrivenNav = a_bFlag;
-	}
+	public var isListAnimating: Boolean = false;
 	
-	private var _bListAnimating: Boolean = false;
+	public var disableInput: Boolean = false;
 	
-	function get listAnimating(): Boolean
-	{
-		return _bListAnimating;
-	}
-
-	function set listAnimating(a_bFlag: Boolean)
-	{
-		_bListAnimating = a_bFlag;
-	}
-
-	private var _bDisableInput: Boolean = false;
-
-	function get disableInput()
-	{
-		return _bDisableInput;
-	}
-
-	function set disableInput(a_bFlag: Boolean)
-	{
-		_bDisableInput = a_bFlag;
-	}
-	
-	private var _bDisableSelection: Boolean = false;
-	
-	function get disableSelection(): Boolean
-	{
-		return _bDisableSelection;
-	}
-	
-	function set disableSelection(a_bFlag: Boolean)
-	{
-		_bDisableSelection = a_bFlag;
-	}
-	
-	private var _entryRenderer: String;
-	
-	public function set entryRenderer(a_entryRenderer: String)
-	{
-		_entryRenderer = a_entryRenderer;
-	}
-	
-	public function get entryRenderer(): String
-	{
-		return _entryRenderer;
-	}
+	public var disableSelection: Boolean = false;
 
 	// @override skyui.components.list.BSList
 	public function get selectedIndex(): Number
@@ -124,28 +74,13 @@ class skyui.components.list.BasicList extends BSList
 		doSetSelectedIndex(a_newIndex, SELECT_MOUSE);
 	}
 	
-	private var _entryClipManager: EntryClipManager;
+	public var entryRenderer: String;
 	
-	private var _listEnumeration: IEntryEnumeration;
+	public var listEnumeration: IEntryEnumeration;
 	
-	public function set listEnumeration(a_enumeration: IEntryEnumeration)
-	{
-		_listEnumeration = a_enumeration;
-	}
+	public var entryFormatter: IEntryFormatter;
 	
-	private var _entryFormatter: IEntryFormatter;
-	
-	public function set entryFormatter(a_entryFormatter: IEntryFormatter)
-	{
-		_entryFormatter = a_entryFormatter;
-	}
-	
-	private var _dataFetcher: IDataFetcher;
-	
-	public function set dataFetcher(a_dataFetcher: IDataFetcher)
-	{
-		_dataFetcher = a_dataFetcher;
-	}
+	public var dataFetcher: IDataFetcher;
 	
 	
   /* CONSTRUCTORS */
@@ -205,13 +140,13 @@ class skyui.components.list.BasicList extends BSList
 	// @override BSList
 	public function InvalidateData(): Void
 	{
-		if (_dataFetcher)
-			_dataFetcher.processEntries(this);
+		if (dataFetcher)
+			dataFetcher.processEntries(this);
 		
-		_listEnumeration.invalidate();
+		listEnumeration.invalidate();
 		
-		if (_selectedIndex >= _listEnumeration.size())
-			_selectedIndex = _listEnumeration.size() - 1;
+		if (_selectedIndex >= listEnumeration.size())
+			_selectedIndex = listEnumeration.size() - 1;
 
 		requestUpdate();
 	}
@@ -222,7 +157,7 @@ class skyui.components.list.BasicList extends BSList
 	
 	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (_bDisableInput || _bDisableSelection || _selectedIndex == -1)
+		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
 			
 		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
@@ -230,7 +165,7 @@ class skyui.components.list.BasicList extends BSList
 	
 	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
 	{
-		if (_bDisableInput || _bDisableSelection || _selectedIndex == -1 || a_buttonIndex != 1)
+		if (disableInput || disableSelection || _selectedIndex == -1 || a_buttonIndex != 1)
 			return;
 		
 		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
@@ -238,11 +173,11 @@ class skyui.components.list.BasicList extends BSList
 	
 	public function onItemRollOver(a_index: Number): Void
 	{
-		if (_bListAnimating || _bDisableSelection || _bDisableInput)
+		if (isListAnimating || disableSelection || disableInput)
 			return;
 			
 		doSetSelectedIndex(a_index, SELECT_MOUSE);
-		_bMouseDrivenNav = true;
+		isMouseDrivenNav = true;
 	}
 
 	public function onItemRollOut(a_index: Number): Void
@@ -255,7 +190,7 @@ class skyui.components.list.BasicList extends BSList
 
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (_bDisableSelection || a_newIndex == _selectedIndex)
+		if (disableSelection || a_newIndex == _selectedIndex)
 			return;
 			
 		// Selection is not contained in current entry enumeration, ignore
@@ -286,51 +221,51 @@ class skyui.components.list.BasicList extends BSList
 	
 	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
 	{
-		_entryFormatter.setEntry(a_entryClip, a_entryObject);
+		entryFormatter.setEntry(a_entryClip, a_entryObject);
 	}
 	
 	private function getSelectedListEnumIndex(): Number
 	{
-		return _listEnumeration.lookupEnumIndex(_selectedIndex);
+		return listEnumeration.lookupEnumIndex(_selectedIndex);
 	}
 	
 	private function getListEnumIndex(a_index: Number): Number
 	{
-		return _listEnumeration.lookupEnumIndex(a_index);
+		return listEnumeration.lookupEnumIndex(a_index);
 	}
 	
 	private function getListEntryIndex(a_index: Number): Number
 	{
-		return _listEnumeration.lookupEntryIndex(a_index);
+		return listEnumeration.lookupEntryIndex(a_index);
 	}
 	
 	private function getListEnumSize(): Number
 	{
-		return _listEnumeration.size();
+		return listEnumeration.size();
 	}
 	
 	private function getListEnumEntry(a_index: Number): Object
 	{
-		return _listEnumeration.at(a_index);
+		return listEnumeration.at(a_index);
 	}
 	
 	private function getListEnumPredecessorIndex(): Number
 	{
-		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() - 1);
+		return listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() - 1);
 	}
 	
 	private function getListEnumSuccessorIndex(): Number
 	{
-		return _listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + 1);
+		return listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + 1);
 	}
 	
 	private function getListEnumFirstIndex(): Number
 	{
-		return _listEnumeration.lookupEntryIndex(0);
+		return listEnumeration.lookupEntryIndex(0);
 	}
 	
 	private function getListEnumLastIndex(): Number
 	{
-		return _listEnumeration.lookupEntryIndex(getListEnumSize() -1);
+		return listEnumeration.lookupEntryIndex(getListEnumSize() -1);
 	}
 }

@@ -36,26 +36,19 @@ class skyui.components.list.ListLayout
 	private var _lastViewIndex: Number = -1;
 	
 	// viewIndex, columnIndex, stateIndex
-	private var _prefData: Object = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
+	private var _prefData: Object;
 	
 	// 1 .. n
-	private var _activeColumnState: Number = 0;
+	private var _activeColumnState: Number = 1;
 	
 	private var _defaultEntryTextFormat: TextFormat;
 	private var _defaultLabelTextFormat: TextFormat;
 	
 	// List of views in this layout (updated only when the config changes)
-	private var _viewList: Array = [];
+	private var _viewList: Array;
 	
 	// List of columns for the current view (updated when the view changes
-	private var _columnList: Array = [];
-	
-	private var _columnDescriptors: Array = [];
-	
-	public function get columnDescriptors(): Array
-	{
-		return _columnDescriptors;
-	}
+	private var _columnList: Array;
 	
 	private var _lastFilterFlag: Number = -1;
 	
@@ -86,14 +79,14 @@ class skyui.components.list.ListLayout
 		return _columnLayoutData.length;
 	}
 	
-	private var _columnLayoutData: Array = [];
+	private var _columnLayoutData: Array;
 	
 	public function get columnLayoutData(): Array
 	{
 		return _columnLayoutData;
 	}
 	
-	private var _hiddenStageNames: Array = [];
+	private var _hiddenStageNames: Array;
 	
 	public function get hiddenStageNames(): Array
 	{
@@ -121,61 +114,30 @@ class skyui.components.list.ListLayout
 		return _layoutUpdateCount;
 	}
 	
-	// columnLayoutData index (no hidden columns) -> columnList index (all columns for this view)
-	private function toColumnListIndex(a_index): Number
+	private var _columnDescriptors: Array;
+	
+	public function get columnDescriptors(): Array
 	{
-		for (var i = 0, c = 0; i < _columnList.length; i++) {
-			if (_columnList[i].hidden == true)
-				continue;
-			if (c == a_index)
-				return i;
-			c++;
-		}
+		return _columnDescriptors;
 	}
+	
+
 	
 	
   /* CONSTRUCTORS */
-  
-	private function updateViewList(): Void
-	{
-		_viewList.splice(0);
-		var viewNames = _layoutData.views;
-		for (var i=0; i<viewNames.length; i++)
-			_viewList.push(_viewData[viewNames[i]]);
-	}
-	
-	private function updateColumnList(): Void
-	{
-		_columnList.splice(0);
-		_columnDescriptors.splice(0);
-		
-		var columnNames = currentView.columns;
-		
-		for (var i=0; i<columnNames.length; i++) {
-			var col = _columnData[columnNames[i]];
-			var cd : ColumnDescriptor = new ColumnDescriptor();
-			cd.hidden = col.hidden;
-			cd.identifier = columnNames[i];
-			cd.longName = Translator.translate(col.name);
-			cd.type = col.type;
-			
-			_columnList.push(col);
-			_columnDescriptors.push(cd);
-		}
-	}
-	
-	public function refresh(): Void
-	{
-		updateViewList();
-		_lastViewIndex = -1;
-		changeFilterFlag(_lastFilterFlag);
-	}
 	
 	public function ListLayout(a_layoutData: Object, a_viewData: Object, a_columnData: Object, a_defaultsData: Object)
 	{
 		GlobalFunctions.addArrayFunctions();
 		
 		EventDispatcher.initialize(this);
+		
+		_prefData = {column: null, stateIndex: 1};
+		_viewList = [];
+		_columnList = [];
+		_columnLayoutData = [];
+		_hiddenStageNames = [];
+		_columnDescriptors = [];
 		
 		_layoutData = a_layoutData;
 		_viewData = a_viewData;
@@ -199,11 +161,17 @@ class skyui.components.list.ListLayout
 		for (var prop in _defaultsData.label.textFormat)
 			if (_defaultLabelTextFormat.hasOwnProperty(prop))
 				_defaultLabelTextFormat[prop] = _defaultsData.label.textFormat[prop];
-				
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
+	
+	public function refresh(): Void
+	{
+		updateViewList();
+		_lastViewIndex = -1;
+		changeFilterFlag(_lastFilterFlag);
+	}
 	
 	public function changeFilterFlag(a_flag: Number): Void
 	{
@@ -226,6 +194,8 @@ class skyui.components.list.ListLayout
 		
 		_lastViewIndex = _activeViewIndex;
 		
+		updateColumnList();
+		
 		// Restoring a previous state was not necessary or failed? Then use default
 		if (! restorePrefState()) {
 			_activeColumnIndex = _viewList[_activeViewIndex].columns.indexOf(_viewList[_activeViewIndex].primaryColumn);
@@ -247,15 +217,12 @@ class skyui.components.list.ListLayout
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	public function selectColumn(a_index: Number)
+	public function selectColumn(a_index: Number): Void
 	{
-		
 		var listIndex = toColumnListIndex(a_index);
 		// Invalid column
 		if (_columnList[listIndex] == undefined)
 			return;
-			
-
 			
 		if (_activeColumnIndex != a_index) {
 			_activeColumnIndex = a_index;
@@ -268,7 +235,8 @@ class skyui.components.list.ListLayout
 		}
 		
 		// Save as preferred state
-		_prefData = {viewIndex: _activeViewIndex, columnIndex: _activeColumnIndex, stateIndex: _activeColumnState};
+		_prefData.column = _columnList[listIndex];
+		_prefData.stateIndex = _activeColumnState;
 			
 		updateLayout();
 	}
@@ -279,8 +247,6 @@ class skyui.components.list.ListLayout
 	private function updateLayout(): Void
 	{
 		_layoutUpdateCount++;
-		
-		updateColumnList();
 
 		var maxHeight = 0;
 		var textFieldIndex = 0;
@@ -509,11 +475,6 @@ class skyui.components.list.ListLayout
 		
 		updateSortParams();
 		
-		for (var i=0; i<_columnLayoutData.length; i++) {
-			var columnLayoutData = _columnLayoutData[i];
-			columnLayoutData.dump();
-		}
-		
 		// sortChange might not always trigger an update, so we have to make sure the list is updated,
 		// even if that means we update it twice.
 		dispatchEvent({type: "layoutChange"});
@@ -549,42 +510,77 @@ class skyui.components.list.ListLayout
 	private function restorePrefState(): Boolean
 	{
 		// No preference to restore yet
-		if (_prefData == undefined || _prefData.viewIndex == -1)
+		if (!_prefData.column)
 			return false;
 
-		// First check if current view contains preferred column
-		var prefColumnName = _viewList[_prefData.viewIndex].columns[_prefData.columnIndex];
-		
-		var index = _viewList[_activeViewIndex].columns.indexOf(prefColumnName);
-		if (prefColumnName != undefined && index != undefined) {
-			_activeColumnIndex = index;
+		var listIndex = _columnList.indexOf(_prefData.column);
+		var layoutDataIndex = toColumnLayoutDataIndex(listIndex);
+
+		if (listIndex > -1 && layoutDataIndex > -1) {
+			_activeColumnIndex = layoutDataIndex;
 			_activeColumnState = _prefData.stateIndex;
 			return true;
 		}
 		
-		// Next, try to search all columns for a similar state by comparing text, sort options and sort attributes
-		var prefState = _layoutData[_viewList[_prefData.viewIndex].columns[_prefData.columnIndex]]["state" + _prefData.stateIndex];
-		
-		for (var i=0; i<_viewList[_activeViewIndex].columns.length; i++) {
-			var col = _layoutData[_viewList[_activeViewIndex].columns[i]];
-			if (col.states == undefined)
-				continue;
-				
-			for (var j=1; j <=  col.states; j++) {
-				var st = col["state" + j];
-				if (st.entry.text != prefState.entry.text)
-					continue;
-				
-				if (st.sortAttributes.equals(prefState.sortAttributes) && st.sortOptions.equals(prefState.sortOptions) && st.label.arrowDown == prefState.label.arrowDown) {
-					_activeColumnIndex = i;
-					_activeColumnState = j;
-					return true;
-				}
-			}
-		}
-
 		// Found no match, reset prefData and return false
-		_prefData = {viewIndex: -1, columnIndex: 0, stateIndex: 1};
+		_prefData.column = null;
+		_prefData.stateIndex = 1;
 		return false;
+	}
+	
+	// columnLayoutData index (no hidden columns) -> columnList index (all columns for this view)
+	private function toColumnListIndex(a_index): Number
+	{
+		for (var i = 0, c = 0; i < _columnList.length; i++) {
+			if (_columnList[i].hidden == true)
+				continue;
+			if (c == a_index)
+				return i;
+			c++;
+		}
+		
+		return -1;
+	}
+	
+	// columnList index (all columns for this view) -> columnLayoutData index (no hidden columns)
+	private function toColumnLayoutDataIndex(a_index): Number
+	{
+		for (var i = 0, c = 0; i < _columnList.length; i++) {
+			if (_columnList[i].hidden == true)
+				continue;
+			if (i == a_index)
+				return c;
+			c++;
+		}
+		
+		return -1;
+	}
+	
+	private function updateViewList(): Void
+	{
+		_viewList.splice(0);
+		var viewNames = _layoutData.views;
+		for (var i=0; i<viewNames.length; i++)
+			_viewList.push(_viewData[viewNames[i]]);
+	}
+	
+	private function updateColumnList(): Void
+	{
+		_columnList.splice(0);
+		_columnDescriptors.splice(0);
+		
+		var columnNames = currentView.columns;
+		
+		for (var i=0; i<columnNames.length; i++) {
+			var col = _columnData[columnNames[i]];
+			var cd : ColumnDescriptor = new ColumnDescriptor();
+			cd.hidden = col.hidden;
+			cd.identifier = columnNames[i];
+			cd.longName = Translator.translate(col.name);
+			cd.type = col.type;
+			
+			_columnList.push(col);
+			_columnDescriptors.push(cd);
+		}
 	}
 }

@@ -1,7 +1,9 @@
 ﻿import gfx.events.EventDispatcher;
 
+import skyui.filter.IFilter;
 
-class skyui.filter.ItemTypeFilter implements skyui.filter.IFilter
+
+class skyui.filter.ItemTypeFilter implements IFilter
 {
   /* PRIVATE VARIABLES */
 
@@ -11,7 +13,7 @@ class skyui.filter.ItemTypeFilter implements skyui.filter.IFilter
 	
   /* PROPERTIES */
 
-	private var _itemFilter: Number;
+	private var _itemFilter: Number = 0xFFFFFFFF;
 
 	function get itemFilter():Number
 	{
@@ -23,10 +25,9 @@ class skyui.filter.ItemTypeFilter implements skyui.filter.IFilter
 
 	public function ItemTypeFilter()
 	{
-		_itemFilter = 0xFFFFFFFF;
-		_matcherFunc = entryMatchesFilter;
-		
 		EventDispatcher.initialize(this);
+		
+		_matcherFunc = entryMatchesFilter;
 	}
 	
 	
@@ -41,7 +42,7 @@ class skyui.filter.ItemTypeFilter implements skyui.filter.IFilter
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	public function changeFilterFlag(a_newFilter:Number, a_bDoNotUpdate:Boolean): Void
+	public function changeFilterFlag(a_newFilter:Number, a_bDoNotUpdate: Boolean): Void
 	{
 		if (a_bDoNotUpdate == undefined)
 			a_bDoNotUpdate = false;
@@ -58,7 +59,7 @@ class skyui.filter.ItemTypeFilter implements skyui.filter.IFilter
 	}
 	
 	// @override skyui.IFilter
-	public function applyFilter(a_filteredList:Array): Void
+	public function applyFilter(a_filteredList: Array): Void
 	{
 		for (var i = 0; i < a_filteredList.length; i++) {
 			if (!_matcherFunc(a_filteredList[i])) {

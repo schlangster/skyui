@@ -99,7 +99,7 @@ class CategoryList extends BasicList
 			iconSize = 32;
 		
 		// Not needed for a category list
-		_dataFetcher = null;
+		dataFetcher = null;
 	}
 	
 	
@@ -122,11 +122,11 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function InvalidateData(): Void
 	{
-		_listEnumeration.invalidate();
+		listEnumeration.invalidate();
 		calculateSegmentParams();
 		
-		if (_selectedIndex >= _listEnumeration.size())
-			_selectedIndex = _listEnumeration.size() - 1;
+		if (_selectedIndex >= listEnumeration.size())
+			_selectedIndex = listEnumeration.size() - 1;
 
 		UpdateList();
 	}
@@ -141,9 +141,9 @@ class CategoryList extends BasicList
 		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);
 
-			setEntry(entryClip, _listEnumeration.at(i + _segmentOffset));
+			setEntry(entryClip, listEnumeration.at(i + _segmentOffset));
 
-			_listEnumeration.at(i + _segmentOffset).clipIndex = i;
+			listEnumeration.at(i + _segmentOffset).clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;
 
 			cw = cw + iconSize;
@@ -170,7 +170,7 @@ class CategoryList extends BasicList
 	// Moves the selection left to the next element. Wraps around.
 	public function moveSelectionLeft(): Void
 	{
-		if (_bDisableSelection)
+		if (disableSelection)
 			return;
 
 		var curIndex = _selectedIndex;
@@ -183,7 +183,7 @@ class CategoryList extends BasicList
 				_bFastSwitch = true;
 				curIndex = _segmentOffset + _segmentLength - 1;					
 			}
-		} while (curIndex != startIndex && _listEnumeration.at(curIndex).filterFlag == 0 && !_listEnumeration.at(curIndex).bDontHide);
+		} while (curIndex != startIndex && listEnumeration.at(curIndex).filterFlag == 0 && !listEnumeration.at(curIndex).bDontHide);
 			
 		onItemPress(curIndex, 0);
 	}
@@ -191,7 +191,7 @@ class CategoryList extends BasicList
 	// Moves the selection right to the next element. Wraps around.
 	public function moveSelectionRight(): Void
 	{
-		if (_bDisableSelection)
+		if (disableSelection)
 			return;
 			
 		var curIndex = _selectedIndex;
@@ -204,7 +204,7 @@ class CategoryList extends BasicList
 				_bFastSwitch = true;
 				curIndex = _segmentOffset;
 			}
-		} while (curIndex != startIndex && _listEnumeration.at(curIndex).filterFlag == 0 && !_listEnumeration.at(curIndex).bDontHide);
+		} while (curIndex != startIndex && listEnumeration.at(curIndex).filterFlag == 0 && !listEnumeration.at(curIndex).bDontHide);
 			
 		onItemPress(curIndex, 0);
 	}
@@ -214,7 +214,7 @@ class CategoryList extends BasicList
 	{
 		var processed = false;
 
-		if (!_bDisableInput) {
+		if (!disableInput) {
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == NavigationCode.LEFT) {
 					moveSelectionLeft();
@@ -259,7 +259,7 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (_bDisableInput || _bDisableSelection || a_index == -1)
+		if (disableInput || disableSelection || a_index == -1)
 			return;
 			
 		doSetSelectedIndex(a_index, a_keyboardOrMouse);
@@ -270,7 +270,7 @@ class CategoryList extends BasicList
 	// @override BasicList
 	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
 	{
-		if (_bDisableInput || _bDisableSelection || a_index == -1 || a_buttonIndex != 1)
+		if (disableInput || disableSelection || a_index == -1 || a_buttonIndex != 1)
 			return;
 		
 		doSetSelectedIndex(a_index, a_keyboardOrMouse);
@@ -281,10 +281,10 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function onItemRollOver(a_index: Number): Void
 	{
-		if (_bDisableInput || _bDisableSelection)
+		if (disableInput || disableSelection)
 			return;
 			
-		_bMouseDrivenNav = true;
+		isMouseDrivenNav = true;
 		
 		if (a_index == _selectedIndex)
 			return;
@@ -296,10 +296,10 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function onItemRollOut(a_index: Number): Void
 	{
-		if (_bDisableInput || _bDisableSelection)
+		if (disableInput || disableSelection)
 			return;
 			
-		_bMouseDrivenNav = true;
+		isMouseDrivenNav = true;
 		
 		if (a_index == _selectedIndex)
 			return;
@@ -320,13 +320,13 @@ class CategoryList extends BasicList
 				_segmentLength = dividerIndex;
 			} else {
 				_segmentOffset = dividerIndex + 1;
-				_segmentLength = _listEnumeration.size() - _segmentOffset;
+				_segmentLength = listEnumeration.size() - _segmentOffset;
 			}
 		
 		// Default for non-divided lists
 		} else {
 			_segmentOffset = 0;
-			_segmentLength = _listEnumeration.size();
+			_segmentLength = listEnumeration.size();
 		}
 	}
 	

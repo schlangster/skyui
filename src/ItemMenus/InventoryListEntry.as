@@ -27,11 +27,4 @@ class InventoryListEntry extends BasicListEntry
 		for (var i = 0; this["textField" + i] != undefined; i++)
 			this["textField" + i]._visible = false;
 	}
-	
-	public function reset(): Void
-	{
-		// Do nothing.
-	}
-	
-	
 }

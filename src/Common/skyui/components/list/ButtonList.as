@@ -131,7 +131,7 @@ class skyui.components.list.ButtonList extends BasicList
 	{
 		var processed = false;
 
-		if (_bDisableInput)
+		if (disableInput)
 			return false;
 
 		var entry = getClipByIndex(_selectedIndex);
@@ -144,7 +144,7 @@ class skyui.components.list.ButtonList extends BasicList
 			} else if (details.navEquivalent == NavigationCode.DOWN || details.navEquivalent == NavigationCode.PAGE_DOWN) {
 				moveSelectionDown();
 				processed = true;
-			} else if (!_bDisableSelection && details.navEquivalent == NavigationCode.ENTER) {
+			} else if (!disableSelection && details.navEquivalent == NavigationCode.ENTER) {
 				onItemPress();
 				processed = true;
 			}
@@ -155,7 +155,7 @@ class skyui.components.list.ButtonList extends BasicList
 	// @GFx
 	public function onMouseWheel(delta)
 	{
-		if (_bDisableInput)
+		if (disableInput)
 			return;
 			
 		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
@@ -167,35 +167,35 @@ class skyui.components.list.ButtonList extends BasicList
 			}
 		}
 		
-		_bMouseDrivenNav = true;
+		isMouseDrivenNav = true;
 	}
 	
 	public function moveSelectionUp(): Void
 	{
-		if (_bDisableSelection)
+		if (disableSelection)
 			return;
 			
 		if (_selectedIndex == -1) {
 			doSetSelectedIndex(getListEnumLastIndex(), SELECT_KEYBOARD);
-			_bMouseDrivenNav = false;
+			isMouseDrivenNav = false;
 		} else if (getSelectedListEnumIndex() > 0) {
 			doSetSelectedIndex(getListEnumPredecessorIndex(), SELECT_KEYBOARD);
-			_bMouseDrivenNav = false;
+			isMouseDrivenNav = false;
 			dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: true});
 		}
 	}
 
 	public function moveSelectionDown(): Void
 	{
-		if (_bDisableSelection)
+		if (disableSelection)
 			return;
 			
 		if (_selectedIndex == -1) {
 			doSetSelectedIndex(getListEnumFirstIndex(), SELECT_KEYBOARD);
-			_bMouseDrivenNav = false;
+			isMouseDrivenNav = false;
 		} else if (getSelectedListEnumIndex() < getListEnumSize() - 1) {
 			doSetSelectedIndex(getListEnumSuccessorIndex(), SELECT_KEYBOARD);
-			_bMouseDrivenNav = false;
+			isMouseDrivenNav = false;
 			dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 		}
 	}

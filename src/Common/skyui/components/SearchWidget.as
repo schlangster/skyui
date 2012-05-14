@@ -30,17 +30,7 @@ class skyui.components.SearchWidget extends MovieClip
 	
   /* PROPERTIES */
 	
-	private var _bDisabled: Boolean = false;
-	
-	public function get disabled(): Boolean
-	{
-		return _bDisabled;
-	}
-	
-	public function set disabled(a_bDisabled: Boolean)
-	{
-		_bDisabled = a_bDisabled;
-	}
+	public var isDisabled: Boolean = false;
 	
 	
   /* CONSTRUCTORS */
@@ -91,7 +81,7 @@ class skyui.components.SearchWidget extends MovieClip
 
 	public function startInput(): Void
 	{
-		if (_bActive || _bDisabled)
+		if (_bActive || isDisabled)
 			return;
 		
 		_previousFocus = FocusHandler.instance.getFocus(0);
@@ -127,20 +117,6 @@ class skyui.components.SearchWidget extends MovieClip
 			};
 		}
 	}
-	
-	public function updateInput()
-	{
-		if (_updateTimerId != undefined) {
-			clearInterval(_updateTimerId);
-			_updateTimerId = undefined;
-			
-			if (_currentInput != undefined()) {
-				dispatchEvent({type: "inputChange", data: _currentInput});
-			} else {
-				dispatchEvent({type: "inputChange", data: ""});
-			}
-		}
-	}
 
 	public function endInput(): Void
 	{
@@ -172,8 +148,8 @@ class skyui.components.SearchWidget extends MovieClip
 		}
 	}
 
-	// GFx
-	public function handleInput(details, pathToFocus)
+	// @GFx
+	public function handleInput(details, pathToFocus): Boolean
 	{
 		var bCaught = false;
 
@@ -195,12 +171,15 @@ class skyui.components.SearchWidget extends MovieClip
 		return bCaught;
 	}
 	
-	public function clearText(): Void
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function clearText(): Void
 	{
 		textField.SetText("");
 	}
 	
-	public function refreshInput(): Void
+	private function refreshInput(): Void
 	{
 		var t =  GlobalFunc.StringTrim(textField.text);
 		
@@ -208,6 +187,20 @@ class skyui.components.SearchWidget extends MovieClip
 			_currentInput = t;
 		} else {
 			_currentInput = undefined;
+		}
+	}
+	
+	private function updateInput(): Void
+	{
+		if (_updateTimerId != undefined) {
+			clearInterval(_updateTimerId);
+			_updateTimerId = undefined;
+			
+			if (_currentInput != undefined()) {
+				dispatchEvent({type: "inputChange", data: _currentInput});
+			} else {
+				dispatchEvent({type: "inputChange", data: ""});
+			}
 		}
 	}
 }

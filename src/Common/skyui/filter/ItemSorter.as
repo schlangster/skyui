@@ -31,7 +31,7 @@ class skyui.filter.ItemSorter implements skyui.filter.IFilter
 	public var cleanUpEvents: Function;
 
 	// Change the filter attributes and options and trigger an update if necessary.
-	public function setSortBy(a_sortAttributes: Array, a_sortOptions: Array)
+	public function setSortBy(a_sortAttributes: Array, a_sortOptions: Array): Void
 	{
 		if (_sortAttributes == a_sortAttributes && _sortOptions == a_sortOptions)
 			return;

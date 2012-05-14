@@ -59,13 +59,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	}
 	
 	// @override BasicList
-	private var _listEnumeration: FilteredEnumeration;
-	
-	// @override BasicList
-	public function set listEnumeration(a_enumeration: FilteredEnumeration)
-	{
-		_listEnumeration = a_enumeration;
-	}
+	public var listEnumeration: FilteredEnumeration;
 
 
   /* CONSTRUCTORS */
@@ -98,7 +92,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	{
 		var processed = false;
 
-		if (_bDisableInput)
+		if (disableInput)
 			return false;
 
 		var entry = getClipByIndex(selectedIndex - scrollPosition);
@@ -111,7 +105,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			} else if (details.navEquivalent == NavigationCode.DOWN || details.navEquivalent == NavigationCode.PAGE_DOWN) {
 				moveSelectionDown(details.navEquivalent == NavigationCode.PAGE_DOWN);
 				processed = true;
-			} else if (!_bDisableSelection && details.navEquivalent == NavigationCode.ENTER) {
+			} else if (!disableSelection && details.navEquivalent == NavigationCode.ENTER) {
 				onItemPress();
 				processed = true;
 			}
@@ -122,7 +116,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	// GFx
 	public function onMouseWheel(delta: Number): Void
 	{
-		if (_bDisableInput)
+		if (disableInput)
 			return;
 			
 		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
@@ -134,7 +128,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			}
 		}
 		
-		_bMouseDrivenNav = true;
+		isMouseDrivenNav = true;
 	}
 
 	// @override BasicList
@@ -177,7 +171,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			getListEnumEntry(i).clipIndex = undefined;
 		
 		// Select entry under the cursor for mouse-driven navigation
-		if (_bMouseDrivenNav)
+		if (isMouseDrivenNav)
 			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 				if (e._parent == this && e._visible && e.itemIndex != undefined)
 					doSetSelectedIndex(e.itemIndex, SELECT_MOUSE);
@@ -205,12 +199,12 @@ class skyui.components.list.ScrollingList extends BasicList
 	
 	public function moveSelectionUp(a_bScrollPage: Boolean): Void
 	{
-		if (!_bDisableSelection && !a_bScrollPage) {
+		if (!disableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(false);
 			} else if (getSelectedListEnumIndex() > 0) {
 				doSetSelectedIndex(getListEnumPredecessorIndex(), SELECT_KEYBOARD);
-				_bMouseDrivenNav = false;
+				isMouseDrivenNav = false;
 				dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: true});
 			}
 		} else if (a_bScrollPage) {
@@ -224,12 +218,12 @@ class skyui.components.list.ScrollingList extends BasicList
 
 	public function moveSelectionDown(a_bScrollPage: Boolean): Void
 	{
-		if (!_bDisableSelection && !a_bScrollPage) {
+		if (!disableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(true);
 			} else if (getSelectedListEnumIndex() < getListEnumSize() - 1) {
 				doSetSelectedIndex(getListEnumSuccessorIndex(), SELECT_KEYBOARD);
-				_bMouseDrivenNav = false;
+				isMouseDrivenNav = false;
 				dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 			}
 		} else if (a_bScrollPage) {
@@ -276,7 +270,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	
 	public function addFilter(a_filter: IFilter): Void
 	{
-		_listEnumeration.addFilter(a_filter);
+		listEnumeration.addFilter(a_filter);
 	}
 	
 	
@@ -285,7 +279,7 @@ class skyui.components.list.ScrollingList extends BasicList
   	// @override BasicList
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
 	{
-		if (_bDisableSelection || a_newIndex == _selectedIndex)
+		if (disableSelection || a_newIndex == _selectedIndex)
 			return;
 			
 		// Selection is not contained in current entry enumeration, ignore
@@ -339,7 +333,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			scrollPosition = _maxScrollPosition;
 	}
 	
-	private function updateScrollPosition(a_position:Number): Void
+	private function updateScrollPosition(a_position: Number): Void
 	{
 		_scrollPosition = a_position;
 		UpdateList();
@@ -358,11 +352,10 @@ class skyui.components.list.ScrollingList extends BasicList
 		// Set up helper attributes for easy mapping between original list, filtered list and entry clips
 		for (var i = 0; i < _entryList.length; i++)
 			_entryList[i].clipIndex = undefined;
-			
-		_listEnumeration.entryData = _entryList;
-		_listEnumeration.invalidate();
+		
+		listEnumeration.invalidate();
 
-		if (_listEnumeration.lookupEnumIndex(_selectedIndex) == undefined)
+		if (listEnumeration.lookupEnumIndex(_selectedIndex) == undefined)
 			_selectedIndex = -1;
 	}
 	

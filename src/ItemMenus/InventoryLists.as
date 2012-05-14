@@ -57,11 +57,17 @@ class InventoryLists extends MovieClip
   /* PROPERTIES */
 
 	public var itemList: TabularList;
+	
 	public var categoryList: CategoryList;
+	
 	public var tabBar: TabBar;
+	
 	public var searchWidget: SearchWidget;
+	
 	public var categoryLabel: MovieClip;
+	
 	public var columnSelectButton: Button;
+	
 	public var columnSelectDialog: MovieClip;
 	
 	private var _currentState: Number;
@@ -171,24 +177,25 @@ class InventoryLists extends MovieClip
 	{
 		if (columnSelectDialog) {
 			DialogManager.closeDialog();
-		} else {			
-			_savedSelectionIndex = itemList.selectedIndex;
-			itemList.selectedIndex = -1;
-		
-			categoryList.disableSelection = categoryList.disableInput = true;
-			itemList.disableSelection = itemList.disableInput = true;
-			searchWidget.disabled = true;
-			
-			columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
-			columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
+			return;
 		}
+		
+		_savedSelectionIndex = itemList.selectedIndex;
+		itemList.selectedIndex = -1;
+		
+		categoryList.disableSelection = categoryList.disableInput = true;
+		itemList.disableSelection = itemList.disableInput = true;
+		searchWidget.isDisabled = true;
+			
+		columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
+		columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 	}
 	
 	public function onColumnSelectDialogClosed(event: Object): Void
 	{
 		categoryList.disableSelection = categoryList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
-		searchWidget.disabled = false;
+		searchWidget.isDisabled = false;
 		
 		itemList.selectedIndex = _savedSelectionIndex;
 	}
