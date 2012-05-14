@@ -176,7 +176,9 @@ class skyui.components.list.BasicList extends BSList
 	// If timing is imporant (like for scrolling), use UpdateList() directly.
 	public function requestUpdate()
 	{
-		_bUpdateRequested = true;
+//		_bUpdateRequested = true;
+// TODO optimize this later, for now lets get everything working
+		UpdateList();
 	}
 	
 	public function clearList()

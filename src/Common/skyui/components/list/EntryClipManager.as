@@ -29,14 +29,14 @@ class skyui.components.list.EntryClipManager
 	{
 		_clipCount = a_clipCount;
 		
+		var d = a_clipCount - _clipPool.length;
+		if (d > 0)
+			growPool(d);
+			
 		for (var i=0; i<_clipPool.length; i++) {
 			_clipPool[i]._visible = false;
 			_clipPool[i].itemIndex = undefined;
 		}
-		
-		var d = a_clipCount - _clipPool.length;
-		if (d > 0)
-			growPool(d);
 	}
 	
 	

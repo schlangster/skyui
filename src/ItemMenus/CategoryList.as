@@ -106,6 +106,7 @@ class CategoryList extends BasicList
   /* PUBLIC FUNCTIONS */
   
   	// Clears the list. For the category list, that's ok since the entryList isn't manipulated directly.
+	// @override BasicList
 	function clearList()
 	{
 		dividerIndex = -1;
@@ -119,7 +120,7 @@ class CategoryList extends BasicList
 	}
 	
 	// @override BasicList
-	function InvalidateData()
+	public function InvalidateData(): Void
 	{
 		_listEnumeration.invalidate();
 		calculateSegmentParams();
@@ -131,7 +132,7 @@ class CategoryList extends BasicList
 	}
 	
 	// @override BasicList
-	public function UpdateList()
+	public function UpdateList(): Void
 	{
 		setClipCount(_segmentLength);
 
@@ -167,7 +168,7 @@ class CategoryList extends BasicList
 	}
 	
 	// Moves the selection left to the next element. Wraps around.
-	public function moveSelectionLeft()
+	public function moveSelectionLeft(): Void
 	{
 		if (_bDisableSelection)
 			return;
@@ -188,7 +189,7 @@ class CategoryList extends BasicList
 	}
 
 	// Moves the selection right to the next element. Wraps around.
-	public function moveSelectionRight()
+	public function moveSelectionRight(): Void
 	{
 		if (_bDisableSelection)
 			return;

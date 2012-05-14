@@ -41,53 +41,28 @@ class InventoryLists extends MovieClip
 
 	private var _config: Object;
 
-	private var _searchWidget: SearchWidget;
-	
-	private var _categoryLabel: MovieClip;
-
 	private var _typeFilter: ItemTypeFilter;
-	
 	private var _nameFilter: ItemNameFilter;
-	
 	private var _sortFilter: ItemSorter;
 	
 	private var _platform: Number;
 	
 	private var _currCategoryIndex: Number;
-	
-	private var _columnSelectButton: Button;
-	
-	private var _columnSelectDialog: MovieClip;
+	private var _savedSelectionIndex: Number = -1;
 
 	private var _searchKey: Number;
 	private var _tabToggleKey: Number;
-	private var _allString: String;
-	
-	private var _savedSelectionIndex: Number = -1;
 
 
   /* PROPERTIES */
 
-	private var _itemList: TabularList;
-	
-	function get itemList(): TabularList
-	{
-		return _itemList;
-	}
-	
-	private var _categoryList: CategoryList;
-	
-	function get categoryList(): CategoryList
-	{
-		return _categoryList;
-	}
-	
-	private var _tabBar: TabBar;
-	
-	function get tabBar(): TabBar
-	{
-		return _tabBar;
-	}
+	public var itemList: TabularList;
+	public var categoryList: CategoryList;
+	public var tabBar: TabBar;
+	public var searchWidget: SearchWidget;
+	public var categoryLabel: MovieClip;
+	public var columnSelectButton: Button;
+	public var columnSelectDialog: MovieClip;
 	
 	private var _currentState: Number;
 	
@@ -99,7 +74,7 @@ class InventoryLists extends MovieClip
 	public function set currentState(a_newState: Number)
 	{
 		if (a_newState == SHOW_PANEL)
-			FocusHandler.instance.setFocus(_itemList,0);
+			FocusHandler.instance.setFocus(itemList,0);
 
 		_currentState = a_newState;
 	}
@@ -107,7 +82,7 @@ class InventoryLists extends MovieClip
 
   /* CONSTRUCTORS */
 
-	function InventoryLists()
+	public function InventoryLists()
 	{
 		super();
 
@@ -127,12 +102,12 @@ class InventoryLists extends MovieClip
 		_searchKey = undefined;
 		_tabToggleKey = undefined;
 		
-		_categoryList = panelContainer.categoryList;
-		_categoryLabel = panelContainer.categoryLabel;
-		_itemList = panelContainer.itemList;
-		_searchWidget = panelContainer.searchWidget;
-		_tabBar = panelContainer.tabBar;
-		_columnSelectButton = panelContainer.columnSelectButton;
+		categoryList = panelContainer.categoryList;
+		categoryLabel = panelContainer.categoryLabel;
+		itemList = panelContainer.itemList;
+		searchWidget = panelContainer.searchWidget;
+		tabBar = panelContainer.tabBar;
+		columnSelectButton = panelContainer.columnSelectButton;
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
@@ -154,75 +129,68 @@ class InventoryLists extends MovieClip
 
 	// Apparently it's not safe to use stage elements in the constructor (as it doesn't work).
 	// That's why they are initialized in onLoad.
-	public function onLoad()
+	public function onLoad(): Void
 	{
-		_categoryList.listEnumeration = new BasicEnumeration(_categoryList.entryList);
-		_categoryList.entryFormatter = new AlphaEntryFormatter(_categoryList);
+		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
+		categoryList.entryFormatter = new AlphaEntryFormatter(categoryList);
 
-		var listEnumeration = new FilteredEnumeration(_itemList.entryList);
+		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
 		listEnumeration.addFilter(_nameFilter);
 		listEnumeration.addFilter(_sortFilter);
-		_itemList.listEnumeration = listEnumeration;
+		itemList.listEnumeration = listEnumeration;
 		// entry formatter and data fetcher are initialized by the top-level menu since they differ in each case
 
-		_typeFilter.addEventListener("filterChange", _itemList, "onFilterChange");
-		_nameFilter.addEventListener("filterChange", _itemList, "onFilterChange");
-		_sortFilter.addEventListener("filterChange", _itemList, "onFilterChange");
+		_typeFilter.addEventListener("filterChange", itemList, "onFilterChange");
+		_nameFilter.addEventListener("filterChange", itemList, "onFilterChange");
+		_sortFilter.addEventListener("filterChange", itemList, "onFilterChange");
 
-		_categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
-		_categoryList.addEventListener("listPress", this, "onCategoriesListPress");
-		_categoryList.addEventListener("listMovedUp", this, "onCategoriesListMoveUp");
-		_categoryList.addEventListener("listMovedDown", this, "onCategoriesListMoveDown");
-		_categoryList.addEventListener("selectionChange", this, "onCategoriesListMouseSelectionChange");
+		categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
+		categoryList.addEventListener("listMovedUp", this, "onCategoriesListMoveUp");
+		categoryList.addEventListener("listMovedDown", this, "onCategoriesListMoveDown");
+		categoryList.addEventListener("selectionChange", this, "onCategoriesListMouseSelectionChange");
 
-//		_itemList.disableInput = false;
+		itemList.disableInput = false;
 
-		_itemList.addEventListener("listMovedUp", this, "onItemsListMoveUp");
-		_itemList.addEventListener("listMovedDown", this, "onItemsListMoveDown");
-		_itemList.addEventListener("selectionChange", this, "onItemsListMouseSelectionChange");
-		_itemList.addEventListener("sortChange", this, "onSortChange");
+		itemList.addEventListener("listMovedUp", this, "onItemsListMoveUp");
+		itemList.addEventListener("listMovedDown", this, "onItemsListMoveDown");
+		itemList.addEventListener("selectionChange", this, "onItemsListMouseSelectionChange");
+		itemList.addEventListener("sortChange", this, "onSortChange");
 
-		_searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
-		_searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
-		_searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
+		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
+		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
+		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
-		_columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
+		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 		
-		if (_tabBar != undefined)
-			_tabBar.addEventListener("tabPress", this, "onTabPress");
+		if (tabBar != undefined)
+			tabBar.addEventListener("tabPress", this, "onTabPress");
 	}
 	
 	public function onColumnSelectButtonPress(event: Object): Void
 	{
-		if (_columnSelectDialog) {
+		if (columnSelectDialog) {
 			DialogManager.closeDialog();
 		} else {			
-			_savedSelectionIndex = _itemList.selectedIndex;
-			_itemList.selectedIndex = -1;
+			_savedSelectionIndex = itemList.selectedIndex;
+			itemList.selectedIndex = -1;
 		
-			_categoryList.disableSelection = true;
-			_categoryList.disableInput = true;
-			_itemList.disableSelection = true;
-			_itemList.disableInput = true;
-			_searchWidget.disabled = true;
+			categoryList.disableSelection = categoryList.disableInput = true;
+			itemList.disableSelection = itemList.disableInput = true;
+			searchWidget.disabled = true;
 			
-			_columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: _itemList.layout});
-			_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
+			columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
+			columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 		}
-		
-//		ConfigManager.setOverride("ListLayout", "columns.valueWeightColumn.hidden", false);
 	}
 	
 	public function onColumnSelectDialogClosed(event: Object): Void
 	{
-		_categoryList.disableSelection = false;
-		_categoryList.disableInput = false;
-		_itemList.disableSelection = false;
-		_itemList.disableInput = false;
-		_searchWidget.disabled = false;
+		categoryList.disableSelection = categoryList.disableInput = false;
+		itemList.disableSelection = itemList.disableInput = false;
+		searchWidget.disabled = false;
 		
-		_itemList.selectedIndex = _savedSelectionIndex;
+		itemList.selectedIndex = _savedSelectionIndex;
 	}
 
 	public function onConfigLoad(event: Object): Void
@@ -236,8 +204,8 @@ class InventoryLists extends MovieClip
 	{
 		_platform = a_platform;
 
-		_categoryList.platform = a_platform;
-		_itemList.platform = a_platform;
+		categoryList.platform = a_platform;
+		itemList.platform = a_platform;
 	}
 
 	// @GFx
@@ -252,18 +220,18 @@ class InventoryLists extends MovieClip
 				// Search hotkey (default space)
 				if (details.code == _searchKey) {
 					bCaught = true;
-					_searchWidget.startInput();
+					searchWidget.startInput();
 					
 				// Toggle tab (default ALT)
-				} else if (_tabBar != undefined && (details.code == _tabToggleKey || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8))) {
+				} else if (tabBar != undefined && (details.code == _tabToggleKey || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8))) {
 					
 					bCaught = true;
-					_tabBar.tabToggle();
+					tabBar.tabToggle();
 				}
 			}
 			
 			if (!bCaught)
-				bCaught = _categoryList.handleInput(details, pathToFocus);
+				bCaught = categoryList.handleInput(details, pathToFocus);
 			
 			if (!bCaught)
 				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
@@ -277,124 +245,107 @@ class InventoryLists extends MovieClip
 		return [lb._x, lb._y, lb._width, lb._height];
 	}
 
-	public function restoreCategoryIndex()
+	public function restoreCategoryIndex(): Void
 	{
-		_categoryList.selectedIndex = _currCategoryIndex;
+		categoryList.selectedIndex = _currCategoryIndex;
 	}
 
-	public function showCategoriesList(a_bPlayBladeSound: Boolean)
+	public function showCategoriesList(a_bPlayBladeSound: Boolean): Void
 	{
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
-		dispatchEvent({type:"categoryChange", index:_categoryList.selectedIndex});
+		dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
 
 		if (a_bPlayBladeSound != false)
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 	}
 
-	public function hideCategoriesList()
+	public function hideCategoriesList(): Void
 	{
 		_currentState = TRANSITIONING_TO_HIDE_PANEL;
 		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 	
-	public function showItemsList()
+	public function showItemsList(): Void
 	{
-		_currCategoryIndex = _categoryList.selectedIndex;
+		_currCategoryIndex = categoryList.selectedIndex;
 		
-		_categoryLabel.textField.SetText(_categoryList.selectedEntry.text);
+		categoryLabel.textField.SetText(categoryList.selectedEntry.text);
 
 		// Start with no selection
-		_itemList.selectedIndex = -1;
-		_itemList.scrollPosition = 0;
+		itemList.selectedIndex = -1;
+		itemList.scrollPosition = 0;
 
-		if (_categoryList.selectedEntry != undefined) {
+		if (categoryList.selectedEntry != undefined) {
 			// Set filter type
-			_typeFilter.changeFilterFlag(_categoryList.selectedEntry.flag);
-			_itemList.layout.changeFilterFlag(_categoryList.selectedEntry.flag);
+			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
+			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
 		} else {
-			_itemList.UpdateList();
+			itemList.UpdateList();
 		}
 		
-		dispatchEvent({type:"itemHighlightChange", index:_itemList.selectedIndex});
+		dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 
-		_itemList.disableInput = false;
-	}
-
-	// Not needed anymore, items list always visible
-	function hideItemsList(): Void
-	{
-		/*
-		_currentState = TRANSITIONING_TO_ONE_PANEL;
-		dispatchEvent({type:"hideItemsList", index:_itemList.selectedIndex});
-		_itemList.selectedIndex = -1;
-		gotoAndPlay("Panel2Hide");
-		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-		_itemList.disableInput = true;
-		*/
+		itemList.disableInput = false;
 	}
 
 	public function onCategoriesItemPress(): Void
 	{
 		showItemsList();
 	}
-
-	public function onCategoriesListPress(): Void
-	{
-	}
 	
 	public function onTabPress(event: Object): Void
 	{
-		if (_categoryList.disableSelection || _categoryList.disableInput || _itemList.disableSelection || _itemList.disableInput)
+		if (categoryList.disableSelection || categoryList.disableInput || itemList.disableSelection || itemList.disableInput)
 			return;
 		
 		if (event.index == TabBar.LEFT_TAB) {
-			_tabBar.activeTab = TabBar.LEFT_TAB;
-			_categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
+			tabBar.activeTab = TabBar.LEFT_TAB;
+			categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
 		} else if (event.index == TabBar.RIGHT_TAB) {
-			_tabBar.activeTab = TabBar.RIGHT_TAB;
-			_categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
+			tabBar.activeTab = TabBar.RIGHT_TAB;
+			categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
 		}
 		
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		showItemsList();
 	}
 
-	public function onCategoriesListMoveUp(event: Object)
+	public function onCategoriesListMoveUp(event: Object): Void
 	{
 		doCategorySelectionChange(event);
 	}
 
-	public function onCategoriesListMoveDown(event: Object)
+	public function onCategoriesListMoveDown(event: Object): Void
 	{
 		doCategorySelectionChange(event);
 	}
 
-	public function onCategoriesListMouseSelectionChange(event: Object)
+	public function onCategoriesListMouseSelectionChange(event: Object): Void
 	{
 		if (event.keyboardOrMouse == 0)
 			doCategorySelectionChange(event);
 	}
 
-	public function onItemsListMoveUp(event: Object)
+	public function onItemsListMoveUp(event: Object): Void
 	{
-		this.doItemsSelectionChange(event);
+		doItemsSelectionChange(event);
 	}
 
-	public function onItemsListMoveDown(event: Object)
+	public function onItemsListMoveDown(event: Object): Void
 	{
-		this.doItemsSelectionChange(event);
+		doItemsSelectionChange(event);
 	}
 
-	public function onItemsListMouseSelectionChange(event: Object)
+	public function onItemsListMouseSelectionChange(event: Object): Void
 	{
 		if (event.keyboardOrMouse == 0)
 			doItemsSelectionChange(event);
 	}
 
-	public function doCategorySelectionChange(event: Object)
+	public function doCategorySelectionChange(event: Object): Void
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
@@ -402,7 +353,7 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	public function doItemsSelectionChange(event: Object)
+	public function doItemsSelectionChange(event: Object): Void
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
 
@@ -410,15 +361,15 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	public function onSortChange(event: Object)
+	public function onSortChange(event: Object): Void
 	{
 		_sortFilter.setSortBy(event.attributes, event.options);
 	}
 
-	public function onSearchInputStart(event: Object)
+	public function onSearchInputStart(event: Object): Void
 	{
-		_categoryList.disableSelection = _categoryList.disableInput = true;
-		_itemList.disableSelection = _itemList.disableInput = true
+		categoryList.disableSelection = categoryList.disableInput = true;
+		itemList.disableSelection = itemList.disableInput = true
 		_nameFilter.filterText = "";
 	}
 
@@ -429,12 +380,13 @@ class InventoryLists extends MovieClip
 
 	public function onSearchInputEnd(event: Object)
 	{
-		_categoryList.disableSelection = _categoryList.disableInput = false;
-		_itemList.disableSelection = _itemList.disableInput = false;
+		categoryList.disableSelection = categoryList.disableInput = false;
+		itemList.disableSelection = itemList.disableInput = false;
 		_nameFilter.filterText = event.data;
 	}
 
-	// API - Called to initially set the category list
+	// Called to initially set the category list.
+	// @API 
 	function setCategoriesList()
 	{
 		var textOffset = 0;
@@ -442,67 +394,63 @@ class InventoryLists extends MovieClip
 		var bDontHideOffset = 2;
 		var len = 3;
 
-		_categoryList.clearList();
+		categoryList.clearList();
 
 		for (var i = 0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
-			_categoryList.entryList.push(entry);
+			categoryList.entryList.push(entry);
 
-			if (entry.flag == 0) {
-				_categoryList.dividerIndex = index;
-			}
+			if (entry.flag == 0)
+				categoryList.dividerIndex = index;
 		}
 		
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
-		if (_tabBar != undefined) {
-			if (_categoryList.dividerIndex != -1) {
-				_tabBar.setLabelText(_categoryList.entryList[0].text, _categoryList.entryList[_categoryList.dividerIndex + 1].text);
-				_categoryList.entryList[0].text = _categoryList.entryList[_categoryList.dividerIndex + 1].text = Translator.translate("$ALL");
+		if (tabBar != undefined) {
+			if (categoryList.dividerIndex != -1) {
+				tabBar.setLabelText(categoryList.entryList[0].text, categoryList.entryList[categoryList.dividerIndex + 1].text);
+				categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = Translator.translate("$ALL");
 			}
 			
 			// Restore 0 as default index for tabbed lists
-			_categoryList.selectedIndex = 0;
+			categoryList.selectedIndex = 0;
 		}
 
-		_categoryList.InvalidateData();
+		categoryList.InvalidateData();
 	}
 
-	// API - Called whenever the underlying entryList data is updated (using an item, equipping etc.)
+	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
+	// @API
 	function invalidateListData()
 	{
-		var flag = _categoryList.selectedEntry.flag;
+		var flag = categoryList.selectedEntry.flag;
 
-		for (var i = 0; i < _categoryList.entryList.length; i++) {
-			_categoryList.entryList[i].filterFlag = _categoryList.entryList[i].bDontHide ? 1 : 0;
-		}
+		for (var i = 0; i < categoryList.entryList.length; i++)
+			categoryList.entryList[i].filterFlag = categoryList.entryList[i].bDontHide ? 1 : 0;
 
 		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
-		_itemList.InvalidateData();
-		for (var i = 0; i < _itemList.entryList.length; i++) {
-			for (var j = 0; j < _categoryList.entryList.length; ++j) {
-				if (_categoryList.entryList[j].filterFlag != 0) {
+		itemList.InvalidateData();
+		for (var i = 0; i < itemList.entryList.length; i++) {
+			for (var j = 0; j < categoryList.entryList.length; ++j) {
+				if (categoryList.entryList[j].filterFlag != 0)
 					continue;
-				}
 
-				if (_itemList.entryList[i].filterFlag & _categoryList.entryList[j].flag) {
-					_categoryList.entryList[j].filterFlag = 1;
-				}
+				if (itemList.entryList[i].filterFlag & categoryList.entryList[j].flag)
+					categoryList.entryList[j].filterFlag = 1;
 			}
 		}
 
-		_categoryList.UpdateList();
+		categoryList.UpdateList();
 
-		if (flag != _categoryList.selectedEntry.flag) {
+		if (flag != categoryList.selectedEntry.flag) {
 			// Triggers an update if filter flag changed
-			_typeFilter.itemFilter = _categoryList.selectedEntry.flag;
-			dispatchEvent({type:"categoryChange", index:_categoryList.selectedIndex});
+			_typeFilter.itemFilter = categoryList.selectedEntry.flag;
+			dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
 		}
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
-		if (_itemList.selectedIndex == -1) {
+		if (itemList.selectedIndex == -1)
 			dispatchEvent({type:"showItemsList", index: -1});
-		} else {
-			dispatchEvent({type:"itemHighlightChange", index:_itemList.selectedIndex});
-		}
+		else
+			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 	}
 }
