@@ -43,7 +43,7 @@ defaults.entryWidth = 530
 
 ; Default text format defaults -------------------------------------------------------
 defaults.entry.textFormat.font = '$EverywhereMediumFont'
-defaults.entry.textFormat.align = left
+defaults.entry.textFormat.align = right
 defaults.entry.textFormat.bold = false
 defaults.entry.textFormat.italic = false
 defaults.entry.textFormat.underline = false
@@ -56,7 +56,7 @@ defaults.entry.textFormat.indent = 0
 defaults.entry.textFormat.leading = 0
 
 defaults.label.textFormat.font = '$EverywhereMediumFont'
-defaults.label.textFormat.align = left
+defaults.label.textFormat.align = right
 defaults.label.textFormat.bold = false
 defaults.label.textFormat.italic = false
 defaults.label.textFormat.underline = false
@@ -72,16 +72,18 @@ defaults.label.textFormat.leading = 0
 ; ICONS -------------------------------------------------------
 columns.equipColumn.type = EQUIP_ICON
 columns.equipColumn.passive = true
+columns.equipColumn.states = 1
 columns.equipColumn.indent = -28
 columns.equipColumn.icon.size = 18
-columns.equipColumn.label.text = ' '
 columns.equipColumn.border = <0, 10, 3, 3> ; left right top bottom
+columns.equipColumn.state1.label.text = ' '
 
 columns.iconColumn.type = ITEM_ICON
 columns.iconColumn.passive = true
+columns.equipColumn.states = 1
 columns.iconColumn.icon.size = 18
-columns.iconColumn.label.text = ' '
 columns.iconColumn.border = <0, 3, 3, 3> ; left right top bottom
+columns.iconColumn.state1.label.text = ' '
 
 
 ; ITEM NAME COLUMN -------------------------------------------------------
@@ -90,6 +92,7 @@ columns.itemNameColumn.name = '$NAME'
 columns.itemNameColumn.states = 4
 columns.itemNameColumn.weight = 1.0
 columns.itemNameColumn.border = <0, 0, 1.1, 0> ; left right top bottom
+columns.itemNameColumn.label.textFormat.align = left
 
 columns.itemNameColumn.state1.label.text = '$NAME'
 columns.itemNameColumn.state1.entry.text = @text
@@ -174,7 +177,8 @@ columns.weightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | C
 columns.valueColumn.type = TEXT
 columns.valueColumn.name = '$VALUE'
 columns.valueColumn.states = 2
-columns.valueColumn.width = 0.085
+;columns.valueColumn.width = 0.085
+columns.valueColumn.width = 0.16
 columns.valueColumn.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.valueColumn.state1.label.text = '$VALUE'
