@@ -218,6 +218,7 @@ columns.magicNameColumn.type = NAME
 columns.magicNameColumn.states = 3
 columns.magicNameColumn.weight = 1.0
 columns.magicNameColumn.border = <0, 0, 1.1, 0> ; left right top bottom
+columns.magicNameColumn.label.textFormat.align = left
 
 columns.magicNameColumn.state1.label.text = '$NAME'
 columns.magicNameColumn.state1.entry.text = @text
@@ -237,6 +238,7 @@ columns.magicNameColumn.state3.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING
 ; SPELL COST COLUMN -------------------------------------------
 columns.spellCostColumn.type = TEXT
 columns.spellCostColumn.states = 2
+columns.spellCostColumn.width = 0.21
 columns.spellCostColumn.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.spellCostColumn.state1.label.text = '$SPELL COST'
@@ -255,6 +257,8 @@ columns.spellCostColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING
 ; WORD 1 COLUMN -------------------------------------------
 columns.word1Column.type = TEXT
 columns.word1Column.states = 2
+columns.word1Column.width = 0.2
+columns.word1Column.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.word1Column.state1.label.text = '$FIRST WORD'
 columns.word1Column.state1.label.arrowDown = true
@@ -272,6 +276,8 @@ columns.word1Column.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | N
 ; WORD 2 COLUMN -------------------------------------------
 columns.word2Column.type = TEXT
 columns.word2Column.states = 2
+columns.word2Column.width = 0.2
+columns.word2Column.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.word2Column.state1.label.text = '$SECOND WORD'
 columns.word2Column.state1.label.arrowDown = true
@@ -289,6 +295,8 @@ columns.word2Column.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | N
 ; WORD 3 COLUMN -------------------------------------------
 columns.word3Column.type = TEXT
 columns.word3Column.states = 2
+columns.word3Column.width = 0.2
+columns.word3Column.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.word3Column.state1.label.text = '$THIRD WORD'
 columns.word3Column.state1.label.arrowDown = true
@@ -306,6 +314,8 @@ columns.word3Column.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | N
 ; SCHOOL COLUMN -------------------------------------------
 columns.schoolColumn.type = TEXT
 columns.schoolColumn.states = 2
+columns.schoolColumn.width = 0.21
+columns.schoolColumn.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.schoolColumn.state1.label.text = '$SCHOOL'
 columns.schoolColumn.state1.label.arrowDown = false
@@ -323,6 +333,8 @@ columns.schoolColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING |
 ; LEVEL COLUMN -------------------------------------------
 columns.levelColumn.type = TEXT
 columns.levelColumn.states = 2
+columns.levelColumn.width = 0.21
+columns.levelColumn.border = <0, 0, 1.1, 0> ; left right top bottom
 
 columns.levelColumn.state1.label.text = '$SKILL LEVEL'
 columns.levelColumn.state1.label.arrowDown = false
@@ -340,6 +352,7 @@ columns.levelColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | 
 ; TIME REMAINING COLUMN -------------------------------------------
 columns.timeRemainingColumn.type = TEXT
 columns.timeRemainingColumn.states = 2
+columns.timeRemainingColumn.width = 0.333
 columns.timeRemainingColumn.label.textFormat.align = center
 columns.timeRemainingColumn.entry.textFormat.align = center
 
@@ -359,6 +372,7 @@ columns.timeRemainingColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCE
 ; EFFECT ITEM COLUMN -------------------------------------------
 columns.effectItemColumn.type = TEXT
 columns.effectItemColumn.states = 2
+columns.effectItemColumn.width = 0.333
 columns.effectItemColumn.label.textFormat.align = right
 columns.effectItemColumn.entry.textFormat.align = right
 
