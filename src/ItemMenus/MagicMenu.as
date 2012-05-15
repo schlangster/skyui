@@ -2,26 +2,29 @@
 import gfx.io.GameDelegate;
 import gfx.ui.NavigationCode;
 
-import skyui.MagicColumnFormatter;
-import skyui.MagicDataFetcher;
+import skyui.components.list.ListLayoutManager;
+import skyui.components.list.TabularList;
 
 
 class MagicMenu extends ItemMenu
 {
-	private var _hideButtonFlag:Number;
-	private var _bMenuClosing:Boolean;
+  /* PRIVATE VARIABLES */
+  
+	private var _hideButtonFlag: Number;
+	private var _bMenuClosing: Boolean;
 
-	var MagicButtonArt:Object;
-	var CategoryListIconArt:Array;
+	private var _magicButtonArt: Object;
+	private var _categoryListIconArt: Array;
+	
+	
+  /* PROPERTIES */
+  
+	public var hideButtonFlag: Number;
+	
 
-	var ColumnFormatter:MagicColumnFormatter;
-	var DataFetcher:MagicDataFetcher;
+  /* CONSTRUCTORS */
 
-	// ?
-	var bPCControlsReady = true;
-
-
-	function MagicMenu()
+	public function MagicMenu()
 	{
 		super();
 		_bMenuClosing = false;
@@ -34,159 +37,157 @@ class MagicMenu extends ItemMenu
 		_3DIconWideZSettingStr = "fMagic3DItemPosZWide:Interface";
 		_3DIconWideScaleSettingStr = "fMagic3DItemPosScaleWide:Interface";
 		
-		MagicButtonArt = [{PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"},
+		_magicButtonArt = [{PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"},
 						  {PCArt:"F",XBoxArt:"360_Y", PS3Art:"PS3_Y"},
 						  {PCArt:"R",XBoxArt:"360_X", PS3Art:"PS3_X"},
 						  {PCArt:"Tab",XBoxArt:"360_B", PS3Art:"PS3_B"}];
 		
-		CategoryListIconArt = ["cat_favorites", "mag_all", "mag_alteration", "mag_illusion",
+		_categoryListIconArt = ["cat_favorites", "mag_all", "mag_alteration", "mag_illusion",
 							   "mag_destruction", "mag_conjuration", "mag_restoration", "mag_shouts",
 							   "mag_powers", "mag_activeeffects"];
+	}
+	
+	
+  /* PUBLIC FUNCTIONS */
+
+	public function initExtensions(): Void
+	{
+		super.initExtensions();
 		
-		ColumnFormatter = new MagicColumnFormatter();
-		ColumnFormatter.maxTextLength = 80;
+		GameDelegate.addCallBack("DragonSoulSpent", this, "dragonSoulSpent");
+		GameDelegate.addCallBack("AttemptEquip", this , "attemptEquip");
 		
-		DataFetcher = new MagicDataFetcher();
+		bottomBar.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
+		
+		bottomBar.SetButtonsArt(_magicButtonArt);
+		
+		// Initialize menu-specific list components
+		var categoryList: CategoryList = inventoryLists.categoryList;
+		categoryList.iconArt = _categoryListIconArt;
+		
+		var itemList: TabularList = inventoryLists.itemList;		
+		var entryFormatter = new MagicEntryFormatter(itemList);
+		entryFormatter.maxTextLength = 80;
+		itemList.entryFormatter = entryFormatter;
+		itemList.dataFetcher = new MagicDataFetcher(itemList);
+		itemList.layout = ListLayoutManager.instance.getLayoutByName("MagicListLayout");
 	}
 
-	function InitExtensions()
+	// @GFx
+	public function handleInput(details, pathToFocus): Boolean
 	{
-		super.InitExtensions();
-		
-		GameDelegate.addCallBack("DragonSoulSpent", this, "DragonSoulSpent");
-		GameDelegate.addCallBack("AttemptEquip", this , "AttemptEquip");
-		
-		BottomBar_mc.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
-		
-		BottomBar_mc.SetButtonsArt(MagicButtonArt);
-		
-		InventoryLists_mc.CategoriesList.setIconArt(CategoryListIconArt);
-		
-		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
-		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
-		InventoryLists_mc.ItemsList.setConfigSection("MagicList");
-	}
-
-	function handleInput(details,pathToFocus)
-	{
-		if (bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
+		if (_bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
 			if (Shared.GlobalFunc.IsKeyPressed(details)) {
-				if (InventoryLists_mc.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.RIGHT) {
-					StartMenuFade();
+				if (inventoryLists.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.RIGHT) {
+					startMenuFade();
 					GameDelegate.call("ShowTweenMenu",[]);
 				} else if (details.navEquivalent == NavigationCode.TAB) {
-					StartMenuFade();
+					startMenuFade();
 					GameDelegate.call("CloseTweenMenu",[]);
-				} else if (!InventoryLists_mc.ItemsList.disableInput)  {
-					if (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8 && _platform != 0) {
+				} else if (!inventoryLists.itemList.disableInput)  {
+					if (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8 && _platform != 0)
 						openInventoryMenu();
-					}
 				}
 			}
 		}
 		return true;
 	}
-	
-	// currently only used for controller users when pressing the BACK button
-	function openInventoryMenu()
-	{
-			SaveIndices();
-			GameDelegate.call("CloseMenu",[]);
-			GameDelegate.call("CloseTweenMenu",[]);
-			_global.skse.OpenMenu("Inventory Menu");
-	}
 
-	function onExitMenuRectClick()
+	// @override ItemMenu
+	public function onExitMenuRectClick(): Void
 	{
-		StartMenuFade();
+		startMenuFade();
 		GameDelegate.call("ShowTweenMenu",[]);
 	}
 
-	function StartMenuFade()
+	public function onFadeCompletion(): Void
 	{
-		InventoryLists_mc.HideCategoriesList();
-		ToggleMenuFade();
-		SaveIndices();
-		_bMenuClosing = true;
-	}
-
-	function onFadeCompletion()
-	{
-		if (_bMenuClosing) {
+		if (_bMenuClosing)
 			GameDelegate.call("CloseMenu",[]);
-		}
 	}
 
-	function onShowItemsList(event)
+	// @override ItemMenu
+	public function onShowItemsList(event: Object): Void
 	{
 		super.onShowItemsList(event);
 		
-		if (event.index != -1) {
-			UpdateButtonText();
-		}
+		if (event.index != -1)
+			updateButtonText();
 	}
 
-	function onItemHighlightChange(event)
+	// @override ItemMenu
+	public function onItemHighlightChange(event: Object)
 	{
 		super.onItemHighlightChange(event);
 		
-		if (event.index != -1) {
-			UpdateButtonText();
-		}
+		if (event.index != -1)
+			updateButtonText();
 	}
 
-	function DragonSoulSpent()
+	// @API
+	public function dragonSoulSpent(): Void
 	{
-		ItemCard_mc.itemInfo.soulSpent = true;
-		UpdateButtonText();
+		itemCard.itemInfo.soulSpent = true;
+		updateButtonText();
 	}
 
-	function get hideButtonFlag()
-	{
-		return _hideButtonFlag;
-	}
 
-	function set hideButtonFlag(a_hideFlag)
-	{
-		_hideButtonFlag = a_hideFlag;
-	}
-
-	function UpdateButtonText()
-	{
-		if (InventoryLists_mc.ItemsList.selectedEntry != undefined) {
-			var favStr = (InventoryLists_mc.ItemsList.selectedEntry.filterFlag & InventoryLists_mc.CategoriesList.entryList[0].flag) != 0 ? "$Unfavorite" : "$Favorite";
-			var unlockStr = ItemCard_mc.itemInfo.showUnlocked ? "$Unlock":"";
-			
-			if ((InventoryLists_mc.ItemsList.selectedEntry.filterFlag & _hideButtonFlag) != 0) {
-				BottomBar_mc.HideButtons();
-			} else {
-				BottomBar_mc.SetButtonsText("$Equip", favStr, unlockStr);
-			}
-		}
-	}
-
-	function onHideItemsList(event)
+	// @override ItemMenu
+	public function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
 		
-		BottomBar_mc.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
+		bottomBar.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
 	}
-
-	function AttemptEquip(aiSlot)
+	
+	// @API
+	public function AttemptEquip(a_slot: Number): Void
 	{
-		if (ShouldProcessItemsListInput(true) && ConfirmSelectedEntry()) {
-			GameDelegate.call("ItemSelect",[aiSlot]);
-		}
+		if (shouldProcessItemsListInput(true) && confirmSelectedEntry())
+			GameDelegate.call("ItemSelect",[a_slot]);
 	}
 
-	function onItemSelect(event)
+	// @override ItemMenu
+	public function onItemSelect(event: Object): Void
 	{
 		if (event.entry.enabled) {
-			if (event.keyboardOrMouse != 0) {
+			if (event.keyboardOrMouse != 0)
 				GameDelegate.call("ItemSelect",[]);
-			}
 			return;
 		}
 		GameDelegate.call("ShowShoutFail",[]);
+	}
+	
+	// currently only used for controller users when pressing the BACK button
+	private function openInventoryMenu(): Void
+	{
+		saveIndices();
+		GameDelegate.call("CloseMenu",[]);
+		GameDelegate.call("CloseTweenMenu",[]);
+		skse.OpenMenu("Inventory Menu");
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function updateButtonText(): Void
+	{
+		if (inventoryLists.itemList.selectedEntry != undefined) {
+			var favStr = (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag) != 0 ? "$Unfavorite" : "$Favorite";
+			var unlockStr = itemCard.itemInfo.showUnlocked ? "$Unlock":"";
+			
+			if ((inventoryLists.itemList.selectedEntry.filterFlag & _hideButtonFlag) != 0)
+				bottomBar.HideButtons();
+			else
+				bottomBar.SetButtonsText("$Equip", favStr, unlockStr);
+		}
+	}
+	
+	private function startMenuFade(): Void
+	{
+		inventoryLists.hideCategoriesList();
+		toggleMenuFade();
+		saveIndices();
+		_bMenuClosing = true;
 	}
 }

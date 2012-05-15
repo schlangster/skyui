@@ -1,6 +1,5 @@
 ﻿import skyui.components.list.TabularEntryFormatter;
 import skyui.components.list.TabularList;
-import skyui.components.list.ListLayout;
 import skyui.util.Defines;
 import skyui.util.ConfigManager;
 
@@ -65,7 +64,7 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 	
   /* PUBLIC FUNCTIONS */
 	
-  	// @override skyui.LayoutEntryFormatter
+  	// @override TabularEntryFormatter
 	public function setSpecificEntryLayout(a_entryClip: MovieClip, a_entryObject: Object): Void
 	{
 		var iconY = _list.layout.entryHeight * 0.25;
@@ -115,7 +114,7 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		}
 	}
 
-  	// @override skyui.LayoutEntryFormatter
+  	// @override TabularEntryFormatter
 	public function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
@@ -125,7 +124,7 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		}
 	}
 
-  	// @override skyui.LayoutEntryFormatter
+  	// @override TabularEntryFormatter
 	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		var iconLabel: String;
@@ -201,7 +200,7 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		a_entryField.gotoAndStop(iconLabel);
 	}
 
-  	// @override skyui.LayoutEntryFormatter
+  	// @override TabularEntryFormatter
 	public function formatName(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		if (a_entryObject.text == undefined) {
@@ -281,7 +280,7 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		}
 	}
 	
-  	// @override skyui.LayoutEntryFormatter
+  	// @override TabularEntryFormatter
 	public function formatText(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		formatColor(a_entryField, a_entryObject);

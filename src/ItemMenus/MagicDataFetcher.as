@@ -1,6 +1,20 @@
-﻿class MagicDataFetcher implements skyui.IDataFetcher
+﻿import skyui.components.list.BasicList;
+
+
+class MagicDataFetcher extends ItemcardDataFetcher
 {
-	function processEntry(a_entryObject:Object, a_itemInfo:Object)
+  /* CONSTRUCTORS */
+  
+	public function MagicDataFetcher(a_list: BasicList)
+	{
+		super(a_list);
+	}
+
+
+  /* PUBLIC FUNCTIONS */
+	
+  	// @override ItemcardDataFetcher
+	function processEntry(a_entryObject: Object, a_itemInfo: Object)
 	{
 		switch (a_itemInfo.type) {
 			// Spell

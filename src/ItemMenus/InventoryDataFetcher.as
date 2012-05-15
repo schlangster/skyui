@@ -1,41 +1,19 @@
-﻿import gfx.io.GameDelegate;
-
-import skyui.components.list.BasicList;
-import skyui.components.list.IDataFetcher;
+﻿import skyui.components.list.BasicList;
 
 
-class InventoryDataFetcher implements IDataFetcher
+class InventoryDataFetcher extends ItemcardDataFetcher
 {	
+  /* CONSTRUCTORS */
+  
 	public function InventoryDataFetcher(a_list: BasicList)
 	{
-		// Hack to inject functions for itemcard info retrieval		
-		Object(a_list)._itemInfo = null;
-
-		Object(a_list).requestItemInfo = function(a_index: Number): Void
-		{
-			var oldIndex = this._selectedIndex;
-			this._selectedIndex = a_index;
-			GameDelegate.call("RequestItemCardInfo", [], this, "updateItemInfo");
-			this._selectedIndex = oldIndex;
-		};
-
-		Object(a_list).updateItemInfo = function(a_updateObj: Object): Void
-		{
-			this._itemInfo = a_updateObj;
-		};
+		super(a_list);
 	}
+
+
+  /* PUBLIC FUNCTIONS */
 	
-  	// @override skyui.IDataFetcher
-	public function processEntries(a_list: BasicList): Void
-	{
-		var entryList = a_list.entryList;
-		
-		for (var i = 0; i < entryList.length; i++) {
-			Object(a_list).requestItemInfo(i);
-			processEntry(entryList[i], a_list["_itemInfo"]);
-		}
-	}
-	
+  	// @override ItemcardDataFetcher
 	public function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
 		switch (a_itemInfo.type) {

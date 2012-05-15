@@ -19,9 +19,8 @@ class InventoryMenu extends ItemMenu
 	private var _itemCardListButtonArt: Array;
 	private var _categoryListIconArt: Array;
 
-	// ?
-	var bPCControlsReady = true;
 
+  /* CONSTRUCTORS */
 
 	public function InventoryMenu()
 	{
@@ -32,8 +31,7 @@ class InventoryMenu extends ItemMenu
 		_equipButtonArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"};
 		_altButtonArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
 		_chargeButtonArt = {PCArt:"T", XBoxArt:"360_RB", PS3Art:"PS3_RT"};
-		_itemCardListButtonArt = [{PCArt:"Enter", XBoxArt:"360_A", PS3Art:"PS3_A"},
-								 {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
+		_itemCardListButtonArt = [{PCArt:"Enter", XBoxArt:"360_A", PS3Art:"PS3_A"}, {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
 		
 		_prevButtonArt = undefined;
 		
@@ -46,6 +44,9 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("AttemptChargeItem", this, "attemptChargeItem");
 		GameDelegate.addCallBack("ItemRotating", this, "itemRotating");
 	}
+
+
+  /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
 	public function initExtensions(): Void
@@ -266,7 +267,6 @@ class InventoryMenu extends ItemMenu
 				bottomBar.SetButtonArt(_equipButtonArt, 0);
 				bottomBar.SetButtonText("$Equip", 0);
 		}
-
 
 		bottomBar.SetButtonText("$Drop", 1);
 		

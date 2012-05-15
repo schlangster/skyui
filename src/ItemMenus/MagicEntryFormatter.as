@@ -1,16 +1,22 @@
-﻿import skyui.IColumnFormatter;
-import skyui.InventoryColumnFormatter;
-import skyui.Defines;
+﻿import skyui.util.Defines;
+import skyui.components.list.TabularEntryFormatter;
+import skyui.components.list.TabularList;
 
 
-class MagicColumnFormatter extends InventoryColumnFormatter
+class MagicEntryFormatter extends InventoryEntryFormatter
 {
-	function MagicColumnFormatter()
+  /* CONSTRUCTORS */
+	
+	public function MagicEntryFormatter(a_list: TabularList)
 	{
-		super();
+		super(a_list);
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 
-	function formatItemIcon(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
+  	// @override InventoryEntryFormatter
+	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
 	{
 		var iconLabel:String;
 		
@@ -61,33 +67,5 @@ class MagicColumnFormatter extends InventoryColumnFormatter
 		//    the its parent (entryclip.iconLabel) as soon as it's done.
 		a_entryClip.iconLabel = iconLabel;
 		a_entryField.gotoAndStop(iconLabel);
-	}
-
-	function formatName(a_entryField:Object, a_entryObject:Object, a_entryClip:MovieClip)
-	{
-		if (a_entryObject.text != undefined) {
-
-			// Text
-			var text = a_entryObject.text;
-
-			if (text.length > _maxTextLength)
-				text = text.substr(0, _maxTextLength - 3) + "...";
-
-			a_entryField.autoSize = "left";
-			a_entryField.SetText(text);
-
-			formatColor(a_entryField, a_entryObject);
-
-			// Fav icon
-			if (a_entryObject.favorite == true) {
-				a_entryClip.favoriteIcon._x = a_entryField._x + a_entryField._width + 5;
-				a_entryClip.favoriteIcon.gotoAndStop("show");
-			} else {
-				a_entryClip.favoriteIcon.gotoAndStop("hide");
-			}
-
-		} else {
-			a_entryField.SetText(" ");
-		}
 	}
 }
