@@ -13,7 +13,7 @@ class skyui.filter.ItemSorter implements skyui.filter.IFilter
 
   /* CONSTRUCTORS */
 
-	public function ItemSortingFilter()
+	public function ItemSorter()
 	{
 		EventDispatcher.initialize(this);
 	}

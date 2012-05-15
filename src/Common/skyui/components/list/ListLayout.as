@@ -27,6 +27,9 @@ class skyui.components.list.ListLayout
 	
 	
   /* PRIVATE VARIABLES */
+  
+	private var _activeViewIndex: Number = -1;
+	private var _activeColumnState: Number = 1;
 		
 	private var _layoutData: Object;
 	private var _viewData: Object;
@@ -38,8 +41,10 @@ class skyui.components.list.ListLayout
 	// viewIndex, columnIndex, stateIndex
 	private var _prefData: Object;
 	
+	private var _stateData: Object;
+	
 	// 1 .. n
-	private var _activeColumnState: Number = 1;
+
 	
 	private var _defaultEntryTextFormat: TextFormat;
 	private var _defaultLabelTextFormat: TextFormat;
@@ -54,13 +59,7 @@ class skyui.components.list.ListLayout
 	
 	
   /* PROPERTIES */
-	
-	private var _activeViewIndex: Number = -1;
-	
-	public function get activeViewIndex(): Number
-	{
-		return _activeViewIndex;
-	}
+
 	
 	public function get currentView(): Object
 	{
@@ -121,7 +120,19 @@ class skyui.components.list.ListLayout
 		return _columnDescriptors;
 	}
 	
-
+	private var _sortOptions: Array;
+	
+	public function get sortOptions(): Array
+	{
+		return _sortOptions;
+	}
+	
+	private var _sortAttributes: Array;
+	
+	public function get sortAttributes(): Array
+	{
+		return _sortAttributes;
+	}
 	
 	
   /* CONSTRUCTORS */
@@ -165,6 +176,15 @@ class skyui.components.list.ListLayout
 	
 	
   /* PUBLIC FUNCTIONS */
+  
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	public function refresh(): Void
 	{
@@ -194,11 +214,12 @@ class skyui.components.list.ListLayout
 		
 		_lastViewIndex = _activeViewIndex;
 		
+		// Do this before restoring the pref state!
 		updateColumnList();
 		
 		// Restoring a previous state was not necessary or failed? Then use default
 		if (! restorePrefState()) {
-			_activeColumnIndex = _viewList[_activeViewIndex].columns.indexOf(_viewList[_activeViewIndex].primaryColumn);
+			_activeColumnIndex = currentView.columns.indexOf(currentView.primaryColumn);
 			if (_activeColumnIndex == undefined)
 				_activeColumnIndex = 0;
 				
@@ -207,15 +228,6 @@ class skyui.components.list.ListLayout
 
 		updateLayout();
 	}
-	
-	// @mixin by gfx.events.EventDispatcher
-	public var dispatchEvent: Function;
-	public var dispatchQueue: Function;
-	public var hasEventListener: Function;
-	public var addEventListener: Function;
-	public var removeEventListener: Function;
-	public var removeAllEventListeners: Function;
-	public var cleanUpEvents: Function;
 	
 	public function selectColumn(a_index: Number): Void
 	{
@@ -266,31 +278,23 @@ class skyui.components.list.ListLayout
 				continue;
 				
 			var columnLayoutData = new ColumnLayoutData();
-			_columnLayoutData[c++] = columnLayoutData;
-			
-			// Single-state
-			if (col.states == undefined || col.states < 2)
-				continue;
+			_columnLayoutData[c] = columnLayoutData;
 				
 			// Non-active columns always use state 1
-			var stateData;
-			if (i == _activeColumnIndex)
+			var stateData: Object;
+			if (c == _activeColumnIndex) {
 				stateData = col["state" + _activeColumnState];
-			else
+				updateSortParams(stateData);
+			} else {
 				stateData = col["state1"];
-
-			// Might have to create parents nodes first
-			if (col.label == undefined)
-				col.label = {};
+			}
 				
-			if (col.entry == undefined)
-				col.entry = {};
-
-			col.label.text = stateData.label.text;
-			col.label.arrowDown = stateData.label.arrowDown;
-			col.entry.text = stateData.entry.text;
-			col.sortAttributes = stateData.sortAttributes;
-			col.sortOptions = stateData.sortOptions;
+			columnLayoutData.type = col.type;
+			columnLayoutData.labelArrowDown = stateData.label.arrowDown ? true : false;
+			columnLayoutData.labelValue = stateData.label.text;
+			columnLayoutData.entryValue = stateData.entry.text;
+			
+			c++;
 		}
 		
 		// Subtract arrow tip width
@@ -322,10 +326,6 @@ class skyui.components.list.ListLayout
 			
 			// Height including borders for maxHeight
 			var curHeight = 0;
-			
-			columnLayoutData.type = col.type;
-			columnLayoutData.labelArrowDown = col.label.arrowDown;
-			columnLayoutData.labelValue = col.label.text;
 			
 			switch (col.type) {
 				// ITEM ICON + EQUIP ICON
@@ -365,9 +365,7 @@ class skyui.components.list.ListLayout
 					else
 						columnLayoutData.height = 0;
 					
-					columnLayoutData.entryValue = col.entry.text;
-					
-					if (col.entry.format != undefined) {
+					if (col.entry.textFormat != undefined) {
 						var customTextFormat = new TextFormat();
 
 						// First clone default format
@@ -375,16 +373,16 @@ class skyui.components.list.ListLayout
 							customTextFormat[prop] = _defaultEntryTextFormat[prop];
 						
 						// Then override if necessary
-						for (var prop in col.entry.format)
+						for (var prop in col.entry.textFormat)
 							if (customTextFormat.hasOwnProperty(prop))
-								customTextFormat[prop] = col.entry.format[prop];
+								customTextFormat[prop] = col.entry.textFormat[prop];
 						
 						columnLayoutData.textFormat = customTextFormat;
 					} else {
 						columnLayoutData.textFormat = _defaultEntryTextFormat;
 					}
 					
-					if (col.entry.format != undefined) {
+					if (col.label.textFormat != undefined) {
 						var customTextFormat = new TextFormat();
 
 						// First clone default format
@@ -392,9 +390,9 @@ class skyui.components.list.ListLayout
 							customTextFormat[prop] = _defaultLabelTextFormat[prop];
 					
 						// Then override if necessary
-						for (var prop in _columnList[i].label.format)
+						for (var prop in col.label.textFormat)
 							if (customTextFormat.hasOwnProperty(prop))
-								customTextFormat[prop] = col.label.format[prop];
+								customTextFormat[prop] = col.label.textFormat[prop];
 								
 						columnLayoutData.labelTextFormat = customTextFormat;
 					} else {
@@ -473,29 +471,32 @@ class skyui.components.list.ListLayout
 		
 		_entryHeight = maxHeight;
 		
-		updateSortParams();
-		
 		// sortChange might not always trigger an update, so we have to make sure the list is updated,
 		// even if that means we update it twice.
 		dispatchEvent({type: "layoutChange"});
 	}
 	
-	private function updateSortParams(): Void
+	private function updateSortParams(stateData: Object): Void
 	{
-		var columns = currentView.columns;
-		var sortAttributes = columns[_activeColumnIndex].sortAttributes;
-		var sortOptions = columns[_activeColumnIndex].sortOptions;
+		var sortAttributes = stateData.sortAttributes;
+		var sortOptions = stateData.sortOptions;
 		
-		if (sortOptions == undefined)
+		if (!sortOptions) {
+			_sortOptions = null;
+			_sortAttributes = null;
 			return;
+		}
 		
 		// No attribute(s) set? Try to use entry value
-		if (sortAttributes == undefined)
-			if (_columnLayoutData[_activeColumnIndex].entryValue.charAt(0) == "@")
-				sortAttributes = [ _columnLayoutData[_activeColumnIndex].entryValue.slice(1) ];
+		if (!sortAttributes)
+			if (stateData.entry.text.charAt(0) == "@")
+				sortAttributes = [ stateData.entry.text.slice(1) ];
 		
-		if (sortAttributes == undefined)
+		if (!sortAttributes) {
+			_sortOptions = null;
+			_sortAttributes = null;
 			return;
+		}
 		
 		// Wrap single attribute in array
 		if (! sortAttributes instanceof Array)
@@ -504,7 +505,8 @@ class skyui.components.list.ListLayout
 		if (! sortOptions instanceof Array)
 			sortOptions = [sortOptions];
 			
-		dispatchEvent({type:"sortChange", attributes: sortAttributes, options: sortOptions});
+		_sortOptions = sortOptions;
+		_sortAttributes = sortAttributes;
 	}
 	
 	private function restorePrefState(): Boolean

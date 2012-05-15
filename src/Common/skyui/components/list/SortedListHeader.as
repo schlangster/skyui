@@ -102,6 +102,7 @@ class skyui.components.list.SortedListHeader extends MovieClip
 	public function onLayoutChange(event): Void
 	{
 		clearColumns();
+		
 		var activeIndex = _layout.activeColumnIndex;
 			
 		for (var i = 0; i < _layout.columnCount; i++) {
