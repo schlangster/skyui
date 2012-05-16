@@ -44,7 +44,13 @@ class ItemMenu extends MovieClip
 	
   /* PROPERTIES */
 	
-	public var itemCard: MovieClip;	
+	public var itemCard: MovieClip;
+	
+	// @override ItemMenu
+	public var bEnableTabs: Boolean = false;
+	
+	// @Mysterious GFx
+	public var bPCControlsReady: Boolean = true;
 	
 	
   /* CONSTRUCTORS */
@@ -73,22 +79,26 @@ class ItemMenu extends MovieClip
   /* PUBLIC FUNCTIONS */
 
 	// @API
-	public function initExtensions(a_bPlayBladeSound): Void
+	public function InitExtensions(a_bPlayBladeSound): Void
 	{
 		skse.ExtendData(true);
 		skse.ForceContainerCategorization(true);
 		
+		if (bEnableTabs)
+			inventoryLists.enableTabBar();
 		
-		GameDelegate.addCallBack("UpdatePlayerInfo",this,"updatePlayerInfo");
-		GameDelegate.addCallBack("UpdateItemCardInfo",this,"updateItemCardInfo");
-		GameDelegate.addCallBack("ToggleMenuFade",this,"toggleMenuFade");
-		GameDelegate.addCallBack("RestoreIndices",this,"restoreIndices");
+		GameDelegate.addCallBack("UpdatePlayerInfo",this,"UpdatePlayerInfo");
+		GameDelegate.addCallBack("UpdateItemCardInfo",this,"UpdateItemCardInfo");
+		GameDelegate.addCallBack("ToggleMenuFade",this,"ToggleMenuFade");
+		GameDelegate.addCallBack("RestoreIndices",this,"RestoreIndices");
 		
 		inventoryLists.addEventListener("categoryChange",this,"onCategoryChange");
 		inventoryLists.addEventListener("itemHighlightChange",this,"onItemHighlightChange");
 		inventoryLists.addEventListener("showItemsList",this,"onShowItemsList");
 		inventoryLists.addEventListener("hideItemsList",this,"onHideItemsList");
-		inventoryLists.itemList.addEventListener("itemPress",this,"onItemSelect");
+		
+		inventoryLists.itemList.addEventListener("itemPress", this ,"onItemSelect");
+		
 		itemCard.addEventListener("quantitySelect",this,"onQuantityMenuSelect");
 		itemCard.addEventListener("subMenuAction",this,"onItemCardSubMenuAction");
 
@@ -134,13 +144,13 @@ class ItemMenu extends MovieClip
 		}
 	}
 	
-	public function onConfigLoad(event): Void
+	public function onConfigLoad(event: Object): Void
 	{
 		_config = event.config;
 	}
 
 	// @API
-	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
@@ -149,7 +159,7 @@ class ItemMenu extends MovieClip
 	}
 
 	// @API
-	public function getInventoryItemList(): MovieClip
+	public function GetInventoryItemList(): MovieClip
 	{
 		return inventoryLists.itemList;
 	}
@@ -169,7 +179,7 @@ class ItemMenu extends MovieClip
 		return true;
 	}
 
-	public function onMouseWheel(delta): Void
+	public function onMouseWheel(delta: Number): Void
 	{
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
 			if (e == mouseRotationRect && shouldProcessItemsListInput(false) || !_bFadedIn && delta == -1) {
@@ -200,7 +210,7 @@ class ItemMenu extends MovieClip
 			}
 			
 			GameDelegate.call("UpdateItem3D",[true]);
-			GameDelegate.call("RequestItemCardInfo",[],this,"updateItemCardInfo");
+			GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
 			
 		} else {
 			if (!_bFadedIn)
@@ -213,19 +223,19 @@ class ItemMenu extends MovieClip
 		}
 	}
 
-	function onShowItemsList(event: Object): Void
+	public function onShowItemsList(event: Object): Void
 	{
 		onItemHighlightChange(event);
 	}
 
-	function onHideItemsList(event: Object): Void
+	public function onHideItemsList(event: Object): Void
 	{
 		GameDelegate.call("UpdateItem3D",[false]);
 		itemCard.FadeOutCard();
 		bottomBar.HideButtons();
 	}
 
-	function onItemSelect(event: Object): Void
+	public function onItemSelect(event: Object): Void
 	{
 		if (event.entry.enabled) {
 			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
@@ -243,19 +253,19 @@ class ItemMenu extends MovieClip
 	}
 
 	// @API
-	public function updatePlayerInfo(aUpdateObj): Void
+	public function UpdatePlayerInfo(aUpdateObj: Object): Void
 	{
 		bottomBar.UpdatePlayerInfo(aUpdateObj,itemCard.itemInfo);
 	}
 
 	// @API
-	public function updateItemCardInfo(aUpdateObj): Void
+	public function UpdateItemCardInfo(aUpdateObj: Object): Void
 	{
 		itemCard.itemInfo = aUpdateObj;
 		bottomBar.UpdatePerItemInfo(aUpdateObj);
 	}
 
-	function onItemCardSubMenuAction(event)
+	public function onItemCardSubMenuAction(event: Object): Void
 	{
 		if (event.opening == true) {
 			inventoryLists.itemList.disableSelection = true;
@@ -291,7 +301,7 @@ class ItemMenu extends MovieClip
 	}
 
 	// @API
-	public function toggleMenuFade(): Void
+	public function ToggleMenuFade(): Void
 	{
 		if (_bFadedIn) {
 			_parent.gotoAndPlay("fadeOut");
@@ -306,7 +316,7 @@ class ItemMenu extends MovieClip
 	}
 
 	// @API
-	public function setFadedIn(): Void
+	public function SetFadedIn(): Void
 	{
 		_bFadedIn = true;
 		inventoryLists.itemList.disableSelection = false;
@@ -316,7 +326,7 @@ class ItemMenu extends MovieClip
 	}
 	
 	// @API
-	public function restoreIndices(): Void
+	public function RestoreIndices(): Void
 	{
 		if (arguments[0] != undefined && arguments[0] != -1 && arguments.length == 3) {
 			inventoryLists.categoryList.restoreCategory(arguments[0]);
@@ -435,7 +445,7 @@ class ItemMenu extends MovieClip
 		if (_platform != 0)
 			return true;
 		
-		for (var e = Mouse.getTopMostEntity(); e && e != undefined; e = e._parent)
+		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 			if (e.itemIndex == inventoryLists.itemList.selectedIndex)
 				return true;
 				
@@ -446,8 +456,8 @@ class ItemMenu extends MovieClip
 		This method is only used for the InventoryMenu Favorites Category.
 		It prevents a lockup when unfavoriting the last item from favorites list by
 		resetting the menu.
-	*/
-	private function resetMenu()
+	 */
+	private function resetMenu(): Void
 	{
 		saveIndices();
 		GameDelegate.call("CloseMenu",[]);

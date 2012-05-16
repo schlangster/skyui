@@ -10,8 +10,8 @@ class MagicMenu extends ItemMenu
 {
   /* PRIVATE VARIABLES */
   
-	private var _hideButtonFlag: Number;
-	private var _bMenuClosing: Boolean;
+	private var _hideButtonFlag: Number = 0;
+	private var _bMenuClosing: Boolean = false;
 
 	private var _magicButtonArt: Object;
 	private var _categoryListIconArt: Array;
@@ -27,8 +27,6 @@ class MagicMenu extends ItemMenu
 	public function MagicMenu()
 	{
 		super();
-		_bMenuClosing = false;
-		_hideButtonFlag = 0;
 		
 		_3DIconXSettingStr = "fMagic3DItemPosX:Interface";
 		_3DIconZSettingStr = "fMagic3DItemPosZ:Interface";
@@ -50,12 +48,12 @@ class MagicMenu extends ItemMenu
 	
   /* PUBLIC FUNCTIONS */
 
-	public function initExtensions(): Void
+	public function InitExtensions(): Void
 	{
-		super.initExtensions();
+		super.InitExtensions();
 		
-		GameDelegate.addCallBack("DragonSoulSpent", this, "dragonSoulSpent");
-		GameDelegate.addCallBack("AttemptEquip", this , "attemptEquip");
+		GameDelegate.addCallBack("DragonSoulSpent", this, "DragonSoulSpent");
+		GameDelegate.addCallBack("AttemptEquip", this , "AttemptEquip");
 		
 		bottomBar.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
 		
@@ -125,7 +123,7 @@ class MagicMenu extends ItemMenu
 	}
 
 	// @API
-	public function dragonSoulSpent(): Void
+	public function DragonSoulSpent(): Void
 	{
 		itemCard.itemInfo.soulSpent = true;
 		updateButtonText();
@@ -186,7 +184,7 @@ class MagicMenu extends ItemMenu
 	private function startMenuFade(): Void
 	{
 		inventoryLists.hideCategoriesList();
-		toggleMenuFade();
+		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;
 	}

@@ -14,7 +14,7 @@ class MagicDataFetcher extends ItemcardDataFetcher
   /* PUBLIC FUNCTIONS */
 	
   	// @override ItemcardDataFetcher
-	function processEntry(a_entryObject: Object, a_itemInfo: Object)
+	function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
 		switch (a_itemInfo.type) {
 			// Spell

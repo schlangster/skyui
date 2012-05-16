@@ -23,8 +23,6 @@ class skyui.components.list.ScrollingList extends BasicList
 	// The maximum allowed size. Actual size might be smaller if the list is not filled completely.
 	private var _maxListIndex: Number;
 	
-	private var _listHeight: Number;
-	
 	
   /* STAGE ELEMENTS */
   
@@ -58,6 +56,21 @@ class skyui.components.list.ScrollingList extends BasicList
 		return _maxScrollPosition;
 	}
 	
+	private var _listHeight: Number;
+	
+	public function get listHeight(): Number
+	{
+		return _listHeight;
+	}
+	
+  	public function set listHeight(a_height: Number): Void
+	{
+		_listHeight = background._height = a_height;
+		
+		if (scrollbar != undefined)
+			scrollbar.height = _listHeight;
+	}
+	
 	// @override BasicList
 	public var listEnumeration: FilteredEnumeration;
 
@@ -68,13 +81,15 @@ class skyui.components.list.ScrollingList extends BasicList
 	{
 		super();
 		
-		_listHeight = anchorEntriesBegin._y + anchorEntriesEnd._y;
+		_listHeight = background._height;
 		
 		_maxListIndex = Math.floor(_listHeight / _entryHeight);
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
+  
+
 
 	// @override MovieClip
 	public function onLoad(): Void
@@ -82,7 +97,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (scrollbar != undefined) {
 			scrollbar.position = 0;
 			scrollbar.addEventListener("scroll", this, "onScroll");
-			scrollbar._y = anchorEntriesBegin._y;
+			scrollbar._y = background._x;
 			scrollbar.height = _listHeight;
 		}
 	}
@@ -139,7 +154,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		// Prepare clips
 		setClipCount(_maxListIndex);
 		
-		var yStart = anchorEntriesBegin._y;
+		var yStart = background._y;
 		var h = 0;
 
 		// Clear clipIndex for everything before the selected list portion

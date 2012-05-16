@@ -98,8 +98,8 @@ class skyui.components.TabBar extends MovieClip
 		tabPress(_activeTab == LEFT_TAB ? RIGHT_TAB : LEFT_TAB);
 	}
 
-	// override MovieClip
-	public function onLoad()
+	// @override MovieClip
+	public function onLoad(): Void
 	{
 		leftLabel.textAutoSize = "shrink";
 		rightLabel.textAutoSize = "shrink";

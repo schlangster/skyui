@@ -1,177 +1,192 @@
 ﻿import gfx.io.GameDelegate;
 
-import skyui.InventoryColumnFormatter;
-import skyui.BarterDataFetcher;
+import skyui.components.list.ListLayoutManager;
+import skyui.components.list.TabularList;
 
 
 class BarterMenu extends ItemMenu
 {
-	private var _playerInfoObj:Object;
-	private var _buyMult:Number;
-	private var _sellMult:Number;
-	private var _confirmAmount:Number;
-	private var _playerGold:Number;
-	private var _vendorGold:Number;
+  /* PRIVATE VARIABLES */
+  
+	private var _playerInfoObj: Object;
+	private var _buyMult: Number = 1;
+	private var _sellMult: Number = 1;
+	private var _confirmAmount: Number = 0;
+	private var _playerGold: Number = 0;
+	private var _vendorGold: Number = 0;
 
-	var CategoryListIconArt:Array;
+	private var _categoryListIconArt: Array;
+	private var _tabBarIconArt: Array;
+	
+	private var _dataFetcher: BarterDataFetcher;
+	
+  /* PROPERTIES */
+	
+	// @override ItemMenu
+	public var bEnableTabs: Boolean = true;
 
-	var ColumnFormatter:InventoryColumnFormatter;
-	var DataFetcher:BarterDataFetcher;
 
+  /* CONSTRUCTORS */
 
-	function BarterMenu()
+	public function BarterMenu()
 	{
 		super();
-		_buyMult = 1;
-		_sellMult = 1;
-		_vendorGold = 0;
-		_playerGold = 0;
-		_confirmAmount = 0;
 
-		CategoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
-
-		ColumnFormatter = new InventoryColumnFormatter();
-		ColumnFormatter.maxTextLength = 80;
-
-		DataFetcher = new BarterDataFetcher();
-		
-
+		_categoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
+		_tabBarIconArt = ["buy", "sell"];
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 
-	function InitExtensions()
+	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
-		GameDelegate.addCallBack("SetBarterMultipliers",this,"SetBarterMultipliers");
+		GameDelegate.addCallBack("SetBarterMultipliers", this, "SetBarterMultipliers");
 		
-		ItemCard_mc.addEventListener("messageConfirm",this,"onTransactionConfirm");
-		ItemCard_mc.addEventListener("sliderChange",this,"onQuantitySliderChange");
-		BottomBar_mc.SetButtonArt({PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"},1);
-		BottomBar_mc.Button1.addEventListener("click",this,"onExitButtonPress");
-		BottomBar_mc.Button1.disabled = false;
-
-		InventoryLists_mc.CategoriesList.setIconArt(CategoryListIconArt);
-
-
-		InventoryLists_mc.ItemsList.columnFormatter = ColumnFormatter;
-		InventoryLists_mc.ItemsList.dataFetcher = DataFetcher;
-		InventoryLists_mc.ItemsList.setConfigSection("ItemList");
+		itemCard.addEventListener("messageConfirm",this,"onTransactionConfirm");
+		itemCard.addEventListener("sliderChange",this,"onQuantitySliderChange");
+		bottomBar.SetButtonArt({PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"},1);
+		bottomBar.Button1.addEventListener("click",this,"onExitButtonPress");
+		bottomBar.Button1.disabled = false;
 		
-		InventoryLists_mc.TabBar.setIcons("buy", "sell");
+		inventoryLists.tabBarIconArt = _tabBarIconArt;
+		
+		// Initialize menu-specific list components
+		var categoryList: CategoryList = inventoryLists.categoryList;
+		categoryList.iconArt = _categoryListIconArt;
+
+		// Save this to modify multipliers later.
+		_dataFetcher = new BarterDataFetcher(itemList);
+
+		var itemList: TabularList = inventoryLists.itemList;		
+		var entryFormatter = new InventoryEntryFormatter(itemList);
+
+		entryFormatter.maxTextLength = 80;
+		itemList.entryFormatter = entryFormatter;
+		itemList.dataFetcher = _dataFetcher;
+		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 	}
 
-	function onExitButtonPress()
+	public function onExitButtonPress(): Void
 	{
 		GameDelegate.call("CloseMenu",[]);
 	}
 
-	function SetBarterMultipliers(a_buyMult:Number, a_sellMult:Number)
+	// @API
+	public function SetBarterMultipliers(a_buyMult: Number, a_sellMult: Number): Void
 	{
 		_buyMult = a_buyMult;
 		_sellMult = a_sellMult;
-		InventoryLists_mc.ItemsList.dataFetcher.barterSellMult = a_sellMult;
-		InventoryLists_mc.ItemsList.dataFetcher.barterBuyMult = a_buyMult;
-		BottomBar_mc.SetButtonsText("","$Exit");
+		_dataFetcher.barterSellMult = a_sellMult;
+		_dataFetcher.barterBuyMult = a_buyMult;
+		bottomBar.SetButtonsText("","$Exit");
 	}
 	
-	
-	function onShowItemsList(event)
+	// @override ItemMenu
+	public function onShowItemsList(event: Object): Void
 	{
-		InventoryLists_mc.showItemsList();
+		inventoryLists.showItemsList();
 
 		//super.onShowItemsList(event);
 	}
 
-	
-	function onItemHighlightChange(event)
+	// @override ItemMenu
+	public function onItemHighlightChange(event: Object): Void
 	{
 		if (event.index != -1) {
-			if (IsViewingVendorItems()) {
-				BottomBar_mc.SetButtonsText("$Buy","$Exit");
-			} else {
-				BottomBar_mc.SetButtonsText("$Sell","$Exit");
-			}
+			if (isViewingVendorItems())
+				bottomBar.SetButtonsText("$Buy","$Exit");
+			else
+				bottomBar.SetButtonsText("$Sell","$Exit");
 		}
 
 		super.onItemHighlightChange(event);
 	}
 
-	function onHideItemsList(event)
+	// @override ItemMenu
+	public function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		BottomBar_mc.SetButtonsText("","$Exit");
+		bottomBar.SetButtonsText("","$Exit");
 	}
 
-	function IsViewingVendorItems()
+	private function isViewingVendorItems(): Boolean
 	{
-		return (InventoryLists_mc.CategoriesList.activeSegment == 0);
+		return inventoryLists.categoryList.activeSegment == 0;
 	}
 
-	function onQuantityMenuSelect(event)
+	// @override ItemMenu
+	public function onQuantityMenuSelect(event: Object): Void
 	{
-		var price = event.amount * ItemCard_mc.itemInfo.value;
-		if (price > _vendorGold && !IsViewingVendorItems()) {
+		var price = event.amount * itemCard.itemInfo.value;
+		if (price > _vendorGold && !isViewingVendorItems()) {
 			_confirmAmount = event.amount;
-			GameDelegate.call("GetRawDealWarningString",[price],this,"ShowRawDealWarning");
+			GameDelegate.call("GetRawDealWarningString", [price], this, "ShowRawDealWarning");
 			return;
 		}
 		doTransaction(event.amount);
 	}
 
-	function ShowRawDealWarning(a_warning:String)
+	// @API
+	public function ShowRawDealWarning(a_warning: String): Void
 	{
-		ItemCard_mc.ShowConfirmMessage(a_warning);
+		itemCard.ShowConfirmMessage(a_warning);
 	}
 
-	function onTransactionConfirm()
+	public function onTransactionConfirm(): Void
 	{
 		doTransaction(_confirmAmount);
 		_confirmAmount = 0;
 	}
 
-	function doTransaction(a_amount:Number)
+	private function doTransaction(a_amount: Number): Void
 	{
-		GameDelegate.call("ItemSelect",[a_amount, ItemCard_mc.itemInfo.value, IsViewingVendorItems()]);
+		GameDelegate.call("ItemSelect",[a_amount, itemCard.itemInfo.value, isViewingVendorItems()]);
 	}
 
-	function UpdateItemCardInfo(a_updateObj:Object)
+	// @override ItemMenu
+	public function UpdateItemCardInfo(a_updateObj: Object): Void
 	{
-		if (IsViewingVendorItems()) {
+		if (isViewingVendorItems()) {
 			a_updateObj.value = a_updateObj.value * _buyMult;
 			a_updateObj.value = Math.max(a_updateObj.value, 1);
 		} else {
 			a_updateObj.value = a_updateObj.value * _sellMult;
 		}
 		a_updateObj.value = Math.floor(a_updateObj.value + 0.5);
-		ItemCard_mc.itemInfo = a_updateObj;
-		BottomBar_mc.SetBarterPerItemInfo(a_updateObj,_playerInfoObj);
+		itemCard.itemInfo = a_updateObj;
+		bottomBar.SetBarterPerItemInfo(a_updateObj,_playerInfoObj);
 	}
 
-	function UpdatePlayerInfo(a_playerGold:Number, a_vendorGold:Number, a_vendorName:String, a_updateObj:Object)
+	// @override ItemMenu
+	public function UpdatePlayerInfo(a_playerGold: Number, a_vendorGold: Number, a_vendorName: String, a_updateObj: Object): Void
 	{
 		_vendorGold = a_vendorGold;
 		_playerGold = a_playerGold;
-		BottomBar_mc.SetBarterInfo(a_playerGold,a_vendorGold,undefined,a_vendorName);
+		bottomBar.SetBarterInfo(a_playerGold,a_vendorGold,undefined,a_vendorName);
 		_playerInfoObj = a_updateObj;
 	}
 
-	function onQuantitySliderChange(event)
+	public function onQuantitySliderChange(event: Object): Void
 	{
-		var price = ItemCard_mc.itemInfo.value * event.value;
-		if (IsViewingVendorItems()) {
+		var price = itemCard.itemInfo.value * event.value;
+		if (isViewingVendorItems()) {
 			price = price * -1;
 		}
-		BottomBar_mc.SetBarterInfo(_playerGold,_vendorGold,price);
+		bottomBar.SetBarterInfo(_playerGold,_vendorGold,price);
 	}
 
-	function onItemCardSubMenuAction(event)
+	// @override ItemMenu
+	public function onItemCardSubMenuAction(event: Object): Void
 	{
 		super.onItemCardSubMenuAction(event);
 		if (event.menu == "quantity") {
 			if (event.opening) {
-				onQuantitySliderChange({value:ItemCard_mc.itemInfo.count});
+				onQuantitySliderChange({value:itemCard.itemInfo.count});
 				return;
 			}
-			BottomBar_mc.SetBarterInfo(_playerGold,_vendorGold);
+			bottomBar.SetBarterInfo(_playerGold,_vendorGold);
 		}
 	}
 

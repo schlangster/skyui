@@ -52,6 +52,8 @@ class InventoryLists extends MovieClip
 
 	private var _searchKey: Number;
 	private var _tabToggleKey: Number;
+	
+	private var _bTabbed = false;
 
 
   /* PROPERTIES */
@@ -84,6 +86,21 @@ class InventoryLists extends MovieClip
 
 		_currentState = a_newState;
 	}
+	
+	private var _tabBarIconArt: Array;
+	
+	public function set tabBarIconArt(a_iconArt: Array)
+	{
+		_tabBarIconArt = a_iconArt;
+		
+		if (tabBar)
+			tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
+	}
+	
+	public function get tabBarIconArt(): Array
+	{
+		return _tabBarIconArt;
+	}
 
 
   /* CONSTRUCTORS */
@@ -98,8 +115,8 @@ class InventoryLists extends MovieClip
 
 		gotoAndStop("NoPanels");
 
-		GameDelegate.addCallBack("SetCategoriesList", this, "setCategoriesList");
-		GameDelegate.addCallBack("InvalidateListData", this, "invalidateListData");
+		GameDelegate.addCallBack("SetCategoriesList", this, "SetCategoriesList");
+		GameDelegate.addCallBack("InvalidateListData", this, "InvalidateListData");
 
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
@@ -112,7 +129,6 @@ class InventoryLists extends MovieClip
 		categoryLabel = panelContainer.categoryLabel;
 		itemList = panelContainer.itemList;
 		searchWidget = panelContainer.searchWidget;
-		tabBar = panelContainer.tabBar;
 		columnSelectButton = panelContainer.columnSelectButton;
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
@@ -168,9 +184,25 @@ class InventoryLists extends MovieClip
 		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
+	}
+	
+	public function enableTabBar(): Void
+	{
+		_bTabbed = true;
+		panelContainer.gotoAndPlay("tabbed");
+		itemList.listHeight = 480;
+	}
+	
+	public function onTabBarLoad(): Void
+	{
+		tabBar = panelContainer.tabBar;
+		tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
+		tabBar.addEventListener("tabPress", this, "onTabPress");
 		
-		if (tabBar != undefined)
-			tabBar.addEventListener("tabPress", this, "onTabPress");
+		if (categoryList.dividerIndex != -1) {
+			tabBar.setLabelText(categoryList.entryList[0].text, categoryList.entryList[categoryList.dividerIndex + 1].text);
+			categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = Translator.translate("$ALL");
+		}
 	}
 	
 	public function onColumnSelectButtonPress(event: Object): Void
@@ -394,7 +426,7 @@ class InventoryLists extends MovieClip
 
 	// Called to initially set the category list.
 	// @API 
-	function setCategoriesList()
+	function SetCategoriesList()
 	{
 		var textOffset = 0;
 		var flagOffset = 1;
@@ -412,22 +444,16 @@ class InventoryLists extends MovieClip
 		}
 		
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
-		if (tabBar != undefined) {
-			if (categoryList.dividerIndex != -1) {
-				tabBar.setLabelText(categoryList.entryList[0].text, categoryList.entryList[categoryList.dividerIndex + 1].text);
-				categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = Translator.translate("$ALL");
-			}
-			
+		if (_bTabbed)
 			// Restore 0 as default index for tabbed lists
 			categoryList.selectedIndex = 0;
-		}
 
 		categoryList.InvalidateData();
 	}
 
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	// @API
-	function invalidateListData()
+	function InvalidateListData()
 	{
 		var flag = categoryList.selectedEntry.flag;
 

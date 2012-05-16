@@ -28,8 +28,7 @@ class skyui.components.list.BasicList extends BSList
 	
   /* STAGE ELEMENTS */
 
-	public var anchorEntriesBegin: MovieClip;
-	public var anchorEntriesEnd: MovieClip;
+	public var background: MovieClip;
 	
 	
   /* PRIVATE VARIABLES */
@@ -109,14 +108,14 @@ class skyui.components.list.BasicList extends BSList
 	
 	// Queue an update for the next frame to avoid multiple updates in this one.
 	// If timing is imporant (like for scrolling), use UpdateList() directly.
-	public function requestUpdate()
+	public function requestUpdate(): Void
 	{
 //		_bUpdateRequested = true;
 // TODO optimize this later, for now lets get everything working
 		UpdateList();
 	}
 	
-	public function clearList()
+	public function clearList(): Void
 	{
 		_entryList.splice(0);
 	}
@@ -159,6 +158,8 @@ class skyui.components.list.BasicList extends BSList
 	{
 		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
+			
+		skse.Log("ItemPressed");
 			
 		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}

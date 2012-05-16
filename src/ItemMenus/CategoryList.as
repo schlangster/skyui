@@ -154,7 +154,7 @@ class CategoryList extends BasicList
 
 		var spacing = (_totalWidth - _contentWidth) / (_segmentLength + 1);
 
-		var xPos = anchorEntriesBegin._x + spacing;
+		var xPos = background._x + spacing;
 
 		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);

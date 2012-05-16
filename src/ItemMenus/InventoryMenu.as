@@ -18,6 +18,13 @@ class InventoryMenu extends ItemMenu
 	private var _prevButtonArt: Object;
 	private var _itemCardListButtonArt: Array;
 	private var _categoryListIconArt: Array;
+	
+	
+  /* PROPERTIES */
+  
+	// @GFx
+	// @Mysterious
+	public var bPCControlsReady: Boolean = true;
 
 
   /* CONSTRUCTORS */
@@ -39,19 +46,19 @@ class InventoryMenu extends ItemMenu
 							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
 							   "inv_books", "inv_keys", "inv_misc"];
 		
-		GameDelegate.addCallBack("AttemptEquip", this, "attemptEquip");
-		GameDelegate.addCallBack("DropItem", this, "dropItem");
-		GameDelegate.addCallBack("AttemptChargeItem", this, "attemptChargeItem");
-		GameDelegate.addCallBack("ItemRotating", this, "itemRotating");
+		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
+		GameDelegate.addCallBack("DropItem", this, "DropItem");
+		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
+		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
 
 
   /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
-	public function initExtensions(): Void
-	{
-		super.initExtensions();
+	public function InitExtensions(): Void
+	{		
+		super.InitExtensions();
 
 		GlobalFunc.AddReverseFunctions();
 		
@@ -98,10 +105,10 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.call("ShowTweenMenu", []);
 	}
 
-	public function startMenuFade(): Void
+	private function startMenuFade(): Void
 	{
 		inventoryLists.hideCategoriesList();
-		toggleMenuFade();
+		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;
 	}
@@ -112,6 +119,7 @@ class InventoryMenu extends ItemMenu
 			GameDelegate.call("CloseMenu", []);
 	}
 
+	// @override ItemMenu
 	public function onShowItemsList(event: Object): Void
 	{
 		super.onShowItemsList(event);
@@ -144,7 +152,7 @@ class InventoryMenu extends ItemMenu
 	}
 
 	// @API
-	public function attemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
+	public function AttemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
 	{
 		var bCheckOverList = a_bCheckOverList != undefined ? a_bCheckOverList : true;
 		if (shouldProcessItemsListInput(bCheckOverList) && confirmSelectedEntry())
@@ -152,7 +160,7 @@ class InventoryMenu extends ItemMenu
 	}
 
 	// @API
-	public function dropItem(): Void
+	public function DropItem(): Void
 	{
 		if (shouldProcessItemsListInput(false) && inventoryLists.itemList.selectedEntry != undefined) {
 			if (inventoryLists.itemList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
@@ -163,7 +171,7 @@ class InventoryMenu extends ItemMenu
 	}
 
 	// @API
-	public function attemptChargeItem(): Void
+	public function AttemptChargeItem(): Void
 	{
 		if (inventoryLists.itemList.selectedIndex == -1)
 			return;
@@ -179,13 +187,13 @@ class InventoryMenu extends ItemMenu
 		
 		// Bug Fix: ItemCard does not update when attempting to drop quest items through the quantity menu
 		//   so let's request an update even though it may be redundant.
-		GameDelegate.call("RequestItemCardInfo", [], this, "updateItemCardInfo");
+		GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
 	}
 
 
 	public function onMouseRotationFastClick(aiMouseButton: Number): Void
 	{
-		GameDelegate.call("CheckForMouseEquip", [aiMouseButton], this, "attemptEquip");
+		GameDelegate.call("CheckForMouseEquip", [aiMouseButton], this, "AttemptEquip");
 	}
 
 	public function onItemCardListPress(event: Object): Void
@@ -194,7 +202,7 @@ class InventoryMenu extends ItemMenu
 	}
 
 	// @override ItemMenu
-	public function onItemCardSubMenuAction(event: Object)
+	public function onItemCardSubMenuAction(event: Object): Void
 	{
 		super.onItemCardSubMenuAction(event);
 		GameDelegate.call("QuantitySliderOpen", [event.opening]);
@@ -207,24 +215,24 @@ class InventoryMenu extends ItemMenu
 			} else {
 				bottomBar.SetButtonsArt(_prevButtonArt);
 				_prevButtonArt = undefined;
-				GameDelegate.call("RequestItemCardInfo", [], this, "updateItemCardInfo");
+				GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
 				updateBottomBarButtons();
 			}
 		}
 	}
 
 	// @override ItemMenu
-	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
 		inventoryLists.zoomButtonHolder.ZoomButton._visible = a_platform != 0;
 		inventoryLists.zoomButtonHolder.ZoomButton.SetPlatform(a_platform, a_bPS3Switch);
 		
-		super.setPlatform(a_platform, a_bPS3Switch);
+		super.SetPlatform(a_platform, a_bPS3Switch);
 	}
 
 	// @API
-	public function itemRotating(): Void
+	public function ItemRotating(): Void
 	{
 		inventoryLists.zoomButtonHolder.PlayForward(inventoryLists.zoomButtonHolder._currentframe);
 	}
