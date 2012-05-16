@@ -10,8 +10,7 @@ $skyrim_dir = "F:\\Spiele\\Steam\\steamapps\\common\\skyrim\\Data\\Interface";
 	"inventorymenu.swf",
 	"magicmenu.swf",
 	"favoritesmenu.swf",
-	"skyui\\inventorylists.swf",
-	"skyui\\tabbedinventorylists.swf"
+	"skyui\\inventorylists.swf"
 );
 
 foreach (@menus) {
