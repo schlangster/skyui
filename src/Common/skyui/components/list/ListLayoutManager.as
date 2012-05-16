@@ -64,7 +64,6 @@ class skyui.components.list.ListLayoutManager
 	
 	public function onConfigUpdate(event: Object): Void
 	{
-		// Otherwise create
 		for (var k in _layouts)
 			_layouts[k].refresh();
 	}

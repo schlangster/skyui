@@ -18,30 +18,14 @@ class InventoryDataFetcher extends ItemcardDataFetcher
 	{
 		switch (a_itemInfo.type) {
 			case InventoryDefines.ICT_ARMOR :
-				if (a_itemInfo.armor) {
-					a_entryObject.infoArmor = a_itemInfo.armor;
-					a_entryObject.infoArmorValid = 1;
-				} else {
-					a_entryObject.infoArmor = "-";
-					a_entryObject.infoArmorValid = 0;
-				}
-
+				a_entryObject.infoArmor = a_itemInfo.armor ? a_itemInfo.armor : "-";
 				a_entryObject.infoDamage = "-";
-				a_entryObject.infoDamageValid = 0;
 				a_entryObject.infoIsEnchanted = (a_itemInfo.effects != "");
 				break;
 				
 			case InventoryDefines.ICT_WEAPON :
-				if (a_itemInfo.damage) {
-					a_entryObject.infoDamage = a_itemInfo.damage;
-					a_entryObject.infoDamageValid = 1;
-				} else {
-					a_entryObject.infoDamage = "-";
-					a_entryObject.infoDamageValid = 0;
-				}
-				
-				a_entryObject.infoArmor =  "-";
-				a_entryObject.infoArmorValid =  0;
+				a_entryObject.infoDamage = a_itemInfo.damage ? a_itemInfo.damage : "-";
+				a_entryObject.infoArmor = "-";
 				a_entryObject.infoIsEnchanted = (a_itemInfo.effects != "");
 				break;
 				
@@ -54,26 +38,16 @@ class InventoryDataFetcher extends ItemcardDataFetcher
 				// Fall through
 				
 			default:
-				a_entryObject.infoArmor =  "-";
-				a_entryObject.infoArmorValid =  0;
+				a_entryObject.infoArmor = "-";
 				a_entryObject.infoDamage = "-";
-				a_entryObject.infoDamageValid = 0;
 				a_entryObject.infoIsEnchanted = false;
 		}
 
 		a_entryObject.infoValue = Math.round(a_itemInfo.value);
 		a_entryObject.infoWeight = Math.round(a_itemInfo.weight * 10) / 10;
 		a_entryObject.infoType = a_itemInfo.type;
-		a_entryObject.infoPotionType = a_itemInfo.potionType;
-		a_entryObject.infoWeightValue = a_itemInfo.weight != 0 ? Math.round(a_itemInfo.value / a_itemInfo.weight) : "-";
-		
-		if (a_itemInfo.weight != 0) {
-			a_entryObject.infoWeightValue = Math.round(a_itemInfo.value / a_itemInfo.weight);
-			a_entryObject.infoWeightValueValid = 1;
-		} else {
-			a_entryObject.infoWeightValue = "-";
-			a_entryObject.infoWeightValueValid = 0;
-		}
+		a_entryObject.infoPotionType = a_itemInfo.potionType;		
+		a_entryObject.infoWeightValue = a_itemInfo.weight > 0 ? Math.round(a_itemInfo.value / a_itemInfo.weight) : "-";
 		
 		a_entryObject.infoIsPoisoned = (a_itemInfo.poisoned > 0);
 		a_entryObject.infoIsStolen = (a_itemInfo.stolen > 0);

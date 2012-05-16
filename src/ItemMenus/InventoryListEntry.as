@@ -1,5 +1,6 @@
 ﻿import skyui.components.list.ScrollingList;
 import skyui.components.list.BasicListEntry;
+import skyui.util.ConfigManager;
 
 
 class InventoryListEntry extends BasicListEntry
@@ -19,7 +20,7 @@ class InventoryListEntry extends BasicListEntry
 	
 	public function initialize(a_index: Number, a_list: ScrollingList): Void
 	{
-		itemIcon.loadMovie("skyui_icons_celtic.swf");
+		itemIcon.loadMovie(ConfigManager.getValue("Appearance", "icons.source").toString());
 		
 		itemIcon._visible = false;
 		equipIcon._visible = false;

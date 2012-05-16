@@ -1,4 +1,5 @@
 ﻿import skyui.components.list.BasicListEntry;
+import skyui.util.ConfigManager;
 
 
 class CategoryListEntry extends BasicListEntry
@@ -19,7 +20,7 @@ class CategoryListEntry extends BasicListEntry
 	{
 		if (a_list.iconArt[a_index] != undefined) {
 			iconLabel = a_list.iconArt[a_index];
-			icon.loadMovie("skyui_icons_celtic.swf");
+			icon.loadMovie(ConfigManager.getValue("Appearance", "icons.source").toString());
 		}
 	}
 }

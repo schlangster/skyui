@@ -131,6 +131,20 @@ class skyui.util.ConfigManager
 		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 	}
+	
+	// Provide static accessor to the config to retrieve trivial values
+	public static function getValue(a_section: String, a_key: String): Object
+	{
+		var a = a_key.split(".");
+		var loc = _config[a_section];
+		for (var j=0; j<a.length; j++) {
+			if (loc[a[j]] == undefined)
+				return null;
+			loc = loc[a[j]];
+		}
+		
+		return loc;
+	}
 
 
   /* PRIVATE FUNCTIONS */
