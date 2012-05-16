@@ -189,16 +189,16 @@ class ItemMenu extends MovieClip
 		}
 	}
 
-	function onExitMenuRectClick()
+	public function onExitMenuRectClick(): Void
 	{
 		GameDelegate.call("CloseMenu",[]);
 	}
 
-	function onCategoryChange(event)
+	public function onCategoryChange(event: Object): Void
 	{
 	}
 	
-	function onItemHighlightChange(event)
+	public function onItemHighlightChange(event: Object): Void
 	{
 		super.onItemHighlightChange(event);
 		

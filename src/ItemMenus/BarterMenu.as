@@ -111,10 +111,7 @@ class BarterMenu extends ItemMenu
 		bottomBar.SetButtonsText("","$Exit");
 	}
 
-	private function isViewingVendorItems(): Boolean
-	{
-		return inventoryLists.categoryList.activeSegment == 0;
-	}
+
 
 	// @override ItemMenu
 	public function onQuantityMenuSelect(event: Object): Void
@@ -139,12 +136,7 @@ class BarterMenu extends ItemMenu
 		doTransaction(_confirmAmount);
 		_confirmAmount = 0;
 	}
-
-	private function doTransaction(a_amount: Number): Void
-	{
-		GameDelegate.call("ItemSelect",[a_amount, itemCard.itemInfo.value, isViewingVendorItems()]);
-	}
-
+	
 	// @override ItemMenu
 	public function UpdateItemCardInfo(a_updateObj: Object): Void
 	{
@@ -188,6 +180,19 @@ class BarterMenu extends ItemMenu
 			}
 			bottomBar.SetBarterInfo(_playerGold,_vendorGold);
 		}
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function doTransaction(a_amount: Number): Void
+	{
+		GameDelegate.call("ItemSelect",[a_amount, itemCard.itemInfo.value, isViewingVendorItems()]);
+	}
+	
+	private function isViewingVendorItems(): Boolean
+	{
+		return inventoryLists.categoryList.activeSegment == 0;
 	}
 
 }
