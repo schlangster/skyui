@@ -7,5 +7,6 @@
 	static function OpenMenu(a_menu:String):Void;
 	static function CloseMenu(a_menu:String):Void;
 	static function ExtendData(enable:Boolean):Void;
-	static function ForceContainerCategorization(enable:Boolean):Void;
+	static function ForceContainerCategorization(enable:Boolean):Void;	
+	static function SendModEvent(a_eventName:String, a_message: String):Void;
 }

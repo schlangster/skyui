@@ -65,7 +65,7 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 	public function onColumnToggle(event: Object): Void
 	{
 		var entry = event.entry;
-		ConfigManager.setOverride("ListLayout", "columns." + entry.id + ".hidden", !entry.value);
+		ConfigManager.setOverride("ListLayout", "columns." + entry.id + ".hidden", !entry.value, entry.value ? "false" : "true");
 	}
 	
 	public function onLayoutChange(event: Object): Void

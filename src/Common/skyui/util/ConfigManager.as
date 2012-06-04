@@ -61,6 +61,13 @@ class skyui.util.ConfigManager
 	private static var _config: Object;
 	
 	
+  /* PAPYRUS ARGUMENTS */
+  
+  	// Key/value pairs "Section$k§e§y§" / "value"
+	public static var out_overrides = {};
+	public static var in_overrideKeys = [];
+	
+	
   /* STATIC INITIALIZER */
   
   	private static var _initialized:Boolean = initialize();
@@ -69,6 +76,8 @@ class skyui.util.ConfigManager
 	{
 		if (_initialized)
 			return;
+			
+		GlobalFunctions.addArrayFunctions();
 		
 		_eventDummy = {};
 		EventDispatcher.initialize(_eventDummy);
@@ -109,7 +118,7 @@ class skyui.util.ConfigManager
 		_constantTable[a_name] = a_value;
 	}
 	
-	public static function setOverride(a_section: String, a_key: String, a_value): Void
+	public static function setOverride(a_section: String, a_key: String, a_value, a_valueStr: String): Void
 	{
 		skse.Log("settingOverride " + a_section + " " + a_key + " " + a_value);
 		
@@ -126,10 +135,62 @@ class skyui.util.ConfigManager
 			loc = loc[a[j]];
 		}
 
-		// Store value
+		// Store value in config
 		loc[a[a.length-1]] = a_value;
 		
+		// Running out of special characters soon... :)
+		var replacer = a_key.split(".");
+		a_key = replacer.join("§");
+		
+		var ovrKey = a_section + "$" + a_key;
+		out_overrides[ovrKey] = a_valueStr;
+		skse.SendModEvent("SKI_setConfigOverride", ovrKey);
+		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
+	}
+	
+	// @Papyrus
+	public static function setExternalOverrideKeys()
+	{
+		in_overrideKeys.splice(0);
+		skse.Log("Called setExternalOverrideKeys");
+		
+		for (var i = 0; i < arguments.length; i++)
+			in_overrideKeys[i] = arguments[i];
+	}
+	
+	// @Papyrus
+	public static function setExternalOverrideValues()
+	{
+		skse.Log("Called setExternalOverrideValues");
+		
+		// Update happens in 2 phases.
+		// First the keys are sent and stored, then the values are sent and immediately processed.
+		for (var i = 0; i < arguments.length; i++)
+			if (in_overrideKeys[i])
+				parseExternalOverride(in_overrideKeys[i], arguments[i]);
+				
+		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});				
+	}
+	
+	private static function parseExternalOverride(a_key: String, a_value: String)
+	{
+		var section = GlobalFunctions.clean(a_key.slice(0, a_key.indexOf("$")));
+		var key = GlobalFunctions.clean(a_key.slice(a_key.indexOf("$") + 1));
+		var val = parseValueString(GlobalFunctions.clean(a_value));
+
+		// Prepare key subsections - external keys use § as separator
+		var a = key.split("§");
+		var loc = _config[section];
+		for (var j=0; j<a.length-1; j++) {
+			if (loc[a[j]] == undefined)
+				loc[a[j]] = {};
+			loc = loc[a[j]];
+		}
+		
+		loc[a[a.length-1]] = val;
+		
+		skse.Log("Received external override. section: " + section + " key: " + key + " val: " + val);
 	}
 	
 	// Provide static accessor to the config to retrieve trivial values
@@ -194,7 +255,7 @@ class skyui.util.ConfigManager
 			}
 
 			// Detect value type & extract
-			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _constantTable, _config[section]);
+			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)));
 			
 			if (val == undefined)
 				continue;
@@ -210,7 +271,7 @@ class skyui.util.ConfigManager
 		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
 	
-	private static function parseValueString(a_str: String, a_constantTable: Object, a_root: Object): Object
+	private static function parseValueString(a_str: String, a_root: Object): Object
 	{
 		if (a_str == undefined)
 			return undefined;
@@ -239,7 +300,7 @@ class skyui.util.ConfigManager
 		} else if (a_str.charAt(0) == "<") {
 			var values = GlobalFunctions.extract(a_str, "<", ">").split(",");
 			for (var i=0; i<values.length; i++)
-				values[i] = parseValueString(GlobalFunctions.clean(values[i]), a_constantTable, a_root);
+				values[i] = parseValueString(GlobalFunctions.clean(values[i]));
 				
 			return values;
 			
@@ -248,7 +309,7 @@ class skyui.util.ConfigManager
 			var values = GlobalFunctions.extract(a_str, "{", "}").split("|");
 			var flags = 0;
 			for (var i=0; i<values.length; i++) {
-				var t = parseValueString(GlobalFunctions.clean(values[i]), a_constantTable, a_root);
+				var t = parseValueString(GlobalFunctions.clean(values[i]));
 				if (isNaN(t))
 					return undefined;
 					
@@ -257,15 +318,8 @@ class skyui.util.ConfigManager
 			return flags;
 		
 		// Constant?
-		} else if (a_constantTable[a_str] != undefined) {
-			return a_constantTable[a_str];
-
-		// No longer used. Lookup is done at runtime now. Otherwise the names of the top level elements would no longer be available,
-		// which is a problem because it's needed to create the column descriptors for overrides.
-		//
-		// Top-level property?
-		//} else if (a_root[a_str] != undefined) {
-		//	return a_root[a_str];
+		} else if (_constantTable[a_str] != undefined) {
+			return _constantTable[a_str];
 		}
 		
 		// Default String

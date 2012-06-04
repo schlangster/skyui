@@ -2,13 +2,13 @@
 {
   /* PUBLIC FUNCTIONS */
 	
-	public static function extract(a_str:String,a_startChar:String,a_endChar:String):String
+	public static function extract(a_str: String, a_startChar: String, a_endChar: String): String
 	{
 		return a_str.slice(a_str.indexOf(a_startChar) + 1,a_str.lastIndexOf(a_endChar));
 	}
 
 	// Remove comments and leading/trailing white space
-	static function clean(a_str:String):String
+	static function clean(a_str:String): String
 	{
 		if (a_str.indexOf(";") > 0)
 			a_str = a_str.slice(0,a_str.indexOf(";"));
@@ -24,9 +24,16 @@
 		return a_str.slice(i,j + 1);
 	}
 
-	public static function addArrayFunctions()
+	private static var _arrayExtended = false;
+
+	public static function addArrayFunctions(): Void
 	{
-		Array.prototype.indexOf = function (a_element):Number
+		if (_arrayExtended)
+			return;
+			
+		_arrayExtended = true;
+		
+		Array.prototype.indexOf = function (a_element): Number
 		{
 			for (var i=0; i<this.length; i++)
 				if (this[i] == a_element)
@@ -35,8 +42,7 @@
 			return undefined;
 		};
 		
-		
-		Array.prototype.equals = function (a:Array):Boolean 
+		Array.prototype.equals = function (a: Array): Boolean 
 		{
 			if (a == undefined)
 				return false;
@@ -50,10 +56,19 @@
 					
 	    	return true;
     	};
+		
+		Array.prototype.contains = function (a_element): Boolean 
+		{
+			for (var i=0; i<this.length; i++)
+				if (this[i] == a_element)
+					return true;
+					
+	    	return false;
+    	};
 	}
 
 	// Maps Unicode inputted character code to it's CP819/CP1251 character code
-	public static function mapUnicodeChar(a_charCode:Number):Number
+	public static function mapUnicodeChar(a_charCode: Number): Number
 	{
 		//NUMERO SIGN
 		if (a_charCode == 0x2116)
