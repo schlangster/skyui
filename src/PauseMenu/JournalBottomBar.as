@@ -1,90 +1,89 @@
-dynamic class JournalBottomBar extends MovieClip
+﻿import Components.CrossPlatformButtons;
+import Components.Meter;
+import gfx.io.GameDelegate;
+
+class JournalBottomBar extends MovieClip
 {
-	var Button1_mc: Components.CrossPlatformButtons;
-	var Button2_mc: Components.CrossPlatformButtons;
-	var ButtonRect;
-	var DateText;
-	var LevelMeterRect;
-	var LevelMeter_mc;
+	var Button1_mc: CrossPlatformButtons;
+	var Button2_mc: CrossPlatformButtons;
+	var ButtonRect: MovieClip;
+	var DateText: TextField;
+	var LevelMeterRect: MovieClip;
+	var LevelMeter_mc: Meter;
 
 	function JournalBottomBar()
 	{
 		super();
-		this.Button1_mc = this.ButtonRect.Button1;
-		this.Button2_mc = this.ButtonRect.Button2;
+		Button1_mc = ButtonRect.Button1;
+		Button2_mc = ButtonRect.Button2;
 	}
 
-	function InitBar()
+	function InitBar(): Void
 	{
-		this.LevelMeter_mc = new Components.Meter(this.LevelMeterRect.LevelProgressBar);
-		gfx.io.GameDelegate.call("RequestPlayerInfo", [], this, "SetPlayerInfo");
+		LevelMeter_mc = new Meter(LevelMeterRect.LevelProgressBar);
+		GameDelegate.call("RequestPlayerInfo", [], this, "SetPlayerInfo");
 	}
 
-	function SetPlayerInfo()
+	function SetPlayerInfo(): Void
 	{
-		this.DateText.SetText(arguments[0]);
-		this.LevelMeterRect.LevelNumberLabel.SetText(arguments[1]);
-		this.LevelMeter_mc.SetPercent(arguments[2]);
+		DateText.SetText(arguments[0]);
+		LevelMeterRect.LevelNumberLabel.SetText(arguments[1]);
+		LevelMeter_mc.SetPercent(arguments[2]);
 	}
 
-	function SetMode(aiTab)
+	function SetMode(aiTab: Number): Void
 	{
-		this.LevelMeterRect._visible = aiTab == 1 || aiTab == 2;
-		this.Button1_mc._visible = this.Button2_mc._visible = aiTab == 0;
-		if ((__reg0 = aiTab) === 0) 
-		{
-			this.Button1_mc.label = "$Toggle Active";
-			this.Button1_mc.SetArt({PCArt: "Enter", XBoxArt: "360_A", PS3Art: "PS3_A"});
-			this.Button2_mc.label = "$Show on Map";
-			this.Button2_mc.SetArt({PCArt: "M", XBoxArt: "360_X", PS3Art: "PS3_X"});
-			this.PositionButtons();
+		LevelMeterRect._visible = aiTab == 1 || aiTab == 2;
+		Button1_mc._visible = Button2_mc._visible = aiTab == 0;
+		if (aiTab === 0) {
+			Button1_mc.label = "$Toggle Active";
+			Button1_mc.SetArt({PCArt: "Enter", XBoxArt: "360_A", PS3Art: "PS3_A"});
+			Button2_mc.label = "$Show on Map";
+			Button2_mc.SetArt({PCArt: "M", XBoxArt: "360_X", PS3Art: "PS3_X"});
+			PositionButtons();
+			return;
+		} else if (aiTab !== 2) {
 			return;
 		}
-		else if (__reg0 !== 2) 
-		{
-			return;
-		}
-		this.Button1_mc.label = "$Delete";
-		this.Button1_mc.SetArt({PCArt: "X", XBoxArt: "360_X", PS3Art: "PS3_X"});
-		this.PositionButtons();
+		Button1_mc.label = "$Delete";
+		Button1_mc.SetArt({PCArt: "X", XBoxArt: "360_X", PS3Art: "PS3_X"});
+		PositionButtons();
 		return;
 	}
 
-	function PositionButtons()
+	function PositionButtons(): Void
 	{
-		var __reg2 = 20;
-		this.Button1_mc._x = this.Button1_mc.ButtonArt._width;
-		this.Button2_mc._x = this.Button1_mc._x + this.Button1_mc.textField.getLineMetrics(0).width + __reg2 + this.Button2_mc.ButtonArt._width;
+		var ixOffset: Number = 20;
+		Button1_mc._x = Button1_mc.ButtonArt._width;
+		Button2_mc._x = Button1_mc._x + Button1_mc.textField.getLineMetrics(0).width + ixOffset + Button2_mc.ButtonArt._width;
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean)
+	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		this.Button1_mc.SetPlatform(aiPlatform, abPS3Switch);
-		this.Button2_mc.SetPlatform(aiPlatform, abPS3Switch);
+		Button1_mc.SetPlatform(aiPlatform, abPS3Switch);
+		Button2_mc.SetPlatform(aiPlatform, abPS3Switch);
 	}
 
-	function SetButtonVisibility(aiButtonIndex, abVisible, afAlpha)
+	function SetButtonVisibility(aiButtonIndex: Number, abVisible: Boolean, afAlpha: Number): Void
 	{
-		if (abVisible != undefined) 
-		{
-			this.ButtonRect["Button" + aiButtonIndex]._visible = abVisible;
+		if (abVisible != undefined) {
+			ButtonRect["Button" + aiButtonIndex]._visible = abVisible;
 		}
-		if (afAlpha != undefined) 
-		{
-			this.ButtonRect["Button" + aiButtonIndex]._alpha = afAlpha;
+		if (afAlpha != undefined) {
+			ButtonRect["Button" + aiButtonIndex]._alpha = afAlpha;
 		}
 	}
 
-	function IsButtonVisible(aiButtonIndex)
+	function IsButtonVisible(aiButtonIndex: Number): Boolean
 	{
-		return this.ButtonRect["Button" + aiButtonIndex]._visible == true && this.ButtonRect["Button" + aiButtonIndex]._alpha == 100;
+		return ButtonRect["Button" + aiButtonIndex]._visible == true && ButtonRect["Button" + aiButtonIndex]._alpha == 100;
 	}
 
-	function SetButtonInfo(aiButtonIndex, astrText, aArtInfo)
+	function SetButtonInfo(aiButtonIndex: Number, astrText: String, aArtInfo: Array): Void
 	{
-		this.ButtonRect["Button" + aiButtonIndex].label = astrText;
-		this.ButtonRect["Button" + aiButtonIndex].SetArt(aArtInfo);
-		this.PositionButtons();
+		ButtonRect["Button" + aiButtonIndex].label = astrText;
+		ButtonRect["Button" + aiButtonIndex].SetArt(aArtInfo);
+		PositionButtons();
 	}
 
 }

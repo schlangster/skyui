@@ -1,19 +1,20 @@
-dynamic class StatsList extends Shared.BSScrollingList
+import gfx.controls.ScrollBar;
+
+class StatsList extends Shared.BSScrollingList
 {
-	var scrollbar;
+	var scrollbar: ScrollBar;
 
 	function StatsList()
 	{
 		super();
-		this.scrollbar.focusTarget = this;
+		scrollbar.focusTarget = this;
 	}
 
-	function SetEntryText(aEntryClip, aEntryObject)
+	function SetEntryText(aEntryClip: MovieClip, aEntryObject: Object): Void
 	{
 		super.SetEntryText(aEntryClip, aEntryObject);
 		aEntryClip.valueText.textAutoSize = "shrink";
-		if (aEntryObject.text != undefined) 
-		{
+		if (aEntryObject.text != undefined) {
 			aEntryClip.valueText.SetText(aEntryObject.value.toString());
 			return;
 		}

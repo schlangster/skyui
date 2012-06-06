@@ -1,44 +1,33 @@
-dynamic class ObjectiveScrollingList extends Shared.BSScrollingList
+class ObjectiveScrollingList extends Shared.BSScrollingList
 {
-	var SetEntryText;
+	var SetEntryText: Function;
 
 	function ObjectiveScrollingList()
 	{
 		super();
 	}
 
-	function SetEntry(aEntryClip, aEntryObject)
+	function SetEntry(aEntryClip: MovieClip, aEntryObject: Object): Void
 	{
-		if (aEntryObject.text == undefined) 
-		{
+		if (aEntryObject.text == undefined) {
 			aEntryClip.gotoAndStop("None");
+		} else {
+			var slabelName: String = "";
+			if (aEntryObject.active) {
+				slabelName = slabelName + "Active";
+			} else if (aEntryObject.completed) {
+				slabelName = slabelName + "Completed";
+			} else if (aEntryObject.failed) {
+				slabelName = slabelName + "Failed";
+			} else  {
+				slabelName = slabelName + "Normal";
+			}
+			if (aEntryObject == selectedEntry) {
+				slabelName = slabelName + "Selected";
+			}
+			aEntryClip.gotoAndStop(slabelName);
 		}
-		else 
-		{
-			var __reg2 = "";
-			if (aEntryObject.active) 
-			{
-				__reg2 = __reg2 + "Active";
-			}
-			else if (aEntryObject.completed) 
-			{
-				__reg2 = __reg2 + "Completed";
-			}
-			else if (aEntryObject.failed) 
-			{
-				__reg2 = __reg2 + "Failed";
-			}
-			else 
-			{
-				__reg2 = __reg2 + "Normal";
-			}
-			if (aEntryObject == this.selectedEntry) 
-			{
-				__reg2 = __reg2 + "Selected";
-			}
-			aEntryClip.gotoAndStop(__reg2);
-		}
-		this.SetEntryText(aEntryClip, aEntryObject);
+		SetEntryText(aEntryClip, aEntryObject);
 	}
 
 }

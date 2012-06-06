@@ -1,123 +1,120 @@
-dynamic class StatsPage extends MovieClip
+﻿import gfx.managers.FocusHandler;
+import gfx.io.GameDelegate;
+
+class StatsPage extends MovieClip
 {
-	var CategoryList;
-	var CategoryList_mc;
-	var StatsList_mc;
-	var _StatsList;
-	var bUpdated;
+	var CategoryList: MovieClip;
+	var CategoryList_mc: MovieClip;
+	var StatsList_mc: MovieClip;
+	var _StatsList: MovieClip;
+	var bUpdated: Boolean;
 
 	function StatsPage()
 	{
 		super();
-		this.CategoryList = this.CategoryList_mc.List_mc;
-		this._StatsList = this.StatsList_mc;
-		this.bUpdated = false;
+		CategoryList = CategoryList_mc.List_mc;
+		_StatsList = StatsList_mc;
+		bUpdated = false;
 	}
 
-	function onLoad()
+	function onLoad(): Void
 	{
-		this.CategoryList.entryList.push({text: "$GENERAL", stats: new Array(), savedHighlight: 0});
-		this.CategoryList.entryList.push({text: "$QUEST", stats: new Array(), savedHighlight: 0});
-		this.CategoryList.entryList.push({text: "$COMBAT", stats: new Array(), savedHighlight: 0});
-		this.CategoryList.entryList.push({text: "$MAGIC", stats: new Array(), savedHighlight: 0});
-		this.CategoryList.entryList.push({text: "$CRAFTING", stats: new Array(), savedHighlight: 0});
-		this.CategoryList.entryList.push({text: "$CRIME", stats: new Array(), savedHighlight: 0});
-		this.CategoryList.InvalidateData();
-		this.CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
-		this.CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
-		this.CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
-		this._StatsList.disableSelection = true;
+		CategoryList.entryList.push({text: "$GENERAL", stats: new Array(), savedHighlight: 0});
+		CategoryList.entryList.push({text: "$QUEST", stats: new Array(), savedHighlight: 0});
+		CategoryList.entryList.push({text: "$COMBAT", stats: new Array(), savedHighlight: 0});
+		CategoryList.entryList.push({text: "$MAGIC", stats: new Array(), savedHighlight: 0});
+		CategoryList.entryList.push({text: "$CRAFTING", stats: new Array(), savedHighlight: 0});
+		CategoryList.entryList.push({text: "$CRIME", stats: new Array(), savedHighlight: 0});
+		CategoryList.InvalidateData();
+		CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
+		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
+		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
+        CategoryList.disableInput = true;
+		_StatsList.disableSelection = true;
 	}
 
-	function startPage()
+	function startPage(): Void
 	{
-		gfx.managers.FocusHandler.instance.setFocus(this.CategoryList, 0);
-		if (this.bUpdated) 
-		{
+        CategoryList.disableInput = false;
+		FocusHandler.instance.setFocus(CategoryList, 0);
+		if (bUpdated) {
 			return;
 		}
-		gfx.io.GameDelegate.call("updateStats", [], this, "PopulateStatsList");
-		this.bUpdated = true;
+		GameDelegate.call("updateStats", [], this, "PopulateStatsList");
+		bUpdated = true;
 	}
 
-	function endPage()
+	function endPage(): Void
 	{
+        CategoryList.disableInput = true;
 	}
 
-	function PopulateStatsList()
+	function PopulateStatsList(): Void
 	{
-		var __reg10 = 0;
-		var __reg8 = 1;
-		var __reg9 = 2;
-		var __reg11 = 3;
-		var __reg7 = 4;
-		var __reg3 = 0;
-		while (__reg3 < arguments.length) 
-		{
-			var __reg4 = {text: "$" + arguments[__reg3 + __reg10], value: arguments[__reg3 + __reg8]};
-			this.CategoryList.entryList[arguments[__reg3 + __reg9]].stats.push(__reg4);
-			__reg3 = __reg3 + __reg7;
+		var itextIndex = 0;
+		var ivalueIndex = 1;
+		var ientryListIndexIndex = 2;
+		var iUnknownIndex = 3;
+		var istride = 4;
+		
+		for (var i: Number = 0; i < arguments.length; i += istride) {
+			var sstat: Object = {text: "$" + arguments[i + itextIndex], value: arguments[i + ivalueIndex]};
+			CategoryList.entryList[arguments[i + ientryListIndexIndex]].stats.push(sstat);
 		}
-		this.onCategoryHighlight();
-	}
+		onCategoryHighlight();
+	} 
 
-	function onCategoryHighlight()
+	function onCategoryHighlight(): Void
 	{
-		var __reg3 = this.CategoryList.selectedEntry.stats;
-		this._StatsList.ClearList();
-		this._StatsList.scrollPosition = 0;
-		var __reg2 = 0;
-		while (__reg2 < __reg3.length) 
-		{
-			this._StatsList.entryList.push(__reg3[__reg2]);
-			++__reg2;
+		var stats: Array = CategoryList.selectedEntry.stats;
+		_StatsList.ClearList();
+		_StatsList.scrollPosition = 0;
+		
+		for(var i: Number = 0; i < stats.length; i++) {
+			_StatsList.entryList.push(stats[i]);
 		}
-		this._StatsList.InvalidateData();
+		_StatsList.InvalidateData();
 	}
 
-	function onCategoryListMoveUp(event)
+	function onCategoryListMoveUp(event: Object): Void
 	{
-		this.onCategoryHighlight();
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-		if (event.scrollChanged == true) 
-		{
-			this.CategoryList._parent.gotoAndPlay("moveUp");
+		onCategoryHighlight();
+		GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.scrollChanged == true) {
+			CategoryList._parent.gotoAndPlay("moveUp");
 		}
 	}
 
-	function onCategoryListMoveDown(event)
+	function onCategoryListMoveDown(event: Object): Void
 	{
-		this.onCategoryHighlight();
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-		if (event.scrollChanged == true) 
-		{
-			this.CategoryList._parent.gotoAndPlay("moveDown");
+		onCategoryHighlight();
+		GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.scrollChanged == true) {
+			CategoryList._parent.gotoAndPlay("moveDown");
 		}
 	}
 
-	function onCategoryListMouseSelectionChange(event)
+	function onCategoryListMouseSelectionChange(event: Object): Void
 	{
-		if (event.keyboardOrMouse == 0 && event.index != -1) 
-		{
-			this.onCategoryHighlight();
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.keyboardOrMouse == 0 && event.index != -1) {
+			onCategoryHighlight();
+			GameDelegate.call("PlaySound", ["UIMenuFocus"]);
 		}
 	}
 
-	function onRightStickInput(afX, afY)
+	function onRightStickInput(afX: Number, afY: Number): Void
 	{
-		if (afY < 0) 
-		{
-			this._StatsList.moveSelectionDown();
+		if (afY < 0) {
+			_StatsList.moveSelectionDown();
 			return;
 		}
-		this._StatsList.moveSelectionUp();
+		_StatsList.moveSelectionUp();
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean)
+	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		this.CategoryList.SetPlatform(aiPlatform, abPS3Switch);
-		this._StatsList.SetPlatform(aiPlatform, abPS3Switch);
+		CategoryList.SetPlatform(aiPlatform, abPS3Switch);
+		_StatsList.SetPlatform(aiPlatform, abPS3Switch);
 	}
 
 }

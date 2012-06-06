@@ -1,285 +1,257 @@
-dynamic class QuestsPage extends MovieClip
+import Components.CrossPlatformButtons;
+import gfx.io.GameDelegate;
+import gfx.ui.InputDetails;
+import Shared.GlobalFunc;
+import gfx.ui.NavigationCode;
+import gfx.managers.FocusHandler;
+
+class QuestsPage extends MovieClip
 {
-	var DescriptionText;
-	var Divider;
-	var NoQuestsText;
-	var ObjectiveList;
-	var ObjectivesHeader;
-	var QuestTitleText;
+	var DescriptionText: TextField;
+	var Divider: MovieClip;
+	var NoQuestsText: TextField;
+	var ObjectiveList: Object;
+	var ObjectivesHeader: MovieClip;
+	var QuestTitleText: TextField;
 	var ShowOnMapButton;
-	var TitleList;
-	var TitleList_mc;
-	var ToggleActiveButton;
-	var _parent;
-	var bAllowShowOnMap;
-	var bHasMiscQuests;
-	var bUpdated;
-	var iPlatform;
-	var objectiveList;
-	var objectivesHeader;
-	var questDescriptionText;
-	var questTitleEndpieces;
-	var questTitleText;
+	var TitleList: MovieClip;
+	var TitleList_mc: MovieClip;
+	var ToggleActiveButton: CrossPlatformButtons;
+	var bAllowShowOnMap: Boolean;
+	var bHasMiscQuests: Boolean;
+	var bUpdated: Boolean;
+	var iPlatform: Number;
+	var objectiveList: Object;
+	var objectivesHeader: MovieClip;
+	var questDescriptionText: TextField;
+	var questTitleEndpieces: MovieClip;
+	var questTitleText: TextField;
 
 	function QuestsPage()
 	{
 		super();
-		this.TitleList = this.TitleList_mc.List_mc;
-		this.DescriptionText = this.questDescriptionText;
-		this.QuestTitleText = this.questTitleText;
-		this.ObjectiveList = this.objectiveList;
-		this.ObjectivesHeader = this.objectivesHeader;
-		this.bHasMiscQuests = false;
-		this.bUpdated = false;
+		TitleList = TitleList_mc.List_mc;
+		DescriptionText = questDescriptionText;
+		QuestTitleText = questTitleText;
+		ObjectiveList = objectiveList;
+		ObjectivesHeader = objectivesHeader;
+		bHasMiscQuests = false;
+		bUpdated = false;
 	}
 
 	function onLoad()
 	{
-		this.QuestTitleText.SetText(" ");
-		this.DescriptionText.SetText(" ");
-		this.DescriptionText.verticalAutoSize = "top";
-		this.QuestTitleText.textAutoSize = "shrink";
-		this.TitleList.addEventListener("itemPress", this, "onTitleListSelect");
-		this.TitleList.addEventListener("listMovedUp", this, "onTitleListMoveUp");
-		this.TitleList.addEventListener("listMovedDown", this, "onTitleListMoveDown");
-		this.TitleList.addEventListener("selectionChange", this, "onTitleListMouseSelectionChange");
-		this.ObjectiveList.addEventListener("itemPress", this, "onObjectiveListSelect");
-		this.ObjectiveList.addEventListener("selectionChange", this, "onObjectiveListHighlight");
+		QuestTitleText.SetText(" ");
+		DescriptionText.SetText(" ");
+		DescriptionText.verticalAutoSize = "top";
+		QuestTitleText.textAutoSize = "shrink";
+		TitleList.addEventListener("itemPress", this, "onTitleListSelect");
+		TitleList.addEventListener("listMovedUp", this, "onTitleListMoveUp");
+		TitleList.addEventListener("listMovedDown", this, "onTitleListMoveDown");
+		TitleList.addEventListener("selectionChange", this, "onTitleListMouseSelectionChange");
+        TitleList.disableInput = true;
+		ObjectiveList.addEventListener("itemPress", this, "onObjectiveListSelect");
+		ObjectiveList.addEventListener("selectionChange", this, "onObjectiveListHighlight");
 	}
 
 	function startPage()
 	{
-		if (!this.bUpdated) 
-		{
-			this.ShowOnMapButton = this._parent._parent.BottomBar_mc.Button2_mc;
-			gfx.io.GameDelegate.call("RequestQuestsData", [this.TitleList], this, "onQuestsDataComplete");
-			this.ToggleActiveButton = this._parent._parent.BottomBar_mc.Button1_mc;
-			this.bUpdated = true;
+        TitleList.disableInput = false;
+		if (!bUpdated) {
+			ShowOnMapButton = _parent._parent.BottomBar_mc.Button2_mc;
+			GameDelegate.call("RequestQuestsData", [TitleList], this, "onQuestsDataComplete");
+			ToggleActiveButton = _parent._parent.BottomBar_mc.Button1_mc;
+			bUpdated = true;
 		}
-		this.SwitchFocusToTitles();
+		SwitchFocusToTitles();
 	}
 
 	function endPage()
 	{
+        TitleList.disableInput = true;
 	}
 
-	function get selectedQuestID()
+	function get selectedQuestID(): Number
 	{
-		return this.TitleList.entryList.length <= 0 ? undefined : this.TitleList.centeredEntry.formID;
+		return TitleList.entryList.length <= 0 ? undefined : TitleList.centeredEntry.formID;
 	}
 
-	function get selectedQuestInstance()
+	function get selectedQuestInstance(): Number
 	{
-		return this.TitleList.entryList.length <= 0 ? undefined : this.TitleList.centeredEntry.instance;
+		return TitleList.entryList.length <= 0 ? undefined : TitleList.centeredEntry.instance;
 	}
 
-	function handleInput(details: gfx.ui.InputDetails, pathToFocus: Array): Boolean
+	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var __reg2 = false;
-		if (Shared.GlobalFunc.IsKeyPressed(details)) 
-		{
-			if ((details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_X || details.code == 77) && this.bAllowShowOnMap) 
+		var bhandledInput: Boolean = false;
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 77) && bAllowShowOnMap) 
 			{
-				var __reg3 = undefined;
-				if (this.ObjectiveList.selectedEntry != undefined && this.ObjectiveList.selectedEntry.questTargetID != undefined) 
-				{
-					__reg3 = this.ObjectiveList.selectedEntry;
+				var oitem: Object = undefined;
+				if (ObjectiveList.selectedEntry != undefined && ObjectiveList.selectedEntry.questTargetID != undefined) {
+					oitem = ObjectiveList.selectedEntry;
+				} else {
+					oitem = ObjectiveList.entryList[0];
 				}
-				else 
-				{
-					__reg3 = this.ObjectiveList.entryList[0];
+				if (oitem != undefined && oitem.questTargetID != undefined) {
+					_parent._parent.CloseMenu();
+					GameDelegate.call("ShowTargetOnMap", [oitem.questTargetID]);
+				} else {
+					GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 				}
-				if (__reg3 != undefined && __reg3.questTargetID != undefined) 
-				{
-					this._parent._parent.CloseMenu();
-					gfx.io.GameDelegate.call("ShowTargetOnMap", [__reg3.questTargetID]);
-				}
-				else 
-				{
-					gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-				}
-				__reg2 = true;
-			}
-			else if (this.TitleList.entryList.length > 0) 
-			{
-				if (details.navEquivalent == gfx.ui.NavigationCode.LEFT && gfx.managers.FocusHandler.instance.getFocus(0) != this.TitleList) 
-				{
-					this.SwitchFocusToTitles();
-					__reg2 = true;
-				}
-				else if (details.navEquivalent == gfx.ui.NavigationCode.RIGHT && gfx.managers.FocusHandler.instance.getFocus(0) != this.ObjectiveList) 
-				{
-					this.SwitchFocusToObjectives();
-					__reg2 = true;
+				bhandledInput = true;
+			} else if (TitleList.entryList.length > 0) {
+				if (details.navEquivalent == NavigationCode.LEFT && FocusHandler.instance.getFocus(0) != TitleList) {
+					SwitchFocusToTitles();
+					bhandledInput = true;
+				} else if (details.navEquivalent == NavigationCode.RIGHT && FocusHandler.instance.getFocus(0) != ObjectiveList) {
+					SwitchFocusToObjectives();
+					bhandledInput = true;
 				}
 			}
 		}
-		if (!__reg2 && pathToFocus != undefined && pathToFocus.length > 0) 
-		{
-			__reg2 = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+		if (!bhandledInput && pathToFocus != undefined && pathToFocus.length > 0) {
+			bhandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}
-		return __reg2;
+		return bhandledInput;
 	}
 
-	function IsViewingMiscObjectives()
+	function IsViewingMiscObjectives(): Boolean
 	{
-		return this.bHasMiscQuests && this.TitleList.selectedEntry.formID == 0;
+		return bHasMiscQuests && TitleList.selectedEntry.formID == 0;
 	}
 
-	function onTitleListSelect()
+	function onTitleListSelect(): Void
 	{
-		if (this.TitleList.selectedEntry != undefined && !this.TitleList.selectedEntry.completed) 
-		{
-			if (!this.IsViewingMiscObjectives()) 
-			{
-				gfx.io.GameDelegate.call("ToggleQuestActiveStatus", [this.TitleList.selectedEntry.formID, this.TitleList.selectedEntry.instance], this, "ToggleQuestActiveCallback");
+		if (TitleList.selectedEntry != undefined && !TitleList.selectedEntry.completed) {
+			if (!IsViewingMiscObjectives()) {
+				GameDelegate.call("ToggleQuestActiveStatus", [TitleList.selectedEntry.formID, TitleList.selectedEntry.instance], this, "ToggleQuestActiveCallback");
 				return;
 			}
-			this.TitleList.selectedEntry.active = !this.TitleList.selectedEntry.active;
-			gfx.io.GameDelegate.call("ToggleShowMiscObjectives", [this.TitleList.selectedEntry.active]);
-			this.TitleList.UpdateList();
+			TitleList.selectedEntry.active = !TitleList.selectedEntry.active;
+			GameDelegate.call("ToggleShowMiscObjectives", [TitleList.selectedEntry.active]);
+			TitleList.UpdateList();
 		}
 	}
 
-	function onObjectiveListSelect()
+	function onObjectiveListSelect(): Void
 	{
-		if (this.IsViewingMiscObjectives()) 
-		{
-			gfx.io.GameDelegate.call("ToggleQuestActiveStatus", [this.ObjectiveList.selectedEntry.formID, this.ObjectiveList.selectedEntry.instance], this, "ToggleQuestActiveCallback");
+		if (IsViewingMiscObjectives()) {
+			GameDelegate.call("ToggleQuestActiveStatus", [ObjectiveList.selectedEntry.formID, ObjectiveList.selectedEntry.instance], this, "ToggleQuestActiveCallback");
 		}
 	}
 
-	function SwitchFocusToTitles()
+	function SwitchFocusToTitles(): Void
 	{
-		gfx.managers.FocusHandler.instance.setFocus(this.TitleList, 0);
-		this.Divider.gotoAndStop("Right");
-		this.ToggleActiveButton._alpha = 100;
-		this.ObjectiveList.selectedIndex = -1;
-		if (this.iPlatform != 0) 
-		{
-			this.ObjectiveList.disableSelection = true;
+		FocusHandler.instance.setFocus(TitleList, 0);
+		Divider.gotoAndStop("Right");
+		ToggleActiveButton._alpha = 100;
+		ObjectiveList.selectedIndex = -1;
+		if (iPlatform != 0) {
+			ObjectiveList.disableSelection = true;
 		}
-		this.UpdateShowOnMapButtonAlpha(0);
+		UpdateShowOnMapButtonAlpha(0);
 	}
 
-	function SwitchFocusToObjectives()
+	function SwitchFocusToObjectives(): Void
 	{
-		gfx.managers.FocusHandler.instance.setFocus(this.ObjectiveList, 0);
-		this.Divider.gotoAndStop("Left");
-		this.ToggleActiveButton._alpha = this.IsViewingMiscObjectives() ? 100 : 50;
-		if (this.iPlatform != 0) 
-		{
-			this.ObjectiveList.disableSelection = false;
+		FocusHandler.instance.setFocus(ObjectiveList, 0);
+		Divider.gotoAndStop("Left");
+		ToggleActiveButton._alpha = IsViewingMiscObjectives() ? 100 : 50;
+		if (iPlatform != 0) {
+			ObjectiveList.disableSelection = false;
 		}
-		this.ObjectiveList.selectedIndex = 0;
-		this.UpdateShowOnMapButtonAlpha(0);
+		ObjectiveList.selectedIndex = 0;
+		UpdateShowOnMapButtonAlpha(0);
 	}
 
-	function onObjectiveListHighlight(event)
+	function onObjectiveListHighlight(event): Void
 	{
-		this.UpdateShowOnMapButtonAlpha(event.index);
+		UpdateShowOnMapButtonAlpha(event.index);
 	}
 
-	function UpdateShowOnMapButtonAlpha(aiObjIndex)
+	function UpdateShowOnMapButtonAlpha(aiObjIndex: Number): Void
 	{
-		var __reg2 = 50;
-		if ((aiObjIndex >= 0 && this.ObjectiveList.entryList[aiObjIndex].questTargetID != undefined) || (this.ObjectiveList.entryList.length > 0 && this.ObjectiveList.entryList[0].questTargetID != undefined)) 
-		{
-			__reg2 = 100;
+		var ialpha: Number = 50;
+		if ((aiObjIndex >= 0 && ObjectiveList.entryList[aiObjIndex].questTargetID != undefined) || (ObjectiveList.entryList.length > 0 && ObjectiveList.entryList[0].questTargetID != undefined)) {
+			ialpha = 100;
 		}
-		this.ShowOnMapButton._alpha = __reg2;
+		ShowOnMapButton._alpha = ialpha;
 	}
 
-	function ToggleQuestActiveCallback(abNewActiveStatus)
+	function ToggleQuestActiveCallback(abNewActiveStatus: Number): Void
 	{
-		if (this.IsViewingMiscObjectives()) 
-		{
-			var __reg3 = this.ObjectiveList.selectedEntry.formID;
-			var __reg2 = this.ObjectiveList.selectedEntry.instance;
-			for (var __reg5 in this.ObjectiveList.entryList) 
-			{
-				if (this.ObjectiveList.entryList[__reg5].formID == __reg3 && this.ObjectiveList.entryList[__reg5].instance == __reg2) 
-				{
-					this.ObjectiveList.entryList[__reg5].active = abNewActiveStatus;
+		if (IsViewingMiscObjectives()) {
+			var iformID: Number = ObjectiveList.selectedEntry.formID;
+			var iinstance: Number = ObjectiveList.selectedEntry.instance;
+			for (var i: String in ObjectiveList.entryList) {
+				if (ObjectiveList.entryList[i].formID == iformID && ObjectiveList.entryList[i].instance == iinstance) {
+					ObjectiveList.entryList[i].active = abNewActiveStatus;
 				}
 			}
-			this.ObjectiveList.UpdateList();
+			ObjectiveList.UpdateList();
+		} else {
+			TitleList.selectedEntry.active = abNewActiveStatus;
+			TitleList.UpdateList();
 		}
-		else 
-		{
-			this.TitleList.selectedEntry.active = abNewActiveStatus;
-			this.TitleList.UpdateList();
-		}
-		if (abNewActiveStatus) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIQuestActive"]);
+		if (abNewActiveStatus) {
+			GameDelegate.call("PlaySound", ["UIQuestActive"]);
 			return;
 		}
-		gfx.io.GameDelegate.call("PlaySound", ["UIQuestInactive"]);
+		GameDelegate.call("PlaySound", ["UIQuestInactive"]);
 	}
 
-	function onQuestsDataComplete(auiSavedFormID, auiSavedInstance, abAddMiscQuest, abMiscQuestActive, abAllowShowOnMap)
+	function onQuestsDataComplete(auiSavedFormID: Number, auiSavedInstance: Number, abAddMiscQuest: Boolean, abMiscQuestActive: Boolean, abAllowShowOnMap: Boolean): Void
 	{
-		this.bAllowShowOnMap = abAllowShowOnMap;
-		if (abAddMiscQuest) 
-		{
-			this.TitleList.entryList.push({text: "$MISCELLANEOUS", formID: 0, instance: 0, active: abMiscQuestActive, completed: false, type: 0});
-			this.bHasMiscQuests = true;
+		bAllowShowOnMap = abAllowShowOnMap;
+		if (abAddMiscQuest)	{
+			TitleList.entryList.push({text: "$MISCELLANEOUS", formID: 0, instance: 0, active: abMiscQuestActive, completed: false, type: 0});
+			bHasMiscQuests = true;
 		}
-		var __reg3 = undefined;
-		var __reg5 = false;
-		var __reg6 = false;
-		var __reg2 = 0;
-		while (__reg2 < this.TitleList.entryList.length) 
-		{
-			if (this.TitleList.entryList[__reg2].formID == 0) 
-			{
-				this.TitleList.entryList[__reg2].timeIndex = 1.79769313486e+308;
-			}
-			else 
-			{
-				this.TitleList.entryList[__reg2].timeIndex = __reg2;
-			}
-			if (this.TitleList.entryList[__reg2].completed) 
-			{
-				if (__reg3 == undefined) 
-				{
-					__reg3 = this.TitleList.entryList[__reg2].timeIndex - 0.5;
+		var itimeCompleted: Number = undefined;
+		var bCompleted = false;
+		var bUncompleted = false;
+		
+		for (var i: Number; i < TitleList.entryList.length; i++) {
+			if (TitleList.entryList[i].formID == 0) {
+					TitleList.entryList[i].timeIndex = Number.MAX_VALUE;
+				} else {
+					TitleList.entryList[i].timeIndex = i;
 				}
-				__reg5 = true;
-			}
-			else 
-			{
-				__reg6 = true;
-			}
-			++__reg2;
+				if (TitleList.entryList[i].completed) {
+					if (itimeCompleted == undefined) {
+						itimeCompleted = TitleList.entryList[i].timeIndex - 0.5;
+					}
+					bCompleted = true;
+				} else {
+					bUncompleted = true;
+				}
 		}
-		if (__reg3 != undefined && __reg5 && __reg6) 
-		{
-			this.TitleList.entryList.push({divider: true, completed: true, timeIndex: __reg3});
+		
+		if (itimeCompleted != undefined && bCompleted && bUncompleted) {
+			// i.e. at least one completed and one uncompleted quest in the list
+			TitleList.entryList.push({divider: true, completed: true, timeIndex: itimeCompleted});
 		}
-		this.TitleList.entryList.sort(this.completedQuestSort);
-		var __reg4 = 0;
-		__reg2 = 0;
-		while (__reg2 < this.TitleList.entryList.length) 
-		{
-			if (this.TitleList.entryList[__reg2].text != undefined) 
-			{
-				this.TitleList.entryList[__reg2].text = this.TitleList.entryList[__reg2].text.toUpperCase();
+		TitleList.entryList.sort(completedQuestSort);
+		
+		var isavedIndex = 0;
+
+		for (var i: Number; i < TitleList.entryList.length; i++) {
+			if (TitleList.entryList[i].text != undefined) {
+				TitleList.entryList[i].text = TitleList.entryList[i].text.toUpperCase();
 			}
-			if (this.TitleList.entryList[__reg2].formID == auiSavedFormID && this.TitleList.entryList[__reg2].instance == auiSavedInstance) 
-			{
-				__reg4 = __reg2;
+			if (TitleList.entryList[i].formID == auiSavedFormID && TitleList.entryList[i].instance == auiSavedInstance) {
+				isavedIndex = i;
 			}
-			++__reg2;
 		}
-		this.TitleList.InvalidateData();
-		this.TitleList.RestoreScrollPosition(__reg4, true);
-		this.TitleList.UpdateList();
-		this.onQuestHighlight();
+
+		TitleList.InvalidateData();
+		TitleList.RestoreScrollPosition(isavedIndex, true);
+		TitleList.UpdateList();
+		onQuestHighlight();
 	}
 
-	function completedQuestSort(aObj1, aObj2)
+	function completedQuestSort(aObj1: Object, aObj2: Object): Number
 	{
 		if (!aObj1.completed && aObj2.completed) 
 		{
@@ -300,109 +272,97 @@ dynamic class QuestsPage extends MovieClip
 		return 0;
 	}
 
-	function onQuestHighlight()
+	function onQuestHighlight(): Void
 	{
-		if (this.TitleList.entryList.length > 0) 
-		{
-			var __reg2 = ["Misc", "Main", "MagesGuild", "ThievesGuild", "DarkBrotherhood", "Companion", "Favor", "Daedric", "Misc", "CivilWar"];
-			this.QuestTitleText.SetText(this.TitleList.selectedEntry.text);
-			if (this.TitleList.selectedEntry.objectives == undefined) 
-			{
-				gfx.io.GameDelegate.call("RequestObjectivesData", []);
+		if (TitleList.entryList.length > 0) {
+			var aCategories: Array = ["Misc", "Main", "MagesGuild", "ThievesGuild", "DarkBrotherhood", "Companion", "Favor", "Daedric", "Misc", "CivilWar"];
+			QuestTitleText.SetText(TitleList.selectedEntry.text);
+			if (TitleList.selectedEntry.objectives == undefined) {
+				GameDelegate.call("RequestObjectivesData", []);
 			}
-			this.ObjectiveList.entryList = this.TitleList.selectedEntry.objectives;
-			this.SetDescriptionText();
-			this.questTitleEndpieces.gotoAndStop(__reg2[this.TitleList.selectedEntry.type]);
-			this.questTitleEndpieces._visible = true;
-			this.ObjectivesHeader._visible = !this.IsViewingMiscObjectives();
-			this.ObjectiveList.selectedIndex = -1;
-			this.ObjectiveList.scrollPosition = 0;
-			if (this.iPlatform != 0) 
-			{
-				this.ObjectiveList.disableSelection = true;
+			ObjectiveList.entryList = TitleList.selectedEntry.objectives;
+			SetDescriptionText();
+			questTitleEndpieces.gotoAndStop(aCategories[TitleList.selectedEntry.type]);
+			questTitleEndpieces._visible = true;
+			ObjectivesHeader._visible = !IsViewingMiscObjectives();
+			ObjectiveList.selectedIndex = -1;
+			ObjectiveList.scrollPosition = 0;
+			if (iPlatform != 0) {
+				ObjectiveList.disableSelection = true;
 			}
-			this.ToggleActiveButton._visible = !this.TitleList.selectedEntry.completed;
-			this.ShowOnMapButton._visible = !this.TitleList.selectedEntry.completed && this.bAllowShowOnMap;
-			this.UpdateShowOnMapButtonAlpha(0);
+			ToggleActiveButton._visible = !TitleList.selectedEntry.completed;
+			ShowOnMapButton._visible = !TitleList.selectedEntry.completed && bAllowShowOnMap;
+			UpdateShowOnMapButtonAlpha(0);
+		} else {
+			NoQuestsText.SetText("No Active Quests");
+			DescriptionText.SetText(" ");
+			QuestTitleText.SetText(" ");
+			ObjectiveList.ClearList();
+			questTitleEndpieces._visible = false;
+			ObjectivesHeader._visible = false;
+			ShowOnMapButton._visible = false;
 		}
-		else 
-		{
-			this.NoQuestsText.SetText("No Active Quests");
-			this.DescriptionText.SetText(" ");
-			this.QuestTitleText.SetText(" ");
-			this.ObjectiveList.ClearList();
-			this.questTitleEndpieces._visible = false;
-			this.ObjectivesHeader._visible = false;
-			this.ShowOnMapButton._visible = false;
-		}
-		this.ObjectiveList.InvalidateData();
+		ObjectiveList.InvalidateData();
 	}
 
-	function SetDescriptionText()
+	function SetDescriptionText(): Void
 	{
-		var __reg2 = 25;
-		var __reg5 = 10;
-		var __reg3 = 470;
-		var __reg4 = 40;
-		this.DescriptionText.SetText(this.TitleList.selectedEntry.description);
-		var __reg6 = this.DescriptionText.getCharBoundaries(this.DescriptionText.getLineOffset(this.DescriptionText.numLines - 1));
-		this.ObjectivesHeader._y = this.DescriptionText._y + __reg6.bottom + __reg2;
-		if (this.IsViewingMiscObjectives()) 
-		{
-			this.ObjectiveList._y = this.DescriptionText._y;
+		var iHeaderyOffset: Number = 25;
+		var iObjectiveyOffset: Number = 10;
+		var iObjectiveBorderMaxy: Number = 470;
+		var iObjectiveBorderMiny: Number = 40;
+		DescriptionText.SetText(TitleList.selectedEntry.description);
+		var oCharBoundaries: Object = DescriptionText.getCharBoundaries(DescriptionText.getLineOffset(DescriptionText.numLines - 1));
+		ObjectivesHeader._y = DescriptionText._y + oCharBoundaries.bottom + iHeaderyOffset;
+		if (IsViewingMiscObjectives()) {
+			ObjectiveList._y = DescriptionText._y;
+		} else {
+			ObjectiveList._y = ObjectivesHeader._y + ObjectivesHeader._height + iObjectiveyOffset;
 		}
-		else 
-		{
-			this.ObjectiveList._y = this.ObjectivesHeader._y + this.ObjectivesHeader._height + __reg5;
-		}
-		this.ObjectiveList.border._height = Math.max(__reg3 - this.ObjectiveList._y, __reg4);
-		this.ObjectiveList.scrollbar.height = this.ObjectiveList.border._height - 20;
+		ObjectiveList.border._height = Math.max(iObjectiveBorderMaxy - ObjectiveList._y, iObjectiveBorderMiny);
+		ObjectiveList.scrollbar.height = ObjectiveList.border._height - 20;
 	}
 
-	function onTitleListMoveUp(event)
+	function onTitleListMoveUp(event: Object): Void
 	{
-		this.onQuestHighlight();
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-		if (event.scrollChanged == true) 
-		{
-			this.TitleList._parent.gotoAndPlay("moveUp");
+		onQuestHighlight();
+		GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.scrollChanged == true) {
+			TitleList._parent.gotoAndPlay("moveUp");
 		}
 	}
 
-	function onTitleListMoveDown(event)
+	function onTitleListMoveDown(event: Object): Void
 	{
-		this.onQuestHighlight();
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-		if (event.scrollChanged == true) 
-		{
-			this.TitleList._parent.gotoAndPlay("moveDown");
+		onQuestHighlight();
+		GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.scrollChanged == true) {
+			TitleList._parent.gotoAndPlay("moveDown");
 		}
 	}
 
-	function onTitleListMouseSelectionChange(event)
+	function onTitleListMouseSelectionChange(event: Object): Void
 	{
-		if (event.keyboardOrMouse == 0 && event.index != -1) 
-		{
-			this.onQuestHighlight();
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.keyboardOrMouse == 0 && event.index != -1) {
+			onQuestHighlight();
+			GameDelegate.call("PlaySound", ["UIMenuFocus"]);
 		}
 	}
 
-	function onRightStickInput(afX, afY)
+	function onRightStickInput(afX: Number, afY: Number): Void
 	{
-		if (afY < 0) 
-		{
-			this.ObjectiveList.moveSelectionDown();
+		if (afY < 0) {
+			ObjectiveList.moveSelectionDown();
 			return;
 		}
-		this.ObjectiveList.moveSelectionUp();
+		ObjectiveList.moveSelectionUp();
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean)
+	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		this.iPlatform = aiPlatform;
-		this.TitleList.SetPlatform(aiPlatform, abPS3Switch);
-		this.ObjectiveList.SetPlatform(aiPlatform, abPS3Switch);
+		iPlatform = aiPlatform;
+		TitleList.SetPlatform(aiPlatform, abPS3Switch);
+		ObjectiveList.SetPlatform(aiPlatform, abPS3Switch);
 	}
 
 }

@@ -1,39 +1,35 @@
-dynamic class OptionsList extends Shared.BSScrollingList
+class OptionsList extends Shared.BSScrollingList
 {
-	var EntriesA;
-	var GetClipByIndex;
-	var bAllowValueOverwrite;
+	var EntriesA: Array;
+	var GetClipByIndex: Function;
+	var bAllowValueOverwrite: Boolean;
 
 	function OptionsList()
 	{
 		super();
-		this.bAllowValueOverwrite = false;
+		bAllowValueOverwrite = false;
 	}
 
-	function GetEntryHeight(aiEntryIndex)
+	function GetEntryHeight(aiEntryIndex: Number): Number
 	{
-		var __reg2 = this.GetClipByIndex(0);
-		return __reg2._height;
+		var entry: MovieClip = GetClipByIndex(0);
+		return entry._height;
 	}
 
-	function onValueChange(aiItemIndex, aiNewValue)
+	function onValueChange(aiItemIndex: Number, aiNewValue: Number): Void
 	{
-		if (aiItemIndex != undefined) 
-		{
-			this.EntriesA[aiItemIndex].value = aiNewValue;
+		if (aiItemIndex != undefined) {
+			EntriesA[aiItemIndex].value = aiNewValue;
 		}
 	}
 
-	function SetEntry(aEntryClip, aEntryObject)
+	function SetEntry(aEntryClip: MovieClip, aEntryObject: Object): Void
 	{
-		if (aEntryClip != undefined) 
-		{
-			aEntryClip.selected = aEntryObject == this.selectedEntry;
-			if (this.bAllowValueOverwrite || aEntryClip.ID != aEntryObject.ID) 
-			{
+		if (aEntryClip != undefined) {
+			aEntryClip.selected = aEntryObject == selectedEntry;
+			if (bAllowValueOverwrite || aEntryClip.ID != aEntryObject.ID) {
 				aEntryClip.movieType = aEntryObject.movieType;
-				if (aEntryObject.options != undefined) 
-				{
+				if (aEntryObject.options != undefined) {
 					aEntryClip.SetOptionStepperOptions(aEntryObject.options);
 				}
 				aEntryClip.ID = aEntryObject.ID;

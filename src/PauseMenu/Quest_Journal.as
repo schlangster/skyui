@@ -1,201 +1,231 @@
-﻿dynamic class Quest_Journal extends MovieClip
-{
-	var BottomBar;
-	var BottomBar_mc;
-	var PageArray;
-	var QuestsFader;
-	var QuestsTab;
-	var StatsFader;
-	var StatsTab;
-	var SystemFader;
-	var SystemTab;
-	var TabButtonGroup;
-	var TabButtonHelp;
-	var TopmostPage;
-	var _parent;
-	var bTabsDisabled;
-	var iCurrentTab;
+import gfx.controls.RadioButton;
+import gfx.controls.ButtonGroup;
+import gfx.io.GameDelegate;
+import gfx.ui.InputDetails;
+import Shared.GlobalFunc;
+import gfx.ui.NavigationCode;
+import gfx.managers.FocusHandler;
 
-	public function Quest_Journal()
+class Quest_Journal extends MovieClip
+{
+	var bTabsDisabled: Boolean;
+	
+	var iCurrentTab: Number;
+	
+	var BottomBar: MovieClip;
+	var BottomBar_mc: MovieClip;
+	
+	var PageArray: Array;
+	
+	var TabButtonHelp: MovieClip;
+	var TopmostPage: MovieClip;	
+	var QuestsFader: MovieClip;
+	var StatsFader: MovieClip;
+	var SystemFader: MovieClip;
+	
+	var QuestsTab: RadioButton;
+	var StatsTab: RadioButton;
+	var SystemTab: RadioButton;
+	var TabButtonGroup: ButtonGroup;
+	
+	var ConfigPanel: MovieClip;
+
+	function Quest_Journal()
 	{
 		super();
-		this.QuestsTab = this.QuestsTab;
-		this.StatsTab = this.StatsTab;
-		this.SystemTab = this.SystemTab;
-		this.BottomBar_mc = this.BottomBar;
-		this.PageArray = new Array(this.QuestsFader.Page_mc, this.StatsFader.Page_mc, this.SystemFader.Page_mc);
-		this.TopmostPage = this.QuestsFader;
-		this.bTabsDisabled = false;
+		BottomBar_mc = BottomBar;
+		PageArray = new Array(QuestsFader.Page_mc, StatsFader.Page_mc, SystemFader.Page_mc);
+		TopmostPage = QuestsFader;
+		bTabsDisabled = false;
+		
 	}
 
-	public function InitExtensions(): Void
+	function InitExtensions()
 	{
-		Shared.GlobalFunc.SetLockFunction();
-		MovieClip(this.BottomBar_mc).Lock("B");
-		this.QuestsTab.disableFocus = true;
-		this.StatsTab.disableFocus = true;
-		this.SystemTab.disableFocus = true;
-		this.TabButtonGroup = gfx.controls.ButtonGroup(this.QuestsTab.group);
-		this.TabButtonGroup.addEventListener("itemClick", this, "onTabClick");
-		this.TabButtonGroup.addEventListener("change", this, "onTabChange");
-		gfx.io.GameDelegate.addCallBack("RestoreSavedSettings", this, "RestoreSavedSettings");
-		gfx.io.GameDelegate.addCallBack("onRightStickInput", this, "onRightStickInput");
-		gfx.io.GameDelegate.addCallBack("HideMenu", this, "DoHideMenu");
-		gfx.io.GameDelegate.addCallBack("ShowMenu", this, "DoShowMenu");
-		gfx.io.GameDelegate.addCallBack("StartCloseMenu", this, "CloseMenu");
-		this.BottomBar_mc.InitBar();
+		GlobalFunc.SetLockFunction();
+		MovieClip(BottomBar_mc).Lock("B");
+		
+		ConfigPanel = _root.ConfigPanelFader.Menu_mc;
+		
+		QuestsTab.disableFocus = true;
+		StatsTab.disableFocus = true;
+		SystemTab.disableFocus = true;
+		
+		TabButtonGroup = ButtonGroup(QuestsTab.group);
+		TabButtonGroup.addEventListener("itemClick", this, "onTabClick");
+		TabButtonGroup.addEventListener("change", this, "onTabChange");
+		
+		GameDelegate.addCallBack("RestoreSavedSettings", this, "RestoreSavedSettings");
+		GameDelegate.addCallBack("onRightStickInput", this, "onRightStickInput");
+		GameDelegate.addCallBack("HideMenu", this, "DoHideMenu");
+		GameDelegate.addCallBack("ShowMenu", this, "DoShowMenu");
+		GameDelegate.addCallBack("StartCloseMenu", this, "CloseMenu");
+		
+		BottomBar_mc.InitBar();
 	}
 
-	function RestoreSavedSettings(aiSavedTab, abTabsDisabled)
+	function RestoreSavedSettings(aiSavedTab: Number, abTabsDisabled: Boolean): Void
 	{
-		this.iCurrentTab = Math.min(Math.max(aiSavedTab, 0), this.TabButtonGroup.length - 1);
-		this.bTabsDisabled = abTabsDisabled;
-		if (this.bTabsDisabled) 
-		{
-			this.iCurrentTab = this.TabButtonGroup.length - 1;
-			this.QuestsTab.disabled = true;
-			this.StatsTab.disabled = true;
+		iCurrentTab = Math.min(Math.max(aiSavedTab, 0), TabButtonGroup.length - 1);
+		bTabsDisabled = abTabsDisabled;
+		if (bTabsDisabled) {
+			iCurrentTab = TabButtonGroup.length - 1;
+			QuestsTab.disabled = true;
+			StatsTab.disabled = true;
 		}
-		this.SwitchPageToFront(this.iCurrentTab, true);
-		this.TabButtonGroup.setSelectedButton(this.TabButtonGroup.getButtonAt(this.iCurrentTab));
+		SwitchPageToFront(iCurrentTab, true);
+		TabButtonGroup.setSelectedButton(TabButtonGroup.getButtonAt(iCurrentTab));
 	}
 
-	function SwitchPageToFront(aiTab, abForceFade)
+	function SwitchPageToFront(aiTab: Number, abForceFade: Boolean): Void
 	{
-		if (this.TopmostPage != this.PageArray[this.iCurrentTab]._parent) 
-		{
-			this.TopmostPage.gotoAndStop("hide");
-			this.PageArray[this.iCurrentTab]._parent.swapDepths(this.TopmostPage);
-			this.TopmostPage = this.PageArray[this.iCurrentTab]._parent;
+		if (bTabsDisabled) {
+			return;
 		}
-		this.TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
-		this.BottomBar_mc.SetMode(this.iCurrentTab);
+		if (TopmostPage != PageArray[iCurrentTab]._parent) 
+		{
+			TopmostPage.gotoAndStop("hide");
+			PageArray[iCurrentTab]._parent.swapDepths(TopmostPage);
+			TopmostPage = PageArray[iCurrentTab]._parent;
+			
+		}
+		TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
+		BottomBar_mc.SetMode(iCurrentTab);
 	}
 
-	function handleInput(details: gfx.ui.InputDetails, pathToFocus: Array): Boolean
+	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var __reg4 = false;
-		if (pathToFocus != undefined && pathToFocus.length > 0) 
-		{
-			__reg4 = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+		var bHandledInput: Boolean = false;
+		
+		if (pathToFocus != undefined && pathToFocus.length > 0) {
+			bHandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}
-		if (!__reg4 && Shared.GlobalFunc.IsKeyPressed(details, false)) 
-		{
-			if ((__reg0 = details.navEquivalent) === gfx.ui.NavigationCode.TAB) 
-			{
-				this.CloseMenu();
-			}
-			else if (__reg0 === gfx.ui.NavigationCode.GAMEPAD_L2) 
-			{
-				if (!this.bTabsDisabled) 
-				{
-					this.PageArray[this.iCurrentTab].endPage();
-					this.iCurrentTab = this.iCurrentTab + (details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_L2 ? -1 : 1);
-					if (this.iCurrentTab == -1) 
-					{
-						this.iCurrentTab = this.TabButtonGroup.length - 1;
+		if (!bHandledInput && GlobalFunc.IsKeyPressed(details, false)) {
+			if (details.navEquivalent === NavigationCode.TAB) {
+				CloseMenu();
+			} else if (details.navEquivalent === NavigationCode.GAMEPAD_L2) {
+				if (!bTabsDisabled) {
+					PageArray[iCurrentTab].endPage();
+					iCurrentTab = iCurrentTab + (details.navEquivalent == NavigationCode.GAMEPAD_L2 ? -1 : 1);
+					if (iCurrentTab == -1) {
+						iCurrentTab = TabButtonGroup.length - 1;
 					}
-					if (this.iCurrentTab == this.TabButtonGroup.length) 
-					{
-						this.iCurrentTab = 0;
+					if (iCurrentTab == TabButtonGroup.length) {
+						iCurrentTab = 0;
 					}
-					this.SwitchPageToFront(this.iCurrentTab, false);
-					this.TabButtonGroup.setSelectedButton(this.TabButtonGroup.getButtonAt(this.iCurrentTab));
+					SwitchPageToFront(iCurrentTab, false);
+					TabButtonGroup.setSelectedButton(TabButtonGroup.getButtonAt(iCurrentTab));
 				}
-			}
-			else if (__reg0 === gfx.ui.NavigationCode.GAMEPAD_R2) 
-			{
-				if (!this.bTabsDisabled) 
-				{
-					this.PageArray[this.iCurrentTab].endPage();
-					this.iCurrentTab = this.iCurrentTab + (details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_L2 ? -1 : 1);
-					if (this.iCurrentTab == -1) 
-					{
-						this.iCurrentTab = this.TabButtonGroup.length - 1;
+			} else if (details.navEquivalent === NavigationCode.GAMEPAD_R2) {
+				if (!bTabsDisabled) {
+					PageArray[iCurrentTab].endPage();
+					iCurrentTab = iCurrentTab + (details.navEquivalent == NavigationCode.GAMEPAD_L2 ? -1 : 1);
+					if (iCurrentTab == -1) {
+						iCurrentTab = TabButtonGroup.length - 1;
 					}
-					if (this.iCurrentTab == this.TabButtonGroup.length) 
-					{
-						this.iCurrentTab = 0;
+					if (iCurrentTab == TabButtonGroup.length) {
+						iCurrentTab = 0;
 					}
-					this.SwitchPageToFront(this.iCurrentTab, false);
-					this.TabButtonGroup.setSelectedButton(this.TabButtonGroup.getButtonAt(this.iCurrentTab));
+					SwitchPageToFront(iCurrentTab, false);
+					TabButtonGroup.setSelectedButton(TabButtonGroup.getButtonAt(iCurrentTab));
 				}
 			}
 		}
 		return true;
 	}
 
-	function CloseMenu(abForceClose)
+	function CloseMenu(abForceClose: Boolean): Void
 	{
-		if (abForceClose != true) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIJournalClose"]);
+		if (abForceClose != true) {
+			GameDelegate.call("PlaySound", ["UIJournalClose"]);
 		}
-		gfx.io.GameDelegate.call("CloseMenu", [this.iCurrentTab, this.QuestsFader.Page_mc.selectedQuestID, this.QuestsFader.Page_mc.selectedQuestInstance]);
+		GameDelegate.call("CloseMenu", [iCurrentTab, QuestsFader.Page_mc.selectedQuestID, QuestsFader.Page_mc.selectedQuestInstance]);
 	}
 
-	function onTabClick(event)
+	function onTabClick(event: Object): Void
 	{
-		if (this.bTabsDisabled) 
-		{
+		if (bTabsDisabled) {
 			return;
 		}
-		var __reg2 = this.iCurrentTab;
-		if (event.item == this.QuestsTab) 
-		{
-			this.iCurrentTab = 0;
+		
+		var iOldTab: Number = iCurrentTab;
+		
+		if (event.item == QuestsTab) {
+			iCurrentTab = 0;
+		} else if (event.item == StatsTab) {
+			iCurrentTab = 1;
+		} else if (event.item == SystemTab) {
+			iCurrentTab = 2;
 		}
-		else if (event.item == this.StatsTab) 
-		{
-			this.iCurrentTab = 1;
+		if (iOldTab != iCurrentTab) {
+			PageArray[iOldTab].endPage();
 		}
-		else if (event.item == this.SystemTab) 
-		{
-			this.iCurrentTab = 2;
-		}
-		if (__reg2 != this.iCurrentTab) 
-		{
-			this.PageArray[__reg2].endPage();
-		}
-		this.SwitchPageToFront(this.iCurrentTab, false);
+		
+		SwitchPageToFront(iCurrentTab, false);
 	}
 
-	function onTabChange(event)
+	function onTabChange(event: Object): Void
 	{
+		if (bTabsDisabled) {
+			return;
+		}
+
 		event.item.gotoAndPlay("selecting");
-		this.PageArray[this.iCurrentTab].startPage();
-		gfx.io.GameDelegate.call("PlaySound", ["UIJournalTabsSD"]);
+		PageArray[iCurrentTab].startPage();
+		GameDelegate.call("PlaySound", ["UIJournalTabsSD"]);
 	}
 
-	function onRightStickInput(afX, afY)
+	function onRightStickInput(afX: Number, afY: Number): Void
 	{
-		if (this.PageArray[this.iCurrentTab].onRightStickInput != undefined) 
-		{
-			this.PageArray[this.iCurrentTab].onRightStickInput(afX, afY);
+		if (PageArray[iCurrentTab].onRightStickInput != undefined) {
+			PageArray[iCurrentTab].onRightStickInput(afX, afY);
 		}
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean)
+	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		for (var __reg4 in this.PageArray) 
-		{
-			if (this.PageArray[__reg4].SetPlatform != undefined) 
+		for (var i: String in PageArray) {
+			if (PageArray[i].SetPlatform != undefined) 
 			{
-				this.PageArray[__reg4].SetPlatform(aiPlatform, abPS3Switch);
+				PageArray[i].SetPlatform(aiPlatform, abPS3Switch);
 			}
 		}
-		this.BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
-		this.TabButtonHelp.gotoAndStop(aiPlatform + 1);
+		BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
+		TabButtonHelp.gotoAndStop(aiPlatform + 1);
 	}
 
-	function DoHideMenu()
+	function DoHideMenu(): Void
 	{
-		this._parent.gotoAndPlay("fadeOut");
+		_parent.gotoAndPlay("fadeOut");
 	}
 
-	function DoShowMenu()
+	function DoShowMenu(): Void
 	{
-		this._parent.gotoAndPlay("fadeIn");
+		_parent.gotoAndPlay("fadeIn");
 	}
 
+	function DisableTabs(abEnable: Boolean): Void {
+		QuestsTab.disabled = abEnable;
+		StatsTab.disabled = abEnable;
+		SystemTab.disabled = abEnable;
+	}
+	
+	function ConfigPanelOpen() {
+		DisableTabs(true); // Disable Tabs
+		SystemFader.Page_mc.endPage(); // End System Page
+		DoHideMenu(); // Hide the main menu
+		_root.ConfigPanelFader.swapDepths(_root.QuestJournalFader); // Move ConfigPanelFader to front
+		FocusHandler.instance.setFocus(ConfigPanel, 0); // Set focus to _root.ConfigPanelFader.Menu_mc
+		ConfigPanel.startPage(); // Start the config panel
+	}
+	
+	function ConfigPanelClose() {
+		ConfigPanel.endPage(); // End config panel
+		_root.QuestJournalFader.swapDepths(_root.ConfigPanelFader); // Move QuestJournalFader to front
+		FocusHandler.instance.setFocus(this, 0); // Set focus to _root.QuestJournalFader.Menu_mc
+		DoShowMenu(); // Show main menu
+		SystemFader.Page_mc.startPage(); // Start System Page
+		DisableTabs(false); // Reenable tabs
+	}
+	
 }
