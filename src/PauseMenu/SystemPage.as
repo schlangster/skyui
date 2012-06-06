@@ -1,4 +1,11 @@
-dynamic class SystemPage extends MovieClip
+import Shared.ButtonTextArtHolder;
+import gfx.io.GameDelegate;
+import gfx.ui.InputDetails;
+import Shared.GlobalFunc;
+import gfx.ui.NavigationCode;
+import gfx.managers.FocusHandler;
+
+class SystemPage extends MovieClip
 {
 	static var MAIN_STATE: Number = 0;
 	static var SAVE_LOAD_STATE: Number = 1;
@@ -14,1101 +21,874 @@ dynamic class SystemPage extends MovieClip
 	static var HELP_LIST_STATE: Number = 11;
 	static var HELP_TEXT_STATE: Number = 12;
 	static var TRANSITIONING: Number = 13;
-	var BottomBar_mc;
-	var CategoryList;
-	var CategoryList_mc;
-	var ConfirmPanel;
-	var ConfirmTextField;
-	var ErrorText;
-	var HelpButtonHolder;
-	var HelpList;
-	var HelpListPanel;
-	var HelpText;
-	var HelpTextPanel;
-	var HelpTitleText;
-	var InputMappingPanel;
-	var MappingList;
-	var OptionsListsPanel;
-	var PCQuitList;
-	var PCQuitPanel;
-	var PanelRect;
-	var SaveLoadListHolder;
-	var SaveLoadPanel;
-	var SettingsList;
-	var SettingsPanel;
-	var SystemDivider;
-	var TopmostPanel;
-	var VersionText;
-	var _parent;
-	var bMenuClosing;
-	var bRemapMode;
-	var bSavingSettings;
-	var bSettingsChanged;
-	var bUpdated;
-	var iCurrentState;
-	var iDebounceRemapModeID;
-	var iHideErrorTextID;
-	var iPlatform;
-	var iSaveDelayTimerID;
-	var iSavingSettingsTimerID;
+    static var MOD_CONFIG_STATE: Number = 14;
+	
+	var HelpButtonHolder: ButtonTextArtHolder;
+	
+	var BottomBar_mc: MovieClip;
+	var CategoryList: MovieClip;
+	var CategoryList_mc: MovieClip;
+	var ConfirmPanel: MovieClip;
+	var HelpList: MovieClip;
+	var HelpListPanel: MovieClip;
+	var HelpTextPanel: MovieClip;
+	var InputMappingPanel: MovieClip;
+	var MappingList: MovieClip;
+	var OptionsListsPanel: MovieClip;
+	var PCQuitList: MovieClip;
+	var PCQuitPanel: MovieClip;
+	var PanelRect: MovieClip;
+	var SaveLoadListHolder: MovieClip;
+	var SaveLoadPanel: MovieClip;
+	var SettingsList: MovieClip;
+	var SettingsPanel: MovieClip;
+	var SystemDivider: MovieClip;
+	var TopmostPanel: MovieClip;
+	
+	var ConfirmTextField: TextField;
+	var ErrorText: TextField;
+	var HelpText: TextField;
+	var HelpTitleText: TextField;
+	var VersionText: TextField;
+	
+	var bMenuClosing: Boolean;
+	var bRemapMode: Boolean;
+	var bSavingSettings: Boolean;
+	var bSettingsChanged: Boolean;
+	var bUpdated: Boolean;
+	
+	var iCurrentState: Number;
+	var iDebounceRemapModeID: Number;
+	var iHideErrorTextID: Number;
+	var iPlatform: Number;
+	var iSaveDelayTimerID: Number;
+	var iSavingSettingsTimerID: Number;
 
 	function SystemPage()
 	{
 		super();
-		this.CategoryList = this.CategoryList_mc.List_mc;
-		this.SaveLoadListHolder = this.SaveLoadPanel;
-		this.SettingsList = this.SettingsPanel.List_mc;
-		this.MappingList = this.InputMappingPanel.List_mc;
-		this.PCQuitList = this.PCQuitPanel.List_mc;
-		this.HelpList = this.HelpListPanel.List_mc;
-		this.HelpText = this.HelpTextPanel.HelpTextHolder.HelpText;
-		this.HelpButtonHolder = this.HelpTextPanel.HelpTextHolder.ButtonArtHolder;
-		this.HelpTitleText = this.HelpTextPanel.HelpTextHolder.TitleText;
-		this.ConfirmTextField = this.ConfirmPanel.ConfirmText.textField;
-		this.TopmostPanel = this.PanelRect;
-		this.bUpdated = false;
-		this.bRemapMode = false;
-		this.bSettingsChanged = false;
-		this.bMenuClosing = false;
-		this.bSavingSettings = false;
-		this.iPlatform = 0;
+		CategoryList = CategoryList_mc.List_mc;
+		SaveLoadListHolder = SaveLoadPanel;
+		SettingsList = SettingsPanel.List_mc;
+		MappingList = InputMappingPanel.List_mc;
+		PCQuitList = PCQuitPanel.List_mc;
+		HelpList = HelpListPanel.List_mc;
+		HelpText = HelpTextPanel.HelpTextHolder.HelpText;
+		HelpButtonHolder = HelpTextPanel.HelpTextHolder.ButtonArtHolder;
+		HelpTitleText = HelpTextPanel.HelpTextHolder.TitleText;
+		ConfirmTextField = ConfirmPanel.ConfirmText.textField;
+		TopmostPanel = PanelRect;
+		bUpdated = false;
+		bRemapMode = false;
+		bSettingsChanged = false;
+		bMenuClosing = false;
+		bSavingSettings = false;
+		iPlatform = 0;
 	}
 
-	function onLoad()
+	function onLoad(): Void
 	{
-		this.CategoryList.entryList.push({text: "$SAVE"});
-		this.CategoryList.entryList.push({text: "$LOAD"});
-		this.CategoryList.entryList.push({text: "$SETTINGS"});
-		this.CategoryList.entryList.push({text: "$CONTROLS"});
-		this.CategoryList.entryList.push({text: "$HELP"});
-		this.CategoryList.entryList.push({text: "$QUIT"});
-		this.CategoryList.InvalidateData();
-		this.CategoryList.addEventListener("itemPress", this, "onCategoryButtonPress");
-		this.CategoryList.addEventListener("listPress", this, "onCategoryListPress");
-		this.CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
-		this.CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
-		this.CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
-		this.ConfirmPanel.handleInput = function ()
-		{
+		CategoryList.entryList.push({text: "$SAVE"});
+		CategoryList.entryList.push({text: "$LOAD"});
+		CategoryList.entryList.push({text: "$SETTINGS"});
+		CategoryList.entryList.push({text: "$MOD CONFIG"});
+		CategoryList.entryList.push({text: "$CONTROLS"});
+		CategoryList.entryList.push({text: "$HELP"});
+		CategoryList.entryList.push({text: "$QUIT"});
+		CategoryList.InvalidateData();
+		CategoryList.addEventListener("itemPress", this, "onCategoryButtonPress");
+		CategoryList.addEventListener("listPress", this, "onCategoryListPress");
+		CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
+		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
+		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
+		CategoryList.disableInput = true;
+		ConfirmPanel.handleInput = function () {
 			return false;
-		}
-		;
-		this.ConfirmPanel.ButtonRect.AcceptMouseButton.addEventListener("click", this, "onAcceptMousePress");
-		this.ConfirmPanel.ButtonRect.CancelMouseButton.addEventListener("click", this, "onCancelMousePress");
-		this.ConfirmPanel.ButtonRect.AcceptMouseButton.SetPlatform(0, false);
-		this.ConfirmPanel.ButtonRect.CancelMouseButton.SetPlatform(0, false);
-		this.SaveLoadListHolder.addEventListener("saveGameSelected", this, "ConfirmSaveGame");
-		this.SaveLoadListHolder.addEventListener("loadGameSelected", this, "ConfirmLoadGame");
-		this.SaveLoadListHolder.addEventListener("saveListPopulated", this, "OnSaveListOpenSuccess");
-		this.SaveLoadListHolder.addEventListener("saveHighlighted", this, "onSaveHighlight");
-		this.SaveLoadListHolder.List_mc.addEventListener("listPress", this, "onSaveLoadListPress");
-		this.SettingsList.entryList = [{text: "$Gameplay"}, {text: "$Display"}, {text: "$Audio"}];
-		this.SettingsList.InvalidateData();
-		this.SettingsList.addEventListener("itemPress", this, "onSettingsCategoryPress");
-		this.SettingsList.disableInput = true;
-		this.InputMappingPanel.List_mc.addEventListener("itemPress", this, "onInputMappingPress");
-		gfx.io.GameDelegate.addCallBack("FinishRemapMode", this, "onFinishRemapMode");
-		gfx.io.GameDelegate.addCallBack("SettingsSaved", this, "onSettingsSaved");
-		gfx.io.GameDelegate.addCallBack("RefreshSystemButtons", this, "RefreshSystemButtons");
-		this.PCQuitList.entryList = [{text: "$Main Menu"}, {text: "$Desktop"}];
-		this.PCQuitList.UpdateList();
-		this.PCQuitList.addEventListener("itemPress", this, "onPCQuitButtonPress");
-		this.HelpList.addEventListener("itemPress", this, "onHelpItemPress");
-		this.HelpList.disableInput = true;
-		this.HelpTitleText.textAutoSize = "shrink";
-		this.BottomBar_mc = this._parent._parent.BottomBar_mc;
-		gfx.io.GameDelegate.addCallBack("BackOutFromLoadGame", this, "BackOutFromLoadGame");
+		};
+		ConfirmPanel.ButtonRect.AcceptMouseButton.addEventListener("click", this, "onAcceptMousePress");
+		ConfirmPanel.ButtonRect.CancelMouseButton.addEventListener("click", this, "onCancelMousePress");
+		ConfirmPanel.ButtonRect.AcceptMouseButton.SetPlatform(0, false);
+		ConfirmPanel.ButtonRect.CancelMouseButton.SetPlatform(0, false);
+		SaveLoadListHolder.addEventListener("saveGameSelected", this, "ConfirmSaveGame");
+		SaveLoadListHolder.addEventListener("loadGameSelected", this, "ConfirmLoadGame");
+		SaveLoadListHolder.addEventListener("saveListPopulated", this, "OnSaveListOpenSuccess");
+		SaveLoadListHolder.addEventListener("saveHighlighted", this, "onSaveHighlight");
+		SaveLoadListHolder.List_mc.addEventListener("listPress", this, "onSaveLoadListPress");
+		SettingsList.entryList = [{text: "$Gameplay"}, {text: "$Display"}, {text: "$Audio"}];
+		SettingsList.InvalidateData();
+		SettingsList.addEventListener("itemPress", this, "onSettingsCategoryPress");
+		SettingsList.disableInput = true;
+		InputMappingPanel.List_mc.addEventListener("itemPress", this, "onInputMappingPress");
+		GameDelegate.addCallBack("FinishRemapMode", this, "onFinishRemapMode");
+		GameDelegate.addCallBack("SettingsSaved", this, "onSettingsSaved");
+		GameDelegate.addCallBack("RefreshSystemButtons", this, "RefreshSystemButtons");
+		PCQuitList.entryList = [{text: "$Main Menu"}, {text: "$Desktop"}];
+		PCQuitList.UpdateList();
+		PCQuitList.addEventListener("itemPress", this, "onPCQuitButtonPress");
+		HelpList.addEventListener("itemPress", this, "onHelpItemPress");
+		HelpList.disableInput = true;
+		HelpTitleText.textAutoSize = "shrink";
+		BottomBar_mc = _parent._parent.BottomBar_mc;
+		GameDelegate.addCallBack("BackOutFromLoadGame", this, "BackOutFromLoadGame");
 	}
 
-	function startPage()
+	function startPage(): Void
 	{
-		if (!this.bUpdated) 
-		{
-			this.currentState = SystemPage.MAIN_STATE;
-			gfx.io.GameDelegate.call("SetVersionText", [this.VersionText]);
-			gfx.io.GameDelegate.call("SetSaveDisabled", [this.CategoryList.entryList[0], this.CategoryList.entryList[1], this.CategoryList.entryList[2], this.CategoryList.entryList[3], this.CategoryList.entryList[5]]);
-			this.BottomBar_mc.SetButtonVisibility(1, false, 50);
-			this.CategoryList.UpdateList();
-			this.bUpdated = true;
+		CategoryList.disableInput = false;
+		if (!bUpdated) {
+			currentState = SystemPage.MAIN_STATE;
+			GameDelegate.call("SetVersionText", [VersionText]);
+			GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5]]);
+			BottomBar_mc.SetButtonVisibility(1, false, 50);
+			CategoryList.UpdateList();
+			bUpdated = true;
 			return;
 		}
-		this.UpdateStateFocus(this.iCurrentState);
+		UpdateStateFocus(iCurrentState);
 	}
 
-	function endPage()
+	function endPage(): Void
 	{
-		this.BottomBar_mc.SetButtonVisibility(1, false, 100);
+		BottomBar_mc.SetButtonVisibility(1, false, 100);
+		CategoryList.disableInput = true;
 	}
 
-	function get currentState()
+	function get currentState(): Number
 	{
-		return this.iCurrentState;
+		return iCurrentState;
 	}
 
-	function set currentState(aiNewState)
+	function set currentState(aiNewState: Number): Void
 	{
-		var __reg2 = this.GetPanelForState(aiNewState);
-		this.iCurrentState = aiNewState;
-		if (__reg2 != this.TopmostPanel) 
-		{
-			__reg2.swapDepths(this.TopmostPanel);
-			this.TopmostPanel = __reg2;
-		}
-		this.UpdateStateFocus(aiNewState);
+		var Panel_mc: MovieClip = GetPanelForState(aiNewState);
+		iCurrentState = aiNewState;
+		if (Panel_mc != TopmostPanel && iCurrentState) {
+			Panel_mc.swapDepths(TopmostPanel);
+			TopmostPanel = Panel_mc;
+		}		
+		UpdateStateFocus(aiNewState);
 	}
 
-	function handleInput(details: gfx.ui.InputDetails, pathToFocus: Array): Boolean
+	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var __reg3 = false;
-		if (this.bRemapMode || this.bMenuClosing || this.bSavingSettings || this.iCurrentState == SystemPage.TRANSITIONING) 
-		{
-			__reg3 = true;
-		}
-		else if (Shared.GlobalFunc.IsKeyPressed(details, this.iCurrentState != SystemPage.INPUT_MAPPING_STATE)) 
-		{
-			if (this.iCurrentState != SystemPage.OPTIONS_LISTS_STATE) 
-			{
-				if (details.navEquivalent == gfx.ui.NavigationCode.RIGHT && this.iCurrentState == SystemPage.MAIN_STATE) 
-				{
-					details.navEquivalent = gfx.ui.NavigationCode.ENTER;
-				}
-				else if (details.navEquivalent == gfx.ui.NavigationCode.LEFT && this.iCurrentState != SystemPage.MAIN_STATE) 
-				{
-					details.navEquivalent = gfx.ui.NavigationCode.TAB;
+		var bhandledInput: Boolean = false;
+		if (bRemapMode || bMenuClosing || bSavingSettings || iCurrentState == SystemPage.TRANSITIONING) {
+			bhandledInput = true;
+		} else if (GlobalFunc.IsKeyPressed(details, iCurrentState != SystemPage.INPUT_MAPPING_STATE)) {
+			if (iCurrentState != SystemPage.OPTIONS_LISTS_STATE) {
+				if (details.navEquivalent == NavigationCode.RIGHT && iCurrentState == SystemPage.MAIN_STATE) {
+					details.navEquivalent = NavigationCode.ENTER;
+				} else if (details.navEquivalent == NavigationCode.LEFT && iCurrentState != SystemPage.MAIN_STATE) {
+					details.navEquivalent = NavigationCode.TAB;
 				}
 			}
-			if ((details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_L2 || details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_R2) && this.isConfirming()) 
-			{
-				__reg3 = true;
-			}
-			else if ((details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_X || details.code == 88) && this.iCurrentState == SystemPage.SAVE_LOAD_STATE && this.BottomBar_mc.IsButtonVisible(1)) 
-			{
-				this.ConfirmDeleteSave();
-				__reg3 = true;
-			}
-			else if ((details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_Y || details.code == 84) && (this.iCurrentState == SystemPage.OPTIONS_LISTS_STATE || this.iCurrentState == SystemPage.INPUT_MAPPING_STATE) && this.BottomBar_mc.IsButtonVisible(1)) 
-			{
-				this.ConfirmTextField.SetText("$Reset settings to default values?");
-				this.StartState(SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE);
-				__reg3 = true;
-			}
-			else if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) 
-			{
-				if (details.navEquivalent == gfx.ui.NavigationCode.ENTER) 
-				{
-					__reg3 = this.onAcceptPress();
-				}
-				else if (details.navEquivalent == gfx.ui.NavigationCode.TAB) 
-				{
-					__reg3 = this.onCancelPress();
+			if ((details.navEquivalent == NavigationCode.GAMEPAD_L2 || details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_R2) && isConfirming()) {
+				bhandledInput = true;
+			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 88) && iCurrentState == SystemPage.SAVE_LOAD_STATE && BottomBar_mc.IsButtonVisible(1)) {
+				ConfirmDeleteSave();
+				bhandledInput = true;
+			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 84) && (iCurrentState == SystemPage.OPTIONS_LISTS_STATE || iCurrentState == SystemPage.INPUT_MAPPING_STATE) && BottomBar_mc.IsButtonVisible(1)) {
+				ConfirmTextField.SetText("$Reset settings to default values?");
+				StartState(SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE);
+				bhandledInput = true;
+			} else if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
+				if (details.navEquivalent == NavigationCode.ENTER) {
+					bhandledInput = onAcceptPress();
+				} else if (details.navEquivalent == NavigationCode.TAB) {
+					bhandledInput = onCancelPress();
 				}
 			}
 		}
-		return __reg3;
+		return bhandledInput;
 	}
 
-	function onAcceptPress()
+	function onAcceptPress(): Boolean
 	{
-		var __reg2 = true;
-		if ((__reg0 = this.iCurrentState) === SystemPage.SAVE_LOAD_CONFIRM_STATE) 
-		{
-			if (this.SaveLoadListHolder.List_mc.disableSelection) 
-			{
-				gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-				this.bMenuClosing = true;
-				if (this.SaveLoadListHolder.isSaving) 
-				{
-					this.ConfirmPanel._visible = false;
-					if (this.iPlatform == Shared.ButtonChange.PLATFORM_360) 
-					{
-						this.ErrorText.SetText("$Saving content. Please don\'t turn off your console.");
+		var bAcceptPressed: Boolean = true;
+		
+		switch (iCurrentState) {
+			case SystemPage.SAVE_LOAD_CONFIRM_STATE:
+			case SystemPage.TRANSITIONING:
+				if (SaveLoadListHolder.List_mc.disableSelection) {
+					GameDelegate.call("PlaySound", ["UIMenuOK"]);
+					bMenuClosing = true;
+					if (SaveLoadListHolder.isSaving) {
+						ConfirmPanel._visible = false;
+						if (iPlatform == Shared.ButtonChange.PLATFORM_360) {
+							ErrorText.SetText("$Saving content. Please don\'t turn off your console.");
+						} else {
+							ErrorText.SetText("$Saving...");
+						}
+						iSaveDelayTimerID = setInterval(this, "DoSaveGame", 1);
+					} else {
+						GameDelegate.call("LoadGame", [SaveLoadListHolder.selectedIndex]);
 					}
-					else 
-					{
-						this.ErrorText.SetText("$Saving...");
+				}
+				break;
+				
+			case SystemPage.QUIT_CONFIRM_STATE:
+				GameDelegate.call("PlaySound", ["UIMenuOK"]);
+				GameDelegate.call("QuitToMainMenu", []);
+				bMenuClosing = true;
+				break;
+				
+			case SystemPage.PC_QUIT_CONFIRM_STATE:
+				if (PCQuitList.selectedIndex == 0) {
+					GameDelegate.call("QuitToMainMenu", []);
+					bMenuClosing = true;
+				} else if (PCQuitList.selectedIndex == 1) {
+					GameDelegate.call("QuitToDesktop", []);
+				}
+				break;
+				
+			case SystemPage.DELETE_SAVE_CONFIRM_STATE:
+				SaveLoadListHolder.DeleteSelectedSave();
+				if (SaveLoadListHolder.numSaves == 0) {
+					GetPanelForState(SystemPage.SAVE_LOAD_STATE).gotoAndStop(1);
+					GetPanelForState(SystemPage.DELETE_SAVE_CONFIRM_STATE).gotoAndStop(1);
+					BottomBar_mc.SetButtonVisibility(1, false);
+					currentState = SystemPage.MAIN_STATE;
+				} else {
+					EndState();
+				}
+				break;
+				
+			case SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE:
+				GameDelegate.call("PlaySound", ["UIMenuOK"]);
+				if (ConfirmPanel.returnState == SystemPage.OPTIONS_LISTS_STATE) {
+					ResetSettingsToDefaults();
+				} else if (ConfirmPanel.returnState == SystemPage.INPUT_MAPPING_STATE) {
+					ResetControlsToDefaults();
+				}
+				EndState();
+				break;
+				
+			default:
+				bAcceptPressed = false;
+				break;
+		}
+		return bAcceptPressed;		
+	}
+
+	function onCancelPress(): Boolean
+	{
+		var bCancelPressed: Boolean = true;
+
+		switch (iCurrentState) {
+			case SystemPage.SAVE_LOAD_STATE:
+			case SystemPage.PC_QUIT_LIST_STATE:
+			case SystemPage.HELP_LIST_STATE:
+			case SystemPage.SAVE_LOAD_CONFIRM_STATE:	
+			case SystemPage.QUIT_CONFIRM_STATE:
+			case SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE:
+			case SystemPage.PC_QUIT_CONFIRM_STATE:
+			case SystemPage.DELETE_SAVE_CONFIRM_STATE:
+				GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+				EndState();
+				break;
+				
+			case SystemPage.HELP_TEXT_STATE:
+				GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+				EndState();
+				StartState(SystemPage.HELP_LIST_STATE);
+				HelpListPanel.bCloseToMainState = true;
+				break;
+				
+			case SystemPage.OPTIONS_LISTS_STATE:
+				GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+				EndState();
+				StartState(SystemPage.SETTINGS_CATEGORY_STATE);
+				SettingsPanel.bCloseToMainState = true;
+				break;
+				
+			case SystemPage.INPUT_MAPPING_STATE:
+			case SystemPage.SETTINGS_CATEGORY_STATE:
+				GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+				if (bSettingsChanged) {
+					ErrorText.SetText("$Saving...");
+					bSavingSettings = true;
+					if (iCurrentState == SystemPage.INPUT_MAPPING_STATE) {
+						iSavingSettingsTimerID = setInterval(this, "SaveControls", 1000);
+					} else if (iCurrentState == SystemPage.SETTINGS_CATEGORY_STATE) {
+						iSavingSettingsTimerID = setInterval(this, "SaveSettings", 1000);
 					}
-					this.iSaveDelayTimerID = setInterval(this, "DoSaveGame", 1);
+				} else {
+					onSettingsSaved();
 				}
-				else 
-				{
-					gfx.io.GameDelegate.call("LoadGame", [this.SaveLoadListHolder.selectedIndex]);
-				}
-			}
+				break;
+				
+			default:
+				bCancelPressed = false;
+				break;
 		}
-		else if (__reg0 === SystemPage.TRANSITIONING) 
-		{
-			if (this.SaveLoadListHolder.List_mc.disableSelection) 
-			{
-				gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-				this.bMenuClosing = true;
-				if (this.SaveLoadListHolder.isSaving) 
-				{
-					this.ConfirmPanel._visible = false;
-					if (this.iPlatform == Shared.ButtonChange.PLATFORM_360) 
-					{
-						this.ErrorText.SetText("$Saving content. Please don\'t turn off your console.");
-					}
-					else 
-					{
-						this.ErrorText.SetText("$Saving...");
-					}
-					this.iSaveDelayTimerID = setInterval(this, "DoSaveGame", 1);
-				}
-				else 
-				{
-					gfx.io.GameDelegate.call("LoadGame", [this.SaveLoadListHolder.selectedIndex]);
-				}
-			}
-		}
-		else if (__reg0 === SystemPage.QUIT_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-			gfx.io.GameDelegate.call("QuitToMainMenu", []);
-			this.bMenuClosing = true;
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_CONFIRM_STATE) 
-		{
-			if (this.PCQuitList.selectedIndex == 0) 
-			{
-				gfx.io.GameDelegate.call("QuitToMainMenu", []);
-				this.bMenuClosing = true;
-			}
-			else if (this.PCQuitList.selectedIndex == 1) 
-			{
-				gfx.io.GameDelegate.call("QuitToDesktop", []);
-			}
-		}
-		else if (__reg0 === SystemPage.DELETE_SAVE_CONFIRM_STATE) 
-		{
-			this.SaveLoadListHolder.DeleteSelectedSave();
-			if (this.SaveLoadListHolder.numSaves == 0) 
-			{
-				this.GetPanelForState(SystemPage.SAVE_LOAD_STATE).gotoAndStop(1);
-				this.GetPanelForState(SystemPage.DELETE_SAVE_CONFIRM_STATE).gotoAndStop(1);
-				this.BottomBar_mc.SetButtonVisibility(1, false);
-				this.currentState = SystemPage.MAIN_STATE;
-			}
-			else 
-			{
-				this.EndState();
-			}
-		}
-		else if (__reg0 === SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-			if (this.ConfirmPanel.returnState == SystemPage.OPTIONS_LISTS_STATE) 
-			{
-				this.ResetSettingsToDefaults();
-			}
-			else if (this.ConfirmPanel.returnState == SystemPage.INPUT_MAPPING_STATE) 
-			{
-				this.ResetControlsToDefaults();
-			}
-			this.EndState();
-		}
-		else 
-		{
-			__reg2 = false;
-		}
-		return __reg2;
+		return bCancelPressed;
 	}
 
-	function onCancelPress()
+	function isConfirming(): Boolean
 	{
-		var __reg2 = true;
-		if ((__reg0 = this.iCurrentState) === SystemPage.SAVE_LOAD_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_LIST_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.HELP_LIST_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.SAVE_LOAD_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.QUIT_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.DELETE_SAVE_CONFIRM_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-		}
-		else if (__reg0 === SystemPage.HELP_TEXT_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-			this.StartState(SystemPage.HELP_LIST_STATE);
-			this.HelpListPanel.bCloseToMainState = true;
-		}
-		else if (__reg0 === SystemPage.OPTIONS_LISTS_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.EndState();
-			this.StartState(SystemPage.SETTINGS_CATEGORY_STATE);
-			this.SettingsPanel.bCloseToMainState = true;
-		}
-		else if (__reg0 === SystemPage.INPUT_MAPPING_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			if (this.bSettingsChanged) 
-			{
-				this.ErrorText.SetText("$Saving...");
-				this.bSavingSettings = true;
-				if (this.iCurrentState == SystemPage.INPUT_MAPPING_STATE) 
-				{
-					this.iSavingSettingsTimerID = setInterval(this, "SaveControls", 1000);
-				}
-				else if (this.iCurrentState == SystemPage.SETTINGS_CATEGORY_STATE) 
-				{
-					this.iSavingSettingsTimerID = setInterval(this, "SaveSettings", 1000);
-				}
-			}
-			else 
-			{
-				this.onSettingsSaved();
-			}
-		}
-		else if (__reg0 === SystemPage.SETTINGS_CATEGORY_STATE) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			if (this.bSettingsChanged) 
-			{
-				this.ErrorText.SetText("$Saving...");
-				this.bSavingSettings = true;
-				if (this.iCurrentState == SystemPage.INPUT_MAPPING_STATE) 
-				{
-					this.iSavingSettingsTimerID = setInterval(this, "SaveControls", 1000);
-				}
-				else if (this.iCurrentState == SystemPage.SETTINGS_CATEGORY_STATE) 
-				{
-					this.iSavingSettingsTimerID = setInterval(this, "SaveSettings", 1000);
-				}
-			}
-			else 
-			{
-				this.onSettingsSaved();
-			}
-		}
-		else 
-		{
-			__reg2 = false;
-		}
-		return __reg2;
+		return iCurrentState == SystemPage.SAVE_LOAD_CONFIRM_STATE || iCurrentState == SystemPage.QUIT_CONFIRM_STATE || iCurrentState == SystemPage.PC_QUIT_CONFIRM_STATE || iCurrentState == SystemPage.DELETE_SAVE_CONFIRM_STATE || iCurrentState == SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE;
 	}
 
-	function isConfirming()
+	function onAcceptMousePress(): Void
 	{
-		return this.iCurrentState == SystemPage.SAVE_LOAD_CONFIRM_STATE || this.iCurrentState == SystemPage.QUIT_CONFIRM_STATE || this.iCurrentState == SystemPage.PC_QUIT_CONFIRM_STATE || this.iCurrentState == SystemPage.DELETE_SAVE_CONFIRM_STATE || this.iCurrentState == SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE;
-	}
-
-	function onAcceptMousePress()
-	{
-		if (this.isConfirming()) 
-		{
-			this.onAcceptPress();
+		if (isConfirming()) {
+			onAcceptPress();
 		}
 	}
 
-	function onCancelMousePress()
+	function onCancelMousePress(): Void
 	{
-		if (this.isConfirming()) 
-		{
-			this.onCancelPress();
+		if (isConfirming()) {
+			onCancelPress();
 		}
 	}
 
-	function onCategoryButtonPress(event)
+	function onCategoryButtonPress(event: Object): Void
 	{
-		if (event.entry.disabled) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+		if (event.entry.disabled) {
+			GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 			return;
 		}
-		if (this.iCurrentState == SystemPage.MAIN_STATE) 
+		if (iCurrentState == SystemPage.MAIN_STATE) 
 		{
-			if ((__reg0 = event.index) === 0) 
-			{
-				this.SaveLoadListHolder.isSaving = true;
-				gfx.io.GameDelegate.call("SAVE", [this.SaveLoadListHolder.List_mc.entryList, this.SaveLoadListHolder.batchSize]);
-				return;
+			switch (event.index) {
+				case 0:
+					SaveLoadListHolder.isSaving = true;
+					GameDelegate.call("SAVE", [SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]);
+					break;
+					
+				case 1:
+					SaveLoadListHolder.isSaving = false;
+					GameDelegate.call("LOAD", [SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]);
+					break;
+					
+				case 2:
+					StartState(SystemPage.SETTINGS_CATEGORY_STATE);
+					GameDelegate.call("PlaySound", ["UIMenuOK"]);
+					break;
+					
+				case 3:
+					_root.QuestJournalFader.Menu_mc.ConfigPanelOpen();
+					break;
+					
+				case 4:
+					if (MappingList.entryList.length == 0) {
+						GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
+						MappingList.entryList.sort(inputMappingSort);
+						MappingList.InvalidateData();
+					}
+					StartState(SystemPage.INPUT_MAPPING_STATE);
+					GameDelegate.call("PlaySound", ["UIMenuOK"]);
+					break;
+					
+				case 5:
+					if (HelpList.entryList.length == 0) {
+						GameDelegate.call("PopulateHelpTopics", [HelpList.entryList]);
+						HelpList.entryList.sort(doABCSort);
+						HelpList.InvalidateData();
+						GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+					} else {
+						StartState(SystemPage.HELP_LIST_STATE);
+						GameDelegate.call("PlaySound", ["UIMenuOK"]);
+					}
+					break;
+					
+				case 6:
+					GameDelegate.call("PlaySound", ["UIMenuOK"]);
+					GameDelegate.call("RequestIsOnPC", [], this, "populateQuitList");
+					break;
+					
+				default:
+					GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+					break;
 			}
-			else if (__reg0 === 1) 
-			{
-				this.SaveLoadListHolder.isSaving = false;
-				gfx.io.GameDelegate.call("LOAD", [this.SaveLoadListHolder.List_mc.entryList, this.SaveLoadListHolder.batchSize]);
-				return;
-			}
-			else if (__reg0 === 2) 
-			{
-				this.StartState(SystemPage.SETTINGS_CATEGORY_STATE);
-				gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-				return;
-			}
-			else if (__reg0 === 3) 
-			{
-				if (this.MappingList.entryList.length == 0) 
-				{
-					gfx.io.GameDelegate.call("RequestInputMappings", [this.MappingList.entryList]);
-					this.MappingList.entryList.sort(this.inputMappingSort);
-					this.MappingList.InvalidateData();
-				}
-				this.StartState(SystemPage.INPUT_MAPPING_STATE);
-				gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-				return;
-			}
-			else if (__reg0 === 4) 
-			{
-				if (this.HelpList.entryList.length == 0) 
-				{
-					gfx.io.GameDelegate.call("PopulateHelpTopics", [this.HelpList.entryList]);
-					this.HelpList.entryList.sort(this.doABCSort);
-					this.HelpList.InvalidateData();
-				}
-				if (this.HelpList.entryList.length == 0) 
-				{
-					gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-				}
-				else 
-				{
-					this.StartState(SystemPage.HELP_LIST_STATE);
-					gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-				}
-				return;
-			}
-			else if (__reg0 === 5) 
-			{
-				gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-				gfx.io.GameDelegate.call("RequestIsOnPC", [], this, "populateQuitList");
-				return;
-			}
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			return;
 		}
 	}
 
-	function onCategoryListPress(event)
+	function onCategoryListPress(event: Object): Void
 	{
-		if (!this.bRemapMode && !this.bMenuClosing && !this.bSavingSettings && this.iCurrentState != SystemPage.TRANSITIONING) 
-		{
-			this.onCancelPress();
-			this.CategoryList.disableSelection = false;
-			this.CategoryList.UpdateList();
-			this.CategoryList.disableSelection = true;
+		if (!bRemapMode && !bMenuClosing && !bSavingSettings && iCurrentState != SystemPage.TRANSITIONING) {
+			onCancelPress();
+			CategoryList.disableSelection = false;
+			CategoryList.UpdateList();
+			CategoryList.disableSelection = true;
 		}
 	}
 
-	function doABCSort(aObj1, aObj2)
+	function doABCSort(aObj1: Object, aObj2: Object): Number
 	{
-		if (aObj1.text < aObj2.text) 
-		{
+		if (aObj1.text < aObj2.text) {
 			return -1;
 		}
-		if (aObj1.text > aObj2.text) 
-		{
+		if (aObj1.text > aObj2.text) {
 			return 1;
 		}
 		return 0;
 	}
 
-	function onCategoryListMoveUp(event)
+	function onCategoryListMoveUp(event: Object): Void
 	{
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-		if (event.scrollChanged == true) 
-		{
-			this.CategoryList._parent.gotoAndPlay("moveUp");
+		GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.scrollChanged == true) {
+			CategoryList._parent.gotoAndPlay("moveUp");
 		}
 	}
 
-	function onCategoryListMoveDown(event)
+	function onCategoryListMoveDown(event: Object): Void
 	{
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-		if (event.scrollChanged == true) 
-		{
-			this.CategoryList._parent.gotoAndPlay("moveDown");
+		GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.scrollChanged == true) {
+			CategoryList._parent.gotoAndPlay("moveDown");
 		}
 	}
 
-	function onCategoryListMouseSelectionChange(event)
+	function onCategoryListMouseSelectionChange(event: Object): Void
 	{
-		if (event.keyboardOrMouse == 0 && event.index != -1) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (event.keyboardOrMouse == 0 && event.index != -1) {
+			GameDelegate.call("PlaySound", ["UIMenuFocus"]);
 		}
 	}
 
-	function OnSaveListOpenSuccess()
+	function OnSaveListOpenSuccess(): Void
 	{
-		if (this.SaveLoadListHolder.numSaves > 0) 
-		{
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-			this.StartState(SystemPage.SAVE_LOAD_STATE);
+		if (SaveLoadListHolder.numSaves > 0) {
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
+			StartState(SystemPage.SAVE_LOAD_STATE);
 			return;
 		}
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+		GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 	}
 
-	function ConfirmSaveGame(event)
+	function ConfirmSaveGame(event: Object): Void
 	{
-		this.SaveLoadListHolder.List_mc.disableSelection = true;
-		if (this.iCurrentState == SystemPage.SAVE_LOAD_STATE) 
-		{
-			if (event.index == 0) 
-			{
-				this.iCurrentState = SystemPage.SAVE_LOAD_CONFIRM_STATE;
-				this.onAcceptPress();
+		SaveLoadListHolder.List_mc.disableSelection = true;
+		if (iCurrentState == SystemPage.SAVE_LOAD_STATE) {
+			if (event.index == 0) {
+				iCurrentState = SystemPage.SAVE_LOAD_CONFIRM_STATE;
+				onAcceptPress();
 				return;
 			}
-			this.ConfirmTextField.SetText("$Save over this game?");
-			this.StartState(SystemPage.SAVE_LOAD_CONFIRM_STATE);
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
+			ConfirmTextField.SetText("$Save over this game?");
+			StartState(SystemPage.SAVE_LOAD_CONFIRM_STATE);
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
 
-	function DoSaveGame()
+	function DoSaveGame(): Void
 	{
-		clearInterval(this.iSaveDelayTimerID);
-		gfx.io.GameDelegate.call("SaveGame", [this.SaveLoadListHolder.selectedIndex]);
-		this._parent._parent.CloseMenu();
+		clearInterval(iSaveDelayTimerID);
+		GameDelegate.call("SaveGame", [SaveLoadListHolder.selectedIndex]);
+		_parent._parent.CloseMenu();
 	}
 
-	function onSaveHighlight(event)
+	function onSaveHighlight(event: Object): Void
 	{
-		if (this.iCurrentState == SystemPage.SAVE_LOAD_STATE) 
-		{
-			this.BottomBar_mc.SetButtonVisibility(1, true, event.index == -1 ? 50 : 100);
-			if (this.iPlatform == 0) 
-			{
-				gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (iCurrentState == SystemPage.SAVE_LOAD_STATE) {
+			BottomBar_mc.SetButtonVisibility(1, true, event.index == -1 ? 50 : 100);
+			if (iPlatform == 0) {
+				GameDelegate.call("PlaySound", ["UIMenuFocus"]);
 			}
 		}
 	}
 
-	function onSaveLoadListPress()
+	function onSaveLoadListPress(): Void
 	{
-		this.onAcceptPress();
+		onAcceptPress();
 	}
 
-	function ConfirmLoadGame(event)
+	function ConfirmLoadGame(event: Object): Void
 	{
-		this.SaveLoadListHolder.List_mc.disableSelection = true;
-		if (this.iCurrentState == SystemPage.SAVE_LOAD_STATE) 
-		{
-			this.ConfirmTextField.SetText("$Load this game? All unsaved progress will be lost.");
-			this.StartState(SystemPage.SAVE_LOAD_CONFIRM_STATE);
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
+		SaveLoadListHolder.List_mc.disableSelection = true;
+		if (iCurrentState == SystemPage.SAVE_LOAD_STATE) {
+			ConfirmTextField.SetText("$Load this game? All unsaved progress will be lost.");
+			StartState(SystemPage.SAVE_LOAD_CONFIRM_STATE);
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
 
-	function ConfirmDeleteSave()
+	function ConfirmDeleteSave(): Void
 	{
-		if (!this.SaveLoadListHolder.isSaving || this.SaveLoadListHolder.selectedIndex != 0) 
-		{
-			this.SaveLoadListHolder.List_mc.disableSelection = true;
-			if (this.iCurrentState == SystemPage.SAVE_LOAD_STATE) 
-			{
-				this.ConfirmTextField.SetText("$Delete this save?");
-				this.StartState(SystemPage.DELETE_SAVE_CONFIRM_STATE);
+		if (!SaveLoadListHolder.isSaving || SaveLoadListHolder.selectedIndex != 0) {
+			SaveLoadListHolder.List_mc.disableSelection = true;
+			if (iCurrentState == SystemPage.SAVE_LOAD_STATE) {
+				ConfirmTextField.SetText("$Delete this save?");
+				StartState(SystemPage.DELETE_SAVE_CONFIRM_STATE);
 			}
 		}
 	}
 
-	function onSettingsCategoryPress()
+	function onSettingsCategoryPress(): Void
 	{
-		var __reg2 = this.OptionsListsPanel.OptionsLists.List_mc;
-		if ((__reg0 = this.SettingsList.selectedIndex) === 0) 
-		{
-			__reg2.entryList = [{text: "$Invert Y", movieType: 2}, {text: "$Look Sensitivity", movieType: 0}, {text: "$Vibration", movieType: 2}, {text: "$360 Controller", movieType: 2}, {text: "$Difficulty", movieType: 1, options: ["$Very Easy", "$Easy", "$Normal", "$Hard", "$Very Hard"]}, {text: "$Show Floating Markers", movieType: 2}, {text: "$Save on Rest", movieType: 2}, {text: "$Save on Wait", movieType: 2}, {text: "$Save on Travel", movieType: 2}, {text: "$Save on Pause", movieType: 1, options: ["$5 Mins", "$10 Mins", "$15 Mins", "$30 Mins", "$45 Mins", "$60 Mins", "$Disabled"]}];
-			gfx.io.GameDelegate.call("RequestGameplayOptions", [__reg2.entryList]);
+		var List_mc: MovieClip = OptionsListsPanel.OptionsLists.List_mc;
+		
+		switch (SettingsList.selectedIndex) {
+			case 0:
+				List_mc.entryList = [{text: "$Invert Y", movieType: 2}, {text: "$Look Sensitivity", movieType: 0}, {text: "$Vibration", movieType: 2}, {text: "$360 Controller", movieType: 2}, {text: "$Difficulty", movieType: 1, options: ["$Very Easy", "$Easy", "$Normal", "$Hard", "$Very Hard"]}, {text: "$Show Floating Markers", movieType: 2}, {text: "$Save on Rest", movieType: 2}, {text: "$Save on Wait", movieType: 2}, {text: "$Save on Travel", movieType: 2}, {text: "$Save on Pause", movieType: 1, options: ["$5 Mins", "$10 Mins", "$15 Mins", "$30 Mins", "$45 Mins", "$60 Mins", "$Disabled"]}];
+				GameDelegate.call("RequestGameplayOptions", [List_mc.entryList]);
+				break;
+				
+			case 1:
+				List_mc.entryList = [{text: "$Brightness", movieType: 0}, {text: "$HUD Opacity", movieType: 0}, {text: "$Actor Fade", movieType: 0}, {text: "$Item Fade", movieType: 0}, {text: "$Object Fade", movieType: 0}, {text: "$Grass Fade", movieType: 0}, {text: "$Shadow Fade", movieType: 0}, {text: "$Light Fade", movieType: 0}, {text: "$Specularity Fade", movieType: 0}, {text: "$Tree LOD Fade", movieType: 0}, {text: "$Crosshair", movieType: 2}, {text: "$Dialogue Subtitles", movieType: 2}, {text: "$General Subtitles", movieType: 2}];
+				GameDelegate.call("RequestDisplayOptions", [List_mc.entryList]);
+				break;
+				
+			case 2:
+				List_mc.entryList = [{text: "$Master", movieType: 0}];
+				GameDelegate.call("RequestAudioOptions", [List_mc.entryList]);
+				for (var i: String in List_mc.entryList) {
+					List_mc.entryList[i].movieType = 0;
+				}
+				break;
 		}
-		else if (__reg0 === 1) 
-		{
-			__reg2.entryList = [{text: "$Brightness", movieType: 0}, {text: "$HUD Opacity", movieType: 0}, {text: "$Actor Fade", movieType: 0}, {text: "$Item Fade", movieType: 0}, {text: "$Object Fade", movieType: 0}, {text: "$Grass Fade", movieType: 0}, {text: "$Shadow Fade", movieType: 0}, {text: "$Light Fade", movieType: 0}, {text: "$Specularity Fade", movieType: 0}, {text: "$Tree LOD Fade", movieType: 0}, {text: "$Crosshair", movieType: 2}, {text: "$Dialogue Subtitles", movieType: 2}, {text: "$General Subtitles", movieType: 2}];
-			gfx.io.GameDelegate.call("RequestDisplayOptions", [__reg2.entryList]);
-		}
-		else if (__reg0 === 2) 
-		{
-			__reg2.entryList = [{text: "$Master", movieType: 0}];
-			gfx.io.GameDelegate.call("RequestAudioOptions", [__reg2.entryList]);
-			for (var __reg4 in __reg2.entryList) 
-			{
-				__reg2.entryList[__reg4].movieType = 0;
+		
+		for (var i: Number = 0; i < List_mc.entryList.length; ){
+			if (List_mc.entryList[i].ID == undefined) {
+				List_mc.entryList.splice(i, 1);
+			} else {
+				i++;
 			}
 		}
-		var __reg3 = 0;
-		while (__reg3 < __reg2.entryList.length) 
-		{
-			if (__reg2.entryList[__reg3].ID == undefined) 
-			{
-				__reg2.entryList.splice(__reg3, 1);
-			}
-			else 
-			{
-				++__reg3;
-			}
+		
+		if (iPlatform != 0) {
+			List_mc.selectedIndex = 0;
 		}
-		if (this.iPlatform != 0) 
-		{
-			__reg2.selectedIndex = 0;
-		}
-		__reg2.InvalidateData();
-		this.SettingsPanel.bCloseToMainState = false;
-		this.EndState();
-		this.StartState(SystemPage.OPTIONS_LISTS_STATE);
-		gfx.io.GameDelegate.call("PlaySound", ["UIMenuOK"]);
-		this.bSettingsChanged = true;
+		
+		List_mc.InvalidateData();
+		SettingsPanel.bCloseToMainState = false;
+		EndState();
+		StartState(SystemPage.OPTIONS_LISTS_STATE);
+		GameDelegate.call("PlaySound", ["UIMenuOK"]);
+		bSettingsChanged = true;
 	}
 
-	function ResetSettingsToDefaults()
+	function ResetSettingsToDefaults(): Void
 	{
-		var __reg2 = this.OptionsListsPanel.OptionsLists.List_mc;
-		for (var __reg3 in __reg2.entryList) 
-		{
-			if (__reg2.entryList[__reg3].defaultVal != undefined) 
-			{
-				__reg2.entryList[__reg3].value = __reg2.entryList[__reg3].defaultVal;
-				gfx.io.GameDelegate.call("OptionChange", [__reg2.entryList[__reg3].ID, __reg2.entryList[__reg3].value]);
+		var List_mc: MovieClip = OptionsListsPanel.OptionsLists.List_mc;
+		for (var i: String in List_mc.entryList) {
+			if (List_mc.entryList[i].defaultVal != undefined) {
+				List_mc.entryList[i].value = List_mc.entryList[i].defaultVal;
+				GameDelegate.call("OptionChange", [List_mc.entryList[i].ID, List_mc.entryList[i].value]);
 			}
 		}
-		__reg2.bAllowValueOverwrite = true;
-		__reg2.UpdateList();
-		__reg2.bAllowValueOverwrite = false;
+		List_mc.bAllowValueOverwrite = true;
+		List_mc.UpdateList();
+		List_mc.bAllowValueOverwrite = false;
 	}
 
-	function onInputMappingPress(event)
+	function onInputMappingPress(event: Object): Void
 	{
-		if (this.bRemapMode == false && this.iCurrentState == SystemPage.INPUT_MAPPING_STATE) 
+		if (bRemapMode == false && iCurrentState == SystemPage.INPUT_MAPPING_STATE) 
 		{
-			this.MappingList.disableSelection = true;
-			this.bRemapMode = true;
-			this.ErrorText.SetText("$Press a button to map to this action.");
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuPrevNext"]);
-			gfx.io.GameDelegate.call("StartRemapMode", [event.entry.text, this.MappingList.entryList]);
+			MappingList.disableSelection = true;
+			bRemapMode = true;
+			ErrorText.SetText("$Press a button to map to this action.");
+			GameDelegate.call("PlaySound", ["UIMenuPrevNext"]);
+			GameDelegate.call("StartRemapMode", [event.entry.text, MappingList.entryList]);
 		}
 	}
 
-	function onFinishRemapMode(abSuccess)
+	function onFinishRemapMode(abSuccess: Boolean): Void
 	{
-		if (abSuccess) 
-		{
-			this.HideErrorText();
-			this.MappingList.entryList.sort(this.inputMappingSort);
-			this.MappingList.UpdateList();
-			this.bSettingsChanged = true;
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		if (abSuccess) {
+			HideErrorText();
+			MappingList.entryList.sort(inputMappingSort);
+			MappingList.UpdateList();
+			bSettingsChanged = true;
+			GameDelegate.call("PlaySound", ["UIMenuFocus"]);
+		} else {
+			ErrorText.SetText("$That button is reserved.");
+			GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+			iHideErrorTextID = setInterval(this, "HideErrorText", 1000);
 		}
-		else 
-		{
-			this.ErrorText.SetText("$That button is reserved.");
-			gfx.io.GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-			this.iHideErrorTextID = setInterval(this, "HideErrorText", 1000);
-		}
-		this.MappingList.disableSelection = false;
-		this.iDebounceRemapModeID = setInterval(this, "ClearRemapMode", 200);
+		MappingList.disableSelection = false;
+		iDebounceRemapModeID = setInterval(this, "ClearRemapMode", 200);
 	}
 
-	function inputMappingSort(aObj1, aObj2)
+	function inputMappingSort(aObj1: Object, aObj2: Object): Number
 	{
-		if (aObj1.sortIndex < aObj2.sortIndex) 
-		{
+		if (aObj1.sortIndex < aObj2.sortIndex) {
 			return -1;
 		}
-		if (aObj1.sortIndex > aObj2.sortIndex) 
-		{
+		if (aObj1.sortIndex > aObj2.sortIndex) {
 			return 1;
 		}
 		return 0;
 	}
 
-	function HideErrorText()
+	function HideErrorText(): Void
 	{
-		if (this.iHideErrorTextID != undefined) 
-		{
-			clearInterval(this.iHideErrorTextID);
+		if (iHideErrorTextID != undefined) {
+			clearInterval(iHideErrorTextID);
 		}
-		this.ErrorText.SetText(" ");
+		ErrorText.SetText(" ");
 	}
 
-	function ClearRemapMode()
+	function ClearRemapMode(): Void
 	{
-		if (this.iDebounceRemapModeID != undefined) 
-		{
-			clearInterval(this.iDebounceRemapModeID);
+		if (iDebounceRemapModeID != undefined) {
+			clearInterval(iDebounceRemapModeID);
 		}
-		this.bRemapMode = false;
+		bRemapMode = false;
 	}
 
-	function ResetControlsToDefaults()
+	function ResetControlsToDefaults(): Void
 	{
-		gfx.io.GameDelegate.call("ResetControlsToDefaults", [this.MappingList.entryList]);
-		this.MappingList.entryList.splice(0, this.MappingList.entryList.length);
-		gfx.io.GameDelegate.call("RequestInputMappings", [this.MappingList.entryList]);
-		this.MappingList.entryList.sort(this.inputMappingSort);
-		this.MappingList.UpdateList();
-		this.bSettingsChanged = true;
+		GameDelegate.call("ResetControlsToDefaults", [MappingList.entryList]);
+		MappingList.entryList.splice(0, MappingList.entryList.length);
+		GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
+		MappingList.entryList.sort(inputMappingSort);
+		MappingList.UpdateList();
+		bSettingsChanged = true;
 	}
 
-	function onHelpItemPress()
+	function onHelpItemPress(): Void
 	{
-		gfx.io.GameDelegate.call("RequestHelpText", [this.HelpList.selectedEntry.index, this.HelpTitleText, this.HelpText]);
-		this.ApplyHelpTextButtonArt();
-		this.HelpListPanel.bCloseToMainState = false;
-		this.EndState();
-		this.StartState(SystemPage.HELP_TEXT_STATE);
+		GameDelegate.call("RequestHelpText", [HelpList.selectedEntry.index, HelpTitleText, HelpText]);
+		ApplyHelpTextButtonArt();
+		HelpListPanel.bCloseToMainState = false;
+		EndState();
+		StartState(SystemPage.HELP_TEXT_STATE);
 	}
 
-	function ApplyHelpTextButtonArt()
+	function ApplyHelpTextButtonArt(): Void
 	{
-		var __reg2 = this.HelpButtonHolder.CreateButtonArt(this.HelpText.textField);
-		if (__reg2 != undefined) 
+		var strTextWithButtons: String = HelpButtonHolder.CreateButtonArt(HelpText.textField);
+		if (strTextWithButtons != undefined) 
 		{
-			this.HelpText.htmlText = __reg2;
+			HelpText.htmlText = strTextWithButtons;
 		}
 	}
 
-	function populateQuitList(abOnPC)
+	function populateQuitList(abOnPC: Boolean): Void
 	{
-		if (abOnPC) 
-		{
-			if (this.iPlatform != 0) 
-			{
-				this.PCQuitList.selectedIndex = 0;
+		if (abOnPC) {
+			if (iPlatform != 0) {
+				PCQuitList.selectedIndex = 0;
 			}
-			this.StartState(SystemPage.PC_QUIT_LIST_STATE);
+			StartState(SystemPage.PC_QUIT_LIST_STATE);
 			return;
 		}
-		this.ConfirmTextField.textAutoSize = "shrink";
-		this.ConfirmTextField.SetText("$Quit to main menu?  Any unsaved progress will be lost.");
-		this.StartState(SystemPage.QUIT_CONFIRM_STATE);
+		ConfirmTextField.textAutoSize = "shrink";
+		ConfirmTextField.SetText("$Quit to main menu?  Any unsaved progress will be lost.");
+		StartState(SystemPage.QUIT_CONFIRM_STATE);
 	}
 
-	function onPCQuitButtonPress(event)
+	function onPCQuitButtonPress(event: Object): Void
 	{
-		if (this.iCurrentState == SystemPage.PC_QUIT_LIST_STATE) 
-		{
-			this.PCQuitList.disableSelection = true;
-			if (event.index == 0) 
-			{
-				this.ConfirmTextField.textAutoSize = "shrink";
-				this.ConfirmTextField.SetText("$Quit to main menu?  Any unsaved progress will be lost.");
+		if (iCurrentState == SystemPage.PC_QUIT_LIST_STATE) {
+			PCQuitList.disableSelection = true;
+			if (event.index == 0) {
+				ConfirmTextField.textAutoSize = "shrink";
+				ConfirmTextField.SetText("$Quit to main menu?  Any unsaved progress will be lost.");
 			}
-			else if (event.index == 1) 
-			{
-				this.ConfirmTextField.textAutoSize = "shrink";
-				this.ConfirmTextField.SetText("$Quit to desktop?  Any unsaved progress will be lost.");
+			else if (event.index == 1) {
+				ConfirmTextField.textAutoSize = "shrink";
+				ConfirmTextField.SetText("$Quit to desktop?  Any unsaved progress will be lost.");
 			}
-			this.StartState(SystemPage.PC_QUIT_CONFIRM_STATE);
+			StartState(SystemPage.PC_QUIT_CONFIRM_STATE);
 		}
 	}
 
-	function SaveControls()
+	function SaveControls(): Void
 	{
-		clearInterval(this.iSavingSettingsTimerID);
-		gfx.io.GameDelegate.call("SaveControls", []);
+		clearInterval(iSavingSettingsTimerID);
+		GameDelegate.call("SaveControls", []);
 	}
 
-	function SaveSettings()
+	function SaveSettings(): Void
 	{
-		clearInterval(this.iSavingSettingsTimerID);
-		gfx.io.GameDelegate.call("SaveSettings", []);
+		clearInterval(iSavingSettingsTimerID);
+		GameDelegate.call("SaveSettings", []);
 	}
 
-	function onSettingsSaved()
+	function onSettingsSaved(): Void
 	{
-		this.bSavingSettings = false;
-		this.bSettingsChanged = false;
-		this.ErrorText.SetText(" ");
-		this.EndState();
+		bSavingSettings = false;
+		bSettingsChanged = false;
+		ErrorText.SetText(" ");
+		EndState();
 	}
 
 	function RefreshSystemButtons()
 	{
-		gfx.io.GameDelegate.call("SetSaveDisabled", [this.CategoryList.entryList[0], this.CategoryList.entryList[1], this.CategoryList.entryList[2], this.CategoryList.entryList[3], this.CategoryList.entryList[5], true]);
-		this.CategoryList.UpdateList();
+		GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5], true]);
+		CategoryList.UpdateList();
 	}
 
-	function StartState(aiState)
+	function StartState(aiState: Number): Void
 	{
-		if ((__reg0 = aiState) === SystemPage.SAVE_LOAD_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Left");
-			this.BottomBar_mc.SetButtonInfo(1, "$Delete", {PCArt: "X", XBoxArt: "360_X", PS3Art: "PS3_X"});
-			this.BottomBar_mc.SetButtonVisibility(1, true);
+		switch (aiState) {
+			case SystemPage.SAVE_LOAD_STATE:
+			case SystemPage.INPUT_MAPPING_STATE:
+				SystemDivider.gotoAndStop("Left");
+			case SystemPage.OPTIONS_LISTS_STATE:
+				BottomBar_mc.SetButtonInfo(1, "$Defaults", {PCArt: "T", XBoxArt: "360_Y", PS3Art: "PS3_Y"});
+				BottomBar_mc.SetButtonVisibility(1, true, 100);
+				break;
+				
+			case SystemPage.SETTINGS_CATEGORY_STATE:
+			case SystemPage.PC_QUIT_LIST_STATE:
+			case SystemPage.HELP_LIST_STATE:
+				SystemDivider.gotoAndStop("Left");
+				break;
+				
+			case SystemPage.SAVE_LOAD_CONFIRM_STATE:
+			case SystemPage.QUIT_CONFIRM_STATE:
+			case SystemPage.PC_QUIT_CONFIRM_STATE:
+			case SystemPage.DELETE_SAVE_CONFIRM_STATE:
+			case SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE:
+				ConfirmPanel.confirmType = aiState;
+				ConfirmPanel.returnState = iCurrentState;
+				break;
 		}
-		else if (__reg0 === SystemPage.INPUT_MAPPING_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Left");
-			this.BottomBar_mc.SetButtonInfo(1, "$Defaults", {PCArt: "T", XBoxArt: "360_Y", PS3Art: "PS3_Y"});
-			this.BottomBar_mc.SetButtonVisibility(1, true, 100);
-		}
-		else if (__reg0 === SystemPage.OPTIONS_LISTS_STATE) 
-		{
-			this.BottomBar_mc.SetButtonInfo(1, "$Defaults", {PCArt: "T", XBoxArt: "360_Y", PS3Art: "PS3_Y"});
-			this.BottomBar_mc.SetButtonVisibility(1, true, 100);
-		}
-		else if (__reg0 === SystemPage.SETTINGS_CATEGORY_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Left");
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_LIST_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Left");
-		}
-		else if (__reg0 === SystemPage.HELP_LIST_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Left");
-		}
-		else if (__reg0 === SystemPage.SAVE_LOAD_CONFIRM_STATE) 
-		{
-			this.ConfirmPanel.confirmType = aiState;
-			this.ConfirmPanel.returnState = this.iCurrentState;
-		}
-		else if (__reg0 === SystemPage.QUIT_CONFIRM_STATE) 
-		{
-			this.ConfirmPanel.confirmType = aiState;
-			this.ConfirmPanel.returnState = this.iCurrentState;
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_CONFIRM_STATE) 
-		{
-			this.ConfirmPanel.confirmType = aiState;
-			this.ConfirmPanel.returnState = this.iCurrentState;
-		}
-		else if (__reg0 === SystemPage.DELETE_SAVE_CONFIRM_STATE) 
-		{
-			this.ConfirmPanel.confirmType = aiState;
-			this.ConfirmPanel.returnState = this.iCurrentState;
-		}
-		else if (__reg0 === SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE) 
-		{
-			this.ConfirmPanel.confirmType = aiState;
-			this.ConfirmPanel.returnState = this.iCurrentState;
-		}
-		this.iCurrentState = SystemPage.TRANSITIONING;
-		this.GetPanelForState(aiState).gotoAndPlay("start");
+		iCurrentState = SystemPage.TRANSITIONING;
+		GetPanelForState(aiState).gotoAndPlay("start");
 	}
 
-	function EndState()
+	function EndState(): Void
 	{
-		if ((__reg0 = this.iCurrentState) === SystemPage.SAVE_LOAD_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Right");
-			this.BottomBar_mc.SetButtonVisibility(1, false);
+	
+		switch (iCurrentState) {
+			case SystemPage.SAVE_LOAD_STATE:
+			case SystemPage.INPUT_MAPPING_STATE:
+				SystemDivider.gotoAndStop("Right");
+			case SystemPage.OPTIONS_LISTS_STATE:
+				BottomBar_mc.SetButtonVisibility(1, false);
+				break;
+				
+			case SystemPage.HELP_LIST_STATE:
+				HelpList.disableInput = true;
+				if (HelpListPanel.bCloseToMainState != false) {
+					SystemDivider.gotoAndStop("Right");
+				}
+				break;
+				
+			case SystemPage.SETTINGS_CATEGORY_STATE:
+				SettingsList.disableInput = true;
+				if (SettingsPanel.bCloseToMainState != false) {
+					SystemDivider.gotoAndStop("Right");
+				}
+				break;
+				
+			case SystemPage.PC_QUIT_LIST_STATE:
+				SystemDivider.gotoAndStop("Right");
+				break;
 		}
-		else if (__reg0 === SystemPage.INPUT_MAPPING_STATE) 
+		if (iCurrentState != SystemPage.MAIN_STATE) 
 		{
-			this.SystemDivider.gotoAndStop("Right");
-			this.BottomBar_mc.SetButtonVisibility(1, false);
-		}
-		else if (__reg0 === SystemPage.OPTIONS_LISTS_STATE) 
-		{
-			this.BottomBar_mc.SetButtonVisibility(1, false);
-		}
-		else if (__reg0 === SystemPage.HELP_LIST_STATE) 
-		{
-			this.HelpList.disableInput = true;
-			if (this.HelpListPanel.bCloseToMainState != false) 
-			{
-				this.SystemDivider.gotoAndStop("Right");
-			}
-		}
-		else if (__reg0 === SystemPage.SETTINGS_CATEGORY_STATE) 
-		{
-			this.SettingsList.disableInput = true;
-			if (this.SettingsPanel.bCloseToMainState != false) 
-			{
-				this.SystemDivider.gotoAndStop("Right");
-			}
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_LIST_STATE) 
-		{
-			this.SystemDivider.gotoAndStop("Right");
-		}
-		if (this.iCurrentState != SystemPage.MAIN_STATE) 
-		{
-			this.GetPanelForState(this.iCurrentState).gotoAndPlay("end");
-			this.iCurrentState = SystemPage.TRANSITIONING;
+			GetPanelForState(iCurrentState).gotoAndPlay("end");
+			iCurrentState = SystemPage.TRANSITIONING;
 		}
 	}
 
-	function GetPanelForState(aiState)
+	function GetPanelForState(aiState: Number): MovieClip
 	{
-		if ((__reg0 = aiState) === SystemPage.MAIN_STATE) 
-		{
-			return this.PanelRect;
+		switch (aiState) {
+			case SystemPage.MAIN_STATE:
+				return PanelRect;
+				break;
+				
+			case SystemPage.SETTINGS_CATEGORY_STATE:
+				return SettingsPanel;
+				
+			case SystemPage.OPTIONS_LISTS_STATE:
+				return OptionsListsPanel;
+				
+			case SystemPage.INPUT_MAPPING_STATE:
+				return InputMappingPanel;
+				
+			case SystemPage.SAVE_LOAD_STATE:
+				return SaveLoadPanel;
+				
+			case SystemPage.SAVE_LOAD_CONFIRM_STATE:
+			case SystemPage.PC_QUIT_CONFIRM_STATE:
+			case SystemPage.QUIT_CONFIRM_STATE:
+			case SystemPage.DELETE_SAVE_CONFIRM_STATE:
+			case SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE:
+				return ConfirmPanel;
+				
+			case SystemPage.PC_QUIT_LIST_STATE:
+				return PCQuitPanel;
+				
+			case SystemPage.HELP_LIST_STATE:
+				return HelpListPanel;
+				
+			case SystemPage.HELP_TEXT_STATE:
+				return HelpTextPanel;
 		}
-		else if (__reg0 === SystemPage.SETTINGS_CATEGORY_STATE) 
-		{
-			return this.SettingsPanel;
-		}
-		else if (__reg0 === SystemPage.OPTIONS_LISTS_STATE) 
-		{
-			return this.OptionsListsPanel;
-		}
-		else if (__reg0 === SystemPage.INPUT_MAPPING_STATE) 
-		{
-			return this.InputMappingPanel;
-		}
-		else if (__reg0 === SystemPage.SAVE_LOAD_STATE) 
-		{
-			return this.SaveLoadPanel;
-		}
-		else if (__reg0 === SystemPage.SAVE_LOAD_CONFIRM_STATE) 
-		{
-			return this.ConfirmPanel;
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_CONFIRM_STATE) 
-		{
-			return this.ConfirmPanel;
-		}
-		else if (__reg0 === SystemPage.QUIT_CONFIRM_STATE) 
-		{
-			return this.ConfirmPanel;
-		}
-		else if (__reg0 === SystemPage.DELETE_SAVE_CONFIRM_STATE) 
-		{
-			return this.ConfirmPanel;
-		}
-		else if (__reg0 === SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE) 
-		{
-			return this.ConfirmPanel;
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_LIST_STATE) 
-		{
-			return this.PCQuitPanel;
-		}
-		else if (__reg0 === SystemPage.HELP_LIST_STATE) 
-		{
-			return this.HelpListPanel;
-		}
-		else if (__reg0 !== SystemPage.HELP_TEXT_STATE) 
-		{
-			return;
-		}
-		return this.HelpTextPanel;
 	}
 
-	function UpdateStateFocus(aiNewState)
+	function UpdateStateFocus(aiNewState: Number): Void
 	{
-		this.CategoryList.disableSelection = aiNewState != SystemPage.MAIN_STATE;
-		if ((__reg0 = aiNewState) === SystemPage.MAIN_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.CategoryList, 0);
-			return;
+		CategoryList.disableSelection = aiNewState != SystemPage.MAIN_STATE;
+		
+		switch (aiNewState) {
+			case SystemPage.MAIN_STATE:
+				FocusHandler.instance.setFocus(CategoryList, 0);
+				break;
+			
+			case SystemPage.SETTINGS_CATEGORY_STATE:
+				SettingsList.disableInput = false;
+				FocusHandler.instance.setFocus(SettingsList, 0);
+				break;
+			
+			case SystemPage.OPTIONS_LISTS_STATE:
+				FocusHandler.instance.setFocus(OptionsListsPanel.OptionsLists.List_mc, 0);
+				break;
+			
+			case SystemPage.INPUT_MAPPING_STATE:
+				FocusHandler.instance.setFocus(MappingList, 0);
+				break;
+			
+			case SystemPage.SAVE_LOAD_STATE:
+				FocusHandler.instance.setFocus(SaveLoadListHolder.List_mc, 0);
+				SaveLoadListHolder.List_mc.disableSelection = false;
+				break;
+			
+			case SystemPage.SAVE_LOAD_CONFIRM_STATE:
+			case SystemPage.QUIT_CONFIRM_STATE:
+			case SystemPage.PC_QUIT_CONFIRM_STATE:
+			case SystemPage.DELETE_SAVE_CONFIRM_STATE:
+			case SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE:
+				FocusHandler.instance.setFocus(ConfirmPanel, 0);
+				break;
+				
+			case SystemPage.PC_QUIT_LIST_STATE:
+				FocusHandler.instance.setFocus(PCQuitList, 0);
+				PCQuitList.disableSelection = false;
+				break;
+				
+			case SystemPage.HELP_LIST_STATE:
+				HelpList.disableInput = false;
+			case SystemPage.HELP_TEXT_STATE:
+				FocusHandler.instance.setFocus(HelpText, 0);
+				break;
 		}
-		else if (__reg0 === SystemPage.SETTINGS_CATEGORY_STATE) 
-		{
-			this.SettingsList.disableInput = false;
-			gfx.managers.FocusHandler.instance.setFocus(this.SettingsList, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.OPTIONS_LISTS_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.OptionsListsPanel.OptionsLists.List_mc, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.INPUT_MAPPING_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.MappingList, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.SAVE_LOAD_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.SaveLoadListHolder.List_mc, 0);
-			this.SaveLoadListHolder.List_mc.disableSelection = false;
-			return;
-		}
-		else if (__reg0 === SystemPage.SAVE_LOAD_CONFIRM_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.ConfirmPanel, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.QUIT_CONFIRM_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.ConfirmPanel, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_CONFIRM_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.ConfirmPanel, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.DELETE_SAVE_CONFIRM_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.ConfirmPanel, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.ConfirmPanel, 0);
-			return;
-		}
-		else if (__reg0 === SystemPage.PC_QUIT_LIST_STATE) 
-		{
-			gfx.managers.FocusHandler.instance.setFocus(this.PCQuitList, 0);
-			this.PCQuitList.disableSelection = false;
-			return;
-		}
-		else if (__reg0 === SystemPage.HELP_LIST_STATE) 
-		{
-			this.HelpList.disableInput = false;
-			gfx.managers.FocusHandler.instance.setFocus(this.HelpList, 0);
-			return;
-		}
-		else if (__reg0 !== SystemPage.HELP_TEXT_STATE) 
-		{
-			return;
-		}
-		gfx.managers.FocusHandler.instance.setFocus(this.HelpText, 0);
-		return;
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean)
+	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		this.ConfirmPanel.ButtonRect.AcceptGamepadButton._visible = aiPlatform != 0;
-		this.ConfirmPanel.ButtonRect.CancelGamepadButton._visible = aiPlatform != 0;
-		this.ConfirmPanel.ButtonRect.AcceptMouseButton._visible = aiPlatform == 0;
-		this.ConfirmPanel.ButtonRect.CancelMouseButton._visible = aiPlatform == 0;
-		this.BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
-		this.CategoryList.SetPlatform(aiPlatform, abPS3Switch);
-		if (aiPlatform != 0) 
-		{
-			this.ConfirmPanel.ButtonRect.AcceptGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-			this.ConfirmPanel.ButtonRect.CancelGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-			this.SettingsList.selectedIndex = 0;
-			this.PCQuitList.selectedIndex = 0;
-			this.HelpList.selectedIndex = 0;
-			this.MappingList.selectedIndex = 0;
+		ConfirmPanel.ButtonRect.AcceptGamepadButton._visible = aiPlatform != 0;
+		ConfirmPanel.ButtonRect.CancelGamepadButton._visible = aiPlatform != 0;
+		ConfirmPanel.ButtonRect.AcceptMouseButton._visible = aiPlatform == 0;
+		ConfirmPanel.ButtonRect.CancelMouseButton._visible = aiPlatform == 0;
+		BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
+		CategoryList.SetPlatform(aiPlatform, abPS3Switch);
+		if (aiPlatform != 0) {
+			ConfirmPanel.ButtonRect.AcceptGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
+			ConfirmPanel.ButtonRect.CancelGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
+			SettingsList.selectedIndex = 0;
+			PCQuitList.selectedIndex = 0;
+			HelpList.selectedIndex = 0;
+			MappingList.selectedIndex = 0;
 		}
-		this.iPlatform = aiPlatform;
-		this.SaveLoadListHolder.platform = aiPlatform;
+		iPlatform = aiPlatform;
+		SaveLoadListHolder.platform = aiPlatform;
 	}
 
-	function BackOutFromLoadGame()
+	function BackOutFromLoadGame(): Void
 	{
-		this.bMenuClosing = false;
-		this.onCancelPress();
+		bMenuClosing = false;
+		onCancelPress();
 	}
-
 }
