@@ -9,8 +9,7 @@ import skyui.components.list.BasicEntryFactory;
 import skyui.components.list.IEntryEnumeration;
 import skyui.components.list.BasicEnumeration;
 import skyui.components.list.IEntryFormatter;
-import skyui.components.list.IDataFetcher;
-import skyui.components.list.IListComponentInitializer;
+import skyui.components.list.IListProcessor;
 import skyui.components.list.BSList;
 
 
@@ -36,6 +35,8 @@ class skyui.components.list.BasicList extends BSList
   	private var _bUpdateRequested: Boolean = false;
 	
 	private var _entryClipManager: EntryClipManager;
+	
+	private var _dataProcessors: Array;
 	
 
   /* PROPERTIES */
@@ -79,7 +80,7 @@ class skyui.components.list.BasicList extends BSList
 	
 	public var entryFormatter: IEntryFormatter;
 	
-	public var dataFetcher: IDataFetcher;
+
 	
 	
   /* CONSTRUCTORS */
@@ -89,6 +90,7 @@ class skyui.components.list.BasicList extends BSList
 		super();
 		
 		_entryClipManager = new EntryClipManager(this);
+		_dataProcessors = [];
 
 		EventDispatcher.initialize(this);
 		Mouse.addListener(this);
@@ -115,6 +117,11 @@ class skyui.components.list.BasicList extends BSList
 		UpdateList();
 	}
 	
+	public function addDataProcessor(a_dataProcessor: IListProcessor): Void
+	{
+		_dataProcessors.push(a_dataProcessor);
+	}
+	
 	public function clearList(): Void
 	{
 		_entryList.splice(0);
@@ -139,8 +146,8 @@ class skyui.components.list.BasicList extends BSList
 	// @override BSList
 	public function InvalidateData(): Void
 	{
-		if (dataFetcher)
-			dataFetcher.processEntries(this);
+		for (var i=0; i<_dataProcessors.length; i++)
+			_dataProcessors[i].processList(this);
 		
 		listEnumeration.invalidate();
 		

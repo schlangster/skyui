@@ -4,6 +4,7 @@ import gfx.ui.NavigationCode;
 import skyui.util.Translator;
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
+import skyui.props.PropertyDataExtender;
 
 
 class ContainerMenu extends ItemMenu
@@ -79,7 +80,8 @@ class ContainerMenu extends ItemMenu
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		itemList.dataFetcher = new InventoryDataFetcher(itemList);
+		itemList.addDataProcessor(new InventoryDataExtender(itemList));
+		itemList.addDataProcessor(new PropertyDataExtender(itemList, 'itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");

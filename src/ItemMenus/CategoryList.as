@@ -97,9 +97,6 @@ class CategoryList extends BasicList
 		
 		if (iconSize == undefined)
 			iconSize = 32;
-		
-		// Not needed for a category list
-		dataFetcher = null;
 	}
 	
 	

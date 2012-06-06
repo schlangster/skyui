@@ -1,6 +1,6 @@
 ﻿import skyui.components.list.BasicList;
 
-class BarterDataFetcher extends InventoryDataFetcher
+class BarterDataExtender extends InventoryDataExtender
 {
   /* PROPERTIES */
   
@@ -11,7 +11,7 @@ class BarterDataFetcher extends InventoryDataFetcher
 	
   /* CONSTRUCTORS */
 	
-	function BarterDataFetcher(a_list: BasicList)
+	function BarterDataExtender(a_list: BasicList)
 	{
 		super(a_list);
 		barterSellMult = 1.0;
@@ -22,7 +22,7 @@ class BarterDataFetcher extends InventoryDataFetcher
   /* PUBLIC FUNCTIONS */
 	
 	
-  	// @override InventoryDataFetcher
+  	// @override InventoryDataExtender
 	function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
 		super.processEntry(a_entryObject, a_itemInfo);

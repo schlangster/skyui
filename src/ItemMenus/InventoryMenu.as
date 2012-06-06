@@ -4,6 +4,7 @@ import gfx.ui.NavigationCode;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
+import skyui.props.PropertyDataExtender;
 
 
 class InventoryMenu extends ItemMenu
@@ -73,7 +74,8 @@ class InventoryMenu extends ItemMenu
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		itemList.dataFetcher = new InventoryDataFetcher(itemList);
+		itemList.addDataProcessor(new InventoryDataExtender(itemList));
+		itemList.addDataProcessor(new PropertyDataExtender(itemList, "itemProperties", "itemIcons", "itemCompoundProperties", "translateProperties"));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");

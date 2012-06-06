@@ -79,6 +79,14 @@ class skyui.util.ConfigManager
 			
 		GlobalFunctions.addArrayFunctions();
 		
+		//TODO: direct lookup into Defines and InventoryDefines
+		for (var variable:String in Defines) {
+				setConstant(variable, Defines[variable]);
+		}
+		for (var variable:String in InventoryDefines) {
+				setConstant(variable, InventoryDefines[variable]);
+		}
+		
 		_eventDummy = {};
 		EventDispatcher.initialize(_eventDummy);
 		
@@ -295,9 +303,29 @@ class skyui.util.ConfigManager
 		// Entry property? - substituted later
 		} else if (a_str.charAt(0) == "@") {
 			return a_str;
-			
+
+		// Associative array?
+		//TODO: This should properly check if [:,] is within a string
+		//      As should the List parsing below
+		} else if (a_str.charAt(0) == "<" && a_str.indexOf(":") != -1) {
+			var assocArray = new Object();
+			var pairs =  GlobalFunctions.extract(a_str, "<", ">").split(",");
+			for (var i=0; i<pairs.length; i++) {
+				var keyValue = pairs[i].split(":");
+				if (keyValue.length != 2) {
+					// If we don't have a pair we just ignore it
+					continue;
+				}
+				var key = parseValueString(GlobalFunctions.clean(keyValue[0]));
+				var val = parseValueString(GlobalFunctions.clean(keyValue[1]));
+				assocArray[key] = val;
+			}
+			return assocArray;
+
 		// List?
 		} else if (a_str.charAt(0) == "<") {
+			if (a_str.charAt(1) == ">")
+				return new Array();
 			var values = GlobalFunctions.extract(a_str, "<", ">").split(",");
 			for (var i=0; i<values.length; i++)
 				values[i] = parseValueString(GlobalFunctions.clean(values[i]));

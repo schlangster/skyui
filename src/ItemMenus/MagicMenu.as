@@ -4,6 +4,7 @@ import gfx.ui.NavigationCode;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
+import skyui.props.PropertyDataExtender;
 
 
 class MagicMenu extends ItemMenu
@@ -64,10 +65,11 @@ class MagicMenu extends ItemMenu
 		categoryList.iconArt = _categoryListIconArt;
 		
 		var itemList: TabularList = inventoryLists.itemList;		
-		var entryFormatter = new MagicEntryFormatter(itemList);
+		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		itemList.dataFetcher = new MagicDataFetcher(itemList);
+		itemList.addDataProcessor(new MagicDataExtender(itemList));
+		itemList.addDataProcessor(new PropertyDataExtender(itemList, 'magicProperties', 'magicIcons', 'magicCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("MagicListLayout");
 	}
 
