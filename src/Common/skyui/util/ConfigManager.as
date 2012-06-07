@@ -134,9 +134,15 @@ class skyui.util.ConfigManager
 		if (_config[a_section] == undefined)
 			_config[a_section] = {};
 		
-		// Prepare key subsections
 		var a = a_key.split(".");
+
+		// Prepare key subsections
 		var loc = _config[a_section];
+
+		var varContainer = null;
+		if (a[0] == "vars")
+			var varContainer = loc.vars[a[1]];
+		
 		for (var j=0; j<a.length-1; j++) {
 			if (loc[a[j]] == undefined)
 				loc[a[j]] = {};
@@ -147,12 +153,23 @@ class skyui.util.ConfigManager
 		loc[a[a.length-1]] = a_value;
 		
 		// Running out of special characters soon... :)
+		// Background: UI functions would try to look up keys.a.b.c, instead of keys["a.b.c"].
+		// So we use a different delimiter, and keys.a§b§c works fine.
 		var replacer = a_key.split(".");
 		a_key = replacer.join("§");
 		
 		var ovrKey = a_section + "$" + a_key;
 		out_overrides[ovrKey] = a_valueStr;
 		skse.SendModEvent("SKI_setConfigOverride", ovrKey);
+		
+		// If we changed the value of a var, update all recorded references.
+		if (varContainer) {
+			for (var i=0; i<varContainer._refLocs.length; i++) {
+				var varLoc = varContainer._refLocs[i];
+				var varKey = varContainer._refKeys[i];
+				varLoc[varKey] = a_value;
+			}
+		}
 		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 	}
@@ -177,19 +194,24 @@ class skyui.util.ConfigManager
 		for (var i = 0; i < arguments.length; i++)
 			if (in_overrideKeys[i])
 				parseExternalOverride(in_overrideKeys[i], arguments[i]);
-				
+		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});				
 	}
 	
-	private static function parseExternalOverride(a_key: String, a_value: String)
+	private static function parseExternalOverride(a_key: String, a_valueStr: String)
 	{
 		var section = GlobalFunctions.clean(a_key.slice(0, a_key.indexOf("$")));
 		var key = GlobalFunctions.clean(a_key.slice(a_key.indexOf("$") + 1));
-		var val = parseValueString(GlobalFunctions.clean(a_value));
+		var val = parseValueString(GlobalFunctions.clean(a_valueStr), null);
 
 		// Prepare key subsections - external keys use § as separator
 		var a = key.split("§");
 		var loc = _config[section];
+		
+		var varContainer = null;
+		if (a[0] == "vars")
+			var varContainer = loc.vars[a[1]];
+		
 		for (var j=0; j<a.length-1; j++) {
 			if (loc[a[j]] == undefined)
 				loc[a[j]] = {};
@@ -197,6 +219,15 @@ class skyui.util.ConfigManager
 		}
 		
 		loc[a[a.length-1]] = val;
+		
+		// If we changed the value of a var, update all recorded references.
+		if (varContainer) {
+			for (var i=0; i<varContainer._refLocs.length; i++) {
+				var varLoc = varContainer._refLocs[i];
+				var varKey = varContainer._refKeys[i];
+				varLoc[varKey] = val;
+			}
+		}
 		
 		skse.Log("Received external override. section: " + section + " key: " + key + " val: " + val);
 	}
@@ -263,7 +294,7 @@ class skyui.util.ConfigManager
 			}
 
 			// Detect value type & extract
-			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)));
+			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _config[section], loc, a[a.length-1]);
 			
 			if (val == undefined)
 				continue;
@@ -279,7 +310,7 @@ class skyui.util.ConfigManager
 		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
 	
-	private static function parseValueString(a_str: String, a_root: Object): Object
+	private static function parseValueString(a_str: String, a_root: Object, a_loc: Object, a_name: String): Object
 	{
 		if (a_str == undefined)
 			return undefined;
@@ -348,6 +379,20 @@ class skyui.util.ConfigManager
 		// Constant?
 		} else if (_constantTable[a_str] != undefined) {
 			return _constantTable[a_str];
+			
+		// Var?
+		} else if (a_root.vars[a_str] != undefined) {
+			// A variable might be updated later via overrides, in which case we'd have to re-evaluate previous
+			// expressions that used it. To make that efficient, each variable stores it's references.
+			// Because we can't store pointers, this has to be the object/key pair (aka loc/name).
+			if (a_root.vars[a_str]._refLocs == undefined) {
+				a_root.vars[a_str]._refLocs = [];
+				a_root.vars[a_str]._refKeys = [];
+			}
+			a_root.vars[a_str]._refLocs.push(a_loc);
+			a_root.vars[a_str]._refKeys.push(a_name);
+			
+			return a_root.vars[a_str].value;
 		}
 		
 		// Default String

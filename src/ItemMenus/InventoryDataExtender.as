@@ -78,7 +78,7 @@ class InventoryDataExtender extends ItemcardDataExtender
 	
   /* PRIVATE FUNCTIONS */
 	
-	private function fixWeaponSubType(a_entryObject: Object)
+	private function fixWeaponSubType(a_entryObject: Object): Void
 	{
 		// Differentiate between battleaxe and warhammer
 		
