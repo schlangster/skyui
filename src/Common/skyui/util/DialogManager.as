@@ -29,7 +29,7 @@ class skyui.util.DialogManager
 		
 		_previousFocus = FocusHandler.instance.getFocus(0);
 
-		_activeDialog = a_target.attachMovie("ColumnSelectDialog", "dialog", a_target.getNextHighestDepth(), a_init);
+		_activeDialog = a_target.attachMovie(a_linkageID, "dialog", a_target.getNextHighestDepth(), a_init);
 		
 		EventDispatcher.initialize(_activeDialog);
 		

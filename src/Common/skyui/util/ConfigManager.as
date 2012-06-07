@@ -15,41 +15,12 @@ class skyui.util.ConfigManager
 		DESCENDING: Array.DESCENDING,
 		CASEINSENSITIVE: Array.CASEINSENSITIVE,
 		NUMERIC: Array.NUMERIC,
-		
-		CAT_INV_ALL: Defines.FLAG_INV_ALL,
-		CAT_INV_FAVORITES: Defines.FLAG_INV_FAVORITES,
-		CAT_INV_WEAPONS: Defines.FLAG_INV_WEAPONS,
-		CAT_INV_ARMOR: Defines.FLAG_INV_ARMOR,
-		CAT_INV_POTIONS: Defines.FLAG_INV_POTIONS,
-		CAT_INV_SCROLLS: Defines.FLAG_INV_SCROLLS,
-		CAT_INV_FOOD: Defines.FLAG_INV_FOOD,
-		CAT_INV_INGREDIENTS: Defines.FLAG_INV_INGREDIENTS,
-		CAT_INV_BOOKS: Defines.FLAG_INV_BOOKS,
-		CAT_INV_KEYS: Defines.FLAG_INV_KEYS,
-		CAT_INV_MISC: Defines.FLAG_INV_MISC,
-		
-		CAT_CONTAINER_ALL: Defines.FLAG_CONTAINER_ALL,
-		CAT_CONTAINER_WEAPONS: Defines.FLAG_CONTAINER_WEAPONS,
-		CAT_CONTAINER_ARMOR: Defines.FLAG_CONTAINER_ARMOR,
-		CAT_CONTAINER_POTIONS: Defines.FLAG_CONTAINER_POTIONS,
-		CAT_CONTAINER_SCROLLS: Defines.FLAG_CONTAINER_SCROLLS,
-		CAT_CONTAINER_FOOD: Defines.FLAG_CONTAINER_FOOD,
-		CAT_CONTAINER_INGREDIENTS: Defines.FLAG_CONTAINER_INGREDIENTS,
-		CAT_CONTAINER_BOOKS: Defines.FLAG_CONTAINER_BOOKS,
-		CAT_CONTAINER_KEYS: Defines.FLAG_CONTAINER_KEYS,
-		CAT_CONTAINER_MISC: Defines.FLAG_CONTAINER_MISC,
-		
-		CAT_MAG_ALL: Defines.FLAG_MAGIC_ALL,
-		CAT_MAG_FAVORITES: Defines.FLAG_MAGIC_FAVORITES,
-		CAT_MAG_ALTERATION: Defines.FLAG_MAGIC_ALTERATION,
-		CAT_MAG_ILLUSION: Defines.FLAG_MAGIC_ILLUSION,
-		CAT_MAG_DESTRUCTION: Defines.FLAG_MAGIC_DESTRUCTION,
-		CAT_MAG_CONJURATION: Defines.FLAG_MAGIC_CONJURATION,
-		CAT_MAG_RESTORATION: Defines.FLAG_MAGIC_RESTORATION,
-		CAT_MAG_SHOUTS: Defines.FLAG_MAGIC_SHOUTS,
-		CAT_MAG_POWERS: Defines.FLAG_MAGIC_POWERS,
-		CAT_MAG_EFFECTS: Defines.FLAG_MAGIC_ACTIVE_EFFECT
+
+		_LOAD_DEFINES_DUMMY: Defines.FLAG_CATEGORY_DIVIDER,
+		_LOAD_INVENTORYDEFINES: InventoryDefines.ICT_NONE
 	};
+	
+	private static var _extConstantTables = [];
 	
 	
   /* PRIVATE VARIABLES */	
@@ -72,20 +43,17 @@ class skyui.util.ConfigManager
   
   	private static var _initialized:Boolean = initialize();
   
-	private static function initialize():Boolean
+	private static function initialize(): Boolean
 	{
 		if (_initialized)
 			return;
 			
 		GlobalFunctions.addArrayFunctions();
 		
-		//TODO: direct lookup into Defines and InventoryDefines
-		for (var variable:String in Defines) {
-				setConstant(variable, Defines[variable]);
-		}
-		for (var variable:String in InventoryDefines) {
-				setConstant(variable, InventoryDefines[variable]);
-		}
+		// Note how the local constant table has to reference some attribute in each of the
+		// external tables before so they get loaded properly.
+		addConstantTable(Defines);
+		addConstantTable(InventoryDefines);
 		
 		_eventDummy = {};
 		EventDispatcher.initialize(_eventDummy);
@@ -100,7 +68,7 @@ class skyui.util.ConfigManager
 	
   /* PUBLIC FUNCTIONS */
   
-	public static function registerLoadCallback(a_scope: Object, a_callBack: String)
+	public static function registerLoadCallback(a_scope: Object, a_callBack: String): Void
 	{
 		// Not loaded yet
 		if (!_loaded) {
@@ -112,18 +80,36 @@ class skyui.util.ConfigManager
 		a_scope[a_callBack]({type: "configLoad", config: _config});
 	}
 	
-	public static function registerUpdateCallback(a_scope: Object, a_callBack: String)
+	public static function registerUpdateCallback(a_scope: Object, a_callBack: String): Void
 	{
 		_eventDummy.addEventListener("configUpdate", a_scope, a_callBack);
 	}
 	
-	public static function setConstant(a_name: String, a_value)
+	public static function setConstant(a_name: String, a_value): Void
 	{
 		var type = typeof(a_value);
 		if (type != "number" && type != "boolean" && type != "string")
 			return;
 		
 		_constantTable[a_name] = a_value;
+	}
+	
+	
+	public static function addConstantTable(a_tbl: Object): Void
+	{
+		_extConstantTables.push(a_tbl);
+	}
+	
+	public static function getConstant(a_name: String)
+	{
+		if (_constantTable[a_name] != undefined)
+			return _constantTable[a_name];
+			
+		for (var i=0; i<_extConstantTables.length; i++)
+			if (_extConstantTables[i][a_name] != undefined)
+				return _extConstantTables[i][a_name];
+				
+		return undefined;
 	}
 	
 	public static function setOverride(a_section: String, a_key: String, a_value, a_valueStr: String): Void
@@ -310,10 +296,12 @@ class skyui.util.ConfigManager
 		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
 	
-	private static function parseValueString(a_str: String, a_root: Object, a_loc: Object, a_name: String): Object
+	private static function parseValueString(a_str: String, a_root: Object, a_loc: Object, a_key: String): Object
 	{
 		if (a_str == undefined)
 			return undefined;
+			
+		var t = undefined;
 
 		// Number?
 		if (!isNaN(a_str)) {
@@ -347,8 +335,8 @@ class skyui.util.ConfigManager
 					// If we don't have a pair we just ignore it
 					continue;
 				}
-				var key = parseValueString(GlobalFunctions.clean(keyValue[0]));
-				var val = parseValueString(GlobalFunctions.clean(keyValue[1]));
+				var key = parseValueString(GlobalFunctions.clean(keyValue[0]), null, null);
+				var val = parseValueString(GlobalFunctions.clean(keyValue[1]), assocArray, key);
 				assocArray[key] = val;
 			}
 			return assocArray;
@@ -359,7 +347,7 @@ class skyui.util.ConfigManager
 				return new Array();
 			var values = GlobalFunctions.extract(a_str, "<", ">").split(",");
 			for (var i=0; i<values.length; i++)
-				values[i] = parseValueString(GlobalFunctions.clean(values[i]));
+				values[i] = parseValueString(GlobalFunctions.clean(values[i]), values, i);
 				
 			return values;
 			
@@ -377,20 +365,25 @@ class skyui.util.ConfigManager
 			return flags;
 		
 		// Constant?
-		} else if (_constantTable[a_str] != undefined) {
-			return _constantTable[a_str];
+		} else if ((t = getConstant(a_str)) != undefined) {
+			return t;
 			
 		// Var?
 		} else if (a_root.vars[a_str] != undefined) {
 			// A variable might be updated later via overrides, in which case we'd have to re-evaluate previous
 			// expressions that used it. To make that efficient, each variable stores it's references.
 			// Because we can't store pointers, this has to be the object/key pair (aka loc/name).
-			if (a_root.vars[a_str]._refLocs == undefined) {
-				a_root.vars[a_str]._refLocs = [];
-				a_root.vars[a_str]._refKeys = [];
+			// Only works for scalar values so far.
+			if (a_loc && a_key) {
+				if (a_root.vars[a_str]._refLocs == undefined) {
+					a_root.vars[a_str]._refLocs = [];
+					a_root.vars[a_str]._refKeys = [];
+				}
+				
+				// Can be either object+string or array+index
+				a_root.vars[a_str]._refLocs.push(a_loc);
+				a_root.vars[a_str]._refKeys.push(a_key);
 			}
-			a_root.vars[a_str]._refLocs.push(a_loc);
-			a_root.vars[a_str]._refKeys.push(a_name);
 			
 			return a_root.vars[a_str].value;
 		}
