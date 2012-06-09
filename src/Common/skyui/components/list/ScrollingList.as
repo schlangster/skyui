@@ -3,15 +3,13 @@ import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
 import skyui.components.list.EntryClipManager;
-import skyui.components.list.BasicEnumeration;
-import skyui.components.list.FilteredEnumeration;
 import skyui.components.list.BasicList;
 import skyui.filter.IFilter;
 
 
 class skyui.components.list.ScrollingList extends BasicList
 {
-  /* PRIVATE VARIABLES */  
+  /* PRIVATE VARIABLES */ 
 
 	// This serves as the actual size of the list as its incremented during updating
 	private var _listIndex: Number = 0;
@@ -70,9 +68,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (scrollbar != undefined)
 			scrollbar.height = _listHeight;
 	}
-	
-	// @override BasicList
-	public var listEnumeration: FilteredEnumeration;
 
 
   /* CONSTRUCTORS */
@@ -89,8 +84,6 @@ class skyui.components.list.ScrollingList extends BasicList
 	
   /* PUBLIC FUNCTIONS */
   
-
-
 	// @override MovieClip
 	public function onLoad(): Void
 	{
@@ -102,7 +95,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		}
 	}
 
-	// GFx
+	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
 		var processed = false;
@@ -195,11 +188,22 @@ class skyui.components.list.ScrollingList extends BasicList
 	// @override BasicList
 	public function InvalidateData(): Void
 	{
-		invalidateFilterData();
+		for (var i = 0; i < _entryList.length; i++)
+			_entryList[i].clipIndex = undefined;
+			
+		for (var i=0; i<_dataProcessors.length; i++)
+			_dataProcessors[i].processList(this);
+		
+		if (_selectedIndex >= listEnumeration.size())
+			_selectedIndex = listEnumeration.size() - 1;
+			
+		if (listEnumeration.lookupEnumIndex(_selectedIndex) == undefined)
+			_selectedIndex = -1;
+		
+		listEnumeration.invalidate();
 		
 		calculateMaxScrollPosition();		
-		
-		super.InvalidateData();
+		requestUpdate();
 		
 		// TODO: This might be a problem when doing delayed updating.
 		
@@ -271,23 +275,6 @@ class skyui.components.list.ScrollingList extends BasicList
 	public function onScroll(event: Object): Void
 	{
 		updateScrollPosition(Math.floor(event.position + 0.500000));
-	}
-	
-	public function onFilterChange(): Void
-	{
-		invalidateFilterData();
-		calculateMaxScrollPosition();
-		UpdateList();
-	}
-	
-	public function get filteredItemsCount(): Number
-	{
-		return getListEnumSize();
-	}
-	
-	public function addFilter(a_filter: IFilter): Void
-	{
-		listEnumeration.addFilter(a_filter);
 	}
 	
 	
@@ -362,18 +349,6 @@ class skyui.components.list.ScrollingList extends BasicList
 			scrollbar._visible = _maxScrollPosition > 0;
 			scrollbar.setScrollProperties(_maxListIndex,0,_maxScrollPosition);
 		}
-	}
-	
-	private function invalidateFilterData(): Void
-	{
-		// Set up helper attributes for easy mapping between original list, filtered list and entry clips
-		for (var i = 0; i < _entryList.length; i++)
-			_entryList[i].clipIndex = undefined;
-		
-		listEnumeration.invalidate();
-
-		if (listEnumeration.lookupEnumIndex(_selectedIndex) == undefined)
-			_selectedIndex = -1;
 	}
 	
 	// @override BasicList

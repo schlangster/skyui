@@ -2,6 +2,12 @@
 import skyui.components.list.IEntryFormatter;
 
 
+/*
+ *  A generic entry formatter.
+ *  Sets selectIndicator visible for the selected entry, if defined.
+ *  Sets textField to obj.text.
+ *  Forwards to label obj.state, if defined.
+ */
 class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 {
   /* PRIVATE VARIABLES */
@@ -23,13 +29,14 @@ class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 	{
 		if (a_entryClip == undefined)
 			return;
-			
-		a_entryClip.gotoAndPlay(a_entryObject.state);
-		a_entryClip.enabled = a_entryObject.enabled;
-		
-		a_entryClip.selectIndicator._visible = (a_entryObject == _list.selectedEntry);
 
-		var buttonWidth = 0;
+		a_entryClip.enabled = a_entryObject.enabled;
+
+		if (a_entryObject.state != undefined)
+			a_entryClip.gotoAndPlay(a_entryObject.state);
+		
+		if (a_entryClip.selectIndicator != undefined)
+			a_entryClip.selectIndicator._visible = (a_entryObject == _list.selectedEntry);
 
 		if (a_entryClip.textField != undefined) {
 			a_entryClip.textField.autoSize = "left";

@@ -1,7 +1,6 @@
 ﻿/*
  *  An enumeration of list entries.
  */
-
 interface skyui.components.list.IEntryEnumeration
 {
 	// Returns the number of entries the enumeration contains.

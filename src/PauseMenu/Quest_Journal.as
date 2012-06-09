@@ -1,4 +1,4 @@
-import gfx.controls.RadioButton;
+﻿import gfx.controls.RadioButton;
 import gfx.controls.ButtonGroup;
 import gfx.io.GameDelegate;
 import gfx.ui.InputDetails;
@@ -45,7 +45,7 @@ class Quest_Journal extends MovieClip
 		GlobalFunc.SetLockFunction();
 		MovieClip(BottomBar_mc).Lock("B");
 		
-		ConfigPanel = _root.ConfigPanelFader.Menu_mc;
+		ConfigPanel = _root.ConfigPanelFader.configPanel;
 		
 		QuestsTab.disableFocus = true;
 		StatsTab.disableFocus = true;

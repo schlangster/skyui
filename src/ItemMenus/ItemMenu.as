@@ -420,7 +420,7 @@ class ItemMenu extends MovieClip
 	
 	private function shouldProcessItemsListInput(abCheckIfOverRect: Boolean): Boolean
 	{
-		var process = _bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.filteredItemsCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
+		var process = _bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.itemCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
 
 		if (process && _platform == 0 && abCheckIfOverRect) {
 			var e = Mouse.getTopMostEntity();

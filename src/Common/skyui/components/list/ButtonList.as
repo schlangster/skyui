@@ -14,11 +14,6 @@ class skyui.components.list.ButtonList extends BasicList
 	public var ALIGN_RIGHT = 1;
 	
 	
-  /* STAGE ELEMENTS */
-  
-	public var background: MovieClip;
-	
-	
   /* PROPERTIES */
 	
 	private var _bAutoScale: Boolean = true;
@@ -51,11 +46,6 @@ class skyui.components.list.ButtonList extends BasicList
 	{
 		return _buttonWidth;
 	}
-	
-	public var topBorder: Number = 0;
-	public var bottomBorder: Number = 0;
-	public var leftBorder: Number = 0;
-	public var rightBorder: Number = 0;
 
 	private var _align: Number = ALIGN_RIGHT;
 	

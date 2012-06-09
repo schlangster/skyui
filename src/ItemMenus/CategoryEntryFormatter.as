@@ -1,17 +1,16 @@
-﻿import skyui.components.list.BasicList;
-import skyui.components.list.IEntryFormatter;
+﻿import skyui.components.list.IEntryFormatter;
 
 
-class skyui.components.list.AlphaEntryFormatter implements IEntryFormatter
+class CategoryEntryFormatter implements IEntryFormatter
 {
   /* PRIVATE VARIABLES */
   
-	private var _list: BasicList;
+	private var _list: CategoryList;
 	
 	
   /* CONSTRUCTORS */
 	
-	public function AlphaEntryFormatter(a_list: BasicList)
+	public function CategoryEntryFormatter(a_list: CategoryList)
 	{
 		_list = a_list;
 	}

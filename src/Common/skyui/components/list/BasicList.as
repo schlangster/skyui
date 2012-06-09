@@ -24,7 +24,6 @@ class skyui.components.list.BasicList extends BSList
 	public static var SELECT_KEYBOARD = 1;
 
 	
-	
   /* STAGE ELEMENTS */
 
 	public var background: MovieClip;
@@ -40,6 +39,11 @@ class skyui.components.list.BasicList extends BSList
 	
 
   /* PROPERTIES */
+  
+  	public var topBorder: Number = 0;
+	public var bottomBorder: Number = 0;
+	public var leftBorder: Number = 0;
+	public var rightBorder: Number = 0;
   
 	private var _platform: Number = PLATFORM_PC;
 	
@@ -62,13 +66,13 @@ class skyui.components.list.BasicList extends BSList
 	
 	public var disableSelection: Boolean = false;
 
-	// @override skyui.components.list.BSList
+	// @override BSList
 	public function get selectedIndex(): Number
 	{
 		return _selectedIndex;
 	}
 	
-	// @override skyui.components.list.BSList
+	// @override BSList
 	public function set selectedIndex(a_newIndex: Number)
 	{
 		doSetSelectedIndex(a_newIndex, SELECT_MOUSE);
@@ -80,7 +84,10 @@ class skyui.components.list.BasicList extends BSList
 	
 	public var entryFormatter: IEntryFormatter;
 	
-
+	public function get itemCount(): Number
+	{
+		return getListEnumSize();
+	}
 	
 	
   /* CONSTRUCTORS */
@@ -132,7 +139,7 @@ class skyui.components.list.BasicList extends BSList
 	// @override MovieClip
 	public function onEnterFrame(): Void
 	{
-		if (updateCount>0)
+		if (updateCount > 0)
 			skse.Log("Update count was " + updateCount);
 		updateCount = 0;
 		
@@ -165,8 +172,6 @@ class skyui.components.list.BasicList extends BSList
 	{
 		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
-			
-		skse.Log("ItemPressed");
 			
 		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}
@@ -274,6 +279,6 @@ class skyui.components.list.BasicList extends BSList
 	
 	private function getListEnumLastIndex(): Number
 	{
-		return listEnumeration.lookupEntryIndex(getListEnumSize() -1);
+		return listEnumeration.lookupEntryIndex(getListEnumSize() - 1);
 	}
 }
