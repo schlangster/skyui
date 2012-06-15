@@ -43,7 +43,7 @@ class skyui.components.list.FilteredEnumeration extends BasicEnumeration
 	// @override skyui.IEntryEnumeration
 	public function lookupEntryIndex(a_enumIndex: Number)
 	{
-		return _filteredData[a_enumIndex].unfilteredIndex;
+		return _filteredData[a_enumIndex].itemIndex;
 	}
 	
 	// @override skyui.IEntryEnumeration
@@ -67,7 +67,6 @@ class skyui.components.list.FilteredEnumeration extends BasicEnumeration
 		
 		// Copy the original list, add some helper attributes for easy mapping
 		for (var i = 0; i < _entryData.length; i++) {
-			_entryData[i].unfilteredIndex = i;
 			_entryData[i].filteredIndex = undefined;
 			_filteredData[i] = _entryData[i];
 		}

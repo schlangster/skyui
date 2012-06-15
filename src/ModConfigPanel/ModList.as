@@ -2,9 +2,6 @@
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
-import skyui.components.list.EntryClipManager;
-import skyui.components.list.BasicEnumeration;
-import skyui.components.list.AlphaEntryFormatter;
 import skyui.components.list.ScrollingList;
 
 
@@ -12,19 +9,9 @@ class ModList extends ScrollingList
 {
   /* CONSTANTS */
 	
-	
-	
-	
-  /* STAGE ELEMENTS */
-	
-	public var selectorCenter: MovieClip;
-	public var selectorTop: MovieClip;
-	public var selectorBottom: MovieClip;
-	
-	
   /* PRIVATE VARIABLES */
 
-	
+	private var _activeModIndex = -1;
 	
 
   /* PROPERTIES */
@@ -42,11 +29,53 @@ class ModList extends ScrollingList
 	
   /* PUBLIC FUNCTIONS */
 	
+	// @override ScrollingList
 	public function onLoad(): Void
 	{
-		trace("loaded");
+		super.onLoad();
+	}
+	
+	// @override ScrollingList
+	public function UpdateList(): Void
+	{
+		super.UpdateList();
+	}
+	
+	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
+	{
+		if (disableInput || disableSelection || _selectedIndex == -1)
+			return;
+		
+		_activeModIndex = _selectedIndex;
+		skse.Log("Active mod index is: " + _activeModIndex);
+		_entryList[_activeModIndex].state = "active";
+			
+		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
+	{
+		if (disableInput || disableSelection || _selectedIndex == -1 || a_buttonIndex != 1)
+			return;
+		
+		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+	}
+	
+	public function onItemRollOver(a_index: Number): Void
+	{
+		if (isListAnimating || disableSelection || disableInput)
+			return;
+			
+		doSetSelectedIndex(a_index, SELECT_MOUSE);
+		isMouseDrivenNav = true;
 	}
 
-  /* PRIVATE FUNCTIONS */
-
+	public function onItemRollOut(a_index: Number): Void
+	{
+		if (isListAnimating || disableSelection || disableInput)
+			return;
+			
+		doSetSelectedIndex(-1, SELECT_MOUSE);
+		isMouseDrivenNav = true;
+	}
 }

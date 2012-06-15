@@ -1,4 +1,4 @@
-﻿import skyui.components.list.ButtonList;
+﻿import skyui.components.list.BasicList;
 import skyui.components.list.IEntryFormatter;
 
 
@@ -12,12 +12,12 @@ class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 {
   /* PRIVATE VARIABLES */
   
-	private var _list: ButtonList;
+	private var _list: BasicList;
 	
 	
   /* CONSTRUCTORS */
 	
-	public function ButtonEntryFormatter(a_list: ButtonList)
+	public function ButtonEntryFormatter(a_list: BasicList)
 	{
 		_list = a_list;
 	}
@@ -39,7 +39,7 @@ class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 			a_entryClip.selectIndicator._visible = (a_entryObject == _list.selectedEntry);
 
 		if (a_entryClip.textField != undefined) {
-			a_entryClip.textField.autoSize = "left";
+			a_entryClip.textField.autoSize = a_entryObject.align ? a_entryObject.align : "left";
 			a_entryClip.textField.textColor = a_entryObject.enabled ? 0xffffff : 0x4c4c4c;
 			a_entryClip.textField.SetText(a_entryObject.text ? a_entryObject.text : " ");
         }

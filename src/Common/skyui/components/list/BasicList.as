@@ -153,6 +153,11 @@ class skyui.components.list.BasicList extends BSList
 	// @override BSList
 	public function InvalidateData(): Void
 	{
+		for (var i = 0; i < _entryList.length; i++) {
+			_entryList[i].itemIndex = i;
+			_entryList[i].clipIndex = undefined;
+		}
+		
 		for (var i=0; i<_dataProcessors.length; i++)
 			_dataProcessors[i].processList(this);
 		

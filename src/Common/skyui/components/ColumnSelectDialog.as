@@ -97,7 +97,6 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 			if (e == this)
 				return;
-				
 		DialogManager.closeDialog();
 	}
 	
