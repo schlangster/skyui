@@ -5,9 +5,9 @@ class MagicDataExtender extends ItemcardDataExtender
 {
   /* CONSTRUCTORS */
   
-	public function MagicDataExtender(a_list: BasicList)
+	public function MagicDataExtender()
 	{
-		super(a_list);
+		super();
 	}
 
 

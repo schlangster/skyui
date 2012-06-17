@@ -27,7 +27,7 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	
   /* CONSTRUCTORS */
 	
-	public function PropertyDataExtender(a_list: BasicList, a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String, a_translatePropVar: String)
+	public function PropertyDataExtender(a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String, a_translatePropVar: String)
 	{
 		propertiesVar = a_propertiesVar;
 		iconsVar = a_iconsVar;

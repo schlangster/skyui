@@ -80,8 +80,8 @@ class ContainerMenu extends ItemMenu
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		itemList.addDataProcessor(new InventoryDataExtender(itemList));
-		itemList.addDataProcessor(new PropertyDataExtender(itemList, 'itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
+		itemList.addDataProcessor(new InventoryDataExtender());
+		itemList.addDataProcessor(new PropertyDataExtender('itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
@@ -116,7 +116,7 @@ class ContainerMenu extends ItemMenu
 	public function onXButtonPress(): Void
 	{
 		// If we are zoomed into an item, do nothing
-		if (!_bFadedIn)
+		if (!bFadedIn)
 			return;
 		
 		if (isViewingContainer() && !bNPCMode) {

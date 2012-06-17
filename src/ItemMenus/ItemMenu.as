@@ -26,7 +26,7 @@ class ItemMenu extends MovieClip
 	
 	private var _config: Object;
 	
-	private var _bFadedIn: Boolean;
+
 	
 	
   /* STAGE ELEMENTS */
@@ -52,6 +52,8 @@ class ItemMenu extends MovieClip
 	// @Mysterious GFx
 	public var bPCControlsReady: Boolean = true;
 	
+	private var bFadedIn: Boolean;
+	
 	
   /* CONSTRUCTORS */
 
@@ -64,7 +66,7 @@ class ItemMenu extends MovieClip
 		Mouse.addListener(this);
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		
-		_bFadedIn = true;
+		bFadedIn = true;
 		_bItemCardFadedIn = false;
 		
 		_3DIconXSettingStr = "fInventory3DItemPosX:Interface";
@@ -111,7 +113,7 @@ class ItemMenu extends MovieClip
 		
 		exitMenuRect.onMouseDown = function()
 		{
-			if (_parent._bFadedIn == true && Mouse.getTopMostEntity() == this)
+			if (_parent.bFadedIn == true && Mouse.getTopMostEntity() == this)
 				_parent.onExitMenuRectClick();
 		};
 		
@@ -167,7 +169,7 @@ class ItemMenu extends MovieClip
 	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
-		if (!_bFadedIn)
+		if (!bFadedIn)
 			return true;
 			
 		if (pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
@@ -182,7 +184,7 @@ class ItemMenu extends MovieClip
 	public function onMouseWheel(delta: Number): Void
 	{
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
-			if (e == mouseRotationRect && shouldProcessItemsListInput(false) || !_bFadedIn && delta == -1) {
+			if (e == mouseRotationRect && shouldProcessItemsListInput(false) || !bFadedIn && delta == -1) {
 				GameDelegate.call("ZoomItemModel",[delta]);
 				continue;
 			}
@@ -213,7 +215,7 @@ class ItemMenu extends MovieClip
 			GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
 			
 		} else {
-			if (!_bFadedIn)
+			if (!bFadedIn)
 				resetMenu();
 			
 			if (_bItemCardFadedIn) {
@@ -303,9 +305,9 @@ class ItemMenu extends MovieClip
 	// @API
 	public function ToggleMenuFade(): Void
 	{
-		if (_bFadedIn) {
+		if (bFadedIn) {
 			_parent.gotoAndPlay("fadeOut");
-			_bFadedIn = false;
+			bFadedIn = false;
 			inventoryLists.itemList.disableSelection = true;
 			inventoryLists.itemList.disableInput = true;
 			inventoryLists.categoryList.disableSelection = true;
@@ -318,7 +320,7 @@ class ItemMenu extends MovieClip
 	// @API
 	public function SetFadedIn(): Void
 	{
-		_bFadedIn = true;
+		bFadedIn = true;
 		inventoryLists.itemList.disableSelection = false;
 		inventoryLists.itemList.disableInput = false;
 		inventoryLists.categoryList.disableSelection = false;
@@ -420,7 +422,7 @@ class ItemMenu extends MovieClip
 	
 	private function shouldProcessItemsListInput(abCheckIfOverRect: Boolean): Boolean
 	{
-		var process = _bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.itemCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
+		var process = bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.itemCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
 
 		if (process && _platform == 0 && abCheckIfOverRect) {
 			var e = Mouse.getTopMostEntity();

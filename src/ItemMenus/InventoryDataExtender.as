@@ -10,9 +10,9 @@ class InventoryDataExtender extends ItemcardDataExtender
 
   /* CONSTRUCTORS */
   
-	public function InventoryDataFetcher(a_list: BasicList)
+	public function InventoryDataExtender()
 	{
-		super(a_list);
+		super();
 	}
 
 
@@ -64,8 +64,7 @@ class InventoryDataExtender extends ItemcardDataExtender
 			
 		} else if (a_entryObject.formType == Defines.FORMTYPE_ARMOR) {
 			processArmorSubType(a_entryObject);
-			// Swap heavy and light values for better sorting
-			a_entryObject.weightClass = 1 - a_entryObject.weightClass;
+			fixWeightClassSorting(a_entryObject);
 			
 		} else if (a_entryObject.formType == Defines.FORMTYPE_ALCH) {
 			fixAlchemySubType(a_entryObject);
@@ -118,6 +117,16 @@ class InventoryDataExtender extends ItemcardDataExtender
 			}
 		}
 		a_entryObject.subType = subType;		
+	}
+	
+	private function fixWeightClassSorting(a_entryObject:Object)
+	{
+		// Swap heavy and light values for better sorting
+		if (a_entryObject.weightClass == 0) {
+			a_entryObject.weightClass = 1;
+		} else if (a_entryObject.weightClass == 1) {
+			a_entryObject.weightClass = 0;
+		}
 	}
 	
 	private function fixAlchemySubType(a_entryObject: Object): Void

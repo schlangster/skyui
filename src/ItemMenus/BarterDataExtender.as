@@ -11,9 +11,9 @@ class BarterDataExtender extends InventoryDataExtender
 	
   /* CONSTRUCTORS */
 	
-	function BarterDataExtender(a_list: BasicList)
+	function BarterDataExtender()
 	{
-		super(a_list);
+		super();
 		barterSellMult = 1.0;
 		barterBuyMult = 1.0;
 	}

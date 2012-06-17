@@ -15,7 +15,7 @@ class ItemcardDataExtender implements IListProcessor
 	
   /* CONSTRUCTORS */
 	
-	public function ItemcardDataExtender(a_list: BasicList)
+	public function ItemcardDataExtender()
 	{
 		_requestItemInfo = function(a_target: Object, a_index: Number): Void
 		{

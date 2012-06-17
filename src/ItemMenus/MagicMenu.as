@@ -68,15 +68,15 @@ class MagicMenu extends ItemMenu
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		itemList.addDataProcessor(new MagicDataExtender(itemList));
-		itemList.addDataProcessor(new PropertyDataExtender(itemList, 'magicProperties', 'magicIcons', 'magicCompoundProperties', 'translateProperties'));
+		itemList.addDataProcessor(new MagicDataExtender());
+		itemList.addDataProcessor(new PropertyDataExtender('magicProperties', 'magicIcons', 'magicCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("MagicListLayout");
 	}
 
 	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
-		if (_bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
+		if (bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
 			if (Shared.GlobalFunc.IsKeyPressed(details)) {
 				if (inventoryLists.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.RIGHT) {
 					startMenuFade();

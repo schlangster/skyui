@@ -58,7 +58,7 @@ class BarterMenu extends ItemMenu
 		categoryList.iconArt = _categoryListIconArt;
 
 		// Save this to modify multipliers later.
-		_dataExtender = new BarterDataExtender(itemList);
+		_dataExtender = new BarterDataExtender();
 
 		var itemList: TabularList = inventoryLists.itemList;		
 		var entryFormatter = new InventoryEntryFormatter(itemList);
@@ -66,7 +66,7 @@ class BarterMenu extends ItemMenu
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
 		itemList.addDataProcessor(_dataExtender);
-		itemList.addDataProcessor(new PropertyDataExtender(itemList, 'itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
+		itemList.addDataProcessor(new PropertyDataExtender('itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 	}
 
