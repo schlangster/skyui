@@ -8,7 +8,7 @@
 	}
 
 	// Remove comments and leading/trailing white space
-	static function clean(a_str:String): String
+	static function clean(a_str: String): String
 	{
 		if (a_str.indexOf(";") > 0)
 			a_str = a_str.slice(0,a_str.indexOf(";"));

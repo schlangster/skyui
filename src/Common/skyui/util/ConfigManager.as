@@ -335,8 +335,8 @@ class skyui.util.ConfigManager
 					// If we don't have a pair we just ignore it
 					continue;
 				}
-				var key = parseValueString(GlobalFunctions.clean(keyValue[0]), null, null);
-				var val = parseValueString(GlobalFunctions.clean(keyValue[1]), assocArray, key);
+				var key = parseValueString(GlobalFunctions.clean(keyValue[0]), a_root, null, null);
+				var val = parseValueString(GlobalFunctions.clean(keyValue[1]), a_root, assocArray, key);
 				assocArray[key] = val;
 			}
 			return assocArray;
@@ -347,7 +347,7 @@ class skyui.util.ConfigManager
 				return new Array();
 			var values = GlobalFunctions.extract(a_str, "<", ">").split(",");
 			for (var i=0; i<values.length; i++)
-				values[i] = parseValueString(GlobalFunctions.clean(values[i]), values, i);
+				values[i] = parseValueString(GlobalFunctions.clean(values[i]), a_root, values, i);
 				
 			return values;
 			
@@ -356,7 +356,7 @@ class skyui.util.ConfigManager
 			var values = GlobalFunctions.extract(a_str, "{", "}").split("|");
 			var flags = 0;
 			for (var i=0; i<values.length; i++) {
-				var t = parseValueString(GlobalFunctions.clean(values[i]));
+				var t = parseValueString(GlobalFunctions.clean(values[i]), a_root, a_loc, a_key);
 				if (isNaN(t))
 					return undefined;
 					
