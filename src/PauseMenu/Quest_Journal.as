@@ -1,4 +1,4 @@
-﻿import gfx.controls.RadioButton;
+import gfx.controls.RadioButton;
 import gfx.controls.ButtonGroup;
 import gfx.io.GameDelegate;
 import gfx.ui.InputDetails;
@@ -37,7 +37,6 @@ class Quest_Journal extends MovieClip
 		PageArray = new Array(QuestsFader.Page_mc, StatsFader.Page_mc, SystemFader.Page_mc);
 		TopmostPage = QuestsFader;
 		bTabsDisabled = false;
-		
 	}
 
 	function InitExtensions()
@@ -92,7 +91,6 @@ class Quest_Journal extends MovieClip
 			TopmostPage.gotoAndStop("hide");
 			PageArray[iCurrentTab]._parent.swapDepths(TopmostPage);
 			TopmostPage = PageArray[iCurrentTab]._parent;
-			
 		}
 		TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
 		BottomBar_mc.SetMode(iCurrentTab);
@@ -101,7 +99,6 @@ class Quest_Journal extends MovieClip
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bHandledInput: Boolean = false;
-		
 		if (pathToFocus != undefined && pathToFocus.length > 0) {
 			bHandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}
@@ -174,7 +171,6 @@ class Quest_Journal extends MovieClip
 		if (bTabsDisabled) {
 			return;
 		}
-
 		event.item.gotoAndPlay("selecting");
 		PageArray[iCurrentTab].startPage();
 		GameDelegate.call("PlaySound", ["UIJournalTabsSD"]);

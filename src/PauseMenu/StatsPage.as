@@ -29,13 +29,13 @@ class StatsPage extends MovieClip
 		CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
 		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
 		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
-        CategoryList.disableInput = true;
+		CategoryList.disableInput = true;
 		_StatsList.disableSelection = true;
 	}
 
 	function startPage(): Void
 	{
-        CategoryList.disableInput = false;
+		CategoryList.disableInput = false;
 		FocusHandler.instance.setFocus(CategoryList, 0);
 		if (bUpdated) {
 			return;
@@ -46,20 +46,20 @@ class StatsPage extends MovieClip
 
 	function endPage(): Void
 	{
-        CategoryList.disableInput = true;
+		CategoryList.disableInput = true;
 	}
 
 	function PopulateStatsList(): Void
 	{
-		var itextIndex = 0;
-		var ivalueIndex = 1;
-		var ientryListIndexIndex = 2;
-		var iUnknownIndex = 3;
-		var istride = 4;
+		var STAT_TEXT = 0;
+		var STAT_VALUE = 1;
+		var STAT_ENTRYLISTINDEX = 2;
+		var STAT_UNKNOWN = 3;
+		var STAT_STRIDE = 4;
 		
-		for (var i: Number = 0; i < arguments.length; i += istride) {
-			var sstat: Object = {text: "$" + arguments[i + itextIndex], value: arguments[i + ivalueIndex]};
-			CategoryList.entryList[arguments[i + ientryListIndexIndex]].stats.push(sstat);
+		for (var i: Number = 0; i < arguments.length; i += STAT_STRIDE) {
+			var stat: Object = {text: "$" + arguments[i + STAT_TEXT], value: arguments[i + STAT_VALUE]};
+			CategoryList.entryList[arguments[i + STAT_ENTRYLISTINDEX]].stats.push(stat);
 		}
 		onCategoryHighlight();
 	} 
