@@ -1,4 +1,4 @@
-class HUDMenu extends Shared.PlatformChangeUser
+﻿class HUDMenu extends Shared.PlatformChangeUser
 {
 	var SavedRolloverText: String = "";
 	var ItemInfoArray: Array = new Array();
@@ -76,6 +76,9 @@ class HUDMenu extends Shared.PlatformChangeUser
 	function HUDMenu()
 	{
 		super();
+		
+		WidgetLoader.skyuiWidgetExtensions = true;
+		
 		Shared.GlobalFunc.MaintainTextFormat();
 		Shared.GlobalFunc.AddReverseFunctions();
 		Key.addListener(this);
@@ -334,6 +337,8 @@ class HUDMenu extends Shared.PlatformChangeUser
 				HUDMode = String(HUDModes[HUDModes.length - 1]);
 			}
 		}
+		
+		skse.SendModEvent("hudModeChange", HUDMode);
 		
 		for(var i: Number = 0; i < HudElements.length; i++) {
 			if (HudElements[i] != undefined) {
