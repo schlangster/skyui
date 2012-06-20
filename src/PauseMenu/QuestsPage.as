@@ -49,14 +49,14 @@ class QuestsPage extends MovieClip
 		TitleList.addEventListener("listMovedUp", this, "onTitleListMoveUp");
 		TitleList.addEventListener("listMovedDown", this, "onTitleListMoveDown");
 		TitleList.addEventListener("selectionChange", this, "onTitleListMouseSelectionChange");
-        TitleList.disableInput = true;
+		TitleList.disableInput = true;
 		ObjectiveList.addEventListener("itemPress", this, "onObjectiveListSelect");
 		ObjectiveList.addEventListener("selectionChange", this, "onObjectiveListHighlight");
 	}
 
 	function startPage()
 	{
-        TitleList.disableInput = false;
+		TitleList.disableInput = false;
 		if (!bUpdated) {
 			ShowOnMapButton = _parent._parent.BottomBar_mc.Button2_mc;
 			GameDelegate.call("RequestQuestsData", [TitleList], this, "onQuestsDataComplete");
@@ -68,7 +68,7 @@ class QuestsPage extends MovieClip
 
 	function endPage()
 	{
-        TitleList.disableInput = true;
+		TitleList.disableInput = true;
 	}
 
 	function get selectedQuestID(): Number
@@ -275,7 +275,7 @@ class QuestsPage extends MovieClip
 	function onQuestHighlight(): Void
 	{
 		if (TitleList.entryList.length > 0) {
-			var aCategories: Array = ["Misc", "Main", "MagesGuild", "ThievesGuild", "DarkBrotherhood", "Companion", "Favor", "Daedric", "Misc", "CivilWar"];
+			var aCategories: Array = ["Misc", "Main", "MagesGuild", "ThievesGuild", "DarkBrotherhood", "Companion", "Favor", "Daedric", "Misc", "CivilWar", "DLC01"];
 			QuestTitleText.SetText(TitleList.selectedEntry.text);
 			if (TitleList.selectedEntry.objectives == undefined) {
 				GameDelegate.call("RequestObjectivesData", []);

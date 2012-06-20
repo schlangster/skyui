@@ -7,7 +7,6 @@ import Shared.GlobalFunc;
 
 import skyui.components.SearchWidget;
 import skyui.components.TabBar;
-import skyui.components.list.AlphaEntryFormatter;
 import skyui.components.list.FilteredEnumeration;
 import skyui.components.list.BasicEnumeration;
 import skyui.components.list.TabularList;
@@ -154,7 +153,7 @@ class InventoryLists extends MovieClip
 	public function onLoad(): Void
 	{
 		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
-		categoryList.entryFormatter = new AlphaEntryFormatter(categoryList);
+		categoryList.entryFormatter = new CategoryEntryFormatter(categoryList);
 
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
@@ -163,9 +162,9 @@ class InventoryLists extends MovieClip
 		itemList.listEnumeration = listEnumeration;
 		// entry formatter and data fetcher are initialized by the top-level menu since they differ in each case
 
-		_typeFilter.addEventListener("filterChange", itemList, "onFilterChange");
-		_nameFilter.addEventListener("filterChange", itemList, "onFilterChange");
-		_sortFilter.addEventListener("filterChange", itemList, "onFilterChange");
+		_typeFilter.addEventListener("filterChange", this, "onFilterChange");
+		_nameFilter.addEventListener("filterChange", this, "onFilterChange");
+		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
 
 		categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
 		categoryList.addEventListener("listMovedUp", this, "onCategoriesListMoveUp");
@@ -184,6 +183,11 @@ class InventoryLists extends MovieClip
 		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
+	}
+	
+	public function onFilterChange(): Void
+	{
+		itemList.InvalidateData();
 	}
 	
 	public function enableTabBar(): Void

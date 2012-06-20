@@ -37,7 +37,6 @@ class Quest_Journal extends MovieClip
 		PageArray = new Array(QuestsFader.Page_mc, StatsFader.Page_mc, SystemFader.Page_mc);
 		TopmostPage = QuestsFader;
 		bTabsDisabled = false;
-		
 	}
 
 	function InitExtensions()
@@ -45,7 +44,7 @@ class Quest_Journal extends MovieClip
 		GlobalFunc.SetLockFunction();
 		MovieClip(BottomBar_mc).Lock("B");
 		
-		ConfigPanel = _root.ConfigPanelFader.Menu_mc;
+		ConfigPanel = _root.ConfigPanelFader.configPanel;
 		
 		QuestsTab.disableFocus = true;
 		StatsTab.disableFocus = true;
@@ -62,6 +61,11 @@ class Quest_Journal extends MovieClip
 		GameDelegate.addCallBack("StartCloseMenu", this, "CloseMenu");
 		
 		BottomBar_mc.InitBar();
+
+		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
+		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
+
+		_root.ConfigPanelFader._x = (rightEdge - leftEdge - _root.ConfigPanelFader._width) / 2;
 	}
 
 	function RestoreSavedSettings(aiSavedTab: Number, abTabsDisabled: Boolean): Void
@@ -87,7 +91,6 @@ class Quest_Journal extends MovieClip
 			TopmostPage.gotoAndStop("hide");
 			PageArray[iCurrentTab]._parent.swapDepths(TopmostPage);
 			TopmostPage = PageArray[iCurrentTab]._parent;
-			
 		}
 		TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
 		BottomBar_mc.SetMode(iCurrentTab);
@@ -96,7 +99,6 @@ class Quest_Journal extends MovieClip
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bHandledInput: Boolean = false;
-		
 		if (pathToFocus != undefined && pathToFocus.length > 0) {
 			bHandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}
@@ -169,7 +171,6 @@ class Quest_Journal extends MovieClip
 		if (bTabsDisabled) {
 			return;
 		}
-
 		event.item.gotoAndPlay("selecting");
 		PageArray[iCurrentTab].startPage();
 		GameDelegate.call("PlaySound", ["UIJournalTabsSD"]);
@@ -204,28 +205,30 @@ class Quest_Journal extends MovieClip
 		_parent.gotoAndPlay("fadeIn");
 	}
 
-	function DisableTabs(abEnable: Boolean): Void {
+	function DisableTabs(abEnable: Boolean): Void
+	{
 		QuestsTab.disabled = abEnable;
 		StatsTab.disabled = abEnable;
 		SystemTab.disabled = abEnable;
 	}
 	
-	function ConfigPanelOpen() {
-		DisableTabs(true); // Disable Tabs
-		SystemFader.Page_mc.endPage(); // End System Page
-		DoHideMenu(); // Hide the main menu
-		_root.ConfigPanelFader.swapDepths(_root.QuestJournalFader); // Move ConfigPanelFader to front
-		FocusHandler.instance.setFocus(ConfigPanel, 0); // Set focus to _root.ConfigPanelFader.Menu_mc
-		ConfigPanel.startPage(); // Start the config panel
+	function ConfigPanelOpen()
+	{
+		DisableTabs(true);
+		SystemFader.Page_mc.endPage();
+		DoHideMenu();
+		_root.ConfigPanelFader.swapDepths(_root.QuestJournalFader);
+		FocusHandler.instance.setFocus(ConfigPanel, 0);
+		ConfigPanel.startPage();
 	}
 	
-	function ConfigPanelClose() {
-		ConfigPanel.endPage(); // End config panel
-		_root.QuestJournalFader.swapDepths(_root.ConfigPanelFader); // Move QuestJournalFader to front
-		FocusHandler.instance.setFocus(this, 0); // Set focus to _root.QuestJournalFader.Menu_mc
-		DoShowMenu(); // Show main menu
-		SystemFader.Page_mc.startPage(); // Start System Page
-		DisableTabs(false); // Reenable tabs
+	function ConfigPanelClose()
+	{
+		ConfigPanel.endPage();
+		_root.QuestJournalFader.swapDepths(_root.ConfigPanelFader);
+		FocusHandler.instance.setFocus(this, 0);
+		DoShowMenu();
+		SystemFader.Page_mc.startPage();
+		DisableTabs(false);
 	}
-	
 }

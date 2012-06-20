@@ -97,9 +97,6 @@ class CategoryList extends BasicList
 		
 		if (iconSize == undefined)
 			iconSize = 32;
-		
-		// Not needed for a category list
-		dataFetcher = null;
 	}
 	
 	
@@ -209,7 +206,7 @@ class CategoryList extends BasicList
 		onItemPress(curIndex, 0);
 	}
 	
-	// GFx
+	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
 		var processed = false;
@@ -339,12 +336,11 @@ class CategoryList extends BasicList
 		if (_selectedIndex == -1) {
 			selectorCenter._visible = false;
 
-			if (selectorLeft != undefined) {
+			if (selectorLeft != undefined)
 				selectorLeft._visible = false;
-			}
-			if (selectorRight != undefined) {
+				
+			if (selectorRight != undefined)
 				selectorRight._visible = false;
-			}
 
 			return;
 		}
@@ -376,9 +372,8 @@ class CategoryList extends BasicList
 
 		selectorCenter._x = _selectorPos;
 
-		if (selectorLeft != undefined) {
+		if (selectorLeft != undefined)
 			selectorLeft._width = selectorCenter._x;
-		}
 
 		if (selectorRight != undefined) {
 			selectorRight._x = selectorCenter._x + selectorCenter._width;

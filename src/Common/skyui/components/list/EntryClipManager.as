@@ -66,6 +66,8 @@ class skyui.components.list.EntryClipManager
 	{
 		var entryRenderer = _list.entryRenderer;
 		
+		skse.Log("Growing pool " + entryRenderer);
+		
 		for (var i=0; i<a_size; i++) {
 			var entryClip = _list.attachMovie(entryRenderer, entryRenderer + _nextIndex, _list.getNextHighestDepth());
 			entryClip.initialize(_nextIndex, _list);

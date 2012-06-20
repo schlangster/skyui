@@ -1,19 +1,19 @@
 ﻿import skyui.components.list.BasicList;
 
 
-class MagicDataFetcher extends ItemcardDataFetcher
+class MagicDataExtender extends ItemcardDataExtender
 {
   /* CONSTRUCTORS */
   
-	public function MagicDataFetcher(a_list: BasicList)
+	public function MagicDataExtender()
 	{
-		super(a_list);
+		super();
 	}
 
 
   /* PUBLIC FUNCTIONS */
 	
-  	// @override ItemcardDataFetcher
+  	// @override ItemcardDataExtender
 	function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
 		switch (a_itemInfo.type) {

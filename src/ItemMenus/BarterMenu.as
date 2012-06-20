@@ -2,6 +2,7 @@
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
+import skyui.props.PropertyDataExtender;
 
 
 class BarterMenu extends ItemMenu
@@ -18,7 +19,7 @@ class BarterMenu extends ItemMenu
 	private var _categoryListIconArt: Array;
 	private var _tabBarIconArt: Array;
 	
-	private var _dataFetcher: BarterDataFetcher;
+	private var _dataExtender: BarterDataExtender;
 	
   /* PROPERTIES */
 	
@@ -57,14 +58,15 @@ class BarterMenu extends ItemMenu
 		categoryList.iconArt = _categoryListIconArt;
 
 		// Save this to modify multipliers later.
-		_dataFetcher = new BarterDataFetcher(itemList);
+		_dataExtender = new BarterDataExtender();
 
 		var itemList: TabularList = inventoryLists.itemList;		
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
-		itemList.dataFetcher = _dataFetcher;
+		itemList.addDataProcessor(_dataExtender);
+		itemList.addDataProcessor(new PropertyDataExtender('itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 	}
 
@@ -78,8 +80,8 @@ class BarterMenu extends ItemMenu
 	{
 		_buyMult = a_buyMult;
 		_sellMult = a_sellMult;
-		_dataFetcher.barterSellMult = a_sellMult;
-		_dataFetcher.barterBuyMult = a_buyMult;
+		_dataExtender.barterSellMult = a_sellMult;
+		_dataExtender.barterBuyMult = a_buyMult;
 		bottomBar.SetButtonsText("","$Exit");
 	}
 	

@@ -8,12 +8,13 @@ class skyui.components.list.SortedListHeader extends MovieClip
 {
   /* PRIVATE VARIABLES */
 	
-	private var _columns:Array;
+	private var _columns: Array;
 	
 	
   /* STAGE ELEMENTS */
   
-	public var sortIcon:MovieClip;
+	public var sortIcon: MovieClip;
+	public var iconColumnIndicator: MovieClip;
 	
   
   /* PROPERTIES */ 
@@ -83,16 +84,14 @@ class skyui.components.list.SortedListHeader extends MovieClip
 
 		columnButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			if (!this.columnIndex != undefined) {
+			if (!this.columnIndex != undefined)
 				_parent.columnPress(this.columnIndex);
-			}
 		};
 
 		columnButton.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
-			if (!this.columnIndex != undefined) {
+			if (!this.columnIndex != undefined)
 				_parent.columnPress(this.columnIndex);
-			}
 		};
 
 		_columns[a_index] = columnButton;
@@ -138,9 +137,16 @@ class skyui.components.list.SortedListHeader extends MovieClip
 			e.buttonArea._y = e.label._y - 2;
 			e.buttonArea._height = e.label._height + 2;
 			
+			if (_layout.columnLayoutData[i].type == ListLayout.COL_TYPE_ITEM_ICON) {
+				iconColumnIndicator._x = e._x + e.buttonArea._x + e.buttonArea._width;
+				iconColumnIndicator._y = -e._height + ((e._height - iconColumnIndicator._height) / 2);
+			}
+			
 			if (activeIndex == i) {
-				sortIcon._x = e._x + e.buttonArea._x + e.buttonArea._width + 2;
-				sortIcon._y = -e._height + ((e._height - sortIcon._height) / 2);
+				sortIcon._x = e._x + e.buttonArea._x + e.buttonArea._width;
+				sortIcon._y = -e._height + ((e._height - sortIcon._height) / 2) - 1;
+				
+				iconColumnIndicator._visible = _layout.columnLayoutData[i].type != ListLayout.COL_TYPE_ITEM_ICON;
 			}
 		}
 	}

@@ -1,4 +1,6 @@
-﻿import skyui.components.list.TabularEntryFormatter;
+﻿import flash.geom.ColorTransform;
+
+import skyui.components.list.TabularEntryFormatter;
 import skyui.components.list.TabularList;
 import skyui.util.Defines;
 import skyui.util.ConfigManager;
@@ -87,31 +89,24 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 	{
 		_config = event.config;
 		
-		if (_config.ItemList.entry.icon.showStolen != undefined) {
+		if (_config.ItemList.entry.icon.showStolen != undefined)
 			_bShowStolenIcon = _config.ItemList.entry.icon.showStolen;
-		}
 		
 		// Enabled entry
-		if (_config.ItemList.entry.color.enabled.text != undefined) {
+		if (_config.ItemList.entry.color.enabled.text != undefined)
 			_defaultEnabledColor = _config.ItemList.entry.color.enabled.text;
-		}
-		if (_config.ItemList.entry.color.enabled.negative != undefined) {
+		if (_config.ItemList.entry.color.enabled.negative != undefined)
 			_negativeEnabledColor = _config.ItemList.entry.color.enabled.negative;
-		}
-		if (_config.ItemList.entry.color.enabled.stolen != undefined) {
+		if (_config.ItemList.entry.color.enabled.stolen != undefined)
 			_stolenEnabledColor = _config.ItemList.entry.color.enabled.stolen;
-		}
 		
 		// Disabled entry
-		if (_config.ItemList.entry.color.disabled.text != undefined) {
+		if (_config.ItemList.entry.color.disabled.text != undefined)
 			_defaultDisabledColor = _config.ItemList.entry.color.disabled.text;
-		}
-		if (_config.ItemList.entry.color.disabled.negative != undefined) {
+		if (_config.ItemList.entry.color.disabled.negative != undefined)
 			_negativeDisabledColor = _config.ItemList.entry.color.disabled.negative;
-		}
-		if (_config.ItemList.entry.color.disabled.stolen != undefined) {
+		if (_config.ItemList.entry.color.disabled.stolen != undefined)
 			_stolenDisabledColor = _config.ItemList.entry.color.disabled.stolen;
-		}
 	}
 
   	// @override TabularEntryFormatter
@@ -125,79 +120,27 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 	}
 
   	// @override TabularEntryFormatter
-	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip): Void
+	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_entryClip: MovieClip)
 	{
-		var iconLabel: String;
-		
-		switch (a_entryObject.infoType) {
-			case InventoryDefines.ICT_WEAPON :
-				if (a_entryObject.formType == Defines.FORMTYPE_ARROW) {
-					iconLabel = "weapon_arrow";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_DAGGER) {
-					iconLabel = "weapon_dagger";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_BOW) {
-					iconLabel = "weapon_bow";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_GREATSWORD) {
-					iconLabel = "weapon_greatsword";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_WARAXE) {
-					iconLabel = "weapon_waraxe";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_MACE) {
-					iconLabel = "weapon_mace";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_LONGSWORD) {
-					iconLabel = "weapon_sword";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_HAMMER) {
-					iconLabel = "weapon_hammer";
-					break;
-				} else if (a_entryObject.subType == Defines.WEAPON_TYPE_STAFF) {
-					iconLabel = "weapon_staff";
-					break;
-				}
-
-				iconLabel = "default_weapon";
-				break;
-			case InventoryDefines.ICT_ARMOR :
-				iconLabel = "default_armor";
-				break;
-			case InventoryDefines.ICT_POTION :
-				iconLabel = "default_potion";
-				break;
-			case InventoryDefines.ICT_SPELL :
-				iconLabel = "default_scroll";
-				break;
-			case InventoryDefines.ICT_FOOD :
-				iconLabel = "default_food";
-				break;
-			case InventoryDefines.ICT_INGREDIENT :
-				iconLabel = "default_ingredient";
-				break;
-			case InventoryDefines.ICT_BOOK :
-				iconLabel = "default_book";
-				break;
-			case InventoryDefines.ICT_KEY :
-				iconLabel = "default_key";
-				break;
-			case InventoryDefines.ICT_MISC :
-			default :
-				if (a_entryObject.formType == Defines.FORMTYPE_SOULGEM) {
-					iconLabel = "misc_soulgem";
-				} else {
-					iconLabel = "default_misc";
-				}
-		}
+		var iconLabel = a_entryObject["iconLabel"] != undefined ? a_entryObject["iconLabel"] : "default_misc";
 		
 		// The icon clip is loaded at runtime from a seperate .swf. So two scenarios are possible:
 		// 1. The clip has been loaded, gotoAndStop will set it to the new label
 		// 2. Loading is not done yet, so gotoAndStop will fail. In this case, the loaded clip will fetch the current label from
-		//    the its parent (entryclip.iconLabel) as soon as it's done.
+		//    the its parent (entryclip.iconLabel) as soon as it's done.  Same for the iconColor.
 		a_entryClip.iconLabel = iconLabel;
 		a_entryField.gotoAndStop(iconLabel);
+		
+		if (a_entryObject["iconColor"] != undefined) {
+			var iconColor: Number = Number(a_entryObject["iconColor"]);
+			skse.Log("Setting icon color of " + a_entryObject.text + " to " + iconColor);
+			changeIconColor(MovieClip(a_entryField), iconColor);
+			a_entryClip.iconColor = iconColor;
+			
+		} else {
+			resetIconColor(MovieClip(a_entryField));
+			a_entryClip.iconColor = undefined;
+		}
 	}
 
   	// @override TabularEntryFormatter
@@ -286,7 +229,10 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		formatColor(a_entryField, a_entryObject);
 	}
 	
-	public function formatColor(a_entryField: Object, a_entryObject: Object): Void
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function formatColor(a_entryField: Object, a_entryObject: Object): Void
 	{
 		// Negative Effect
 		if (a_entryObject.negativeEffect == true)
@@ -299,5 +245,30 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		// Default
 		else
 			a_entryField.textColor = a_entryObject.enabled == false ? _defaultDisabledColor : _defaultEnabledColor;
+	}
+	
+	private function changeIconColor(a_icon: MovieClip, a_rgb: Number)
+	{
+		for (var e in a_icon) {
+			if (a_icon[e] instanceof MovieClip) {
+					//Note: Could check if all values of RGBA mult and .rgb are all the same then skip
+					var colorTrans = new ColorTransform();
+					colorTrans.rgb = a_rgb;
+					a_icon[e].transform.colorTransform = colorTrans;
+					// Shouldn't be necessary to recurse since we don't expect multiple clip depths for an icon
+					//changeIconColor(a_icon[e], a_rgb);
+			}
+		}
+	}
+
+	private function resetIconColor(a_icon: MovieClip)
+	{
+		for (var e in a_icon) {
+			if (a_icon[e] instanceof MovieClip) {
+					a_icon[e].transform.colorTransform = new ColorTransform();
+					// Shouldn't be necessary to recurse since we don't expect multiple clip depths for an icon
+					//resetIconColor(a_icon[e]);
+			}
+		}
 	}
 }

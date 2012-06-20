@@ -35,20 +35,20 @@ class JournalBottomBar extends MovieClip
 	{
 		LevelMeterRect._visible = aiTab == 1 || aiTab == 2;
 		Button1_mc._visible = Button2_mc._visible = aiTab == 0;
-		if (aiTab === 0) {
-			Button1_mc.label = "$Toggle Active";
-			Button1_mc.SetArt({PCArt: "Enter", XBoxArt: "360_A", PS3Art: "PS3_A"});
-			Button2_mc.label = "$Show on Map";
-			Button2_mc.SetArt({PCArt: "M", XBoxArt: "360_X", PS3Art: "PS3_X"});
-			PositionButtons();
-			return;
-		} else if (aiTab !== 2) {
-			return;
+        switch (aiTab) {
+			case 0:
+				Button1_mc.label = "$Toggle Active";
+				Button1_mc.SetArt({PCArt: "Enter", XBoxArt: "360_A", PS3Art: "PS3_A"});
+				Button2_mc.label = "$Show on Map";
+				Button2_mc.SetArt({PCArt: "M", XBoxArt: "360_X", PS3Art: "PS3_X"});
+				PositionButtons();
+				break;
+			case 2:
+				Button1_mc.label = "$Delete";
+				Button1_mc.SetArt({PCArt: "X", XBoxArt: "360_X", PS3Art: "PS3_X"});
+				PositionButtons();
+				break;
 		}
-		Button1_mc.label = "$Delete";
-		Button1_mc.SetArt({PCArt: "X", XBoxArt: "360_X", PS3Art: "PS3_X"});
-		PositionButtons();
-		return;
 	}
 
 	function PositionButtons(): Void

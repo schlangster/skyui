@@ -1,11 +1,11 @@
 ﻿import gfx.io.GameDelegate;
 
 import skyui.components.list.BasicList;
-import skyui.components.list.IDataFetcher;
+import skyui.components.list.IListProcessor;
 
 
 // @abstract
-class ItemcardDataFetcher implements IDataFetcher
+class ItemcardDataExtender implements IListProcessor
 {
   /* PRIVATE VARIABLES */
   
@@ -15,7 +15,7 @@ class ItemcardDataFetcher implements IDataFetcher
 	
   /* CONSTRUCTORS */
 	
-	public function ItemcardDataFetcher(a_list: BasicList)
+	public function ItemcardDataExtender()
 	{
 		_requestItemInfo = function(a_target: Object, a_index: Number): Void
 		{
@@ -34,12 +34,16 @@ class ItemcardDataFetcher implements IDataFetcher
 		_itemInfo = a_updateObj;
 	}
 	
-  	// @override IDataFetcher
-	public function processEntries(a_list: BasicList): Void
+  	// @override IListProcessor
+	public function processList(a_list: BasicList): Void
 	{
 		var entryList = a_list.entryList;
 		
 		for (var i = 0; i < entryList.length; i++) {
+			if (entryList[i].skyui_itemcardDataExtended)
+				continue;
+			entryList[i].skyui_itemcardDataExtended = true;
+				
 			// Hack to retrieve itemcard info
 			_requestItemInfo.apply(a_list, [this, i]);
 			processEntry(entryList[i], _itemInfo);

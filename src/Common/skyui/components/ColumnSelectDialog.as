@@ -73,7 +73,7 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 		setColumnListData();
 	}
 	
-	// GFx
+	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
 		var bCaught = false;
@@ -90,6 +90,14 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 		}
 		
 		return bCaught;
+	}
+	
+	public function onMouseDown(): Void
+	{
+		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
+			if (e == this)
+				return;
+		DialogManager.closeDialog();
 	}
 	
 	

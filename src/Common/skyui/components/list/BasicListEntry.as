@@ -15,7 +15,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 	public function onRollOver(): Void
 	{
 		var list = _parent;
-			
+		
 		if (itemIndex != undefined && enabled)
 			list.onItemRollOver(itemIndex);
 	}

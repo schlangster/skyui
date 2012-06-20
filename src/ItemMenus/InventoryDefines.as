@@ -24,10 +24,6 @@
 	static var ES_BOTH_EQUIPPED = 4;
 	static var QUANTITY_MENU_COUNT_LIMIT = 5;
 
-	function InventoryDefines()
-	{
-	}
-
 	static function GetEquipText(aiItemType)
 	{
 		switch (aiItemType) {

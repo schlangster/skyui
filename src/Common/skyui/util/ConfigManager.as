@@ -15,41 +15,12 @@ class skyui.util.ConfigManager
 		DESCENDING: Array.DESCENDING,
 		CASEINSENSITIVE: Array.CASEINSENSITIVE,
 		NUMERIC: Array.NUMERIC,
-		
-		CAT_INV_ALL: Defines.FLAG_INV_ALL,
-		CAT_INV_FAVORITES: Defines.FLAG_INV_FAVORITES,
-		CAT_INV_WEAPONS: Defines.FLAG_INV_WEAPONS,
-		CAT_INV_ARMOR: Defines.FLAG_INV_ARMOR,
-		CAT_INV_POTIONS: Defines.FLAG_INV_POTIONS,
-		CAT_INV_SCROLLS: Defines.FLAG_INV_SCROLLS,
-		CAT_INV_FOOD: Defines.FLAG_INV_FOOD,
-		CAT_INV_INGREDIENTS: Defines.FLAG_INV_INGREDIENTS,
-		CAT_INV_BOOKS: Defines.FLAG_INV_BOOKS,
-		CAT_INV_KEYS: Defines.FLAG_INV_KEYS,
-		CAT_INV_MISC: Defines.FLAG_INV_MISC,
-		
-		CAT_CONTAINER_ALL: Defines.FLAG_CONTAINER_ALL,
-		CAT_CONTAINER_WEAPONS: Defines.FLAG_CONTAINER_WEAPONS,
-		CAT_CONTAINER_ARMOR: Defines.FLAG_CONTAINER_ARMOR,
-		CAT_CONTAINER_POTIONS: Defines.FLAG_CONTAINER_POTIONS,
-		CAT_CONTAINER_SCROLLS: Defines.FLAG_CONTAINER_SCROLLS,
-		CAT_CONTAINER_FOOD: Defines.FLAG_CONTAINER_FOOD,
-		CAT_CONTAINER_INGREDIENTS: Defines.FLAG_CONTAINER_INGREDIENTS,
-		CAT_CONTAINER_BOOKS: Defines.FLAG_CONTAINER_BOOKS,
-		CAT_CONTAINER_KEYS: Defines.FLAG_CONTAINER_KEYS,
-		CAT_CONTAINER_MISC: Defines.FLAG_CONTAINER_MISC,
-		
-		CAT_MAG_ALL: Defines.FLAG_MAGIC_ALL,
-		CAT_MAG_FAVORITES: Defines.FLAG_MAGIC_FAVORITES,
-		CAT_MAG_ALTERATION: Defines.FLAG_MAGIC_ALTERATION,
-		CAT_MAG_ILLUSION: Defines.FLAG_MAGIC_ILLUSION,
-		CAT_MAG_DESTRUCTION: Defines.FLAG_MAGIC_DESTRUCTION,
-		CAT_MAG_CONJURATION: Defines.FLAG_MAGIC_CONJURATION,
-		CAT_MAG_RESTORATION: Defines.FLAG_MAGIC_RESTORATION,
-		CAT_MAG_SHOUTS: Defines.FLAG_MAGIC_SHOUTS,
-		CAT_MAG_POWERS: Defines.FLAG_MAGIC_POWERS,
-		CAT_MAG_EFFECTS: Defines.FLAG_MAGIC_ACTIVE_EFFECT
+
+		_LOAD_DEFINES_DUMMY: Defines.FLAG_CATEGORY_DIVIDER,
+		_LOAD_INVENTORYDEFINES: InventoryDefines.ICT_NONE
 	};
+	
+	private static var _extConstantTables = [];
 	
 	
   /* PRIVATE VARIABLES */	
@@ -72,12 +43,17 @@ class skyui.util.ConfigManager
   
   	private static var _initialized:Boolean = initialize();
   
-	private static function initialize():Boolean
+	private static function initialize(): Boolean
 	{
 		if (_initialized)
 			return;
 			
 		GlobalFunctions.addArrayFunctions();
+		
+		// Note how the local constant table has to reference some attribute in each of the
+		// external tables before so they get loaded properly.
+		addConstantTable(Defines);
+		addConstantTable(InventoryDefines);
 		
 		_eventDummy = {};
 		EventDispatcher.initialize(_eventDummy);
@@ -92,7 +68,7 @@ class skyui.util.ConfigManager
 	
   /* PUBLIC FUNCTIONS */
   
-	public static function registerLoadCallback(a_scope: Object, a_callBack: String)
+	public static function registerLoadCallback(a_scope: Object, a_callBack: String): Void
 	{
 		// Not loaded yet
 		if (!_loaded) {
@@ -104,18 +80,36 @@ class skyui.util.ConfigManager
 		a_scope[a_callBack]({type: "configLoad", config: _config});
 	}
 	
-	public static function registerUpdateCallback(a_scope: Object, a_callBack: String)
+	public static function registerUpdateCallback(a_scope: Object, a_callBack: String): Void
 	{
 		_eventDummy.addEventListener("configUpdate", a_scope, a_callBack);
 	}
 	
-	public static function setConstant(a_name: String, a_value)
+	public static function setConstant(a_name: String, a_value): Void
 	{
 		var type = typeof(a_value);
 		if (type != "number" && type != "boolean" && type != "string")
 			return;
 		
 		_constantTable[a_name] = a_value;
+	}
+	
+	
+	public static function addConstantTable(a_tbl: Object): Void
+	{
+		_extConstantTables.push(a_tbl);
+	}
+	
+	public static function getConstant(a_name: String)
+	{
+		if (_constantTable[a_name] != undefined)
+			return _constantTable[a_name];
+			
+		for (var i=0; i<_extConstantTables.length; i++)
+			if (_extConstantTables[i][a_name] != undefined)
+				return _extConstantTables[i][a_name];
+				
+		return undefined;
 	}
 	
 	public static function setOverride(a_section: String, a_key: String, a_value, a_valueStr: String): Void
@@ -126,9 +120,15 @@ class skyui.util.ConfigManager
 		if (_config[a_section] == undefined)
 			_config[a_section] = {};
 		
-		// Prepare key subsections
 		var a = a_key.split(".");
+
+		// Prepare key subsections
 		var loc = _config[a_section];
+
+		var varContainer = null;
+		if (a[0] == "vars")
+			var varContainer = loc.vars[a[1]];
+		
 		for (var j=0; j<a.length-1; j++) {
 			if (loc[a[j]] == undefined)
 				loc[a[j]] = {};
@@ -139,12 +139,23 @@ class skyui.util.ConfigManager
 		loc[a[a.length-1]] = a_value;
 		
 		// Running out of special characters soon... :)
+		// Background: UI functions would try to look up keys.a.b.c, instead of keys["a.b.c"].
+		// So we use a different delimiter, and keys.a§b§c works fine.
 		var replacer = a_key.split(".");
 		a_key = replacer.join("§");
 		
 		var ovrKey = a_section + "$" + a_key;
 		out_overrides[ovrKey] = a_valueStr;
 		skse.SendModEvent("SKI_setConfigOverride", ovrKey);
+		
+		// If we changed the value of a var, update all recorded references.
+		if (varContainer) {
+			for (var i=0; i<varContainer._refLocs.length; i++) {
+				var varLoc = varContainer._refLocs[i];
+				var varKey = varContainer._refKeys[i];
+				varLoc[varKey] = a_value;
+			}
+		}
 		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 	}
@@ -169,19 +180,24 @@ class skyui.util.ConfigManager
 		for (var i = 0; i < arguments.length; i++)
 			if (in_overrideKeys[i])
 				parseExternalOverride(in_overrideKeys[i], arguments[i]);
-				
+		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});				
 	}
 	
-	private static function parseExternalOverride(a_key: String, a_value: String)
+	private static function parseExternalOverride(a_key: String, a_valueStr: String)
 	{
 		var section = GlobalFunctions.clean(a_key.slice(0, a_key.indexOf("$")));
 		var key = GlobalFunctions.clean(a_key.slice(a_key.indexOf("$") + 1));
-		var val = parseValueString(GlobalFunctions.clean(a_value));
+		var val = parseValueString(GlobalFunctions.clean(a_valueStr), null);
 
 		// Prepare key subsections - external keys use § as separator
 		var a = key.split("§");
 		var loc = _config[section];
+		
+		var varContainer = null;
+		if (a[0] == "vars")
+			var varContainer = loc.vars[a[1]];
+		
 		for (var j=0; j<a.length-1; j++) {
 			if (loc[a[j]] == undefined)
 				loc[a[j]] = {};
@@ -189,6 +205,15 @@ class skyui.util.ConfigManager
 		}
 		
 		loc[a[a.length-1]] = val;
+		
+		// If we changed the value of a var, update all recorded references.
+		if (varContainer) {
+			for (var i=0; i<varContainer._refLocs.length; i++) {
+				var varLoc = varContainer._refLocs[i];
+				var varKey = varContainer._refKeys[i];
+				varLoc[varKey] = val;
+			}
+		}
 		
 		skse.Log("Received external override. section: " + section + " key: " + key + " val: " + val);
 	}
@@ -255,7 +280,7 @@ class skyui.util.ConfigManager
 			}
 
 			// Detect value type & extract
-			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)));
+			var val = parseValueString(GlobalFunctions.clean(lines[i].slice(lines[i].indexOf("=") + 1)), _config[section], loc, a[a.length-1]);
 			
 			if (val == undefined)
 				continue;
@@ -271,10 +296,12 @@ class skyui.util.ConfigManager
 		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
 	
-	private static function parseValueString(a_str: String, a_root: Object): Object
+	private static function parseValueString(a_str: String, a_root: Object, a_loc: Object, a_key: String): Object
 	{
 		if (a_str == undefined)
 			return undefined;
+			
+		var t = undefined;
 
 		// Number?
 		if (!isNaN(a_str)) {
@@ -295,12 +322,32 @@ class skyui.util.ConfigManager
 		// Entry property? - substituted later
 		} else if (a_str.charAt(0) == "@") {
 			return a_str;
-			
+
+		// Associative array?
+		//TODO: This should properly check if [:,] is within a string
+		//      As should the List parsing below
+		} else if (a_str.charAt(0) == "<" && a_str.indexOf(":") != -1) {
+			var assocArray = new Object();
+			var pairs =  GlobalFunctions.extract(a_str, "<", ">").split(",");
+			for (var i=0; i<pairs.length; i++) {
+				var keyValue = pairs[i].split(":");
+				if (keyValue.length != 2) {
+					// If we don't have a pair we just ignore it
+					continue;
+				}
+				var key = parseValueString(GlobalFunctions.clean(keyValue[0]), null, null);
+				var val = parseValueString(GlobalFunctions.clean(keyValue[1]), assocArray, key);
+				assocArray[key] = val;
+			}
+			return assocArray;
+
 		// List?
 		} else if (a_str.charAt(0) == "<") {
+			if (a_str.charAt(1) == ">")
+				return new Array();
 			var values = GlobalFunctions.extract(a_str, "<", ">").split(",");
 			for (var i=0; i<values.length; i++)
-				values[i] = parseValueString(GlobalFunctions.clean(values[i]));
+				values[i] = parseValueString(GlobalFunctions.clean(values[i]), values, i);
 				
 			return values;
 			
@@ -318,8 +365,27 @@ class skyui.util.ConfigManager
 			return flags;
 		
 		// Constant?
-		} else if (_constantTable[a_str] != undefined) {
-			return _constantTable[a_str];
+		} else if ((t = getConstant(a_str)) != undefined) {
+			return t;
+			
+		// Var?
+		} else if (a_root.vars[a_str] != undefined) {
+			// A variable might be updated later via overrides, in which case we'd have to re-evaluate previous
+			// expressions that used it. To make that efficient, each variable stores it's references.
+			// Because we can't store pointers, this has to be the object/key pair (aka loc/name).
+			// Only works for scalar values so far.
+			if (a_loc && a_key) {
+				if (a_root.vars[a_str]._refLocs == undefined) {
+					a_root.vars[a_str]._refLocs = [];
+					a_root.vars[a_str]._refKeys = [];
+				}
+				
+				// Can be either object+string or array+index
+				a_root.vars[a_str]._refLocs.push(a_loc);
+				a_root.vars[a_str]._refKeys.push(a_key);
+			}
+			
+			return a_root.vars[a_str].value;
 		}
 		
 		// Default String
