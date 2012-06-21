@@ -1,14 +1,21 @@
 scriptname SKI_WidgetBase extends SKI_QuestBase
 
+; CONSTANTS------------------------------
+
+string	HUD_MENU = "HUD Menu"
+
+
 ; PRIVATE VARIABLES ---------------------
 
 bool		_initialized = false
 int			_widgetID = -1
 string		_type = ""
+string		_widgetRoot = ""
 string[]	_modes ;Default modes set in OnInit
 float		_x = 0.0
 float		_y = 0.0
 int			_alpha = 100
+
 
 ; PROPERTIES ----------------------------
 
@@ -42,7 +49,7 @@ string[] property Modes
 	function set(string[] a_val)
 		_modes = a_val
 		if (_initialized)
-			WidgetManager.SetWidgetModes(_widgetID, a_val)
+			SyncWidgetModes()
 		endIf
 	endFunction
 endProperty
@@ -55,7 +62,7 @@ float property X
 	function set(float a_val)
 		_x = a_val
 		if (_initialized)
-			WidgetManager.SetWidgetPositionX(_widgetID, a_val)
+			SyncWidgetPositionX()
 		endIf
 	endFunction
 endProperty
@@ -68,7 +75,7 @@ float property Y
 	function set(float a_val)
 		_y = a_val
 		if (_initialized)
-			WidgetManager.SetWidgetPositionY(_widgetID, a_val)
+			SyncWidgetPositionY()
 		endIf
 	endFunction
 endProperty
@@ -81,12 +88,10 @@ int property Alpha
 	function set(int a_val)
 		_alpha = a_val
 		if (_initialized)
-			WidgetManager.SetWidgetAlpha(_widgetID, a_val)
+			SyncWidgetAlpha()
 		endIf
 	endFunction
 endProperty
-
-; FUNCTIONS -------------------------
 
 
 ; EVENTS ----------------------------
@@ -121,9 +126,68 @@ state _INIT
 		RegisterForModEvent("hudModeChange", "OnHudModeChange")
 		_widgetID = WidgetManager.RequestWidgetID(self)
 		if (_widgetID != -1)
+			_widgetRoot = "_root.WidgetContainer." + _widgetID + "."
 			OnWidgetInit()
 			WidgetManager.CreateWidget(_widgetID, _type)
 			_initialized = true
 		endIf
 	endEvent
 endState
+
+
+; FUNCTIONS -------------------------
+
+function Sync()
+	SyncWidgetClientInfo()
+	SyncWidgetPositionX()
+	SyncWidgetPositionY()
+	SyncWidgetAlpha()
+endFunction
+
+function SyncWidgetClientInfo()
+	UI.InvokeString(HUD_MENU, _widgetRoot + "setClientInfo", self as string)
+endFunction
+
+function SyncWidgetPositionX()
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setPositionX", _x)
+endFunction
+
+function SyncWidgetPositionY()
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setPositionY", _y)
+endFunction
+
+function SyncWidgetAlpha()
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setAlpha", _alpha)
+endFunction
+
+function SyncWidgetModes()
+	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setModes", _modes)
+endFunction
+
+function InvokeCallback(string a_funcName)
+	UI.Invoke(HUD_MENU, _widgetRoot + a_funcName)
+endFunction
+
+function InvokeCallbackBool(string a_funcName, bool a_arg)
+	UI.InvokeBool(HUD_MENU, _widgetRoot + a_funcName, a_arg)
+endFunction
+
+function InvokeCallbackNumber(string a_funcName, float a_arg)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + a_funcName, a_arg)
+endFunction
+
+function InvokeCallbackString(string a_funcName, string a_arg)
+	UI.InvokeString(HUD_MENU, _widgetRoot + a_funcName, a_arg)
+endFunction
+
+function InvokeCallbackBoolA(string a_funcName, bool[] a_args)
+	UI.InvokeBoolA(HUD_MENU, _widgetRoot + a_funcName, a_args)
+endFunction
+
+function InvokeCallbackNumberA(string a_funcName, float[] a_args)
+	UI.InvokeNumberA(HUD_MENU, _widgetRoot + a_funcName, a_args)
+endFunction
+
+function InvokeCallbackStringA(string a_funcName, string[] a_args)
+	UI.InvokeStringA(HUD_MENU, _widgetRoot + a_funcName, a_args)
+endFunction

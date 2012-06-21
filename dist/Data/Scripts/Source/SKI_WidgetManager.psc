@@ -101,38 +101,8 @@ event OnWidgetLoaded(string a_eventName, String a_msg)
 	SKI_WidgetBase client = _widgets[widgetID]
 	
 	if (client != none)
-		SetWidgetClientInfo(widgetID, client as string)
-		SetWidgetPositionX(widgetID, client.X)
-		SetWidgetPositionY(widgetID, client.Y)
-		SetWidgetAlpha(widgetID, client.Alpha)
-		
+		client.Sync() ; update widget state to UI
 		client.OnWidgetReset() ; do any custom reset actions here
-		
-		SetWidgetModes(widgetID, client.Modes) ;Resets the current mode, but only for the current widget ID
+		client.SyncWidgetModes() ;Resets the current mode, but only for the current widget ID
 	endIf
 endEvent
-
-function SetWidgetClientInfo(int a_widgetID, string a_clientString)
-	Debug.Trace("SKI_WidgetManager: SetWidgetClientInfo(a_widgetID = " + a_widgetID + ", a_clientString = " + a_clientString + ")")
-	UI.InvokeString(HUD_MENU, "_root.WidgetContainer." + a_widgetID + ".setClientInfo", a_clientString)
-endFunction
-
-function SetWidgetPositionX(int a_widgetID, float a_x)
-	Debug.Trace("SKI_WidgetManager: SetWidgetPositionX(a_widgetID = " + a_widgetID + ", a_x = " + a_x + ")")
-	UI.InvokeNumber(HUD_MENU, "_root.WidgetContainer." + a_widgetID + ".setPositionX", a_x)
-endFunction
-
-function SetWidgetPositionY(int a_widgetID, float a_y)
-	Debug.Trace("SKI_WidgetManager: SetWidgetPositionY(a_widgetID = " + a_widgetID + ", a_y = " + a_y + ")")
-	UI.InvokeNumber(HUD_MENU, "_root.WidgetContainer." + a_widgetID + ".setPositionY", a_y)
-endFunction
-
-function SetWidgetAlpha(int a_widgetID, int a_alpha)
-	Debug.Trace("SKI_WidgetManager: SetWidgetAlpha(a_widgetID = " + a_widgetID + ", a_alpha = " + a_alpha + ")")
-	UI.InvokeNumber(HUD_MENU, "_root.WidgetContainer." + a_widgetID + ".setAlpha", a_alpha)
-endFunction
-
-function SetWidgetModes(int a_widgetID, string[] a_modes)
-	Debug.Trace("SKI_WidgetManager: SetWidgetModes(a_widgetID = " + a_widgetID + ", a_modes = " + a_modes + ")")
-	UI.InvokeStringA(HUD_MENU, "_root.WidgetContainer." + a_widgetID + ".setModes", a_modes)
-endFunction
