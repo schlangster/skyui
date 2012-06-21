@@ -96,7 +96,7 @@ event OnGameReload()
 endEvent
 
 event OnWidgetLoad(string a_eventName, String a_msg)
-	Debug.Trace("SKI_WidgetManager: event OnWidgetLoaded(a_eventName = " + a_eventName + ", a_msg = " + a_msg + ")")
+	Debug.Trace("SKI_WidgetManager: event OnWidgetLoad(a_eventName = " + a_eventName + ", a_msg = " + a_msg + ")")
 	int widgetID = a_msg as int
 	SKI_WidgetBase client = _widgets[widgetID]
 	

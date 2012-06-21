@@ -19,7 +19,7 @@ int			_alpha = 100
 
 ; PROPERTIES ----------------------------
 
-SKI_WidgetManager property WidgetManager auto
+SKI_WidgetManager property SKI_WidgetManagerInstance auto
 
 ; Read-only
 int property WidgetID
@@ -142,11 +142,11 @@ state _INIT
 	event OnUpdate()
 		gotoState("")
 		RegisterForModEvent("hudModeChange", "OnHudModeChange")
-		_widgetID = WidgetManager.RequestWidgetID(self)
+		_widgetID = SKI_WidgetManagerInstance.RequestWidgetID(self)
 		if (_widgetID != -1)
 			_widgetRoot = "_root.WidgetContainer." + _widgetID + "."
 			OnWidgetInit()
-			WidgetManager.CreateWidget(_widgetID, _type)
+			SKI_WidgetManagerInstance.CreateWidget(_widgetID, _type)
 			_initialized = true
 		endIf
 	endEvent
