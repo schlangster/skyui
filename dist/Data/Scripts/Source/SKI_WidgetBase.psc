@@ -97,10 +97,12 @@ endProperty
 ; EVENTS ----------------------------
 
 event OnInit()
-	; Default Modes
-	_modes = new string[2]
-	_modes[0] = "All"
-	_modes[1] = "StealthMode"
+	; Default Modes if not set via property
+	if (!_modes)
+		_modes = new string[2]
+		_modes[0] = "All"
+		_modes[1] = "StealthMode"
+	endIf
 	
 	gotoState("_INIT")
 	RegisterForSingleUpdate(3)
@@ -159,23 +161,23 @@ function ResetCustomProperties()
 endFunction
 
 function UpdateWidgetClientInfo()
-	UI.InvokeString(HUD_MENU, _widgetRoot + "setClientInfo", self as string)
+	UI.InvokeString(HUD_MENU, _widgetRoot + "setWidgetClientInfo", self as string)
 endFunction
 
 function UpdateWidgetPositionX()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setPositionX", _x)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setWidgetX", _x)
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setPositionY", _y)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setWidgetY", _y)
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setAlpha", _alpha)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setWidgetAlpha", _alpha as float)
 endFunction
 
 function UpdateWidgetModes()
-	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setModes", _modes)
+	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setWidgetModes", _modes)
 endFunction
 
 function InvokeCallback(string a_funcName)
