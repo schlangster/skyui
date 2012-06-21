@@ -50,30 +50,31 @@
 		_widgetContainer.Lock("TL");
 		// Locks _widgetContainer to the safe top left of the Stage, for all child elements {_x = 0, _y = 0} is the top left of the stage
 		
-		var setPositionXFunc = function(a_x: Number): Void
+		var setWidgetXFunc = function(a_x: Number): Void
 		{
 			var widget = this;
-			skse.Log("WidgetLoader.as: setPositionXFunc(a_x = " + a_x + ") for widgetID " + widget.widgetID);
+			skse.Log("WidgetLoader.as: setWidgetXFunc(a_x = " + a_x + ") for widgetID " + widget.widgetID);
 			widget._x = a_x;
 		};
 		
-		var setPositionYFunc = function(a_y: Number): Void
+		var setWidgetYFunc = function(a_y: Number): Void
 		{
 			var widget = this;
-			skse.Log("WidgetLoader.as: setPositionXFunc(a_y = " + a_y + ") for widgetID " + widget.widgetID);
+			skse.Log("WidgetLoader.as: setWidgetXFunc(a_y = " + a_y + ") for widgetID " + widget.widgetID);
 			widget._y = a_y;
 		};
 		
-		var setAlphaFunc = function(a_alpha: Number): Void
+		var setWidgetAlphaFunc = function(a_alpha: Number): Void
 		{
 			var widget = this;
+			skse.Log("WidgetLoader.as: setWidgetAlphaFunc(a_alpha = " + a_alpha + ") for widgetID " + widget.widgetID);
 			widget._alpha = a_alpha;
 		};
 		
-		var setModesFunc = function(/* a_visibleModes [] */): Void
+		var setWidgetModesFunc = function(/* a_visibleModes [] */): Void
 		{
 			var widget = this;
-			
+			skse.Log("WidgetLoader.as: setWidgetModesFunc(a_visibleModes = " + arguments + ") for widgetID " + widget.widgetID);
 			var _availableModes: Array = ["All", "StealthMode"];
 			
 			for (var i=0; i<_availableModes.length; i++)
@@ -93,9 +94,9 @@
 				if (widget.onModeChange != undefined)
 					widget.onModeChange(hudMode);
 			_root.HUDMovieBaseInstance.HudElements.push(widget);
-		}
+		};
 		
-		var setClientInfoFunc = function(a_clientString: String): Void
+		var setWidgetClientInfoFunc = function(a_clientString: String): Void
 		{
 			var widget = this;
 			var clientInfo: Object = new Object();
@@ -114,22 +115,22 @@
 
 		_widgetContainer.onWidgetLoad = function(a_widget: MovieClip, a_widgetID: String): Void
 		{
-			skse.Log("WidgetLoader.as: _widgetContainer.onWidgetLoad(a_widget = " + a_widget + ", a_widgetID = " + a_widgetID);
+			skse.Log("WidgetLoader.as: _widgetContainer.onWidgetLoad(a_widget = " + a_widget + ", a_widgetID = " + a_widgetID + ")");
 			a_widget._visible = false;
 			
 			a_widget.clientInfo = new Object();
 			a_widget.widgetID = Number(a_widgetID);
 			
-			if (a_widget.setClientInfo == undefined)
-				a_widget.setClientInfo = setClientInfoFunc;
-			if (a_widget.setPositionX == undefined)
-				a_widget.setPositionX = setPositionXFunc;
-			if (a_widget.setPositionY == undefined)
-				a_widget.setPositionY = setPositionYFunc;
-			if (a_widget.setAlpha == undefined)
-				a_widget.setAlpha = setAlphaFunc;
-			if (a_widget.setModes == undefined)
-				a_widget.setModes = setModesFunc;
+			if (a_widget.setWidgetClientInfo == undefined)
+				a_widget.setWidgetClientInfo = setWidgetClientInfoFunc;
+			if (a_widget.setWidgetX == undefined)
+				a_widget.setWidgetX = setWidgetXFunc;
+			if (a_widget.setWidgetY == undefined)
+				a_widget.setWidgetY = setWidgetYFunc;
+			if (a_widget.setWidgetAlpha == undefined)
+				a_widget.setWidgetAlpha = setWidgetAlphaFunc;
+			if (a_widget.setWidgetModes == undefined)
+				a_widget.setWidgetModes = setWidgetModesFunc;
 
 			skse.SendModEvent("widgetLoaded", a_widgetID);
 		};
