@@ -112,6 +112,24 @@ event OnWidgetInit()
 endEvent
 
 ; Executed after each game reload by widget manager
+event OnWidgetLoad()
+	; Reset base properties except modes to prevent widget from being drawn too early
+	SyncWidgetClientInfo()
+	SyncWidgetPositionX()
+	SyncWidgetPositionY()
+	SyncWidgetAlpha()
+	
+	; Reset any widget-specific properties
+	ResetCustomProperties()
+	
+	; Give the user the chance to add custom event handling code here
+	OnWidgetReset()
+	
+	; Before that the widget was still hidden.
+	; Now that everything is done is done, set modes to show it eventually
+	SyncWidgetModes()
+endEvent
+
 event OnWidgetReset()
 endEvent
 
@@ -137,11 +155,7 @@ endState
 
 ; FUNCTIONS -------------------------
 
-function Sync()
-	SyncWidgetClientInfo()
-	SyncWidgetPositionX()
-	SyncWidgetPositionY()
-	SyncWidgetAlpha()
+function ResetCustomProperties()
 endFunction
 
 function SyncWidgetClientInfo()

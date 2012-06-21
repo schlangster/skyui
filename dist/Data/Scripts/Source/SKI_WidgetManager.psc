@@ -95,14 +95,12 @@ event OnGameReload()
 	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidgets", _widgetTypes);
 endEvent
 
-event OnWidgetLoaded(string a_eventName, String a_msg)
+event OnWidgetLoad(string a_eventName, String a_msg)
 	Debug.Trace("SKI_WidgetManager: event OnWidgetLoaded(a_eventName = " + a_eventName + ", a_msg = " + a_msg + ")")
 	int widgetID = a_msg as int
 	SKI_WidgetBase client = _widgets[widgetID]
 	
 	if (client != none)
-		client.Sync() ; update widget state to UI
-		client.OnWidgetReset() ; do any custom reset actions here
-		client.SyncWidgetModes() ;Resets the current mode, but only for the current widget ID
+		client.OnWidgetLoad()
 	endIf
 endEvent
