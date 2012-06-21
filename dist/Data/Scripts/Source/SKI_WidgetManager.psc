@@ -87,7 +87,7 @@ endEvent
 
 event OnGameReload()
 	Debug.Trace("SKI_WidgetManager: OnGameReload()")
-	RegisterForModEvent("widgetLoaded", "OnWidgetLoaded")
+	RegisterForModEvent("widgetLoaded", "OnWidgetLoad")
 	
 	CleanUp()
 	
