@@ -49,7 +49,7 @@ string[] property Modes
 	function set(string[] a_val)
 		_modes = a_val
 		if (_initialized)
-			SyncWidgetModes()
+			UpdateWidgetModes()
 		endIf
 	endFunction
 endProperty
@@ -62,7 +62,7 @@ float property X
 	function set(float a_val)
 		_x = a_val
 		if (_initialized)
-			SyncWidgetPositionX()
+			UpdateWidgetPositionX()
 		endIf
 	endFunction
 endProperty
@@ -75,7 +75,7 @@ float property Y
 	function set(float a_val)
 		_y = a_val
 		if (_initialized)
-			SyncWidgetPositionY()
+			UpdateWidgetPositionY()
 		endIf
 	endFunction
 endProperty
@@ -88,7 +88,7 @@ int property Alpha
 	function set(int a_val)
 		_alpha = a_val
 		if (_initialized)
-			SyncWidgetAlpha()
+			UpdateWidgetAlpha()
 		endIf
 	endFunction
 endProperty
@@ -114,10 +114,10 @@ endEvent
 ; Executed after each game reload by widget manager
 event OnWidgetLoad()
 	; Reset base properties except modes to prevent widget from being drawn too early
-	SyncWidgetClientInfo()
-	SyncWidgetPositionX()
-	SyncWidgetPositionY()
-	SyncWidgetAlpha()
+	UpdateWidgetClientInfo()
+	UpdateWidgetPositionX()
+	UpdateWidgetPositionY()
+	UpdateWidgetAlpha()
 	
 	; Reset any widget-specific properties
 	ResetCustomProperties()
@@ -127,7 +127,7 @@ event OnWidgetLoad()
 	
 	; Before that the widget was still hidden.
 	; Now that everything is done is done, set modes to show it eventually
-	SyncWidgetModes()
+	UpdateWidgetModes()
 endEvent
 
 event OnWidgetReset()
@@ -158,23 +158,23 @@ endState
 function ResetCustomProperties()
 endFunction
 
-function SyncWidgetClientInfo()
+function UpdateWidgetClientInfo()
 	UI.InvokeString(HUD_MENU, _widgetRoot + "setClientInfo", self as string)
 endFunction
 
-function SyncWidgetPositionX()
+function UpdateWidgetPositionX()
 	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setPositionX", _x)
 endFunction
 
-function SyncWidgetPositionY()
+function UpdateWidgetPositionY()
 	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setPositionY", _y)
 endFunction
 
-function SyncWidgetAlpha()
+function UpdateWidgetAlpha()
 	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setAlpha", _alpha)
 endFunction
 
-function SyncWidgetModes()
+function UpdateWidgetModes()
 	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setModes", _modes)
 endFunction
 
