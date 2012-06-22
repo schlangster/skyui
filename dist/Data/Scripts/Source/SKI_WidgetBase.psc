@@ -7,6 +7,8 @@ string	HUD_MENU = "HUD Menu"
 
 ; PRIVATE VARIABLES ---------------------
 
+SKI_WidgetManager _widgetManager
+
 bool		_initialized = false
 int			_widgetID = -1
 string		_type = ""
@@ -18,8 +20,6 @@ int			_alpha = 100
 
 
 ; PROPERTIES ----------------------------
-
-SKI_WidgetManager property SKI_WidgetManagerInstance auto
 
 ; Read-only
 int property WidgetID
@@ -104,6 +104,8 @@ event OnInit()
 		_modes[1] = "StealthMode"
 	endIf
 	
+	_widgetManager = Game.GetFormFromFile(0x00000800, "SkyUI.esp") As SKI_WidgetManager
+	
 	gotoState("_INIT")
 	RegisterForSingleUpdate(3)
 endEvent
@@ -144,11 +146,13 @@ state _INIT
 	event OnUpdate()
 		gotoState("")
 		RegisterForModEvent("hudModeChange", "OnHudModeChange")
-		_widgetID = SKI_WidgetManagerInstance.RequestWidgetID(self)
+		_widgetID = _widgetManager.RequestWidgetID(self)
 		if (_widgetID != -1)
 			_widgetRoot = "_root.WidgetContainer." + _widgetID + "."
+			
 			OnWidgetInit()
-			SKI_WidgetManagerInstance.CreateWidget(_widgetID, _type)
+			
+			_widgetManager.CreateWidget(_widgetID, _type)
 			_initialized = true
 		endIf
 	endEvent
