@@ -7,6 +7,7 @@
 	/* PRIVATE VARIABLES */
 	
 	private static var _widgetContainer: MovieClip;
+	private static var _widgetDirectory: String = "./skyui/widgets/";
 	
 	/* PUBILC FUNCTIONS */
 	
@@ -36,7 +37,8 @@
 			createWidgetContainer();
 		
 		var widget: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		widget.loadMovie(a_widgetType + ".swf");
+		widget._lockroot = true;
+		widget.loadMovie(_widgetDirectory + a_widgetType + ".swf");
 	}
 	 
 	private static function createWidgetContainer(): Void
