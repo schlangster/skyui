@@ -1,4 +1,6 @@
-﻿class WidgetLoader
+﻿import mx.utils.Delegate;
+
+class WidgetLoader
 {
 	/* PROPERTIES */
 	
@@ -51,69 +53,6 @@
 		// depth: Number - A unique integer specifying the depth at which the new movie clip is placed. Use depth -16384 to place the new movie clip instance beneath all content that is created in the authoring environment. Values between -16383 and -1, inclusive, are reserved for use by the authoring environment and should not be used with this method. The remaining valid depth values range from 0 to 1048575, inclusive.
 		_widgetContainer.Lock("TL");
 		// Locks _widgetContainer to the safe top left of the Stage, for all child elements {_x = 0, _y = 0} is the top left of the stage
-		
-		var setWidgetXFunc = function(a_x: Number): Void
-		{
-			var widget = this;
-			skse.Log("WidgetLoader.as: setWidgetXFunc(a_x = " + a_x + ") for widgetID " + widget.widgetID);
-			widget._x = a_x;
-		};
-		
-		var setWidgetYFunc = function(a_y: Number): Void
-		{
-			var widget = this;
-			skse.Log("WidgetLoader.as: setWidgetXFunc(a_y = " + a_y + ") for widgetID " + widget.widgetID);
-			widget._y = a_y;
-		};
-		
-		var setWidgetAlphaFunc = function(a_alpha: Number): Void
-		{
-			var widget = this;
-			skse.Log("WidgetLoader.as: setWidgetAlphaFunc(a_alpha = " + a_alpha + ") for widgetID " + widget.widgetID);
-			widget._alpha = a_alpha;
-		};
-		
-		var setWidgetModesFunc = function(/* a_visibleModes [] */): Void
-		{
-			var widget = this;
-			skse.Log("WidgetLoader.as: setWidgetModesFunc(a_visibleModes = " + arguments + ") for widgetID " + widget.widgetID);
-			var _availableModes: Array = ["All", "StealthMode"];
-			
-			for (var i=0; i<_availableModes.length; i++)
-				delete(widget[_availableModes[i]]);
-				
-			for (var i=0; i<arguments.length; i++) {
-				var m = arguments[i];
-				if (_availableModes.indexOf(m) != undefined)
-					widget[arguments[i]] = true;
-				else
-					skse.SendModEvent("widgetWarning", "WidgetID: " + widget.widgetID+ " Invalid widget mode: " + m);
-			}
-			
-			
-			var hudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
-			widget._visible = widget.hasOwnProperty(hudMode);
-				if (widget.onModeChange != undefined)
-					widget.onModeChange(hudMode);
-			_root.HUDMovieBaseInstance.HudElements.push(widget);
-		};
-		
-		var setWidgetClientInfoFunc = function(a_clientString: String): Void
-		{
-			var widget = this;
-			var clientInfo: Object = new Object();
-			//[ScriptName <formName (formID)>]
-			var lBrackIdx: Number = 0;
-			var lInequIdx: Number = a_clientString.indexOf("<");
-			var lParenIdx: Number = a_clientString.indexOf("(");
-			var rParenIdx: Number = a_clientString.indexOf(")");
-			
-			clientInfo["scriptName"] = a_clientString.slice(lBrackIdx + 1, lInequIdx - 1);
-			clientInfo["formName"] = a_clientString.slice(lInequIdx + 1, lParenIdx - 1);
-			clientInfo["formID"] = a_clientString.slice(lParenIdx + 1, rParenIdx);
-			
-			widget.clientInfo = clientInfo;
-		};
 
 		_widgetContainer.onWidgetLoad = function(a_widget: MovieClip, a_widgetID: String): Void
 		{
@@ -124,17 +63,80 @@
 			a_widget.widgetID = Number(a_widgetID);
 			
 			if (a_widget.setWidgetClientInfo == undefined)
-				a_widget.setWidgetClientInfo = setWidgetClientInfoFunc;
+				a_widget.setWidgetClientInfo = Delegate.create(a_widget, setWidgetClientInfoFunc);
 			if (a_widget.setWidgetX == undefined)
-				a_widget.setWidgetX = setWidgetXFunc;
+				a_widget.setWidgetX = Delegate.create(a_widget, setWidgetXFunc);
 			if (a_widget.setWidgetY == undefined)
-				a_widget.setWidgetY = setWidgetYFunc;
+				a_widget.setWidgetY = Delegate.create(a_widget, setWidgetYFunc);
 			if (a_widget.setWidgetAlpha == undefined)
-				a_widget.setWidgetAlpha = setWidgetAlphaFunc;
+				a_widget.setWidgetAlpha = Delegate.create(a_widget, setWidgetAlphaFunc);
 			if (a_widget.setWidgetModes == undefined)
-				a_widget.setWidgetModes = setWidgetModesFunc;
+				a_widget.setWidgetModes = Delegate.create(a_widget, setWidgetModesFunc);
 
 			skse.SendModEvent("widgetLoaded", a_widgetID);
 		};
+	}
+	
+	function setWidgetXFunc(a_x: Number): Void
+	{
+		var widget = this;
+		skse.Log("WidgetLoader.as: setWidgetXFunc(a_x = " + a_x + ") for widgetID " + widget.widgetID);
+		widget._x = a_x;
+	}
+	
+	function setWidgetYFunc(a_y: Number): Void
+	{
+		var widget = this;
+		skse.Log("WidgetLoader.as: setWidgetXFunc(a_y = " + a_y + ") for widgetID " + widget.widgetID);
+		widget._y = a_y;
+	}
+	
+	function setWidgetAlphaFunc(a_alpha: Number): Void
+	{
+		var widget = this;
+		skse.Log("WidgetLoader.as: setWidgetAlphaFunc(a_alpha = " + a_alpha + ") for widgetID " + widget.widgetID);
+		widget._alpha = a_alpha;
+	}
+		
+	function setWidgetModesFunc(/* a_visibleModes [] */): Void
+	{
+		var widget = this;
+		skse.Log("WidgetLoader.as: setWidgetModesFunc(a_visibleModes = " + arguments + ") for widgetID " + widget.widgetID);
+		var _availableModes: Array = ["All", "StealthMode"];
+		
+		for (var i=0; i<_availableModes.length; i++)
+			delete(widget[_availableModes[i]]);
+			
+		for (var i=0; i<arguments.length; i++) {
+			var m = arguments[i];
+			if (_availableModes.indexOf(m) != undefined)
+				widget[arguments[i]] = true;
+			else
+				skse.SendModEvent("widgetWarning", "WidgetID: " + widget.widgetID+ " Invalid widget mode: " + m);
+		}
+		
+		
+		var hudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
+		widget._visible = widget.hasOwnProperty(hudMode);
+			if (widget.onModeChange != undefined)
+				widget.onModeChange(hudMode);
+		_root.HUDMovieBaseInstance.HudElements.push(widget);
+	}
+		
+	function setWidgetClientInfoFunc(a_clientString: String): Void
+	{
+		var widget = this;
+		var clientInfo: Object = new Object();
+		//[ScriptName <formName (formID)>]
+		var lBrackIdx: Number = 0;
+		var lInequIdx: Number = a_clientString.indexOf("<");
+		var lParenIdx: Number = a_clientString.indexOf("(");
+		var rParenIdx: Number = a_clientString.indexOf(")");
+		
+		clientInfo["scriptName"] = a_clientString.slice(lBrackIdx + 1, lInequIdx - 1);
+		clientInfo["formName"] = a_clientString.slice(lInequIdx + 1, lParenIdx - 1);
+		clientInfo["formID"] = a_clientString.slice(lParenIdx + 1, rParenIdx);
+		
+		widget.clientInfo = clientInfo;
 	}
 }
