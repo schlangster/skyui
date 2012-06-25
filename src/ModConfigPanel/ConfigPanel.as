@@ -29,9 +29,8 @@ class ConfigPanel extends MovieClip
 	
 	
   /* STAGE ELEMENTS */
-	
 
-	public var modListHolder: ModListPanel;
+	public var modListPanel: ModListPanel;
 	
 	public var decorTop: MovieClip;
 	public var decorTitle: MovieClip;
@@ -43,7 +42,7 @@ class ConfigPanel extends MovieClip
 	function ConfigPanel()
 	{
 		_parentMenu = _root.QuestJournalFader.Menu_mc;
-		_modList = modListHolder.modList;
+		_modList = modListPanel.modListFader.list;
 	}
 	
 	function startPage(): Void
@@ -59,7 +58,7 @@ class ConfigPanel extends MovieClip
 	
 	function onLoad()
 	{
-		_modList.addEventListener("itemPress", this, "onColumnToggle");
+		_modList.addEventListener("itemPress", this, "onModListPress");
 		
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
@@ -69,6 +68,11 @@ class ConfigPanel extends MovieClip
 	{
 		GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 		_parent.gotoAndPlay("fadeOut");
+	}
+	
+	public function onModListPress(a_event: Object): Void
+	{
+		modListPanel.showSublist();
 	}
 	
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean

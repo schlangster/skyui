@@ -89,6 +89,12 @@ class skyui.components.list.BasicList extends BSList
 		return getListEnumSize();
 	}
 	
+	// The selected entry.
+	public function get selectedClip(): Object
+	{
+		return _entryClipManager.getClip(_selectedIndex);
+	}
+	
 	
   /* CONSTRUCTORS */
   
