@@ -7,7 +7,7 @@
 	/* PRIVATE VARIABLES */
 	
 	private static var _widgetContainer: MovieClip;
-	private static var _widgetDirectory: String = "./skyui/widgets/";
+	private static var _widgetDirectory: String = "./widgets/";
 	
 	/* PUBILC FUNCTIONS */
 	
