@@ -34,6 +34,13 @@ class skyui.widgets.WidgetLabel extends MovieClip
 	private var _background: MovieClip;
 	private var _border: MovieClip;
 	
+	
+	private var _borderBackground: MovieClip;
+	private var _widgetBorder: MovieClip;
+	private var _widgetBackground: MovieClip;
+	
+	
+	
 	// Public Vars
 	
 
@@ -62,7 +69,7 @@ class skyui.widgets.WidgetLabel extends MovieClip
 		
 		_labelTextField = _textContainer.createTextField("_labelTextField", _textContainer.getNextHighestDepth(), 0, 0, 1, 1);
 		_labelTextField.html = true;
-		_labelTextField.autoSize = "left";
+		//_labelTextField.autoSize = "left";
 		_labelTextField.verticalAutoSize = "top";
 		_labelTextField.verticalAlign = "center";
 		_labelTextField.setTextFormat(textFieldFormat);
@@ -73,7 +80,7 @@ class skyui.widgets.WidgetLabel extends MovieClip
 		
 		_valueTextField = _textContainer.createTextField("_valueTextField", _textContainer.getNextHighestDepth(), 0, 0, 1, 1);
 		_valueTextField.html = true;
-		_valueTextField.autoSize = "right";
+		//_valueTextField.autoSize = "right";
 		_valueTextField.verticalAutoSize = "top";
 		_valueTextField.verticalAlign = "center";
 		_valueTextField.setTextFormat(textFieldFormat);
@@ -88,69 +95,111 @@ class skyui.widgets.WidgetLabel extends MovieClip
 		// For testing...
 		setWidgetParams(200, 0xCCCCCC, 50, 2, 0xFF0000, 50, 1);
 		//setTextPadding(10, 10, 10, 10);
+		
+		//_labelTextField.border = _valueTextField.border = true;
+		trace("");
+		trace("=== Calling setWidgetText for the 1st");
+		trace("");
 		setWidgetText("<p align=\"center\"><font size=\"20\">Delicious Pi: </font></p>", "<font size=\"50\">3.14159265358979323846264338327...</font>");
-		// TODO Resetting text... 
-		//setWidgetText("<p align=\"center\"><font size=\"20\">Pi:</font></p>", "<font size=\"50\">3.141</font>");
+		trace("");
+		trace("=== Calling setWidgetText for the 2nd");
+		trace("");
+		setWidgetText("<p align=\"center\"><font size=\"20\">Pi:</font></p>", "<font size=\"50\">3</font>");
+
 	}
 	
 	function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number)
 	{
+		debugTrace("setWidgetParams");
+		
 		widgetWidth = a_widgetWidth;
 		backgroundColor = a_backgroundColor;
 		backgroundAlpha = a_backgroundAlpha;
 		borderWidth = a_borderWidth;
 		borderColor = a_borderColor;
 		borderAlpha = a_borderAlpha;
-		borderRounded = a_borderRounded;
-		
-		// Set textField widths to max
-		_labelTextField._width = a_widgetWidth - (textPadding.left + textPadding.right);
-		_valueTextField._width = a_widgetWidth - (textPadding.left + textPadding.right);		
+		borderRounded = a_borderRounded;		
 	}	
 	
 	function setWidgetText(a_labelHTMLText: String, a_valueHTMLText: String): Void
 	{
+		debugTrace("setWidgetText");
+		
 		updateWidgetLabel(a_labelHTMLText);
 			
 		if (a_valueHTMLText != undefined)
 			updateWidgetValue(a_valueHTMLText);
-		
+			
 		updateTextPositions();
 	}
 	
 	
 	function updateWidgetLabel(a_labelHTMLText: String): Void
 	{
+		// 1) reset position to 0,0
+		_labelTextField._x = 0;
+		_labelTextField._y = 0;
+		// 2) Set autoSize to left
+		_labelTextField.autoSize = "left";
+		_labelTextField.textAutoSize = "none";
+		// 3) Set width to max
+		_labelTextField._width = widgetWidth - (textPadding.left + textPadding.right);
+
 		_labelTextField.htmlText = '<FONT COLOR="#' + toHexString(defaultFontColor) + '" FACE="' + defaultFontFace + '">' + a_labelHTMLText + '</FONT>';
 		_labelTextField.setTextFormat();
+		
+		updateTextPositions();
+		
+		debugTrace("updateWidgetLabel", true);
 	}
 	
 	function updateWidgetValue(a_valueHTMLText: String): Void
 	{
+		debugTrace("updateWidgetValue");
+		// 1) reset position to 0,0
+		_valueTextField._x = 0;
+		_valueTextField._y = 0;
+		// 2) Set autoSize to none
+		_valueTextField.autoSize = "right";
+		_valueTextField.textAutoSize = "none";
+		// 3) Set width to max
+		_valueTextField._width = widgetWidth - (textPadding.left + textPadding.right);
+		
 		_valueTextField.htmlText = '<FONT COLOR="#' + toHexString(defaultFontColor) + '" FACE="' + defaultFontFace + '">' + a_valueHTMLText + '</FONT>';
 		_valueTextField.setTextFormat();
+		
+		updateTextPositions();
+
+		debugTrace("updateWidgetValue", true);
 	}
 	
-	function updateTextPositions(): Void
+	private function updateTextPositions(): Void
 	{
 		var maxContainerWidth: Number = widgetWidth - (textPadding.left + textPadding.right);
-		var givenTextWidth: Number = _labelTextField.textWidth + _valueTextField.textWidth;
-		// Offset created by CLIK's verticalAlign
-		var yOffset: Number = Math.max(Math.abs(_labelTextField._y), Math.abs(_valueTextField._y));
-		
+	
+		// Set _textContainer position to (0, 0) and set to max height and width of textFields
+		_textContainer._x = 0;
+		_textContainer._y = 0;
+		_textContainer._width = Math.abs(Math.min(_labelTextField._x, _valueTextField._x) - Math.max(_labelTextField._x + _labelTextField._width, _valueTextField._x + _valueTextField._width));
+		_textContainer._height = Math.abs(Math.min(_labelTextField._y, _valueTextField._y) - Math.max(_labelTextField.y + _labelTextField._height, _valueTextField._y + _valueTextField._height));
+	
+		// Allow resizing of textFields
 		_labelTextField.autoSize = "none";
 		_valueTextField.autoSize = "none";
 		
-		if(givenTextWidth > maxContainerWidth) {
-			_labelTextField._width = _labelTextField.textWidth;
-			_valueTextField._width = _valueTextField.textWidth;
+		_labelTextField._x = 0;
+		_valueTextField._x = _valueTextField._x;
+		
+		if(_textContainer._width > maxContainerWidth) {
 			_valueTextField._x = (_labelTextField.text == "") ? 0 : _labelTextField._width;
 			
 			_labelTextField.textAutoSize = "shrink";
 			_valueTextField.textAutoSize = "shrink";
 			
+			// Don't switch these around
+			_textContainer._height = _textContainer._height/_textContainer._width * maxContainerWidth;
 			_textContainer._width = maxContainerWidth;
-			_textContainer._height = _textContainer._height/givenTextWidth * maxContainerWidth;
+			
 			_labelTextField.autoSize = _labelTextField.getTextFormat()["align"] ? _labelTextField.getTextFormat()["align"] : "left";
 			_valueTextField.autoSize = _valueTextField.getTextFormat()["align"] ? _valueTextField.getTextFormat()["align"] : "right";
 		} else if (_valueTextField.text == "") {
@@ -168,17 +217,16 @@ class skyui.widgets.WidgetLabel extends MovieClip
 		_backgroundHeight = textPadding.top + _textContainer._height + textPadding.bottom;
 		
 		_textContainer._x = textPadding.left;
-		_textContainer._y = _backgroundHeight/2 - Math.max(_labelTextField.height, _valueTextField.height)/2;
-		
-		if (_labelTextField.text != "" && _valueTextField.text != "") {
-			_labelTextField._y += yOffset;
-			_valueTextField._y += yOffset;
-		}
+		_textContainer._y = _textContainer._height/2 + textPadding.top - 1;
 		
 		relativeVerticalAlign(_labelTextField, _valueTextField)
-
+		
+		// (re)draw the border and background
 		drawBorder();
 		drawBackground();
+		
+		debugTrace("updateTextPositions", true);
+		
 	}
 	
 	function drawBorder(): Void
@@ -234,6 +282,7 @@ class skyui.widgets.WidgetLabel extends MovieClip
 			_textContainer.swapDepths(_background);
 	}
 	
+	
 	function setTextPadding(a_top: Number, a_right: Number, a_bottom: Number, a_left: Number): Void
 	{
 		var top: Number = Math.abs(a_top);
@@ -281,6 +330,33 @@ class skyui.widgets.WidgetLabel extends MovieClip
 		
 		hex = ((prefix) ? "0x" : "") + hex;
 		return hex;
+	}
+	
+	
+	function debugTrace(funcName: String, end: Boolean) {	
+		return;
+		trace("");
+		trace("---");
+		trace(funcName + "()" + ((end) ? " (end)" : ""));
+		trace("");
+		trace("_labelTextField");
+		trace("_labelTextField._x: " + _labelTextField._x + ", _labelTextField._y: " + _labelTextField._y);
+		trace("_labelTextField._width: " + _labelTextField._width + ", _labelTextField._height: " + _labelTextField._height);
+		trace("_labelTextField.textWidth: " + _labelTextField.textWidth + ", _labelTextField.textHeight: " + _labelTextField.textHeight);
+		trace("");
+		trace("_valueTextField");
+		trace("_valueTextField._x: " + _valueTextField._x + ", _valueTextField._y: " + _valueTextField._y);
+		trace("_valueTextField._width: " + _valueTextField._width + ", _valueTextField._height: " + _valueTextField._height);
+		trace("_valueTextField.textWidth: " + _valueTextField.textWidth + ", _valueTextField.textHeight: " + _valueTextField.textHeight);
+		trace("");
+		trace("_textContainer");
+		trace("_textContainer._x: " + _textContainer._x + ", _textContainer._y: " + _textContainer._y);
+		trace("_textContainer._width: " + _textContainer._width + ", _textContainer._height: " + _textContainer._height);
+		trace("");
+		trace("_background");
+		trace("_background._width: " + _background._width + ", _background._height: " + _background._height);
+		trace("---");
+		trace("");
 	}
 	
 	
