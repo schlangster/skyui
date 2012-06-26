@@ -45,10 +45,6 @@ class ModList extends ScrollingList
 	{
 		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
-		
-		_activeModIndex = _selectedIndex;
-		skse.Log("Active mod index is: " + _activeModIndex);
-		_entryList[_activeModIndex].state = "active";
 			
 		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
 	}
