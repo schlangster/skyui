@@ -10,13 +10,21 @@
 	private var _valueColor: Number = 0x00FFFF;
 	private var _valueFont: String = "$SkyrimBooks";
 	
-	private var _border: MovieClip;
+	private var _paddingTop: Number = 0;
+	private var _paddingBottom: Number = 0;
+	private var _paddingLeft: Number = 10;
+	private var _paddingRight: Number = 10;
+	
+	private var _borderColor: Number;
+	private var _borderAlpha: Number;
+	private var _borderWidth: Number;
+	private var _borderRounded: Number;
 	
 	private var _backgroundColor: Number;
 	
-	
 	// Stage elements
 	
+	public var border: MovieClip;
 	public var background: MovieClip;
 	public var labelTextField: TextField;
 	public var valueTextField: TextField;
@@ -27,7 +35,7 @@
 	public function TextboxWidget()
 	{
 		// For testing...
-		setWidgetParams(200, 0xCCCCCC, 100, 2, 0xFFFF00, 50, 1);
+		setWidgetParams(200, 0xCCCCCC, 100, 0, 0xFFFF00, 100, 1);
 	}
 	
 	
@@ -41,12 +49,19 @@
 	
 	function onEnterFrame()
 	{
-		
 		if (c == 100) {
 			setWidgetTexts("key", "value");
+			borderColor = 0xFF0000;
+			borderAlpha = 50;
+			borderWidth = 5;
+			borderRounded = 1;
 		} else if (c == 200) {
 			setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
-			backgroundColor = 0x123456;
+			//backgroundColor = 0x123456;
+			borderColor = 0xFFFF00;
+			borderWidth = 10;
+			borderAlpha = 100;
+			borderRounded = 0;
 		} else if (c == 300) {
 			setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
 			backgroundColor = 0x789ABC;
@@ -65,11 +80,6 @@
 	
 	// Properties
 	
-	public var paddingTop: Number = 0;
-	public var paddingBottom: Number = 0;
-	public var paddingLeft: Number = 10;
-	public var paddingRight: Number = 10;
-	
 	// TODO
 	public var labelAlign: String;
 	public var valueAlign: String;
@@ -79,7 +89,6 @@
 	{
 		return _backgroundColor;
 	}
-	
 	public function set backgroundColor(a_color: Number)
 	{
 		_backgroundColor = a_color;
@@ -87,13 +96,52 @@
 		t.setRGB(a_color);
 	}
 	
-	var borderWidth: Number;	// Width of the border
+	public function get borderColor(): Number
+	{
+		return _borderColor;
+	}
+	public function set borderColor(a_color: Number)
+	{
+		_borderColor = a_color;
+		if (border != undefined) {
+			var t = new Color(border); 
+			t.setRGB(a_color);
+		}
+	}
 	
-	var borderColor: Number;	// Color of the border
+	public function get borderWidth(): Number
+	{
+		return _borderWidth;
+	}
+	public function set borderWidth(a_width: Number)
+	{
+		_borderWidth = (a_width != undefined && a_width > 0) ? a_width : 0;
+		
+		if (border != undefined)
+			redrawBorder();
+	}
 	
-	var borderAlpha: Number;	// Alpha value of the border
+	public function get borderAlpha(): Number
+	{
+		return _borderAlpha;
+	}
+	public function set borderAlpha(a_alpha: Number)
+	{
+		_borderAlpha = a_alpha;
+		if (border != undefined)
+			border._alpha = a_alpha;
+	}
 	
-	var borderRounded: Number;	// Boolean, 1 gives the border round corners, 0 gives straight corners
+	public function get borderRounded(): Number
+	{
+		return _borderRounded;
+	}
+	public function set borderRounded(a_rounded: Number)
+	{
+		_borderRounded = (a_rounded <= 0) ? 0 : 1;
+		if (border != undefined)
+			redrawBorder();
+	}
 	
 	public function get labelText(): String
 	{
@@ -155,10 +203,10 @@
 	
 	public function setTextPadding(a_top: Number, a_right: Number, a_bottom: Number, a_left: Number): Void
 	{
-		paddingTop = a_top;
-		paddingRight = a_right;
-		paddingBottom = a_bottom;
-		paddingLeft = a_left;
+		_paddingTop = a_top;
+		_paddingRight = a_right;
+		_paddingBottom = a_bottom;
+		_paddingLeft = a_left;
 	}
 	
 	
@@ -172,8 +220,8 @@
 		labelTextField.autoSize = "left";
 		labelTextField.textAutoSize = "none";
 		
-		labelTextField._x = paddingLeft;
-		labelTextField._y = paddingTop;
+		labelTextField._x = _paddingLeft;
+		labelTextField._y = _paddingTop;
 		
 		if (!a_noResize) {
 			fixTextOverlap();
@@ -189,8 +237,8 @@
 		valueTextField.autoSize = "left";
 		valueTextField.textAutoSize = "none";
 		
-		valueTextField._x = background._width - paddingRight - valueTextField._width;
-		valueTextField._y = paddingTop;
+		valueTextField._x = background._width - _paddingRight - valueTextField._width;
+		valueTextField._y = _paddingTop;
 		
 		if (!a_noResize) {
 			fixTextOverlap();
@@ -218,17 +266,17 @@
 	
 	private function updateBackground()
 	{
-		var h = paddingTop + paddingBottom + Math.max(labelTextField._height, valueTextField._height);
+		var h = _paddingTop + _paddingBottom + Math.max(labelTextField._height, valueTextField._height);
 		if (h == background._height)
 			return;
 			
 		background._height = h;
-		updateBorder();
+		redrawBorder();
 	}
 	
 	private function fixTextOverlap(): Void
 	{
-		var availableWidth = background._width - paddingLeft - paddingRight;
+		var availableWidth = background._width - _paddingLeft - _paddingRight;
 		var textWidth = labelTextField._width + valueTextField._width;
 		if (availableWidth > textWidth)
 			return;
@@ -242,25 +290,27 @@
 		labelTextField._width = availableWidth * (labelTextField._width / textWidth);
 		valueTextField._width = availableWidth * (valueTextField._width / textWidth);
 		
-		valueTextField._x = background._width - paddingRight - valueTextField._width;
-		valueTextField._y = paddingTop;
+		valueTextField._x = background._width - _paddingRight - valueTextField._width;
+		valueTextField._y = _paddingTop;
 	}
 	
-	private function updateBorder(): Void
+	private function redrawBorder(): Void
 	{
-		if (_border != undefined)
-			_border.removeMovieClip();
-		
-		if (borderWidth <= 0 || borderWidth == undefined)
+		if (border != undefined)
+			border.removeMovieClip();
+			
+		// We create the borderMC anyway 
+		createEmptyMovieClip("border", getNextHighestDepth());
+		if (_borderWidth == 0)
 			return;
+		border.moveTo(0 - borderWidth/2 , 0 - borderWidth/2); // Start at TL
+		border.lineStyle(borderWidth, borderColor, 100, true, "normal", (borderRounded) ? "round" : "square", (borderRounded) ? "round" : "miter");
+		border.lineTo(background._width + borderWidth/2, 0 - borderWidth/2); // TR
+		border.lineTo(background._width + borderWidth/2, background._height + borderWidth/2); // BR
+		border.lineTo(0 - borderWidth/2, background._height + borderWidth/2); // BL
+		border.lineTo(0 - borderWidth/2 , 0 - borderWidth/2); // TL
 		
-		_border = createEmptyMovieClip("border", getNextHighestDepth());
-		_border.moveTo(0 - borderWidth/2 , 0 - borderWidth/2); // Start at TL
-		_border.lineStyle(borderWidth, borderColor, borderAlpha, true, "normal", (borderRounded) ? "round" : "square", (borderRounded) ? "round" : "miter");
-		_border.lineTo(background._width + borderWidth/2, 0 - borderWidth/2); // TR
-		_border.lineTo(background._width + borderWidth/2, background._height + borderWidth/2); // BR
-		_border.lineTo(0 - borderWidth/2, background._height + borderWidth/2); // BL
-		_border.lineTo(0 - borderWidth/2 , 0 - borderWidth/2); // TL
+		border._alpha = borderAlpha;
 	}
 	
 	function relativeVerticalAlign(textFieldA: TextField, textFieldB: TextField): Void
