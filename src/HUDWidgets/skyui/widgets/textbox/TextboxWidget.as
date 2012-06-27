@@ -1,6 +1,8 @@
-﻿class skyui.widgets.textbox.TextboxWidget extends MovieClip
+﻿import skyui.widgets.WidgetBase;
+
+class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 {
-	// Private Vars
+  /* PRIVATE VARIABLES */
 	
 	private var _labelText: String = "";
 	private var _labelColor: Number = 0xFF00FF;
@@ -22,7 +24,7 @@
 	
 	private var _backgroundColor: Number;
 	
-	// Stage elements
+  /* STAGE ELEMENTS */
 	
 	public var border: MovieClip;
 	public var background: MovieClip;
@@ -30,18 +32,20 @@
 	public var valueTextField: TextField;
 	
 
-	// Initialization
+  /* INITIALIZATION */
 	
 	public function TextboxWidget()
 	{
+		super();
+		
 		// For testing...
 		setWidgetParams(200, 0xCCCCCC, 100, 0, 0xFFFF00, 100, 1);
 	}
 	
-	
-	// Debug
+	// @override WidgetBase
 	function onLoad()
 	{
+		super.onLoad();
 		setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
 	}
 	
@@ -78,7 +82,7 @@
 	}
 	
 	
-	// Properties
+  /* PROPERTIES */
 	
 	// TODO
 	public var labelAlign: String;
@@ -182,7 +186,7 @@
 	}
 	
 	
-	// Public functions
+  /* PUBLIC FUNCTIONS */
 	
 	public function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number)
 	{
@@ -210,7 +214,7 @@
 	}
 	
 	
-	// Private functions
+  /* PRIVATE FUNCTIONS */
 	
 	private function doSetLabelText(a_text: String, a_noResize: Boolean): Void
 	{
@@ -313,7 +317,7 @@
 		border._alpha = borderAlpha;
 	}
 	
-	function relativeVerticalAlign(textFieldA: TextField, textFieldB: TextField): Void
+	private function relativeVerticalAlign(textFieldA: TextField, textFieldB: TextField): Void
 	{
 		var	midpointA: Number = textFieldA._y + textFieldA.textHeight/2;
 		var	midpointB: Number = textFieldB._y + textFieldB.textHeight/2;

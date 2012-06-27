@@ -13,7 +13,7 @@ bool		_initialized = false
 int			_widgetID = -1
 string		_type = ""
 string		_widgetRoot = ""
-string[]	_modes ;Default modes set in OnInit
+string[]	_modes
 float		_x = 0.0
 float		_y = 0.0
 int			_alpha = 100
@@ -148,7 +148,7 @@ state _INIT
 		RegisterForModEvent("hudModeChange", "OnHudModeChange")
 		_widgetID = _widgetManager.RequestWidgetID(self)
 		if (_widgetID != -1)
-			_widgetRoot = "_root.WidgetContainer." + _widgetID + "."
+			_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget."
 			
 			OnWidgetInit()
 			
@@ -165,49 +165,21 @@ function ResetCustomProperties()
 endFunction
 
 function UpdateWidgetClientInfo()
-	UI.InvokeString(HUD_MENU, _widgetRoot + "setWidgetClientInfo", self as string)
+	UI.InvokeString(HUD_MENU, _widgetRoot + "setClientInfo", self as string)
 endFunction
 
 function UpdateWidgetPositionX()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setWidgetX", _x)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "_x", X)
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setWidgetY", _y)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "_y", X)
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + "setWidgetAlpha", _alpha as float)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "_alpha", Alpha as float)
 endFunction
 
 function UpdateWidgetModes()
-	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setWidgetModes", _modes)
-endFunction
-
-function InvokeCallback(string a_funcName)
-	UI.Invoke(HUD_MENU, _widgetRoot + a_funcName)
-endFunction
-
-function InvokeCallbackBool(string a_funcName, bool a_arg)
-	UI.InvokeBool(HUD_MENU, _widgetRoot + a_funcName, a_arg)
-endFunction
-
-function InvokeCallbackNumber(string a_funcName, float a_arg)
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + a_funcName, a_arg)
-endFunction
-
-function InvokeCallbackString(string a_funcName, string a_arg)
-	UI.InvokeString(HUD_MENU, _widgetRoot + a_funcName, a_arg)
-endFunction
-
-function InvokeCallbackBoolA(string a_funcName, bool[] a_args)
-	UI.InvokeBoolA(HUD_MENU, _widgetRoot + a_funcName, a_args)
-endFunction
-
-function InvokeCallbackNumberA(string a_funcName, float[] a_args)
-	UI.InvokeNumberA(HUD_MENU, _widgetRoot + a_funcName, a_args)
-endFunction
-
-function InvokeCallbackStringA(string a_funcName, string[] a_args)
-	UI.InvokeStringA(HUD_MENU, _widgetRoot + a_funcName, a_args)
+	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setModes", Modes)
 endFunction
