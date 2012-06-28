@@ -10,6 +10,8 @@
 	private var _valueColor: Number = 0x00FFFF;
 	private var _valueFont: String = "$SkyrimBooks";
 	
+	private var _verticalAlign: String = "center";
+	
 	private var _paddingTop: Number = 0;
 	private var _paddingBottom: Number = 0;
 	private var _paddingLeft: Number = 10;
@@ -17,10 +19,14 @@
 	
 	private var _borderColor: Number;
 	private var _borderAlpha: Number;
-	private var _borderWidth: Number;
 	private var _borderRounded: Number;
+	private var _borderWidth: Number;
 	
 	private var _backgroundColor: Number;
+	private var _backgroundAlpha: Number;
+	
+	private var _widgetWidth: Number;
+	
 	
 	// Stage elements
 	
@@ -35,14 +41,17 @@
 	public function TextboxWidget()
 	{
 		// For testing...
-		setWidgetParams(200, 0xCCCCCC, 100, 0, 0xFFFF00, 100, 1);
+		setWidgetParams(200, 0xCCCCCC, 100, 3, 0xFFFF00, 100, 1);
+		//setWidgetTextParams();
+		/*labelTextField.border = valueTextField.border = true;
+		labelTextField.borderColor = valueTextField.borderColor = 0xFFFFFF;*/
 	}
 	
 	
 	// Debug
 	function onLoad()
 	{
-		setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
+		setWidgetTexts("keyeeeeeeeeeeeeeeeeeee", "val");
 	}
 	
 	var c = 0;
@@ -55,19 +64,22 @@
 			borderAlpha = 50;
 			borderWidth = 5;
 			borderRounded = 1;
+			backgroundAlpha = 0;
 		} else if (c == 200) {
-			setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
-			//backgroundColor = 0x123456;
+			setWidgetTexts("keyeeeeeeeeeee\nOMG A NEW LINE!", "valueeee\neeeeeeee");
+			backgroundColor = 0x123456;
 			borderColor = 0xFFFF00;
 			borderWidth = 10;
 			borderAlpha = 100;
 			borderRounded = 0;
+			backgroundAlpha = 100;
 		} else if (c == 300) {
 			setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
 			backgroundColor = 0x789ABC;
 		} else if (c == 400) {
-			setWidgetTexts("keyeeeeeeeeeeeeeeeeeee", "val");
-			backgroundColor = 0xDEF012;
+			setWidgetTexts("Health", "val");
+			verticalAlign = "bottom";
+			backgroundColor = 0xDE0014;
 		} else if (c == 500) {
 			setWidgetTexts("key", "valueeeeeeeeeeeeeeeeee");
 			backgroundColor = 0xFFFFFF;
@@ -84,6 +96,18 @@
 	public var labelAlign: String;
 	public var valueAlign: String;
 	
+	public function get widgetWidth(): Number
+	{
+		return _widgetWidth;
+	}
+	public function set widgetWidth(a_width: Number)
+	{
+		if (_widgetWidth != undefined) {
+			// Reset text
+		}
+		
+		_widgetWidth = a_width;
+	}
 	
 	public function get backgroundColor(): Number
 	{
@@ -91,9 +115,23 @@
 	}
 	public function set backgroundColor(a_color: Number)
 	{
-		_backgroundColor = a_color;
+		_backgroundColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0x000000;
 		var t = new Color(background); 
-		t.setRGB(a_color);
+		t.setRGB(_backgroundColor);
+	}
+	
+	public function get backgroundAlpha(): Number
+	{
+		return _backgroundAlpha;
+	}
+	public function set backgroundAlpha(a_alpha: Number)
+	{
+		if (a_alpha <= 0)
+			_backgroundAlpha = 0;
+		else if (a_alpha >= 100)
+			_backgroundAlpha = 100;
+			
+		background._alpha = _backgroundAlpha; 
 	}
 	
 	public function get borderColor(): Number
@@ -102,10 +140,10 @@
 	}
 	public function set borderColor(a_color: Number)
 	{
-		_borderColor = a_color;
+		_borderColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0xFFFFFF;
 		if (border != undefined) {
 			var t = new Color(border); 
-			t.setRGB(a_color);
+			t.setRGB(_borderColor);
 		}
 	}
 	
@@ -127,9 +165,13 @@
 	}
 	public function set borderAlpha(a_alpha: Number)
 	{
-		_borderAlpha = a_alpha;
+		if (a_alpha <= 0)
+			_backgroundAlpha = 0;
+		else if (a_alpha >= 100)
+			_backgroundAlpha = 100;
+			
 		if (border != undefined)
-			border._alpha = a_alpha;
+			border._alpha = _backgroundAlpha;
 	}
 	
 	public function get borderRounded(): Number
@@ -167,7 +209,7 @@
 	}
 	public function set labelColor(a_color: Number)
 	{
-		_labelColor = a_color;
+		_labelColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0xFFFFFF;
 		updateLabelText();
 	}
 	
@@ -177,8 +219,19 @@
 	}
 	public function set valueColor(a_color: Number)
 	{
-		_valueColor = a_color;
+		_valueColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0xFFFFFF;
 		updateValueText();
+	}
+	
+	public function get verticalAlign(): String
+	{
+		return _verticalAlign;
+	}
+	public function set verticalAlign(a_align: String)
+	{
+		
+		_verticalAlign = (a_align == "top" || a_align == "bottom") ? a_align : "center";
+		relativeVerticalAlign(labelTextField, valueTextField, _verticalAlign);
 	}
 	
 	
@@ -187,18 +240,23 @@
 	public function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number)
 	{
 		background._width = a_widgetWidth;
-		background._color = a_backgroundColor;
-		background._alpha = a_backgroundAlpha;
+		backgroundColor = background._color; // = a_backgroundColor;
+		backgroundAlpha = background._alpha; // = a_backgroundAlpha;
 		borderWidth = a_borderWidth;
 		borderColor = a_borderColor;
 		borderAlpha = a_borderAlpha;
-		borderRounded = a_borderRounded;		
+		borderRounded = a_borderRounded;
+	}
+	
+	public function setWidgetTextParams(/* Strings */) {
+		//labelFontColor, labelFontFace, labelFontSize etc..
+		//verticalAlign
 	}
 	
 	public function setWidgetTexts(a_labelText: String, a_valueText: String): Void
 	{
 		doSetLabelText(a_labelText, true);
-		doSetValueText(a_valueText);
+		doSetValueText(a_valueText, false);
 	}
 	
 	public function setTextPadding(a_top: Number, a_right: Number, a_bottom: Number, a_left: Number): Void
@@ -225,6 +283,7 @@
 		
 		if (!a_noResize) {
 			fixTextOverlap();
+			relativeVerticalAlign(labelTextField, valueTextField, verticalAlign);
 			updateBackground();
 		}
 	}
@@ -242,6 +301,7 @@
 		
 		if (!a_noResize) {
 			fixTextOverlap();
+			relativeVerticalAlign(labelTextField, valueTextField, verticalAlign);
 			updateBackground();
 		}
 	}
@@ -301,27 +361,54 @@
 			
 		// We create the borderMC anyway 
 		createEmptyMovieClip("border", getNextHighestDepth());
+		
 		if (_borderWidth == 0)
 			return;
-		border.moveTo(0 - borderWidth/2 , 0 - borderWidth/2); // Start at TL
+		
+		var _borderLimits = new Object();
+		_borderLimits["left"] = 0 - borderWidth/2;
+		_borderLimits["top"] = 0 - borderWidth/2;
+		_borderLimits["right"] = background._width + borderWidth/2;
+		_borderLimits["bottom"] = background._height + borderWidth/2;
+		
 		border.lineStyle(borderWidth, borderColor, 100, true, "normal", (borderRounded) ? "round" : "square", (borderRounded) ? "round" : "miter");
-		border.lineTo(background._width + borderWidth/2, 0 - borderWidth/2); // TR
-		border.lineTo(background._width + borderWidth/2, background._height + borderWidth/2); // BR
-		border.lineTo(0 - borderWidth/2, background._height + borderWidth/2); // BL
-		border.lineTo(0 - borderWidth/2 , 0 - borderWidth/2); // TL
+		border.moveTo(_borderLimits.left, _borderLimits.top);
+		border.lineTo(_borderLimits.right, _borderLimits.top);
+		border.lineTo(_borderLimits.right, _borderLimits.bottom);
+		border.lineTo(_borderLimits.left, _borderLimits.bottom);
+		border.lineTo(_borderLimits.left, _borderLimits.top);
 		
 		border._alpha = borderAlpha;
 	}
 	
-	function relativeVerticalAlign(textFieldA: TextField, textFieldB: TextField): Void
+	function relativeVerticalAlign(textFieldA: TextField, textFieldB: TextField, mode: String): Void
 	{
-		var	midpointA: Number = textFieldA._y + textFieldA.textHeight/2;
-		var	midpointB: Number = textFieldB._y + textFieldB.textHeight/2;
-		var difference: Number = Math.abs(midpointA - midpointB);
+		// Will only work if _y is same for both text fields, in this case, they are.
 		
-		if(midpointA > midpointB)
+		textFieldA._y = _paddingTop;
+		textFieldB._y = _paddingTop;
+		
+		var difference: Number;
+		switch (mode) {
+			case "top":
+				// difference = top of textFieldA boundry box - top of textFieldB boundry box
+				difference = Math.abs((textFieldA._height - textFieldA.textHeight) - (textFieldB._height - textFieldB.textHeight))/2;
+				difference += Math.abs(textFieldA.getLineMetrics(0)["height"] - textFieldB.getLineMetrics(0)["height"]);
+				difference -= Math.abs(textFieldA.getLineMetrics(0)["descent"] - textFieldB.getLineMetrics(0)["descent"]);
+				break;
+			case "bottom":
+				// difference = bottom of textFieldA boundry box - bottom of textFieldB boundry box
+				difference = Math.abs((textFieldA._height + textFieldA.textHeight) - (textFieldB._height + textFieldB.textHeight))/2;
+				difference -= Math.abs(textFieldA.getLineMetrics(textFieldA.numLines - 1)["descent"] - textFieldB.getLineMetrics(textFieldB.numLines - 1)["descent"]);
+				break;
+			case "center":
+			default:
+				difference = Math.abs(textFieldA._height - textFieldB._height)/2;
+		}
+		if(textFieldA.textHeight > textFieldB.textHeight)
 			textFieldB._y += difference;
 		else
 			textFieldA._y += difference;
+			
 	}
 }
