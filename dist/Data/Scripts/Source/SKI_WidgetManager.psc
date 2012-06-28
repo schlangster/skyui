@@ -1,4 +1,4 @@
-scriptname SKI_WidgetManager extends SKI_QuestBase  
+scriptname SKI_WidgetManager extends SKI_QuestBase
 
 ; CONSTANTS------------------------------
 

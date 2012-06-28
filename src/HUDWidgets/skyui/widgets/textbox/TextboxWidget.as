@@ -56,7 +56,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	{
 		super.onLoad();
 		setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
-		this._visible = true;
 	}
 	
 	var c = 0;

@@ -1,4 +1,4 @@
-scriptname SKI_PlayerLoadGameAlias extends ReferenceAlias  
+scriptname SKI_PlayerLoadGameAlias extends ReferenceAlias
  
 SKI_QuestBase property InitQuest auto
  

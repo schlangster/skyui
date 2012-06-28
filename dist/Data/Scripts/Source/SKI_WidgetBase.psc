@@ -16,7 +16,7 @@ string		_widgetRoot = ""
 string[]	_modes
 float		_x = 0.0
 float		_y = 0.0
-int			_alpha = 100
+float		_alpha = 100.0
 
 
 ; PROPERTIES ----------------------------
@@ -28,8 +28,15 @@ int property WidgetID
 	endFunction
 endProperty
 
-; Can only be set once. Has to be set early; either in OnWidgetInit, or as property in the editor.
-string property Type
+; Read-only
+bool property Initialized
+	bool function get()
+		return  _initialized
+	endFunction
+endProperty
+
+; Can only be set once. Has to be set early in OnWidgetInit
+string property Type hidden
 	string function get()
 		return  _type
 	endFunction
@@ -80,14 +87,14 @@ float property Y
 	endFunction
 endProperty
 
-int property Alpha
-	int function get()
+float property Alpha
+	float function get()
 		return _alpha
 	endFunction
 	
-	function set(int a_val)
+	function set(float a_val)
 		_alpha = a_val
-		if (_initialized)
+		if (Initialized)
 			UpdateWidgetAlpha()
 		endIf
 	endFunction
@@ -173,11 +180,11 @@ function UpdateWidgetPositionX()
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "_y", X)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "_y", Y)
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "_alpha", Alpha as float)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "_alpha", Alpha)
 endFunction
 
 function UpdateWidgetModes()

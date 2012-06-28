@@ -19,6 +19,12 @@
 		_clientInfo = {};
 		_container = _parent;
 		_widgetID = _container._name;
+		// Allows for preview in Flash Player
+		// Works on the premise that the widget is placed on the root of the stage.
+		// When the widget is loaded by widgetLoader _root will be the root of the document which loaded the widget
+		//	and _container will be the root of the widget's document
+		if(_root != _container)
+			_container._visible = false;
 	}
 	
 	// @override MovieClip
@@ -32,7 +38,7 @@
   
   	// @Papyrus
 	public function setModes(/* a_visibleModes [] */): Void
-	{		
+	{	
 		// Clear all modes
 		for (var i=0; i<MODES.length; i++)
 			delete(_container[MODES[i]]);

@@ -1,4 +1,4 @@
-scriptname SKI_QuestBase extends Quest  
+scriptname SKI_QuestBase extends Quest hidden
 
-function OnGameReload()
-endFunction
+event OnGameReload()
+endEvent

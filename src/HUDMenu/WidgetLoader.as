@@ -20,7 +20,7 @@
 			for(i: String in _widgetContainer)
 				if (i instanceof MovieClip && _root.HUDMovieBaseInstance.HudElements[i] != undefined)
 					delete(_root.HUDMovieBaseInstance.HudElements[i])
-
+			
 			_widgetContainer.swapDepths(_root.getNextHighestDepth());
 			_widgetContainer.removeMovieClip();
 			_widgetContainer = undefined;
@@ -38,7 +38,6 @@
 			createWidgetContainer();
 		
 		var widget: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		widget._visible = false;
 		widget.loadMovie(_widgetDirectory + a_widgetType + ".swf");
 	}
 	 
@@ -48,10 +47,10 @@
 	private static function createWidgetContainer(): Void
 	{
 		skyui.util.GlobalFunctions.addArrayFunctions();
-
+		
 		// -16384 places the WidgetContainer beneath all elements which were added to the stage in Flash.
 		_widgetContainer = _root.createEmptyMovieClip("WidgetContainer", -16384);
-
+		
 		// Locks _widgetContainer to the safe top left of the Stage, for all child elements {_x = 0, _y = 0} is the top left of the stage
 		_widgetContainer.Lock("TL");
 	}

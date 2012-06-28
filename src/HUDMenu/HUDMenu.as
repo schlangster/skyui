@@ -305,7 +305,7 @@
 		
 		//JournalMode
 	}
-
+	
 	function ShowElements(aMode: String, abShow: Boolean): Void
 	{
 		var HUDMode: String = "All";
@@ -338,8 +338,6 @@
 			}
 		}
 		
-		skse.SendModEvent("hudModeChange", HUDMode);
-		
 		for(var i: Number = 0; i < HudElements.length; i++) {
 			if (HudElements[i] != undefined) {
 				HudElements[i]._visible = HudElements[i].hasOwnProperty(HUDMode);
@@ -347,8 +345,10 @@
 					HudElements[i].onModeChange(HUDMode);
 			}
 		}
+		
+		skse.SendModEvent("hudModeChange", HUDMode);
 	}
-
+	
 	function SetLocationName(aLocation: String): Void
 	{
 		LocationLockBase.LocationNameBase.LocationTextBase.LocationTextInstance.SetText(aLocation);
@@ -671,6 +671,10 @@
 		ArrowInfoInstance.ArrowCountInstance.ArrowNumInstance.SetText(aArrows + " (" + aCount.toString() + ")");
 	}
 
+	var amIVisible: Boolean;
+	var amIVisibleToo: Boolean;
+	var amIVisibleThree: Boolean;
+	
 	function onEnterFrame(): Void
 	{
 		MagickaMeter.Update();
