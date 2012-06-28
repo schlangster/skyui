@@ -6,6 +6,7 @@ import Shared.GlobalFunc;
 
 import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ButtonEntryFormatter;
+import skyui.components.list.ScrollingList;
 
 
 class ConfigPanel extends MovieClip
@@ -23,7 +24,8 @@ class ConfigPanel extends MovieClip
 	// Quest_Journal_mc
 	private var _parentMenu: MovieClip;
 	
-	private var _modList: ModList;
+	private var _modList: ScrollingList;
+	private var _subList: ScrollingList;
 
 	private var _state: Number;
 	
@@ -42,7 +44,9 @@ class ConfigPanel extends MovieClip
 	function ConfigPanel()
 	{
 		_parentMenu = _root.QuestJournalFader.Menu_mc;
+
 		_modList = modListPanel.modListFader.list;
+		_subList = modListPanel.subListFader.list;
 	}
 	
 	function startPage(): Void
@@ -52,8 +56,12 @@ class ConfigPanel extends MovieClip
 		
 		for (var i=0; i<25; i++)
 			_modList.entryList.push({text: "MOD NUMBER " + i, align: "right", enabled: true, state: "normal"});
+			
+		for (var i=0; i<5; i++)
+			_subList.entryList.push({text: "Sub Entry " + i, align: "right", enabled: true, state: "normal"});
 		
 		_modList.InvalidateData();
+		_subList.InvalidateData();
 	}
 	
 	function onLoad()
@@ -62,6 +70,9 @@ class ConfigPanel extends MovieClip
 		
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
+		
+		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
+		_subList.entryFormatter = new ButtonEntryFormatter(_subList);
 	}
 	
 	function endPage(): Void

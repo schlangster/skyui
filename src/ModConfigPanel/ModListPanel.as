@@ -1,6 +1,7 @@
 ﻿import mx.transitions.Tween;
 import mx.transitions.easing.Strong;
 import mx.utils.Delegate;
+import skyui.components.list.ScrollingList;
 
 
 class ModListPanel extends MovieClip
@@ -36,8 +37,8 @@ class ModListPanel extends MovieClip
 	public var decorTitle: MovieClip;
 	public var decorBottom: MovieClip;
 	
-	public var _modList: ModList;
-	public var _subList: ModList;
+	public var _modList: ScrollingList;
+	public var _subList: ScrollingList;
 	
 	public var modListFader: MovieClip;
 	public var subListFader: MovieClip;
@@ -48,6 +49,7 @@ class ModListPanel extends MovieClip
 	public function ModListPanel()
 	{
 		_modList = modListFader.list;
+		_subList = subListFader.list;
 	}
 	
 	
@@ -84,64 +86,79 @@ class ModListPanel extends MovieClip
 		if (_modList.selectedClip == undefined || _modList.selectedEntry == undefined)
 			return;
 
-		_titleText = _modList.selectedEntry.text;
-		decorTitle._y = _modList.selectedClip._y;
+		
 
-		
-		hideDecorTitle(false);
-		decorTitle.gotoAndPlay("fadeIn");
-		
-		decorTitle.textHolder.textField.text = _titleText;
+		setState(TRANSITION_TO_SUBLIST);
+	}
+	
+	private function setState(a_state: Number): Void
+	{
+		switch (a_state) {
+			case LIST_ACTIVE:
+				modListFader.gotoAndStop("active");
+				_modList.disableInput = false;
+				_modList.disableSelection = false;
+				break;
+				
+			case SUBLIST_ACTIVE:
+				subListFader.gotoAndStop("active");
+				_subList.disableInput = false;
+				_subList.disableSelection = false;
+				break;
+				
+			case TRANSITION_TO_SUBLIST:
+				_titleText = _modList.selectedEntry.text;
+				decorTitle._y = _modList.selectedClip._y;
+				hideDecorTitle(false);
+				decorTitle.gotoAndPlay("fadeIn");
+				decorTitle.textHolder.textField.text = _titleText;
+				modListFader.gotoAndPlay("fadeOut");
 			
-		modListFader.gotoAndPlay("fadeOut");
-		_state = TRANSITION_TO_SUBLIST;
+				_modList.disableInput = true;
+				_modList.disableSelection = true;
+				break;
+				
+			case TRANSITION_TO_LIST:
+				_subList.disableInput = true;
+				_subList.disableSelection = true;
+				break;
+				
+			default:
+				return;
+		}
+		
+		_state = a_state;
 	}
 	
 	public function onAnimFinish(a_animID: Number): Void
 	{
 		trace("onAnimFinish: state " + _state + " anim " + a_animID);
 		
-		decorTitle.decorTitleText.textField.text = _titleText;
-		
-		switch (_state) {
-			case LIST_ACTIVE:
-				break;
-				
-			case SUBLIST_ACTIVE:
-				break;
-				
-			case TRANSITION_TO_SUBLIST:
+		switch (a_animID) {
+			case ANIM_DECORTITLE_FADE_IN:
 				// Should happen at the same time as ANIM_LIST_FADE_OUT, we just need to handle one of them.
-				if (a_animID == ANIM_DECORTITLE_FADE_IN) {
-					decorTitle.decorTitleText.textField.text = _titleText;
-					
-					var tween = new Tween(decorTitle, "_y", Strong.easeOut, decorTitle._y, _modList._x + _modList.topBorder, 0.75, true);
-					tween.FPS = 60;
-					tween.onMotionFinished = Delegate.create(this, decorMotionFinishedFunc);
-					tween.onMotionChanged = Delegate.create(this, decorMotionUpdateFunc);
-
-				} else if (a_animID == ANIM_DECORTITLE_TWEEN) {
-					decorTitle.decorTitleText.textField.text = _titleText;
-					
-					subListFader.gotoAndPlay("fadeIn");
-					
-				} else if (a_animID == ANIM_SUBLIST_FADE_IN) {
-					
-					subListFader.gotoAndStop("active");
-					_state = SUBLIST_ACTIVE;
-					
-					showList();
-				}
+				var tween = new Tween(decorTitle, "_y", Strong.easeOut, decorTitle._y, _modList._x + _modList.topBorder, 0.75, true);
+				tween.FPS = 60;
+				tween.onMotionFinished = Delegate.create(this, decorMotionFinishedFunc);
+				tween.onMotionChanged = Delegate.create(this, decorMotionUpdateFunc);
 				break;
 				
-			case TRANSITION_TO_LIST:
-				if (a_animID == ANIM_SUBLIST_FADE_OUT) {
-					modListFader.gotoAndPlay("fadeIn");
-					hideDecorTitle(true);
-				} else if (a_animID == ANIM_LIST_FADE_IN) {
-					modListFader.gotoAndStop("active");
-					_state = LIST_ACTIVE;
-				}
+			case ANIM_DECORTITLE_TWEEN:
+				subListFader.gotoAndPlay("fadeIn");
+				break;
+				
+			case ANIM_SUBLIST_FADE_IN:
+				setState(SUBLIST_ACTIVE);
+				break;
+				
+			case ANIM_SUBLIST_FADE_OUT:
+				// Should happen at the same time as ANIM_DECORTITLE_FADE_OUT, we just need to handle one of them.
+				modListFader.gotoAndPlay("fadeIn");
+				hideDecorTitle(true);
+				break;
+					
+			case ANIM_LIST_FADE_IN:
+				setState(LIST_ACTIVE);
 				break;
 		}
 	}

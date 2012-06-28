@@ -65,6 +65,8 @@ class skyui.components.list.BasicList extends BSList
 	public var disableInput: Boolean = false;
 	
 	public var disableSelection: Boolean = false;
+	
+	public var isAutoUnselect: Boolean = false;
 
 	// @override BSList
 	public function get selectedIndex(): Number
@@ -92,7 +94,7 @@ class skyui.components.list.BasicList extends BSList
 	// The selected entry.
 	public function get selectedClip(): Object
 	{
-		return _entryClipManager.getClip(_selectedIndex);
+		return _entryClipManager.getClip(selectedEntry.clipIndex);
 	}
 	
 	
@@ -206,7 +208,14 @@ class skyui.components.list.BasicList extends BSList
 
 	public function onItemRollOut(a_index: Number): Void
 	{
-		// empty
+		if (!isAutoUnselect)
+			return;
+		
+		if (isListAnimating || disableSelection || disableInput)
+			return;
+			
+		doSetSelectedIndex(-1, SELECT_MOUSE);
+		isMouseDrivenNav = true;
 	}
 	
 	
