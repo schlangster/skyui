@@ -24,7 +24,6 @@
 	// @override MovieClip
 	public function onLoad(): Void
 	{
-		_visible = false;
 		skse.SendModEvent("widgetLoaded", _widgetID);
 	}
 		
@@ -48,7 +47,7 @@
 		
 		
 		var hudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
-		_visible = _container.hasOwnProperty(hudMode);
+		_container._visible = _container.hasOwnProperty(hudMode);
 			
 		_root.HUDMovieBaseInstance.HudElements.push(_container);
 	}

@@ -38,6 +38,7 @@
 			createWidgetContainer();
 		
 		var widget: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
+		widget._visible = false;
 		widget.loadMovie(_widgetDirectory + a_widgetType + ".swf");
 	}
 	 
