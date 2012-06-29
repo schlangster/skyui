@@ -670,10 +670,6 @@
 		ArrowInfoInstance.PlayForward(ArrowInfoInstance._currentframe);
 		ArrowInfoInstance.ArrowCountInstance.ArrowNumInstance.SetText(aArrows + " (" + aCount.toString() + ")");
 	}
-
-	var amIVisible: Boolean;
-	var amIVisibleToo: Boolean;
-	var amIVisibleThree: Boolean;
 	
 	function onEnterFrame(): Void
 	{
