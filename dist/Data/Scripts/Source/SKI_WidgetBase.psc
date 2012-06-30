@@ -2,8 +2,7 @@ scriptname SKI_WidgetBase extends SKI_QuestBase
 
 ; CONSTANTS------------------------------
 
-string	HUD_MENU = "HUD Menu"
-
+string property HUD_MENU = "HUD Menu" autoReadonly
 
 ; PRIVATE VARIABLES ---------------------
 
@@ -35,16 +34,10 @@ bool property Initialized
 	endFunction
 endProperty
 
-; Can only be set once. Has to be set early in OnWidgetInit
-string property Type hidden
+; Read-only
+string property WidgetRoot
 	string function get()
-		return  _type
-	endFunction
-	
-	function set(string a_val)
-		if (_type == "")
-			_type = a_val
-		endIf
+		return  _widgetRoot
 	endFunction
 endProperty
 
@@ -156,10 +149,8 @@ state _INIT
 		_widgetID = _widgetManager.RequestWidgetID(self)
 		if (_widgetID != -1)
 			_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget."
-			
 			OnWidgetInit()
-			
-			_widgetManager.CreateWidget(_widgetID, _type)
+			_widgetManager.CreateWidget(_widgetID, GetWidgetType())
 			_initialized = true
 		endIf
 	endEvent
@@ -167,6 +158,10 @@ endState
 
 
 ; FUNCTIONS -------------------------
+
+string function GetWidgetType()
+	return ""
+endFunction
 
 function ResetCustomProperties()
 endFunction
