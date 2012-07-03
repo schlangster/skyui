@@ -3,16 +3,23 @@ scriptname SKI_TextboxWidget extends SKI_WidgetBase
 ; PRIVATE VARIABLES ---------------------
 
 float		_widgetWidth		= 200.0
-int			_backgroundColor	= 0xFF0000
+int			_backgroundColor	= 0x333333
 float		_backgroundAlpha	= 10.0
 float		_borderWidth		= 5.0
-int			_borderColor		= 0xFFFF00
+int			_borderColor		= 0x000000
 float		_borderAlpha		= 10.0
 
 bool		_borderRounded		= true
 
 string		_labelText			= ""
+string		_labelTextFont		= "$SkyrimBooks"
+int			_labelTextColor		= 0xFFFFFF
+int			_labelTextSize		= 22
+
 string		_valueText			= ""
+string		_valueTextFont		= "$SkyrimBooks"
+int			_valueTextColor		= 0xFFFFFF
+int			_valueTextSize		= 22
 
 
 ; PROPERTIES ----------------------------
@@ -36,9 +43,8 @@ int property BackgroundColor
 	endFunction
 	
 	function set(int a_val)
-			_backgroundColor = a_val
 		if (Initialized)
-			;UpdateBackgroundColor()
+			UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetBackgroundColor", _backgroundColor) 
 		endIf
 	endFunction
 endProperty
@@ -121,6 +127,30 @@ string property LabelText
 	endFunction
 endProperty
 
+int property LabelTextColor
+	int function get()
+		return _labelTextColor
+	endFunction
+	
+	function set(int a_val)
+		if (Initialized)
+			UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetLabelTextColor", _labelTextColor) 
+		endIf
+	endFunction
+endProperty
+
+string property LabelTextFont
+	string function get()
+		return _labelTextFont
+	endFunction
+	
+	function set(string a_val)
+		if (Initialized)
+			UI.InvokeString(HUD_MENU, WidgetRoot + "setWidgetLabelTextFont", _labelTextFont) 
+		endIf
+	endFunction
+endProperty
+
 string property ValueText
 	string function get()
 		return _valueText
@@ -134,9 +164,31 @@ string property ValueText
 	endFunction
 endProperty
 
+int property ValueTextColor
+	int function get()
+		return _valueTextColor
+	endFunction
+	
+	function set(int a_val)
+		if (Initialized)
+			UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetValueTextColor", _valueTextColor) 
+		endIf
+	endFunction
+endProperty
+
+string property ValueTextFont
+	string function get()
+		return _valueTextFont
+	endFunction
+	
+	function set(string a_val)
+		if (Initialized)
+			UI.InvokeString(HUD_MENU, WidgetRoot + "setWidgetValueTextFont", _valueTextFont) 
+		endIf
+	endFunction
+endProperty
+
 ; EVENTS ----------------------------
-;public function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number,
-; a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number)
 
 event OnWidgetInit()
 endEvent
@@ -149,7 +201,7 @@ endFunction
 
 function ResetCustomProperties()
 	SetParams(_widgetWidth, _backgroundColor, _backgroundAlpha, _borderWidth, _borderColor, _borderAlpha, _borderRounded)
-	SetTextFormat()
+	SetTextFormats(_labelTextFont, _labelTextColor, _labelTextSize, _valueTextFont, _valueTextColor, _valueTextSize)
 	SetTexts(_labelText, _valueText)
 endFunction
 
@@ -168,8 +220,21 @@ function SetParams(float a_widgetWidth, int a_backgroundColor, float a_backgroun
 	UI.InvokeNumberA(HUD_MENU, WidgetRoot + "setWidgetParams", args)
 endFunction
 
-function SetTextFormat()
+function SetTextFormats(string a_labelTextFont, int a_labelTextColor, float a_labelTextSize, string a_valueTextFont, int a_valueTextColor, float a_valueTextSize)
 	; TODO labelFontFace, labelFontColor, etc.
+	string[] args0 = new string[2]
+	args0[0] = a_labelTextFont
+	args0[1] = a_valueTextFont
+	
+	UI.InvokeStringA(HUD_MENU, WidgetRoot + "setWidgetTextFonts", args0)
+	
+	float[] args1 = new float[4]
+	args1[0] = a_labelTextColor as float
+	args1[1] = a_labelTextSize;
+	args1[2] = a_valueTextColor as float
+	args1[3] = a_valueTextSize;
+	
+	UI.InvokeNumberA(HUD_MENU, WidgetRoot + "setWidgetTextFormats", args1)
 endFunction
 
 function SetTexts(string a_labelText, string a_valueText)

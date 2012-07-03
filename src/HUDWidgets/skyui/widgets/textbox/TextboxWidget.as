@@ -1,16 +1,20 @@
 ﻿import skyui.widgets.WidgetBase;
+import flash.geom.Transform;
+import flash.geom.ColorTransform;
 
 class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 {
   /* PRIVATE VARIABLES */
 	
 	private var _labelText: String = "";
-	private var _labelColor: Number = 0xFF00FF;
-	private var _labelFont: String = "$SkyrimBooks";
+	private var _labelTextFont: String = "$EverywhereFont";
+	private var _labelTextColor: Number = 0xFFFFFF;
+	private var _labelTextSize: Number = 20;
 	
 	private var _valueText: String = "";
-	private var _valueColor: Number = 0x00FFFF;
-	private var _valueFont: String = "$SkyrimBooks";
+	private var _valueTextFont: String = "$EverywhereFont";
+	private var _valueTextColor: Number = 0xFFFFFF;
+	private var _valueTextSize: Number = 20;
 	
 	private var _verticalAlign: String = "center";
 	
@@ -43,59 +47,13 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	public function TextboxWidget()
 	{
 		super();
-		
-		// For testing...
-		//setWidgetParams(200, 0xCCCCCC, 100, 3, 0xFFFF00, 100, 1);
-		//setWidgetTextParams();
-		/*labelTextField.border = valueTextField.border = true;
-		labelTextField.borderColor = valueTextField.borderColor = 0xFFFFFF;*/
 	}
 	
 	// @override WidgetBase
 	function onLoad()
 	{
 		super.onLoad();
-		labelTextField.text = "";
-		valueTextField.text = "";
 	}
-	
-	/*var c = -50000;
-	
-	function onEnterFrame()
-	{
-		if (c = -400) {
-			setWidgetTexts("key", "value");
-		} else if (c == 100) {
-			setWidgetTexts("key", "value");
-			borderColor = 0xFF0000;
-			borderAlpha = 50;
-			borderWidth = 5;
-			borderRounded = 1;
-			backgroundAlpha = 0;
-		} else if (c == 200) {
-			setWidgetTexts("keyeeeeeeeeeee\nOMG A NEW LINE!", "valueeee\neeeeeeee");
-			backgroundColor = 0x123456;
-			borderColor = 0xFFFF00;
-			borderWidth = 10;
-			borderAlpha = 100;
-			borderRounded = 0;
-			backgroundAlpha = 100;
-		} else if (c == 300) {
-			setWidgetTexts("keyeeeeeeeeeee", "valueeeeeeeeeeee");
-			backgroundColor = 0x789ABC;
-		} else if (c == 400) {
-			setWidgetTexts("Health", "val");
-			verticalAlign = "bottom";
-			backgroundColor = 0xDE0014;
-		} else if (c == 500) {
-			setWidgetTexts("key", "valueeeeeeeeeeeeeeeeee");
-			backgroundColor = 0xFFFFFF;
-			c = 0;
-		}
-		
-		c++;
-	}*/
-	
 	
   /* PROPERTIES */
 	
@@ -107,141 +65,214 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	{
 		return _widgetWidth;
 	}
-	public function set widgetWidth(a_width: Number)
+	public function set widgetWidth(a_val: Number)
 	{
 		if (_widgetWidth != undefined) {
 			// Reset text
 		}
 		
-		_widgetWidth = a_width;
+		_widgetWidth = a_val;
 	}
 	
-	public function get backgroundColor(): Number
+	public function getWidgetBackgroundColor(): Number
 	{
 		return _backgroundColor;
 	}
-	public function set backgroundColor(a_color: Number)
+	public function setWidgetBackgroundColor(a_val: Number)
 	{
-		_backgroundColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0x000000;
-		var t = new Color(background); 
-		t.setRGB(_backgroundColor);
+		if (a_val < 0x000000)
+			_backgroundColor = 0x000000;
+		else if (a_val > 0xFFFFFF)
+			_backgroundColor = 0xFFFFFF;
+		else
+			_backgroundColor = a_val;
+			
+		var tf: Transform = new Transform(background);
+		var colorTf: ColorTransform = new ColorTransform();
+		colorTf.rgb = _backgroundColor;
+		tf.colorTransform = colorTf;
 	}
 	
-	public function get backgroundAlpha(): Number
+	public function getWidgetBackgroundAlpha(): Number
 	{
 		return _backgroundAlpha;
 	}
-	public function set backgroundAlpha(a_alpha: Number)
+	public function setWidgetBackgroundAlpha(a_val: Number)
 	{
-		if (a_alpha <= 0)
+		if (a_val <= 0)
 			_backgroundAlpha = 0;
-		else if (a_alpha >= 100)
+		else if (a_val >= 100)
 			_backgroundAlpha = 100;
 		else
-			_backgroundAlpha = a_alpha;
+			_backgroundAlpha = a_val;
 		
 		background._alpha = _backgroundAlpha; 
 	}
 	
-	public function get borderColor(): Number
+	public function getWidgetBorderColor(): Number
 	{
 		return _borderColor;
 	}
-	public function set borderColor(a_color: Number)
+	public function setWidgetBorderColor(a_val: Number)
 	{
-		_borderColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0xFFFFFF;
+		if (a_val < 0x000000)
+			_borderColor = 0x000000;
+		else if (a_val > 0xFFFFFF)
+			_borderColor = 0xFFFFFF;
+		else
+			_borderColor = a_val;
+			
 		if (border != undefined) {
-			var t = new Color(border); 
-			t.setRGB(_borderColor);
+			var tf: Transform = new Transform(border);
+			var colorTf: ColorTransform = new ColorTransform();
+			colorTf.rgb = _backgroundColor;
+			tf.colorTransform = colorTf;
 		}
 	}
 	
-	public function get borderWidth(): Number
+	public function getWidgetBorderWidth(): Number
 	{
 		return _borderWidth;
 	}
-	public function set borderWidth(a_width: Number)
+	public function setWidgetBorderWidth(a_val: Number)
 	{
-		_borderWidth = (a_width != undefined && a_width > 0) ? a_width : 0;
+		_borderWidth = (a_val > 0) ? a_val : 0;
 		
 		if (border != undefined)
 			redrawBorder();
 	}
 	
-	public function get borderAlpha(): Number
+	public function getWidgetBorderAlpha(): Number
 	{
 		return _borderAlpha;
 	}
-	public function set borderAlpha(a_alpha: Number)
+	public function setWidgetBorderAlpha(a_val: Number)
 	{
-		if (a_alpha <= 0)
+		if (a_val < 0)
 			_borderAlpha = 0;
-		else if (a_alpha >= 100)
+		else if (a_val > 100)
 			_borderAlpha = 100;
 		else
-			_borderAlpha = a_alpha;
+			_borderAlpha = a_val;
 			
 		if (border != undefined)
 			border._alpha = _backgroundAlpha;
 	}
 	
-	public function get borderRounded(): Number
+	public function getWidgetBorderRounded(): Number
 	{
 		return _borderRounded;
 	}
-	public function set borderRounded(a_rounded: Number)
+	public function setWidgetBorderRounded(a_val: Number)
 	{
-		_borderRounded = (a_rounded <= 0) ? 0 : 1;
+		_borderRounded = (a_val <= 0) ? 0 : 1;
 		if (border != undefined)
 			redrawBorder();
 	}
 	
-	public function get labelText(): String
+	public function getWidgetLabelText(): String
 	{
 		return _labelText;
 	}
-	public function set labelText(a_text: String)
+	public function setWidgetLabelText(a_val: String)
 	{
-		doSetLabelText(a_text, false);
+		_labelText = a_val;
+		doSetLabelText(a_val, false);
 	}
 	
-	public function get valueText(): String
+	public function getWidgetLabelTextFont(): String
+	{
+		return _labelTextFont;
+	}
+	public function setWidgetLabelTextFont(a_val: String)
+	{
+		_labelTextFont = a_val;
+		if(_labelTextSize != a_val)
+			doSetLabelText(_labelText, false);
+	}
+	
+	public function getWidgetLabelTextColor(): Number
+	{
+		return _labelTextColor;
+	}
+	public function setWidgetLabelTextColor(a_val: Number)
+	{
+		if (a_val < 0x000000)
+			_labelTextColor = 0x000000;
+		else if (a_val > 0xFFFFFF)
+			_labelTextColor = 0xFFFFFF;
+		else
+			_labelTextColor = a_val;
+			
+		updateLabelTextFormat();
+	}
+	
+	public function getWidgetLabelTextSize(): Number
+	{
+		return _labelTextSize;
+	}
+	public function setWidgetLabelTextSize(a_val: Number)
+	{
+		_labelTextSize = a_val;
+		if(_labelTextSize != a_val)
+			doSetLabelText(_labelText, false);
+	}
+	
+	public function getWidgetValueText(): String
 	{
 		return _valueText;
 	}
-	public function set valueText(a_text: String)
+	public function setWidgetValueText(a_val: String)
 	{
-		doSetValueText(a_text, false);
+		_valueText = a_val;
+		doSetValueText(a_val, false);
 	}
 	
-	public function get labelColor(): Number
+	public function getWidgetValueTextFont(): String
 	{
-		return _labelColor;
+		return _valueTextFont;
 	}
-	public function set labelColor(a_color: Number)
+	public function setWidgetValueTextFont(a_val: String)
 	{
-		_labelColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0xFFFFFF;
-		updateLabelText();
-	}
-	
-	public function get valueColor(): Number
-	{
-		return _labelColor;
-	}
-	public function set valueColor(a_color: Number)
-	{
-		_valueColor = (a_color >= 0x000000 && a_color <= 0xFFFFFF) ? a_color : 0xFFFFFF;
-		updateValueText();
+		_valueTextFont = a_val;
+		if(_valueTextFont != a_val)
+			doSetValueText(_valueText, false);
 	}
 	
-	public function get verticalAlign(): String
+	public function getWidgetValueTextColor(): Number
+	{
+		return _valueTextColor;
+	}
+	public function setWidgetValueTextColor(a_val: Number)
+	{
+		if (a_val < 0x000000)
+			_valueTextColor = 0x000000;
+		else if (a_val > 0xFFFFFF)
+			_valueTextColor = 0xFFFFFF;
+		else
+			_valueTextColor = a_val;
+			
+		updateValueTextFormat();
+	}
+	
+	public function getWidgetValueTextSize(): Number
+	{
+		return _valueTextSize;
+	}
+	public function setWidgetValueTextSize(a_val: Number)
+	{
+		_valueTextSize = a_val;
+		if(_valueTextSize != a_val)
+			doSetValueText(_valueText, false);
+	}
+	
+	public function getWidgetVerticalAlign(): String
 	{
 		return _verticalAlign;
 	}
-	public function set verticalAlign(a_align: String)
+	public function setWidgetVerticalAlign(a_val: String)
 	{
-		
-		_verticalAlign = (a_align == "top" || a_align == "bottom") ? a_align : "center";
+		_verticalAlign = (a_val == "top" || a_val == "bottom") ? a_val : "center";
 		relativeVerticalAlign(labelTextField, valueTextField, _verticalAlign);
 	}
 	
@@ -250,19 +281,25 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	public function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number)
 	{
-		skse.Log("setWidgetParams() called");
 		background._width = a_widgetWidth;
-		backgroundColor = a_backgroundColor;
-		backgroundAlpha = a_backgroundAlpha;
-		borderWidth = a_borderWidth;
-		borderColor = a_borderColor;
-		borderAlpha = a_borderAlpha;
-		borderRounded = a_borderRounded;
+		setWidgetBackgroundColor(a_backgroundColor);
+		setWidgetBackgroundAlpha(a_backgroundAlpha);
+		setWidgetBorderWidth(a_borderWidth);
+		setWidgetBorderColor(a_borderColor);
+		setWidgetBorderAlpha(a_borderAlpha);
+		setWidgetBorderRounded(a_borderRounded);
 	}
 	
-	public function setWidgetTextFormat(/* Strings */) {
-		//labelFontColor, labelFontFace, labelFontSize etc..
-		//verticalAlign
+	public function setWidgetTextFonts(a_labelTextFont: String, a_valueTextFont: String) {
+		setWidgetLabelTextFont(a_labelTextFont);
+		setWidgetValueTextFont(a_valueTextFont);
+	}
+	
+	public function setWidgetTextFormats(a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number) {
+		setWidgetLabelTextColor(a_labelTextColor);
+		setWidgetLabelTextSize(a_labelTextSize);
+		setWidgetValueTextColor(a_valueTextColor);
+		setWidgetValueTextSize(a_valueTextSize);
 	}
 	
 	public function setWidgetTexts(a_labelText: String, a_valueText: String): Void
@@ -295,7 +332,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		if (!a_noResize) {
 			fixTextOverlap();
-			relativeVerticalAlign(labelTextField, valueTextField, verticalAlign);
+			relativeVerticalAlign(labelTextField, valueTextField, _verticalAlign);
 			updateBackground();
 		}
 	}
@@ -313,7 +350,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		if (!a_noResize) {
 			fixTextOverlap();
-			relativeVerticalAlign(labelTextField, valueTextField, verticalAlign);
+			relativeVerticalAlign(labelTextField, valueTextField, _verticalAlign);
 			updateBackground();
 		}
 	}
@@ -325,9 +362,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	
 	private function updateLabelTextFormat() {
-		var tf = labelTextField.getTextFormat();
-		tf.color = _labelColor;
-		tf.font = _labelFont;
+		var tf: TextFormat = labelTextField.getTextFormat();
+		tf.color = _labelTextColor;
+		tf.font = _labelTextFont;
+		tf.size = _labelTextSize;
 		labelTextField.setTextFormat(tf);
 	}
 	
@@ -338,9 +376,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	
 	private function updateValueTextFormat() {
-		var tf = valueTextField.getTextFormat();
-		tf.color = _valueColor;
-		tf.font = _valueFont;
+		var tf: TextFormat  = valueTextField.getTextFormat();
+		tf.color = _valueTextColor;
+		tf.font = _valueTextFont;
+		tf.size = _valueTextSize;
 		valueTextField.setTextFormat(tf);
 	}
 	
@@ -386,19 +425,19 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			return;
 		
 		var _borderLimits = new Object();
-		_borderLimits["left"] = 0 - borderWidth/2;
-		_borderLimits["top"] = 0 - borderWidth/2;
-		_borderLimits["right"] = background._width + borderWidth/2;
-		_borderLimits["bottom"] = background._height + borderWidth/2;
+		_borderLimits["left"] = 0 - _borderWidth/2;
+		_borderLimits["top"] = 0 - _borderWidth/2;
+		_borderLimits["right"] = background._width + _borderWidth/2;
+		_borderLimits["bottom"] = background._height + _borderWidth/2;
 		
-		border.lineStyle(borderWidth, borderColor, 100, true, "normal", (borderRounded) ? "round" : "square", (borderRounded) ? "round" : "miter");
+		border.lineStyle(_borderWidth, _borderColor, 100, true, "normal", (_borderRounded) ? "round" : "square", (_borderRounded) ? "round" : "miter");
 		border.moveTo(_borderLimits.left, _borderLimits.top);
 		border.lineTo(_borderLimits.right, _borderLimits.top);
 		border.lineTo(_borderLimits.right, _borderLimits.bottom);
 		border.lineTo(_borderLimits.left, _borderLimits.bottom);
 		border.lineTo(_borderLimits.left, _borderLimits.top);
 		
-		border._alpha = borderAlpha;
+		border._alpha = _borderAlpha;
 	}
 	
 	private function relativeVerticalAlign(textFieldA: TextField, textFieldB: TextField, mode: String): Void
