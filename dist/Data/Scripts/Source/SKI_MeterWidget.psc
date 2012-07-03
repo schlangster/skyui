@@ -10,20 +10,17 @@ int _gradientEnd = 0x00FFFF;0xDFDF20
 
 function OnWidgetReset()
 	parent.OnWidgetReset()
-	;Forced = _forced
-	;MeterType = _meterType
-	;Orientation = _orientation
-	;AlwaysVisible = _alwaysVisible
 	;setGradient(_gradientStart, _gradientEnd)
-	;Percent = _percent
-	;UpdateWidgetMeterType()
-	;UpdateWidgetMeterOrientation()
-	;UpdateWidgetAlwaysVisible()
-	;UpdateWidgetPercent()
-
+	UpdateWidgetMeterType()
+	UpdateWidgetMeterOrientation()
+	UpdateWidgetAlwaysVisible()
+	UpdateWidgetPercent()
 
 	; Initialization has to happen in one go otherwise it gets all mucked for for some reason...
 	SetParams(_meterType, _orientation, _forced, _alwaysVisible, _percent, _gradientStart, _gradientEnd)
+	
+	; Debug
+	RegisterForSingleUpdate(4)
 endFunction
 
 float property Percent
@@ -45,9 +42,9 @@ bool property Forced
 	endFunction
 	
 	function set(bool a_val)
-			;_forced = a_val
+		_forced = a_val
 		if (Initialized)
-			;UpdateWidgetForced()
+			UpdateWidgetForced()
 		endIf
 	endFunction
 endProperty
@@ -58,9 +55,9 @@ bool property AlwaysVisible
 	endFunction
 	
 	function set(bool a_val)
-			;_alwaysVisible = a_val
+		_alwaysVisible = a_val
 		if (Initialized)
-			;UpdateWidgetAlwaysVisible()
+			UpdateWidgetAlwaysVisible()
 		endIf
 	endFunction
 endProperty
@@ -71,9 +68,9 @@ int property MeterType
 	endFunction
 	
 	function set(int a_val)
-			;_meterType = a_val
+		_meterType = a_val
 		if (Initialized)
-			;UpdateWidgetMeterType()
+			UpdateWidgetMeterType()
 		endIf
 	endFunction
 endProperty
@@ -84,9 +81,9 @@ int property Orientation
 	endFunction
 	
 	function set(int a_val)
-			;_orientation = a_val
+		_orientation = a_val
 		if (Initialized)
-			;UpdateWidgetMeterOrientation()
+			UpdateWidgetMeterOrientation()
 		endIf
 	endFunction
 endProperty
@@ -97,9 +94,9 @@ int property CustomFillStart
 	endFunction
 	
 	function set(int a_val)
-			;_gradientStart = a_val
+		_gradientStart = a_val
 		if (Initialized)
-			;setGradient(_gradientStart, _gradientEnd)
+			setGradient(_gradientStart, _gradientEnd)
 		endIf
 	endFunction
 endProperty
@@ -110,9 +107,9 @@ int property CustomFillEnd
 	endFunction
 	
 	function set(int a_val)
-			;_gradientEnd = a_val
+		_gradientEnd = a_val
 		if (Initialized)
-			;setGradient(_gradientStart, _gradientEnd)
+			setGradient(_gradientStart, _gradientEnd)
 		endIf
 	endFunction
 endProperty
@@ -163,8 +160,6 @@ function SetParams(int a_type, int a_orient, bool a_forced, bool a_alwaysShown, 
 	args[6] = a_fillEnd as float
 	
 	UI.InvokeNumberA(HUD_MENU, WidgetRoot + "setWidgetParams", args)
-	
-	RegisterForSingleUpdate(4)
 endFunction
 
 function setGradient(int beginFill, int EndFill)
@@ -180,26 +175,20 @@ event OnUpdate()
 
 if st == 0
 	st = 1
-	_meterType = 2
-	_orientation = 1
-	UpdateWidgetMeterType()
-	UpdateWidgetMeterOrientation()
+	MeterType = 2
+	Orientation = 1
 	Percent = 10
 	
 elseif st == 1
 	st = 2
-	_meterType = 1
-	_orientation = 0
-	UpdateWidgetMeterType()
-	UpdateWidgetMeterOrientation()
+	MeterType = 1
+	Orientation = 0
 	Percent = 50
 	
 elseif st == 2
 	st = 0
-	_meterType = 0
-	_orientation = 1
-	UpdateWidgetMeterType()
-	UpdateWidgetMeterOrientation()
+	MeterType = 0
+	Orientation = 1
 	Percent = 70
 
 endIf

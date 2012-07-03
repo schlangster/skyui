@@ -158,9 +158,6 @@ string function GetWidgetType()
 	return ""
 endFunction
 
-function ResetCustomProperties()
-endFunction
-
 function UpdateWidgetClientInfo()
 	UI.InvokeString(HUD_MENU, _widgetRoot + "setClientInfo", self as string)
 endFunction
