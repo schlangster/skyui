@@ -147,7 +147,8 @@ string function GetWidgetType()
 	return "textbox"
 endFunction
 
-function ResetCustomProperties()
+function OnWidgetReset()
+	parent.OnWidgetReset()
 	SetParams(_widgetWidth, _backgroundColor, _backgroundAlpha, _borderWidth, _borderColor, _borderAlpha, _borderRounded)
 	SetTextFormat()
 	SetTexts(_labelText, _valueText)

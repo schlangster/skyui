@@ -4,6 +4,11 @@ import skyui.components.list.IEntryClipBuilder;
 
 class skyui.components.list.BasicListEntry extends MovieClip
 {
+  /* STAGE ELEMENTS */
+
+	public var background: MovieClip;
+	
+	
   /* PROPERTIES */
 	
 	public var itemIndex: Number;

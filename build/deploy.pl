@@ -14,7 +14,8 @@ $skyrim_dir = "F:\\Spiele\\Steam\\steamapps\\common\\skyrim\\Data\\Interface";
 	"hudmenu.swf",
 	"skyui\\inventorylists.swf",
 	"skyui\\configpanel.swf",
-	"widgets\\textbox.swf"
+	"widgets\\textbox.swf",
+	"widgets\\meter.swf"
 );
 
 foreach (@menus) {

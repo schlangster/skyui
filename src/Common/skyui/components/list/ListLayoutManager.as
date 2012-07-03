@@ -1,5 +1,6 @@
 ﻿import skyui.util.ConfigManager;
 import skyui.components.list.ListLayout;
+import skyui.util.Defines;
 
 
 class skyui.components.list.ListLayoutManager
@@ -15,7 +16,10 @@ class skyui.components.list.ListLayoutManager
 		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
 		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
 		
-		_instance = new ListLayoutManager;
+		ConfigManager.addConstantTable(Defines);
+		ConfigManager.addConstantTable(InventoryDefines);
+		
+		_instance = new ListLayoutManager();
 		return true;
 	}
 	

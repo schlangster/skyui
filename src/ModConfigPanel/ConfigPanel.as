@@ -26,6 +26,7 @@ class ConfigPanel extends MovieClip
 	
 	private var _modList: ScrollingList;
 	private var _subList: ScrollingList;
+	private var _optionsList: MultiColumnScrollingList;
 
 	private var _state: Number;
 	
@@ -33,10 +34,7 @@ class ConfigPanel extends MovieClip
   /* STAGE ELEMENTS */
 
 	public var modListPanel: ModListPanel;
-	
-	public var decorTop: MovieClip;
-	public var decorTitle: MovieClip;
-	public var decorBottom: MovieClip;
+	public var optionsPanel: MovieClip;
 	
 	
   /* CONSTRUCTORS */
@@ -47,6 +45,7 @@ class ConfigPanel extends MovieClip
 
 		_modList = modListPanel.modListFader.list;
 		_subList = modListPanel.subListFader.list;
+		_optionsList = optionsPanel.optionsList;
 	}
 	
 	function startPage(): Void
@@ -59,9 +58,13 @@ class ConfigPanel extends MovieClip
 			
 		for (var i=0; i<5; i++)
 			_subList.entryList.push({text: "Sub Entry " + i, align: "right", enabled: true, state: "normal"});
+			
+		for (var i=0; i<48; i++)
+			_optionsList.entryList.push({label: "LABEL " + i, value: "VALUE " + i, enabled: true, type: Math.floor(Math.random()*6)});
 		
 		_modList.InvalidateData();
 		_subList.InvalidateData();
+		_optionsList.InvalidateData();
 	}
 	
 	function onLoad()
@@ -73,6 +76,13 @@ class ConfigPanel extends MovieClip
 		
 		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
 		_subList.entryFormatter = new ButtonEntryFormatter(_subList);
+		
+		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
+		_optionsList.entryFormatter = new OptionEntryFormatter(_optionsList);
+		
+		// Debug
+		Shared.GlobalFunc.MaintainTextFormat();
+		startPage();
 	}
 	
 	function endPage(): Void

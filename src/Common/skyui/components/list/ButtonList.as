@@ -92,7 +92,7 @@ class skyui.components.list.ButtonList extends BasicList
 			entryClip._visible = true;
 			
 			entryClip.selectIndicator._width = 4;
-			entryClip.buttonArea._width = 4;
+			entryClip.background._width = 4;
 			
 			if (_buttonWidth < entryClip._width)
 				_buttonWidth = entryClip._width + 4;
@@ -105,7 +105,7 @@ class skyui.components.list.ButtonList extends BasicList
 			
 			var entryClip = getClipByIndex(i);
 			entryClip.selectIndicator._width = _buttonWidth;
-			entryClip.buttonArea._width = _buttonWidth;
+			entryClip.background._width = _buttonWidth;
 		}
 		
 		background._width = leftBorder + _buttonWidth + rightBorder;

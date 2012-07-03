@@ -117,16 +117,6 @@ endEvent
 
 ; Executed after each game reload by widget manager
 event OnWidgetLoad()
-	; Reset base properties except modes to prevent widget from being drawn too early
-	UpdateWidgetClientInfo()
-	UpdateWidgetPositionX()
-	UpdateWidgetPositionY()
-	UpdateWidgetAlpha()
-	
-	; Reset any widget-specific properties
-	ResetCustomProperties()
-	
-	; Give the user the chance to add custom event handling code here
 	OnWidgetReset()
 	
 	; Before that the widget was still hidden.
@@ -135,6 +125,11 @@ event OnWidgetLoad()
 endEvent
 
 event OnWidgetReset()
+	; Reset base properties except modes to prevent widget from being drawn too early
+	UpdateWidgetClientInfo()
+	UpdateWidgetPositionX()
+	UpdateWidgetPositionY()
+	UpdateWidgetAlpha()
 endEvent
 
 ; Executed whenever a hudModeChange is observed
