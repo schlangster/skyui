@@ -28,6 +28,8 @@ class skyui.components.list.ScrollingList extends BasicList
   /* PROPERTIES */
 
 	public var entryHeight: Number = 28;
+	
+	public var scrollDelta: Number = 1;
 
 	private var _scrollPosition: Number = 0;
 	
@@ -130,9 +132,9 @@ class skyui.components.list.ScrollingList extends BasicList
 		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
 			if (target == this) {
 				if (delta < 0)
-					scrollPosition = scrollPosition + 1;
+					scrollPosition = scrollPosition + scrollDelta;
 				else if (delta > 0)
-					scrollPosition = scrollPosition - 1;
+					scrollPosition = scrollPosition - scrollDelta;
 			}
 		}
 		
@@ -147,6 +149,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		// Prepare clips
 		setClipCount(_maxListIndex);
 		
+		var xStart = background._x + leftBorder;
 		var yStart = background._y + topBorder;
 		var h = 0;
 
@@ -165,7 +168,8 @@ class skyui.components.list.ScrollingList extends BasicList
 			entryItem.clipIndex = _listIndex;
 			
 			setEntry(entryClip, entryItem);
-			
+
+			entryClip._x = xStart;
 			entryClip._y = yStart + h;
 			entryClip._visible = true;
 
@@ -235,7 +239,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			scrollPosition = t > 0 ? t : 0;
 			doSetSelectedIndex(-1, SELECT_MOUSE);
 		} else {
-			scrollPosition = scrollPosition - 1;
+			scrollPosition = scrollPosition - scrollDelta;
 		}
 	}
 
@@ -254,7 +258,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			scrollPosition = t < _maxScrollPosition ? t : _maxScrollPosition;
 			doSetSelectedIndex(-1, SELECT_MOUSE);
 		} else {
-			scrollPosition = scrollPosition + 1;
+			scrollPosition = scrollPosition + scrollDelta;
 		}
 	}
 
@@ -276,7 +280,7 @@ class skyui.components.list.ScrollingList extends BasicList
 
 	public function onScroll(event: Object): Void
 	{
-		updateScrollPosition(Math.floor(event.position + 0.500000));
+		updateScrollPosition(Math.floor(event.position + 0.5));
 	}
 	
 	

@@ -44,6 +44,26 @@ class skyui.components.list.BasicList extends BSList
 	public var bottomBorder: Number = 0;
 	public var leftBorder: Number = 0;
 	public var rightBorder: Number = 0;
+	
+	public function get width(): Number
+	{
+		return background._width;
+	}
+	
+	public function set width(a_val: Number)
+	{
+		background._width = a_val;
+	}
+	
+	public function get height(): Number
+	{
+		return background._height;
+	}
+	
+	public function set height(a_val: Number)
+	{
+		background._height = a_val;
+	}
   
 	private var _platform: Number = PLATFORM_PC;
 	

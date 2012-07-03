@@ -1,7 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 
 import skyui.components.list.ListLayout;
-import skyui.util.Defines;
 import skyui.util.GlobalFunctions;
 
 
@@ -14,10 +13,7 @@ class skyui.util.ConfigManager
 		ASCENDING: 0,
 		DESCENDING: Array.DESCENDING,
 		CASEINSENSITIVE: Array.CASEINSENSITIVE,
-		NUMERIC: Array.NUMERIC,
-
-		_LOAD_DEFINES_DUMMY: Defines.FLAG_CATEGORY_DIVIDER,
-		_LOAD_INVENTORYDEFINES: InventoryDefines.ICT_NONE
+		NUMERIC: Array.NUMERIC
 	};
 	
 	private static var _extConstantTables = [];
@@ -49,11 +45,6 @@ class skyui.util.ConfigManager
 			return;
 			
 		GlobalFunctions.addArrayFunctions();
-		
-		// Note how the local constant table has to reference some attribute in each of the
-		// external tables before so they get loaded properly.
-		addConstantTable(Defines);
-		addConstantTable(InventoryDefines);
 		
 		_eventDummy = {};
 		EventDispatcher.initialize(_eventDummy);
