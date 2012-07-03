@@ -17,6 +17,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	private var _fillBar: Number = 0;
 	private var _fillStart: Number = 0x565618;
 	private var _fillEnd: Number = 0xDFDF20;
+	private var _flipped: Boolean = false;
 	
 	// Meter objects
 	private var _meter: Components.BlinkOnDemandMeter;
@@ -145,9 +146,21 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 	
 	public function setWidgetMeterOrientation(newType: Number)
-	{		
-		// Disable old meter
-		if(_fillType != newType) {
+	{
+		if(newType < 0 || newType > 2) {
+			newType = 0;
+		}
+
+		// Changing type
+		if(newType == 1 && _flipped) { // Flip to RS
+			_modes[1].fillMode._xscale *= -1;
+			_flipped = false;
+		} else if(newType == 2 && !_flipped) { // Flip to LS
+			_modes[1].fillMode._xscale *= -1;
+			_flipped = true;
+			newType = 1;
+		}
+		if(_fillType != newType) { // Changing to regular type
 			ChangeMeterType(_fillType, -1, false);
 			_fillType = newType;
 			CreateCustomGradient(_fillType, _fillStart, _fillEnd); // filltype changed, transfer custom type
@@ -253,10 +266,14 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	// Handle meter changes
 	private function ChangeMeterType(index: Number, fillIndex: Number, abEnable: Boolean)
 	{
-		if(index == 0) {
-			_meter = MeterCenter;
-		} else if(index == 1){
-			_meter = MeterLeft;
+		if(abEnable) {
+			if(index == 0) {
+				_meter = MeterCenter;
+			} else if(index == 1){
+				_meter = MeterLeft;
+			} else if(index == 2) {
+				_meter = MeterLeft;
+			}
 		}
 		
 		_modes[index].fillMode._visible = abEnable;
