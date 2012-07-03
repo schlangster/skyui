@@ -1,49 +1,41 @@
 ﻿class MouseRotationInputCatcher extends MovieClip
 {
-	static var PROCESS_ROTATION_DELAY = 150;
+	static var PROCESS_ROTATION_DELAY: Number = 150;
 	
-	private var _processRotationDelayTimerID;
-	
+	var iProcessRotationDelayTimerID: Number;
+
 	function MouseRotationInputCatcher()
 	{
 		super();
 	}
-	
-	function onMouseDown()
+
+	function onMouseDown(): Void
 	{
-		var pressed = Mouse.getTopMostEntity() == this;
-		
-		if (pressed || _parent.bFadedIn == false)
-		{
+		var topMostEntity: Boolean = Mouse.getTopMostEntity() == this;
+		if (topMostEntity || _parent.bFadedIn == false) 
 			_parent.onMouseRotationStart();
-		}
-		
-		if (pressed && _processRotationDelayTimerID == undefined)
-		{
-			_processRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", PROCESS_ROTATION_DELAY);
-		}
+		if (topMostEntity && iProcessRotationDelayTimerID == undefined) 
+			iProcessRotationDelayTimerID = setInterval(this, "onProcessDelayElapsed", MouseRotationInputCatcher.PROCESS_ROTATION_DELAY);
 	}
-	
-	function onProcessDelayElapsed()
+
+	function onProcessDelayElapsed(): Void
 	{
-		clearInterval(_processRotationDelayTimerID);
-		_processRotationDelayTimerID = undefined;
+		clearInterval(iProcessRotationDelayTimerID);
+		iProcessRotationDelayTimerID = undefined;
 	}
-	
-	function onMouseUp()
+
+	function onMouseUp(): Void
 	{
 		_parent.onMouseRotationStop();
-		clearInterval(_processRotationDelayTimerID);
-		
-		if (_processRotationDelayTimerID != undefined && _parent.bFadedIn != false)
-		{
+		clearInterval(iProcessRotationDelayTimerID);
+		if (iProcessRotationDelayTimerID != undefined && _parent.bFadedIn != false) 
 			_parent.onMouseRotationFastClick(0);
-		}
-		_processRotationDelayTimerID = undefined;
+		iProcessRotationDelayTimerID = undefined;
 	}
-	
-	function onPressAux()
+
+	function onPressAux(): Void
 	{
 		_parent.onMouseRotationFastClick(1);
 	}
+
 }

@@ -2,115 +2,106 @@
 
 class Shared.ListFilterer
 {
-	private var _itemFilter;
-	private var _filterArray:Array;
-
-	var EntryMatchesFunc:Function;
-	var dispatchEvent:Function;
+	var EntryMatchesFunc: Function;
+	var _filterArray: Array;
+	var dispatchEvent: Function;
+	var addEventListener: Function;
+	var iItemFilter: Number;
 
 	function ListFilterer()
 	{
-		_itemFilter = 4294967295;
+		iItemFilter = 0xFFFFFFFF;
 		EntryMatchesFunc = EntryMatchesFilter;
 		EventDispatcher.initialize(this);
 	}
 
-	function get itemFilter()
+	function get itemFilter(): Number
 	{
-		return _itemFilter;
+		return iItemFilter;
 	}
 
-	function set itemFilter(a_newFilter)
+	function set itemFilter(aiNewFilter: Number): Void
 	{
-		var changed = _itemFilter != a_newFilter;
-		_itemFilter = a_newFilter;
-
-		if (changed == true) {
-			dispatchEvent({type:"filterChange"});
-		}
+		var bfilterChanged: Boolean = iItemFilter != aiNewFilter;
+		iItemFilter = aiNewFilter;
+		if (bfilterChanged == true) 
+			dispatchEvent({type: "filterChange"});
 	}
 
-	function get filterArray()
+	function get filterArray(): Array
 	{
 		return _filterArray;
 	}
 
-	function set filterArray(a_newArray)
+	function set filterArray(aNewArray: Array): Void
 	{
-		_filterArray = a_newArray;
+		_filterArray = aNewArray;
 	}
 
-	function SetPartitionedFilterMode(a_bPartition)
+	function SetPartitionedFilterMode(abPartition: Boolean): Void
 	{
-		EntryMatchesFunc = a_bPartition ? EntryMatchesPartitionedFilter : EntryMatchesFilter;
+		EntryMatchesFunc = abPartition ? EntryMatchesPartitionedFilter : EntryMatchesFilter;
 	}
 
-	function EntryMatchesFilter(a_entry)
+	function EntryMatchesFilter(aEntry: Object): Boolean
 	{
-		return a_entry != undefined && (a_entry.filterFlag == undefined || (a_entry.filterFlag & _itemFilter) != 0);
+		return aEntry != undefined && (aEntry.filterFlag == undefined || (aEntry.filterFlag & iItemFilter) != 0);
 	}
 
-	function EntryMatchesPartitionedFilter(a_entry)
+	function EntryMatchesPartitionedFilter(aEntry: Object): Boolean
 	{
-		var _loc3 = false;
-		if (a_entry != undefined) {
-			if (_itemFilter == 4294967295) {
-				_loc3 = true;
+		var bmatchFound = false;
+		if (aEntry != undefined) 
+			if (iItemFilter == 0xFFFFFFFF) {
+				bmatchFound = true;
 			} else {
-				var _loc2 = a_entry.filterFlag;
-				var _loc4 = _loc2 & 255;
-				var _loc7 = (_loc2 & 65280) >>> 8;
-				var _loc6 = (_loc2 & 16711680) >>> 16;
-				var _loc5 = (_loc2 & 4278190080) >>> 24;
-				_loc3 = _loc4 == _itemFilter || _loc7 == _itemFilter || _loc6 == _itemFilter || _loc5 == _itemFilter;
+				var ifilterFlag: Number = aEntry.filterFlag;
+				var byte0: Number = (ifilterFlag & 0x000000FF);
+				var byte1: Number = (ifilterFlag & 0x0000FF00) >>> 8;
+				var byte2: Number = (ifilterFlag & 0x00FF0000) >>> 16;
+				var byte3: Number = (ifilterFlag & 0xFF000000) >>> 24;
+				bmatchFound = byte0 == iItemFilter || byte1 == iItemFilter || byte2 == iItemFilter || byte3 == iItemFilter;
 			}
-		}
-		return (_loc3);
+		return bmatchFound;
 	}
 
-	function GetPrevFilterMatch(a_startIndex)
+	function GetPrevFilterMatch(aiStartIndex: Number): Number
 	{
-		var _loc3;
-		if (a_startIndex != undefined) {
-			for (var _loc2 = a_startIndex - 1; _loc2 >= 0 && _loc3 == undefined; --_loc2) {
-				if (EntryMatchesFunc(_filterArray[_loc2])) {
-					_loc3 = _loc2;
-				}
-			}
-		}
-		return (_loc3);
+		var iPrevMatch: Number = undefined;
+		if (aiStartIndex != undefined) 
+			for (var i = aiStartIndex - 1; i >=0 && iPrevMatch == undefined; i--)
+				if (EntryMatchesFunc(_filterArray[i]))
+					iPrevMatch = i;
+		return iPrevMatch;
 	}
 
-	function GetNextFilterMatch(a_startIndex)
+	function GetNextFilterMatch(aiStartIndex: Number): Number
 	{
-		var _loc3;
-		if (a_startIndex != undefined) {
-			for (var _loc2 = a_startIndex + 1; _loc2 < _filterArray.length && _loc3 == undefined; ++_loc2) {
-				if (EntryMatchesFunc(_filterArray[_loc2])) {
-					_loc3 = _loc2;
-				}
-			}
-		}
-
-		return (_loc3);
+		var iNextMatch: Number = undefined;
+		if (aiStartIndex != undefined) 
+			for (var i = aiStartIndex + 1; i < _filterArray.length && iNextMatch == undefined; i++)
+				if (EntryMatchesFunc(_filterArray[i])) 
+					iNextMatch = i;
+		return iNextMatch;
 	}
 
-	function ClampIndex(a_startIndex)
+	function ClampIndex(aiStartIndex: Number): Number
 	{
-		var index = a_startIndex;
-
-		if (index != undefined && !EntryMatchesFunc(_filterArray[index])) {
-			var nextIndex = GetNextFilterMatch(index);
-
-			if (nextIndex == undefined) {
-				nextIndex = GetPrevFilterMatch(index);
-			}
-
-			if (nextIndex == undefined) {
-				nextIndex = -1;
-			}
-			index = nextIndex;
+		var iClampIndex = aiStartIndex;
+		if (aiStartIndex != undefined && !EntryMatchesFunc(_filterArray[iClampIndex])) {
+			var iNextMatch: Number = GetNextFilterMatch(iClampIndex);
+			var iPrevMatch: Number = GetPrevFilterMatch(iClampIndex);
+			if (iNextMatch == undefined)
+				if (iPrevMatch == undefined) 
+					iClampIndex = -1;
+				else
+					iClampIndex = iPrevMatch;
+			else
+				iClampIndex = iNextMatch;
+			if (iNextMatch != undefined && iPrevMatch != undefined && iPrevMatch != iNextMatch && iClampIndex == iNextMatch && _filterArray[iPrevMatch].text == _filterArray[aiStartIndex].text)
+				iClampIndex = iPrevMatch;
 		}
-		return index;
+		return iClampIndex;
 	}
+
 }

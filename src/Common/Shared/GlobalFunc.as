@@ -1,247 +1,218 @@
 ﻿class Shared.GlobalFunc
 {
-	static var RegisteredTextFields = new Object();
-	static var RegisteredMovieClips = new Object();
+	static var RegisteredTextFields: Object = new Object();
+	static var RegisteredMovieClips: Object = new Object();
 
-	var getTextFormat;
-	var htmlText;
-	var setTextFormat;
-
-	var text;
-	var _parent;
-	var _y;
-	var _x;
-	var _currentframe;
-	var _name;
-
-	static function Lerp(aTargetMin:Number, aTargetMax:Number, aSourceMin:Number, aSourceMax:Number, aSource:Number, abClamp:Boolean):Number
+	function GlobalFunc()
 	{
-		var _loc1:Number = aTargetMin + (aSource - aSourceMin) / (aSourceMax - aSourceMin) * (aTargetMax - aTargetMin);
-
-		if (abClamp) {
-			_loc1 = Math.min(Math.max(_loc1, aTargetMin), aTargetMax);
-		}
-		return _loc1;
 	}
 
-	static function IsKeyPressed(aInputInfo, abProcessKeyHeldDown)
+	static function Lerp(aTargetMin: Number, aTargetMax: Number, aSourceMin: Number, aSourceMax: Number, aSource: Number, abClamp: Boolean): Number
 	{
-		if (abProcessKeyHeldDown == undefined) {
+		var normVal: Number = aTargetMin + (aSource - aSourceMin) / (aSourceMax - aSourceMin) * (aTargetMax - aTargetMin);
+		if (abClamp) 
+			normVal = Math.min(Math.max(normVal, aTargetMin), aTargetMax);
+		return normVal;
+	}
+
+	static function IsKeyPressed(aInputInfo: Object, abProcessKeyHeldDown: Boolean): Boolean
+	{
+		if (abProcessKeyHeldDown == undefined) 
 			abProcessKeyHeldDown = true;
-		}
-		return aInputInfo.value == "keyDown" || abProcessKeyHeldDown && aInputInfo.value == "keyHold";
+		return aInputInfo.value == "keyDown" || (abProcessKeyHeldDown && aInputInfo.value == "keyHold");
 	}
 
-	static function RoundDecimal(aNumber:Number, aPrecision:Number):Number
+	static function RoundDecimal(aNumber: Number, aPrecision: Number): Number
 	{
-		var _loc1 = Math.pow(10, aPrecision);
-		return Math.round(_loc1 * aNumber) / _loc1;
+		var significantFigures: Number = Math.pow(10, aPrecision);
+		return Math.round(significantFigures * aNumber) / significantFigures;
 	}
 
-	static function MaintainTextFormat()
+	static function MaintainTextFormat(): Void
 	{
-		TextField.prototype.SetText = function(aText, abHTMLText)
+		TextField.prototype.SetText = function (aText: String, abHTMLText: String)
 		{
-			if (aText == undefined || aText == "") {
+			if (aText == undefined || aText == "") 
 				aText = " ";
-			}
-
+			var textFormat: TextFormat = this.getTextFormat();
 			if (abHTMLText) {
-				var _loc4 = this.getTextFormat();
-				var _loc3 = _loc4.letterSpacing;
-				var _loc5 = _loc4.kerning;
-				htmlText = aText;
-				_loc4 = this.getTextFormat();
-				_loc4.letterSpacing = _loc3;
-				_loc4.kerning = _loc5;
-				this.setTextFormat(_loc4);
-			} else {
-				_loc4 = this.getTextFormat();
-				text = aText;
-				this.setTextFormat(_loc4);
+				var letterSpacing: Number = textFormat.letterSpacing;
+				var kerning: Boolean = textFormat.kerning;
+				this.htmlText = aText;
+				textFormat = this.getTextFormat();
+				textFormat.letterSpacing = letterSpacing;
+				textFormat.kerning = kerning;
+				this.setTextFormat(textFormat);
+				return;
 			}
+			this.text = aText;
+			this.setTextFormat(textFormat);
+			return;
 		};
 	}
 
-	static function SetLockFunction()
+	static function SetLockFunction(): Void
 	{
-		MovieClip.prototype.Lock = function(aPosition: String): Void
+		MovieClip.prototype.Lock = function (aPosition: String)
 		{
-			var topLeft = {x:Stage.visibleRect.x + Stage.safeRect.x, y:Stage.visibleRect.y + Stage.safeRect.y};
-			var bottomRight = {x:Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y:Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
-
-			_parent.globalToLocal(topLeft);
-			_parent.globalToLocal(bottomRight);
-
-			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR")
-				_y = topLeft.y;
-
-			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR")
-				_y = bottomRight.y;
-
-			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL")
-				_x = topLeft.x;
-
-			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR")
-				_x = bottomRight.x;
-
+			var maxXY: Object = {x: Stage.visibleRect.x + Stage.safeRect.x, y: Stage.visibleRect.y + Stage.safeRect.y};
+			var minXY: Object = {x: Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
+			this._parent.globalToLocal(maxXY);
+			this._parent.globalToLocal(minXY);
+			
+			//  (maxXY.x, maxXY.y) _____________ (minXY.x, maxXY.y)
+			//                    |             |
+			//                    |     THE     |
+			//                    |    STAGE    |
+			//  (maxXY.x, minXY.y)|_____________|(minXY.x, minXY.y)
+			
+			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR") 
+				this._y = maxXY.y;
+			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR") 
+				this._y = minXY.y;
+			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL") 
+				this._x = maxXY.x;
+			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR") 
+				this._x = minXY.x;
 		};
 	}
 
-	static function AddMovieExploreFunctions()
+	static function AddMovieExploreFunctions(): Void
 	{
-		MovieClip.prototype.getMovieClips = function()
+		MovieClip.prototype.getMovieClips = function (): Array
 		{
-			var a = new Array();
-			for (var clip in this) {
-				if (this[clip] instanceof MovieClip && this[clip] != this) {
-					a.push(this[clip]);
+			var movieClips: Array = new Array();
+			for (var i: Number = 0; i < this.length; i++)
+				if (this[i] instanceof MovieClip && this[i] != this) 
+					movieClips.push(this[i]);
+			return movieClips;
+		};
+		MovieClip.prototype.showMovieClips = function (): Void
+		{
+			for (var i: Number = 0; i < this.length; i++)
+				if (this[i] instanceof MovieClip && this[i] != this) {
+					trace(this[i]);
+					this[i].showMovieClips();
 				}
-			}
-
-			return a;
-		};
-		MovieClip.prototype.showMovieClips = function()
-		{
-			for (var clip in this) {
-				if (this[clip] instanceof MovieClip && this[clip] != this) {
-					trace(this[clip]);
-					this[clip].showMovieClips();
-				}
-			}
 		};
 	}
 
-	static function AddReverseFunctions()
+	static function AddReverseFunctions(): Void
 	{
-		MovieClip.prototype.PlayReverse = function()
+		MovieClip.prototype.PlayReverse = function (): Void
 		{
-			if (_currentframe > 1) {
-				this.gotoAndStop(_currentframe - 1);
-				this.onEnterFrame = function()
+			if (this._currentframe > 1) {
+				this.gotoAndStop(this._currentframe - 1);
+				this.onEnterFrame = function ()
 				{
-					if (_currentframe > 1) {
-						this.gotoAndStop(_currentframe - 1);
-					} else {
-						delete this.onEnterFrame;
+					if (this._currentframe > 1) {
+						this.gotoAndStop(this._currentframe - 1);
+						return;
 					}
-				};
-			} else {
-				this.gotoAndStop(1);
-			}// end else if
+					delete (this.onEnterFrame);
+				}
+				return;
+			}
+			this.gotoAndStop(1);
 		};
-		MovieClip.prototype.PlayForward = function(aFrameLabel)
+		MovieClip.prototype.PlayForward = function (aFrameLabel: String): Void
 		{
-			delete this.onEnterFrame;
+			delete (this.onEnterFrame);
 			this.gotoAndPlay(aFrameLabel);
 		};
-		MovieClip.prototype.PlayForward = function(aFrame)
+		MovieClip.prototype.PlayForward = function (aFrame: Number): Void
 		{
-			delete this.onEnterFrame;
+			delete (this.onEnterFrame);
 			this.gotoAndPlay(aFrame);
 		};
 	}
 
-	static function GetTextField(aParentClip, aName)
+	static function GetTextField(aParentClip: MovieClip, aName: String): TextField
 	{
-		if (RegisteredTextFields[aName + aParentClip._name] != undefined) {
-			return (RegisteredTextFields[aName + aParentClip._name]);
-		} else {
-			trace(aName + " is not registered a TextField name.");
-		}
+		if (Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name] != undefined) 
+			return Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name];
+		trace(aName + " is not registered a TextField name.");
 	}
 
-	static function GetMovieClip(aParentClip, aName)
+	static function GetMovieClip(aParentClip: MovieClip, aName: String): MovieClip
 	{
-		if (RegisteredMovieClips[aName + aParentClip._name] != undefined) {
-			return (RegisteredMovieClips[aName + aParentClip._name]);
-		} else {
-			trace(aName + " is not registered a MovieClip name.");
-		}
+		if (Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name] != undefined) 
+			return Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name];
+		trace(aName + " is not registered a MovieClip name.");
 	}
 
-	static function AddRegisterTextFields()
+	static function AddRegisterTextFields(): Void
 	{
-		TextField.prototype.RegisterTextField = function(aStartingClip)
+		TextField.prototype.RegisterTextField = function (aStartingClip): Void
 		{
-			if (RegisteredTextFields[_name + aStartingClip._name] == undefined) {
-				RegisteredTextFields[_name + aStartingClip._name] = this;
-			}
+			if (Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] == undefined) 
+				Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] = this;
 		};
 	}
 
-	static function RegisterTextFields(aStartingClip)
+	static function RegisterTextFields(aStartingClip: MovieClip) : Void
 	{
-		for (var _loc2 in aStartingClip) {
-			if (aStartingClip[_loc2] instanceof TextField) {
-				aStartingClip[_loc2].RegisterTextField(aStartingClip);
-			}
+		for (var i: Number = 0; i < aStartingClip.length; i++)
+			if (aStartingClip[i] instanceof TextField) 
+				aStartingClip[i].RegisterTextField(aStartingClip);
+	}
+
+	static function RegisterAllTextFieldsInTimeline(aStartingClip: MovieClip): Void
+	{
+		for (var i: Number = 1; aStartingClip._totalFrames && i <= aStartingClip._totalFrames; i++) {
+			aStartingClip.gotoAndStop(i);
+			Shared.GlobalFunc.RegisterTextFields(aStartingClip);
 		}
 	}
 
-	static function RegisterAllTextFieldsInTimeline(aStartingClip)
+	static function AddRegisterMovieClips(): Void
 	{
-		for (var _loc2 = 1; aStartingClip._totalFrames && _loc2 <= aStartingClip._totalFrames; ++_loc2) {
-			aStartingClip.gotoAndStop(_loc2);
-			RegisterTextFields(aStartingClip);
-		}
-	}
-
-	static function AddRegisterMovieClips()
-	{
-		MovieClip.prototype.RegisterMovieClip = function(aStartingClip)
+		MovieClip.prototype.RegisterMovieClip = function (aStartingClip): Void
 		{
-			if (RegisteredMovieClips[_name + aStartingClip._name] == undefined) {
-				RegisteredMovieClips[_name + aStartingClip._name] = this;
-			}
+			if (Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] == undefined) 
+				Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] = this;
 		};
 	}
 
-	static function RegisterMovieClips(aStartingClip)
+	static function RegisterMovieClips(aStartingClip: MovieClip): Void
 	{
-		for (var _loc2 in aStartingClip) {
-			if (aStartingClip[_loc2] instanceof MovieClip) {
-				aStartingClip[_loc2].RegisterMovieClip(aStartingClip);
+		for (var i: Number = 0; i < aStartingClip.length; i++)
+			if (aStartingClip[i] instanceof MovieClip) 
+				aStartingClip[i].RegisterMovieClip(aStartingClip);
+	}
+
+	static function RecursiveRegisterMovieClips(aStartingClip: MovieClip, aRootClip: MovieClip): Void
+	{
+		for (var i: Number = 0; i < aStartingClip.length; i++)
+			if (aStartingClip[i] instanceof MovieClip) {
+				if (aStartingClip[i] != aStartingClip) 
+					Shared.GlobalFunc.RecursiveRegisterMovieClips(aStartingClip[i], aRootClip);
+				aStartingClip[i].RegisterMovieClip(aRootClip);
 			}
+	}
+
+	static function RegisterAllMovieClipsInTimeline(aStartingClip: MovieClip): Void
+	{
+		for (var i: Number = 0; aStartingClip._totalFrames && i <= aStartingClip._totalFrames; i++) {
+			aStartingClip.gotoAndStop(i);
+			Shared.GlobalFunc.RegisterMovieClips(aStartingClip);
 		}
 	}
 
-	static function RecursiveRegisterMovieClips(aStartingClip, aRootClip)
+	static function StringTrim(astrText: String): String
 	{
-		for (var _loc3 in aStartingClip) {
-			if (aStartingClip[_loc3] instanceof MovieClip) {
-				if (aStartingClip[_loc3] != aStartingClip) {
-					RecursiveRegisterMovieClips(aStartingClip[_loc3],aRootClip);
-				}
-				// end if  
-				aStartingClip[_loc3].RegisterMovieClip(aRootClip);
-			}
-			// end if  
-		}// end of for...in
+		var i: Number = 0;
+		var j: Number = 0;
+		var strLength: Number = astrText.length;
+		var trimStr: String = undefined;
+		while (astrText.charAt(i) == " " || astrText.charAt(i) == "\n" || astrText.charAt(i) == "\r" || astrText.charAt(i) == "\t") 
+			++i;
+		trimStr = astrText.substring(i);
+		j = trimStr.length - 1;
+		while (trimStr.charAt(j) == " " || trimStr.charAt(j) == "\n" || trimStr.charAt(j) == "\r" || trimStr.charAt(j) == "\t") 
+			--j;
+		trimStr = trimStr.substring(0, j + 1);
+		return trimStr;
 	}
 
-	static function RegisterAllMovieClipsInTimeline(aStartingClip)
-	{
-		for (var _loc2 = 1; aStartingClip._totalFrames && _loc2 <= aStartingClip._totalFrames; ++_loc2) {
-			aStartingClip.gotoAndStop(_loc2);
-			RegisterMovieClips(aStartingClip);
-		}// end of for
-	}
-
-	static function StringTrim(astrText)
-	{
-		var _loc2 = 0;
-		var _loc1 = 0;
-		var _loc5 = astrText.length;
-		var _loc3;
-		while (astrText.charAt(_loc2) == " " || astrText.charAt(_loc2) == "\n" || astrText.charAt(_loc2) == "\r" || astrText.charAt(_loc2) == "\t")
-		{
-			++_loc2;
-		}// end while
-		_loc3 = astrText.substring(_loc2);
-		for (var _loc1 = _loc3.length - 1; _loc3.charAt(_loc1) == " " || _loc3.charAt(_loc1) == "\n" || _loc3.charAt(_loc1) == "\r" || _loc3.charAt(_loc1) == "\t"; --_loc1) {
-		}// end of for
-		_loc3 = _loc3.substring(0, _loc1 + 1);
-		return (_loc3);
-	}
 }

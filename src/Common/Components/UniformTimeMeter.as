@@ -33,19 +33,15 @@ class Components.UniformTimeMeter extends Components.Meter
 
 	function Update(): Void
 	{
-		if (this.FrameCount <= this.FrameNumber) 
-		{
+		if (this.FrameCount <= this.FrameNumber) {
 			var iCurrentFrame: Number = GlobalFunc.Lerp(this.CurrentPercent, this.TargetPercent, 0, this.FrameNumber, this.FrameCount);
 			var iActualFrame: Number = GlobalFunc.Lerp(this.Empty, this.Full, 0, 100, iCurrentFrame);
 			this.meterMovieClip.gotoAndStop(iActualFrame);
 			++this.FrameCount;
-			if (this.FrameCount == this.FrameNumber && this.bFinished) 
-			{
+			if (this.FrameCount == this.FrameNumber && this.bFinished) {
 				GameDelegate.call("PlaySound", [this.FinishSound]);
 				if (this.AnimClip != undefined) 
-				{
 					this.AnimClip.gotoAndPlay(this.AnimStart);
-				}
 			}
 		}
 	}

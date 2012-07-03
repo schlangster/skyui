@@ -50,41 +50,29 @@ class Components.Meter
 
 	function Update(): Void
 	{
-		if (TargetPercent > 0 && TargetPercent > CurrentPercent) 
-		{
-			if (TargetPercent - CurrentPercent > FillSpeed) 
-			{
+		if (TargetPercent > 0 && TargetPercent > CurrentPercent) {
+			if (TargetPercent - CurrentPercent > FillSpeed) {
 				CurrentPercent = CurrentPercent + FillSpeed;
 				var iMeterFrame: Number = GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
 				meterMovieClip.gotoAndStop(iMeterFrame);
-			}
-			else 
-			{
+			} else {
 				SetPercent(TargetPercent);
 			}
 			return;
 		}
-		if (TargetPercent <= CurrentPercent) 
-		{
-			var bUnknown: Boolean = CurrentPercent - TargetPercent > EmptySpeed; // Unknown Boolean
-			if ((TargetPercent > 0 && bUnknown) || CurrentPercent > EmptySpeed) 
-			{
-				if (bUnknown) 
-				{
+		if (TargetPercent <= CurrentPercent) {
+			var bAnim: Boolean = CurrentPercent - TargetPercent > EmptySpeed;
+			if ((TargetPercent > 0 && bUnknown) || CurrentPercent > EmptySpeed) {
+				if (bAnim) 
 					CurrentPercent = CurrentPercent - EmptySpeed;
-				}
 				else 
-				{
 					CurrentPercent = TargetPercent;
-				}
 				var iMeterFrame: Number = GlobalFunc.Lerp(Empty, Full, 0, 100, CurrentPercent);
 				meterMovieClip.gotoAndStop(iMeterFrame);
 				return;
 			}
 			if (CurrentPercent >= 0) 
-			{
 				SetPercent(TargetPercent);
-			}
 		}
 	}
 

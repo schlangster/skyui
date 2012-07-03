@@ -6,22 +6,24 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 {
   /* PRIVATE VARIABLES */
 	
-	private var _labelText: String = "";
-	private var _labelTextFont: String = "$EverywhereFont";
-	private var _labelTextColor: Number = 0xFFFFFF;
-	private var _labelTextSize: Number = 20;
+	private var _widgetWidth: Number;
 	
-	private var _valueText: String = "";
-	private var _valueTextFont: String = "$EverywhereFont";
-	private var _valueTextColor: Number = 0xFFFFFF;
-	private var _valueTextSize: Number = 20;
+	private var _labelText: String;
+	private var _labelTextFont: String;
+	private var _labelTextColor: Number;
+	private var _labelTextSize: Number;
+	
+	private var _valueText: String;
+	private var _valueTextFont: String;
+	private var _valueTextColor: Number;
+	private var _valueTextSize: Number;
 	
 	private var _verticalAlign: String = "center";
 	
-	private var _paddingTop: Number = 0;
-	private var _paddingBottom: Number = 0;
-	private var _paddingLeft: Number = 10;
-	private var _paddingRight: Number = 10;
+	private var _paddingTop: Number;
+	private var _paddingRight: Number;
+	private var _paddingBottom: Number;
+	private var _paddingLeft: Number;
 	
 	private var _borderColor: Number;
 	private var _borderAlpha: Number;
@@ -31,9 +33,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	private var _backgroundColor: Number;
 	private var _backgroundAlpha: Number;
 	
-	private var _widgetWidth: Number;
+	// private var _initialized: Boolean = false;
+	// Maybe used this instead of checking if border is defined or not?
 	
-	
+
   /* STAGE ELEMENTS */
 	
 	public var border: MovieClip;
@@ -61,17 +64,19 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	public var labelAlign: String;
 	public var valueAlign: String;
 	
-	public function get widgetWidth(): Number
+	public function getWidgetWidth(): Number
 	{
 		return _widgetWidth;
 	}
-	public function set widgetWidth(a_val: Number)
+	public function setWidgetWidth(a_val: Number)
 	{
-		if (_widgetWidth != undefined) {
-			// Reset text
-		}
-		
+		if (_widgetWidth == a_val)
+			return;
+			
 		_widgetWidth = a_val;
+		
+		if (border != undefined)
+			setWidgetTexts(_labelText, _valueText);
 	}
 	
 	public function getWidgetBackgroundColor(): Number
@@ -80,6 +85,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetBackgroundColor(a_val: Number)
 	{
+		if (_backgroundColor == a_val)
+			return;
+		
 		if (a_val < 0x000000)
 			_backgroundColor = 0x000000;
 		else if (a_val > 0xFFFFFF)
@@ -99,6 +107,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetBackgroundAlpha(a_val: Number)
 	{
+		if (_backgroundAlpha == a_val)
+			return;
+			
 		if (a_val <= 0)
 			_backgroundAlpha = 0;
 		else if (a_val >= 100)
@@ -115,6 +126,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetBorderColor(a_val: Number)
 	{
+		if (_borderColor == a_val)
+			return;
+			
 		if (a_val < 0x000000)
 			_borderColor = 0x000000;
 		else if (a_val > 0xFFFFFF)
@@ -136,6 +150,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetBorderWidth(a_val: Number)
 	{
+		if (_borderWidth == a_val)
+			return;
+			
 		_borderWidth = (a_val > 0) ? a_val : 0;
 		
 		if (border != undefined)
@@ -148,6 +165,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetBorderAlpha(a_val: Number)
 	{
+		if (_borderAlpha == a_val)
+			return;
+		
 		if (a_val < 0)
 			_borderAlpha = 0;
 		else if (a_val > 100)
@@ -165,9 +185,27 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetBorderRounded(a_val: Number)
 	{
+		if (_borderRounded == a_val)
+			return;
+		
 		_borderRounded = (a_val <= 0) ? 0 : 1;
+		
 		if (border != undefined)
 			redrawBorder();
+	}
+	
+	public function setWidgetPadding(a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number): Void
+	{
+		if (_paddingTop == a_paddingTop && _paddingRight == a_paddingRight && _paddingBottom == a_paddingBottom && _paddingLeft == a_paddingLeft)
+			return;
+		
+		_paddingTop = (a_paddingTop > 0) ? a_paddingTop : 0;
+		_paddingRight = (a_paddingRight > 0) ? a_paddingRight : 10;
+		_paddingBottom = (a_paddingBottom > 0) ? a_paddingBottom : 0;
+		_paddingLeft = (a_paddingLeft > 0) ? a_paddingLeft : 10;
+		
+		if (border != undefined)
+			setWidgetTexts(_labelText, _valueText);
 	}
 	
 	public function getWidgetLabelText(): String
@@ -176,7 +214,11 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetLabelText(a_val: String)
 	{
+		if (_labelText == a_val)
+			return
+		
 		_labelText = a_val;
+		
 		doSetLabelText(a_val, false);
 	}
 	
@@ -186,9 +228,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetLabelTextFont(a_val: String)
 	{
+		if (_labelTextFont == a_val)
+			return;
+			
 		_labelTextFont = a_val;
-		if(_labelTextSize != a_val)
-			doSetLabelText(_labelText, false);
+		
+		doSetLabelText(_labelText, false);
 	}
 	
 	public function getWidgetLabelTextColor(): Number
@@ -197,6 +242,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetLabelTextColor(a_val: Number)
 	{
+		if (_labelTextColor == a_val)
+			return;
+		
 		if (a_val < 0x000000)
 			_labelTextColor = 0x000000;
 		else if (a_val > 0xFFFFFF)
@@ -213,9 +261,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetLabelTextSize(a_val: Number)
 	{
+		if(_labelTextSize == a_val)
+			return;
+		
 		_labelTextSize = a_val;
-		if(_labelTextSize != a_val)
-			doSetLabelText(_labelText, false);
+		
+		doSetLabelText(_labelText, false);
 	}
 	
 	public function getWidgetValueText(): String
@@ -224,7 +275,11 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetValueText(a_val: String)
 	{
+		if(_valueText == a_val)
+			return;
+			
 		_valueText = a_val;
+		
 		doSetValueText(a_val, false);
 	}
 	
@@ -234,9 +289,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetValueTextFont(a_val: String)
 	{
+		if(_valueTextFont == a_val)
+			return;
+			
 		_valueTextFont = a_val;
-		if(_valueTextFont != a_val)
-			doSetValueText(_valueText, false);
+		
+		doSetValueText(_valueText, false);
 	}
 	
 	public function getWidgetValueTextColor(): Number
@@ -245,6 +303,9 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetValueTextColor(a_val: Number)
 	{
+		if(_valueTextColor == a_val)
+			return;
+			
 		if (a_val < 0x000000)
 			_valueTextColor = 0x000000;
 		else if (a_val > 0xFFFFFF)
@@ -261,9 +322,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetValueTextSize(a_val: Number)
 	{
+		if(_valueTextSize == a_val)
+			return
+			
 		_valueTextSize = a_val;
-		if(_valueTextSize != a_val)
-			doSetValueText(_valueText, false);
+		
+		doSetValueText(_valueText, false);
 	}
 	
 	public function getWidgetVerticalAlign(): String
@@ -272,22 +336,38 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	public function setWidgetVerticalAlign(a_val: String)
 	{
+		if (_verticalAlign == a_val)
+			return;
+			
 		_verticalAlign = (a_val == "top" || a_val == "bottom") ? a_val : "center";
+		
 		relativeVerticalAlign(labelTextField, valueTextField, _verticalAlign);
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
 	
-	public function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number)
+	public function setWidgetParams(a_widgetWidth: Number,
+									a_backgroundColor: Number,
+									a_backgroundAlpha: Number,
+									a_borderWidth: Number,
+									a_borderColor: Number,
+									a_borderAlpha: Number,
+									a_borderRounded: Number,
+									a_paddingTop: Number,
+									a_paddingRight: Number,
+									a_paddingBottom: Number,
+									a_paddingLeft: Number)
 	{
-		background._width = a_widgetWidth;
+		//background._width = a_widgetWidth;
+		setWidgetWidth(a_widgetWidth);
 		setWidgetBackgroundColor(a_backgroundColor);
 		setWidgetBackgroundAlpha(a_backgroundAlpha);
 		setWidgetBorderWidth(a_borderWidth);
 		setWidgetBorderColor(a_borderColor);
 		setWidgetBorderAlpha(a_borderAlpha);
 		setWidgetBorderRounded(a_borderRounded);
+		setWidgetPadding(a_paddingTop, a_paddingRight, a_paddingBottom, a_paddingLeft);
 	}
 	
 	public function setWidgetTextFonts(a_labelTextFont: String, a_valueTextFont: String) {
@@ -306,14 +386,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	{
 		doSetLabelText(a_labelText, true);
 		doSetValueText(a_valueText, false);
-	}
-	
-	public function setTextPadding(a_top: Number, a_right: Number, a_bottom: Number, a_left: Number): Void
-	{
-		_paddingTop = a_top;
-		_paddingRight = a_right;
-		_paddingBottom = a_bottom;
-		_paddingLeft = a_left;
 	}
 	
 	
@@ -345,7 +417,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		valueTextField.autoSize = "left";
 		valueTextField.textAutoSize = "none";
 		
-		valueTextField._x = background._width - _paddingRight - valueTextField._width;
+		valueTextField._x = _widgetWidth - _paddingRight - valueTextField._width;
 		valueTextField._y = _paddingTop;
 		
 		if (!a_noResize) {
@@ -386,16 +458,17 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	private function updateBackground()
 	{
 		var h = _paddingTop + _paddingBottom + Math.max(labelTextField._height, valueTextField._height);
-		if (h == background._height)
+		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
 			
 		background._height = h;
+		background._width = _widgetWidth;
 		redrawBorder();
 	}
 	
 	private function fixTextOverlap(): Void
 	{
-		var availableWidth = background._width - _paddingLeft - _paddingRight;
+		var availableWidth = _widgetWidth - _paddingLeft - _paddingRight;
 		var textWidth = labelTextField._width + valueTextField._width;
 		if (availableWidth > textWidth)
 			return;
@@ -409,7 +482,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		labelTextField._width = availableWidth * (labelTextField._width / textWidth);
 		valueTextField._width = availableWidth * (valueTextField._width / textWidth);
 		
-		valueTextField._x = background._width - _paddingRight - valueTextField._width;
+		valueTextField._x = _widgetWidth - _paddingRight - valueTextField._width;
 		valueTextField._y = _paddingTop;
 	}
 	
@@ -427,7 +500,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		var _borderLimits = new Object();
 		_borderLimits["left"] = 0 - _borderWidth/2;
 		_borderLimits["top"] = 0 - _borderWidth/2;
-		_borderLimits["right"] = background._width + _borderWidth/2;
+		_borderLimits["right"] = _widgetWidth + _borderWidth/2;
 		_borderLimits["bottom"] = background._height + _borderWidth/2;
 		
 		border.lineStyle(_borderWidth, _borderColor, 100, true, "normal", (_borderRounded) ? "round" : "square", (_borderRounded) ? "round" : "miter");
