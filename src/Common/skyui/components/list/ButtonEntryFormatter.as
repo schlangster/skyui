@@ -42,6 +42,6 @@ class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 			a_entryClip.textField.autoSize = a_entryObject.align ? a_entryObject.align : "left";
 			a_entryClip.textField.textColor = a_entryObject.enabled ? 0xffffff : 0x4c4c4c;
 			a_entryClip.textField.SetText(a_entryObject.text ? a_entryObject.text : " ");
-        }
+		}
 	}
 }
