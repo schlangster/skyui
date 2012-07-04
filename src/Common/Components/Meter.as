@@ -62,7 +62,7 @@ class Components.Meter
 		}
 		if (TargetPercent <= CurrentPercent) {
 			var bAnim: Boolean = CurrentPercent - TargetPercent > EmptySpeed;
-			if ((TargetPercent > 0 && bUnknown) || CurrentPercent > EmptySpeed) {
+			if ((TargetPercent > 0 && bAnim) || CurrentPercent > EmptySpeed) {
 				if (bAnim) 
 					CurrentPercent = CurrentPercent - EmptySpeed;
 				else 
