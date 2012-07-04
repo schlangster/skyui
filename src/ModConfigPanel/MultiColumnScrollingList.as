@@ -2,17 +2,64 @@
 
 class MultiColumnScrollingList extends ScrollingList
 {
-	public var columnCount = 2;
-	public var columnWidth;
-	public var columnSpacing = 0;
+	private var _columnCount: Number = 1;
+	
+	public var columnSpacing: Number = 0;
+	
+	public var separatorRenderer: String;
+	
+	private var _separators: Array;
 	
 
 	public function MultiColumnScrollingList()
 	{
 		super();
 		
+		_separators = [];
+		
 		scrollDelta = columnCount;
 		_maxListIndex *= columnCount;
+	}
+	
+	public function get columnCount(): Number
+	{
+		return _columnCount;
+	}
+	
+	public function set columnCount(a_value: Number)
+	{
+		_columnCount = a_value;
+		
+		refreshSeparators();
+	}
+	
+
+	
+	private function refreshSeparators()
+	{
+		while (_separators.length > 0) {
+			var e = _separators.pop();
+			e.removeMovieClip();
+		}
+		
+		// Create separators
+		if (!separatorRenderer)
+			return;
+			
+		var columnWidth = (background._width - leftBorder - rightBorder - (columnCount-1) * columnSpacing) / columnCount;
+		var t = background._x + leftBorder;
+		var d = columnSpacing/2;
+		
+		for (var i=0; i < columnCount-1; i++) {
+			var e = attachMovie(separatorRenderer, separatorRenderer + i, getNextHighestDepth());
+			t += columnWidth + d;
+			e._x = t;
+			e._y = background._y;
+			e._height = background._height;
+			e._alpha = 50;
+			_separators.push(e);
+			t += d;
+		}
 	}
 	
 	// @override ScrollingList
@@ -26,7 +73,7 @@ class MultiColumnScrollingList extends ScrollingList
 		var h = 0;
 		var w = 0;
 		var lastColumnIndex = columnCount - 1;
-		var columnWidth = (background._width - (columnCount-1) * columnSpacing) / columnCount;
+		var columnWidth = (background._width - leftBorder - rightBorder - (columnCount-1) * columnSpacing) / columnCount;
 
 		// Clear clipIndex for everything before the selected list portion
 		for (var i = 0; i < getListEnumSize() && i < _scrollPosition ; i++)
@@ -47,6 +94,7 @@ class MultiColumnScrollingList extends ScrollingList
 			entryClip._x = xStart + w;
 			entryClip._y = yStart + h;
 			entryClip._visible = true;
+			entryClip.width = columnWidth;
 
 			if (i % columnCount == lastColumnIndex) {
 				w = 0;

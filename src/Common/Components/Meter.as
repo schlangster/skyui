@@ -1,4 +1,4 @@
-import Shared.GlobalFunc;
+﻿import Shared.GlobalFunc;
 
 class Components.Meter
 {

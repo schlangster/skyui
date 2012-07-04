@@ -12,6 +12,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	private var _labelTextFont: String;
 	private var _labelTextColor: Number;
 	private var _labelTextSize: Number;
+	private var _labelAlign: String;
 	
 	private var _valueText: String;
 	private var _valueTextFont: String;
@@ -58,16 +59,25 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		super.onLoad();
 	}
 	
-  /* PROPERTIES */
+  /* INTERFACE */
 	
-	// TODO
-	public var labelAlign: String;
-	public var valueAlign: String;
+	public function getWidgetWidth(): Number			{ return _widgetWidth; }
+	public function getWidgetBackgroundColor(): Number	{ return _backgroundColor; }
+	public function getWidgetBackgroundAlpha(): Number	{ return _backgroundAlpha; }
+	public function getWidgetBorderColor(): Number		{ return _borderColor; }
+	public function getWidgetBorderWidth(): Number		{ return _borderWidth; }
+	public function getWidgetBorderAlpha(): Number		{ return _borderAlpha; }
+	public function getWidgetBorderRounded(): Number	{ return _borderRounded; }
+	public function getWidgetLabelText(): String		{ return _labelText; }
+	public function getWidgetLabelTextFont(): String	{ return _labelTextFont; }
+	public function getWidgetLabelTextColor(): Number	{ return _labelTextColor; }
+	public function getWidgetLabelTextSize(): Number	{ return _labelTextSize; }
+	public function getWidgetValueText(): String		{ return _valueText; }
+	public function getWidgetValueTextFont(): String	{ return _valueTextFont; }
+	public function getWidgetValueTextColor(): Number	{ return _valueTextColor; }
+	public function getWidgetValueTextSize(): Number	{ return _valueTextSize; }
+	public function getWidgetVerticalAlign(): String	{ return _verticalAlign; }
 	
-	public function getWidgetWidth(): Number
-	{
-		return _widgetWidth;
-	}
 	public function setWidgetWidth(a_val: Number)
 	{
 		if (_widgetWidth == a_val)
@@ -78,11 +88,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if (border != undefined)
 			setWidgetTexts(_labelText, _valueText);
 	}
-	
-	public function getWidgetBackgroundColor(): Number
-	{
-		return _backgroundColor;
-	}
+
 	public function setWidgetBackgroundColor(a_val: Number)
 	{
 		if (_backgroundColor == a_val)
@@ -100,11 +106,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		colorTf.rgb = _backgroundColor;
 		tf.colorTransform = colorTf;
 	}
-	
-	public function getWidgetBackgroundAlpha(): Number
-	{
-		return _backgroundAlpha;
-	}
+
 	public function setWidgetBackgroundAlpha(a_val: Number)
 	{
 		if (_backgroundAlpha == a_val)
@@ -118,12 +120,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			_backgroundAlpha = a_val;
 		
 		background._alpha = _backgroundAlpha; 
-	}
-	
-	public function getWidgetBorderColor(): Number
-	{
-		return _borderColor;
-	}
+	}	
+
 	public function setWidgetBorderColor(a_val: Number)
 	{
 		if (_borderColor == a_val)
@@ -144,10 +142,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		}
 	}
 	
-	public function getWidgetBorderWidth(): Number
-	{
-		return _borderWidth;
-	}
 	public function setWidgetBorderWidth(a_val: Number)
 	{
 		if (_borderWidth == a_val)
@@ -159,10 +153,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			redrawBorder();
 	}
 	
-	public function getWidgetBorderAlpha(): Number
-	{
-		return _borderAlpha;
-	}
 	public function setWidgetBorderAlpha(a_val: Number)
 	{
 		if (_borderAlpha == a_val)
@@ -179,10 +169,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			border._alpha = _backgroundAlpha;
 	}
 	
-	public function getWidgetBorderRounded(): Number
-	{
-		return _borderRounded;
-	}
+
 	public function setWidgetBorderRounded(a_val: Number)
 	{
 		if (_borderRounded == a_val)
@@ -207,11 +194,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if (border != undefined)
 			setWidgetTexts(_labelText, _valueText);
 	}
-	
-	public function getWidgetLabelText(): String
-	{
-		return _labelText;
-	}
+
 	public function setWidgetLabelText(a_val: String)
 	{
 		if (_labelText == a_val)
@@ -221,11 +204,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		doSetLabelText(a_val, false);
 	}
-	
-	public function getWidgetLabelTextFont(): String
-	{
-		return _labelTextFont;
-	}
+
 	public function setWidgetLabelTextFont(a_val: String)
 	{
 		if (_labelTextFont == a_val)
@@ -236,10 +215,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		doSetLabelText(_labelText, false);
 	}
 	
-	public function getWidgetLabelTextColor(): Number
-	{
-		return _labelTextColor;
-	}
 	public function setWidgetLabelTextColor(a_val: Number)
 	{
 		if (_labelTextColor == a_val)
@@ -255,10 +230,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateLabelTextFormat();
 	}
 	
-	public function getWidgetLabelTextSize(): Number
-	{
-		return _labelTextSize;
-	}
 	public function setWidgetLabelTextSize(a_val: Number)
 	{
 		if(_labelTextSize == a_val)
@@ -269,10 +240,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		doSetLabelText(_labelText, false);
 	}
 	
-	public function getWidgetValueText(): String
-	{
-		return _valueText;
-	}
+
 	public function setWidgetValueText(a_val: String)
 	{
 		if(_valueText == a_val)
@@ -282,11 +250,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		doSetValueText(a_val, false);
 	}
-	
-	public function getWidgetValueTextFont(): String
-	{
-		return _valueTextFont;
-	}
+
 	public function setWidgetValueTextFont(a_val: String)
 	{
 		if(_valueTextFont == a_val)
@@ -296,11 +260,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		doSetValueText(_valueText, false);
 	}
-	
-	public function getWidgetValueTextColor(): Number
-	{
-		return _valueTextColor;
-	}
+
 	public function setWidgetValueTextColor(a_val: Number)
 	{
 		if(_valueTextColor == a_val)
@@ -316,10 +276,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateValueTextFormat();
 	}
 	
-	public function getWidgetValueTextSize(): Number
-	{
-		return _valueTextSize;
-	}
 	public function setWidgetValueTextSize(a_val: Number)
 	{
 		if(_valueTextSize == a_val)
@@ -329,11 +285,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		doSetValueText(_valueText, false);
 	}
-	
-	public function getWidgetVerticalAlign(): String
-	{
-		return _verticalAlign;
-	}
+
 	public function setWidgetVerticalAlign(a_val: String)
 	{
 		if (_verticalAlign == a_val)
@@ -343,9 +295,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		relativeVerticalAlign(labelTextField, valueTextField, _verticalAlign);
 	}
-	
-	
-  /* PUBLIC FUNCTIONS */
 	
 	public function setWidgetParams(a_widgetWidth: Number,
 									a_backgroundColor: Number,

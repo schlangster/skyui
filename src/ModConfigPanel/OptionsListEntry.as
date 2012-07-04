@@ -15,6 +15,20 @@ class OptionsListEntry extends BasicListEntry
 	public var menuIcon: MovieClip;
 	public var toggleIcon: MovieClip;
 	
+	public function get width(): Number
+	{
+		return background._width;
+	}
+
+	public function set width(a_val: Number)
+	{
+		background._width = a_val;
+		labelTextField._width = a_val;
+		valueTextField._width = a_val;
+		
+		toggleIcon._x = a_val - toggleIcon._width;
+	}
+	
 	
   /* PUBLIC FUNCTIONS */
 	
