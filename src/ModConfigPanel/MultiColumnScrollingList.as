@@ -89,12 +89,12 @@ class MultiColumnScrollingList extends ScrollingList
 			entryClip.itemIndex = entryItem.itemIndex;
 			entryItem.clipIndex = _listIndex;
 			
+			entryClip.width = columnWidth;
 			setEntry(entryClip, entryItem);
 
 			entryClip._x = xStart + w;
 			entryClip._y = yStart + h;
 			entryClip._visible = true;
-			entryClip.width = columnWidth;
 
 			if (i % columnCount == lastColumnIndex) {
 				w = 0;

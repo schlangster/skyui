@@ -32,70 +32,83 @@ class OptionEntryFormatter implements IEntryFormatter
 	{
 		if (a_entryClip == undefined)
 			return;
+
+		var entryWidth = a_entryClip.width;
 			
 		switch (a_entryObject.optionType) {
 			
 			case OPTION_HEADER:
 				a_entryClip.gotoAndStop("header");
 				
-				a_entryClip.labelTextField.SetText(a_entryObject.labelText);
+				var labelTextField = a_entryClip.labelTextField;
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.labelText);
+
+				var headerDecor = a_entryClip.headerDecor;
+				headerDecor._x = labelTextField.getLineMetrics(0).width + 10;
+				headerDecor._width = entryWidth - headerDecor._x;
+				
 				break;
 				
 			case OPTION_TEXT:
 				a_entryClip.gotoAndStop("text");
 				
-				a_entryClip.labelTextField._width;
-				a_entryClip.labelTextField.SetText(a_entryObject.labelText);				
-				a_entryClip.valueTextField.SetText(a_entryObject.valueText);
+				var labelTextField = a_entryClip.labelTextField;
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.labelText);
+				
+				var valueTextField = a_entryClip.valueTextField;
+				valueTextField._width = entryWidth;
+				valueTextField.SetText(a_entryObject.valueText);
 				
 				break;
 				
 			case OPTION_TOGGLE:
 				a_entryClip.gotoAndStop("toggle");
-				a_entryClip.labelTextField.SetText(a_entryObject.labelText);
+				
+				var labelTextField = a_entryClip.labelTextField;
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.labelText);
+				
+				var toggleIcon = a_entryClip.toggleIcon;
+				toggleIcon._x = entryWidth - toggleIcon._width;
+				
 				break;
 				
 			case OPTION_SLIDER:
 				a_entryClip.gotoAndStop("slider");
 				
-				a_entryClip.labelTextField.SetText(a_entryObject.labelText);
+				var labelTextField = a_entryClip.labelTextField;
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.labelText);
 				
-				a_entryClip.valueTextField.SetText(a_entryObject.valueText);
+				var valueTextField = a_entryClip.valueTextField;
+				valueTextField._width = entryWidth;
+				valueTextField.SetText(a_entryObject.valueText);
 			
-				a_entryClip.onEnterFrame = updateSliderIconFunc;
+				var sliderIcon = a_entryClip.sliderIcon;
+				sliderIcon._x = valueTextField.getLineMetrics(0).x - sliderIcon._width;
+				
 				break;
 				
 			case OPTION_MENU:
 				a_entryClip.gotoAndStop("menu");
 				
-				a_entryClip.labelTextField.SetText(a_entryObject.labelText);
+				var labelTextField = a_entryClip.labelTextField;
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.labelText);
 				
-				a_entryClip.valueTextField.SetText(a_entryObject.valueText);
+				var valueTextField = a_entryClip.valueTextField;
+				valueTextField._width = entryWidth;
+				valueTextField.SetText(a_entryObject.valueText);
 				
-				a_entryClip.onEnterFrame = updateMenuIconFunc;
+				var menuIcon = a_entryClip.menuIcon;
+				menuIcon._x = valueTextField.getLineMetrics(0).x - menuIcon._width;
 				break;
 				
 			case OPTION_EMPTY:
 			default:
 				a_entryClip.gotoAndStop("empty");
 		}
-	}
-	
-	
-  /* PRIVATE FUNCTIONS */
-	
-	// For some reason getLineMetrics is off by 5px in the same frame. Sad story.
-	private function updateSliderIconFunc(): Void
-	{
-		var e = this;
-		e.sliderIcon._x = e.valueTextField.getLineMetrics(0).x - e.sliderIcon._width;
-		delete e.onEnterFrame;
-	}
-	
-	private function updateMenuIconFunc(): Void
-	{
-		var e = this;
-		e.menuIcon._x = e.valueTextField.getLineMetrics(0).x - e.menuIcon._width;
-		delete e.onEnterFrame;
 	}
 }

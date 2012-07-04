@@ -76,7 +76,8 @@ class ModListPanel extends MovieClip
 		} else {
 			hideDecorTitle(true);
 			
-			modListFader.gotoAndStop("active");
+			modListFader.gotoAndStop("show");
+			subListFader.gotoAndStop("hide");
 			_state = LIST_ACTIVE;
 		}
 	}
@@ -95,13 +96,13 @@ class ModListPanel extends MovieClip
 	{
 		switch (a_state) {
 			case LIST_ACTIVE:
-				modListFader.gotoAndStop("active");
+				modListFader.gotoAndStop("show");
 				_modList.disableInput = false;
 				_modList.disableSelection = false;
 				break;
 				
 			case SUBLIST_ACTIVE:
-				subListFader.gotoAndStop("active");
+				subListFader.gotoAndStop("show");
 				_subList.disableInput = false;
 				_subList.disableSelection = false;
 				break;
