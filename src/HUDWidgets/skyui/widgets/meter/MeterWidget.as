@@ -3,12 +3,20 @@ import flash.geom.*
 
 class skyui.widgets.meter.MeterWidget extends WidgetBase
 {
-  /* CONSTANTS */
+	/* CONSTANTS */
 	
 	var METER_PAUSE_FRAME: Number = 40;
 	
+	var METER_ORIENTATION_CENTER: Number = 0;
+	var METER_ORIENTATION_LEFT: Number = 1;
+	var METER_ORIENTATION_RIGHT: Number = 2;
 	
-  /* PRIVATE VARIABLES */
+	var METER_FILL_HEALTH: Number = 0;
+	var METER_FILL_MAGICKA: Number = 1;
+	var METER_FILL_STAMINA: Number = 2;
+	var METER_FILL_CUSTOM: Number = 3;
+	
+	/* PRIVATE VARIABLES */
 	
 	private var _percent: Number = 0;
 	private var _forced: Number = 0;
@@ -22,7 +30,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	// Meter objects
 	private var _meter: Components.BlinkOnDemandMeter;
 	
-  /* STAGE ELEMENTS */
+	/* STAGE ELEMENTS */
   
 	private var _modes: Array;
 	
@@ -37,7 +45,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		_meter.Update();
 	}
 
-  /* INITIALIZATION */
+	/* INITIALIZATION */
 	
 	public function MeterWidget()
 	{
@@ -83,33 +91,17 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		MeterBase.StaminaFlashInstance.gotoAndStop(1);
 		
 		// Create the gradients so their visibility can be toggled properly
-		CreateCustomGradient(0, _fillStart, _fillEnd);
-		CreateCustomGradient(1, _fillStart, _fillEnd);
+		DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
+		DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
 		
 		// Disable both modes until a mode is set
-		ChangeMeterType(0, -1, false);
-		ChangeMeterType(1, -1, false);
+		UpdateMeter(METER_ORIENTATION_CENTER, -1, false);
+		UpdateMeter(METER_ORIENTATION_LEFT, -1, false);
+		
+		_meter = MeterCenter;
 		
 		// Enable Center Health
-		ChangeMeterType(_fillType, _fillBar, true);
-		
-		// TestCode
-		/*setWidgetMeterGradient([0xFF00FF, 0x00FF00]);
-		setWidgetMeterOrientation("Left");
-		setWidgetMeterType("Magicka");
-		setWidgetAlwaysVisible(1.0);
-		setWidgetPercent(50.0);
-		startWidgetMeterBlinking();
-		setWidgetMeterOrientation("Center");
-		setWidgetMeterType("Stamina");*/
-		
-		/*setWidgetMeterType("Magicka");
-		setWidgetMeterOrientation("Left");
-		setWidgetAlwaysVisible(1.0);
-		//setWidgetMeterGradient(0xFF00FF, 0x00FFFF);
-		setWidgetPercent(50.0);*/
-		//startWidgetMeterBlinking();
-		
+		UpdateMeter(_fillType, _fillBar, true);	
 	}
 	
 	function InitExtensions(): Void
@@ -130,48 +122,59 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	
 	public function setWidgetMeterType(newType: Number)
 	{
-		if(newType >= 0 && newType <= 3) {
+		if(newType >= METER_FILL_HEALTH && newType <= METER_FILL_CUSTOM) {
 			_fillBar = newType;
-		} else {
+		} else { // Default to Health
 			_fillBar = 0;
 		}
 		
-		if(newType == 3) {
-			_fillBar = 3;
-			CreateCustomGradient(_fillType, _fillStart, _fillEnd);
-		} 
-		
-		skse.Log("Setting meter param: " + newType + " type:" + _fillType + " fill:" + _fillBar);
-		ChangeMeterType(_fillType, _fillBar, true);
+		UpdateMeter(_fillType, _fillBar, true);
 	}
 	
 	public function setWidgetMeterOrientation(newType: Number)
 	{
-		if(newType < 0 || newType > 2) {
-			newType = 0;
-		}
-
-		// Changing type
-		if(newType == 1 && _flipped) { // Flip to RS
-			_modes[1].fillMode._xscale *= -1;
-			_flipped = false;
-		} else if(newType == 2 && !_flipped) { // Flip to LS
-			_modes[1].fillMode._xscale *= -1;
-			_flipped = true;
-			newType = 1;
-		}
-		if(_fillType != newType) { // Changing to regular type
-			ChangeMeterType(_fillType, -1, false);
-			_fillType = newType;
-			CreateCustomGradient(_fillType, _fillStart, _fillEnd); // filltype changed, transfer custom type
+		// Default to center
+		if(newType < METER_ORIENTATION_CENTER || newType > METER_ORIENTATION_RIGHT) {
+			newType = METER_ORIENTATION_CENTER;
 		}
 		
-		// Enable new meter
-		skse.Log("Setting orientation: " + newType + " type:" + _fillType + " fill:" + _fillBar);
-		ChangeMeterType(_fillType, _fillBar, true);
-		// Changing these via SetPercent cause problems, Update should handle it anyhow
-		_meter.CurrentPercent = _percent;
-		_meter.TargetPercent = _percent;
+		// Determine meter script
+		var oldType = _fillType;
+		var oldMeter = _meter;
+		if(newType == METER_ORIENTATION_CENTER) {
+			_meter = MeterCenter;
+		} else if(newType == METER_ORIENTATION_LEFT){
+			_meter = MeterLeft;
+		} else if(newType == METER_ORIENTATION_RIGHT) {
+			_meter = MeterLeft;
+		}
+		
+		// Changing orientation
+		if(newType == METER_ORIENTATION_LEFT && _flipped) { // Flip back to Left
+			_modes[1].fillMode._xscale *= -1;
+			_flipped = !_flipped;
+		} else if(newType == METER_ORIENTATION_RIGHT && !_flipped) { // Flip to right
+			_modes[1].fillMode._xscale *= -1;
+			_flipped = !_flipped;
+		}
+		if(newType == METER_ORIENTATION_RIGHT)
+			newType = 1;
+		
+		_fillType = newType;
+		if(oldType != newType) { // Type change, disable old meter
+			UpdateMeter(oldType, -1, false);
+		}
+		
+		// Update new meter
+		UpdateMeter(_fillType, _fillBar, true);
+		
+		// Transfer meter settings and clear old settings
+		if(oldMeter != _meter) {
+			_meter.CurrentPercent = oldMeter.CurrentPercent;
+			_meter.TargetPercent = oldMeter.TargetPercent;
+			oldMeter.CurrentPercent = 0;
+			oldMeter.TargetPercent = 0;
+		}
 	}
 	
 	public function setWidgetForced(a_forced: Number)
@@ -205,24 +208,25 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	{
 		_fillStart = fillStart;
 		_fillEnd = fillFinish;
-		CreateCustomGradient(_fillType, _fillStart, _fillEnd);
+		
+		DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
+		DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
 	}
 	
 	/* PUBLIC FUNCTIONS */
   	// None
 
 	/* PRIVATE FUNCTIONS */
-	private function CreateCustomGradient(index: Number, fillStart: Number, fillEnd: Number)
-	{
-		// Cleanup old gradient
-		if(_modes[index].fillType[3].bar) {
-			_modes[index].fillType[3].bar.removeMovieClip();
+	private function DrawGradient(index: Number, fillStart: Number, fillEnd: Number)
+	{		
+		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());
+		if(_fillBar != METER_FILL_CUSTOM) {
+			customFill.enabled = false;
+			customFill._visible = false;
 		}
 		
-		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());
-		if(index == 0) {
-			with (customFill) 
-			{
+		if(index == METER_ORIENTATION_CENTER) {
+			with (customFill) {
 				colors = [fillStart, fillEnd, fillStart];
 				fillType = "linear"
 				alphas = [100, 100, 100];
@@ -236,9 +240,8 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 				lineTo(0, 0);
 				endFill();
 			}
-		} else if(index == 1) {
-			with (customFill) 
-			{
+		} else if(index == METER_ORIENTATION_LEFT) {
+			with (customFill) {
 				colors = [fillStart, fillEnd];
 				fillType = "linear"
 				alphas = [100, 100];
@@ -254,57 +257,35 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 			}
 		}
 		
+		// Cleanup old gradient
+		if(_modes[index].fillType[3].bar) {
+			_modes[index].fillType[3].bar.removeMovieClip();
+		}
 		_modes[index].fillType[3].bar = customFill;
 		_modes[index].fillType[3].blink = null;
-		
-		if(_fillBar != 3) {
-			_modes[index].fillType[3].bar.enabled = false;
-			_modes[index].fillType[3].bar._visible = false;
-		}
 	}
 	
 	// Handle meter changes
-	private function ChangeMeterType(index: Number, fillIndex: Number, abEnable: Boolean)
+	private function UpdateMeter(index: Number, fillIndex: Number, abEnable: Boolean)
 	{
-		if(abEnable) {
-			if(index == 0) {
-				_meter = MeterCenter;
-			} else if(index == 1){
-				_meter = MeterLeft;
-			} else if(index == 2) {
-				_meter = MeterLeft;
-			}
-		}
-		
 		_modes[index].fillMode._visible = abEnable;
 		_modes[index].fillMode.enabled = abEnable;
 		
 		_modes[index].fillParent._visible = abEnable;
 		_modes[index].fillParent.enabled = abEnable;
-				
-		for(var n = 0; n < _modes[index].fillType.length; n++)
-		{
+			
+		for(var n = 0; n < _modes[index].fillType.length; n++) {
 			if(n == fillIndex) {
 				_modes[index].fillType[n].bar._visible = true;
 				_modes[index].fillType[n].bar.enabled = true;
 				
-				if(_modes[index].fillType[n].blink) {
-					// Change Blink type
-					if(_meter.BlinkMovieClip != _modes[index].fillType[n].blink) {
-						//var lastBlink = _meter.BlinkMovieClip;
+				if(_modes[index].fillType[n].blink) { // New blink, swap it
+					if(_meter.BlinkMovieClip != _modes[index].fillType[n].blink)
 						_meter.BlinkMovieClip = _modes[index].fillType[n].blink;
-						// Hotswap blink, just in case?
-						/*if(lastBlink._previousframe != lastBlink._currentframe) {
-							_meter.BlinkMovieClip.gotoAndPlay(lastBlink._currentframe);
-							lastBlink.gotoAndStop(1);
-						}*/
-					}
-				} else { // This may be intended?
-					// Stop the old blink
-					if(_meter.BlinkMovieClip) {
+				} else {
+					if(_meter.BlinkMovieClip) // Stop the old blink if there was one
 						_meter.BlinkMovieClip.gotoAndStop(1);
-					}
-					_meter.BlinkMovieClip = null;
+					_meter.BlinkMovieClip = null; // Clear blink
 				}
 			} else {
 				_modes[index].fillType[n].bar._visible = false;
@@ -316,8 +297,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 			_modes[index].baseParent._visible = abEnable;
 			_modes[index].baseParent.enabled = abEnable;
 			
-			for(var b = 0; b < _modes[index].baseType.length; b++)
-			{
+			for(var b = 0; b < _modes[index].baseType.length; b++) {
 				if(b == fillIndex) {
 					_modes[index].baseType[b]._visible = true;
 					_modes[index].baseType[b].enabled = true;
@@ -327,6 +307,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 				}
 			}
 		}
+
 	}
 		
 	private function SetMeterPercent(abMeter: Components.BlinkOnDemandMeter, aPercent: Number, abForce: Boolean, abAlwaysShown: Boolean): Void
