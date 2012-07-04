@@ -4,9 +4,10 @@ float _percent = 50.0
 bool _forced = false
 bool _alwaysVisible = true
 int _meterType = 3
-int _orientation = 0
+int _orientation = 1
 int _gradientStart = 0xFF00FF;0x565618
 int _gradientEnd = 0x00FFFF;0xDFDF20
+int _blinkColor = 0x00FFFF
 
 function OnWidgetReset()
 	parent.OnWidgetReset()
@@ -17,10 +18,10 @@ function OnWidgetReset()
 	UpdateWidgetPercent()
 
 	; Initialization has to happen in one go otherwise it gets all mucked for for some reason...
-	SetParams(_meterType, _orientation, _forced, _alwaysVisible, _percent, _gradientStart, _gradientEnd)
+	SetParams(_meterType, _orientation, _forced, _alwaysVisible, _percent, _gradientStart, _gradientEnd, _blinkColor)
 	
 	; Debug
-	RegisterForSingleUpdate(4)
+	RegisterForSingleUpdate(1)
 endFunction
 
 float property Percent
@@ -114,6 +115,19 @@ int property CustomFillEnd
 	endFunction
 endProperty
 
+int property CustomBlink
+	int function get()
+		return _blinkColor
+	endFunction
+	
+	function set(int a_val)
+		_blinkColor = a_val
+		if (Initialized)
+			UpdateWidgetMeterBlinkColor(_blinkColor)
+		endIf
+	endFunction
+endProperty
+
 ; FUNCTIONS -------------------------
 
 string function GetWidgetType()
@@ -121,17 +135,17 @@ string function GetWidgetType()
 endFunction
 
 function UpdateWidgetAlwaysVisible()
-	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetAlwaysVisible", _alwaysVisible as float)
+	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetMeterAlwaysVisible", _alwaysVisible as float)
 	Debug.Trace("UpdateWidgetAlwaysVisible - " + (_alwaysVisible as float))
 endFunction
 
 function UpdateWidgetForced()
-	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetForced", _forced as float)
+	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetMeterForced", _forced as float)
 	Debug.Trace("UpdateWidgetForced - " + (_forced as float))
 endFunction
 
 function UpdateWidgetPercent()
-	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetPercent", _percent)
+	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetMeterPercent", _percent)
 	Debug.Trace("UpdateWidgetPercent - " + _percent)
 endFunction
 
@@ -145,11 +159,15 @@ function UpdateWidgetMeterOrientation()
 	Debug.Trace("UpdateWidgetMeterOrientation - " + _orientation)
 endFunction
 
+function UpdateWidgetMeterBlinkColor(int color)
+	UI.InvokeNumber(HUD_MENU, WidgetRoot + "setWidgetMeterBlinkColor", _blinkColor)
+endFunction
+
 function startBlinking()
 	UI.Invoke(HUD_MENU, WidgetRoot + "startWidgetMeterBlinking")
 endFunction
 
-function SetParams(int a_type, int a_orient, bool a_forced, bool a_alwaysShown, float a_percent, int a_fillStart, int a_fillEnd)
+function SetParams(int a_type, int a_orient, bool a_forced, bool a_alwaysShown, float a_percent, int a_fillStart, int a_fillEnd, int a_blinkColor)
 	float[] args = new float[7]
 	args[0] = a_type as float
 	args[1] = a_orient as float
@@ -158,8 +176,9 @@ function SetParams(int a_type, int a_orient, bool a_forced, bool a_alwaysShown, 
 	args[4] = a_percent
 	args[5] = a_fillStart as float
 	args[6] = a_fillEnd as float
+	args[7] = a_blinkColor as float
 	
-	UI.InvokeNumberA(HUD_MENU, WidgetRoot + "setWidgetParams", args)
+	UI.InvokeNumberA(HUD_MENU, WidgetRoot + "setWidgetMeterParams", args)
 endFunction
 
 function setGradient(int beginFill, int EndFill)
@@ -172,27 +191,13 @@ endFunction
 int st = 0
 
 event OnUpdate()
-
-if st == 0
-	st = 1
-	MeterType = 2
-	Orientation = 1
-	Percent = 10
-	
-elseif st == 1
-	st = 2
-	MeterType = 1
-	Orientation = 0
-	Percent = 50
-	
-elseif st == 2
-	st = 0
-	MeterType = 0
-	Orientation = 1
-	Percent = 70
-
-endIf
-
-RegisterForSingleUpdate(4)
-
+	MeterType = Utility.RandomInt(0, 3)
+	Orientation = Utility.RandomInt(0, 2)
+	int randStart = Utility.RandomInt(0x000000, 0xFFFFFF)
+	int randEnd = Utility.RandomInt(0x000000, 0xFFFFFF)
+	setGradient(randStart, randEnd)
+	Percent = Utility.RandomFloat(25, 100)
+	CustomBlink = randEnd
+	startBlinking()
+	RegisterForSingleUpdate(1)
 endEvent
