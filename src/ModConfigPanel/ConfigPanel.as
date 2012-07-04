@@ -60,7 +60,7 @@ class ConfigPanel extends MovieClip
 			_subList.entryList.push({text: "Sub Entry " + i, align: "right", enabled: true, state: "normal"});
 			
 		for (var i=0; i<48; i++)
-			_optionsList.entryList.push({labelText: "LABEL " + i, valueText: "VALUE " + i, enabled: true, optionType: Math.floor(Math.random()*6)});
+			_optionsList.entryList.push({labelText: "Label " + i, valueText: "VALUE " + i, enabled: true, optionType: Math.floor(Math.random()*6)});
 		
 		_modList.InvalidateData();
 		_subList.InvalidateData();

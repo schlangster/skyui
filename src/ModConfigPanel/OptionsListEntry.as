@@ -23,10 +23,6 @@ class OptionsListEntry extends BasicListEntry
 	public function set width(a_val: Number)
 	{
 		background._width = a_val;
-		labelTextField._width = a_val;
-		valueTextField._width = a_val;
-		
-		toggleIcon._x = a_val - toggleIcon._width;
 	}
 	
 	
