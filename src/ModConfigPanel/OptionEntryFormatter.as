@@ -12,6 +12,9 @@ class OptionEntryFormatter implements IEntryFormatter
 	public static var OPTION_SLIDER = 4;
 	public static var OPTION_MENU = 5;
 	
+	public static var ALPHA_SELECTED = 100;
+	public static var ALPHA_ACTIVE = 75;
+	
 	
   /* PRIVATE VARIABLES */
   
@@ -34,6 +37,10 @@ class OptionEntryFormatter implements IEntryFormatter
 			return;
 
 		var entryWidth = a_entryClip.width;
+		var isSelected = a_entryObject == _list.selectedEntry;
+		
+		var selectIndicator = a_entryClip.selectIndicator;
+		selectIndicator._visible = isSelected;
 			
 		switch (a_entryObject.optionType) {
 			
@@ -42,7 +49,8 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var labelTextField = a_entryClip.labelTextField;
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.labelText);
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = 100;
 
 				var headerDecor = a_entryClip.headerDecor;
 				headerDecor._x = labelTextField.getLineMetrics(0).width + 10;
@@ -55,11 +63,12 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var labelTextField = a_entryClip.labelTextField;
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.labelText);
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				var valueTextField = a_entryClip.valueTextField;
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.valueText);
+				valueTextField.SetText(a_entryObject.strValue);
 				
 				break;
 				
@@ -68,10 +77,12 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var labelTextField = a_entryClip.labelTextField;
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.labelText);
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				var toggleIcon = a_entryClip.toggleIcon;
 				toggleIcon._x = entryWidth - toggleIcon._width;
+				toggleIcon.gotoAndStop(a_entryObject.numValue? "on" : "off");
 				
 				break;
 				
@@ -80,11 +91,12 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var labelTextField = a_entryClip.labelTextField;
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.labelText);
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = isSelected ? 100 : ALPHA_ACTIVE;
 				
 				var valueTextField = a_entryClip.valueTextField;
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.valueText);
+				valueTextField.SetText(a_entryObject.numValue);
 			
 				var sliderIcon = a_entryClip.sliderIcon;
 				sliderIcon._x = valueTextField.getLineMetrics(0).x - sliderIcon._width;
@@ -96,14 +108,16 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var labelTextField = a_entryClip.labelTextField;
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.labelText);
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				var valueTextField = a_entryClip.valueTextField;
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.valueText);
+				valueTextField.SetText(a_entryObject.strValue);
 				
 				var menuIcon = a_entryClip.menuIcon;
 				menuIcon._x = valueTextField.getLineMetrics(0).x - menuIcon._width;
+				
 				break;
 				
 			case OPTION_EMPTY:

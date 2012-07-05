@@ -63,23 +63,16 @@ class ModListPanel extends MovieClip
 	// @override MovieClip
 	public function onLoad(): Void
 	{
-		showList();
+		// Init state
+		hideDecorTitle(true);
+		modListFader.gotoAndStop("show");
+		subListFader.gotoAndStop("hide");
+		_state = LIST_ACTIVE;
 	}
   
 	public function showList(): Void
 	{
-		if (_state == SUBLIST_ACTIVE) {
-			decorTitle.gotoAndPlay("fadeOut");
-			subListFader.gotoAndPlay("fadeOut");
-			_state = TRANSITION_TO_LIST;
-			
-		} else {
-			hideDecorTitle(true);
-			
-			modListFader.gotoAndStop("show");
-			subListFader.gotoAndStop("hide");
-			_state = LIST_ACTIVE;
-		}
+		setState(TRANSITION_TO_LIST);
 	}
 	
 	public function showSublist(): Void
@@ -87,24 +80,30 @@ class ModListPanel extends MovieClip
 		if (_modList.selectedClip == undefined || _modList.selectedEntry == undefined)
 			return;
 
-		
-
 		setState(TRANSITION_TO_SUBLIST);
 	}
 	
 	private function setState(a_state: Number): Void
 	{
+		trace("Setting state to " + a_state);
 		switch (a_state) {
 			case LIST_ACTIVE:
 				modListFader.gotoAndStop("show");
 				_modList.disableInput = false;
 				_modList.disableSelection = false;
+				if (modListFader.getDepth() < subListFader.getDepth())
+					modListFader.swapDepths(subListFader);
+					
 				break;
 				
 			case SUBLIST_ACTIVE:
 				subListFader.gotoAndStop("show");
 				_subList.disableInput = false;
 				_subList.disableSelection = false;
+				if (subListFader.getDepth() < modListFader.getDepth())
+					subListFader.swapDepths(modListFader);
+				decorTitle.onPress = onDecorPressFunc;
+				
 				break;
 				
 			case TRANSITION_TO_SUBLIST:
@@ -115,13 +114,22 @@ class ModListPanel extends MovieClip
 				decorTitle.textHolder.textField.text = _titleText;
 				modListFader.gotoAndPlay("fadeOut");
 			
+				_modList.selectedIndex = -1;
 				_modList.disableInput = true;
 				_modList.disableSelection = true;
+				
 				break;
 				
 			case TRANSITION_TO_LIST:
+				decorTitle.gotoAndPlay("fadeOut");
+				subListFader.gotoAndPlay("fadeOut");
+				
+				delete decorTitle.onPress;
+			
+				_subList.selectedIndex = -1;
 				_subList.disableInput = true;
 				_subList.disableSelection = true;
+
 				break;
 				
 			default:
@@ -179,6 +187,11 @@ class ModListPanel extends MovieClip
 		
 		decorBottom._y = decorTitle._y + decorTitle._height;
 		decorBottom._height = decorBottom._y - _modList._height;
+	}
+	
+	private function onDecorPressFunc(): Void
+	{
+		_parent.showList();
 	}
 	
 	private function hideDecorTitle(a_hide: Boolean): Void

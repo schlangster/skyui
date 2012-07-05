@@ -1,16 +1,10 @@
 ﻿import gfx.managers.FocusHandler;
 import gfx.events.EventDispatcher;
+import skyui.components.dialog.BasicDialog;
 
 
 class skyui.util.DialogManager
 {
-  /* CONSTANTS */
-  
-	public static var OPEN = 0;
-	public static var CLOSED = 1;
-	public static var OPENING = 2;
-	public static var CLOSING = 3;
-	
 	
   /* PRIVATE VARIABLES */
   
@@ -22,63 +16,26 @@ class skyui.util.DialogManager
 	
   /* PUBLIC FUNCTIONS */
 	
-	public static function createDialog(a_target: MovieClip, a_linkageID: String, a_init: Object): MovieClip
+	public static function open(a_target: MovieClip, a_linkageID: String, a_init: Object): MovieClip
 	{
 		if (_activeDialog)
-			closeDialog();
+			close();
 		
 		_previousFocus = FocusHandler.instance.getFocus(0);
 
-		_activeDialog = a_target.attachMovie(a_linkageID, "dialog", a_target.getNextHighestDepth(), a_init);
-		
-		EventDispatcher.initialize(_activeDialog);
-		
-		_activeDialog._dialogState = -1;
-		
-		_activeDialog.setDialogState = function(a_newState: Number): Void
-		{
-			if (this._dialogState == a_newState)
-				return;
-				
-			this._dialogState = a_newState;
-			
-			if (a_newState == OPENING) {
-				if (this.onDialogOpening)
-					this.onDialogOpening();
-				
-			} else if (a_newState == OPEN) {
-				if (this.onDialogOpen)
-					this.onDialogOpen();
-				this.dispatchEvent({type: "dialogOpen"});
-
-			} else if (a_newState == CLOSING) {
-				if (this.onDialogClosing)
-					this.onDialogClosing();
-
-			} else if (a_newState == CLOSED) {
-				if (this.onDialogClosed)
-					this.onDialogClosed();
-				this.dispatchEvent({type: "dialogClosed"});
-				
-				this.removeAllEventListeners();
-				this.removeMovieClip();
-			}
-		};
-		
+		_activeDialog = BasicDialog(a_target.attachMovie(a_linkageID, "dialog", a_target.getNextHighestDepth(), a_init));
 		FocusHandler.instance.setFocus(_activeDialog, 0);
 		
-		_activeDialog.setDialogState(OPENING);
-		_activeDialog.gotoAndPlay("open");
+		_activeDialog.openDialog();
 		
 		return _activeDialog;
 	}
 	
-	public static function closeDialog(): Void
+	public static function close(): Void
 	{
 		FocusHandler.instance.setFocus(_previousFocus, 0);
 		
-		_activeDialog.setDialogState(CLOSING);
-		_activeDialog.gotoAndPlay("close");
+		_activeDialog.closeDialog();
 		_activeDialog = null;
 	}
 }

@@ -212,7 +212,7 @@ class InventoryLists extends MovieClip
 	public function onColumnSelectButtonPress(event: Object): Void
 	{
 		if (columnSelectDialog) {
-			DialogManager.closeDialog();
+			DialogManager.close();
 			return;
 		}
 		
@@ -223,7 +223,7 @@ class InventoryLists extends MovieClip
 		itemList.disableSelection = itemList.disableInput = true;
 		searchWidget.isDisabled = true;
 			
-		columnSelectDialog = DialogManager.createDialog(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
+		columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
 		columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 	}
 	

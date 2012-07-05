@@ -7,6 +7,8 @@ class OptionsListEntry extends BasicListEntry
 {
   /* STAGE ELMENTS */
 
+	public var selectIndicator: MovieClip;
+
 	public var labelTextField: TextField;
 	public var valueTextField: TextField;
 	
@@ -23,6 +25,7 @@ class OptionsListEntry extends BasicListEntry
 	public function set width(a_val: Number)
 	{
 		background._width = a_val;
+		selectIndicator._width = a_val;
 	}
 	
 	
