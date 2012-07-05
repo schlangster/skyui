@@ -7,20 +7,16 @@ import skyui.components.list.ButtonEntryFormatter;
 import skyui.components.list.ButtonList;
 import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ListLayout;
+import skyui.components.dialog.BasicDialog;
 import skyui.util.DialogManager;
 import skyui.util.ConfigManager;
 
 
-class skyui.components.ColumnSelectDialog extends MovieClip
+class ColumnSelectDialog extends BasicDialog
 {	
   /* STAGE ELEMENTS */
   
-	public var panelContainer: MovieClip;
-	
-	
-  /* PRIVATE VARIABLES */
-  
-	private var _columnList: ButtonList;
+	public var list: ButtonList;
 	
 	
   /* PROPERTIES */
@@ -32,7 +28,7 @@ class skyui.components.ColumnSelectDialog extends MovieClip
   
 	public function ColumnSelectDialog()
 	{
-		_columnList = panelContainer.list;
+		super();
 	}
 	
 	
@@ -41,10 +37,10 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 	// Constructor is too early to do anything with the embedded list if the Movie is created with attachMovie.
 	public function onLoad(): Void
 	{
-		_columnList.listEnumeration = new BasicEnumeration(_columnList.entryList);
-		_columnList.entryFormatter = new ButtonEntryFormatter(_columnList);
+		list.listEnumeration = new BasicEnumeration(list.entryList);
+		list.entryFormatter = new ButtonEntryFormatter(list);
 		
-		_columnList.addEventListener("itemPress", this, "onColumnToggle");
+		list.addEventListener("itemPress", this, "onColumnToggle");
 		layout.addEventListener("layoutChange", this, "onLayoutChange");
 		
 		setColumnListData();
@@ -53,7 +49,7 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 	public function onDialogOpening(): Void
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-		FocusHandler.instance.setFocus(_columnList, 0);
+		FocusHandler.instance.setFocus(list, 0);
 	}
 	
 	public function onDialogClosing(): Void
@@ -81,7 +77,7 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 		if (GlobalFunc.IsKeyPressed(details)) {
 				
 			if (details.navEquivalent == NavigationCode.LEFT || details.navEquivalent == NavigationCode.RIGHT) {
-				DialogManager.closeDialog();
+				DialogManager.close();
 				bCaught = true;
 			}
 
@@ -97,7 +93,7 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 			if (e == this)
 				return;
-		DialogManager.closeDialog();
+		DialogManager.close();
 	}
 	
 	
@@ -105,16 +101,16 @@ class skyui.components.ColumnSelectDialog extends MovieClip
 	
 	private function setColumnListData()
 	{
-		_columnList.clearList();
+		list.clearList();
 		
 		var columnDescriptors = layout.columnDescriptors;
 		
 		for (var i=0; i<columnDescriptors.length; i++) {
 			var col = columnDescriptors[i];
 			if (col.type == ListLayout.COL_TYPE_TEXT)
-				_columnList.entryList.push({enabled: true, text: col.longName, value: col.hidden, state: (col.hidden ? "off" : "on"), id: col.identifier});
+				list.entryList.push({enabled: true, text: col.longName, value: col.hidden, state: (col.hidden ? "off" : "on"), id: col.identifier});
 		}
 		
-		_columnList.InvalidateData();
+		list.InvalidateData();
 	}
 }
