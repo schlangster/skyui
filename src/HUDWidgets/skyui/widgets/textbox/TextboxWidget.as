@@ -63,11 +63,13 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		// For testing in flash
 		
+		/*
 		setWidgetParams(500, 0xFF0000, 100, 5, 0xFFFF00, 100, 1, 100, 100, 100, 100);
 		setWidgetTextFonts("$EverywhereFont", "$EverywhereFont");
 		setWidgetTextFormats(0x00FF00, 20, 0x0000FF, 50);
 		setWidgetTexts("label", "value");
 		//setWidgetValueTextSize(50);
+		*/
 	}
 	
   /* INTERFACE */
@@ -107,7 +109,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if (_initialized) {
 			// Check padding is ok
 			setWidgetPadding(_paddingTop, _paddingRight, _paddingBottom, _paddingLeft);
-			// Reset text positions
+			// Reset both text positions
 			doSetLabelText(true);
 			doSetValueText(false);
 		}
@@ -266,7 +268,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			tf.font = _labelTextFont;
 			labelTextField.setTextFormat(tf);
 			labelTextField.setNewTextFormat(tf);
-			// Force an update of both textfields' positions.
 			doSetLabelText(false);
 		}
 	}
@@ -303,7 +304,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			tf.size = _labelTextSize;
 			labelTextField.setTextFormat(tf);
 			labelTextField.setNewTextFormat(tf);
-			// Force an update of both textfields' positions.
 			doSetLabelText(false);
 		}
 	}
@@ -368,7 +368,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			tf.size = _valueTextSize;
 			valueTextField.setTextFormat(tf);
 			valueTextField.setNewTextFormat(tf);
-			// Force an update of both textfields' positions.
 			doSetValueText(false);
 		}
 	}
