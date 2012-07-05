@@ -1,5 +1,6 @@
 ﻿import skyui.widgets.WidgetBase;
 import flash.geom.*
+import flash.filters.BevelFilter;
 
 class skyui.widgets.meter.MeterWidget extends WidgetBase
 {
@@ -70,14 +71,16 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 							baseType: [MeterBase.MeterFader.OrientationCenter.CenterFillBase.Health,
 						  			   MeterBase.MeterFader.OrientationCenter.CenterFillBase.Magicka,
 									   MeterBase.MeterFader.OrientationCenter.CenterFillBase.Stamina,
-									   null]
+									   null],
+							overlay: null
 							};
 		var left:Object = {fillMode: MeterBase.MeterFader.OrientationLeft, 
 						  fillParent: MeterBase.MeterFader.OrientationLeft.LeftFill,
 						  fillType: [{bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Health, blink: MeterBase.HealthFlashInstance},
 						  			 {bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Magicka, blink: MeterBase.MagickaFlashInstance},
 									 {bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Stamina, blink: MeterBase.StaminaFlashInstance},
-									 {bar: null, blink: MeterBase.CustomFlashInstance}]
+									 {bar: null, blink: MeterBase.CustomFlashInstance}],
+						  overlay: null
 						  };
 		
 		_modes.push(center);
@@ -93,6 +96,9 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		MeterBase.CustomFlashInstance.gotoAndStop(1);
 		
 		// Create the gradients so their visibility can be toggled properly
+		DrawOverlay(METER_ORIENTATION_CENTER, 4);
+		DrawOverlay(METER_ORIENTATION_LEFT , 4);
+		
 		DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
 		DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
 		
@@ -106,13 +112,13 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		UpdateMeter(_fillType, _fillBar, true);	
 		
 		// Test Code
-		/*setWidgetMeterType(METER_FILL_CUSTOM);
+		setWidgetMeterType(METER_FILL_CUSTOM);
 		setWidgetMeterOrientation(METER_ORIENTATION_CENTER);
-		setWidgetAlwaysVisible(1.0);
-		setWidgetForced(1.0);
-		setWidgetPercent(50.0);
-		setWidgetMeterBlink(0xFF00FF);
-		startWidgetMeterBlinking();*/
+		setWidgetMeterAlwaysVisible(1.0);
+		setWidgetMeterForced(1.0);
+		setWidgetMeterPercent(100.0);
+		setWidgetMeterBlinkColor(0xFF00FF);
+		startWidgetMeterBlinking();
 	}
 	
 	function InitExtensions(): Void
@@ -235,6 +241,93 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
   	// None
 
 	/* PRIVATE FUNCTIONS */
+	private function DrawOverlay(index: Number, shadowRadius: Number)
+	{
+		var overlay: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Overlay", _modes[index].fillParent.getNextHighestDepth());
+		var size_x;
+		var size_y;
+		if(index == METER_ORIENTATION_CENTER) {
+			size_x = 364.7;
+			size_y = 17;
+		} else if(index == METER_ORIENTATION_LEFT) {
+			size_x = 366.4;
+			size_y = 17.3;
+		}
+		
+		// Shadow Bevel
+		var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
+		overlay.filters = new Array(filter);
+		
+		var matrix;
+		overlay.beginFill(0xFFFFFF, 0);
+		overlay.lineTo(size_x, 0);
+		overlay.lineTo(size_x, size_y);
+		overlay.lineTo(0, size_y);
+		overlay.lineTo(0, 0);
+		/*
+		// Upper trapezoid
+		matrix = new Matrix();
+		matrix.createGradientBox(size_x, shadowRadius, Math.PI/2, 0, 0);
+		overlay.beginGradientFill("linear", [0x000000, 0x000000], [40, 0], [0, 255], matrix);
+		overlay.moveTo(0, 0);
+		overlay.lineTo(size_x, 0);
+		overlay.lineTo(size_x - shadowRadius, shadowRadius);
+		overlay.lineTo(shadowRadius, shadowRadius);
+		overlay.lineTo(0, 0);
+		overlay.endFill();
+		
+		// Left trapezoid
+		matrix = new Matrix();
+		matrix.createGradientBox(shadowRadius, size_y, Math.PI, 0, 0);
+		overlay.beginGradientFill("linear", [0x000000, 0x000000], [0, 40], [0, 255], matrix);
+		overlay.moveTo(0, 0);
+		overlay.lineTo(shadowRadius, shadowRadius);
+		overlay.lineTo(shadowRadius, size_y - shadowRadius);
+		overlay.lineTo(0, size_y);
+		overlay.lineTo(0, 0);
+		overlay.endFill();
+		
+		// Right trapezoid
+		matrix = new Matrix();
+		matrix.createGradientBox(shadowRadius, size_y, 0, size_x - shadowRadius, 0);
+		overlay.beginGradientFill("linear", [0x000000, 0x000000], [0, 40], [0, 255], matrix);
+		overlay.moveTo(size_x, 0);
+		overlay.lineTo(size_x - shadowRadius, shadowRadius);
+		overlay.lineTo(size_x - shadowRadius, size_y - shadowRadius);
+		overlay.lineTo(size_x, size_y);
+		overlay.lineTo(size_x, 0);
+		overlay.endFill();
+		
+		// Lower trapezoid
+		matrix = new Matrix();
+		matrix.createGradientBox(size_x, shadowRadius, Math.PI/2, 0, size_y - shadowRadius);
+		overlay.beginGradientFill("linear", [0x000000, 0x000000], [0, 40], [0, 255], matrix);
+		overlay.moveTo(shadowRadius, size_y - shadowRadius);
+		overlay.lineTo(size_x - shadowRadius, size_y - shadowRadius);
+		overlay.lineTo(size_x, size_y);
+		overlay.lineTo(0, size_y);
+		overlay.endFill();
+		
+		//var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
+		//overlay.filters = new Array(filter);
+		*/
+		
+		matrix = new Matrix();
+		matrix.createGradientBox(size_x, size_y, Math.PI/2, 0, 0);
+		overlay.beginGradientFill("linear", [0x000000, 0xFFFFFF, 0x000000, 0x000000], [0, 57, 0,  20], [0, 124, 124, 255], matrix);
+		overlay.moveTo(0, 0);
+		overlay.lineTo(size_x, 0);
+		overlay.lineTo(size_x, size_y);
+		overlay.lineTo(0, size_y);
+		overlay.lineTo(0, 0);
+		overlay.endFill();
+		
+		if(_modes[index].overlay) {
+			_modes[index].overlay.removeMovieClip();
+		}
+		_modes[index].overlay = overlay;
+	}
+
 	private function DrawBlink(fillColor: Number)
 	{
 		if(MeterBase.CustomFlashInstance.transform) {
@@ -242,53 +335,54 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 			MeterBase.CustomFlashInstance.transform = null;
 		}
 		var colorTrans:ColorTransform = new ColorTransform();
-		colorTrans.redOffset = ( ( fillColor & 0x00FF0000 ) >>> 16);
+		colorTrans.rgb = fillColor;
+		/*colorTrans.redOffset = ( ( fillColor & 0x00FF0000 ) >>> 16);
 		colorTrans.greenOffset = ( ( fillColor & 0x0000FF00 ) >>> 8);
-		colorTrans.blueOffset = ( ( fillColor & 0x000000FF ));
+		colorTrans.blueOffset = ( ( fillColor & 0x000000FF ));*/
 		var trans:Transform = new Transform(MeterBase.CustomFlashInstance);
 		trans.colorTransform = colorTrans;
 		MeterBase.CustomFlashInstance.transform = trans;
 	}
 	
 	private function DrawGradient(index: Number, fillStart: Number, fillEnd: Number)
-	{		
-		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());
+	{
+		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());		
+		if(_modes[index].overlay.getDepth() < customFill.getDepth())
+			_modes[index].overlay.swapDepths(customFill.getDepth());
+			
 		if(_fillBar != METER_FILL_CUSTOM) {
 			customFill.enabled = false;
 			customFill._visible = false;
 		}
 		
+		var alphas;
+		var colors;
+		var ratios;
+		var size_x;
+		var size_y;
+		
 		if(index == METER_ORIENTATION_CENTER) {
-			with (customFill) {
-				colors = [fillStart, fillEnd, fillStart];
-				fillType = "linear"
-				alphas = [100, 100, 100];
-				ratios = [0, 127, 255];
-				matrix = new Matrix();
-				matrix.createGradientBox(364.7, 17, 0, 0, 0);
-				beginGradientFill(fillType, colors, alphas, ratios, matrix);
-				lineTo(364.7, 0);
-				lineTo(364.7, 17);
-				lineTo(0, 17);
-				lineTo(0, 0);
-				endFill();
-			}
+			colors = [fillStart, fillEnd, fillStart];
+			alphas = [100, 100, 100];
+			ratios = [0, 127, 255];
+			size_x = 364.7;
+			size_y = 17;
 		} else if(index == METER_ORIENTATION_LEFT) {
-			with (customFill) {
-				colors = [fillStart, fillEnd];
-				fillType = "linear"
-				alphas = [100, 100];
-				ratios = [0, 255];
-				matrix = new Matrix();
-				matrix.createGradientBox(366.4, 17, 0, 0, 0);
-				beginGradientFill(fillType, colors, alphas, ratios, matrix);
-				lineTo(366.4, 0);
-				lineTo(366.4, 17.3);
-				lineTo(0, 17);
-				lineTo(0, 0);
-				endFill();
-			}
+			colors = [fillStart, fillEnd];
+			alphas = [100, 100];
+			ratios = [0, 255];
+			size_x = 366.4;
+			size_y = 17.3;
 		}
+		
+		var matrix = new Matrix();
+		matrix.createGradientBox(size_x, size_y, 0, 0, 0);
+		customFill.beginGradientFill("linear", colors, alphas, ratios, matrix);
+		customFill.lineTo(size_x, 0);
+		customFill.lineTo(size_x, size_y);
+		customFill.lineTo(0, size_y);
+		customFill.lineTo(0, 0);
+		customFill.endFill();
 		
 		// Cleanup old gradient
 		if(_modes[index].fillType[3].bar) {
