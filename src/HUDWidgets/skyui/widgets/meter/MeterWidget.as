@@ -71,14 +71,16 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 							baseType: [MeterBase.MeterFader.OrientationCenter.CenterFillBase.Health,
 						  			   MeterBase.MeterFader.OrientationCenter.CenterFillBase.Magicka,
 									   MeterBase.MeterFader.OrientationCenter.CenterFillBase.Stamina,
-									   null]
+									   null],
+							overlay: null
 							};
 		var left:Object = {fillMode: MeterBase.MeterFader.OrientationLeft, 
 						  fillParent: MeterBase.MeterFader.OrientationLeft.LeftFill,
 						  fillType: [{bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Health, blink: MeterBase.HealthFlashInstance},
 						  			 {bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Magicka, blink: MeterBase.MagickaFlashInstance},
 									 {bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Stamina, blink: MeterBase.StaminaFlashInstance},
-									 {bar: null, blink: MeterBase.CustomFlashInstance}]
+									 {bar: null, blink: MeterBase.CustomFlashInstance}],
+						  overlay: null
 						  };
 		
 		_modes.push(center);
@@ -110,13 +112,13 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		UpdateMeter(_fillType, _fillBar, true);	
 		
 		// Test Code
-		setWidgetMeterType(METER_FILL_HEALTH);
+		/*setWidgetMeterType(METER_FILL_CUSTOM);
 		setWidgetMeterOrientation(METER_ORIENTATION_CENTER);
 		setWidgetMeterAlwaysVisible(1.0);
 		setWidgetMeterForced(1.0);
 		setWidgetMeterPercent(100.0);
 		setWidgetMeterBlinkColor(0xFF00FF);
-		startWidgetMeterBlinking();
+		startWidgetMeterBlinking();*/
 	}
 	
 	function InitExtensions(): Void
@@ -242,7 +244,6 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	private function DrawOverlay(index: Number, shadowRadius: Number)
 	{
 		var overlay: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Overlay", _modes[index].fillParent.getNextHighestDepth());
-		
 		var size_x;
 		var size_y;
 		if(index == METER_ORIENTATION_CENTER) {
@@ -310,6 +311,11 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		overlay.lineTo(0, size_y);
 		overlay.lineTo(0, 0);
 		overlay.endFill();
+		
+		if(_modes[index].overlay) {
+			_modes[index].overlay.removeMovieClip();
+		}
+		_modes[index].overlay = overlay;
 	}
 
 	private function DrawBlink(fillColor: Number)
@@ -328,8 +334,11 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 	
 	private function DrawGradient(index: Number, fillStart: Number, fillEnd: Number)
-	{		
-		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());
+	{
+		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());		
+		if(_modes[index].overlay.getDepth() < customFill.getDepth())
+			_modes[index].overlay.swapDepths(customFill.getDepth());
+			
 		if(_fillBar != METER_FILL_CUSTOM) {
 			customFill.enabled = false;
 			customFill._visible = false;
