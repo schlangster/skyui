@@ -112,13 +112,13 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		UpdateMeter(_fillType, _fillBar, true);	
 		
 		// Test Code
-		/*setWidgetMeterType(METER_FILL_CUSTOM);
+		setWidgetMeterType(METER_FILL_CUSTOM);
 		setWidgetMeterOrientation(METER_ORIENTATION_CENTER);
 		setWidgetMeterAlwaysVisible(1.0);
 		setWidgetMeterForced(1.0);
 		setWidgetMeterPercent(100.0);
 		setWidgetMeterBlinkColor(0xFF00FF);
-		startWidgetMeterBlinking();*/
+		startWidgetMeterBlinking();
 	}
 	
 	function InitExtensions(): Void
@@ -254,8 +254,17 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 			size_y = 17.3;
 		}
 		
-		var matrix;
+		// Shadow Bevel
+		var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
+		overlay.filters = new Array(filter);
 		
+		var matrix;
+		overlay.beginFill(0xFFFFFF, 0);
+		overlay.lineTo(size_x, 0);
+		overlay.lineTo(size_x, size_y);
+		overlay.lineTo(0, size_y);
+		overlay.lineTo(0, 0);
+		/*
 		// Upper trapezoid
 		matrix = new Matrix();
 		matrix.createGradientBox(size_x, shadowRadius, Math.PI/2, 0, 0);
@@ -301,6 +310,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		
 		//var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
 		//overlay.filters = new Array(filter);
+		*/
 		
 		matrix = new Matrix();
 		matrix.createGradientBox(size_x, size_y, Math.PI/2, 0, 0);
@@ -325,9 +335,10 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 			MeterBase.CustomFlashInstance.transform = null;
 		}
 		var colorTrans:ColorTransform = new ColorTransform();
-		colorTrans.redOffset = ( ( fillColor & 0x00FF0000 ) >>> 16);
+		colorTrans.rgb = fillColor;
+		/*colorTrans.redOffset = ( ( fillColor & 0x00FF0000 ) >>> 16);
 		colorTrans.greenOffset = ( ( fillColor & 0x0000FF00 ) >>> 8);
-		colorTrans.blueOffset = ( ( fillColor & 0x000000FF ));
+		colorTrans.blueOffset = ( ( fillColor & 0x000000FF ));*/
 		var trans:Transform = new Transform(MeterBase.CustomFlashInstance);
 		trans.colorTransform = colorTrans;
 		MeterBase.CustomFlashInstance.transform = trans;
