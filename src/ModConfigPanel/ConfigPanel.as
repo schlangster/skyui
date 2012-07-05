@@ -60,7 +60,7 @@ class ConfigPanel extends MovieClip
 			_subList.entryList.push({text: "Sub Entry " + i, align: "right", enabled: true, state: "normal"});
 			
 		for (var i=0; i<48; i++)
-			_optionsList.entryList.push({labelText: "Label " + i, valueText: "VALUE " + i, enabled: true, optionType: Math.floor(Math.random()*6)});
+			_optionsList.entryList.push({optionType: Math.floor(Math.random()*6), enabled: true, text: "Label " + i, strValue: "OPTION " + i, numValue: 123.45});
 		
 		_modList.InvalidateData();
 		_subList.InvalidateData();
@@ -70,6 +70,7 @@ class ConfigPanel extends MovieClip
 	function onLoad()
 	{
 		_modList.addEventListener("itemPress", this, "onModListPress");
+		_subList.addEventListener("itemPress", this, "onSubListPress");
 		
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
@@ -94,6 +95,11 @@ class ConfigPanel extends MovieClip
 	public function onModListPress(a_event: Object): Void
 	{
 		modListPanel.showSublist();
+	}
+	
+	public function onSubListPress(a_event: Object): Void
+	{
+		modListPanel.showList();
 	}
 	
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean

@@ -15,12 +15,19 @@ class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 	private var _list: BasicList;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function ButtonEntryFormatter(a_list: BasicList)
 	{
 		_list = a_list;
 	}
+	
+	
+  /* PROPERTIES */
+  
+	public var defaultTextColor: Number = 0xffffff;
+	public var selectedTextColor: Number = 0xffffff;
+	public var disabledTextColor: Number = 0x4c4c4c;
 	
 	
   /* PUBLIC FUNCTIONS */
@@ -31,16 +38,20 @@ class skyui.components.list.ButtonEntryFormatter implements IEntryFormatter
 			return;
 
 		a_entryClip.enabled = a_entryObject.enabled;
+		var isSelected = a_entryObject == _list.selectedEntry;
 
 		if (a_entryObject.state != undefined)
 			a_entryClip.gotoAndPlay(a_entryObject.state);
 		
 		if (a_entryClip.selectIndicator != undefined)
-			a_entryClip.selectIndicator._visible = (a_entryObject == _list.selectedEntry);
+			a_entryClip.selectIndicator._visible = isSelected;
 
 		if (a_entryClip.textField != undefined) {
 			a_entryClip.textField.autoSize = a_entryObject.align ? a_entryObject.align : "left";
-			a_entryClip.textField.textColor = a_entryObject.enabled ? 0xffffff : 0x4c4c4c;
+			if (!a_entryObject.enabled)
+				a_entryClip.textField.textColor = disabledTextColor;
+			else
+				a_entryClip.textField.textColor = isSelected ?  selectedTextColor : defaultTextColor;
 			a_entryClip.textField.SetText(a_entryObject.text ? a_entryObject.text : " ");
 		}
 	}
