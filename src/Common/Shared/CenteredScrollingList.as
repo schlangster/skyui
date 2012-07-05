@@ -240,23 +240,27 @@ class Shared.CenteredScrollingList extends Shared.BSScrollingList
 		if (bDisableInput)
 			return;
 			
-		for (var item: Object = Mouse.getTopMostEntity(); item && item != undefined; item = item._parent)
-			if (item == this)
+		for (var item: Object = Mouse.getTopMostEntity(); item && item != undefined; item = item._parent) {
+			if (item == this) {
 				if (delta < 0) {
 					var newItem: MovieClip = GetClipByIndex(iNumTopHalfEntries + 1);
-					if (newItem._visible == true)
+					if (newItem._visible == true) {
 						if (newItem.itemIndex == undefined)
 							scrollPosition = scrollPosition + 2;
 						else
 							scrollPosition = scrollPosition + 1;
+					}
 				} else if (delta > 0) {
 					var newItem = GetClipByIndex(iNumTopHalfEntries - 1);
-					if (newItem._visible == true)
+					if (newItem._visible == true) {
 						if (newItem.itemIndex == undefined)
 							scrollPosition = scrollPosition - 2;
 						else
 							scrollPosition = scrollPosition - 1;
+					}
 				}
+			}
+		}
 		bMouseDrivenNav = true;
 	}
 

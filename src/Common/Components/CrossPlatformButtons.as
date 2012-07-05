@@ -1,4 +1,4 @@
-﻿import Shared.ButtonChange;
+import Shared.ButtonChange;
 
 class Components.CrossPlatformButtons extends gfx.controls.Button
 {
@@ -46,11 +46,12 @@ class Components.CrossPlatformButtons extends gfx.controls.Button
 			ButtonArt_mc = attachMovie(XBoxButton, "ButtonArt", getNextHighestDepth());
 		} else if (iCurrentPlatform === ButtonChange.PLATFORM_PS3) {
 			var strPS3Button: String = PS3Button;
-			if (PS3Swapped)
+			if (PS3Swapped) {
 				if (strPS3Button == "PS3_A") 
 					strPS3Button = "PS3_B";
 				else if (strPS3Button == "PS3_B") 
 					strPS3Button = "PS3_A";
+			}
 			ButtonArt_mc = attachMovie(strPS3Button, "ButtonArt", getNextHighestDepth());
 		}
 		ButtonArt_mc._x = ButtonArt_mc._x - ButtonArt_mc._width;

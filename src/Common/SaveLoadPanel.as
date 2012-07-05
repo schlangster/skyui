@@ -170,7 +170,7 @@ class SaveLoadPanel extends MovieClip
 	{
 		var iSaveNameMaxLength: Number = 20;
 		
-		for (var i = 0; i < SaveLoadList_mc.entryList.length; i++)
+		for (var i: Number = 0; i < SaveLoadList_mc.entryList.length; i++)
 			if (SaveLoadList_mc.entryList[i].text.length > iSaveNameMaxLength) 
 				SaveLoadList_mc.entryList[i].text = SaveLoadList_mc.entryList[i].text.substr(0, iSaveNameMaxLength - 3) + "...";
 		
@@ -186,12 +186,12 @@ class SaveLoadPanel extends MovieClip
 		SaveLoadList_mc.InvalidateData();
 		
 		if (abDoInitialUpdate) {
-			if (iPlatform != 0) 
+			if (iPlatform != 0) {
 				if (SaveLoadList_mc.selectedIndex == 0) 
 					onSaveLoadItemHighlight({index: 0});
 				else 
 					SaveLoadList_mc.selectedIndex = 0;
-					
+			}
 			dispatchEvent({type: "saveListPopulated"});
 		}
 	}

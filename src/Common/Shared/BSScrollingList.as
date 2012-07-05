@@ -1,4 +1,4 @@
-﻿import Shared.GlobalFunc;
+import Shared.GlobalFunc;
 import gfx.ui.InputDetails;
 import gfx.ui.NavigationCode;
 import gfx.events.EventDispatcher;
@@ -123,8 +123,8 @@ class Shared.BSScrollingList extends MovieClip
 
 	function onMouseWheel(delta: Number): Void
 	{
-		if (!bDisableInput)
-			for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent)
+		if (!bDisableInput) {
+			for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
 				if (target == this) {
 					doSetSelectedIndex(-1,0);
 					if (delta < 0)
@@ -132,6 +132,8 @@ class Shared.BSScrollingList extends MovieClip
 					else if (delta > 0)
 						scrollPosition = scrollPosition - 1;
 				}
+			}
+		}
 	}
 
 	function get selectedIndex(): Number
@@ -163,16 +165,18 @@ class Shared.BSScrollingList extends MovieClip
 			if (iCurrentIndex != -1)
 				SetEntry(GetClipByIndex(EntriesA[iCurrentIndex].clipIndex),EntriesA[iCurrentIndex]);
 
-			if (iSelectedIndex != -1)
-				if (iPlatform != 0)
+			if (iSelectedIndex != -1) {
+				if (iPlatform != 0) {
 					if (iSelectedIndex < iScrollPosition)
 						scrollPosition = iSelectedIndex;
 					else if (iSelectedIndex >= iScrollPosition + iListItemsShown)
 						scrollPosition = Math.min(iSelectedIndex - iListItemsShown + 1, iMaxScrollPosition);
 					else
 						SetEntry(GetClipByIndex(EntriesA[iSelectedIndex].clipIndex),EntriesA[iSelectedIndex]);
-				else
+				} else {
 					SetEntry(GetClipByIndex(EntriesA[iSelectedIndex].clipIndex),EntriesA[iSelectedIndex]);
+				}
+			}
 			dispatchEvent({type:"selectionChange", index:iSelectedIndex, keyboardOrMouse:aiKeyboardOrMouse});
 		}
 	}
@@ -189,11 +193,12 @@ class Shared.BSScrollingList extends MovieClip
 
 	function set scrollPosition(aiNewPosition: Number): Void
 	{
-		if (aiNewPosition != iScrollPosition && aiNewPosition >= 0 && aiNewPosition <= iMaxScrollPosition) 
+		if (aiNewPosition != iScrollPosition && aiNewPosition >= 0 && aiNewPosition <= iMaxScrollPosition) {
 			if (ListScrollbar == undefined) 
 				updateScrollPosition(aiNewPosition);
 			else 
 				ListScrollbar.position = aiNewPosition;
+		}
 	}
 
 	function updateScrollPosition(aiPosition: Number): Void
@@ -296,7 +301,7 @@ class Shared.BSScrollingList extends MovieClip
 		var iMaxScrollPos: Number = iMaxScrollPosition;
 		fListHeight = border._height;
 		CalculateMaxScrollPosition();
-		if (ListScrollbar != undefined) 
+		if (ListScrollbar != undefined) {
 			if (iMaxScrollPos == iMaxScrollPosition) {
 				SetScrollbarVisibility();
 			} else {
@@ -306,6 +311,7 @@ class Shared.BSScrollingList extends MovieClip
 					clearInterval(iScrollbarDrawTimerID);
 				iScrollbarDrawTimerID = setInterval(this, "SetScrollbarVisibility", 50);
 			}
+		}
 		if (iSelectedIndex >= EntriesA.length) 
 			iSelectedIndex = EntriesA.length - 1;
 		if (iScrollPosition > iMaxScrollPosition) 
@@ -387,8 +393,7 @@ class Shared.BSScrollingList extends MovieClip
 
 	function SetEntryText(aEntryClip: MovieClip, aEntryObject: Object): Void
 	{
-		if (aEntryClip.textField != undefined) 
-		{
+		if (aEntryClip.textField != undefined) {
 			if (textOption == Shared.BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT) 
 				aEntryClip.textField.textAutoSize = "shrink";
 			else if (textOption == Shared.BSScrollingList.TEXT_OPTION_MULTILINE) 

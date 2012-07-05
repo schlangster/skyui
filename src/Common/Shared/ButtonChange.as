@@ -1,4 +1,4 @@
-﻿import gfx.events.EventDispatcher;
+import gfx.events.EventDispatcher;
 
 class Shared.ButtonChange extends gfx.events.EventDispatcher
 {

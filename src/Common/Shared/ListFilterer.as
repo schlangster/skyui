@@ -51,7 +51,7 @@ class Shared.ListFilterer
 	function EntryMatchesPartitionedFilter(aEntry: Object): Boolean
 	{
 		var bmatchFound = false;
-		if (aEntry != undefined) 
+		if (aEntry != undefined) {
 			if (iItemFilter == 0xFFFFFFFF) {
 				bmatchFound = true;
 			} else {
@@ -62,6 +62,7 @@ class Shared.ListFilterer
 				var byte3: Number = (ifilterFlag & 0xFF000000) >>> 24;
 				bmatchFound = byte0 == iItemFilter || byte1 == iItemFilter || byte2 == iItemFilter || byte3 == iItemFilter;
 			}
+		}
 		return bmatchFound;
 	}
 
@@ -91,13 +92,14 @@ class Shared.ListFilterer
 		if (aiStartIndex != undefined && !EntryMatchesFunc(_filterArray[iClampIndex])) {
 			var iNextMatch: Number = GetNextFilterMatch(iClampIndex);
 			var iPrevMatch: Number = GetPrevFilterMatch(iClampIndex);
-			if (iNextMatch == undefined)
+			if (iNextMatch == undefined) {
 				if (iPrevMatch == undefined) 
 					iClampIndex = -1;
 				else
 					iClampIndex = iPrevMatch;
-			else
+			} else {
 				iClampIndex = iNextMatch;
+			}
 			if (iNextMatch != undefined && iPrevMatch != undefined && iPrevMatch != iNextMatch && iClampIndex == iNextMatch && _filterArray[iPrevMatch].text == _filterArray[aiStartIndex].text)
 				iClampIndex = iPrevMatch;
 		}

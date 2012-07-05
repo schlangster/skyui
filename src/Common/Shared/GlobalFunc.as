@@ -1,4 +1,4 @@
-﻿class Shared.GlobalFunc
+class Shared.GlobalFunc
 {
 	static var RegisteredTextFields: Object = new Object();
 	static var RegisteredMovieClips: Object = new Object();
@@ -183,12 +183,13 @@
 
 	static function RecursiveRegisterMovieClips(aStartingClip: MovieClip, aRootClip: MovieClip): Void
 	{
-		for (var i: Number = 0; i < aStartingClip.length; i++)
+		for (var i: Number = 0; i < aStartingClip.length; i++) {
 			if (aStartingClip[i] instanceof MovieClip) {
 				if (aStartingClip[i] != aStartingClip) 
 					Shared.GlobalFunc.RecursiveRegisterMovieClips(aStartingClip[i], aRootClip);
 				aStartingClip[i].RegisterMovieClip(aRootClip);
 			}
+		}
 	}
 
 	static function RegisterAllMovieClipsInTimeline(aStartingClip: MovieClip): Void
