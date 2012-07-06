@@ -29,6 +29,9 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	private var _fillBlink: Number = 0xDFDF20;
 	private var _flipped: Boolean = false;
 	
+	private var _presets: Array;
+	
+	
 	// Meter objects
 	private var _meter: Components.BlinkOnDemandMeter;
 	
@@ -59,66 +62,52 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	{
 		super.onLoad();
 		
-		_modes = new Array();
-				
-		var center:Object = {fillMode: MeterBase.MeterFader.OrientationCenter, 
-							fillParent: MeterBase.MeterFader.OrientationCenter.CenterFill, 
-							fillType: [{bar: MeterBase.MeterFader.OrientationCenter.CenterFill.Health, blink: MeterBase.HealthFlashInstance},
-						  			   {bar: MeterBase.MeterFader.OrientationCenter.CenterFill.Magicka, blink: MeterBase.MagickaFlashInstance},
-									   {bar: MeterBase.MeterFader.OrientationCenter.CenterFill.Stamina, blink: MeterBase.StaminaFlashInstance},
-									   {bar: null, blink: MeterBase.CustomFlashInstance}],
-							baseParent: MeterBase.MeterFader.OrientationCenter.CenterFillBase,
-							baseType: [MeterBase.MeterFader.OrientationCenter.CenterFillBase.Health,
-						  			   MeterBase.MeterFader.OrientationCenter.CenterFillBase.Magicka,
-									   MeterBase.MeterFader.OrientationCenter.CenterFillBase.Stamina,
-									   null],
-							overlay: null
-							};
-		var left:Object = {fillMode: MeterBase.MeterFader.OrientationLeft, 
-						  fillParent: MeterBase.MeterFader.OrientationLeft.LeftFill,
-						  fillType: [{bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Health, blink: MeterBase.HealthFlashInstance},
-						  			 {bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Magicka, blink: MeterBase.MagickaFlashInstance},
-									 {bar: MeterBase.MeterFader.OrientationLeft.LeftFill.Stamina, blink: MeterBase.StaminaFlashInstance},
-									 {bar: null, blink: MeterBase.CustomFlashInstance}],
-						  overlay: null
-						  };
-		
-		_modes.push(center);
-		_modes.push(left);
-		
-		MeterCenter = new Components.BlinkOnDemandMeter(MeterBase.MeterFader.OrientationCenter, MeterBase.HealthFlashInstance);
-		MeterLeft = new Components.BlinkOnDemandMeter(MeterBase.MeterFader.OrientationLeft, MeterBase.HealthFlashInstance);
+		MeterCenter = new Components.BlinkOnDemandMeter(MeterBase.MeterFader.OrientationCenter, MeterBase.CustomFlashInstance);
+		MeterLeft = new Components.BlinkOnDemandMeter(MeterBase.MeterFader.OrientationLeft, MeterBase.CustomFlashInstance);
 		MeterBaseAnim = MeterBase;
 		MeterBaseAnim.gotoAndStop(1);
-		MeterBase.HealthFlashInstance.gotoAndStop(1);
-		MeterBase.MagickaFlashInstance.gotoAndStop(1);
-		MeterBase.StaminaFlashInstance.gotoAndStop(1);
 		MeterBase.CustomFlashInstance.gotoAndStop(1);
 		
-		// Create the gradients so their visibility can be toggled properly
-		DrawOverlay(METER_ORIENTATION_CENTER, 4);
-		DrawOverlay(METER_ORIENTATION_LEFT , 4);
+		_modes = [{fillMode: MeterBase.MeterFader.OrientationCenter, 
+				   fillParent: MeterBase.MeterFader.OrientationCenter.CenterFill,
+				   fillBar: null,
+				   fillOverlay: null
+				  },
+				  {fillMode: MeterBase.MeterFader.OrientationLeft, 
+				   fillParent: MeterBase.MeterFader.OrientationLeft.LeftFill,
+				   fillBar: null,
+				   fillOverlay: null
+				  }];
 		
-		DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
-		DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
-		
-		// Disable both modes until a mode is set
-		UpdateMeter(METER_ORIENTATION_CENTER, -1, false);
-		UpdateMeter(METER_ORIENTATION_LEFT, -1, false);
+		_presets = [{fillStart: 0x561818, fillEnd: 0xDF2020, fillBlink: 0xFF3232},
+				   {fillStart: 0x0C016D, fillEnd: 0x284BD7, fillBlink: 0x3366FF},
+				   {fillStart: 0x003300, fillEnd: 0x339966, fillBlink: 0x009900},
+				   {fillStart: 0x565618, fillEnd: 0xDFDF20, fillBlink: 0xDFDF20}];
 		
 		_meter = MeterCenter;
 		
-		// Enable Center Health
-		UpdateMeter(_fillType, _fillBar, true);	
+		DrawGradient(METER_ORIENTATION_CENTER, _presets[_fillBar].fillStart, _presets[_fillBar].fillEnd);
+		DrawGradient(METER_ORIENTATION_LEFT, _presets[_fillBar].fillStart, _presets[_fillBar].fillEnd);
+		
+		DrawOverlay(METER_ORIENTATION_CENTER);
+		DrawOverlay(METER_ORIENTATION_LEFT);
+		
+		DrawBlink(_presets[_fillBar].fillEnd);
+		
+		UpdateMeter(METER_ORIENTATION_LEFT, false);
+		UpdateMeter(METER_ORIENTATION_CENTER, true);
+		
 		
 		// Test Code
-		setWidgetMeterType(METER_FILL_CUSTOM);
-		setWidgetMeterOrientation(METER_ORIENTATION_CENTER);
+		//setWidgetMeterPreset(METER_FILL_CUSTOM);
+		//setWidgetMeterOrientation(METER_ORIENTATION_LEFT);
 		setWidgetMeterAlwaysVisible(1.0);
-		setWidgetMeterForced(1.0);
-		setWidgetMeterPercent(100.0);
-		setWidgetMeterBlinkColor(0xFF00FF);
-		startWidgetMeterBlinking();
+		//setWidgetMeterForced(1.0);
+		setWidgetMeterPercent(50.0);
+		
+		
+		//setWidgetMeterBlinkColor(0xFF00FF);
+		//startWidgetMeterBlinking();
 	}
 	
 	function InitExtensions(): Void
@@ -129,7 +118,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	/* SET PROPERTIES */
 	public function setWidgetMeterParams(n_type:Number, a_orient:Number, forced:Number, visibility:Number, percent:Number, fillStart:Number, fillEnd:Number, blinkColor: Number)
 	{
-		setWidgetMeterType(n_type);
+		setWidgetMeterPreset(n_type);
 		setWidgetMeterOrientation(a_orient);
 		setWidgetMeterGradient(fillStart, fillEnd);
 		setWidgetMeterBlinkColor(blinkColor);
@@ -138,15 +127,22 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		setWidgetMeterPercent(percent);
 	}
 	
-	public function setWidgetMeterType(newType: Number)
+	public function setWidgetMeterPreset(newType: Number)
 	{
-		if(newType >= METER_FILL_HEALTH && newType <= METER_FILL_CUSTOM) {
+		var fillStart, fillEnd, fillBlink;
+		if(newType >= METER_FILL_HEALTH && newType <= METER_FILL_STAMINA) {			
+			DrawGradient(METER_ORIENTATION_CENTER, _presets[newType].fillStart, _presets[newType].fillEnd);
+			DrawGradient(METER_ORIENTATION_LEFT, _presets[newType].fillStart, _presets[newType].fillEnd);
+			DrawBlink(_presets[newType].fillBlink);
 			_fillBar = newType;
-		} else { // Default to Health
-			_fillBar = 0;
+		} else if(newType == METER_FILL_CUSTOM){
+			DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
+			DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
+			DrawBlink(_fillBlink);
+			_fillBar = newType;
 		}
-		
-		UpdateMeter(_fillType, _fillBar, true);
+				
+		UpdateMeter(_fillType, true);
 	}
 	
 	public function setWidgetMeterOrientation(newType: Number)
@@ -180,11 +176,11 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		
 		_fillType = newType;
 		if(oldType != newType) { // Type change, disable old meter
-			UpdateMeter(oldType, -1, false);
+			UpdateMeter(oldType, false);
 		}
 		
 		// Update new meter
-		UpdateMeter(_fillType, _fillBar, true);
+		UpdateMeter(_fillType, true);
 		
 		// Transfer meter settings and clear old settings
 		if(oldMeter != _meter) {
@@ -227,23 +223,41 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		_fillStart = fillStart;
 		_fillEnd = fillFinish;
 		
-		DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
-		DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
+		// Only draw if our preset is custom
+		if(_fillBar == 3) {
+			DrawGradient(METER_ORIENTATION_CENTER, _fillStart, _fillEnd);
+			DrawGradient(METER_ORIENTATION_LEFT, _fillStart, _fillEnd);
+		}
 	}
 	
 	public function setWidgetMeterBlinkColor(fillBlink: Number)
 	{
 		_fillBlink = fillBlink;
-		DrawBlink(fillBlink);
+		
+		// Only draw if our preset is custom
+		if(_fillBar == 3) {
+			DrawBlink(fillBlink);
+		}
 	}
 	
 	/* PUBLIC FUNCTIONS */
   	// None
 
 	/* PRIVATE FUNCTIONS */
-	private function DrawOverlay(index: Number, shadowRadius: Number)
+	private function DrawOverlay(index: Number)
 	{
-		var overlay: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Overlay", _modes[index].fillParent.getNextHighestDepth());
+		//var depth = _modes[index].fillParent.getNextHighestDepth();
+		if(_modes[index].fillOverlay) {
+			//depth = _modes[index].fillOverlay.getDepth();
+			_modes[index].fillOverlay.removeMovieClip();
+		}
+		
+		_modes[index].fillOverlay = _modes[index].fillParent.createEmptyMovieClip("Overlay", 2);
+		if(!_modes[index].fillOverlay) {
+			skse.Log("Failed to create overlay");
+			return;
+		}
+
 		var size_x;
 		var size_y;
 		if(index == METER_ORIENTATION_CENTER) {
@@ -254,17 +268,84 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 			size_y = 17.3;
 		}
 		
-		// Shadow Bevel
-		var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
-		overlay.filters = new Array(filter);
+		var matrix = new Matrix();
+		matrix.createGradientBox(size_x, size_y, Math.PI/2, 0, 0);
+		_modes[index].fillOverlay.beginGradientFill("linear", [0xCCCCCC, 0xCCCCCC, 0xCCCCCC, 0xFFFFFF, 0x000000, 0x000000, 0x000000], 
+											[0,        0,        10,       50,       0,        10,       30], 
+											[0,        25,       25,       140,      153,      153,      255], matrix);
+		_modes[index].fillOverlay.moveTo(0, 0);
+		_modes[index].fillOverlay.lineTo(size_x, 0);
+		_modes[index].fillOverlay.lineTo(size_x, size_y);
+		_modes[index].fillOverlay.lineTo(0, size_y);
+		_modes[index].fillOverlay.lineTo(0, 0);
+		_modes[index].fillOverlay.endFill();
+	}
+
+	private function DrawBlink(fillColor: Number)
+	{
+		if(MeterBase.CustomFlashInstance.transform) {
+			delete MeterBase.CustomFlashInstance.transform;
+			MeterBase.CustomFlashInstance.transform = null;
+		}
+		var colorTrans:ColorTransform = new ColorTransform();
+		colorTrans.rgb = fillColor;
+		var trans:Transform = new Transform(MeterBase.CustomFlashInstance);
+		trans.colorTransform = colorTrans;
+		MeterBase.CustomFlashInstance.transform = trans;
+	}
+	
+	private function DrawGradient(index: Number, fillStart: Number, fillEnd: Number)
+	{
+		// Cleanup old gradient
+		/*var depth = _modes[index].fillParent.getNextHighestDepth();
+		if(_modes[index].fillBar) {
+			depth = 0;
+			_modes[index].fillBar.removeMovieClip();
+		}*/
+		_modes[index].fillBar = _modes[index].fillParent.createEmptyMovieClip("Custom", 0);
+		if(!_modes[index].fillBar) {
+			skse.Log("Failed to create gradient");
+			return;
+		}
+		_modes[index].fillParent.Shadow.swapDepths(1);
+		_modes[index].fillOverlay.swapDepths(2);
 		
-		var matrix;
-		overlay.beginFill(0xFFFFFF, 0);
-		overlay.lineTo(size_x, 0);
-		overlay.lineTo(size_x, size_y);
-		overlay.lineTo(0, size_y);
-		overlay.lineTo(0, 0);
-		/*
+		//if(_modes[index].fillParent.Shadow.getDepth() < _modes[index].fillBar.getDepth())
+			//_modes[index].fillParent.Shadow.swapDepths(_modes[index].fillBar.getDepth());
+			
+				
+		var alphas;
+		var colors;
+		var ratios;
+		var size_x;
+		var size_y;
+		
+		if(index == METER_ORIENTATION_CENTER) {
+			colors = [fillStart, fillEnd, fillStart];
+			alphas = [100, 100, 100];
+			ratios = [0, 127, 255];
+			size_x = 364.7;
+			size_y = 17;
+		} else if(index == METER_ORIENTATION_LEFT) {
+			colors = [fillStart, fillEnd];
+			alphas = [100, 100];
+			ratios = [0, 255];
+			size_x = 366.4;
+			size_y = 17.3;
+		}
+		
+		var matrix = new Matrix();
+		matrix.createGradientBox(size_x, size_y, 0, 0, 0);
+		_modes[index].fillBar.beginGradientFill("linear", colors, alphas, ratios, matrix);
+		_modes[index].fillBar.lineTo(size_x, 0);
+		_modes[index].fillBar.lineTo(size_x, size_y);
+		_modes[index].fillBar.lineTo(0, size_y);
+		_modes[index].fillBar.lineTo(0, 0);
+		_modes[index].fillBar.endFill();
+		
+		
+		/*var overlay = _modes[index].fillBar;
+		var shadowRadius = 3.5;
 		// Upper trapezoid
 		matrix = new Matrix();
 		matrix.createGradientBox(size_x, shadowRadius, Math.PI/2, 0, 0);
@@ -306,134 +387,20 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		overlay.lineTo(size_x - shadowRadius, size_y - shadowRadius);
 		overlay.lineTo(size_x, size_y);
 		overlay.lineTo(0, size_y);
-		overlay.endFill();
+		overlay.endFill();*/
 		
-		//var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
-		//overlay.filters = new Array(filter);
-		*/
-		
-		matrix = new Matrix();
-		matrix.createGradientBox(size_x, size_y, Math.PI/2, 0, 0);
-		overlay.beginGradientFill("linear", [0x000000, 0xFFFFFF, 0x000000, 0x000000], [0, 57, 0,  20], [0, 124, 124, 255], matrix);
-		overlay.moveTo(0, 0);
-		overlay.lineTo(size_x, 0);
-		overlay.lineTo(size_x, size_y);
-		overlay.lineTo(0, size_y);
-		overlay.lineTo(0, 0);
-		overlay.endFill();
-		
-		if(_modes[index].overlay) {
-			_modes[index].overlay.removeMovieClip();
-		}
-		_modes[index].overlay = overlay;
-	}
-
-	private function DrawBlink(fillColor: Number)
-	{
-		if(MeterBase.CustomFlashInstance.transform) {
-			delete MeterBase.CustomFlashInstance.transform;
-			MeterBase.CustomFlashInstance.transform = null;
-		}
-		var colorTrans:ColorTransform = new ColorTransform();
-		colorTrans.rgb = fillColor;
-		/*colorTrans.redOffset = ( ( fillColor & 0x00FF0000 ) >>> 16);
-		colorTrans.greenOffset = ( ( fillColor & 0x0000FF00 ) >>> 8);
-		colorTrans.blueOffset = ( ( fillColor & 0x000000FF ));*/
-		var trans:Transform = new Transform(MeterBase.CustomFlashInstance);
-		trans.colorTransform = colorTrans;
-		MeterBase.CustomFlashInstance.transform = trans;
-	}
-	
-	private function DrawGradient(index: Number, fillStart: Number, fillEnd: Number)
-	{
-		var customFill: MovieClip = _modes[index].fillParent.createEmptyMovieClip("Custom", _modes[index].fillParent.getNextHighestDepth());		
-		if(_modes[index].overlay.getDepth() < customFill.getDepth())
-			_modes[index].overlay.swapDepths(customFill.getDepth());
-			
-		if(_fillBar != METER_FILL_CUSTOM) {
-			customFill.enabled = false;
-			customFill._visible = false;
-		}
-		
-		var alphas;
-		var colors;
-		var ratios;
-		var size_x;
-		var size_y;
-		
-		if(index == METER_ORIENTATION_CENTER) {
-			colors = [fillStart, fillEnd, fillStart];
-			alphas = [100, 100, 100];
-			ratios = [0, 127, 255];
-			size_x = 364.7;
-			size_y = 17;
-		} else if(index == METER_ORIENTATION_LEFT) {
-			colors = [fillStart, fillEnd];
-			alphas = [100, 100];
-			ratios = [0, 255];
-			size_x = 366.4;
-			size_y = 17.3;
-		}
-		
-		var matrix = new Matrix();
-		matrix.createGradientBox(size_x, size_y, 0, 0, 0);
-		customFill.beginGradientFill("linear", colors, alphas, ratios, matrix);
-		customFill.lineTo(size_x, 0);
-		customFill.lineTo(size_x, size_y);
-		customFill.lineTo(0, size_y);
-		customFill.lineTo(0, 0);
-		customFill.endFill();
-		
-		// Cleanup old gradient
-		if(_modes[index].fillType[3].bar) {
-			_modes[index].fillType[3].bar.removeMovieClip();
-		}
-		_modes[index].fillType[3].bar = customFill;
+		var filter:BevelFilter = new BevelFilter(1, 45, 0x000000, 1, 0x000000, 1, 6, 6, 1, 3, "inner", false);
+		_modes[index].fillBar.filters = new Array(filter);
 	}
 	
 	// Handle meter changes
-	private function UpdateMeter(index: Number, fillIndex: Number, abEnable: Boolean)
+	private function UpdateMeter(index: Number, abEnable: Boolean)
 	{
 		_modes[index].fillMode._visible = abEnable;
 		_modes[index].fillMode.enabled = abEnable;
 		
 		_modes[index].fillParent._visible = abEnable;
 		_modes[index].fillParent.enabled = abEnable;
-			
-		for(var n = 0; n < _modes[index].fillType.length; n++) {
-			if(n == fillIndex) {
-				_modes[index].fillType[n].bar._visible = true;
-				_modes[index].fillType[n].bar.enabled = true;
-				
-				if(_modes[index].fillType[n].blink) { // New blink, swap it
-					if(_meter.BlinkMovieClip != _modes[index].fillType[n].blink)
-						_meter.BlinkMovieClip = _modes[index].fillType[n].blink;
-				} else {
-					if(_meter.BlinkMovieClip) // Stop the old blink if there was one
-						_meter.BlinkMovieClip.gotoAndStop(1);
-					_meter.BlinkMovieClip = null; // Clear blink
-				}
-			} else {
-				_modes[index].fillType[n].bar._visible = false;
-				_modes[index].fillType[n].bar.enabled = false;
-			}
-		}
-		
-		if(_modes[index].baseParent) {
-			_modes[index].baseParent._visible = abEnable;
-			_modes[index].baseParent.enabled = abEnable;
-			
-			for(var b = 0; b < _modes[index].baseType.length; b++) {
-				if(b == fillIndex) {
-					_modes[index].baseType[b]._visible = true;
-					_modes[index].baseType[b].enabled = true;
-				} else {
-					_modes[index].baseType[b]._visible = false;
-					_modes[index].baseType[b].enabled = false;
-				}
-			}
-		}
-
 	}
 		
 	private function SetMeterPercent(abMeter: Components.BlinkOnDemandMeter, aPercent: Number, abForce: Boolean, abAlwaysShown: Boolean): Void
