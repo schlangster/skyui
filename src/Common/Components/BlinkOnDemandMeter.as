@@ -7,7 +7,7 @@
 	{
 		super(aMeterMovieClip);
 		BlinkMovieClip = aBlinkMovieClip;
-		BlinkMovieClip.gotoAndStop("InitFlash");
+		BlinkMovieClip.gotoAndStop("StartFlash");
 	}
 
 	function StartBlinking(): Void
