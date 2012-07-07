@@ -16,6 +16,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
   
 	public var _labelTextField: TextField;
 	public var _valueTextField: TextField;
+	public var _icon: MovieClip;
 	
 	// Widget data
 	private var _widgetWidth: Number;
@@ -32,8 +33,6 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	private var _valueTextAlpha: Number;
 	private var _valueTextSize: Number;
 	
-	private var _textAlign: Number;
-	
 	private var _paddingTop: Number;
 	private var _paddingRight: Number;
 	private var _paddingBottom: Number;
@@ -46,6 +45,15 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	private var _backgroundColor: Number;
 	private var _backgroundAlpha: Number;
+
+	private var _iconSource: String;
+	private var _iconName: String;
+	private var _iconSize: Number;
+	private var _iconColor: Number;
+	private var _iconSpacing: Number;
+	
+	private var _textAlign: Number;
+	private var _iconAlign: Number;
 	
 
   /* STAGE ELEMENTS */
@@ -54,6 +62,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	public var background: MovieClip;
 	
 	public var content: MovieClip;
+	
+	var iconLabel: String;
 	
 
   /* INITIALIZATION */
@@ -64,6 +74,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		_labelTextField = content.labelTextField;
 		_valueTextField = content.valueTextField;
+		_icon = content.icon;
+		
+		_labelTextField.autoSize = "left";
+		_labelTextField.textAutoSize = "none";
+		_valueTextField.autoSize = "left";
+		_valueTextField.textAutoSize = "none";
 	}
 	
 	// @override WidgetBase
@@ -72,11 +88,26 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		super.onLoad();
 		
 		// For testing in flash
-		initWidgetNumbers(200, 0x0099000, 100, 5, 0xFF00FF, 100, 1, 5, 5, 5, 5, 0x00FFFF, 22, 0x00FFFF, 22, ALIGN_CENTER);
+		initWidgetNumbers(200, 0x0099000, 100,
+						  5, 0xFF00FF, 100, 1,
+						  5, 5, 5, 5,
+						  0x00FFFF, 48, 0x00FFFF, 22,
+						  32, 0xFFFFFF, 5,
+						  ALIGN_BORDER, ALIGN_LEFT);
 		initWidgetStrings("$EverywhereFont", "$EverywhereFont", "label", "value");
 		initWidgetCommit();
 		
-//		setInterval(this, "testFunc", 1000);
+		var iconLoader: MovieClipLoader = new MovieClipLoader();
+		iconLoader.addListener(this);
+		iconLoader.loadClip("../skyui/skyui_icons_psychosteve.swf", _icon);
+		
+		setInterval(this, "testFunc", 1000);
+	}
+	
+	public function onLoadInit(a_icon:MovieClip)
+	{
+		updateIcon();
+		updateElementPositions();
 	}
 	
 	var st = 0;
@@ -141,6 +172,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			
 		} else if (st == 17) {
 			setWidgetTexts("Test Labelsss", "Tost");
+			setWidgetLabelTextSize(22);
+			setWidgetValueTextSize(22);
 			st =  12;
 		}
 	}
@@ -175,7 +208,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 									  a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number,
 									  a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number,
 									  a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
-									  a_textAlign: Number)
+									  a_iconSize: Number, a_iconColor: Number, a_iconSpacing: Number,
+  									  a_textAlign: Number, a_iconAlign: Number)
 	{
 		_widgetWidth = a_widgetWidth;
 		setWidgetBackgroundColor(a_backgroundColor);
@@ -195,8 +229,13 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_labelTextSize = a_labelTextSize;
 		setWidgetValueTextColor(a_valueTextColor);
 		_valueTextSize = a_valueTextSize;
+
+		_iconSize = a_iconSize;
+		_iconColor = a_iconColor;
+		_iconSpacing = a_iconSpacing;
 		
 		_textAlign = a_textAlign;
+		_iconAlign = a_iconAlign;
 	}
 	
 	public function initWidgetStrings(a_labelTextFont: String, a_valueTextFont: String,
@@ -211,8 +250,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	public function initWidgetCommit(): Void
 	{
-		updateLabelText(true);
-		updateValueText();
+		updateLabelTextFormat();
+		updateValueTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
 	public function setWidgetWidth(a_val: Number): Void
@@ -223,8 +264,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_widgetWidth = a_val;
 		
 		// Reset both text positions
-		updateLabelText(true);
-		updateValueText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
 	public function setWidgetBackgroundColor(a_val: Number): Void
@@ -305,8 +346,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_paddingRight = a_paddingRight;
 		_paddingLeft = a_paddingLeft;
 
-		updateLabelText(true);
-		updateLabelText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
 	public function setWidgetTexts(a_labelText: String, a_valueText: String): Void
@@ -314,8 +355,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_labelText = a_labelText;
 		_valueText = a_valueText;
 		
-		updateLabelText(true);
-		updateValueText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
 	public function setWidgetLabelText(a_val: String)
@@ -323,9 +364,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if (_labelText == a_val)
 			return
 			
-		_labelText = a_val;
+		_labelTextField.text = _labelText = a_val;
 		
-		updateLabelText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
 	public function setWidgetLabelTextFont(a_val: String)
@@ -336,7 +378,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_labelTextFont = a_val;
 		
 		updateLabelTextFormat();
-		updateLabelText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
 	public function setWidgetLabelTextColor(a_val: Number)
@@ -355,7 +398,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_labelTextSize = a_val;
 		
 		updateLabelTextFormat();
-		updateLabelText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
 	public function setWidgetValueText(a_val: String): Void
@@ -363,9 +407,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if(_valueText == a_val)
 			return;
 			
-		_valueText = a_val;
+		_valueTextField.text = _valueText = a_val;
 		
-		updateValueText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
 	public function setWidgetValueTextFont(a_val: String)
@@ -376,7 +421,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextFont = a_val;
 		
 		updateValueTextFormat();
-		updateValueText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
 	public function setWidgetValueTextColor(a_val: Number)
@@ -395,7 +441,8 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextSize = a_val;
 		
 		updateValueTextFormat();
-		updateValueText();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
 	public function setWidgetTextAlign(a_val: Number)
@@ -405,37 +452,11 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			
 		_textAlign = a_val;
 		
-		updateTextPositions();
+		updateElementPositions();
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
-	
-	private function updateLabelText(a_noResize: Boolean): Void
-	{
-		if (a_noResize == undefined)
-			a_noResize = false;
-			
-		_labelTextField.text = _labelText;
-		
-		if (!a_noResize) {
-			updateBackgroundSize();
-			updateTextPositions();
-		}
-	}
-	
-	private function updateValueText( a_noResize: Boolean): Void
-	{
-		if (a_noResize == undefined)
-			a_noResize = false;
-			
-		_valueTextField.text = _valueText;
-		
-		if (!a_noResize) {
-			updateBackgroundSize();
-			updateTextPositions();
-		}
-	}
 	
 	private function updateLabelTextFormat(): Void
 	{
@@ -457,43 +478,52 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	private function updateBackgroundSize()
 	{
-		var h = _paddingTop + _paddingBottom + Math.max(_labelTextField._height, _valueTextField._height);
+		var h = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize));
+		
 		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
-			
+
 		background._height = h;
 		background._width = _widgetWidth;
 		
 		redrawBorder();
 	}
 	
-	private function updateTextPositions(): Void
+	private function updateIcon(): Void
+	{
+		_icon.gotoAndStop("weapon_sword");
+	}
+	
+	private function updateElementPositions(): Void
 	{
 		_labelTextField.autoSize = "left";
 		_labelTextField.textAutoSize = "none";
 		_valueTextField.autoSize = "left";
 		_valueTextField.textAutoSize = "none";
 		
-		var availableWidth = _widgetWidth - _paddingLeft - _paddingRight;
+		var availableWidth = _widgetWidth - _paddingLeft - _paddingRight - _iconSize - _iconSpacing;
+		var availableHeight = background._height - _paddingTop - _paddingBottom;
 		var textWidth = _labelTextField._width + _valueTextField._width;
+		var textStart = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + _iconSize + _iconSpacing);
+		var textEnd = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - _iconSize - _iconSpacing) : (_widgetWidth - _paddingRight);
 		
 		// Case 1: There's more available than required space
 		if (availableWidth >= textWidth) {
 			
 			if (_textAlign == ALIGN_LEFT) {
-				_labelTextField._x = _paddingLeft;
+				_labelTextField._x = textStart;
 				_valueTextField._x = _labelTextField._x + _labelTextField._width;
 				
 			} else if (_textAlign == ALIGN_RIGHT) {
-				_valueTextField._x = _widgetWidth - _paddingRight - _valueTextField._width;
+				_valueTextField._x = textEnd - _valueTextField._width;
 				_labelTextField._x = _valueTextField._x - _labelTextField._width;
 				
 			} else if (_textAlign == ALIGN_CENTER) {
-				_labelTextField._x = _paddingLeft + ((availableWidth - textWidth) / 2);
+				_labelTextField._x = textStart + ((availableWidth - textWidth) / 2);
 				_valueTextField._x = _labelTextField._x + _labelTextField._width;
 				
 			} else {
-				_labelTextField._x = _paddingLeft;
+				_labelTextField._x = textStart;
 				_valueTextField._x = _widgetWidth - _paddingRight - _valueTextField._width;
 			}
 			
@@ -509,17 +539,17 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			_labelTextField._width = availableWidth * (_labelTextField._width / textWidth);
 			_valueTextField._width = availableWidth * (_valueTextField._width / textWidth);
 			
-			_labelTextField._x = _paddingLeft;
-			_valueTextField._x = _widgetWidth - _paddingRight - _valueTextField._width;
+			_labelTextField._x = textStart;
+			_valueTextField._x = _labelTextField._x + _labelTextField._width;
 		}
 
-		_labelTextField._y = _valueTextField._y = _paddingTop;
+		_labelTextField._y = _paddingTop + (availableHeight - _labelTextField._height)/2
+		_valueTextField._y = _paddingTop + (availableHeight - _valueTextField._height)/2
+		
+		_icon._width = _icon._height = _iconSize;
+		_icon._x = _paddingLeft;			
+		_icon._y = _paddingTop + (availableHeight - _iconSize)/2
 
-		if(_labelTextField._height > _valueTextField._height) {
-			_valueTextField._y += (_labelTextField._height - _valueTextField._height)/2
-		} else if (_valueTextField._height > _labelTextField._height) {
-			_labelTextField._y += (_valueTextField._height - _labelTextField._height)/2
-		}
 	}
 	
 	private function redrawBorder(): Void
