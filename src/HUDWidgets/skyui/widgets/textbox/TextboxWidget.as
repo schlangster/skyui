@@ -60,10 +60,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	public var border: MovieClip;
 	public var background: MovieClip;
-	
 	public var content: MovieClip;
-	
-	var iconLabel: String;
 	
 
   /* INITIALIZATION */
@@ -92,14 +89,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 						  5, 0xFF00FF, 100, 1,
 						  5, 5, 5, 5,
 						  0x00FFFF, 48, 0x00FFFF, 22,
-						  32, 0xFFFFFF, 5,
-						  ALIGN_BORDER, ALIGN_LEFT);
-		initWidgetStrings("$EverywhereFont", "$EverywhereFont", "label", "value");
+						  32, 0x0F55F0, 5,
+						  ALIGN_BORDER, ALIGN_RIGHT);
+		initWidgetStrings("$EverywhereFont", "$EverywhereFont",
+						  "label", "value",
+						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword");
 		initWidgetCommit();
-		
-		var iconLoader: MovieClipLoader = new MovieClipLoader();
-		iconLoader.addListener(this);
-		iconLoader.loadClip("../skyui/skyui_icons_psychosteve.swf", _icon);
 		
 		setInterval(this, "testFunc", 1000);
 	}
@@ -172,8 +167,15 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 			
 		} else if (st == 17) {
 			setWidgetTexts("Test Labelsss", "Tost");
+			setWidgetIconName("weapon_bow");
 			setWidgetLabelTextSize(22);
 			setWidgetValueTextSize(22);
+			
+		} else if (st == 18) {
+			setWidgetIconSize(64);
+			
+		} else if (st == 19) {
+			setWidgetIconAlign(ALIGN_LEFT);
 			st =  12;
 		}
 	}
@@ -239,17 +241,22 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	}
 	
 	public function initWidgetStrings(a_labelTextFont: String, a_valueTextFont: String,
-									  a_labelText: String, a_valueText: String): Void
+									  a_labelText: String, a_valueText: String,
+									  a_iconSource: String, a_iconName: String): Void
 	{
 		_labelTextFont = a_labelTextFont;
 		_valueTextFont = a_valueTextFont;
 		
 		_labelText = a_labelText;
 		_valueText = a_valueText;
+		
+		_iconSource = a_iconSource;
+		_iconName = a_iconName;
 	}
 	
 	public function initWidgetCommit(): Void
 	{
+		loadIcon();
 		updateLabelTextFormat();
 		updateValueTextFormat();
 		updateBackgroundSize();
@@ -359,7 +366,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
-	public function setWidgetLabelText(a_val: String)
+	public function setWidgetLabelText(a_val: String): Void
 	{
 		if (_labelText == a_val)
 			return
@@ -370,7 +377,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 
-	public function setWidgetLabelTextFont(a_val: String)
+	public function setWidgetLabelTextFont(a_val: String): Void
 	{
 		if (_labelTextFont == a_val)
 			return;
@@ -382,7 +389,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
-	public function setWidgetLabelTextColor(a_val: Number)
+	public function setWidgetLabelTextColor(a_val: Number): Void
 	{
 		if (_labelTextColor == a_val)
 			return;
@@ -390,7 +397,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_labelTextField.textColor = _labelTextColor = a_val;
 	}
 	
-	public function setWidgetLabelTextSize(a_val: Number)
+	public function setWidgetLabelTextSize(a_val: Number): Void
 	{
 		if(_labelTextSize == a_val)
 			return;
@@ -413,7 +420,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 
-	public function setWidgetValueTextFont(a_val: String)
+	public function setWidgetValueTextFont(a_val: String): Void
 	{
 		if(_valueTextFont == a_val)
 			return;
@@ -425,7 +432,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 
-	public function setWidgetValueTextColor(a_val: Number)
+	public function setWidgetValueTextColor(a_val: Number): Void
 	{
 		if(_valueTextColor == a_val)
 			return;
@@ -433,7 +440,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextColor = _valueTextField.textColor = a_val;
 	}
 	
-	public function setWidgetValueTextSize(a_val: Number)
+	public function setWidgetValueTextSize(a_val: Number): Void
 	{
 		if(_valueTextSize == a_val)
 			return
@@ -445,7 +452,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
-	public function setWidgetTextAlign(a_val: Number)
+	public function setWidgetTextAlign(a_val: Number): Void
 	{
 		if (_textAlign == a_val)
 			return;
@@ -455,8 +462,78 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	public function setWidgetIconSize(a_val: Number): Void
+	{
+		if (_iconSize == a_val)
+			return;
+			
+		_iconSize = a_val;
+		
+		updateIcon();
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	public function setWidgetIconColor(a_val: Number): Void
+	{
+		if (_iconColor == a_val)
+			return;
+			
+		_iconColor = a_val;
+		
+		updateIcon();
+	}
+	
+	public function setWidgetIconSpacing(a_val: Number): Void
+	{
+		if (_iconSpacing == a_val)
+			return;
+			
+		_iconSpacing = a_val;
+		
+		updateElementPositions();
+	}
+	
+	public function setWidgetIconAlign(a_val: Number): Void
+	{
+		if (_iconAlign == a_val)
+			return;
+			
+		_iconAlign = a_val;
+		
+		updateElementPositions();
+	}
+	
+	public function setWidgetIconSource(a_iconSource: String, a_initIconName: String): Void
+	{
+		if (_iconSource == a_iconSource)
+			return;
+			
+		_iconSource = a_iconSource;
+		_iconName = a_initIconName;
+		
+		loadIcon();
+	}
+	
+	public function setWidgetIconName(a_iconName: String): Void
+	{
+		if (_iconName == a_iconName)
+			return;
+			
+		_iconName = a_iconName;
+		
+		updateIcon();
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
+	
+	private function loadIcon(): Void
+	{
+		var iconLoader: MovieClipLoader = new MovieClipLoader();
+		iconLoader.addListener(this);
+		iconLoader.loadClip(_iconSource, _icon);
+	}
 	
 	private function updateLabelTextFormat(): Void
 	{
@@ -491,7 +568,13 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	private function updateIcon(): Void
 	{
-		_icon.gotoAndStop("weapon_sword");
+		var tf: Transform = new Transform(_icon);
+		var colorTf: ColorTransform = new ColorTransform();
+		colorTf.rgb = _iconColor;
+		tf.colorTransform = colorTf;
+		
+		_icon._width = _icon._height = _iconSize;
+		_icon.gotoAndStop(_iconName);
 	}
 	
 	private function updateElementPositions(): Void
@@ -524,7 +607,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 				
 			} else {
 				_labelTextField._x = textStart;
-				_valueTextField._x = _widgetWidth - _paddingRight - _valueTextField._width;
+				_valueTextField._x = textEnd - _paddingRight - _valueTextField._width;
 			}
 			
 		// Case 2: Text fields have to be shrunk to fit in available space.
@@ -546,8 +629,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_labelTextField._y = _paddingTop + (availableHeight - _labelTextField._height)/2
 		_valueTextField._y = _paddingTop + (availableHeight - _valueTextField._height)/2
 		
-		_icon._width = _icon._height = _iconSize;
-		_icon._x = _paddingLeft;			
+		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + _iconSpacing) : _paddingLeft;
 		_icon._y = _paddingTop + (availableHeight - _iconSize)/2
 
 	}
