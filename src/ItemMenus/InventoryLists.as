@@ -54,6 +54,8 @@ class InventoryLists extends MovieClip
 	
 	private var _bTabbed = false;
 
+	private var _columnSelectDialog: MovieClip;
+	
 
   /* PROPERTIES */
 
@@ -68,8 +70,6 @@ class InventoryLists extends MovieClip
 	public var categoryLabel: MovieClip;
 	
 	public var columnSelectButton: Button;
-	
-	public var columnSelectDialog: MovieClip;
 	
 	private var _currentState: Number;
 	
@@ -211,7 +211,7 @@ class InventoryLists extends MovieClip
 	
 	public function onColumnSelectButtonPress(event: Object): Void
 	{
-		if (columnSelectDialog) {
+		if (_columnSelectDialog) {
 			DialogManager.close();
 			return;
 		}
@@ -223,8 +223,8 @@ class InventoryLists extends MovieClip
 		itemList.disableSelection = itemList.disableInput = true;
 		searchWidget.isDisabled = true;
 			
-		columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
-		columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
+		_columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
+		_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 	}
 	
 	public function onColumnSelectDialogClosed(event: Object): Void

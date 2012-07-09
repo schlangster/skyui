@@ -1,4 +1,4 @@
-import gfx.io.GameDelegate;
+﻿import gfx.io.GameDelegate;
 import flash.display.BitmapData;
 
 class Shared.ButtonTextArtHolder extends MovieClip
@@ -15,7 +15,7 @@ class Shared.ButtonTextArtHolder extends MovieClip
 		strButtonName = aText;
 	}
 
-	function CreateButtonArt(aInputText: String): String
+	function CreateButtonArt(aInputText: TextField): String
 	{
 		var iReplacerStart: Number = aInputText.text.indexOf("[");
 		var iReplacerEnd: Number = iReplacerStart == -1 ? -1 : aInputText.text.indexOf("]", iReplacerStart);
