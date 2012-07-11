@@ -13,20 +13,32 @@ import skyui.util.DialogManager;
 import skyui.util.ConfigManager;
 
 
-
 class OptionChangeDialog extends BasicDialog
 {	
+  /* CONSTANTS */
+	
+	public var OPTION_SLIDER = 0;
+	public var OPTION_MENU = 1;
+	
+
+  /* PRIVATE VARIABLES */
+  
+	private var _updateButtonID: Number;
+	
+
   /* STAGE ELEMENTS */
 
 	public var background: MovieClip;
 	public var confirmButton: CrossPlatformButtons;
 	public var cancelButton: CrossPlatformButtons;
 	public var defaultButton: CrossPlatformButtons;
+	
+	public var sliderContent: MovieClip;
 
 	
   /* PROPERTIES */
 	
-	public var layout: ListLayout;
+	public var optionType: ListLayout;
 	
 	
   /* CONSTRUCTORS */
@@ -41,8 +53,12 @@ class OptionChangeDialog extends BasicDialog
 	
 	public function onLoad(): Void
 	{
+
+		initButtons();
 		
-		setButtons();
+		sliderContent.slider.setScrollProperties(0.7, 0, 20);
+		sliderContent.slider.addEventListener("scroll", this, "onScroll");
+		sliderContent.slider.position = 50;
 	}
 	
 	public function onDialogOpening(): Void
@@ -74,29 +90,45 @@ class OptionChangeDialog extends BasicDialog
 		return bCaught;
 	}
 	
-	var _updateButtonID;
 	
-	private function setButtons(): Void
+  /* PRIVATE FUNCTIONS */
+	
+	private function initButtons(): Void
 	{
 		var platform = _global.skyui.platform;
 		confirmButton.SetPlatform(platform, false);
 		cancelButton.SetPlatform(platform, false);
 		defaultButton.SetPlatform(platform, false);
-		
+
+		confirmButton.addEventListener("press", this, "onConfirmPress");
+		cancelButton.addEventListener("press", this, "onCancelPress");
+		defaultButton.addEventListener("press", this, "onDefaultPress");
+
 		_updateButtonID = setInterval(this, "updateButtonPositions", 1);
 	}
 	
-	function updateButtonPositions()
+	private function updateButtonPositions(): Void
 	{
 		clearInterval(_updateButtonID);
 		delete _updateButtonID;
+		
 		cancelButton._x = (background._width / 2) - cancelButton.textField.textWidth - 30;
+		confirmButton._x = cancelButton._x - cancelButton.textField.textWidth - 30;
+		defaultButton._x = -(background._width / 2) + 55;
 	}
 	
-	
-  /* PRIVATE FUNCTIONS */
-	
-	private function setColumnListData()
+	private function onCancelPress(): Void
 	{
+		DialogManager.close();
+	}
+	
+	private function onConfirmPress(): Void
+	{
+		DialogManager.close();
+	}
+	
+	private function onDefaultPress(): Void
+	{
+		DialogManager.close();
 	}
 }

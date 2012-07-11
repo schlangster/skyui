@@ -25,9 +25,6 @@ class ConfigPanel extends MovieClip
 	// Quest_Journal_mc
 	private var _parentMenu: MovieClip;
 	
-	private var _platform: Number = 0;
-	private var _bPS3Switch: Boolean = false;
-	
 	private var _modList: ScrollingList;
 	private var _subList: ScrollingList;
 	private var _optionsList: MultiColumnScrollingList;
@@ -104,20 +101,45 @@ class ConfigPanel extends MovieClip
 	
 	public function onModListPress(a_event: Object): Void
 	{
+		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
+		_subList.UpdateList();
 		contentHolder.modListPanel.showSublist();
 	}
 	
 	public function onSubListPress(a_event: Object): Void
 	{
-		contentHolder.modListPanel.showList();
+		var e = a_event.entry;
+		if (e == undefined)
+			return;
+		
+		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = e;
+		_subList.UpdateList();
 	}
 	
 	public function onOptionPress(a_event: Object): Void
 	{
 		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
-		_optionChangeDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		
-		contentHolder._alpha = 50;
+		gotoAndPlay("dimOut");
+	}
+	
+	public function onOptionChangeDialogClosing(event: Object): Void
+	{
+//		categoryList.disableSelection = categoryList.disableInput = false;
+//		itemList.disableSelection = itemList.disableInput = false;
+//		searchWidget.isDisabled = false;
+		
+		gotoAndPlay("dimIn");
+	}
+	
+	
+	public function onOptionChangeDialogClosed(event: Object): Void
+	{
+//		categoryList.disableSelection = categoryList.disableInput = false;
+//		itemList.disableSelection = itemList.disableInput = false;
+//		searchWidget.isDisabled = false;
 	}
 	
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean

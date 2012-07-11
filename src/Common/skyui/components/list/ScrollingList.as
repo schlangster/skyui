@@ -23,6 +23,9 @@ class skyui.components.list.ScrollingList extends BasicList
   /* STAGE ELEMENTS */
   
 	public var scrollbar: MovieClip;
+	
+	public var scrollUpButton: MovieClip;
+	public var scrollDownButton: MovieClip;
 
 
   /* PROPERTIES */
@@ -187,6 +190,11 @@ class skyui.components.list.ScrollingList extends BasicList
 			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 				if (e._parent == this && e._visible && e.itemIndex != undefined)
 					doSetSelectedIndex(e.itemIndex, SELECT_MOUSE);
+					
+		if (scrollUpButton != undefined)
+			scrollUpButton._visible = _scrollPosition > 0;
+		if (scrollDownButton != undefined) 
+			scrollDownButton._visible = _scrollPosition < _maxScrollPosition;
 	}
 
 	// @override BasicList

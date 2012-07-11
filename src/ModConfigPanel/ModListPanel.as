@@ -26,9 +26,11 @@ class ModListPanel extends MovieClip
   /* PRIVATE VARIABLES */
 	
 	private var _state: Number = INIT;
-	private var _transitionPhase: Number = 0;
 
 	private var _titleText : String;
+	
+	private var _modList: ScrollingList;
+	private var _subList: ScrollingList;
 
 
   /* STAGE ELEMENTS */
@@ -37,11 +39,10 @@ class ModListPanel extends MovieClip
 	public var decorTitle: MovieClip;
 	public var decorBottom: MovieClip;
 	
-	public var _modList: ScrollingList;
-	public var _subList: ScrollingList;
-	
 	public var modListFader: MovieClip;
 	public var subListFader: MovieClip;
+	
+	public var sublistIndicator: MovieClip;
 	
 	
   /* CONSTRUCTOR */
@@ -51,11 +52,6 @@ class ModListPanel extends MovieClip
 		_modList = modListFader.list;
 		_subList = subListFader.list;
 	}
-	
-	
-  /* PUBLIC FUNCTIONS */
-  
-
 	
 
   /* PUBLIC FUNCTIONS */
@@ -67,7 +63,11 @@ class ModListPanel extends MovieClip
 		hideDecorTitle(true);
 		modListFader.gotoAndStop("show");
 		subListFader.gotoAndStop("hide");
+		sublistIndicator._visible = false;
+		
 		_state = LIST_ACTIVE;
+		
+		_subList.addEventListener("itemPress", this, "onSubListPress");
 	}
   
 	public function showList(): Void
@@ -117,6 +117,8 @@ class ModListPanel extends MovieClip
 				_modList.selectedIndex = -1;
 				_modList.disableInput = true;
 				_modList.disableSelection = true;
+				
+				sublistIndicator._visible = false;
 				
 				break;
 				
@@ -170,6 +172,12 @@ class ModListPanel extends MovieClip
 				setState(LIST_ACTIVE);
 				break;
 		}
+	}
+	
+	public function onSubListPress(a_event: Object): Void
+	{
+
+		
 	}
 
 
