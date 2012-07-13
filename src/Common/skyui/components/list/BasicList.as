@@ -206,7 +206,7 @@ class skyui.components.list.BasicList extends BSList
 		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
 			
-		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, clip: selectedClip, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
 	private function onItemPressAux(a_index: Number, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
@@ -214,7 +214,7 @@ class skyui.components.list.BasicList extends BSList
 		if (disableInput || disableSelection || _selectedIndex == -1 || a_buttonIndex != 1)
 			return;
 		
-		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, keyboardOrMouse: a_keyboardOrMouse});
+		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, clip: selectedClip, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
 	public function onItemRollOver(a_index: Number): Void

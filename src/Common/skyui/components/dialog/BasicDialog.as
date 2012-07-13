@@ -25,7 +25,7 @@ class skyui.components.dialog.BasicDialog extends MovieClip
 	public function BasicDialog()
 	{
 		EventDispatcher.initialize(this);
-		_alpha = 0;
+		Mouse.addListener(this);
 	}
 	
 
@@ -89,6 +89,7 @@ class skyui.components.dialog.BasicDialog extends MovieClip
 		if (a_newState == OPENING) {
 			if (onDialogOpening)
 				onDialogOpening();
+			dispatchEvent({type: "dialogOpening"});
 			
 		} else if (a_newState == OPEN) {
 			if (onDialogOpen)
@@ -98,6 +99,7 @@ class skyui.components.dialog.BasicDialog extends MovieClip
 		} else if (a_newState == CLOSING) {
 			if (onDialogClosing)
 				onDialogClosing();
+			dispatchEvent({type: "dialogClosing"});
 
 		} else if (a_newState == CLOSED) {
 			if (onDialogClosed)

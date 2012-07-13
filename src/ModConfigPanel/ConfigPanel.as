@@ -7,6 +7,7 @@ import Shared.GlobalFunc;
 import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ButtonEntryFormatter;
 import skyui.components.list.ScrollingList;
+import skyui.util.DialogManager;
 
 
 class ConfigPanel extends MovieClip
@@ -30,11 +31,12 @@ class ConfigPanel extends MovieClip
 
 	private var _state: Number;
 	
+	private var _optionChangeDialog: MovieClip;
+	
 	
   /* STAGE ELEMENTS */
 
-	public var modListPanel: ModListPanel;
-	public var optionsPanel: MovieClip;
+	public var contentHolder: MovieClip;
 	
 	
   /* CONSTRUCTORS */
@@ -43,9 +45,9 @@ class ConfigPanel extends MovieClip
 	{
 		_parentMenu = _root.QuestJournalFader.Menu_mc;
 
-		_modList = modListPanel.modListFader.list;
-		_subList = modListPanel.subListFader.list;
-		_optionsList = optionsPanel.optionsList;
+		_modList = contentHolder.modListPanel.modListFader.list;
+		_subList = contentHolder.modListPanel.subListFader.list;
+		_optionsList = contentHolder.optionsPanel.optionsList;
 	}
 	
 	function startPage(): Void
@@ -69,9 +71,6 @@ class ConfigPanel extends MovieClip
 	
 	function onLoad()
 	{
-		_modList.addEventListener("itemPress", this, "onModListPress");
-		_subList.addEventListener("itemPress", this, "onSubListPress");
-		
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
 		
@@ -81,8 +80,16 @@ class ConfigPanel extends MovieClip
 		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
 		_optionsList.entryFormatter = new OptionEntryFormatter(_optionsList);
 		
+		_modList.addEventListener("itemPress", this, "onModListPress");
+		_subList.addEventListener("itemPress", this, "onSubListPress");
+		_optionsList.addEventListener("itemPress", this, "onOptionPress");
+		
 		// Debug
 		Shared.GlobalFunc.MaintainTextFormat();
+		
+		_global.skyui.platform = 0;
+		_global.skyui.bPS3Switch = false;
+		
 		startPage();
 	}
 	
@@ -94,12 +101,45 @@ class ConfigPanel extends MovieClip
 	
 	public function onModListPress(a_event: Object): Void
 	{
-		modListPanel.showSublist();
+		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
+		_subList.UpdateList();
+		contentHolder.modListPanel.showSublist();
 	}
 	
 	public function onSubListPress(a_event: Object): Void
 	{
-		modListPanel.showList();
+		var e = a_event.entry;
+		if (e == undefined)
+			return;
+		
+		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = e;
+		_subList.UpdateList();
+	}
+	
+	public function onOptionPress(a_event: Object): Void
+	{
+		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
+		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		
+		gotoAndPlay("dimOut");
+	}
+	
+	public function onOptionChangeDialogClosing(event: Object): Void
+	{
+//		categoryList.disableSelection = categoryList.disableInput = false;
+//		itemList.disableSelection = itemList.disableInput = false;
+//		searchWidget.isDisabled = false;
+		
+		gotoAndPlay("dimIn");
+	}
+	
+	
+	public function onOptionChangeDialogClosed(event: Object): Void
+	{
+//		categoryList.disableSelection = categoryList.disableInput = false;
+//		itemList.disableSelection = itemList.disableInput = false;
+//		searchWidget.isDisabled = false;
 	}
 	
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -117,5 +157,4 @@ class ConfigPanel extends MovieClip
 		}
 		return bHandledInput;
 	}
-
 }

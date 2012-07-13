@@ -1,4 +1,4 @@
-import gfx.controls.RadioButton;
+﻿import gfx.controls.RadioButton;
 import gfx.controls.ButtonGroup;
 import gfx.io.GameDelegate;
 import gfx.ui.InputDetails;
@@ -193,6 +193,9 @@ class Quest_Journal extends MovieClip
 		}
 		BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
 		TabButtonHelp.gotoAndStop(aiPlatform + 1);
+
+		_global.skyui.platform = aiPlatform;
+		_global.skyui.bPS3Switch = abPS3Switch;
 	}
 
 	function DoHideMenu(): Void
