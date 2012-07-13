@@ -105,7 +105,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
-	var st = 0;
+	var st: Number = 0;
 	
 	function testFunc()
 	{
@@ -555,7 +555,7 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	private function updateBackgroundSize()
 	{
-		var h = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize));
+		var h: Number = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize));
 		
 		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
@@ -584,11 +584,11 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextField.autoSize = "left";
 		_valueTextField.textAutoSize = "none";
 		
-		var availableWidth = _widgetWidth - _paddingLeft - _paddingRight - _iconSize - _iconSpacing;
-		var availableHeight = background._height - _paddingTop - _paddingBottom;
-		var textWidth = _labelTextField._width + _valueTextField._width;
-		var textStart = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + _iconSize + _iconSpacing);
-		var textEnd = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - _iconSize - _iconSpacing) : (_widgetWidth - _paddingRight);
+		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - _iconSize - _iconSpacing;
+		var availableHeight: Number = background._height - _paddingTop - _paddingBottom;
+		var textWidth: Number = _labelTextField._width + _valueTextField._width;
+		var textStart: Number = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + _iconSize + _iconSpacing);
+		var textEnd: Number = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - _iconSize - _iconSpacing) : (_widgetWidth - _paddingRight);
 		
 		// Case 1: There's more available than required space
 		if (availableWidth >= textWidth) {
@@ -644,11 +644,11 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if (_borderWidth == 0)
 			return;
 		
-		var d = _borderWidth / 2;
-		var left = background._x - d;
-		var top = background._y - d;
-		var right =  background._width + d;
-		var bottom = background._height + d;
+		var d: Number = _borderWidth / 2;
+		var left: Number = background._x - d;
+		var top: Number = background._y - d;
+		var right: Number =  background._width + d;
+		var bottom: Number = background._height + d;
 		
 		border.lineStyle(_borderWidth, _borderColor, 100, true, "normal", _borderRounded ? "round" : "square", _borderRounded ? "round" : "miter");
 		border.moveTo(left, top);
