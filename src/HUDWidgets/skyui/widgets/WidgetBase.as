@@ -9,7 +9,7 @@
   
 	private var _clientInfo: Object;
 	private var _widgetID: String;
-	private var _container: MovieClip;
+	private var _widgetHolder: MovieClip;
 	
 	
   /* INITIALIZATION */
@@ -17,14 +17,14 @@
 	public function WidgetBase()
 	{
 		_clientInfo = {};
-		_container = _parent;
-		_widgetID = _container._name;
+		_widgetHolder = _parent;
+		_widgetID = _widgetHolder._name;
+		
 		// Allows for preview in Flash Player
-		// Works on the premise that the widget is placed on the root of the stage.
-		// When the widget is loaded by widgetLoader _root will be the root of the document which loaded the widget
-		//	and _container will be the root of the widget's document
-		if(_root != _container)
-			_container._visible = false;
+		if (_root != _widgetHolder)
+			_widgetHolder._visible = false;
+		else
+			_global.gfxExtensions = true;
 	}
 	
 	// @override MovieClip
@@ -41,21 +41,21 @@
 	{	
 		// Clear all modes
 		for (var i=0; i<MODES.length; i++)
-			delete(_container[MODES[i]]);
+			delete(_widgetHolder[MODES[i]]);
 			
 		for (var i=0; i<arguments.length; i++) {
 			var m = arguments[i];
 			if (MODES.indexOf(m) != undefined)
-				_container[arguments[i]] = true;
+				_widgetHolder[arguments[i]] = true;
 			else
 				skse.SendModEvent("widgetWarning", "WidgetID: " + _widgetID + " Invalid widget mode: " + m);
 		}
 		
 		
 		var hudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
-		_container._visible = _container.hasOwnProperty(hudMode);
+		_widgetHolder._visible = _widgetHolder.hasOwnProperty(hudMode);
 			
-		_root.HUDMovieBaseInstance.HudElements.push(_container);
+		_root.HUDMovieBaseInstance.HudElements.push(_widgetHolder);
 	}
 
   	// @Papyrus

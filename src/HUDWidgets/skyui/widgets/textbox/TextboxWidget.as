@@ -4,8 +4,21 @@ import flash.geom.ColorTransform;
 
 class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 {
-  /* PRIVATE VARIABLES */
+  /* CONSTANTS */
+
+	public static var ALIGN_BORDER = 0;
+	public static var ALIGN_LEFT = 1;
+	public static var ALIGN_RIGHT = 2;
+	public static var ALIGN_CENTER = 3;
 	
+	
+  /* PRIVATE VARIABLES */
+  
+	public var _labelTextField: TextField;
+	public var _valueTextField: TextField;
+	public var _icon: MovieClip;
+	
+	// Widget data
 	private var _widgetWidth: Number;
 	
 	private var _labelText: String;
@@ -13,16 +26,12 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	private var _labelTextColor: Number;
 	private var _labelTextAlpha: Number;
 	private var _labelTextSize: Number;
-	private var _labelTextAlign: String;
 	
 	private var _valueText: String;
 	private var _valueTextFont: String;
 	private var _valueTextColor: Number;
 	private var _valueTextAlpha: Number;
 	private var _valueTextSize: Number;
-	private var _valueTextAlign: String;
-	
-	private var _verticalAlign: String = "baseline";
 	
 	private var _paddingTop: Number;
 	private var _paddingRight: Number;
@@ -36,17 +45,22 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	private var _backgroundColor: Number;
 	private var _backgroundAlpha: Number;
+
+	private var _iconSource: String;
+	private var _iconName: String;
+	private var _iconSize: Number;
+	private var _iconColor: Number;
+	private var _iconSpacing: Number;
 	
-	private var _initialized: Boolean = false;
-	// Maybe used this instead of checking if border is defined or not?
+	private var _textAlign: Number;
+	private var _iconAlign: Number;
 	
 
   /* STAGE ELEMENTS */
 	
 	public var border: MovieClip;
 	public var background: MovieClip;
-	public var labelTextField: TextField;
-	public var valueTextField: TextField;
+	public var content: MovieClip;
 	
 
   /* INITIALIZATION */
@@ -54,6 +68,15 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	public function TextboxWidget()
 	{
 		super();
+		
+		_labelTextField = content.labelTextField;
+		_valueTextField = content.valueTextField;
+		_icon = content.icon;
+		
+		_labelTextField.autoSize = "left";
+		_labelTextField.textAutoSize = "none";
+		_valueTextField.autoSize = "left";
+		_valueTextField.textAutoSize = "none";
 	}
 	
 	// @override WidgetBase
@@ -62,14 +85,99 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		super.onLoad();
 		
 		// For testing in flash
+		initWidgetNumbers(200, 0x0099000, 100,
+						  5, 0xFF00FF, 100, 1,
+						  5, 5, 5, 5,
+						  0x00FFFF, 48, 0x00FFFF, 22,
+						  32, 0x0F55F0, 5,
+						  ALIGN_BORDER, ALIGN_RIGHT);
+		initWidgetStrings("$EverywhereFont", "$EverywhereFont",
+						  "label", "value",
+						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword");
+		initWidgetCommit();
 		
-		/*
-		setWidgetParams(500, 0xFF0000, 100, 5, 0xFFFF00, 100, 1, 100, 100, 100, 100);
-		setWidgetTextFonts("$EverywhereFont", "$EverywhereFont");
-		setWidgetTextFormats(0x00FF00, 20, 0x0000FF, 50);
-		setWidgetTexts("label", "value");
-		//setWidgetValueTextSize(50);
-		*/
+		setInterval(this, "testFunc", 1000);
+	}
+	
+	public function onLoadInit(a_icon:MovieClip)
+	{
+		updateIcon();
+		updateElementPositions();
+	}
+	
+	var st = 0;
+	
+	function testFunc()
+	{
+		st++;
+		
+		if (st == 1) {
+			setWidgetWidth(100);
+			
+		} else if (st == 2) {
+			setWidgetWidth(300);
+			
+		} else if (st == 3) {
+			setWidgetBackgroundColor(0xFF0000);
+			setWidgetValueTextColor(0x00FFFF);
+			setWidgetLabelTextColor(0xFF00FF);
+			
+		} else if (st == 4) {
+			setWidgetBackgroundAlpha(25);
+			
+		} else if (st == 5) {
+			setWidgetBorderColor(0xFFFF00);
+			
+		} else if (st == 6) {
+			setWidgetBorderWidth(10);
+			
+		} else if (st == 7) {
+			setWidgetBorderAlpha(25);
+			
+		} else if (st == 8) {
+			setWidgetBorderRounded(0);
+			
+		} else if (st == 9) {
+			setWidgetLabelText("Test Label");
+			
+		} else if (st == 10) {
+			setWidgetValueText("Test Value");
+			
+		} else if (st == 11) {
+			setWidgetLabelTextFont("$EverywhereMediumFont");
+			setWidgetValueTextFont("$EverywhereMediumFont");
+			setWidgetLabelTextSize(26);
+			setWidgetValueTextSize(36);
+			
+		} else if (st == 12) {
+			setWidgetValueTextColor(0x00FF00);
+			setWidgetLabelTextColor(0x00FFFF);
+			
+		} else if (st == 13) {
+			setWidgetTextAlign(ALIGN_LEFT);
+			
+		} else if (st == 14) {
+			setWidgetTextAlign(ALIGN_RIGHT);
+			
+		} else if (st == 15) {
+			setWidgetTextAlign(ALIGN_CENTER);
+			
+		} else if (st == 16) {
+			setWidgetTextAlign(ALIGN_BORDER);
+			
+		} else if (st == 17) {
+			setWidgetTexts("Test Labelsss", "Tost");
+			setWidgetIconName("weapon_bow");
+			setWidgetLabelTextSize(22);
+			setWidgetValueTextSize(22);
+			
+		} else if (st == 18) {
+			setWidgetIconSize(64);
+			
+		} else if (st == 19) {
+			setWidgetIconAlign(ALIGN_LEFT);
+			st =  12;
+		}
 	}
 	
   /* INTERFACE */
@@ -89,43 +197,90 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	public function getWidgetLabelTextColor(): Number	{ return _labelTextColor; }
 	public function getWidgetLabelTextAlpha(): Number	{ return _labelTextAlpha; }
 	public function getWidgetLabelTextSize(): Number	{ return _labelTextSize; }
-	public function getWidgetLabelTextAlign(): String	{ return _labelTextAlign; }
 	
 	public function getWidgetValueText(): String		{ return _valueText; }
 	public function getWidgetValueTextFont(): String	{ return _valueTextFont; }
 	public function getWidgetValueTextColor(): Number	{ return _valueTextColor; }
 	public function getWidgetValueTextAlpha(): Number	{ return _valueTextAlpha; }
 	public function getWidgetValueTextSize(): Number	{ return _valueTextSize; }
-	public function getWidgetValueTextAlign(): String	{ return _valueTextAlign; }
-	public function getWidgetVerticalAlign(): String	{ return _verticalAlign; }
 	
-	public function setWidgetWidth(a_val: Number)
+	public function getWidgetTextAlign(): Number		{ return _textAlign; }
+	
+	public function initWidgetNumbers(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number,
+									  a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number,
+									  a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number,
+									  a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
+									  a_iconSize: Number, a_iconColor: Number, a_iconSpacing: Number,
+  									  a_textAlign: Number, a_iconAlign: Number)
+	{
+		_widgetWidth = a_widgetWidth;
+		setWidgetBackgroundColor(a_backgroundColor);
+		setWidgetBackgroundAlpha(a_backgroundAlpha);
+		
+		_borderWidth = a_borderWidth;
+		_borderColor = a_borderColor;
+		_borderAlpha = a_borderAlpha;
+		_borderRounded = a_borderRounded;
+		
+		_paddingTop = a_paddingTop;
+		_paddingRight = a_paddingRight;
+		_paddingBottom = a_paddingBottom;
+		_paddingLeft = a_paddingLeft;
+		
+		setWidgetLabelTextColor(a_labelTextColor);
+		_labelTextSize = a_labelTextSize;
+		setWidgetValueTextColor(a_valueTextColor);
+		_valueTextSize = a_valueTextSize;
+
+		_iconSize = a_iconSize;
+		_iconColor = a_iconColor;
+		_iconSpacing = a_iconSpacing;
+		
+		_textAlign = a_textAlign;
+		_iconAlign = a_iconAlign;
+	}
+	
+	public function initWidgetStrings(a_labelTextFont: String, a_valueTextFont: String,
+									  a_labelText: String, a_valueText: String,
+									  a_iconSource: String, a_iconName: String): Void
+	{
+		_labelTextFont = a_labelTextFont;
+		_valueTextFont = a_valueTextFont;
+		
+		_labelText = a_labelText;
+		_valueText = a_valueText;
+		
+		_iconSource = a_iconSource;
+		_iconName = a_iconName;
+	}
+	
+	public function initWidgetCommit(): Void
+	{
+		loadIcon();
+		updateLabelTextFormat();
+		updateValueTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	public function setWidgetWidth(a_val: Number): Void
 	{
 		if (_widgetWidth == a_val)
 			return;
 			
 		_widgetWidth = a_val;
 		
-		if (_initialized) {
-			// Check padding is ok
-			setWidgetPadding(_paddingTop, _paddingRight, _paddingBottom, _paddingLeft);
-			// Reset both text positions
-			doSetLabelText(true);
-			doSetValueText(false);
-		}
+		// Reset both text positions
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
-	public function setWidgetBackgroundColor(a_val: Number)
+	public function setWidgetBackgroundColor(a_val: Number): Void
 	{
 		if (_backgroundColor == a_val)
 			return;
-		
-		if (a_val < 0x000000)
-			_backgroundColor = 0x000000;
-		else if (a_val > 0xFFFFFF)
-			_backgroundColor = 0xFFFFFF;
-		else
-			_backgroundColor = a_val;
+			
+		_backgroundColor = a_val;
 			
 		var tf: Transform = new Transform(background);
 		var colorTf: ColorTransform = new ColorTransform();
@@ -133,78 +288,59 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		tf.colorTransform = colorTf;
 	}
 
-	public function setWidgetBackgroundAlpha(a_val: Number)
+	public function setWidgetBackgroundAlpha(a_val: Number): Void
 	{
 		if (_backgroundAlpha == a_val)
 			return;
-			
-		if (a_val <= 0)
-			_backgroundAlpha = 0;
-		else if (a_val >= 100)
-			_backgroundAlpha = 100;
-		else
-			_backgroundAlpha = a_val;
 		
-		background._alpha = _backgroundAlpha; 
+		background._alpha = _backgroundAlpha = a_val;
 	}	
 
-	public function setWidgetBorderColor(a_val: Number)
+	public function setWidgetBorderColor(a_val: Number): Void
 	{
-		if (_borderColor == a_val)
+		if (_borderColor == a_val && border)
 			return;
 			
-		if (a_val < 0x000000)
-			_borderColor = 0x000000;
-		else if (a_val > 0xFFFFFF)
-			_borderColor = 0xFFFFFF;
-		else
-			_borderColor = a_val;
-			
-		if (_initialized) {
+		_borderColor = a_val;
+		
+		if (border) {
 			var tf: Transform = new Transform(border);
 			var colorTf: ColorTransform = new ColorTransform();
-			colorTf.rgb = _backgroundColor;
+			colorTf.rgb = _borderColor;
 			tf.colorTransform = colorTf;
+		} else {
+			redrawBorder();
 		}
 	}
 	
-	public function setWidgetBorderWidth(a_val: Number)
+	public function setWidgetBorderWidth(a_val: Number): Void
 	{
 		if (_borderWidth == a_val)
 			return;
 			
-		_borderWidth = (a_val > 0) ? a_val : 0;
-		
-		if (_initialized)
-			redrawBorder();
+		_borderWidth = a_val;
+		redrawBorder();
 	}
 	
-	public function setWidgetBorderAlpha(a_val: Number)
+	public function setWidgetBorderAlpha(a_val: Number): Void
 	{
 		if (_borderAlpha == a_val)
 			return;
-		
-		if (a_val < 0)
-			_borderAlpha = 0;
-		else if (a_val > 100)
-			_borderAlpha = 100;
-		else
-			_borderAlpha = a_val;
 			
-		if (_initialized)
-			border._alpha = _backgroundAlpha;
+		_borderAlpha = a_val;
+		if (border)
+			border._alpha = a_val;
+		else
+			redrawBorder();
 	}
-	
 
-	public function setWidgetBorderRounded(a_val: Number)
+	public function setWidgetBorderRounded(a_val: Number): Void
 	{
 		if (_borderRounded == a_val)
 			return;
 		
-		_borderRounded = (a_val <= 0) ? 0 : 1;
-		
-		if (_initialized)
-			redrawBorder();
+		_borderRounded = a_val;
+		redrawBorder();
 	}
 	
 	public function setWidgetPadding(a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number): Void
@@ -212,348 +348,315 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		if (_paddingTop == a_paddingTop && _paddingRight == a_paddingRight && _paddingBottom == a_paddingBottom && _paddingLeft == a_paddingLeft)
 			return;
 			
-		if (a_paddingTop > _widgetWidth/4)
-			_paddingTop = _widgetWidth/4;
-		else if (a_paddingTop < 0)
-			_paddingTop = 0;
-		else
-			_paddingTop = a_paddingTop;
-			
-		if (a_paddingRight > _widgetWidth/4)
-			_paddingRight = _widgetWidth/4;
-		else if (a_paddingRight < 0)
-			_paddingRight = 10;
-		else
-			_paddingRight = a_paddingRight + 10;
-			
-		if (a_paddingBottom > _widgetWidth/4)
-			_paddingBottom = _widgetWidth/4;
-		else if (a_paddingBottom < 0)
-			_paddingBottom = 0;
-		else
-			_paddingBottom = a_paddingTop;
-		
-		if (a_paddingLeft > _widgetWidth/4)
-			_paddingLeft = _widgetWidth/4;
-		else if (a_paddingLeft < 0)
-			_paddingLeft = 10;
-		else
-			_paddingLeft = a_paddingLeft + 10;
-		
-		if (_initialized)
-			setWidgetTexts(_labelText, _valueText);
+		_paddingTop = a_paddingTop;
+		_paddingBottom = a_paddingTop;
+		_paddingRight = a_paddingRight;
+		_paddingLeft = a_paddingLeft;
+
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
-	public function setWidgetLabelText(a_val: String)
+	public function setWidgetTexts(a_labelText: String, a_valueText: String): Void
+	{
+		_labelText = a_labelText;
+		_valueText = a_valueText;
+		
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	public function setWidgetLabelText(a_val: String): Void
 	{
 		if (_labelText == a_val)
 			return
+			
+		_labelTextField.text = _labelText = a_val;
 		
-		_labelText = a_val;
-		labelTextField.text = a_val;
-		
-		if (_initialized)
-			doSetLabelText(false);
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
-	public function setWidgetLabelTextFont(a_val: String)
+	public function setWidgetLabelTextFont(a_val: String): Void
 	{
 		if (_labelTextFont == a_val)
 			return;
 			
 		_labelTextFont = a_val;
 		
-		if (_initialized) {
-			var tf: TextFormat = labelTextField.getNewTextFormat();
-			tf.font = _labelTextFont;
-			labelTextField.setTextFormat(tf);
-			labelTextField.setNewTextFormat(tf);
-			doSetLabelText(false);
-		}
+		updateLabelTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
-	public function setWidgetLabelTextColor(a_val: Number)
+	public function setWidgetLabelTextColor(a_val: Number): Void
 	{
 		if (_labelTextColor == a_val)
 			return;
-		
-		if (a_val < 0x000000)
-			_labelTextColor = 0x000000;
-		else if (a_val > 0xFFFFFF)
-			_labelTextColor = 0xFFFFFF;
-		else
-			_labelTextColor = a_val;
 			
-		if (_initialized) {
-			var tf: TextFormat = labelTextField.getNewTextFormat();
-			tf.color = _labelTextColor;
-			labelTextField.setTextFormat(tf);
-			labelTextField.setNewTextFormat(tf);
-		}
+		_labelTextField.textColor = _labelTextColor = a_val;
 	}
 	
-	public function setWidgetLabelTextSize(a_val: Number)
+	public function setWidgetLabelTextSize(a_val: Number): Void
 	{
 		if(_labelTextSize == a_val)
 			return;
 		
 		_labelTextSize = a_val;
 		
-		if (_initialized) {
-			var tf: TextFormat = labelTextField.getNewTextFormat();
-			tf.size = _labelTextSize;
-			labelTextField.setTextFormat(tf);
-			labelTextField.setNewTextFormat(tf);
-			doSetLabelText(false);
-		}
+		updateLabelTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
-
-	public function setWidgetValueText(a_val: String)
+	public function setWidgetValueText(a_val: String): Void
 	{
 		if(_valueText == a_val)
 			return;
 			
-		_valueText = a_val;
-		valueTextField.text = a_val;
+		_valueTextField.text = _valueText = a_val;
 		
-		if (_initialized)
-			doSetValueText(false);
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
-	public function setWidgetValueTextFont(a_val: String)
+	public function setWidgetValueTextFont(a_val: String): Void
 	{
 		if(_valueTextFont == a_val)
 			return;
 			
 		_valueTextFont = a_val;
 		
-		if (_initialized) {
-			var tf: TextFormat = valueTextField.getNewTextFormat();
-			tf.font = _valueTextFont;
-			valueTextField.setTextFormat(tf);
-			valueTextField.setNewTextFormat(tf);
-		}
+		updateValueTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 
-	public function setWidgetValueTextColor(a_val: Number)
+	public function setWidgetValueTextColor(a_val: Number): Void
 	{
 		if(_valueTextColor == a_val)
 			return;
 			
-		if (a_val < 0x000000)
-			_valueTextColor = 0x000000;
-		else if (a_val > 0xFFFFFF)
-			_valueTextColor = 0xFFFFFF;
-		else
-			_valueTextColor = a_val;
-			
-		if (_initialized) {
-			var tf: TextFormat = valueTextField.getNewTextFormat();
-			tf.color = _valueTextColor;
-			valueTextField.setTextFormat(tf);
-			valueTextField.setNewTextFormat(tf);
-		}
+		_valueTextColor = _valueTextField.textColor = a_val;
 	}
 	
-	public function setWidgetValueTextSize(a_val: Number)
+	public function setWidgetValueTextSize(a_val: Number): Void
 	{
 		if(_valueTextSize == a_val)
 			return
 			
 		_valueTextSize = a_val;
 		
-		if (_initialized) {
-			var tf: TextFormat = valueTextField.getNewTextFormat();
-			tf.size = _valueTextSize;
-			valueTextField.setTextFormat(tf);
-			valueTextField.setNewTextFormat(tf);
-			doSetValueText(false);
-		}
+		updateValueTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
-
-	public function setWidgetVerticalAlign(a_val: String)
+	
+	public function setWidgetTextAlign(a_val: Number): Void
 	{
-		if (_verticalAlign == a_val)
+		if (_textAlign == a_val)
 			return;
 			
-		_verticalAlign = a_val;
+		_textAlign = a_val;
 		
-		if (_initialized)
-			verticalAlignTextFields(_verticalAlign);
+		updateElementPositions();
 	}
 	
-	public function setWidgetParams(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number,
-									a_borderAlpha: Number, a_borderRounded: Number, a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number,
-									a_paddingLeft: Number)
+	public function setWidgetIconSize(a_val: Number): Void
 	{
-		setWidgetWidth(a_widgetWidth);
-		setWidgetBackgroundColor(a_backgroundColor);
-		setWidgetBackgroundAlpha(a_backgroundAlpha);
-		setWidgetBorderWidth(a_borderWidth);
-		setWidgetBorderColor(a_borderColor);
-		setWidgetBorderAlpha(a_borderAlpha);
-		setWidgetBorderRounded(a_borderRounded);
-		setWidgetPadding(a_paddingTop, a_paddingRight, a_paddingBottom, a_paddingLeft);
-	}
-	
-	public function setWidgetTextFonts(a_labelTextFont: String, a_valueTextFont: String) {
-		setWidgetLabelTextFont(a_labelTextFont);
-		setWidgetValueTextFont(a_valueTextFont);
-	}
-	
-	public function setWidgetTextFormats(a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number) {
-		setWidgetLabelTextColor(a_labelTextColor);
-		setWidgetLabelTextSize(a_labelTextSize);
+		if (_iconSize == a_val)
+			return;
+			
+		_iconSize = a_val;
 		
-		setWidgetValueTextColor(a_valueTextColor);
-		setWidgetValueTextSize(a_valueTextSize);
-		
-		doSetTextFormats();
+		updateIcon();
+		updateBackgroundSize();
+		updateElementPositions();
 	}
 	
-	public function setWidgetTexts(a_labelText: String, a_valueText: String): Void
+	public function setWidgetIconColor(a_val: Number): Void
 	{
-		setWidgetLabelText(a_labelText);
-		setWidgetValueText(a_valueText);
+		if (_iconColor == a_val)
+			return;
+			
+		_iconColor = a_val;
 		
-		doSetLabelText(true); // No resize
-		doSetValueText(false);
+		updateIcon();
+	}
+	
+	public function setWidgetIconSpacing(a_val: Number): Void
+	{
+		if (_iconSpacing == a_val)
+			return;
+			
+		_iconSpacing = a_val;
+		
+		updateElementPositions();
+	}
+	
+	public function setWidgetIconAlign(a_val: Number): Void
+	{
+		if (_iconAlign == a_val)
+			return;
+			
+		_iconAlign = a_val;
+		
+		updateElementPositions();
+	}
+	
+	public function setWidgetIconSource(a_iconSource: String, a_initIconName: String): Void
+	{
+		if (_iconSource == a_iconSource)
+			return;
+			
+		_iconSource = a_iconSource;
+		_iconName = a_initIconName;
+		
+		loadIcon();
+	}
+	
+	public function setWidgetIconName(a_iconName: String): Void
+	{
+		if (_iconName == a_iconName)
+			return;
+			
+		_iconName = a_iconName;
+		
+		updateIcon();
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
 	
-	private function doSetLabelText(a_noResize: Boolean): Void
+	private function loadIcon(): Void
 	{
-		labelTextField.autoSize = "left";
-		labelTextField.textAutoSize = "none";
-		
-		labelTextField.border = true;
-		labelTextField.borderColor = 0xFF00FF;
-		
-		labelTextField._x = _paddingLeft;
-		labelTextField._y = _paddingTop;
-		
-		if (!a_noResize) {
-			fixTextOverlap();
-			verticalAlignTextFields(_verticalAlign);
-			updateBackground();
-		}
+		var iconLoader: MovieClipLoader = new MovieClipLoader();
+		iconLoader.addListener(this);
+		iconLoader.loadClip(_iconSource, _icon);
 	}
 	
-	private function doSetValueText(a_noResize: Boolean): Void
+	private function updateLabelTextFormat(): Void
 	{
-		valueTextField.autoSize = "left";
-		valueTextField.textAutoSize = "none";
-		
-		valueTextField.border = true;
-		valueTextField.borderColor = 0xFFFF00;
-		
-		valueTextField._x = _widgetWidth - _paddingRight - valueTextField._width;
-		valueTextField._y = _paddingTop;
-		
-		if (!a_noResize) {
-			fixTextOverlap();
-			verticalAlignTextFields(_verticalAlign);
-			updateBackground();
-		}
+		var tf: TextFormat = _labelTextField.getTextFormat();
+		tf.size = _labelTextSize;
+		tf.font = _labelTextFont;
+		_labelTextField.setTextFormat(tf);
+		_labelTextField.setNewTextFormat(tf);
 	}
 	
-	private function doSetTextFormats() {
-		// Updates all text formats so we don't have unnecessarry setNewTextFormats..
-		var labelTf: TextFormat = new TextFormat();
-		labelTf.color = _labelTextColor;
-		labelTf.font = _labelTextFont;
-		labelTf.size = _labelTextSize;
-		labelTextField.setNewTextFormat(labelTf);
-		
-		var valueTf: TextFormat = new TextFormat();
-		valueTf.color = _valueTextColor;
-		valueTf.font = _valueTextFont;
-		valueTf.size = _valueTextSize;
-		valueTextField.setNewTextFormat(valueTf);
+	private function updateValueTextFormat(): Void
+	{
+		var tf: TextFormat = _valueTextField.getTextFormat();
+		tf.size = _valueTextSize;
+		tf.font = _valueTextFont;
+		_valueTextField.setTextFormat(tf);
+		_valueTextField.setNewTextFormat(tf);
 	}
 	
-	private function updateBackground()
+	private function updateBackgroundSize()
 	{
-		var h = _paddingTop + _paddingBottom + Math.max(labelTextField._height, valueTextField._height);
+		var h = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize));
+		
 		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
-			
+
 		background._height = h;
 		background._width = _widgetWidth;
+		
 		redrawBorder();
 	}
 	
-	private function fixTextOverlap(): Void
+	private function updateIcon(): Void
 	{
-		var availableWidth = _widgetWidth - _paddingLeft - _paddingRight;
-		var textWidth = labelTextField._width + valueTextField._width;
-		if (availableWidth > textWidth)
-			return;
+		var tf: Transform = new Transform(_icon);
+		var colorTf: ColorTransform = new ColorTransform();
+		colorTf.rgb = _iconColor;
+		tf.colorTransform = colorTf;
+		
+		_icon._width = _icon._height = _iconSize;
+		_icon.gotoAndStop(_iconName);
+	}
+	
+	private function updateElementPositions(): Void
+	{
+		_labelTextField.autoSize = "left";
+		_labelTextField.textAutoSize = "none";
+		_valueTextField.autoSize = "left";
+		_valueTextField.textAutoSize = "none";
+		
+		var availableWidth = _widgetWidth - _paddingLeft - _paddingRight - _iconSize - _iconSpacing;
+		var availableHeight = background._height - _paddingTop - _paddingBottom;
+		var textWidth = _labelTextField._width + _valueTextField._width;
+		var textStart = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + _iconSize + _iconSpacing);
+		var textEnd = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - _iconSize - _iconSpacing) : (_widgetWidth - _paddingRight);
+		
+		// Case 1: There's more available than required space
+		if (availableWidth >= textWidth) {
 			
-		labelTextField.autoSize = "none";
-		labelTextField.textAutoSize = "shrink";
+			if (_textAlign == ALIGN_LEFT) {
+				_labelTextField._x = textStart;
+				_valueTextField._x = _labelTextField._x + _labelTextField._width;
+				
+			} else if (_textAlign == ALIGN_RIGHT) {
+				_valueTextField._x = textEnd - _valueTextField._width;
+				_labelTextField._x = _valueTextField._x - _labelTextField._width;
+				
+			} else if (_textAlign == ALIGN_CENTER) {
+				_labelTextField._x = textStart + ((availableWidth - textWidth) / 2);
+				_valueTextField._x = _labelTextField._x + _labelTextField._width;
+				
+			} else {
+				_labelTextField._x = textStart;
+				_valueTextField._x = textEnd - _paddingRight - _valueTextField._width;
+			}
+			
+		// Case 2: Text fields have to be shrunk to fit in available space.
+		// No need for alignment because there's no free space.
+		} else {
+			_labelTextField.autoSize = "none";
+			_labelTextField.textAutoSize = "shrink";
+			
+			_valueTextField.autoSize = "none";
+			_valueTextField.textAutoSize = "shrink";
+			
+			_labelTextField._width = availableWidth * (_labelTextField._width / textWidth);
+			_valueTextField._width = availableWidth * (_valueTextField._width / textWidth);
+			
+			_labelTextField._x = textStart;
+			_valueTextField._x = _labelTextField._x + _labelTextField._width;
+		}
+
+		_labelTextField._y = _paddingTop + (availableHeight - _labelTextField._height)/2
+		_valueTextField._y = _paddingTop + (availableHeight - _valueTextField._height)/2
 		
-		valueTextField.autoSize = "none";
-		valueTextField.textAutoSize = "shrink";
-		
-		
-		labelTextField._width = availableWidth * (labelTextField._width / textWidth);
-		labelTextField._height = labelTextField.textHeight;
-		
-		valueTextField._width = availableWidth * (valueTextField._width / textWidth);
-		valueTextField._height = valueTextField.textHeight;
-		
-		labelTextField._x = _paddingLeft;
-		labelTextField._y = _paddingTop;
-		
-		valueTextField._x = _widgetWidth - _paddingRight - valueTextField._width;
-		valueTextField._y = _paddingTop;
+		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + _iconSpacing) : _paddingLeft;
+		_icon._y = _paddingTop + (availableHeight - _iconSize)/2
+
 	}
 	
 	private function redrawBorder(): Void
 	{
-		if (!_initialized) {
-			_initialized = true;
-		} else {
-			if (border != undefined)
-				border.removeMovieClip();
-		}
+		if (border != undefined)
+			border.removeMovieClip();
 		
 		createEmptyMovieClip("border", getNextHighestDepth());
 		
 		if (_borderWidth == 0)
 			return;
 		
-		var _borderLimits = new Object();
-		_borderLimits["left"] = 0 - _borderWidth/2;
-		_borderLimits["top"] = 0 - _borderWidth/2;
-		_borderLimits["right"] = _widgetWidth + _borderWidth/2;
-		_borderLimits["bottom"] = background._height + _borderWidth/2;
+		var d = _borderWidth / 2;
+		var left = background._x - d;
+		var top = background._y - d;
+		var right =  background._width + d;
+		var bottom = background._height + d;
 		
-		border.lineStyle(_borderWidth, _borderColor, 100, true, "normal", (_borderRounded) ? "round" : "square", (_borderRounded) ? "round" : "miter");
-		border.moveTo(_borderLimits.left, _borderLimits.top);
-		border.lineTo(_borderLimits.right, _borderLimits.top);
-		border.lineTo(_borderLimits.right, _borderLimits.bottom);
-		border.lineTo(_borderLimits.left, _borderLimits.bottom);
-		border.lineTo(_borderLimits.left, _borderLimits.top);
+		border.lineStyle(_borderWidth, _borderColor, 100, true, "normal", _borderRounded ? "round" : "square", _borderRounded ? "round" : "miter");
+		border.moveTo(left, top);
+		border.lineTo(right, top);
+		border.lineTo(right, bottom);
+		border.lineTo(left, bottom);
+		border.lineTo(left, top);
 		
 		border._alpha = _borderAlpha;
-	}
-	
-	private function verticalAlignTextFields(a_align: String) {
-		var offset = new Object({top: 0,
-								 center: Math.abs(labelTextField._height - valueTextField._height)/2,
-								 baseline: Math.abs((labelTextField._height - labelTextField.getLineMetrics(labelTextField.numLines - 1)["descent"]) - (valueTextField._height - valueTextField.getLineMetrics(valueTextField.numLines - 1)["descent"])),
-								 bottom: Math.abs(labelTextField._height - valueTextField._height)});
-		if(labelTextField._height > valueTextField._height) {
-			if (offset[a_align] != undefined)
-				valueTextField._y += offset[a_align]
-		} else {
-			if (offset[a_align] != undefined)
-				labelTextField._y += offset[a_align]
-		}
 	}
 }
