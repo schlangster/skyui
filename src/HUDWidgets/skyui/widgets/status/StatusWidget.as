@@ -1,8 +1,10 @@
 ﻿import skyui.widgets.WidgetBase;
+import Shared.GlobalFunc;
 import flash.geom.Transform;
 import flash.geom.ColorTransform;
+import flash.geom.Matrix;
 
-class skyui.widgets.textbox.TextboxWidget extends WidgetBase
+class skyui.widgets.status.StatusWidget extends WidgetBase
 {
   /* CONSTANTS */
 
@@ -17,6 +19,13 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	public var _labelTextField: TextField;
 	public var _valueTextField: TextField;
 	public var _icon: MovieClip;
+	
+	public var _meter: MovieClip;
+	public var _meterFrameContent: MovieClip;
+	public var _meterFillContent: MovieClip;
+	public var _meterFlashAnim: MovieClip;
+	public var _meterBarAnim: MovieClip;
+	public var _meterBar: MovieClip;
 	
 	// Widget data
 	private var _widgetWidth: Number;
@@ -55,6 +64,20 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	private var _textAlign: Number;
 	private var _iconAlign: Number;
 	
+	private var _meterCurrentPercent: Number;
+	private var _meterTargetPercent: Number;
+	private var _meterEmptyIdx: Number;
+	private var _meterFullIdx: Number;
+	
+	private var _meterPadding: Number;
+	private var _meterScale: Number;
+	private var _meterFillMode: String;
+	private var _meterFillSpeed: Number;
+	private var _meterEmptySpeed: Number;
+	private var _meterColorA: Number;
+	private var _meterColorB: Number;
+	private var _meterFlashColor: Number;
+	
 
   /* STAGE ELEMENTS */
 	
@@ -73,6 +96,13 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextField = content.valueTextField;
 		_icon = content.icon;
 		
+		_meter = content.meterContent;
+		_meterFrameContent = _meter.meterFrameHolder.meterFrameContent
+		_meterFillContent = _meter.meterFillHolder.meterFillContent;
+		_meterFlashAnim = _meterFrameContent.meterFlashAnim;
+		_meterBarAnim = _meterFillContent.meterBarAnim;
+		_meterBar = _meterBarAnim.meterBar;
+		
 		_labelTextField.autoSize = "left";
 		_labelTextField.textAutoSize = "none";
 		_valueTextField.autoSize = "left";
@@ -85,24 +115,31 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		super.onLoad();
 		
 		// For testing in flash
-		initWidgetNumbers(200, 0x0099000, 100,
+		/*initWidgetNumbers(200, 0x0099000, 100,
 						  5, 0xFF00FF, 100, 1,
 						  5, 5, 5, 5,
 						  0x00FFFF, 48, 0x00FFFF, 22,
 						  32, 0x0F55F0, 5,
-						  ALIGN_BORDER, ALIGN_RIGHT);
+						  ALIGN_BORDER, ALIGN_RIGHT, 5, 50, 0x003300, 0x339966, 0x009900);
 		initWidgetStrings("$EverywhereFont", "$EverywhereFont",
 						  "label", "value",
-						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword");
+						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword", "right");
 		initWidgetCommit();
 		
-		setInterval(this, "testFunc", 1000);
+		setInterval(this, "testFunc", 1000);*/
 	}
 	
-	public function onLoadInit(a_icon:MovieClip)
+	public function onLoadInit(a_icon: MovieClip)
 	{
+	skse.Log("onLoadInit")
 		updateIcon();
 		updateElementPositions();
+	}
+	
+	public function onLoadError(a_icon:MovieClip, a_errorCode: String)
+	{
+	skse.Log("onLoadError: " + a_errorCode)
+		skse.SendModEvent("widgetWarning", "WidgetID: " + _widgetID + " Invalid widget mode: " + a_errorCode);
 	}
 	
 	var st: Number = 0;
@@ -110,13 +147,15 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	function testFunc()
 	{
 		st++;
-		
+		trace(st)
 		if (st == 1) {
+			setMeterPercent(0)
 			setWidgetWidth(100);
-			
+			setWidgetLabelText("");
 		} else if (st == 2) {
 			setWidgetWidth(300);
-			
+			startMeterFlash();
+			setWidgetMeterFillMode("center");
 		} else if (st == 3) {
 			setWidgetBackgroundColor(0xFF0000);
 			setWidgetValueTextColor(0x00FFFF);
@@ -206,13 +245,30 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 	
 	public function getWidgetTextAlign(): Number		{ return _textAlign; }
 	
+	public function getWidgetIconSize(): Number			{return _iconSize;}
+	public function getWidgetIconColor(): Number			{return _iconColor;}
+	public function getWidgetIconSpacing(): Number		{return _iconSpacing;}
+	public function getWidgetIconAlign(): Number			{return _iconAlign;}
+	public function getWidgetIconSource(): String			{return _iconSource;}
+	public function getWidgetIconName(): String			{return _iconName;}
+	
+	public function getWidgetMeterScale(): Number		{ return _meterScale; }
+	public function getWidgetMeterFillMode(): String	{ return _meterFillMode; }
+	public function getWidgetMeterFlashColor(): Number	{ return _meterFlashColor; }
+	public function getMeterPercent(): Number			{ return _meterTargetPercent; } //Returns the target percent
+	
+	
+	
+	
 	public function initWidgetNumbers(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number,
 									  a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number,
 									  a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number,
 									  a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
 									  a_iconSize: Number, a_iconColor: Number, a_iconSpacing: Number,
-  									  a_textAlign: Number, a_iconAlign: Number)
+  									  a_textAlign: Number, a_iconAlign: Number, a_meterPadding: Number, a_meterScale: Number,
+									  a_meterColorA: Number, a_meterColorB: Number, a_meterFlashColor: Number): Void
 	{
+	skse.Log("initWidgetNumbers");
 		_widgetWidth = a_widgetWidth;
 		setWidgetBackgroundColor(a_backgroundColor);
 		setWidgetBackgroundAlpha(a_backgroundAlpha);
@@ -238,20 +294,30 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		_textAlign = a_textAlign;
 		_iconAlign = a_iconAlign;
+		
+		_meterPadding = a_meterPadding;
+		_meterScale = a_meterScale;
+		
+		_meterColorA = a_meterColorA;
+		_meterColorB = a_meterColorB;
+		_meterFlashColor = a_meterFlashColor;
 	}
 	
 	public function initWidgetStrings(a_labelTextFont: String, a_valueTextFont: String,
 									  a_labelText: String, a_valueText: String,
-									  a_iconSource: String, a_iconName: String): Void
+									  a_iconSource: String, a_iconName: String,
+									  a_meterFillMode: String): Void
 	{
 		_labelTextFont = a_labelTextFont;
 		_valueTextFont = a_valueTextFont;
 		
-		_labelText = a_labelText;
-		_valueText = a_valueText;
+		_labelTextField.text = _labelText = a_labelText;
+		_valueTextField.text = _valueText = a_valueText;
 		
 		_iconSource = a_iconSource;
 		_iconName = a_iconName;
+		
+		_meterFillMode = a_meterFillMode;
 	}
 	
 	public function initWidgetCommit(): Void
@@ -259,8 +325,14 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		loadIcon();
 		updateLabelTextFormat();
 		updateValueTextFormat();
+		
+		updateMeterFillMode();
+		updateMeterFlashColor();
+		
 		updateBackgroundSize();
 		updateElementPositions();
+		
+		onEnterFrame = updateMeter;
 	}
 	
 	public function setWidgetWidth(a_val: Number): Void
@@ -525,6 +597,52 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		updateIcon();
 	}
 	
+	public function setWidgetMeterScale(a_meterScale: Number): Void
+	{
+		if (_meterScale == a_meterScale)
+			return;
+			
+		_meterScale = a_meterScale;
+		
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	public function setWidgetMeterFillMode(a_meterFillMode: String): Void
+	{
+		if (_meterFillMode == a_meterFillMode)
+			return;
+			
+		_meterFillMode = a_meterFillMode;
+		
+		updateMeterFillMode();
+	}
+	
+	public function setWidgetMeterFlashColor(a_meterFlashColor: Number): Void
+	{
+		if (_meterFlashColor == a_meterFlashColor)
+			return;
+			
+		_meterFlashColor = a_meterFlashColor;
+			
+		updateMeterFlashColor();
+	}
+	
+	public function startMeterFlash(): Void
+	{
+		if (_meterFlashAnim.meterFlashing) // Set on the timeline
+			return;
+		_meterFlashAnim.gotoAndPlay("StartFlash");
+	}
+	
+	public function setMeterPercent(a_percent: Number, a_force: Boolean): Void
+	{
+		setMeterTargetPercent(a_percent);
+		
+		if (a_force)
+			setMeterCurrentPercent(_meterTargetPercent);
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
 	
@@ -553,9 +671,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextField.setNewTextFormat(tf);
 	}
 	
-	private function updateBackgroundSize()
+	private function updateBackgroundSize(): Void
 	{
-		var h: Number = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize));
+		var meterHeight: Number = _meterFrameContent._height * _meterScale/100;
+		var h: Number = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize)) + _meterPadding + meterHeight;
 		
 		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
@@ -585,7 +704,10 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		_valueTextField.textAutoSize = "none";
 		
 		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - _iconSize - _iconSpacing;
-		var availableHeight: Number = background._height - _paddingTop - _paddingBottom;
+		var meterHeight: Number = _meterFrameContent._height * _meterScale/100;
+		var availableHeight: Number = background._height - _paddingTop - _paddingBottom - _meterPadding - meterHeight;
+		var meterWidth: Number = _widgetWidth - _paddingLeft - _paddingRight;
+		
 		var textWidth: Number = _labelTextField._width + _valueTextField._width;
 		var textStart: Number = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + _iconSize + _iconSpacing);
 		var textEnd: Number = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - _iconSize - _iconSpacing) : (_widgetWidth - _paddingRight);
@@ -631,7 +753,14 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		
 		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + _iconSpacing) : _paddingLeft;
 		_icon._y = _paddingTop + (availableHeight - _iconSize)/2
-
+		
+		_meter._x = _paddingLeft;
+		_meter._y = background._height - meterHeight - _paddingBottom;
+		_meter._xscale = _meter._yscale = _meterScale;
+		
+		var newWidth: Number = meterWidth * 100/_meterScale;
+		_meterFrameContent._width = newWidth;
+		_meterFillContent._xscale = (newWidth - (33.25 + 33.25)) /  366.4 * 100;
 	}
 	
 	private function redrawBorder(): Void
@@ -658,5 +787,143 @@ class skyui.widgets.textbox.TextboxWidget extends WidgetBase
 		border.lineTo(left, top);
 		
 		border._alpha = _borderAlpha;
+	}
+	
+	private function initMeter(): Void
+	{
+		// Draws the meter
+		var w: Number = _meterBar._width;
+		var h: Number = _meterBar._height;
+		var meterBevel: MovieClip = _meterBar.meterBevel;
+		var meterShine: MovieClip = _meterBar.meterShine;
+		
+		var colors: Array = [0xCCCCCC, 0xFFFFFF, 0x000000, 0x000000, 0x000000];
+		var alphas: Array = [10,       60,       0,        10,       30];
+		//var ratios: Array = [0,        25,       25,       140,      153,      153,      255];
+		var ratios: Array = [0,       115,      128,      128,      255];
+		var matrix: Matrix = new Matrix();
+		
+		if (meterShine != undefined)
+			return;
+			
+		meterShine = _meterBar.createEmptyMovieClip("meterShine", 2);
+		
+		meterBevel.swapDepths(1);
+		matrix.createGradientBox(w, h, Math.PI/2);
+		meterShine.beginGradientFill("linear", colors, alphas, ratios, matrix);
+		meterShine.moveTo(0,0);
+		meterShine.lineTo(w, 0);
+		meterShine.lineTo(w, h);
+		meterShine.lineTo(0, h);
+		meterShine.lineTo(0, 0);
+		meterShine.endFill();
+	}
+	
+	private function updateMeterFillMode(): Void
+	{
+		switch(_meterFillMode) {
+			case "left":
+			case "center":
+			case "right":
+				break;
+			default:
+				_meterFillMode = "right"
+		}
+		
+		_meterFillContent.gotoAndStop(_meterFillMode);
+		
+		initMeter();
+		
+		_meterCurrentPercent = 100;
+		_meterTargetPercent = 100;
+		_meterBarAnim.gotoAndStop("Empty");
+		_meterEmptyIdx = _meterBarAnim._currentframe;
+		_meterBarAnim.gotoAndStop("Full");
+		_meterFullIdx = _meterBarAnim._currentframe;
+		_meterFillSpeed = 2;
+		_meterEmptySpeed = 3;
+		
+		drawMeterGradient();
+	}
+	
+	private function drawMeterGradient(): Void
+	{
+		var colors: Array;
+		var alphas: Array;
+		var ratios: Array;
+		var w: Number = _meterBar._width;
+		var h: Number = _meterBar._height;
+		var meterGradient: MovieClip = _meterBar.meterGradient;
+		var matrix: Matrix = new Matrix();
+		
+		if (meterGradient != undefined)
+			meterGradient.removeMovieClip();
+			
+		meterGradient = _meterBar.createEmptyMovieClip("meterGradient", 0);
+		
+		switch(_meterFillMode) {
+			case "left":
+				colors = [_meterColorB, _meterColorA];
+				alphas = [100, 100];
+				ratios = [0, 255];
+				break;
+			case "center":
+				colors = [_meterColorA, _meterColorB, _meterColorA];
+				alphas = [100, 100, 100];
+				ratios = [0, 127, 255];
+				break;
+			case "right":
+			default:
+				colors = [_meterColorA, _meterColorB];
+				alphas = [100, 100];
+				ratios = [0, 255];
+		}
+		
+		matrix.createGradientBox(w, h);
+		meterGradient.beginGradientFill("linear", colors, alphas, ratios, matrix);
+		meterGradient.moveTo(0,0);
+		meterGradient.lineTo(w, 0);
+		meterGradient.lineTo(w, h);
+		meterGradient.lineTo(0, h);
+		meterGradient.lineTo(0, 0);
+		meterGradient.endFill();
+	}
+	
+	private function updateMeterFlashColor(): Void
+	{
+		var tf: Transform = new Transform(_meterFlashAnim);
+		var colorTf: ColorTransform = new ColorTransform();
+		colorTf.rgb = _meterFlashColor;
+		tf.colorTransform = colorTf;
+	}
+	
+	private function setMeterCurrentPercent(a_percent: Number): Void
+	{
+		_meterCurrentPercent = Math.min(100, Math.max(a_percent, 0));
+		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_meterEmptyIdx, _meterFullIdx, 0, 100, _meterCurrentPercent));
+		_meterBarAnim.gotoAndStop(meterFrame);
+	}
+	
+	private function setMeterTargetPercent(a_targetPercent: Number): Void
+	{
+		_meterTargetPercent = Math.min(100, Math.max(a_targetPercent, 0));
+	}
+	
+	private function updateMeter(): Void
+	{
+		if (_meterTargetPercent == _meterCurrentPercent)
+			return;
+			
+		if (_meterCurrentPercent < _meterTargetPercent) {
+			_meterCurrentPercent = _meterCurrentPercent + _meterFillSpeed;
+			if (_meterCurrentPercent > _meterTargetPercent)
+				_meterCurrentPercent = _meterTargetPercent;
+		} else {
+			_meterCurrentPercent = _meterCurrentPercent - _meterEmptySpeed;
+			if (_meterCurrentPercent < _meterTargetPercent)
+				_meterCurrentPercent = _meterTargetPercent;
+		}
+		
+		setMeterCurrentPercent(_meterCurrentPercent);
 	}
 }
