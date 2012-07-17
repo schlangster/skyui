@@ -27,6 +27,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	public var _meterBarAnim: MovieClip;
 	public var _meterBar: MovieClip;
 	
+	private var _iconLoader: MovieClipLoader;
+	
 	// Widget data
 	private var _widgetWidth: Number;
 	
@@ -78,6 +80,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	private var _meterColorB: Number;
 	private var _meterFlashColor: Number;
 	
+	private var _iconLoaded: Boolean;
+	
 
   /* STAGE ELEMENTS */
 	
@@ -88,7 +92,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 
   /* INITIALIZATION */
 	
-	public function TextboxWidget()
+	public function StatusWidget()
 	{
 		super();
 		
@@ -107,39 +111,45 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		_labelTextField.textAutoSize = "none";
 		_valueTextField.autoSize = "left";
 		_valueTextField.textAutoSize = "none";
+		
+		_iconLoader = new MovieClipLoader();
+		_iconLoader.addListener(this);
 	}
 	
 	// @override WidgetBase
-	function onLoad()
+	function onLoad(): Void
 	{
 		super.onLoad();
 		
 		// For testing in flash
-		/*initWidgetNumbers(200, 0x0099000, 100,
+		initWidgetNumbers(200, 0x0099000, 100,
 						  5, 0xFF00FF, 100, 1,
 						  5, 5, 5, 5,
 						  0x00FFFF, 48, 0x00FFFF, 22,
 						  32, 0x0F55F0, 5,
-						  ALIGN_BORDER, ALIGN_RIGHT, 5, 50, 0x003300, 0x339966, 0x009900);
+						  ALIGN_BORDER, ALIGN_CENTER, 5, 50, 0x003300, 0x339966, 0x009900);
 		initWidgetStrings("$EverywhereFont", "$EverywhereFont",
-						  "label", "value",
-						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword", "right");
+						  "", "",
+						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword", "center");
 		initWidgetCommit();
 		
-		setInterval(this, "testFunc", 1000);*/
+		setInterval(this, "testFunc", 1000);
 	}
 	
-	public function onLoadInit(a_icon: MovieClip)
+	// @override MovieClipLoader
+	public function onLoadInit(a_icon: MovieClip): Void
 	{
-	skse.Log("onLoadInit")
+		_iconLoaded = true;
 		updateIcon();
 		updateElementPositions();
 	}
 	
-	public function onLoadError(a_icon:MovieClip, a_errorCode: String)
+	// @override MovieClipLoader
+	public function onLoadError(a_icon:MovieClip, a_errorCode: String): Void
 	{
-	skse.Log("onLoadError: " + a_errorCode)
-		skse.SendModEvent("widgetWarning", "WidgetID: " + _widgetID + " Invalid widget mode: " + a_errorCode);
+		skse.SendModEvent("widgetWarning", "WidgetID: " + _widgetID + " IconLoadError: " + a_errorCode + " (" + _iconSource + ")");
+		
+		unloadIcon();
 	}
 	
 	var st: Number = 0;
@@ -149,13 +159,14 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		st++;
 		trace(st)
 		if (st == 1) {
-			setMeterPercent(0)
+			setWidgetMeterPercent(0)
 			setWidgetWidth(100);
 			setWidgetLabelText("");
 		} else if (st == 2) {
 			setWidgetWidth(300);
-			startMeterFlash();
+			startWidgetMeterFlash();
 			setWidgetMeterFillMode("center");
+			setWidgetIconSource("")
 		} else if (st == 3) {
 			setWidgetBackgroundColor(0xFF0000);
 			setWidgetValueTextColor(0x00FFFF);
@@ -163,6 +174,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 			
 		} else if (st == 4) {
 			setWidgetBackgroundAlpha(25);
+			setWidgetIconSource("../skyui/skyui_icons_psychosteve.swf");
 			
 		} else if (st == 5) {
 			setWidgetBorderColor(0xFFFF00);
@@ -246,29 +258,24 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	public function getWidgetTextAlign(): Number		{ return _textAlign; }
 	
 	public function getWidgetIconSize(): Number			{return _iconSize;}
-	public function getWidgetIconColor(): Number			{return _iconColor;}
+	public function getWidgetIconColor(): Number		{return _iconColor;}
 	public function getWidgetIconSpacing(): Number		{return _iconSpacing;}
-	public function getWidgetIconAlign(): Number			{return _iconAlign;}
-	public function getWidgetIconSource(): String			{return _iconSource;}
+	public function getWidgetIconAlign(): Number		{return _iconAlign;}
+	public function getWidgetIconSource(): String		{return _iconSource;}
 	public function getWidgetIconName(): String			{return _iconName;}
 	
 	public function getWidgetMeterScale(): Number		{ return _meterScale; }
 	public function getWidgetMeterFillMode(): String	{ return _meterFillMode; }
 	public function getWidgetMeterFlashColor(): Number	{ return _meterFlashColor; }
-	public function getMeterPercent(): Number			{ return _meterTargetPercent; } //Returns the target percent
+	public function getWidgetMeterPercent(): Number			{ return _meterTargetPercent; }
 	
-	
-	
-	
-	public function initWidgetNumbers(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number,
-									  a_borderWidth: Number, a_borderColor: Number, a_borderAlpha: Number, a_borderRounded: Number,
-									  a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number,
-									  a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
-									  a_iconSize: Number, a_iconColor: Number, a_iconSpacing: Number,
-  									  a_textAlign: Number, a_iconAlign: Number, a_meterPadding: Number, a_meterScale: Number,
-									  a_meterColorA: Number, a_meterColorB: Number, a_meterFlashColor: Number): Void
+	// @Papyrus
+	public function initWidgetNumbers(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number,
+										a_borderAlpha: Number, a_borderRounded: Number, a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number,
+										a_paddingLeft: Number, a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
+										a_iconSize: Number, a_iconColor: Number, a_iconSpacing: Number, a_textAlign: Number, a_iconAlign: Number,
+										a_meterPadding: Number, a_meterScale: Number, a_meterColorA: Number, a_meterColorB: Number, a_meterFlashColor: Number): Void
 	{
-	skse.Log("initWidgetNumbers");
 		_widgetWidth = a_widgetWidth;
 		setWidgetBackgroundColor(a_backgroundColor);
 		setWidgetBackgroundAlpha(a_backgroundAlpha);
@@ -303,10 +310,9 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		_meterFlashColor = a_meterFlashColor;
 	}
 	
-	public function initWidgetStrings(a_labelTextFont: String, a_valueTextFont: String,
-									  a_labelText: String, a_valueText: String,
-									  a_iconSource: String, a_iconName: String,
-									  a_meterFillMode: String): Void
+	// @Papyrus
+	public function initWidgetStrings(a_labelTextFont: String, a_valueTextFont: String, a_labelText: String, a_valueText: String, a_iconSource: String,
+										a_iconName: String, a_meterFillMode: String): Void
 	{
 		_labelTextFont = a_labelTextFont;
 		_valueTextFont = a_valueTextFont;
@@ -320,6 +326,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		_meterFillMode = a_meterFillMode;
 	}
 	
+	// @Papyrus
 	public function initWidgetCommit(): Void
 	{
 		loadIcon();
@@ -335,6 +342,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		onEnterFrame = updateMeter;
 	}
 	
+	// @Papyrus
 	public function setWidgetWidth(a_val: Number): Void
 	{
 		if (_widgetWidth == a_val)
@@ -346,7 +354,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateBackgroundSize();
 		updateElementPositions();
 	}
-
+	
+	// @Papyrus
 	public function setWidgetBackgroundColor(a_val: Number): Void
 	{
 		if (_backgroundColor == a_val)
@@ -359,15 +368,17 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		colorTf.rgb = _backgroundColor;
 		tf.colorTransform = colorTf;
 	}
-
+	
+	// @Papyrus
 	public function setWidgetBackgroundAlpha(a_val: Number): Void
 	{
 		if (_backgroundAlpha == a_val)
 			return;
 		
 		background._alpha = _backgroundAlpha = a_val;
-	}	
-
+	}
+	
+	// @Papyrus
 	public function setWidgetBorderColor(a_val: Number): Void
 	{
 		if (_borderColor == a_val && border)
@@ -385,18 +396,20 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		}
 	}
 	
+	// @Papyrus
 	public function setWidgetBorderWidth(a_val: Number): Void
 	{
-		if (_borderWidth == a_val)
+		if (_borderWidth == a_val && border)
 			return;
 			
 		_borderWidth = a_val;
 		redrawBorder();
 	}
 	
+	// @Papyrus
 	public function setWidgetBorderAlpha(a_val: Number): Void
 	{
-		if (_borderAlpha == a_val)
+		if (_borderAlpha == a_val && border)
 			return;
 			
 		_borderAlpha = a_val;
@@ -405,16 +418,18 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		else
 			redrawBorder();
 	}
-
+	
+	// @Papyrus
 	public function setWidgetBorderRounded(a_val: Number): Void
 	{
-		if (_borderRounded == a_val)
+		if (_borderRounded == a_val && border)
 			return;
 		
 		_borderRounded = a_val;
 		redrawBorder();
 	}
 	
+	// @Papyrus
 	public function setWidgetPadding(a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number): Void
 	{
 		if (_paddingTop == a_paddingTop && _paddingRight == a_paddingRight && _paddingBottom == a_paddingBottom && _paddingLeft == a_paddingLeft)
@@ -429,8 +444,12 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetTexts(a_labelText: String, a_valueText: String): Void
 	{
+		if(_labelText == a_labelText && _valueText == a_valueText)
+			return;
+			
 		_labelTextField.text = _labelText = a_labelText;
 		_valueTextField.text = _valueText = a_valueText;
 		
@@ -438,6 +457,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetLabelText(a_val: String): Void
 	{
 		if (_labelText == a_val)
@@ -448,7 +468,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateBackgroundSize();
 		updateElementPositions();
 	}
-
+	
+	// @Papyrus
 	public function setWidgetLabelTextFont(a_val: String): Void
 	{
 		if (_labelTextFont == a_val)
@@ -461,14 +482,16 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetLabelTextColor(a_val: Number): Void
 	{
 		if (_labelTextColor == a_val)
 			return;
 			
-		_labelTextField.textColor = _labelTextColor = a_val;
+		_labelTextColor = _valueTextField.textColor = a_val;
 	}
 	
+	// @Papyrus
 	public function setWidgetLabelTextSize(a_val: Number): Void
 	{
 		if(_labelTextSize == a_val)
@@ -481,6 +504,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetValueText(a_val: String): Void
 	{
 		if(_valueText == a_val)
@@ -491,7 +515,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateBackgroundSize();
 		updateElementPositions();
 	}
-
+	
+	// @Papyrus
 	public function setWidgetValueTextFont(a_val: String): Void
 	{
 		if(_valueTextFont == a_val)
@@ -503,15 +528,19 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateBackgroundSize();
 		updateElementPositions();
 	}
-
+	
+	// @Papyrus
 	public function setWidgetValueTextColor(a_val: Number): Void
 	{
 		if(_valueTextColor == a_val)
 			return;
 			
 		_valueTextColor = _valueTextField.textColor = a_val;
+		
+		updateValueTextFormat();
 	}
 	
+	// @Papyrus
 	public function setWidgetValueTextSize(a_val: Number): Void
 	{
 		if(_valueTextSize == a_val)
@@ -524,6 +553,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetTextAlign(a_val: Number): Void
 	{
 		if (_textAlign == a_val)
@@ -534,6 +564,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetIconSize(a_val: Number): Void
 	{
 		if (_iconSize == a_val)
@@ -546,6 +577,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetIconColor(a_val: Number): Void
 	{
 		if (_iconColor == a_val)
@@ -556,6 +588,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateIcon();
 	}
 	
+	// @Papyrus
 	public function setWidgetIconSpacing(a_val: Number): Void
 	{
 		if (_iconSpacing == a_val)
@@ -566,6 +599,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetIconAlign(a_val: Number): Void
 	{
 		if (_iconAlign == a_val)
@@ -576,17 +610,23 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetIconSource(a_iconSource: String, a_initIconName: String): Void
 	{
 		if (_iconSource == a_iconSource)
 			return;
 			
 		_iconSource = a_iconSource;
-		_iconName = a_initIconName;
+		if (a_initIconName)
+			_iconName = a_initIconName;
 		
-		loadIcon();
+		if (_iconSource == "")
+			unloadIcon();
+		else
+			loadIcon();
 	}
 	
+	// @Papyrus
 	public function setWidgetIconName(a_iconName: String): Void
 	{
 		if (_iconName == a_iconName)
@@ -597,6 +637,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateIcon();
 	}
 	
+	// @Papyrus
 	public function setWidgetMeterScale(a_meterScale: Number): Void
 	{
 		if (_meterScale == a_meterScale)
@@ -608,6 +649,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateElementPositions();
 	}
 	
+	// @Papyrus
 	public function setWidgetMeterFillMode(a_meterFillMode: String): Void
 	{
 		if (_meterFillMode == a_meterFillMode)
@@ -618,6 +660,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateMeterFillMode();
 	}
 	
+	// @Papyrus
 	public function setWidgetMeterFlashColor(a_meterFlashColor: Number): Void
 	{
 		if (_meterFlashColor == a_meterFlashColor)
@@ -628,14 +671,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateMeterFlashColor();
 	}
 	
-	public function startMeterFlash(): Void
-	{
-		if (_meterFlashAnim.meterFlashing) // Set on the timeline
-			return;
-		_meterFlashAnim.gotoAndPlay("StartFlash");
-	}
-	
-	public function setMeterPercent(a_percent: Number, a_force: Boolean): Void
+	// @Papyrus
+	public function setWidgetMeterPercent(a_percent: Number, a_force: Boolean): Void
 	{
 		setMeterTargetPercent(a_percent);
 		
@@ -643,21 +680,24 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 			setMeterCurrentPercent(_meterTargetPercent);
 	}
 	
+	// @Papyrus
+	public function startWidgetMeterFlash(): Void
+	{
+		if (_meterFlashAnim.meterFlashing) // Set on the timeline
+			return;
+		
+		_meterFlashAnim.gotoAndPlay("StartFlash");
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
 	
-	private function loadIcon(): Void
-	{
-		var iconLoader: MovieClipLoader = new MovieClipLoader();
-		iconLoader.addListener(this);
-		iconLoader.loadClip(_iconSource, _icon);
-	}
 	
 	private function updateLabelTextFormat(): Void
 	{
 		var tf: TextFormat = _labelTextField.getTextFormat();
-		tf.size = _labelTextSize;
 		tf.font = _labelTextFont;
+		tf.size = _labelTextSize;
 		_labelTextField.setTextFormat(tf);
 		_labelTextField.setNewTextFormat(tf);
 	}
@@ -665,8 +705,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	private function updateValueTextFormat(): Void
 	{
 		var tf: TextFormat = _valueTextField.getTextFormat();
-		tf.size = _valueTextSize;
 		tf.font = _valueTextFont;
+		tf.size = _valueTextSize;
 		_valueTextField.setTextFormat(tf);
 		_valueTextField.setNewTextFormat(tf);
 	}
@@ -683,6 +723,18 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		background._width = _widgetWidth;
 		
 		redrawBorder();
+	}
+	
+	private function loadIcon(): Void
+	{
+		_iconLoader.loadClip(_iconSource, _icon);
+	}
+	
+	private function unloadIcon(): Void
+	{
+		_iconLoader.unloadClip(_icon);
+		_iconLoaded = false;
+		updateElementPositions();
 	}
 	
 	private function updateIcon(): Void
@@ -703,14 +755,16 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		_valueTextField.autoSize = "left";
 		_valueTextField.textAutoSize = "none";
 		
-		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - _iconSize - _iconSpacing;
+		var iconSize: Number = (_iconLoaded) ? _iconSize : 0;
+		var iconSpacing: Number = (_iconLoaded) ? _iconSpacing : 0;
+		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - iconSize - iconSpacing;
 		var meterHeight: Number = _meterFrameContent._height * _meterScale/100;
 		var availableHeight: Number = background._height - _paddingTop - _paddingBottom - _meterPadding - meterHeight;
 		var meterWidth: Number = _widgetWidth - _paddingLeft - _paddingRight;
 		
 		var textWidth: Number = _labelTextField._width + _valueTextField._width;
-		var textStart: Number = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + _iconSize + _iconSpacing);
-		var textEnd: Number = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - _iconSize - _iconSpacing) : (_widgetWidth - _paddingRight);
+		var textStart: Number = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + iconSize + iconSpacing);
+		var textEnd: Number = (_iconAlign == ALIGN_RIGHT) ? (_widgetWidth - _paddingRight - iconSize - iconSpacing) : (_widgetWidth - _paddingRight);
 		
 		// Case 1: There's more available than required space
 		if (availableWidth >= textWidth) {
@@ -751,8 +805,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		_labelTextField._y = _paddingTop + (availableHeight - _labelTextField._height)/2
 		_valueTextField._y = _paddingTop + (availableHeight - _valueTextField._height)/2
 		
-		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + _iconSpacing) : _paddingLeft;
-		_icon._y = _paddingTop + (availableHeight - _iconSize)/2
+		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + iconSpacing) : _paddingLeft;
+		_icon._y = _paddingTop + (availableHeight - iconSize)/2
 		
 		_meter._x = _paddingLeft;
 		_meter._y = background._height - meterHeight - _paddingBottom;

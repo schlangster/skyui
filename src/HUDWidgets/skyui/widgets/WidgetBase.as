@@ -1,7 +1,7 @@
 ﻿class skyui.widgets.WidgetBase extends MovieClip
 {
   /* CONSTANTS */
-  
+	
 	private var MODES = ["All", "StealthMode"];
 	
 	
@@ -13,7 +13,7 @@
 	
 	
   /* INITIALIZATION */
-	
+  
 	public function WidgetBase()
 	{
 		_clientInfo = {};
@@ -36,7 +36,7 @@
 		
   /* PUBLIC FUNCTIONS */
   
-  	// @Papyrus
+	// @Papyrus
 	public function setModes(/* a_visibleModes [] */): Void
 	{	
 		// Clear all modes
@@ -58,7 +58,7 @@
 		_root.HUDMovieBaseInstance.HudElements.push(_widgetHolder);
 	}
 
-  	// @Papyrus
+	// @Papyrus
 	public function setClientInfo(a_clientString: String): Void
 	{
 		var widget = this;
