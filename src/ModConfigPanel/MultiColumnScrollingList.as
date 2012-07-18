@@ -75,13 +75,13 @@ class MultiColumnScrollingList extends ScrollingList
 		var lastColumnIndex = columnCount - 1;
 		var columnWidth = (background._width - leftBorder - rightBorder - (columnCount-1) * columnSpacing) / columnCount;
 
-		// Clear clipIndex for everything before the selected list portion
+		// Clear clipIndex for everything before the selected list part
 		for (var i = 0; i < getListEnumSize() && i < _scrollPosition ; i++)
 			getListEnumEntry(i).clipIndex = undefined;
 
 		_listIndex = 0;
 		
-		// Display the selected list portion of the list
+		// Display the selected part of the list
 		for (var i = _scrollPosition; i < getListEnumSize() && _listIndex < _maxListIndex; i++) {
 			var entryClip = getClipByIndex(_listIndex);
 			var entryItem = getListEnumEntry(i);
@@ -106,7 +106,7 @@ class MultiColumnScrollingList extends ScrollingList
 			++_listIndex;
 		}
 		
-		// Clear clipIndex for everything after the selected list portion
+		// Clear clipIndex for everything after the selected list part
 		for (var i = _scrollPosition + _listIndex; i < getListEnumSize(); i++)
 			getListEnumEntry(i).clipIndex = undefined;
 		
