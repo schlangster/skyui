@@ -109,11 +109,15 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		
 		_labelTextField.autoSize = "left";
 		_labelTextField.textAutoSize = "none";
+		_labelTextField.text = "";
 		_valueTextField.autoSize = "left";
 		_valueTextField.textAutoSize = "none";
+		_valueTextField.text = "";
+		_meter._visible = false;
 		
 		_iconLoader = new MovieClipLoader();
 		_iconLoader.addListener(this);
+		_iconLoaded = false;
 	}
 	
 	// @override WidgetBase
@@ -126,14 +130,14 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 						  5, 0xFF00FF, 100, 1,
 						  5, 5, 5, 5,
 						  0x00FFFF, 48, 0x00FFFF, 22,
-						  32, 0x0F55F0, 5,
+						  195, 0x0F55F0, 5,
 						  ALIGN_BORDER, ALIGN_CENTER, 5, 50, 0x003300, 0x339966, 0x009900);
 		initWidgetStrings("$EverywhereFont", "$EverywhereFont",
-						  "", "",
+						  "Label", "Value",
 						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword", "center");
 		initWidgetCommit();
 		
-		setInterval(this, "testFunc", 1000);
+		setInterval(this, "testFunc", 1000);//*/
 	}
 	
 	// @override MovieClipLoader
@@ -141,6 +145,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	{
 		_iconLoaded = true;
 		updateIcon();
+		updateBackgroundSize();
 		updateElementPositions();
 	}
 	
@@ -350,7 +355,6 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 			
 		_widgetWidth = a_val;
 		
-		// Reset both text positions
 		updateBackgroundSize();
 		updateElementPositions();
 	}
@@ -713,8 +717,16 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	
 	private function updateBackgroundSize(): Void
 	{
-		var meterHeight: Number = _meterFrameContent._height * _meterScale/100;
-		var h: Number = _paddingTop + _paddingBottom + Math.max(_labelTextField._height,  Math.max(_valueTextField._height, _iconSize)) + _meterPadding + meterHeight;
+		var labelTextFieldHeight: Number = (_labelText != "") ? _labelTextField._height : 0;
+		var valueTextFieldHeight: Number = (_valueText != "") ? _valueTextField._height : 0;
+		var iconSize: Number = (_iconLoaded) ? _iconSize : 0;
+		
+		var maxIconTextHeight: Number = Math.max(labelTextFieldHeight, Math.max(valueTextFieldHeight, iconSize));
+		
+		var meterHeight: Number = (_meterScale > 0) ? (_meterFrameContent._height * _meterScale/100) : 0;
+		var meterPadding: Number  = (_meterScale > 0 && maxIconTextHeight > 0) ? _meterPadding : 0;
+		
+		var h: Number = _paddingTop + _paddingBottom + maxIconTextHeight + meterPadding + meterHeight;
 		
 		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
@@ -734,6 +746,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	{
 		_iconLoader.unloadClip(_icon);
 		_iconLoaded = false;
+		updateBackgroundSize();
 		updateElementPositions();
 	}
 	
@@ -757,10 +770,13 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		
 		var iconSize: Number = (_iconLoaded) ? _iconSize : 0;
 		var iconSpacing: Number = (_iconLoaded) ? _iconSpacing : 0;
-		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - iconSize - iconSpacing;
-		var meterHeight: Number = _meterFrameContent._height * _meterScale/100;
-		var availableHeight: Number = background._height - _paddingTop - _paddingBottom - _meterPadding - meterHeight;
+		
+		var meterPadding: Number = (_meterScale > 0) ? _meterPadding : 0;
+		var meterHeight: Number = (_meterScale > 0) ? (_meterFrameContent._height * _meterScale/100) : 0;
 		var meterWidth: Number = _widgetWidth - _paddingLeft - _paddingRight;
+		
+		var availableHeight: Number = background._height - _paddingTop - _paddingBottom - meterPadding - meterHeight;
+		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - iconSize - iconSpacing;
 		
 		var textWidth: Number = _labelTextField._width + _valueTextField._width;
 		var textStart: Number = (_iconAlign == ALIGN_RIGHT) ? _paddingLeft : (_paddingLeft + iconSize + iconSpacing);
@@ -808,13 +824,19 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + iconSpacing) : _paddingLeft;
 		_icon._y = _paddingTop + (availableHeight - iconSize)/2
 		
+		if (_meterScale <= 0) {
+			_meter._visible = false
+			return;
+		}
+		
+		_meter._visible = true;
 		_meter._x = _paddingLeft;
 		_meter._y = background._height - meterHeight - _paddingBottom;
 		_meter._xscale = _meter._yscale = _meterScale;
 		
-		var newWidth: Number = meterWidth * 100/_meterScale;
-		_meterFrameContent._width = newWidth;
-		_meterFillContent._xscale = (newWidth - (33.25 + 33.25)) /  366.4 * 100;
+		var newMeterWidth: Number = meterWidth * 100/_meterScale;
+		_meterFrameContent._width = newMeterWidth;
+		_meterFillContent._xscale = (newMeterWidth - (33.25 + 33.25)) /  366.4 * 100;
 	}
 	
 	private function redrawBorder(): Void
