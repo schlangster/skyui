@@ -321,4 +321,9 @@ class skyui.components.list.BasicList extends BSList
 	{
 		return listEnumeration.lookupEntryIndex(getListEnumSize() - 1);
 	}
+	
+	private function getListEnumRelativeIndex(a_offset: Number): Number
+	{
+		return listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + a_offset);
+	}
 }

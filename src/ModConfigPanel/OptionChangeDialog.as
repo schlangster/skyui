@@ -7,7 +7,7 @@ import Components.CrossPlatformButtons
 import skyui.components.list.ButtonEntryFormatter;
 import skyui.components.list.ButtonList;
 import skyui.components.list.BasicEnumeration;
-import skyui.components.list.ListLayout;
+import skyui.components.list.ScrollingList;
 import skyui.components.dialog.BasicDialog;
 import skyui.util.DialogManager;
 import skyui.util.ConfigManager;
@@ -33,12 +33,13 @@ class OptionChangeDialog extends BasicDialog
 	public var cancelButton: CrossPlatformButtons;
 	public var defaultButton: CrossPlatformButtons;
 	
-	public var sliderContent: MovieClip;
+	public var sliderPanel: MovieClip;
+	public var menuList: ScrollingList;
 
 	
   /* PROPERTIES */
 	
-	public var optionType: ListLayout;
+	public var optionType: Number;
 	
 	
   /* CONSTRUCTORS */
@@ -56,9 +57,23 @@ class OptionChangeDialog extends BasicDialog
 
 		initButtons();
 		
-		sliderContent.slider.setScrollProperties(0.7, 0, 20);
-		sliderContent.slider.addEventListener("scroll", this, "onScroll");
-		sliderContent.slider.position = 50;
+		sliderPanel.slider.setScrollProperties(0.7, 0, 20);
+		sliderPanel.slider.addEventListener("scroll", this, "onScroll");
+		sliderPanel.slider.position = 50;
+		
+		menuList.addEventListener("itemPress", this, "onMenuListPress");
+		
+		trace("MNEU LIST 11: " + menuList);
+		
+		menuList.listEnumeration = new BasicEnumeration(menuList.entryList);
+		menuList.entryFormatter = new ButtonEntryFormatter(menuList);
+		
+		trace("MNEU LIST 22: " + menuList);
+		
+		for (var i=0; i<10; i++)
+			menuList.entryList.push({text: "Menu option " + i, align: "center", enabled: true, state: "normal"});
+		
+		menuList.InvalidateData();
 	}
 	
 	public function onDialogOpening(): Void
@@ -90,6 +105,16 @@ class OptionChangeDialog extends BasicDialog
 		return bCaught;
 	}
 	
+	public function onMenuListPress(a_event: Object): Void
+	{
+		var e = a_event.entry;
+		if (e == undefined)
+			return;
+		
+		ButtonEntryFormatter(menuList.entryFormatter).activeEntry = e;
+		menuList.UpdateList();
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
 	
@@ -112,8 +137,8 @@ class OptionChangeDialog extends BasicDialog
 		clearInterval(_updateButtonID);
 		delete _updateButtonID;
 		
-		cancelButton._x = (background._width / 2) - cancelButton.textField.textWidth - 30;
-		confirmButton._x = cancelButton._x - cancelButton.textField.textWidth - 30;
+		confirmButton._x = (background._width / 2) - confirmButton.textField.textWidth - 30;
+		cancelButton._x = confirmButton._x - cancelButton.textField.textWidth - 50;
 		defaultButton._x = -(background._width / 2) + 55;
 	}
 	

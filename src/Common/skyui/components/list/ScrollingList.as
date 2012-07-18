@@ -95,7 +95,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (scrollbar != undefined) {
 			scrollbar.position = 0;
 			scrollbar.addEventListener("scroll", this, "onScroll");
-			scrollbar._y = background._x;
+			scrollbar._y = background._x + topBorder;
 			scrollbar.height = _listHeight;
 		}
 	}
@@ -127,16 +127,16 @@ class skyui.components.list.ScrollingList extends BasicList
 	}
 
 	// @GFx
-	public function onMouseWheel(delta: Number): Void
+	public function onMouseWheel(a_delta: Number): Void
 	{
 		if (disableInput)
 			return;
 			
 		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
 			if (target == this) {
-				if (delta < 0)
+				if (a_delta < 0)
 					scrollPosition = scrollPosition + scrollDelta;
-				else if (delta > 0)
+				else if (a_delta > 0)
 					scrollPosition = scrollPosition - scrollDelta;
 			}
 		}

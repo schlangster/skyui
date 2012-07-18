@@ -88,9 +88,20 @@ class ConfigPanel extends MovieClip
 		Shared.GlobalFunc.MaintainTextFormat();
 		
 		_global.skyui.platform = 0;
-		_global.skyui.bPS3Switch = false;
+		
+		_optionsList._visible = false;
 		
 		startPage();
+		
+		loadBackground();
+	}
+	
+	public function loadBackground(): Void
+	{
+		var optionsPanel: MovieClip = contentHolder.optionsPanel;
+		
+		var image: MovieClip = optionsPanel.createEmptyMovieClip("customBG", optionsPanel.getNextHighestDepth());
+		image.loadMovie("skyui_splash.swf");
 	}
 	
 	function endPage(): Void
