@@ -1,24 +1,25 @@
 scriptname SKI_WidgetBase extends SKI_QuestBase
 
-; CONSTANTS------------------------------
+; CONSTANTS ---------------------------------------------------------------------------------------
 
-string property HUD_MENU = "HUD Menu" autoReadonly
-
-; PRIVATE VARIABLES ---------------------
-
-SKI_WidgetManager _widgetManager
-
-bool		_initialized = false
-int			_widgetID = -1
-string		_type = ""
-string		_widgetRoot = ""
-string[]	_modes
-float		_x = 0.0
-float		_y = 0.0
-float		_alpha = 100.0
+string property		HUD_MENU = "HUD Menu" autoReadOnly
 
 
-; PROPERTIES ----------------------------
+; PRIVATE VARIABLES -------------------------------------------------------------------------------
+
+SKI_WidgetManager	_widgetManager
+
+bool				_initialized = false
+int					_widgetID = -1
+string				_type = ""
+string				_widgetRoot = ""
+string[]			_modes
+float				_x = 0.0
+float				_y = 0.0
+float				_alpha = 100.0
+
+
+; PROPERTIES --------------------------------------------------------------------------------------
 
 ; Read-only
 int property WidgetID
@@ -94,7 +95,7 @@ float property Alpha
 endProperty
 
 
-; EVENTS ----------------------------
+; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
 	; Default Modes if not set via property
@@ -110,40 +111,12 @@ event OnInit()
 	RegisterForSingleUpdate(3)
 endEvent
 
-; Do any custom widget initialization here
-; Executed the first time the widget is loaded by the superclass
-event OnWidgetInit()
-endEvent
-
-; Executed after each game reload by widget manager
-event OnWidgetLoad()
-	OnWidgetReset()
-	
-	; Before that the widget was still hidden.
-	; Now that everything is done is done, set modes to show it eventually
-	UpdateWidgetModes()
-endEvent
-
-event OnWidgetReset()
-	; Reset base properties except modes to prevent widget from being drawn too early
-	UpdateWidgetClientInfo()
-	UpdateWidgetPositionX()
-	UpdateWidgetPositionY()
-	UpdateWidgetAlpha()
-endEvent
-
-; Executed whenever a hudModeChange is observed
-event OnHudModeChange(string a_eventName, string a_hudMode)
-endEvent
-
-; Wrap this in a non-default state so later clients can override OnUpdate() without issues
 state _INIT
 	event OnUpdate()
 		gotoState("")
-		RegisterForModEvent("hudModeChange", "OnHudModeChange")
 		_widgetID = _widgetManager.RequestWidgetID(self)
 		if (_widgetID != -1)
-			_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget."
+			_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget"
 			OnWidgetInit()
 			_widgetManager.CreateWidget(_widgetID, GetWidgetType())
 			_initialized = true
@@ -151,29 +124,60 @@ state _INIT
 	endEvent
 endState
 
+; Do any custom widget initialization here.
+; @interface
+event OnWidgetInit()
+endEvent
 
-; FUNCTIONS -------------------------
 
+; EVENTS ------------------------------------------------------------------------------------------
+
+; Executed after each game reload by widget manager.
+event OnWidgetLoad()
+	OnWidgetReset()
+	
+	; Before that the widget was still hidden.
+	; Now that everything is done, set modes to show it eventually.
+	UpdateWidgetModes()
+endEvent
+
+event OnWidgetReset()
+	; Reset base properties except modes to prevent widget from being drawn too early.
+	UpdateWidgetClientInfo()
+	UpdateWidgetPositionX()
+	UpdateWidgetPositionY()
+	UpdateWidgetAlpha()
+endEvent
+
+; Executed whenever a hudModeChange is observed
+; TODO
+event OnHudModeChange(string a_eventName, string a_hudMode, float a_numArg, Form sender)
+endEvent
+
+
+; FUNCTIONS ---------------------------------------------------------------------------------------
+
+; @interface
 string function GetWidgetType()
 	return ""
 endFunction
 
 function UpdateWidgetClientInfo()
-	UI.InvokeString(HUD_MENU, _widgetRoot + "setClientInfo", self as string)
+	UI.InvokeString(HUD_MENU, _widgetRoot + ".setClientInfo", self as string)
 endFunction
 
 function UpdateWidgetPositionX()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "_x", X)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "._x", X)
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "_y", Y)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "._y", Y)
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "_alpha", Alpha)
+	UI.SetNumber(HUD_MENU, _widgetRoot + "._alpha", Alpha)
 endFunction
 
 function UpdateWidgetModes()
-	UI.InvokeStringA(HUD_MENU, _widgetRoot + "setModes", Modes)
+	UI.InvokeStringA(HUD_MENU, _widgetRoot + ".setModes", Modes)
 endFunction

@@ -28,14 +28,7 @@ class skyui.util.ConfigManager
 	private static var _config: Object;
 	
 	
-  /* PAPYRUS ARGUMENTS */
-  
-  	// Key/value pairs "Section$k§e§y§" / "value"
-	public static var out_overrides = {};
-	public static var in_overrideKeys = [];
-	
-	
-  /* STATIC INITIALIZER */
+  /* INITIALIATZION */
   
   	private static var _initialized:Boolean = initialize();
   
@@ -54,6 +47,35 @@ class skyui.util.ConfigManager
 		lv.load("skyui_cfg.txt");
 		
 		return true;
+	}
+	
+	
+  /* PAPYRUS INTERFACE */
+  
+  	// Key/value pairs "Section$k§e§y§" / "value"
+	public static var out_overrides = {};
+	public static var in_overrideKeys = [];
+	
+	public static function setExternalOverrideKeys()
+	{
+		in_overrideKeys.splice(0);
+		skse.Log("Called setExternalOverrideKeys");
+		
+		for (var i = 0; i < arguments.length; i++)
+			in_overrideKeys[i] = arguments[i];
+	}
+	
+	public static function setExternalOverrideValues()
+	{
+		skse.Log("Called setExternalOverrideValues");
+		
+		// Update happens in 2 phases.
+		// First the keys are sent and stored, then the values are sent and immediately processed.
+		for (var i = 0; i < arguments.length; i++)
+			if (in_overrideKeys[i])
+				parseExternalOverride(in_overrideKeys[i], arguments[i]);
+		
+		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});				
 	}
 	
 	
@@ -149,30 +171,6 @@ class skyui.util.ConfigManager
 		}
 		
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
-	}
-	
-	// @Papyrus
-	public static function setExternalOverrideKeys()
-	{
-		in_overrideKeys.splice(0);
-		skse.Log("Called setExternalOverrideKeys");
-		
-		for (var i = 0; i < arguments.length; i++)
-			in_overrideKeys[i] = arguments[i];
-	}
-	
-	// @Papyrus
-	public static function setExternalOverrideValues()
-	{
-		skse.Log("Called setExternalOverrideValues");
-		
-		// Update happens in 2 phases.
-		// First the keys are sent and stored, then the values are sent and immediately processed.
-		for (var i = 0; i < arguments.length; i++)
-			if (in_overrideKeys[i])
-				parseExternalOverride(in_overrideKeys[i], arguments[i]);
-		
-		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});				
 	}
 	
 	private static function parseExternalOverride(a_key: String, a_valueStr: String)
