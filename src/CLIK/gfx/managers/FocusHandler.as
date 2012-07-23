@@ -21,11 +21,11 @@ dynamic class gfx.managers.FocusHandler
 
 	static function get instance()
 	{
-		if (gfx.managers.FocusHandler._instance == null) 
+		if (_instance == null) 
 		{
-			gfx.managers.FocusHandler._instance = new gfx.managers.FocusHandler();
+			_instance = new FocusHandler();
 		}
-		return gfx.managers.FocusHandler._instance;
+		return _instance;
 	}
 
 	function initialize()
@@ -54,7 +54,7 @@ dynamic class gfx.managers.FocusHandler
 		var __reg5 = this.currentFocusLookup[focusIdx];
 		if (__reg5 != focus) 
 		{
-			__reg5.focused = __reg5.focused & 1 << focusIdx ^ 4294967295;
+			__reg5.focused = __reg5.focused & ~(1 << focusIdx);
 			__reg5 = focus;
 			this.currentFocusLookup[focusIdx] = focus;
 			__reg5.focused = __reg5.focused | 1 << focusIdx;
