@@ -25,9 +25,11 @@ class ConfigPanel extends MovieClip
 	// Quest_Journal_mc
 	private var _parentMenu: MovieClip;
 	
+	private var _modListPanel: ModListPanel;
 	private var _modList: ScrollingList;
 	private var _subList: ScrollingList;
 	private var _optionsList: MultiColumnScrollingList;
+	private var _customContent: MovieClip;
 
 	private var _state: Number;
 	
@@ -39,38 +41,142 @@ class ConfigPanel extends MovieClip
 	public var contentHolder: MovieClip;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIATZION */
 	
 	function ConfigPanel()
 	{
 		_parentMenu = _root.QuestJournalFader.Menu_mc;
 
-		_modList = contentHolder.modListPanel.modListFader.list;
-		_subList = contentHolder.modListPanel.subListFader.list;
+		_modListPanel = contentHolder.modListPanel;
+		_modList = _modListPanel.modListFader.list;
+		_subList = _modListPanel.subListFader.list;
 		_optionsList = contentHolder.optionsPanel.optionsList;
 	}
 	
-	function startPage(): Void
+	
+  /* PAPYRUS INTERFACE */
+	
+	public function setModNames(/* names */): Void
+	{
+		skse.Log("Called setConfigPanelModNames");
+		
+		_modList.clearList();
+		for (var i=0; i<arguments.length; i++)
+			if (arguments[i].toLowerCase() != "none")
+				_modList.entryList.push({text: arguments[i], align: "right", enabled: true});
+		_modList.InvalidateData();
+	}
+	
+	public function setPageNames(/* names */): Void
+	{
+		skse.Log("Called setConfigPanelPageNames");
+		
+		_subList.clearList();
+		for (var i=0; i<arguments.length; i++)
+			if (arguments[i].toLowerCase() != "none")
+				_subList.entryList.push({text: arguments[i], align: "right", enabled: true});
+		_subList.InvalidateData();
+	}
+	
+	public function loadCustomContent(a_source: String): Void
+	{
+		unloadCustomContent();
+		
+		var optionsPanel: MovieClip = contentHolder.optionsPanel;
+		
+		_customContent = optionsPanel.createEmptyMovieClip("customContent", optionsPanel.getNextHighestDepth());
+		_customContent.loadMovie(a_source);
+		
+		_optionsList._visible = false;
+	}
+	
+	public function unloadCustomContent(): Void
+	{
+		if (!_customContent)
+			return;
+			
+		_customContent.removeMovieClip();
+		_customContent = undefined;
+		
+		_optionsList._visible = true;
+	}
+	
+	private static var in_optionTypeBuffer = [];
+	private static var in_optionTextBuffer = [];
+	private static var in_optionStrValueBuffer = [];
+	private static var in_optionNumValueBuffer = [];
+	
+	public function setOptionTypeBuffer(/* values */): Void
+	{
+		for (var i = 0; i < arguments.length; i++)
+			in_optionTypeBuffer[i] = arguments[i];
+	}
+	
+	public function setOptionTextBuffer(/* values */): Void
+	{
+		for (var i = 0; i < arguments.length; i++)
+			in_optionTextBuffer[i] = arguments[i];
+	}
+	
+	public function setOptionStrValueBuffer(/* values */): Void
+	{
+		for (var i = 0; i < arguments.length; i++)
+			in_optionStrValueBuffer[i] = arguments[i];
+	}
+	
+	public function setOptionNumValueBuffer(/* values */): Void
+	{
+		for (var i = 0; i < arguments.length; i++)
+			in_optionNumValueBuffer[i] = arguments[i];
+	}
+	
+	public function flushOptionBuffers(a_optionCount: Number): Void
+	{
+		_optionsList.clearList();
+		for (var i=0; i<a_optionCount; i++) {
+			_optionsList.entryList.push({optionType: in_optionTypeBuffer[i], 
+										 text: in_optionTextBuffer[i],
+ 										 strValue: in_optionStrValueBuffer[i],
+										 numValue: in_optionNumValueBuffer[i],
+										 enabled: true});
+		}
+			
+		_optionsList.InvalidateData();
+		
+		in_optionTypeBuffer.splice(0);
+		in_optionTextBuffer.splice(0);
+		in_optionStrValueBuffer.splice(0);
+		in_optionNumValueBuffer.splice(0);
+	}
+	
+	
+	
+	
+	
+	private function startModSelectMode(): Void
+	{
+		
+	}
+	
+	
+  /* PUBLIC FUNCTIONS */
+	
+	public function startPage(): Void
 	{
 		GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		_parent.gotoAndPlay("fadeIn");
-		
-		for (var i=0; i<25; i++)
-			_modList.entryList.push({text: "MOD NUMBER " + i, align: "right", enabled: true, state: "normal"});
 			
-		for (var i=0; i<5; i++)
-			_subList.entryList.push({text: "Sub Entry " + i, align: "right", enabled: true, state: "normal"});
-			
-		for (var i=0; i<48; i++)
-			_optionsList.entryList.push({optionType: Math.floor(Math.random()*6), enabled: true, text: "Label " + i, strValue: "OPTION " + i, numValue: 123.45});
+//		for (var i=0; i<48; i++)
+//			_optionsList.entryList.push({optionType: Math.floor(Math.random()*6), enabled: true, text: "Label " + i, strValue: "OPTION " + i, numValue: 123.45});
 		
-		_modList.InvalidateData();
-		_subList.InvalidateData();
-		_optionsList.InvalidateData();
+
 	}
 	
-	function onLoad()
+	// @override MovieClip
+	private function onLoad()
 	{
+		super.onLoad();
+		
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
 		
@@ -89,22 +195,13 @@ class ConfigPanel extends MovieClip
 		
 		_global.skyui.platform = 0;
 		
+//		startPage();
+//		loadCustomContent("skyui_splash.swf");
+
 		_optionsList._visible = false;
-		
-		startPage();
-		
-		loadBackground();
 	}
 	
-	public function loadBackground(): Void
-	{
-		var optionsPanel: MovieClip = contentHolder.optionsPanel;
-		
-		var image: MovieClip = optionsPanel.createEmptyMovieClip("customBG", optionsPanel.getNextHighestDepth());
-		image.loadMovie("skyui_splash.swf");
-	}
-	
-	function endPage(): Void
+	public function endPage(): Void
 	{
 		GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 		_parent.gotoAndPlay("fadeOut");
@@ -113,7 +210,12 @@ class ConfigPanel extends MovieClip
 	public function onModListPress(a_event: Object): Void
 	{
 		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
-		_subList.UpdateList();
+		_subList.clearList();
+		_subList.InvalidateData();
+		
+		skse.SendModEvent("modSelected", null, a_event.index);
+
+//		unloadCustomContent();
 		contentHolder.modListPanel.showSublist();
 	}
 	
@@ -125,6 +227,8 @@ class ConfigPanel extends MovieClip
 		
 		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = e;
 		_subList.UpdateList();
+		
+		skse.SendModEvent("pageSelected", e.text);
 	}
 	
 	public function onOptionPress(a_event: Object): Void
