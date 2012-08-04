@@ -43,6 +43,7 @@ string property WidgetRoot
 endProperty
 
 string[] property Modes
+	{HUDModes in which the widget is visible, see readme for available modes}
 	string[] function get()
 		return  _modes
 	endFunction
@@ -56,6 +57,7 @@ string[] property Modes
 endProperty
 
 float property X
+	{Horizontal position of the widget in pixels at a resolution of 1280x720}
 	float function get()
 		return _x
 	endFunction
@@ -69,6 +71,7 @@ float property X
 endProperty
 
 float property Y
+	{Vertical position of the widget in pixels at a resolution of 1280x720}
 	float function get()
 		return _y
 	endFunction
@@ -82,6 +85,7 @@ float property Y
 endProperty
 
 float property Alpha
+	{Opacity of the widget as a percentage}
 	float function get()
 		return _alpha
 	endFunction

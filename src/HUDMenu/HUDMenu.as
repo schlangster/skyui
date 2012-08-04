@@ -72,12 +72,12 @@
 	var ValueTranslated: TextField;
 	var WeightTranslated: TextField;
 	var bCrosshairEnabled: Boolean;
-
+	
+	private var widgetLoaderReference: WidgetLoader;
+	
 	function HUDMenu()
 	{
 		super();
-		
-		WidgetLoader.skyuiWidgetExtensions = true;
 		
 		Shared.GlobalFunc.MaintainTextFormat();
 		Shared.GlobalFunc.AddReverseFunctions();

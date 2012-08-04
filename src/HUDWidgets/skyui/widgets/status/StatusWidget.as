@@ -8,10 +8,14 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 {
   /* CONSTANTS */
 
-	public static var ALIGN_BORDER = 0;
-	public static var ALIGN_LEFT = 1;
-	public static var ALIGN_RIGHT = 2;
-	public static var ALIGN_CENTER = 3;
+	public static var ALIGN_BORDER: String = "border";
+	public static var ALIGN_LEFT: String = "left";
+	public static var ALIGN_RIGHT: String = "right";
+	public static var ALIGN_CENTER: String = "center";
+	
+	public static var FILL_LEFT: String = "left";
+	public static var FILL_RIGHT: String = "right";
+	public static var FILL_CENTER: String = "center";
 	
 	
   /* PRIVATE VARIABLES */
@@ -61,23 +65,25 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	private var _iconName: String;
 	private var _iconSize: Number;
 	private var _iconColor: Number;
+	private var _iconAlpha: Number;
 	private var _iconSpacing: Number;
 	
-	private var _textAlign: Number;
-	private var _iconAlign: Number;
+	private var _textAlign: String;
+	private var _iconAlign: String;
 	
 	private var _meterCurrentPercent: Number;
 	private var _meterTargetPercent: Number;
 	private var _meterEmptyIdx: Number;
 	private var _meterFullIdx: Number;
 	
-	private var _meterPadding: Number;
+	private var _meterSpacing: Number;
 	private var _meterScale: Number;
 	private var _meterFillMode: String;
 	private var _meterFillSpeed: Number;
 	private var _meterEmptySpeed: Number;
 	private var _meterColorA: Number;
 	private var _meterColorB: Number;
+	private var _meterAlpha: Number;
 	private var _meterFlashColor: Number;
 	
 	private var _iconLoaded: Boolean;
@@ -124,17 +130,17 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	function onLoad(): Void
 	{
 		super.onLoad();
-		/*
+		
 		// For testing in flash
-		initNumbers(200, 0x0099000, 100,
+		/*initNumbers(200, 0x0099000, 100,
 						  5, 0xFF00FF, 100, 1,
 						  5, 5, 5, 5,
 						  0x00FFFF, 48, 0x00FFFF, 22,
-						  195, 0x0F55F0, 5,
-						  ALIGN_BORDER, ALIGN_CENTER, 5, 50, 0x003300, 0x339966, 0x009900);
+						  20, 0x0F55F0, 100, 5,
+						  5, 50, 0x003300, 0x339966, 50, 0x009900);
 		initStrings("$EverywhereFont", "$EverywhereFont",
-						  "Label", "Value",
-						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword", "center");
+						  "Lab", "Val", ALIGN_BORDER,
+						  "../skyui/skyui_icons_psychosteve.swf", "weapon_sword", ALIGN_RIGHT, FILL_CENTER);
 		initCommit();
 		
 		setInterval(this, "testFunc", 1000);//*/
@@ -165,11 +171,11 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		trace(st)
 		if (st == 1) {
 			setMeterPercent(0)
-			setWidgetWidth(100);
+			setWidth(100);
 			setLabelText("");
 		} else if (st == 2) {
-			setWidgetWidth(300);
-			startWidgetMeterFlash();
+			setWidth(300);
+			startMeterFlash();
 			setMeterFillMode("center");
 			setIconSource("")
 		} else if (st == 3) {
@@ -242,8 +248,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	public function initNumbers(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number,
 								a_borderAlpha: Number, a_borderRounded: Number, a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number,
 								a_paddingLeft: Number, a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
-								a_iconSize: Number, a_iconColor: Number, a_iconSpacing: Number, a_textAlign: Number, a_iconAlign: Number,
-								a_meterPadding: Number, a_meterScale: Number, a_meterColorA: Number, a_meterColorB: Number, a_meterFlashColor: Number): Void
+								a_iconSize: Number, a_iconColor: Number, a_iconAlpha: Number, a_iconSpacing: Number, a_meterScale: Number,
+								a_meterColorA: Number, a_meterColorB: Number, a_meterAlpha: Number, a_meterSpacing: Number, a_meterFlashColor: Number): Void
 	{
 		_widgetWidth = a_widgetWidth;
 		setBackgroundColor(a_backgroundColor);
@@ -266,33 +272,35 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 
 		_iconSize = a_iconSize;
 		_iconColor = a_iconColor;
+		_iconAlpha = a_iconAlpha;
 		_iconSpacing = a_iconSpacing;
 		
-		_textAlign = a_textAlign;
-		_iconAlign = a_iconAlign;
-		
-		_meterPadding = a_meterPadding;
 		_meterScale = a_meterScale;
-		
 		_meterColorA = a_meterColorA;
 		_meterColorB = a_meterColorB;
+		_meterAlpha = a_meterAlpha;
+		_meterSpacing = a_meterSpacing;
+		
 		_meterFlashColor = a_meterFlashColor;
 	}
 	
 	// @Papyrus
-	public function initStrings(a_labelTextFont: String, a_valueTextFont: String, a_labelText: String, a_valueText: String, a_iconSource: String,
-								a_iconName: String, a_meterFillMode: String): Void
+	public function initStrings(a_labelText: String, a_labelTextFont: String, a_valueText: String, a_valueTextFont: String, a_textAlign: String,
+								a_iconSource: String, a_iconName: String, a_iconAlign: String, a_meterFillMode: String): Void
 	{
+		_labelTextField.text = _labelText = a_labelText;
 		_labelTextFont = a_labelTextFont;
+		
+		_valueTextField.text = _valueText = a_valueText;
 		_valueTextFont = a_valueTextFont;
 		
-		_labelTextField.text = _labelText = a_labelText;
-		_valueTextField.text = _valueText = a_valueText;
+		_textAlign = a_textAlign.toLowerCase();
 		
 		_iconSource = a_iconSource;
 		_iconName = a_iconName;
+		_iconAlign = a_iconAlign.toLowerCase();
 		
-		_meterFillMode = a_meterFillMode;
+		_meterFillMode = a_meterFillMode.toLowerCase();
 	}
 	
 	// @Papyrus
@@ -303,7 +311,6 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateValueTextFormat();
 		
 		updateMeterFillMode();
-		updateMeterFlashColor();
 		
 		updateBackgroundSize();
 		updateElementPositions();
@@ -312,7 +319,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function setWidgetWidth(a_val: Number): Void
+	public function setWidth(a_val: Number): Void
 	{
 		if (_widgetWidth == a_val)
 			return;
@@ -347,6 +354,16 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
+	public function setBorderWidth(a_val: Number): Void
+	{
+		if (_borderWidth == a_val && border)
+			return;
+			
+		_borderWidth = a_val;
+		redrawBorder();
+	}
+	
+	// @Papyrus
 	public function setBorderColor(a_val: Number): Void
 	{
 		if (_borderColor == a_val && border)
@@ -362,16 +379,6 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		} else {
 			redrawBorder();
 		}
-	}
-	
-	// @Papyrus
-	public function setBorderWidth(a_val: Number): Void
-	{
-		if (_borderWidth == a_val && border)
-			return;
-			
-		_borderWidth = a_val;
-		redrawBorder();
 	}
 	
 	// @Papyrus
@@ -398,31 +405,139 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function setPadding(a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number): Void
+	public function setLabelTextColor(a_val: Number): Void
 	{
-		if (_paddingTop == a_paddingTop && _paddingRight == a_paddingRight && _paddingBottom == a_paddingBottom && _paddingLeft == a_paddingLeft)
+		if (_labelTextColor == a_val)
 			return;
 			
-		_paddingTop = a_paddingTop;
-		_paddingBottom = a_paddingBottom;
-		_paddingRight = a_paddingRight;
-		_paddingLeft = a_paddingLeft;
-
+		_labelTextColor = _valueTextField.textColor = a_val;
+	}
+	
+	// @Papyrus
+	public function setLabelTextSize(a_val: Number): Void
+	{
+		if(_labelTextSize == a_val)
+			return;
+		
+		_labelTextSize = a_val;
+		
+		updateLabelTextFormat();
 		updateBackgroundSize();
 		updateElementPositions();
 	}
 	
 	// @Papyrus
-	public function setTexts(a_labelText: String, a_valueText: String): Void
+	public function setValueTextColor(a_val: Number): Void
 	{
-		if(_labelText == a_labelText && _valueText == a_valueText)
+		if(_valueTextColor == a_val)
 			return;
 			
-		_labelTextField.text = _labelText = a_labelText;
-		_valueTextField.text = _valueText = a_valueText;
+		_valueTextColor = _valueTextField.textColor = a_val;
+		
+		updateValueTextFormat();
+	}
+	
+	// @Papyrus
+	public function setValueTextSize(a_val: Number): Void
+	{
+		if(_valueTextSize == a_val)
+			return
+			
+		_valueTextSize = a_val;
+		
+		updateValueTextFormat();
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setIconSize(a_val: Number): Void
+	{
+		if (_iconSize == a_val)
+			return;
+			
+		_iconSize = a_val;
+		
+		updateIcon();
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setIconColor(a_val: Number): Void
+	{
+		if (_iconColor == a_val)
+			return;
+			
+		_iconColor = a_val;
+		
+		updateIcon();
+	}
+	
+	// @Papyrus
+	public function setIconAlpha(a_val: Number): Void
+	{
+		if (_iconAlpha == a_val)
+			return;
+			
+		_iconAlpha = a_val;
+		
+		updateIcon();
+	}
+	
+	// @Papyrus
+	public function setIconSpacing(a_val: Number): Void
+	{
+		if (_iconSpacing == a_val)
+			return;
+			
+		_iconSpacing = a_val;
+		
+		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setMeterScale(a_meterScale: Number): Void
+	{
+		if (_meterScale == a_meterScale)
+			return;
+			
+		_meterScale = a_meterScale;
 		
 		updateBackgroundSize();
 		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setMeterAlpha(a_meterAlpha: Number): Void
+	{
+		if (_meterAlpha == a_meterAlpha)
+			return;
+			
+		_meter._alpha = _meterAlpha = a_meterAlpha;
+	}
+	
+	// @Papyrus
+	public function setMeterSpacing(a_meterSpacing: Number): Void
+	{
+		if (_meterSpacing == a_meterSpacing)
+			return;
+			
+		_meterSpacing = a_meterSpacing;
+		
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setMeterFlashColor(a_meterFlashColor: Number): Void
+	{
+		if (_meterFlashColor == a_meterFlashColor)
+			return;
+			
+		_meterFlashColor = a_meterFlashColor;
+			
+		updateMeterFlashColor();
 	}
 	
 	// @Papyrus
@@ -444,28 +559,6 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 			return;
 			
 		_labelTextFont = a_val;
-		
-		updateLabelTextFormat();
-		updateBackgroundSize();
-		updateElementPositions();
-	}
-	
-	// @Papyrus
-	public function setLabelTextColor(a_val: Number): Void
-	{
-		if (_labelTextColor == a_val)
-			return;
-			
-		_labelTextColor = _valueTextField.textColor = a_val;
-	}
-	
-	// @Papyrus
-	public function setLabelTextSize(a_val: Number): Void
-	{
-		if(_labelTextSize == a_val)
-			return;
-		
-		_labelTextSize = a_val;
 		
 		updateLabelTextFormat();
 		updateBackgroundSize();
@@ -498,82 +591,12 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function setValueTextColor(a_val: Number): Void
+	public function setTextAlign(a_val: String): Void
 	{
-		if(_valueTextColor == a_val)
+		if (_textAlign == a_val.toLowerCase())
 			return;
 			
-		_valueTextColor = _valueTextField.textColor = a_val;
-		
-		updateValueTextFormat();
-	}
-	
-	// @Papyrus
-	public function setValueTextSize(a_val: Number): Void
-	{
-		if(_valueTextSize == a_val)
-			return
-			
-		_valueTextSize = a_val;
-		
-		updateValueTextFormat();
-		updateBackgroundSize();
-		updateElementPositions();
-	}
-	
-	// @Papyrus
-	public function setTextAlign(a_val: Number): Void
-	{
-		if (_textAlign == a_val)
-			return;
-			
-		_textAlign = a_val;
-		
-		updateElementPositions();
-	}
-	
-	// @Papyrus
-	public function setIconSize(a_val: Number): Void
-	{
-		if (_iconSize == a_val)
-			return;
-			
-		_iconSize = a_val;
-		
-		updateIcon();
-		updateBackgroundSize();
-		updateElementPositions();
-	}
-	
-	// @Papyrus
-	public function setIconColor(a_val: Number): Void
-	{
-		if (_iconColor == a_val)
-			return;
-			
-		_iconColor = a_val;
-		
-		updateIcon();
-	}
-	
-	// @Papyrus
-	public function setIconSpacing(a_val: Number): Void
-	{
-		if (_iconSpacing == a_val)
-			return;
-			
-		_iconSpacing = a_val;
-		
-		updateElementPositions();
-	}
-	
-	// @Papyrus
-	public function setIconAlign(a_val: Number): Void
-	{
-		if (_iconAlign == a_val)
-			return;
-			
-		_iconAlign = a_val;
+		_textAlign = a_val.toLowerCase();
 		
 		updateElementPositions();
 	}
@@ -606,37 +629,65 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function setMeterScale(a_meterScale: Number): Void
+	public function setIconAlign(a_val: String): Void
 	{
-		if (_meterScale == a_meterScale)
+		if (_iconAlign == a_val.toLowerCase())
 			return;
 			
-		_meterScale = a_meterScale;
+		_iconAlign =  a_val.toLowerCase();
 		
-		updateBackgroundSize();
 		updateElementPositions();
 	}
 	
 	// @Papyrus
 	public function setMeterFillMode(a_meterFillMode: String): Void
 	{
-		if (_meterFillMode == a_meterFillMode)
+		if (_meterFillMode == a_meterFillMode.toLowerCase())
 			return;
 			
-		_meterFillMode = a_meterFillMode;
+		_meterFillMode = a_meterFillMode.toLowerCase();
 		
 		updateMeterFillMode();
 	}
 	
 	// @Papyrus
-	public function setMeterFlashColor(a_meterFlashColor: Number): Void
+	public function setPadding(a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number, a_paddingLeft: Number): Void
 	{
-		if (_meterFlashColor == a_meterFlashColor)
+		if (_paddingTop == a_paddingTop && _paddingRight == a_paddingRight && _paddingBottom == a_paddingBottom && _paddingLeft == a_paddingLeft)
 			return;
 			
-		_meterFlashColor = a_meterFlashColor;
+		_paddingTop = a_paddingTop;
+		_paddingBottom = a_paddingBottom;
+		_paddingRight = a_paddingRight;
+		_paddingLeft = a_paddingLeft;
+
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setTexts(a_labelText: String, a_valueText: String): Void
+	{
+		if(_labelText == a_labelText && _valueText == a_valueText)
+			return;
 			
-		updateMeterFlashColor();
+		_labelTextField.text = _labelText = a_labelText;
+		_valueTextField.text = _valueText = a_valueText;
+		
+		updateBackgroundSize();
+		updateElementPositions();
+	}
+	
+	// @Papyrus
+	public function setMeterColors(a_meterColorA: Number, a_meterColorB: Number): Void
+	{
+		if (_meterColorA == a_meterColorA && _meterColorB == a_meterColorB)
+			return;
+			
+		_meterColorA = a_meterColorA;
+		_meterColorB = a_meterColorB;
+		
+		drawMeterGradient();
 	}
 	
 	// @Papyrus
@@ -649,9 +700,9 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function startWidgetMeterFlash(): Void
+	public function startMeterFlash(a_force: Boolean): Void
 	{
-		if (_meterFlashAnim.meterFlashing) // Set on the timeline
+		if (_meterFlashAnim.meterFlashing && !a_force) // Set on the timeline
 			return;
 		
 		_meterFlashAnim.gotoAndPlay("StartFlash");
@@ -688,9 +739,9 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		var maxIconTextHeight: Number = Math.max(labelTextFieldHeight, Math.max(valueTextFieldHeight, iconSize));
 		
 		var meterHeight: Number = (_meterScale > 0) ? (_meterFrameContent._height * _meterScale/100) : 0;
-		var meterPadding: Number  = (_meterScale > 0 && maxIconTextHeight > 0) ? _meterPadding : 0;
+		var meterSpacing: Number  = (_meterScale > 0 && maxIconTextHeight > 0) ? _meterSpacing : 0;
 		
-		var h: Number = _paddingTop + _paddingBottom + maxIconTextHeight + meterPadding + meterHeight;
+		var h: Number = _paddingTop + _paddingBottom + maxIconTextHeight + meterSpacing + meterHeight;
 		
 		if (h == background._height && _widgetWidth == background._width && border != undefined)
 			return;
@@ -721,8 +772,13 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		colorTf.rgb = _iconColor;
 		tf.colorTransform = colorTf;
 		
+		_icon._alpha = _iconAlpha;
+		
 		_icon._width = _icon._height = _iconSize;
-		_icon.gotoAndStop(_iconName);
+		if (_iconName == "")
+			_icon.gotoAndStop(0);
+		else
+			_icon.gotoAndStop(_iconName);
 	}
 	
 	private function updateElementPositions(): Void
@@ -735,11 +791,11 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		var iconSize: Number = (_iconLoaded) ? _iconSize : 0;
 		var iconSpacing: Number = (_iconLoaded) ? _iconSpacing : 0;
 		
-		var meterPadding: Number = (_meterScale > 0) ? _meterPadding : 0;
+		var meterSpacing: Number = (_meterScale > 0) ? _meterSpacing : 0;
 		var meterHeight: Number = (_meterScale > 0) ? (_meterFrameContent._height * _meterScale/100) : 0;
 		var meterWidth: Number = _widgetWidth - _paddingLeft - _paddingRight;
 		
-		var availableHeight: Number = background._height - _paddingTop - _paddingBottom - meterPadding - meterHeight;
+		var availableHeight: Number = background._height - _paddingTop - _paddingBottom - meterSpacing - meterHeight;
 		var availableWidth: Number = _widgetWidth - _paddingLeft - _paddingRight - iconSize - iconSpacing;
 		
 		var textWidth: Number = _labelTextField._width + _valueTextField._width;
@@ -782,8 +838,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 			_valueTextField._x = _labelTextField._x + _labelTextField._width;
 		}
 
-		_labelTextField._y = _paddingTop + (availableHeight - _labelTextField._height)/2
-		_valueTextField._y = _paddingTop + (availableHeight - _valueTextField._height)/2
+		_labelTextField._y = _paddingTop + (availableHeight - _labelTextField._height - 4)/2
+		_valueTextField._y = _paddingTop + (availableHeight - _valueTextField._height - 4)/2
 		
 		_icon._x = (_iconAlign == ALIGN_RIGHT) ? (textEnd + iconSpacing) : _paddingLeft;
 		_icon._y = _paddingTop + (availableHeight - iconSize)/2
@@ -857,17 +913,20 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		meterShine.lineTo(0, h);
 		meterShine.lineTo(0, 0);
 		meterShine.endFill();
+		
+		_meter._alpha = _meterAlpha;
+		updateMeterFlashColor();
 	}
 	
 	private function updateMeterFillMode(): Void
 	{
 		switch(_meterFillMode) {
-			case "left":
-			case "center":
-			case "right":
+			case FILL_LEFT:
+			case FILL_CENTER:
+			case FILL_RIGHT:
 				break;
 			default:
-				_meterFillMode = "right"
+				_meterFillMode = FILL_RIGHT;
 		}
 		
 		_meterFillContent.gotoAndStop(_meterFillMode);
@@ -902,17 +961,17 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		meterGradient = _meterBar.createEmptyMovieClip("meterGradient", 0);
 		
 		switch(_meterFillMode) {
-			case "left":
+			case FILL_LEFT:
 				colors = [_meterColorB, _meterColorA];
 				alphas = [100, 100];
 				ratios = [0, 255];
 				break;
-			case "center":
+			case FILL_CENTER:
 				colors = [_meterColorA, _meterColorB, _meterColorA];
 				alphas = [100, 100, 100];
 				ratios = [0, 127, 255];
 				break;
-			case "right":
+			case FILL_RIGHT:
 			default:
 				colors = [_meterColorA, _meterColorB];
 				alphas = [100, 100];
