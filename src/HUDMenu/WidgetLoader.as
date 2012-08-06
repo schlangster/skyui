@@ -9,9 +9,27 @@
 	
 	private static var _widgetContainer: MovieClip;
 	private static var _widgetDirectory: String = "./widgets/";
+	private static var _widgetLoader: MovieClipLoader;
 	
 	
   /* PUBILC FUNCTIONS */
+	
+	public function WidgetLoader()
+	{
+		_widgetLoader = new MovieClipLoader();
+		_widgetLoader.addListener(this);
+	}
+	
+	public function onLoadInit(a_widgetHolder: MovieClip): Void
+	{
+		skse.SendModEvent("widgetLoaded", a_widgetHolder._name);
+	}
+	
+	public function onLoadError(a_widgetHolder:MovieClip, a_errorCode: String): Void
+	{
+		// TODO
+		skse.SendModEvent("widgetWarning", "WidgetLoadFailure", Number(a_widgetHolder._name));
+	}
 	
 	public static function loadWidgets(/* widgetTypes (128) */): Void
 	{
@@ -37,8 +55,8 @@
 		if (_widgetContainer == undefined)
 			createWidgetContainer();
 		
-		var widget: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		widget.loadMovie(_widgetDirectory + a_widgetType + ".swf");
+		var widgetHolder: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
+		_widgetLoader.loadClip(_widgetDirectory + a_widgetType + ".swf", widgetHolder);
 	}
 	 
 	 

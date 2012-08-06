@@ -128,6 +128,8 @@
 		CompassTargetDataA = new Array();
 		SetModes();
 		StealthMeterInstance.gotoAndStop("FadedOut");
+		
+		widgetLoaderReference = new WidgetLoader();
 	}
 
 	function RegisterComponents(): Void

@@ -55,7 +55,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	
 	private var _borderColor: Number;
 	private var _borderAlpha: Number;
-	private var _borderRounded: Number;
+	private var _borderRounded: Boolean;
 	private var _borderWidth: Number;
 	
 	private var _backgroundColor: Number;
@@ -127,7 +127,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @override WidgetBase
-	function onLoad(): Void
+	public function onLoad(): Void
 	{
 		super.onLoad();
 		
@@ -158,14 +158,15 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	// @override MovieClipLoader
 	public function onLoadError(a_icon:MovieClip, a_errorCode: String): Void
 	{
-		skse.SendModEvent("widgetWarning", "WidgetID: " + _widgetID + " IconLoadError: " + a_errorCode + " (" + _iconSource + ")");
+		// TODO
+		skse.SendModEvent("widgetLoadError", "IconLoadFailure", Number(_widgetID)); //"WidgetID: " + _widgetID + " IconLoadError: " + a_errorCode + " (" + _iconSource + ")");
 		
 		unloadIcon();
 	}
 	
 	var st: Number = 0;
 	
-	function testFunc()
+	private function testFunc()
 	{
 		st++;
 		trace(st)
@@ -197,7 +198,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 			setBorderAlpha(25);
 			
 		} else if (st == 8) {
-			setBorderRounded(0);
+			setBorderRounded(false);
 			
 		} else if (st == 9) {
 			setLabelText("Test Label");
@@ -246,7 +247,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	
 	// @Papyrus
 	public function initNumbers(a_widgetWidth: Number, a_backgroundColor: Number, a_backgroundAlpha: Number, a_borderWidth: Number, a_borderColor: Number,
-								a_borderAlpha: Number, a_borderRounded: Number, a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number,
+								a_borderAlpha: Number, a_borderRounded: Boolean, a_paddingTop: Number, a_paddingRight: Number, a_paddingBottom: Number,
 								a_paddingLeft: Number, a_labelTextColor: Number, a_labelTextSize: Number, a_valueTextColor: Number, a_valueTextSize: Number,
 								a_iconSize: Number, a_iconColor: Number, a_iconAlpha: Number, a_iconSpacing: Number, a_meterScale: Number,
 								a_meterColorA: Number, a_meterColorB: Number, a_meterAlpha: Number, a_meterSpacing: Number, a_meterFlashColor: Number): Void
@@ -395,7 +396,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function setBorderRounded(a_val: Number): Void
+	public function setBorderRounded(a_val: Boolean): Void
 	{
 		if (_borderRounded == a_val && border)
 			return;
@@ -693,10 +694,13 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	// @Papyrus
 	public function setMeterPercent(a_percent: Number, a_force: Boolean): Void
 	{
-		setMeterTargetPercent(a_percent);
+		_meterTargetPercent = Math.min(100, Math.max(a_percent, 0));
 		
-		if (a_force)
-			setMeterCurrentPercent(_meterTargetPercent);
+		if (a_force) {
+			_meterCurrentPercent = _meterTargetPercent;
+			var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_meterEmptyIdx, _meterFullIdx, 0, 100, _meterCurrentPercent));
+			_meterBarAnim.gotoAndStop(meterFrame);
+		}
 	}
 	
 	// @Papyrus
@@ -996,18 +1000,6 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		tf.colorTransform = colorTf;
 	}
 	
-	private function setMeterCurrentPercent(a_percent: Number): Void
-	{
-		_meterCurrentPercent = Math.min(100, Math.max(a_percent, 0));
-		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_meterEmptyIdx, _meterFullIdx, 0, 100, _meterCurrentPercent));
-		_meterBarAnim.gotoAndStop(meterFrame);
-	}
-	
-	private function setMeterTargetPercent(a_targetPercent: Number): Void
-	{
-		_meterTargetPercent = Math.min(100, Math.max(a_targetPercent, 0));
-	}
-	
 	private function updateMeter(): Void
 	{
 		if (_meterTargetPercent == _meterCurrentPercent)
@@ -1023,6 +1015,8 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 				_meterCurrentPercent = _meterTargetPercent;
 		}
 		
-		setMeterCurrentPercent(_meterCurrentPercent);
+		_meterCurrentPercent = Math.min(100, Math.max(_meterCurrentPercent, 0));
+		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_meterEmptyIdx, _meterFullIdx, 0, 100, _meterCurrentPercent));
+		_meterBarAnim.gotoAndStop(meterFrame);
 	}
 }

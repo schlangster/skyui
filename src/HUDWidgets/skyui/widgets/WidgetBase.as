@@ -27,30 +27,27 @@
 			_global.gfxExtensions = true;
 	}
 	
-	// @override MovieClip
-	public function onLoad(): Void
-	{
-		skse.SendModEvent("widgetLoaded", _widgetID);
-	}
-		
 		
   /* PUBLIC FUNCTIONS */
   
 	// @Papyrus
 	public function setModes(/* a_visibleModes [] */): Void
 	{	
+		var numValidModes: Number = 0;
 		// Clear all modes
 		for (var i=0; i<MODES.length; i++)
 			delete(_widgetHolder[MODES[i]]);
 			
 		for (var i=0; i<arguments.length; i++) {
 			var m = arguments[i];
-			if (MODES.indexOf(m) != undefined)
+			if (MODES.indexOf(m) != undefined) {
 				_widgetHolder[arguments[i]] = true;
-			else
-				skse.SendModEvent("widgetWarning", "WidgetID: " + _widgetID + " Invalid widget mode: " + m);
+				numValidModes++;
+			}
 		}
 		
+		if (numValidModes == 0) // TODO
+			skse.SendModEvent("widgetWarning", "NoValidModes", Number(_widgetID));
 		
 		var hudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
 		_widgetHolder._visible = _widgetHolder.hasOwnProperty(hudMode);

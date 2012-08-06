@@ -26,6 +26,7 @@ endEvent
 
 event OnGameReload()
 	RegisterForModEvent("widgetLoaded", "OnWidgetLoad")
+	RegisterForModEvent("widgetWarning", "OnWidgetWarning")
 	
 	CleanUp()
 	
@@ -50,13 +51,24 @@ endFunction
 
 ; EVENTS ------------------------------------------------------------------------------------------
 
-event OnWidgetLoad(string a_eventName, String a_strArg, float a_numArg, Form a_sender)
+event OnWidgetLoad(string a_eventName, string a_strArg, float a_numArg, form a_sender)
 	int widgetID = a_strArg as int
 	SKI_WidgetBase client = _widgets[widgetID]
 	
 	if (client != none)
 		client.OnWidgetLoad()
 	endIf
+endEvent
+
+event OnWidgetWarning(string a_eventName, string a_strArg, float a_numArg, form a_sender)
+	int widgetID = a_numArg as int
+	string errorType = a_strArg
+	string errorStr;
+	
+	SKI_WidgetBase client = _widgets[widgetID]
+	errorStr = "WidgetWarning: " + client as string + ": " + errorType
+	
+	Debug.Trace(errorStr)
 endEvent
 
 

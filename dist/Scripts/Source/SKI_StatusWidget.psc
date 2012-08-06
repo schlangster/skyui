@@ -146,7 +146,7 @@ bool property BorderRounded
 	function set(bool a_val)
 		_borderRounded = a_val
 		if (Initialized)
-			UI.InvokeNumber(HUD_MENU, WidgetRoot + ".setBorderRounded", _borderRounded as int) 
+			UI.InvokeBool(HUD_MENU, WidgetRoot + ".setBorderRounded", _borderRounded) 
 		endIf
 	endFunction
 endProperty
@@ -628,8 +628,13 @@ function SetMeterColors(int a_meterColorA, int a_meterColorB)
 	UI.InvokeNumberA(HUD_MENU, WidgetRoot + ".setMeterColors", args)
 endFunction
 
-function SetMeterPercent(float a_percent)
-	UI.InvokeNumber(HUD_MENU, WidgetRoot + ".setMeterPercent", a_percent)
+function SetMeterPercent(float a_percent, bool a_force = false)
+	{a_force boolean sets the meter percent without animation}
+	float[] args = new float[2]
+	args[0] = a_percent as float
+	args[1] = a_force as float
+	
+	UI.InvokeNumberA(HUD_MENU, WidgetRoot + ".setMeterPercent", args)
 endFunction
 
 function StartMeterFlash(bool a_force = false)
