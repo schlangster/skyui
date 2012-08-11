@@ -31,7 +31,7 @@ event OnGameReload()
 	CleanUp()
 	
 	; Load already registered widgets
-	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidgets", _widgetTypes);
+	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidgets", _widgetTypes)
 endEvent
 
 function CleanUp()

@@ -1,10 +1,5 @@
 ﻿class WidgetLoader
 {
-  /* PROPERTIES */
-	
-	public static var skyuiWidgetExtensions: Boolean = false;
-
-
   /* PRIVATE VARIABLES */
 	
 	private static var _widgetContainer: MovieClip;
@@ -18,6 +13,7 @@
 	{
 		_widgetLoader = new MovieClipLoader();
 		_widgetLoader.addListener(this);
+		skyui.util.GlobalFunctions.addArrayFunctions();
 	}
 	
 	public function onLoadInit(a_widgetHolder: MovieClip): Void
@@ -35,13 +31,13 @@
 	{
 		skse.Log("WidgetLoader.as: loadWidgets(widgetTypes[] = " + arguments + ")");
 		if (_widgetContainer != undefined) {
-			for(i: String in _widgetContainer)
-				if (i instanceof MovieClip && _root.HUDMovieBaseInstance.HudElements[i] != undefined)
-					delete(_root.HUDMovieBaseInstance.HudElements[i])
-			
-			_widgetContainer.swapDepths(_root.getNextHighestDepth());
-			_widgetContainer.removeMovieClip();
-			_widgetContainer = undefined;
+			for(var i: String in _widgetContainer) {
+				if (_widgetContainer[i] instanceof MovieClip) {
+					_widgetLoader.unloadClip(_widgetContainer[i]);
+					if (_root.HUDMovieBaseInstance.HudElements.hasOwnProperty(i))
+						delete(_root.HUDMovieBaseInstance.HudElements[i]); 
+				}
+			}
 		}
 		
 		for (var i: Number = 0; i < arguments.length; i++)
@@ -64,8 +60,6 @@
   
 	private static function createWidgetContainer(): Void
 	{
-		skyui.util.GlobalFunctions.addArrayFunctions();
-		
 		// -16384 places the WidgetContainer beneath all elements which were added to the stage in Flash.
 		_widgetContainer = _root.createEmptyMovieClip("WidgetContainer", -16384);
 		

@@ -21,10 +21,10 @@
 		_widgetID = _widgetHolder._name;
 		
 		// Allows for preview in Flash Player
-		if (_root != _widgetHolder)
-			_widgetHolder._visible = false;
-		else
+		if (_global.gfxPlayer)
 			_global.gfxExtensions = true;
+		else
+			_widgetHolder._visible = false;
 	}
 	
 		
@@ -32,7 +32,7 @@
   
 	// @Papyrus
 	public function setModes(/* a_visibleModes [] */): Void
-	{	
+	{
 		var numValidModes: Number = 0;
 		// Clear all modes
 		for (var i=0; i<MODES.length; i++)
@@ -45,7 +45,6 @@
 				numValidModes++;
 			}
 		}
-		
 		if (numValidModes == 0) // TODO
 			skse.SendModEvent("widgetWarning", "NoValidModes", Number(_widgetID));
 		

@@ -1,11 +1,15 @@
-﻿class HUDMenu extends Shared.PlatformChangeUser
+﻿import gfx.io.GameDelegate;
+import flash.display.BitmapData;
+import Components.BlinkOnDemandMeter;
+import Components.BlinkOnEmptyMeter;
+import Components.Meter;
+
+class HUDMenu extends Shared.PlatformChangeUser
 {
 	var SavedRolloverText: String = "";
 	var ItemInfoArray: Array = new Array();
 	var CompassMarkerList: Array = new Array();
 	var METER_PAUSE_FRAME: Number = 40;
-	
-	
 	var ActivateButton_tf: TextField;
 	var ArrowInfoInstance: MovieClip;
 	var BottomLeftLockInstance: MovieClip;
@@ -27,7 +31,7 @@
 	var Crosshair: MovieClip;
 	var CrosshairAlert: MovieClip;
 	var CrosshairInstance: MovieClip;
-	var EnemyHealthMeter: Components.Meter;
+	var EnemyHealthMeter: Meter;
 	var EnemyHealth_mc: MovieClip;
 	var FavorBackButtonBase: MovieClip;
 	var FavorBackButton_mc: MovieClip;
@@ -37,18 +41,18 @@
 	var HUDModes: Array;
 	var Health: MovieClip;
 	var HealthMeterAnim: MovieClip;
-	var HealthMeterLeft: Components.BlinkOnEmptyMeter;
+	var HealthMeterLeft: BlinkOnEmptyMeter;
 	var HudElements: Array;
-	var LeftChargeMeter: Components.Meter;
+	var LeftChargeMeter: Meter;
 	var LeftChargeMeterAnim: MovieClip;
 	var LocationLockBase: MovieClip;
 	var Magica: MovieClip;
-	var MagickaMeter: Components.BlinkOnDemandMeter;
+	var MagickaMeter: BlinkOnDemandMeter;
 	var MagickaMeterAnim: MovieClip;
 	var MessagesBlock: MovieClip;
 	var MessagesInstance: MovieClip;
 	var QuestUpdateBaseInstance: MovieClip;
-	var RightChargeMeter: Components.Meter;
+	var RightChargeMeter: Meter;
 	var RightChargeMeterAnim: MovieClip;
 	var RolloverButton_tf: TextField;
 	var RolloverGrayBar_mc: MovieClip;
@@ -58,7 +62,7 @@
 	var RolloverText: TextField;
 	var ShoutMeter_mc: ShoutMeter;
 	var Stamina: MovieClip;
-	var StaminaMeter: Components.BlinkOnDemandMeter;
+	var StaminaMeter: BlinkOnDemandMeter;
 	var StaminaMeterAnim: MovieClip;
 	var StealthMeterInstance: MovieClip;
 	var SubtitleText: TextField;
@@ -74,20 +78,19 @@
 	var bCrosshairEnabled: Boolean;
 	
 	private var widgetLoaderReference: WidgetLoader;
-	
+
 	function HUDMenu()
 	{
 		super();
-		
 		Shared.GlobalFunc.MaintainTextFormat();
 		Shared.GlobalFunc.AddReverseFunctions();
 		Key.addListener(this);
-		MagickaMeter = new Components.BlinkOnDemandMeter(Magica.MagickaMeter_mc, Magica.MagickaFlashInstance);
-		HealthMeterLeft = new Components.BlinkOnEmptyMeter(Health.HealthMeter_mc.HealthLeft);
-		StaminaMeter = new Components.BlinkOnDemandMeter(Stamina.StaminaMeter_mc, Stamina.StaminaFlashInstance);
+		MagickaMeter = new BlinkOnDemandMeter(Magica.MagickaMeter_mc, Magica.MagickaFlashInstance);
+		HealthMeterLeft = new BlinkOnEmptyMeter(Health.HealthMeter_mc.HealthLeft);
+		StaminaMeter = new BlinkOnDemandMeter(Stamina.StaminaMeter_mc, Stamina.StaminaFlashInstance);
 		ShoutMeter_mc = new ShoutMeter(CompassShoutMeterHolder.ShoutMeterInstance, CompassShoutMeterHolder.ShoutWarningInstance);
-		LeftChargeMeter = new Components.Meter(BottomLeftLockInstance.LeftHandChargeMeterInstance.ChargeMeter_mc);
-		RightChargeMeter = new Components.Meter(BottomRightLockInstance.RightHandChargeMeterInstance.ChargeMeter_mc);
+		LeftChargeMeter = new Meter(BottomLeftLockInstance.LeftHandChargeMeterInstance.ChargeMeter_mc);
+		RightChargeMeter = new Meter(BottomRightLockInstance.RightHandChargeMeterInstance.ChargeMeter_mc);
 		MagickaMeterAnim = Magica;
 		HealthMeterAnim = Health;
 		StaminaMeterAnim = Stamina;
@@ -99,7 +102,7 @@
 		HealthMeterAnim.gotoAndStop(1);
 		StaminaMeterAnim.gotoAndStop(1);
 		ArrowInfoInstance.gotoAndStop(1);
-		EnemyHealthMeter = new Components.Meter(EnemyHealth_mc);
+		EnemyHealthMeter = new Meter(EnemyHealth_mc);
 		EnemyHealth_mc.BracketsInstance.RolloverNameInstance.textAutoSize = "shrink";
 		EnemyHealthMeter.SetPercent(0);
 		gotoAndStop("Alert");
@@ -134,7 +137,7 @@
 
 	function RegisterComponents(): Void
 	{
-		gfx.io.GameDelegate.call("RegisterHUDComponents", [this, HudElements, QuestUpdateBaseInstance, EnemyHealthMeter, StealthMeterInstance, StealthMeterInstance.SneakAnimInstance, EnemyHealth_mc.BracketsInstance, EnemyHealth_mc.BracketsInstance.RolloverNameInstance, StealthMeterInstance.SneakTextHolder, StealthMeterInstance.SneakTextHolder.SneakTextClip.SneakTextInstance]);
+		GameDelegate.call("RegisterHUDComponents", [this, HudElements, QuestUpdateBaseInstance, EnemyHealthMeter, StealthMeterInstance, StealthMeterInstance.SneakAnimInstance, EnemyHealth_mc.BracketsInstance, EnemyHealth_mc.BracketsInstance.RolloverNameInstance, StealthMeterInstance.SneakTextHolder, StealthMeterInstance.SneakTextHolder.SneakTextClip.SneakTextInstance]);
 	}
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
@@ -305,9 +308,27 @@
 		SubtitleTextHolder.CartMode = true;
 		TutorialLockInstance.CartMode = true;
 		
-		//JournalMode
+		/*
+		All // Normal hud mode
+		Favor
+		MovementDisabled
+		Swimming
+		WarhorseMode
+		HorseMode
+		InventoryMode
+		BookMode
+		DialogueMode
+		StealthMode
+		SleepWaitMode
+		BarterMode
+		TweenMode
+		WorldMapMode
+		JournalMode // Everything is hidden
+		CartMode
+		VATSPlayback // Deathcam/killcam
+		*/
 	}
-	
+
 	function ShowElements(aMode: String, abShow: Boolean): Void
 	{
 		var HUDMode: String = "All";
@@ -350,7 +371,7 @@
 		
 		skse.SendModEvent("hudModeChange", HUDMode);
 	}
-	
+
 	function SetLocationName(aLocation: String): Void
 	{
 		LocationLockBase.LocationNameBase.LocationTextBase.LocationTextInstance.SetText(aLocation);
@@ -400,32 +421,32 @@
 		SubtitleText.SetText(" ", true);
 		RolloverText.verticalAutoSize = "top";
 		RolloverText.html = true;
-		gfx.io.GameDelegate.addCallBack("SetCrosshairTarget", this, "SetCrosshairTarget");
-		gfx.io.GameDelegate.addCallBack("SetLoadDoorInfo", this, "SetLoadDoorInfo");
-		gfx.io.GameDelegate.addCallBack("ShowMessage", this, "ShowMessage");
-		gfx.io.GameDelegate.addCallBack("ShowSubtitle", this, "ShowSubtitle");
-		gfx.io.GameDelegate.addCallBack("HideSubtitle", this, "HideSubtitle");
-		gfx.io.GameDelegate.addCallBack("SetCrosshairEnabled", this, "SetCrosshairEnabled");
-		gfx.io.GameDelegate.addCallBack("SetSubtitlesEnabled", this, "SetSubtitlesEnabled");
-		gfx.io.GameDelegate.addCallBack("SetHealthMeterPercent", this, "SetHealthMeterPercent");
-		gfx.io.GameDelegate.addCallBack("SetMagickaMeterPercent", this, "SetMagickaMeterPercent");
-		gfx.io.GameDelegate.addCallBack("SetStaminaMeterPercent", this, "SetStaminaMeterPercent");
-		gfx.io.GameDelegate.addCallBack("SetShoutMeterPercent", this, "SetShoutMeterPercent");
-		gfx.io.GameDelegate.addCallBack("FlashShoutMeter", this, "FlashShoutMeter");
-		gfx.io.GameDelegate.addCallBack("SetChargeMeterPercent", this, "SetChargeMeterPercent");
-		gfx.io.GameDelegate.addCallBack("StartMagickaMeterBlinking", this, "StartMagickaBlinking");
-		gfx.io.GameDelegate.addCallBack("StartStaminaMeterBlinking", this, "StartStaminaBlinking");
-		gfx.io.GameDelegate.addCallBack("FadeOutStamina", this, "FadeOutStamina");
-		gfx.io.GameDelegate.addCallBack("FadeOutChargeMeters", this, "FadeOutChargeMeters");
-		gfx.io.GameDelegate.addCallBack("SetCompassAngle", this, "SetCompassAngle");
-		gfx.io.GameDelegate.addCallBack("SetCompassMarkers", this, "SetCompassMarkers");
-		gfx.io.GameDelegate.addCallBack("SetEnemyHealthPercent", EnemyHealthMeter, "SetPercent");
-		gfx.io.GameDelegate.addCallBack("SetEnemyHealthTargetPercent", EnemyHealthMeter, "SetTargetPercent");
-		gfx.io.GameDelegate.addCallBack("ShowNotification", QuestUpdateBaseInstance, "ShowNotification");
-		gfx.io.GameDelegate.addCallBack("ShowElements", this, "ShowElements");
-		gfx.io.GameDelegate.addCallBack("SetLocationName", this, "SetLocationName");
-		gfx.io.GameDelegate.addCallBack("ShowTutorialHintText", this, "ShowTutorialHintText");
-		gfx.io.GameDelegate.addCallBack("ValidateCrosshair", this, "ValidateCrosshair");
+		GameDelegate.addCallBack("SetCrosshairTarget", this, "SetCrosshairTarget");
+		GameDelegate.addCallBack("SetLoadDoorInfo", this, "SetLoadDoorInfo");
+		GameDelegate.addCallBack("ShowMessage", this, "ShowMessage");
+		GameDelegate.addCallBack("ShowSubtitle", this, "ShowSubtitle");
+		GameDelegate.addCallBack("HideSubtitle", this, "HideSubtitle");
+		GameDelegate.addCallBack("SetCrosshairEnabled", this, "SetCrosshairEnabled");
+		GameDelegate.addCallBack("SetSubtitlesEnabled", this, "SetSubtitlesEnabled");
+		GameDelegate.addCallBack("SetHealthMeterPercent", this, "SetHealthMeterPercent");
+		GameDelegate.addCallBack("SetMagickaMeterPercent", this, "SetMagickaMeterPercent");
+		GameDelegate.addCallBack("SetStaminaMeterPercent", this, "SetStaminaMeterPercent");
+		GameDelegate.addCallBack("SetShoutMeterPercent", this, "SetShoutMeterPercent");
+		GameDelegate.addCallBack("FlashShoutMeter", this, "FlashShoutMeter");
+		GameDelegate.addCallBack("SetChargeMeterPercent", this, "SetChargeMeterPercent");
+		GameDelegate.addCallBack("StartMagickaMeterBlinking", this, "StartMagickaBlinking");
+		GameDelegate.addCallBack("StartStaminaMeterBlinking", this, "StartStaminaBlinking");
+		GameDelegate.addCallBack("FadeOutStamina", this, "FadeOutStamina");
+		GameDelegate.addCallBack("FadeOutChargeMeters", this, "FadeOutChargeMeters");
+		GameDelegate.addCallBack("SetCompassAngle", this, "SetCompassAngle");
+		GameDelegate.addCallBack("SetCompassMarkers", this, "SetCompassMarkers");
+		GameDelegate.addCallBack("SetEnemyHealthPercent", EnemyHealthMeter, "SetPercent");
+		GameDelegate.addCallBack("SetEnemyHealthTargetPercent", EnemyHealthMeter, "SetTargetPercent");
+		GameDelegate.addCallBack("ShowNotification", QuestUpdateBaseInstance, "ShowNotification");
+		GameDelegate.addCallBack("ShowElements", this, "ShowElements");
+		GameDelegate.addCallBack("SetLocationName", this, "SetLocationName");
+		GameDelegate.addCallBack("ShowTutorialHintText", this, "ShowTutorialHintText");
+		GameDelegate.addCallBack("ValidateCrosshair", this, "ValidateCrosshair");
 	}
 
 	function InitCompass(): Void
@@ -477,7 +498,7 @@
 
 	function SetChargeMeterPercent(aPercent: Number, abForce: Boolean, abLeftHand: Boolean, abShow: Boolean): Void
 	{
-		var ChargeMeter: Components.Meter = abLeftHand ? LeftChargeMeter : RightChargeMeter;
+		var ChargeMeter: Meter = abLeftHand ? LeftChargeMeter : RightChargeMeter;
 		var ChargeMeterAnim: MovieClip = abLeftHand ? LeftChargeMeterAnim : RightChargeMeterAnim;
 		if (!abShow) {
 			ChargeMeterAnim.gotoAndStop(1);
@@ -574,7 +595,7 @@
 			RolloverText._alpha = 100;
 			RolloverButton_tf._alpha = abShowButton ? 100 : 0;
 			RolloverButton_tf._x = RolloverText._x + RolloverText.getLineMetrics(0).x - 103;
-		} else 	{
+		} else {
 			Crosshair_mc.gotoAndStop(FavorModeNoTarget);
 			RolloverText.SetText(" ", true);
 			RolloverText._alpha = 0;
@@ -609,7 +630,7 @@
 			return;
 		}
 		
-		var ButtonImage: flash.display.BitmapData = flash.display.BitmapData.loadBitmap(astrButtonName + ".png");
+		var ButtonImage: BitmapData = BitmapData.loadBitmap(astrButtonName + ".png");
 		if (ButtonImage != undefined && ButtonImage.height > 0) {
 			var MaxHeight: Number = 26;
 			var ScaledWidth: Number = Math.floor(MaxHeight / ButtonImage.height * ButtonImage.width);
@@ -642,7 +663,7 @@
 			SubtitleText._visible = true;
 	}
 
-	function ShowMessage(asMessage): Void //Unknown what type asMessage is
+	function ShowMessage(asMessage: String): Void
 	{
 		MessagesInstance.MessageArray.push(asMessage);
 	}
@@ -672,7 +693,7 @@
 		ArrowInfoInstance.PlayForward(ArrowInfoInstance._currentframe);
 		ArrowInfoInstance.ArrowCountInstance.ArrowNumInstance.SetText(aArrows + " (" + aCount.toString() + ")");
 	}
-	
+
 	function onEnterFrame(): Void
 	{
 		MagickaMeter.Update();
