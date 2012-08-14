@@ -124,6 +124,8 @@ state _INIT
 			OnWidgetInit()
 			_widgetManager.CreateWidget(_widgetID, GetWidgetType())
 			_initialized = true
+		else
+			Debug.Trace("WidgetWarning: " + self as string + ": could not be loaded, too many widgets. Max is 128")
 		endIf
 	endEvent
 endState

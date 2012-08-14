@@ -32,18 +32,26 @@ event OnGameReload()
 	
 	; Load already registered widgets
 	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidgets", _widgetTypes)
+	
 endEvent
 
 function CleanUp()
 	_widgetCount = 0
 	int i = 0
+	
 	while (i < _widgets.length)
 		if (_widgets[i] == none)
 			_widgetTypes[i] = none
 		else
-			_widgetCount += 1
+			if (!(_widgets[i].GetFormID() > 0))
+				; Widget no longer exists
+				Debug.Trace("WidgetWarning: " + _widgets[i] as string + ": Not found, possibly uninstalled?")
+				_widgets[i] = none
+				_widgetTypes[i] = none
+			else
+				_widgetCount += 1
+			endIf
 		endIf
-		
 		i += 1
 	endWhile
 endFunction
@@ -76,7 +84,7 @@ endEvent
 
 int function RequestWidgetID(SKI_WidgetBase a_client)
 	if (_widgetCount >= 128)
-		return -1 ;TODO 20120919 need to check for these
+		return -1
 	endIf
 
 	int widgetID = NextWidgetID()
