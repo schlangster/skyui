@@ -45,7 +45,7 @@ class ModListPanel extends MovieClip
 	public var sublistIndicator: MovieClip;
 	
 	
-  /* CONSTRUCTOR */
+  /* INITIALIZATION */
   
 	public function ModListPanel()
 	{

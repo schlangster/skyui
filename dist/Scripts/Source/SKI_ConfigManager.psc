@@ -24,10 +24,6 @@ event OnInit()
 	_curConfigID	= 0
 	_configCount	= 0
 	
-	OnGameReload()
-endEvent
-
-event OnGameReload()
 	RegisterForModEvent("modSelected", "OnModSelect")
 	RegisterForModEvent("pageSelected", "OnPageSelect")
 	RegisterForMenu(JOURNAL_MENU)
@@ -35,11 +31,16 @@ event OnGameReload()
 	CleanUp()
 endEvent
 
+event OnGameReload()
+	CleanUp()
+endEvent
+
 function CleanUp()
 	_configCount = 0
 	int i = 0
 	while (i < _modConfigs.length)
-		if (_modConfigs[i] == none)
+		if (_modConfigs[i] == none || !(_modConfigs[i].GetFormID() > 0))
+			_modConfigs[i] = none
 			_modNames[i] = none
 		else
 			_configCount += 1
@@ -66,15 +67,13 @@ event OnModSelect(string a_eventName, string a_strArg, float a_numArg, Form a_se
 	if (configIndex > -1)
 		_activeConfig = _modConfigs[configIndex]
 		UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", _activeConfig.Pages)
-		_activeConfig.OnPageReset("")
+		_activeConfig.SetPage("")
 	endIf
 endEvent
 
 event OnPageSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	string page = a_strArg
-	_activeConfig.OnPageReset(page)
-	_activeConfig.CurrentPage = page
-	_activeConfig.FlushOptionBuffers()
+	_activeConfig.SetPage(page)
 endEvent
 
 

@@ -26,6 +26,8 @@ int					_npcEndMultSliderID
 int					_playerLvlMultSliderID
 int					_npcLvlMultSliderID
 
+int					counter = 0
+
 
 ; EVENTS ------------------------------------------------------------------------------------------
 
@@ -74,6 +76,10 @@ event OnPageReset(string a_page)
 		_logoAnimToggleID		= AddToggleOption("Logo Animation", false)
 	
 	elseIf (a_page == "Character")
+	
+		counter += 1
+		SetSliderOptionValue(_npcLvlMultSliderID, counter)
+	
 	elseIf (a_page == "Damage + Combat")
 	
 		AddHeaderOption("Hitpoints")
@@ -82,7 +88,7 @@ event OnPageReset(string a_page)
 		_playerEndMultSliderID	= AddSliderOption("Player Endurance Multiplier", 10)
 		_npcEndMultSliderID		= AddSliderOption("NPC Endurance Multiplier", 7)
 		_playerLvlMultSliderID	= AddSliderOption("Player Level Multiplier", 0)
-		_npcLvlMultSliderID		= AddSliderOption("NPC Level Multiplier", 0)
+		_npcLvlMultSliderID		= AddSliderOption("NPC Level Multiplier", counter)
 	
 	elseIf (a_page == "Stealth + Movement")
 	elseIf (a_page == "Loot Rarity")

@@ -101,6 +101,12 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
+function SetPage(string a_page)
+	CurrentPage = ""
+	OnPageReset("")
+	FlushOptionBuffers()
+endFunction
+
 int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue)
 	
 	if (_optionCount >= 127)
@@ -135,7 +141,7 @@ int function AddToggleOption(string a_text, bool a_checked)
 	return AddOption(OPTION_TOGGLE, a_text, none, a_checked as int)
 endfunction
 
-int function AddSliderOption(string a_text, float a_value)
+int function AddSliderOption(string a_text, float a_value, string a_displayValue = "")
 	return AddOption(OPTION_SLIDER, a_text, none, a_value)
 endFunction
 
@@ -162,4 +168,48 @@ function FlushOptionBuffers()
 	UI.InvokeNumber(menu, root + ".flushOptionBuffers", _optionCount)
 	
 	_optionCount = 0
+endFunction
+
+function SetOptionStrValue(int a_option, string a_strValue)
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
+	UI.Invoke(menu, root + ".invalidateOptionData")
+endFunction
+
+function SetOptionNumValue(int a_option, float a_numValue)
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
+	UI.Invoke(menu, root + ".invalidateOptionData")
+endFunction
+
+function SetOptionValues(int a_option, string a_strValue, float a_numValue)
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
+	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
+	UI.Invoke(menu, root + ".invalidateOptionData")
+endFunction
+
+function SetTextOptionValue(int a_option, string a_value)
+	SetOptionStrValue(a_option, a_value)
+endFunction
+
+function SetToggleOptionValue(int a_option, bool a_checked)
+	SetOptionNumValue(a_option, a_checked as int)
+endfunction
+
+function SetSliderOptionValue(int a_option, float a_value, string a_displayValue = "")
+	SetOptionValues(a_option, a_displayValue, a_value)
+endFunction
+
+function SetMenuOptionValue(int a_option, string a_value)
+	SetOptionStrValue(a_option, a_value)
 endFunction

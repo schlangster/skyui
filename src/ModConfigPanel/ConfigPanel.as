@@ -12,14 +12,6 @@ import skyui.util.DialogManager;
 
 class ConfigPanel extends MovieClip
 {
-  /* CONSTANTS */
-	
-	private var SHOW_MODLIST = 1;
-	private var SHOW_SUBMODLIST = 2;
-	private var FADE_TO_MODLIST = 3;
-	private var FADE_TO_SUBMODLIST = 4;
-	
-	
   /* PRIVATE VARIABLES */
   
 	// Quest_Journal_mc
@@ -30,10 +22,13 @@ class ConfigPanel extends MovieClip
 	private var _subList: ScrollingList;
 	private var _optionsList: MultiColumnScrollingList;
 	private var _customContent: MovieClip;
-
-	private var _state: Number;
 	
 	private var _optionChangeDialog: MovieClip;
+	
+	// Waiting for Papyrus operations to complete
+	private var _waitForOptionData: Boolean = false;
+	private var _waitForSliderData: Boolean = false;
+	private var _waitForMenuData: Boolean = false;
 	
 	
   /* STAGE ELEMENTS */
@@ -101,57 +96,67 @@ class ConfigPanel extends MovieClip
 		_optionsList._visible = true;
 	}
 	
-	private static var in_optionTypeBuffer = [];
-	private static var in_optionTextBuffer = [];
-	private static var in_optionStrValueBuffer = [];
-	private static var in_optionNumValueBuffer = [];
+	private static var _optionTypeBuffer = [];
+	private static var _optionTextBuffer = [];
+	private static var _optionStrValueBuffer = [];
+	private static var _optionNumValueBuffer = [];
 	
 	public function setOptionTypeBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			in_optionTypeBuffer[i] = arguments[i];
+			_optionTypeBuffer[i] = arguments[i];
 	}
 	
 	public function setOptionTextBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			in_optionTextBuffer[i] = arguments[i];
+			_optionTextBuffer[i] = arguments[i];
 	}
 	
 	public function setOptionStrValueBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			in_optionStrValueBuffer[i] = arguments[i];
+			_optionStrValueBuffer[i] = arguments[i];
 	}
 	
 	public function setOptionNumValueBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			in_optionNumValueBuffer[i] = arguments[i];
+			_optionNumValueBuffer[i] = arguments[i];
 	}
 	
 	public function flushOptionBuffers(a_optionCount: Number): Void
 	{
 		_optionsList.clearList();
 		for (var i=0; i<a_optionCount; i++) {
-			_optionsList.entryList.push({optionType: in_optionTypeBuffer[i], 
-										 text: in_optionTextBuffer[i],
- 										 strValue: in_optionStrValueBuffer[i],
-										 numValue: in_optionNumValueBuffer[i],
+			_optionsList.entryList.push({optionType: _optionTypeBuffer[i], 
+										 text: _optionTextBuffer[i],
+ 										 strValue: _optionStrValueBuffer[i],
+										 numValue: _optionNumValueBuffer[i],
 										 enabled: true});
 		}
 			
 		_optionsList.InvalidateData();
 		
-		in_optionTypeBuffer.splice(0);
-		in_optionTextBuffer.splice(0);
-		in_optionStrValueBuffer.splice(0);
-		in_optionNumValueBuffer.splice(0);
+		_optionTypeBuffer.splice(0);
+		_optionTextBuffer.splice(0);
+		_optionStrValueBuffer.splice(0);
+		_optionNumValueBuffer.splice(0);
+		
+		_waitForOptionData = false;
 	}
 	
+	public var optionCursorIndex = -1;
 	
+	public function get optionCursor(): Object
+	{
+		return _optionsList.entryList[optionCursorIndex];
+	}
 	
-	
+	public function invalidateOptionData(): Void
+	{
+		_optionsList.InvalidateData();
+	}
 	
 	private function startModSelectMode(): Void
 	{
@@ -209,14 +214,7 @@ class ConfigPanel extends MovieClip
 	
 	public function onModListPress(a_event: Object): Void
 	{
-		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
-		_subList.clearList();
-		_subList.InvalidateData();
-		
-		skse.SendModEvent("modSelected", null, a_event.index);
-
-//		unloadCustomContent();
-		contentHolder.modListPanel.showSublist();
+		selectMod(a_event.index);
 	}
 	
 	public function onSubListPress(a_event: Object): Void
@@ -233,28 +231,20 @@ class ConfigPanel extends MovieClip
 	
 	public function onOptionPress(a_event: Object): Void
 	{
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
-		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
-		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
-		
-		gotoAndPlay("dimOut");
+		selectOption();
 	}
 	
 	public function onOptionChangeDialogClosing(event: Object): Void
 	{
-//		categoryList.disableSelection = categoryList.disableInput = false;
-//		itemList.disableSelection = itemList.disableInput = false;
-//		searchWidget.isDisabled = false;
-		
 		gotoAndPlay("dimIn");
 	}
 	
 	
 	public function onOptionChangeDialogClosed(event: Object): Void
 	{
-//		categoryList.disableSelection = categoryList.disableInput = false;
-//		itemList.disableSelection = itemList.disableInput = false;
-//		searchWidget.isDisabled = false;
+		categoryList.disableSelection = categoryList.disableInput = false;
+		itemList.disableSelection = itemList.disableInput = false;
+		searchWidget.isDisabled = false;
 	}
 	
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -271,5 +261,36 @@ class ConfigPanel extends MovieClip
 			}
 		}
 		return bHandledInput;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function selectMod(a_index: Number): Void
+	{
+		if (_waitForOptionData || _waitForSliderData || _waitForMenuData)
+			return;
+		
+		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
+		_subList.clearList();
+		_subList.InvalidateData();
+		
+		_waitForOptionData = true;
+		skse.SendModEvent("modSelected", null, a_index);
+
+//		unloadCustomContent();
+		contentHolder.modListPanel.showSublist();
+	}
+	
+	private function selectOption(a_index: Number): Void
+	{
+		if (_waitForOptionData || _waitForSliderData || _waitForMenuData)
+			return;
+		
+		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
+		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		
+		gotoAndPlay("dimOut");
 	}
 }

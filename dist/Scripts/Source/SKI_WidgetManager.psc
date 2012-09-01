@@ -21,18 +21,24 @@ event OnInit()
 	_curWidgetID	= 0
 	_widgetCount	= 0
 	
+	RegisterForModEvent("widgetLoaded", "OnWidgetLoad")
+	RegisterForModEvent("widgetWarning", "OnWidgetWarning")
+	
+	; Wait a few seconds until all widgets have registered their callbacks
+	RegisterForSingleUpdate(3)
+endEvent
+
+event OnUpdate()
 	OnGameReload()
 endEvent
 
 event OnGameReload()
-	RegisterForModEvent("widgetLoaded", "OnWidgetLoad")
-	RegisterForModEvent("widgetWarning", "OnWidgetWarning")
-	
 	CleanUp()
 	
 	; Load already registered widgets
 	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidgets", _widgetTypes)
 	
+	SendModEvent("widgetManagerReady")
 endEvent
 
 function CleanUp()
@@ -40,17 +46,12 @@ function CleanUp()
 	int i = 0
 	
 	while (i < _widgets.length)
-		if (_widgets[i] == none)
+		if (_widgets[i] == none || !(_widgets[i].GetFormID() > 0))
+			; Widget no longer exists
+			_widgets[i] = none
 			_widgetTypes[i] = none
 		else
-			if (!(_widgets[i].GetFormID() > 0))
-				; Widget no longer exists
-				Debug.Trace("WidgetWarning: " + _widgets[i] as string + ": Not found, possibly uninstalled?")
-				_widgets[i] = none
-				_widgetTypes[i] = none
-			else
-				_widgetCount += 1
-			endIf
+			_widgetCount += 1
 		endIf
 		i += 1
 	endWhile

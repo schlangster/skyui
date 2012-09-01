@@ -10,9 +10,10 @@
 /build/skyui/configpanel.swf
 /build/skyui/skyui_icons_psychosteve.swf
 /src/Common/mx/transitions/Tween.as
-/src/Common/com/greensock
+/src/greensock-as2
 /build/widgets/textbox.swf
 /build/hudmenu.swf
 /build/widgets/status.swf
 /build/skyui_splash.swf
 /build/skyui/skyui_splash.swf
+
