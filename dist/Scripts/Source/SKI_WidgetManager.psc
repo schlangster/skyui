@@ -22,7 +22,7 @@ event OnInit()
 	_widgetCount	= 0
 	
 	RegisterForModEvent("widgetLoaded", "OnWidgetLoad")
-	RegisterForModEvent("widgetWarning", "OnWidgetWarning")
+	RegisterForModEvent("widgetError", "OnWidgetError")
 	
 	; Wait a few seconds until all widgets have registered their callbacks
 	RegisterForSingleUpdate(3)
@@ -36,7 +36,7 @@ event OnGameReload()
 	CleanUp()
 	
 	; Load already registered widgets
-	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidgets", _widgetTypes)
+	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.instance.loadWidgets", _widgetTypes)
 	
 	SendModEvent("widgetManagerReady")
 endEvent
@@ -69,15 +69,11 @@ event OnWidgetLoad(string a_eventName, string a_strArg, float a_numArg, form a_s
 	endIf
 endEvent
 
-event OnWidgetWarning(string a_eventName, string a_strArg, float a_numArg, form a_sender)
+event OnWidgetError(string a_eventName, string a_strArg, float a_numArg, form a_sender)
 	int widgetID = a_numArg as int
 	string errorType = a_strArg
-	string errorStr;
 	
-	SKI_WidgetBase client = _widgets[widgetID]
-	errorStr = "WidgetWarning: " + client as string + ": " + errorType
-	
-	Debug.Trace(errorStr)
+	Debug.Trace("WidgetError: " + (_widgets[widgetID] as string) + ": " + errorType)
 endEvent
 
 
@@ -116,5 +112,5 @@ function CreateWidget(int a_widgetID, string a_widgetType)
 	string[] args = new string[2]
 	args[0] = a_widgetID as string
 	args[1] = a_widgetType
-	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.loadWidget", args);
+	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.instance.loadWidget", args);
 endFunction

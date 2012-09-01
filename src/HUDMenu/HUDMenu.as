@@ -76,8 +76,6 @@ class HUDMenu extends Shared.PlatformChangeUser
 	var ValueTranslated: TextField;
 	var WeightTranslated: TextField;
 	var bCrosshairEnabled: Boolean;
-	
-	private var widgetLoaderReference: WidgetLoader;
 
 	function HUDMenu()
 	{
@@ -132,7 +130,8 @@ class HUDMenu extends Shared.PlatformChangeUser
 		SetModes();
 		StealthMeterInstance.gotoAndStop("FadedOut");
 		
-		widgetLoaderReference = new WidgetLoader();
+		// Trigger instantiation
+		WidgetLoader.instance;
 	}
 
 	function RegisterComponents(): Void

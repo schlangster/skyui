@@ -1,20 +1,44 @@
-﻿class WidgetLoader
+﻿import skyui.util.GlobalFunctions;
+
+class WidgetLoader
 {
+  /* CONSTANTS */
+
+	private static var WIDGET_PATH = "./widgets/";
+	
+	
   /* PRIVATE VARIABLES */
+
+	private var _widgetContainer: MovieClip;
 	
-	private static var _widgetContainer: MovieClip;
-	private static var _widgetDirectory: String = "./widgets/";
-	private static var _widgetLoader: MovieClipLoader;
+	private var _widgetLoader: MovieClipLoader;
 	
 	
-  /* PUBILC FUNCTIONS */
+  /* PROPERTIES */
+  
+	static private var _instance: WidgetLoader;
 	
-	public function WidgetLoader()
+	static function get instance(): WidgetLoader
+	{
+		if (_instance == undefined)
+			_instance = new WidgetLoader();
+			
+		return _instance;
+	}
+	
+	
+  /* INITIALIZATION */
+	
+	private function WidgetLoader()
 	{
 		_widgetLoader = new MovieClipLoader();
 		_widgetLoader.addListener(this);
-		skyui.util.GlobalFunctions.addArrayFunctions();
+		
+		GlobalFunctions.addArrayFunctions();
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 	
 	public function onLoadInit(a_widgetHolder: MovieClip): Void
 	{
@@ -23,11 +47,10 @@
 	
 	public function onLoadError(a_widgetHolder:MovieClip, a_errorCode: String): Void
 	{
-		// TODO
-		skse.SendModEvent("widgetWarning", "WidgetLoadFailure", Number(a_widgetHolder._name));
+		skse.SendModEvent("widgetError", "WidgetLoadFailure", Number(a_widgetHolder._name));
 	}
 	
-	public static function loadWidgets(/* widgetTypes (128) */): Void
+	public function loadWidgets(/* widgetTypes (128) */): Void
 	{
 		skse.Log("WidgetLoader.as: loadWidgets(widgetTypes[] = " + arguments + ")");
 		if (_widgetContainer != undefined) {
@@ -45,20 +68,20 @@
 				loadWidget(String(i), arguments[i]);
 	}
 
-	public static function loadWidget(a_widgetID: String, a_widgetType: String): Void
+	public function loadWidget(a_widgetID: String, a_widgetType: String): Void
 	{
 		skse.Log("WidgetLoader.as: loadWidget(a_widgetID = " + a_widgetID + ", a_widgetType = " + a_widgetType + ")");
 		if (_widgetContainer == undefined)
 			createWidgetContainer();
 		
 		var widgetHolder: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		_widgetLoader.loadClip(_widgetDirectory + a_widgetType + ".swf", widgetHolder);
+		_widgetLoader.loadClip(WIDGET_PATH + a_widgetType + ".swf", widgetHolder);
 	}
 	 
 	 
   /* PRIVATE FUNCTIONS */
   
-	private static function createWidgetContainer(): Void
+	private function createWidgetContainer(): Void
 	{
 		// -16384 places the WidgetContainer beneath all elements which were added to the stage in Flash.
 		_widgetContainer = _root.createEmptyMovieClip("WidgetContainer", -16384);
