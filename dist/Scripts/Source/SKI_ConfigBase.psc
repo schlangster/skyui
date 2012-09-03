@@ -71,7 +71,7 @@ event OnPageReset(string a_page)
 endEvent
 
 ; @interface
-event OnOptionHover(int a_option)
+event OnOptionHighlight(int a_option)
 endEvent
 
 ; @interface
@@ -102,9 +102,25 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 function SetPage(string a_page)
-	CurrentPage = ""
-	OnPageReset("")
+	CurrentPage = a_page
+	
+	; Set default title, can be overridden in OnPageReset
+	if (a_page != "")
+		SetTitleText(a_page)
+	else
+		SetTitleText(ModName)
+	endIf
+	
+	OnPageReset(a_page)
 	FlushOptionBuffers()
+endFunction
+
+function SetTitleText(string a_text)
+	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setTitleText", a_text)
+endFunction
+
+function SetInfoText(string a_text)
+	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", a_text)
 endFunction
 
 int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue)

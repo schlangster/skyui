@@ -12,6 +12,13 @@ import skyui.util.DialogManager;
 
 class ConfigPanel extends MovieClip
 {
+  /* CONSTANTS */
+  
+  	private var READY = 0;
+	private var WAIT_FOR_OPTION_DATA = 1;
+	private var WAIT_FOR_SLIDER_DATA = 2;
+	private var WAIT_FOR_MENU_DATA = 3;
+	
   /* PRIVATE VARIABLES */
   
 	// Quest_Journal_mc
@@ -25,15 +32,25 @@ class ConfigPanel extends MovieClip
 	
 	private var _optionChangeDialog: MovieClip;
 	
-	// Waiting for Papyrus operations to complete
-	private var _waitForOptionData: Boolean = false;
-	private var _waitForSliderData: Boolean = false;
-	private var _waitForMenuData: Boolean = false;
+	private var _state: Number;
+	
+	private var _optionTypeBuffer: Array;
+	private var _optionTextBuffer: Array;
+	private var _optionStrValueBuffer: Array;
+	private var _optionNumValueBuffer: Array;
+	
+	private var _titleText: String = "";
+	private var _infoText: String = "";
+	
+	private var _highlightIndex: Number = -1;
+	private var _highlightIntervalID: Number;
 	
 	
   /* STAGE ELEMENTS */
 
 	public var contentHolder: MovieClip;
+	
+	public var titlebar: MovieClip;
 	
 	
   /* INITIALIATZION */
@@ -46,6 +63,43 @@ class ConfigPanel extends MovieClip
 		_modList = _modListPanel.modListFader.list;
 		_subList = _modListPanel.subListFader.list;
 		_optionsList = contentHolder.optionsPanel.optionsList;
+		
+		_state = READY;
+		
+		_optionTypeBuffer = [];
+		_optionTextBuffer = [];
+		_optionStrValueBuffer = [];
+		_optionNumValueBuffer = [];
+	}
+	
+	// @override MovieClip
+	private function onLoad()
+	{
+		super.onLoad();
+		
+		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
+		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
+		
+		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
+		_subList.entryFormatter = new ButtonEntryFormatter(_subList);
+		
+		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
+		_optionsList.entryFormatter = new OptionEntryFormatter(_optionsList);
+		
+		_modList.addEventListener("itemPress", this, "onModListPress");
+		_subList.addEventListener("itemPress", this, "onSubListPress");
+		_optionsList.addEventListener("itemPress", this, "onOptionPress");
+		_optionsList.addEventListener("selectionChange", this, "onOptionChange");
+		
+		// Debug
+		Shared.GlobalFunc.MaintainTextFormat();
+		
+		_global.skyui.platform = 0;
+		
+//		startPage();
+//		loadCustomContent("skyui_splash.swf");
+
+		_optionsList._visible = false;
 	}
 	
 	
@@ -58,7 +112,7 @@ class ConfigPanel extends MovieClip
 		_modList.clearList();
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")
-				_modList.entryList.push({text: arguments[i], align: "right", enabled: true});
+				_modList.entryList.push({modIndex: i, text: arguments[i], align: "right", enabled: true});
 		_modList.InvalidateData();
 	}
 	
@@ -96,10 +150,23 @@ class ConfigPanel extends MovieClip
 		_optionsList._visible = true;
 	}
 	
-	private static var _optionTypeBuffer = [];
-	private static var _optionTextBuffer = [];
-	private static var _optionStrValueBuffer = [];
-	private static var _optionNumValueBuffer = [];
+	public function setTitleText(a_text: String): Void
+	{
+		_titleText = a_text.toUpperCase();
+		
+		// Don't apply yet if waiting for option data
+		if (_state != WAIT_FOR_OPTION_DATA)
+			applyTitleText();
+	}
+	
+	public function setInfoText(a_text: String): Void
+	{
+		_infoText = a_text;
+		
+		// Don't apply yet if waiting for option data
+		if (_state != WAIT_FOR_OPTION_DATA)
+			applyInfoText();
+	}
 	
 	public function setOptionTypeBuffer(/* values */): Void
 	{
@@ -143,7 +210,15 @@ class ConfigPanel extends MovieClip
 		_optionStrValueBuffer.splice(0);
 		_optionNumValueBuffer.splice(0);
 		
-		_waitForOptionData = false;
+		applyTitleText();
+		
+		_highlightIndex = -1;
+		clearInterval(_highlightIntervalID);
+		
+		_infoText = "";
+		applyInfoText();
+		
+		_state = READY;
 	}
 	
 	public var optionCursorIndex = -1;
@@ -177,34 +252,7 @@ class ConfigPanel extends MovieClip
 
 	}
 	
-	// @override MovieClip
-	private function onLoad()
-	{
-		super.onLoad();
-		
-		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
-		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
-		
-		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
-		_subList.entryFormatter = new ButtonEntryFormatter(_subList);
-		
-		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
-		_optionsList.entryFormatter = new OptionEntryFormatter(_optionsList);
-		
-		_modList.addEventListener("itemPress", this, "onModListPress");
-		_subList.addEventListener("itemPress", this, "onSubListPress");
-		_optionsList.addEventListener("itemPress", this, "onOptionPress");
-		
-		// Debug
-		Shared.GlobalFunc.MaintainTextFormat();
-		
-		_global.skyui.platform = 0;
-		
-//		startPage();
-//		loadCustomContent("skyui_splash.swf");
 
-		_optionsList._visible = false;
-	}
 	
 	public function endPage(): Void
 	{
@@ -214,24 +262,22 @@ class ConfigPanel extends MovieClip
 	
 	public function onModListPress(a_event: Object): Void
 	{
-		selectMod(a_event.index);
+		selectMod(a_event.entry);
 	}
 	
 	public function onSubListPress(a_event: Object): Void
 	{
-		var e = a_event.entry;
-		if (e == undefined)
-			return;
-		
-		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = e;
-		_subList.UpdateList();
-		
-		skse.SendModEvent("pageSelected", e.text);
+		selectPage(a_event.entry);
 	}
 	
 	public function onOptionPress(a_event: Object): Void
 	{
 		selectOption();
+	}
+	
+	public function onOptionChange(a_event: Object): Void
+	{
+		initHighlightOption(a_event.index);
 	}
 	
 	public function onOptionChangeDialogClosing(event: Object): Void
@@ -242,9 +288,9 @@ class ConfigPanel extends MovieClip
 	
 	public function onOptionChangeDialogClosed(event: Object): Void
 	{
-		categoryList.disableSelection = categoryList.disableInput = false;
-		itemList.disableSelection = itemList.disableInput = false;
-		searchWidget.isDisabled = false;
+//		categoryList.disableSelection = categoryList.disableInput = false;
+//		itemList.disableSelection = itemList.disableInput = false;
+//		searchWidget.isDisabled = false;
 	}
 	
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -266,25 +312,40 @@ class ConfigPanel extends MovieClip
 	
   /* PRIVATE FUNCTIONS */
 	
-	private function selectMod(a_index: Number): Void
-	{
-		if (_waitForOptionData || _waitForSliderData || _waitForMenuData)
+	private function selectMod(a_entry: Object): Void
+	{		
+		if (_state != READY)
 			return;
 		
 		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
 		_subList.clearList();
 		_subList.InvalidateData();
 		
-		_waitForOptionData = true;
-		skse.SendModEvent("modSelected", null, a_index);
+		_state = WAIT_FOR_OPTION_DATA;
+		skse.SendModEvent("modSelected", null, a_entry.modIndex);
 
 //		unloadCustomContent();
 		contentHolder.modListPanel.showSublist();
 	}
 	
+	private function selectPage(a_entry: Object): Void
+	{		
+		if (_state != READY)
+			return;
+			
+		if (a_entry == undefined)
+			return;
+		
+		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = a_entry;
+		_subList.UpdateList();
+		
+		_state = WAIT_FOR_OPTION_DATA;
+		skse.SendModEvent("pageSelected", a_entry.text);
+	}
+	
 	private function selectOption(a_index: Number): Void
 	{
-		if (_waitForOptionData || _waitForSliderData || _waitForMenuData)
+		if (_state != READY)
 			return;
 		
 		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
@@ -292,5 +353,51 @@ class ConfigPanel extends MovieClip
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		
 		gotoAndPlay("dimOut");
+	}
+	
+	private function initHighlightOption(a_index: Number): Void
+	{
+		if (_state != READY)
+			return;
+		
+		// Same option?
+		if (a_index == _highlightIndex)
+			return;
+
+		_highlightIndex = a_index;
+		
+		clearInterval(_highlightIntervalID);
+		_highlightIntervalID = setInterval(doHighlightOption, 300, a_index);
+	}
+	
+	private function doHighlightOption(a_index: Number): Void
+	{
+		clearInterval(_highlightIntervalID);		
+		skse.SendModEvent("optionHighlighted", null, a_index);
+	}
+	
+	private function applyTitleText(): Void
+	{
+		titlebar.textField.text = _titleText;
+		
+		var w = titlebar.textField.textWidth + 100;
+		if (w < 300)
+			w = 300;
+			
+		titlebar.background._width = w;
+	}
+	
+	private function applyInfoText(): Void
+	{
+		var t = contentHolder.infoPanel;
+		
+		t.textField.text = _infoText;
+		
+		if (_infoText != "") {
+			var h = t.textField.textHeight + 22;
+			t.background._height = h;
+		} else {
+			t.background._height = 32;
+		}
 	}
 }
