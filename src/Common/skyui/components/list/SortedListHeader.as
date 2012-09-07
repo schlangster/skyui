@@ -1,8 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 
-import skyui.components.list.ListLayout
-import skyui.util.Translator;
-
+import skyui.components.list.ListLayout;
 
 class skyui.components.list.SortedListHeader extends MovieClip
 {
@@ -115,7 +113,7 @@ class skyui.components.list.SortedListHeader extends MovieClip
 			btn.label._width = columnLayoutData.labelWidth;
 			btn.label.setTextFormat(columnLayoutData.labelTextFormat);
 			
-			btn.label.SetText(Translator.translate(columnLayoutData.labelValue));
+			btn.label.SetText(columnLayoutData.labelValue);
 			
 			if (activeIndex == i)
 				sortIcon.gotoAndStop(columnLayoutData.labelArrowDown ? "desc" : "asc");
