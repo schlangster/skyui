@@ -20,7 +20,7 @@ class CategoryListEntry extends BasicListEntry
 	{
 		if (a_list.iconArt[a_index] != undefined) {
 			iconLabel = a_list.iconArt[a_index];
-			icon.loadMovie(ConfigManager.getValue("Appearance", "icons.source").toString());
+			icon.loadMovie("./skyui/" + ConfigManager.getValue("Appearance", "icons.source").toString());
 		}
 	}
 }
