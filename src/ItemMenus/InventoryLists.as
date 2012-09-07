@@ -53,6 +53,8 @@ class InventoryLists extends MovieClip
 	private var _tabToggleKey: Number;
 	
 	private var _bTabbed = false;
+	private var _leftTabText: String;
+	private var _rightTabText: String;
 
 	private var _columnSelectDialog: MovieClip;
 	
@@ -204,8 +206,9 @@ class InventoryLists extends MovieClip
 		tabBar.addEventListener("tabPress", this, "onTabPress");
 		
 		if (categoryList.dividerIndex != -1) {
-			tabBar.setLabelText(categoryList.entryList[0].text, categoryList.entryList[categoryList.dividerIndex + 1].text);
-			categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = Translator.translate("$ALL");
+//			tabBar.setLabelText(categoryList.entryList[0].text, categoryList.entryList[categoryList.dividerIndex + 1].text);
+//			categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = "$ALL";
+			tabBar.setLabelText(_leftTabText, _rightTabText);
 		}
 	}
 	
@@ -430,7 +433,7 @@ class InventoryLists extends MovieClip
 
 	// Called to initially set the category list.
 	// @API 
-	function SetCategoriesList()
+	public function SetCategoriesList(): Void
 	{
 		var textOffset = 0;
 		var flagOffset = 1;
@@ -448,16 +451,20 @@ class InventoryLists extends MovieClip
 		}
 		
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
-		if (_bTabbed)
+		if (_bTabbed) {
 			// Restore 0 as default index for tabbed lists
 			categoryList.selectedIndex = 0;
+			_leftTabText = categoryList.entryList[0].text;
+			_rightTabText = categoryList.entryList[categoryList.dividerIndex + 1].text
+			categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = "$ALL";
+		}
 
 		categoryList.InvalidateData();
 	}
 
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	// @API
-	function InvalidateListData()
+	public function InvalidateListData(): Void
 	{
 		var flag = categoryList.selectedEntry.flag;
 

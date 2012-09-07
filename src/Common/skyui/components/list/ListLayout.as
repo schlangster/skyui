@@ -3,7 +3,6 @@
 import skyui.components.list.ColumnLayoutData;
 import skyui.components.list.ColumnDescriptor;
 import skyui.util.GlobalFunctions;
-import skyui.util.Translator;
 
 
 /*
@@ -578,7 +577,7 @@ class skyui.components.list.ListLayout
 			var cd : ColumnDescriptor = new ColumnDescriptor();
 			cd.hidden = col.hidden;
 			cd.identifier = columnNames[i];
-			cd.longName = Translator.translate(col.name);
+			cd.longName = col.name;
 			cd.type = col.type;
 			
 			_columnList.push(col);

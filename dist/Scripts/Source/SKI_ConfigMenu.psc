@@ -76,12 +76,10 @@ event OnPageReset(string a_page)
 		_logoAnimToggleID		= AddToggleOption("Logo Animation", false)
 	
 	elseIf (a_page == "Character")
-	
 		counter += 1
 		SetSliderOptionValue(_npcLvlMultSliderID, counter)
 	
 	elseIf (a_page == "Damage + Combat")
-	
 		AddHeaderOption("Hitpoints")
 		AddEmptyOption()
 		
@@ -93,6 +91,8 @@ event OnPageReset(string a_page)
 	elseIf (a_page == "Stealth + Movement")
 	elseIf (a_page == "Loot Rarity")
 	elseIf (a_page == "Hotkeys")
+		SetTitleText("H O T K E Y S")
+		
 	endIf
 endEvent
 
@@ -101,6 +101,25 @@ event OnOptionSelect(int a_option)
 	string page = CurrentPage
 	
 	if (page == "Features")
+	elseIf (page == "Character")
+	elseIf (page == "Damage + Combat")
+	elseIf (page == "Stealth + Movement")
+	elseIf (page == "Loot Rarity")
+	elseIf (page == "Hotkeys")
+	endIf
+endEvent
+
+; @implements SKI_ConfigBase
+event OnOptionHighlight(int a_option)
+	string page = CurrentPage
+	
+	if (page == "Features")
+		if (a_option == _bulletTimeToggleID)
+			SetInfoText("Slows down time. Like in May Payne, you know?")
+		else
+			SetInfoText("")
+		endIf
+	
 	elseIf (page == "Character")
 	elseIf (page == "Damage + Combat")
 	elseIf (page == "Stealth + Movement")

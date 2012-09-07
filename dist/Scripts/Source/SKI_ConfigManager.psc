@@ -26,6 +26,7 @@ event OnInit()
 	
 	RegisterForModEvent("modSelected", "OnModSelect")
 	RegisterForModEvent("pageSelected", "OnPageSelect")
+	RegisterForModEvent("optionHighlighted", "OnOptionHighlight")
 	RegisterForMenu(JOURNAL_MENU)
 	
 	CleanUp()
@@ -74,6 +75,11 @@ endEvent
 event OnPageSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	string page = a_strArg
 	_activeConfig.SetPage(page)
+endEvent
+
+event OnOptionHighlight(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	_activeConfig.OnOptionHighlight(optionIndex)
 endEvent
 
 
