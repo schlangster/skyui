@@ -316,7 +316,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 		updateBackgroundSize();
 		updateElementPositions();
 		
-		this.onEnterFrame = updateMeter;
+		onEnterFrame = updateMeter;
 	}
 	
 	// @Papyrus

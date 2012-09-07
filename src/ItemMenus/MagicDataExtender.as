@@ -106,15 +106,15 @@ class MagicDataExtender extends ItemcardDataExtender
 						h = Math.floor(m / 60);
 						m = m % 60;
 					}
-					if  (h >= 60) {
+					if  (h >= 24) {
 						d = Math.floor(h / 24);
 						h = h % 24;
 					}
 					
 					a_entryObject.infoTimeRemainingStr = (d != 0 ? (d + "d ") : "") +
-														 (h != 0 ? (h + "h ") : "") +
-														 (m != 0 ? (m + "m ") : "") +
-														 (s != 0 ? (s + "s ") : "");
+														 (h != 0 || d ? (h + "h ") : "") +
+														 (m != 0 || d || h ? (m + "m ") : "") +
+														 (s + "s");
 				}
 
 				break;

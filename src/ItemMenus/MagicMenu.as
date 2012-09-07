@@ -64,7 +64,7 @@ class MagicMenu extends ItemMenu
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
 		
-		var itemList: TabularList = inventoryLists.itemList;		
+		var itemList: TabularList = inventoryLists.itemList;
 		var entryFormatter = new InventoryEntryFormatter(itemList);
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
