@@ -13,6 +13,13 @@ $scriptPath			= $skyrimPath . "\\Data\\Scripts\\Source";
 $compilerPath		= $skyrimPath . "\\Papyrus Compiler\\PapyrusCompiler.exe";
 $compilerFlagPath	= $scriptPath . "\\TESV_Papyrus_Flags.flg";
 
+# Clean old files
+@files = <*.pex>;
+foreach $file (@files) {
+    unlink($file);
+}
+
+# Compile files in Source/
 @argList = (
 	"$compilerPath",
 	"Source",
