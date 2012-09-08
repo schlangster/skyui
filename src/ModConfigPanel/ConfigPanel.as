@@ -18,6 +18,8 @@ class ConfigPanel extends MovieClip
 	private var WAIT_FOR_OPTION_DATA = 1;
 	private var WAIT_FOR_SLIDER_DATA = 2;
 	private var WAIT_FOR_MENU_DATA = 3;
+	private var WAIT_FOR_SELECT = 4;
+	private var DIALOG = 5;
 	
   /* PRIVATE VARIABLES */
   
@@ -45,6 +47,8 @@ class ConfigPanel extends MovieClip
 	private var _highlightIndex: Number = -1;
 	private var _highlightIntervalID: Number;
 	
+	private var _menuDialogOptions: Array;
+	
 	
   /* STAGE ELEMENTS */
 
@@ -70,6 +74,8 @@ class ConfigPanel extends MovieClip
 		_optionTextBuffer = [];
 		_optionStrValueBuffer = [];
 		_optionNumValueBuffer = [];
+		
+		_menuDialogOptions = [];
 	}
 	
 	// @override MovieClip
@@ -104,6 +110,11 @@ class ConfigPanel extends MovieClip
 	
 	
   /* PAPYRUS INTERFACE */
+  
+  	public function unlock(): Void
+	{
+		_state = READY;
+	}
 	
 	public function setModNames(/* names */): Void
 	{
@@ -192,6 +203,32 @@ class ConfigPanel extends MovieClip
 			_optionNumValueBuffer[i] = arguments[i];
 	}
 	
+	public function showSliderDialog(a_value: Number, a_min: Number, a_max: Number, a_interval: Number, a_default: Number): Void
+	{
+		_state = DIALOG;
+		
+		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
+		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		gotoAndPlay("dimOut");
+	}
+	
+	public function setMenuDialogOptions(/* values */): Void
+	{
+		for (var i = 0; i < arguments.length; i++)
+			_menuDialogOptions[i] = arguments[i];
+	}
+	
+	public function showMenuDialog(a_curIndex: Number, a_defaultIndex: Number): Void
+	{
+		_state = DIALOG;
+		
+		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
+		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		gotoAndPlay("dimOut");
+	}
+	
 	public function flushOptionBuffers(a_optionCount: Number): Void
 	{
 		_optionsList.clearList();
@@ -217,8 +254,6 @@ class ConfigPanel extends MovieClip
 		
 		_infoText = "";
 		applyInfoText();
-		
-		_state = READY;
 	}
 	
 	public var optionCursorIndex = -1;
@@ -272,7 +307,7 @@ class ConfigPanel extends MovieClip
 	
 	public function onOptionPress(a_event: Object): Void
 	{
-		selectOption();
+		selectOption(a_event.index);
 	}
 	
 	public function onOptionChange(a_event: Object): Void
@@ -322,7 +357,7 @@ class ConfigPanel extends MovieClip
 		_subList.InvalidateData();
 		
 		_state = WAIT_FOR_OPTION_DATA;
-		skse.SendModEvent("modSelected", null, a_entry.modIndex);
+		skse.SendModEvent("SKICP_modSelected", null, a_entry.modIndex);
 
 //		unloadCustomContent();
 		contentHolder.modListPanel.showSublist();
@@ -340,7 +375,7 @@ class ConfigPanel extends MovieClip
 		_subList.UpdateList();
 		
 		_state = WAIT_FOR_OPTION_DATA;
-		skse.SendModEvent("pageSelected", a_entry.text);
+		skse.SendModEvent("SKICP_pageSelected", a_entry.text);
 	}
 	
 	private function selectOption(a_index: Number): Void
@@ -348,11 +383,31 @@ class ConfigPanel extends MovieClip
 		if (_state != READY)
 			return;
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
-		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
-		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		var e = _optionsList.selectedEntry;
+		if (e == undefined)
+			return;
 		
-		gotoAndPlay("dimOut");
+		switch (e.optionType) {
+			case OptionEntryFormatter.OPTION_EMPTY:
+			case OptionEntryFormatter.OPTION_HEADER:
+				break;
+				
+			case OptionEntryFormatter.OPTION_TEXT:
+			case OptionEntryFormatter.OPTION_TOGGLE:
+				_state = WAIT_FOR_SELECT;
+				skse.SendModEvent("SKICP_optionSelected", null, a_index);
+				break;
+				
+			case OptionEntryFormatter.OPTION_SLIDER:
+				_state = WAIT_FOR_SLIDER_DATA;
+				skse.SendModEvent("SKICP_sliderSelected", null, a_index);
+				break;
+				
+			case OptionEntryFormatter.OPTION_MENU:
+				_state = WAIT_FOR_MENU_DATA;
+				skse.SendModEvent("SKICP_menuSelected", null, a_index);
+				break;
+		}
 	}
 	
 	private function initHighlightOption(a_index: Number): Void
@@ -372,8 +427,10 @@ class ConfigPanel extends MovieClip
 	
 	private function doHighlightOption(a_index: Number): Void
 	{
-		clearInterval(_highlightIntervalID);		
-		skse.SendModEvent("optionHighlighted", null, a_index);
+		clearInterval(_highlightIntervalID);
+		delete _highlightIntervalID;
+		
+		skse.SendModEvent("SKICP_optionHighlighted", null, a_index);
 	}
 	
 	private function applyTitleText(): Void
