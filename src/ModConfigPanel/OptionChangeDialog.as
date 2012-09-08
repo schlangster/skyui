@@ -17,8 +17,8 @@ class OptionChangeDialog extends BasicDialog
 {	
   /* CONSTANTS */
 	
-	public var OPTION_SLIDER = 0;
-	public var OPTION_MENU = 1;
+	public var MODE_SLIDER = 0;
+	public var MODE_MENU = 1;
 	
 
   /* PRIVATE VARIABLES */
@@ -39,25 +39,22 @@ class OptionChangeDialog extends BasicDialog
 	
   /* PROPERTIES */
 	
-	public var optionType: Number;
+	public var optionMode: Number;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
   
 	public function OptionChangeDialog()
 	{
 		super();
 	}
 	
-	
-  /* PUBLIC FUNCTIONS */
-	
 	public function onLoad(): Void
 	{
 
 		initButtons();
 		
-		sliderPanel.slider.setScrollProperties(0.7, 0, 20);
+		sliderPanel.slider.setScrollProperties(1, 0, 20);
 		sliderPanel.slider.addEventListener("scroll", this, "onScroll");
 		sliderPanel.slider.position = 50;
 		
@@ -75,6 +72,9 @@ class OptionChangeDialog extends BasicDialog
 		
 		menuList.InvalidateData();
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 	
 	public function onDialogOpening(): Void
 	{

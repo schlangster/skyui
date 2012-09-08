@@ -24,9 +24,12 @@ event OnInit()
 	_curConfigID	= 0
 	_configCount	= 0
 	
-	RegisterForModEvent("modSelected", "OnModSelect")
-	RegisterForModEvent("pageSelected", "OnPageSelect")
-	RegisterForModEvent("optionHighlighted", "OnOptionHighlight")
+	RegisterForModEvent("SKICP_modSelected", "OnModSelect")
+	RegisterForModEvent("SKICP_pageSelected", "OnPageSelect")
+	RegisterForModEvent("SKICP_optionHighlighted", "OnOptionHighlight")
+	RegisterForModEvent("SKICP_optionSelected", "OnOptionSelect")
+	RegisterForModEvent("SKICP_sliderSelected", "OnSliderSelect")
+	RegisterForModEvent("SKICP_menuSelected", "OnMenuSelect")
 	RegisterForMenu(JOURNAL_MENU)
 	
 	CleanUp()
@@ -70,16 +73,24 @@ event OnModSelect(string a_eventName, string a_strArg, float a_numArg, Form a_se
 		UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", _activeConfig.Pages)
 		_activeConfig.SetPage("")
 	endIf
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
 event OnPageSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	string page = a_strArg
 	_activeConfig.SetPage(page)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
 event OnOptionHighlight(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
 	_activeConfig.OnOptionHighlight(optionIndex)
+endEvent
+
+event OnOptionSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	_activeConfig.OnOptionSelect(optionIndex)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
 

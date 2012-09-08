@@ -27,6 +27,7 @@ int					_playerLvlMultSliderID
 int					_npcLvlMultSliderID
 
 int					counter = 0
+bool				_bulletTimeState = false
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("Gameplay")
 		AddEmptyOption()
 		
-		_bulletTimeToggleID		= AddToggleOption("Bullet Time", true)
+		_bulletTimeToggleID		= AddToggleOption("Bullet Time", _bulletTimeState)
 		_crosshairToggleID		= AddToggleOption("Dynamic Crosshair Time", true)
 		_stealthFieldToggleID	= AddToggleOption("Enhanced Stealth Field", true)
 		_visionToggleID			= AddToggleOption("Enhanced Vision", false)
@@ -76,8 +77,6 @@ event OnPageReset(string a_page)
 		_logoAnimToggleID		= AddToggleOption("Logo Animation", false)
 	
 	elseIf (a_page == "Character")
-		counter += 1
-		SetSliderOptionValue(_npcLvlMultSliderID, counter)
 	
 	elseIf (a_page == "Damage + Combat")
 		AddHeaderOption("Hitpoints")
@@ -101,8 +100,15 @@ event OnOptionSelect(int a_option)
 	string page = CurrentPage
 	
 	if (page == "Features")
+		if (a_option == _bulletTimeToggleID)
+			_bulletTimeState = !_bulletTimeState
+			SetToggleOptionValue(a_option, _bulletTimeState)
+		endIf
+	
 	elseIf (page == "Character")
+	
 	elseIf (page == "Damage + Combat")
+		
 	elseIf (page == "Stealth + Movement")
 	elseIf (page == "Loot Rarity")
 	elseIf (page == "Hotkeys")
