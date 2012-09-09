@@ -35,8 +35,11 @@ $filegroupPathOut = "filegroup_all.txt";
 @filegroupPathsIn = (
 	$fileGroupInterfacePath,
 	$fileGroupScriptsPath,
-	$fileGroupScriptsPath
+	$fileGroupMiscPath
 );
+
+# No wait?
+$noWait = defined($ARGV[0]);
 
 # Fetch latest .swf's from build/
 print "=== Updating .SWF files...\n\n";
@@ -74,5 +77,5 @@ copyFile($_, "$skyrimPath\\Data\\" . basename($_)) foreach (<_generated/*>);
 
 print "Done.\n\n";
 
-getc(STDIN);
+getc(STDIN) unless $noWait;
 exit(0);

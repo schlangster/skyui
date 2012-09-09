@@ -17,11 +17,11 @@ $compilerFlagPath	= $scriptPath . "\\TESV_Papyrus_Flags.flg";
 
 $filegroupPath		= "filegroup_scripts.txt";
 
+# No wait?
+$noWait = defined($ARGV[0]);
+
 # Clean old files
-@files = <Data/Scripts/*.pex>;
-foreach $file (@files) {
-    unlink($file);
-}
+unlink($_) foreach (<Data/Scripts/*.pex>);
 
 # Compile files in Source/
 @argList = (
@@ -38,10 +38,9 @@ system(@argList) == 0 or error("Compile failed.");
 
 # Generate filegroup list
 open(OUT, ">$filegroupPath") or error("Cannot open $filegroupPath: $!");
-
-print OUT "Scripts\\" . basename($_) . "\n" foreach (<Data/Scripts/*.pex>)
+print OUT "Scripts\\" . basename($_) . "\n" foreach (<Data/Scripts/*.pex>);
 print OUT "Scripts\\Source\\" . basename($_) . "\n" foreach (<Data/Scripts/Source/*.psc>);
-
 close(OUT);
 
+getc(STDIN) unless $noWait;
 exit(0);

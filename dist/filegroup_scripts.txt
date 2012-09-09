@@ -6,3 +6,11 @@ Scripts\SKI_QuestBase.pex
 Scripts\SKI_StatusWidget.pex
 Scripts\SKI_WidgetBase.pex
 Scripts\SKI_WidgetManager.pex
+Scripts\Source\SKI_ConfigBase.psc
+Scripts\Source\SKI_ConfigManager.psc
+Scripts\Source\SKI_ConfigMenu.psc
+Scripts\Source\SKI_PlayerLoadGameAlias.psc
+Scripts\Source\SKI_QuestBase.psc
+Scripts\Source\SKI_StatusWidget.psc
+Scripts\Source\SKI_WidgetBase.psc
+Scripts\Source\SKI_WidgetManager.psc

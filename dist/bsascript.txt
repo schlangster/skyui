@@ -6,6 +6,8 @@ Check: Misc
 Check: Sounds
 Check: Textures
 Check: Voices
+Check: Retain Directory Names
+Check: Retain File Names
 Set File Group Root: Data\
 Add File Group: filegroup_all.txt
 Save Archive: _generated\SkyUI.bsa
