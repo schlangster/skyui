@@ -59,7 +59,10 @@ open(OUT, ">$filegroupPathOut") or error("Cannot open $filegroupPathOut: $!");
 
 foreach $f (@filegroupPathsIn) {
     open(IN, $f) or error("Cannot open $f: $!");
-	print OUT $_ while (<IN>);
+    while (my $line = <IN>) {
+    	chomp($line);
+    	print OUT "$line\n";
+    }
 	close(IN);
 }
 close(OUT);

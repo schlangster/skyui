@@ -20,7 +20,8 @@ Interface\translations\SkyUI_german.txt
 Interface\translations\SkyUI_italian.txt
 Interface\translations\SkyUI_polish.txt
 Interface\translations\SkyUI_russian.txt
-Interface\translations\SkyUI_spanish.txtScripts\SKI_ConfigBase.pex
+Interface\translations\SkyUI_spanish.txt
+Scripts\SKI_ConfigBase.pex
 Scripts\SKI_ConfigManager.pex
 Scripts\SKI_ConfigMenu.pex
 Scripts\SKI_PlayerLoadGameAlias.pex
