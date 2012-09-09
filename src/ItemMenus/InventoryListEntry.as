@@ -20,7 +20,7 @@ class InventoryListEntry extends BasicListEntry
 	
 	public function initialize(a_index: Number, a_list: ScrollingList): Void
 	{
-		itemIcon.loadMovie("./skyui/" + ConfigManager.getValue("Appearance", "icons.source").toString());
+		itemIcon.loadMovie(ConfigManager.getValue("Appearance", "icons.source").toString());
 		
 		itemIcon._visible = false;
 		equipIcon._visible = false;
