@@ -27,7 +27,7 @@ itemicon.scale = 1.5
 ; =====================================================================================================================
 [Appearance] 
 ; =====================================================================================================================
-icons.source = 'skyui_icons_psychosteve.swf'
+icons.source = 'skyui/skyui_icons_psychosteve.swf'
 icons.showStolen = true
 
 colors.enabled.text = 0xffffff

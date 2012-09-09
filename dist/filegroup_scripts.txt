@@ -1,0 +1,8 @@
+Scripts\SKI_ConfigBase.pex
+Scripts\SKI_ConfigManager.pex
+Scripts\SKI_ConfigMenu.pex
+Scripts\SKI_PlayerLoadGameAlias.pex
+Scripts\SKI_QuestBase.pex
+Scripts\SKI_StatusWidget.pex
+Scripts\SKI_WidgetBase.pex
+Scripts\SKI_WidgetManager.pex

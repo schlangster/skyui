@@ -8,6 +8,11 @@ class skyui.util.ConfigManager
 {
   /* CONSTANTS */
   
+	private static var CONFIG_PATH = "skyui/config.txt";
+	
+	
+  /* PRIVATE VARIABLES */
+  
 	private static var _constantTable: Object = {
 		
 		ASCENDING: 0,
@@ -17,9 +22,6 @@ class skyui.util.ConfigManager
 	};
 	
 	private static var _extConstantTables = [];
-	
-	
-  /* PRIVATE VARIABLES */	
 	
 	private static var _eventDummy: Object;
 	
@@ -44,7 +46,7 @@ class skyui.util.ConfigManager
 		
 		var lv = new LoadVars();
 		lv.onData = parseData;
-		lv.load("skyui_cfg.txt");
+		lv.load(CONFIG_PATH);
 		
 		return true;
 	}

@@ -1,0 +1,5 @@
+
+*.swf
+!fonts_console.swf
+!fonts_en.swf
+!gfxfontlib.swf
