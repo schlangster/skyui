@@ -1,0 +1,11 @@
+Log: Archive.log
+New Archive
+Check: Menus
+Check: Meshes
+Check: Misc
+Check: Sounds
+Check: Textures
+Check: Voices
+Set File Group Root: Data\
+Add File Group: filegroup_all.txt
+Save Archive: _generated\SkyUI.bsa
