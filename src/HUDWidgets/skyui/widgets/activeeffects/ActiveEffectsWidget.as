@@ -1,5 +1,4 @@
 import skyui.widgets.WidgetBase;
-import skyui.util.GlobalFunctions;
 import skyui.util.Defines;
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
@@ -13,10 +12,16 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		
 	private var _fadeInDuration: Number = 0.50;
 	private var _fadeOutDuration: Number = 0.75;
+	private var _effectGap: Number = 20; // pixels at 100% scale between active effects
+	private var _safeWidth: Number;
+	private var _safeHeight: Number;
+	
+	private var _yOffset: Number;
 	
 	//@ Config?
 	public var updateInterval: Number = 150;
 	public var effectScale: Number = 50;
+	public var iconLocation: String = "./skyui/skyui_icons_psychosteve.swf";
 	
 	//@ SKSE
 	public var effectList: Array;
@@ -24,18 +29,34 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	public function ActiveEffectsWidget()
 	{
 		super();
-		GlobalFunctions.addArrayFunctions();
 		
 		effectList = new Array();
 		_clipArray = new Array();
+		
+		_safeWidth = Stage.visibleRect.width - 2 * Stage.safeRect.x;
+		_safeHeight = Stage.visibleRect.height - 2 * Stage.safeRect.y
+		_yOffset = _root.HUDMovieBaseInstance.LocationLockBase._height;
+		
+		_clipContainer = createEmptyMovieClip("clipContainer", getNextHighestDepth());
+		
+		// DEBUG: Keep if testing
 		/*effectList = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11}];//*/
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11}];
+		iconLocation = "." + iconLocation;
+		_safeWidth = Stage.width;
+		_safeHeight = Stage.height//*/
 		
-		_clipContainer = createEmptyMovieClip("clipContainer", getNextHighestDepth());
+		/*GameDelegate.removeCallBack("SetMagickaMeterPercent");
+		GameDelegate.addCallBack("SetMagickaMeterPercent", this, "SetMagickaMeterPercent");
+		
+		_root.HUDMovieBaseInstance.SetMagickaMeterPercent = function (aPercent: Number, abForce: Boolean): Void
+		{
+			skse.Log("asdsadsadsd");
+		}*/
 		
 		setInterval(this, "onIntervalUpdate", updateInterval);
 		
@@ -44,8 +65,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private function onIntervalUpdate()
 	{
 		//wipe array
+		// DEBUG: Remove if testing
 		effectList.splice(0);
-		skse.RequestActivePlayerEffects(effectList);//
+		skse.RequestActivePlayerEffects(effectList);//*/
 		
 		if (_sortFlag) {
 			effectList.sortOn("elapsed", Array.DESCENDING | Array.NUMERIC);
@@ -76,13 +98,15 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 				continue;
 			}
 			
-			
+			// DEBUG: Keep if testing
+			//effectList[i].elapsed += updateInterval/1000;
 			
 			if (clip == undefined) {
 				// New effect
 				
 				var clipInfo: Object = {marker: marker,
 										index: _clipArray.length,
+										iconLocation: iconLocation,
 										finished: false,
 										effect: effect,
 										_alpha: 0,
@@ -91,9 +115,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 				
 				clip = _clipContainer.attachMovie("activeEffect", String(effect.id), _clipContainer.getNextHighestDepth(), clipInfo);
 				
+				clip._x = _safeWidth - ((clip.background._width) * effectScale/100);
+				clip._y = _clipArray.length * ((clip.background._height + _effectGap) * effectScale/100) + _yOffset;
 				
-				clip._x = _clipArray.length * (clip.background._width + 10),
-				clip._y = 0
 				// Perform entry animation here
 				TweenLite.to(clip, _fadeInDuration, {_alpha: 100, overwrite: "AUTO", easing: Linear.easeNone});
 				
@@ -105,8 +129,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			
 			// Always update active effect
 			clip.updateActiveEffect(effect);
-			
-			
 		}
 		
 		for (var i: Number = 0; i < _clipArray.length; i++) {
@@ -124,15 +146,22 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	
 	public function effectFinished(a_effectClip: MovieClip)
 	{
-		var clip: MovieClip = a_effectClip;
-		var clipIndex: Number = clip.index;
-		_clipArray.splice(clipIndex, 1);
-		clip.removeMovieClip();
+		var finishedClip: MovieClip = a_effectClip;
+		var finishedClipIndex: Number = finishedClip.index;
+		_clipArray.splice(finishedClipIndex, 1); // Removes old clip, first clip that needs to be updated will be at clipIndex
+		
+		// Reset clip positions
 		// Only tweens those that need to be tweened.
-		for (var i: Number = clipIndex; i < _clipArray.length; i++) {
+		var clip: MovieClip;
+		var newy: Number;
+		for (var i: Number = finishedClipIndex; i < _clipArray.length; i++) {
 			clip = _clipArray[i];
 			clip.index = i;
-			TweenLite.to(clip, 1, {_x: i * (clip.background._width + 10), overwrite: "AUTO", easing: Linear.easeNone});
+			newy = i * ((clip.background._height + _effectGap) * effectScale/100) + _yOffset;
+			TweenLite.to(clip, 1, {_y: newy, overwrite: "AUTO", easing: Linear.easeNone});
 		}
+		
+		 //alpha is at 0 so can remove the clip at any time
+		 finishedClip.removeMovieClip();
 	}
 }

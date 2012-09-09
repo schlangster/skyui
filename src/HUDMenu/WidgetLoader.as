@@ -18,7 +18,7 @@ class WidgetLoader
   
 	static private var _instance: WidgetLoader;
 	
-	static function get instance(): WidgetLoader
+	static public function get instance(): WidgetLoader
 	{
 		if (_instance == undefined)
 			_instance = new WidgetLoader();
@@ -48,14 +48,14 @@ class WidgetLoader
 			return;
 		}
 		
-		skse.SendModEvent("widgetLoaded", a_widgetHolder._name);
-		
 		a_widgetHolder.onModeChange = function (a_HUDMode: String): Void
 		{
 			var widgetHolder: MovieClip = this;
 			if (widgetHolder.widget.onModeChange != undefined)
 				widgetHolder.widget.onModeChange(a_HUDMode);
 		}
+		
+		skse.SendModEvent("widgetLoaded", a_widgetHolder._name);
 	}
 	
 	public function onLoadError(a_widgetHolder:MovieClip, a_errorCode: String): Void
