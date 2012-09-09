@@ -17,6 +17,9 @@ $compilerFlagPath	= $scriptPath . "\\TESV_Papyrus_Flags.flg";
 
 $filegroupPath		= "filegroup_scripts.txt";
 
+# Safety check
+error("Do not run this script in the vanilla scripts folder!") if (-e "Data\\Scripts\\Source\\TESV_Papyrus_Flags.flg");
+
 # No wait?
 $noWait = defined($ARGV[0]);
 
