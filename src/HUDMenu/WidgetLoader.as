@@ -42,7 +42,20 @@ class WidgetLoader
 	
 	public function onLoadInit(a_widgetHolder: MovieClip): Void
 	{
+		if (a_widgetHolder.widget == undefined) {
+			// Widgets need to have main MovieClip on the root with an instance name of "widget" (i.e. _root.widget for the widget swf)
+			skse.SendModEvent("widgetError", "WidgetInitFailure", Number(a_widgetHolder._name));
+			return;
+		}
+		
 		skse.SendModEvent("widgetLoaded", a_widgetHolder._name);
+		
+		a_widgetHolder.onModeChange = function (a_HUDMode: String): Void
+		{
+			var widgetHolder: MovieClip = this;
+			if (widgetHolder.widget.onModeChange != undefined)
+				widgetHolder.widget.onModeChange(a_HUDMode);
+		}
 	}
 	
 	public function onLoadError(a_widgetHolder:MovieClip, a_errorCode: String): Void
@@ -54,11 +67,11 @@ class WidgetLoader
 	{
 		skse.Log("WidgetLoader.as: loadWidgets(widgetTypes[] = " + arguments + ")");
 		if (_widgetContainer != undefined) {
-			for(var i: String in _widgetContainer) {
-				if (_widgetContainer[i] instanceof MovieClip) {
-					_widgetLoader.unloadClip(_widgetContainer[i]);
-					if (_root.HUDMovieBaseInstance.HudElements.hasOwnProperty(i))
-						delete(_root.HUDMovieBaseInstance.HudElements[i]); 
+			for(var s: String in _widgetContainer) {
+				if (_widgetContainer[s] instanceof MovieClip) {
+					_widgetLoader.unloadClip(_widgetContainer[s]);
+					if (_root.HUDMovieBaseInstance.HudElements.hasOwnProperty(s))
+						delete(_root.HUDMovieBaseInstance.HudElements[s]); 
 				}
 			}
 		}
