@@ -202,8 +202,9 @@ class ConfigPanel extends MovieClip
 		for (var i = 0; i < arguments.length; i++)
 			_optionNumValueBuffer[i] = arguments[i];
 	}
-	
-	public function showSliderDialog(a_value: Number, a_min: Number, a_max: Number, a_interval: Number, a_default: Number): Void
+
+	public function setSliderDialogParams(a_value: Number, a_default: Number, a_max: Number, a_min: Number,
+										  a_interval: Number, a_decimal: Number): Void
 	{
 		_state = DIALOG;
 		
@@ -219,7 +220,7 @@ class ConfigPanel extends MovieClip
 			_menuDialogOptions[i] = arguments[i];
 	}
 	
-	public function showMenuDialog(a_curIndex: Number, a_defaultIndex: Number): Void
+	public function setMenuDialogParams(a_startIndex: Number, a_defaultIndex: Number): Void
 	{
 		_state = DIALOG;
 		

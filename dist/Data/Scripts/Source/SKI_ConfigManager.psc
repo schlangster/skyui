@@ -4,6 +4,8 @@ scriptname SKI_ConfigManager extends SKI_QuestBase hidden
 
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MENU_ROOT		= "_root.ConfigPanelFader.configPanel" autoReadonly
+string property		DIALOG_SLIDER	= 0 autoReadonly
+string property		DIALOG_MENU	= 1 autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -29,7 +31,10 @@ event OnInit()
 	RegisterForModEvent("SKICP_optionHighlighted", "OnOptionHighlight")
 	RegisterForModEvent("SKICP_optionSelected", "OnOptionSelect")
 	RegisterForModEvent("SKICP_sliderSelected", "OnSliderSelect")
+	RegisterForModEvent("SKICP_sliderAccepted", "OnSliderAccept")
 	RegisterForModEvent("SKICP_menuSelected", "OnMenuSelect")
+	RegisterForModEvent("SKICP_menuAccepted", "OnMenuAccept")
+	RegisterForModEvent("SKICP_dialogCanceled", "OnDialogCancel")
 	RegisterForMenu(JOURNAL_MENU)
 	
 	CleanUp()
@@ -90,6 +95,32 @@ endEvent
 event OnOptionSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
 	_activeConfig.OnOptionSelect(optionIndex)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
+endEvent
+
+event OnSliderSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	_activeConfig.RequestSliderDialogData(optionIndex)
+endEvent
+
+event OnSliderAccept(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	float value = a_numArg
+	_activeConfig.SetSliderValue(value)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
+endEvent
+
+event OnMenuSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	_activeConfig.RequestMenuDialogData(optionIndex)
+endEvent
+
+event OnMenuAccept(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int value = a_numArg as int
+	_activeConfig.SetMenuIndex(value)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
+endEvent
+
+event OnDialogCancel(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 

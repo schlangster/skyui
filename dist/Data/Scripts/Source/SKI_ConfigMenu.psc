@@ -116,6 +116,14 @@ event OnOptionSelect(int a_option)
 endEvent
 
 ; @implements SKI_ConfigBase
+event OnOptionSliderOpen(int a_option)
+endEvent
+
+; @implements SKI_ConfigBase
+event OnOptionMenuOpen(int a_option)
+endEvent
+
+; @implements SKI_ConfigBase
 event OnOptionHighlight(int a_option)
 	string page = CurrentPage
 	

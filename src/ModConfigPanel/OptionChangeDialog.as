@@ -144,16 +144,17 @@ class OptionChangeDialog extends BasicDialog
 	
 	private function onCancelPress(): Void
 	{
+		skse.SendModEvent("SKICP_dialogCanceled");
 		DialogManager.close();
 	}
 	
 	private function onConfirmPress(): Void
 	{
+		skse.SendModEvent("SKICP_sliderAccepted", null, 100);		
 		DialogManager.close();
 	}
 	
 	private function onDefaultPress(): Void
 	{
-		DialogManager.close();
 	}
 }
