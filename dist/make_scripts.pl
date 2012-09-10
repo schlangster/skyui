@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use File::Basename;
+use File::Copy;
 
 sub error
 {
@@ -8,6 +9,15 @@ sub error
 		.	"ERROR: $_[0]\n";
 	getc(STDIN);
 	exit(1);
+}
+
+sub copyFile
+{
+	if (copy($_[0], $_[1])) {
+		print "Copy $_[0] to $_[1]\n";
+	} else {
+		print "SKIP $_[0]\n";
+	}
 }
 
 $skyrimPath			= $ENV{'SkyrimPath'} or error("\$SkyrimPath env var not set.");
@@ -44,6 +54,9 @@ open(OUT, ">$filegroupPath") or error("Cannot open $filegroupPath: $!");
 print OUT "Scripts\\" . basename($_) . "\n" foreach (<Data/Scripts/*.pex>);
 print OUT "Scripts\\Source\\" . basename($_) . "\n" foreach (<Data/Scripts/Source/*.psc>);
 close(OUT);
+
+# Copy *.pex to game dir
+copyFile($_, $skyrimPath . "\\" . $_ ) foreach (<Data/Scripts/*.pex>);
 
 getc(STDIN) unless $noWait;
 exit(0);
