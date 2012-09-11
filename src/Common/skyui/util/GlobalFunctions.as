@@ -132,4 +132,33 @@
 		}
 		return a_charCode;
 	}
+	
+	// Ex: format("Last {2}% longer", 100.66666)
+	public static function format(a_str: String /*, ... */): String
+	{
+		if (arguments.length < 2)
+			return a_str;
+		
+		var buf: String = "";
+		var pos: Number = 0;
+		for (var i=1; i<arguments.length; i++) {
+			var start = a_str.indexOf("{", pos);
+			if (start == -1)
+				return a_str;
+				
+			var end = a_str.indexOf("}", pos);
+			if (end == -1)
+				return a_str;
+				
+			buf += a_str.slice(pos, start);
+			var decimal = Math.pow(10, Number(a_str.slice(start+1, end)));
+			var val = Math.round(arguments[i] * decimal) / decimal;
+			buf += val;
+			pos = end+1;
+		}
+		
+		buf += a_str.slice(pos);
+		
+		return buf;
+	}
 }

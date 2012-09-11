@@ -10,4 +10,5 @@
 	static function ForceContainerCategorization(enable:Boolean):Void;	
 	static function SendModEvent(a_eventName:String, a_strArg:String, a_numArg:Number):Void;
 	static function RequestActivePlayerEffects(a_list:Array):Void;
+	static function ExtendForm(a_formid:Number, a_object:Object, a_extraData:Boolean, a_recursive:Boolean):Void;
 }
