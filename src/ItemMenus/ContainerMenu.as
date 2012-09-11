@@ -1,5 +1,6 @@
 ﻿import gfx.io.GameDelegate;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import skyui.util.Translator;
 import skyui.components.list.ListLayoutManager;
@@ -38,7 +39,7 @@ class ContainerMenu extends ItemMenu
 	public var bEnableTabs: Boolean = true;
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function ContainerMenu()
 	{
@@ -62,10 +63,7 @@ class ContainerMenu extends ItemMenu
 		
 		_tabBarIconArt = ["take", "give"];
 	}
-
-
-  /* PUBLIC FUNCTIONS */
-
+	
 	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
@@ -90,6 +88,9 @@ class ContainerMenu extends ItemMenu
 		updateButtons();
 	}
 
+
+  /* PUBLIC FUNCTIONS */
+
 	// @API
 	public function ShowItemsList(): Void
 	{
@@ -98,7 +99,7 @@ class ContainerMenu extends ItemMenu
 	}
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		super.handleInput(details,pathToFocus);
 

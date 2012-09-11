@@ -1,5 +1,6 @@
 ﻿import gfx.io.GameDelegate;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
 import gfx.controls.Button;
@@ -104,7 +105,7 @@ class InventoryLists extends MovieClip
 	}
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function InventoryLists()
 	{
@@ -135,21 +136,6 @@ class InventoryLists extends MovieClip
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
 	
-	
-  /* PUBLIC FUNCTIONS */
-
-	// @mixin by gfx.events.EventDispatcher
-	public var dispatchEvent: Function;
-	public var dispatchQueue: Function;
-	public var hasEventListener: Function;
-	public var addEventListener: Function;
-	public var removeEventListener: Function;
-	public var removeAllEventListeners: Function;
-	public var cleanUpEvents: Function;
-	
-	// @mixin by Shared.GlobalFunc
-	public var Lock: Function;
-
 	// Apparently it's not safe to use stage elements in the constructor (as it doesn't work).
 	// That's why they are initialized in onLoad.
 	public function onLoad(): Void
@@ -187,6 +173,21 @@ class InventoryLists extends MovieClip
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 	}
 	
+	
+  /* PUBLIC FUNCTIONS */
+
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
+	
+	// @mixin by Shared.GlobalFunc
+	public var Lock: Function;
+	
 	public function onFilterChange(): Void
 	{
 		itemList.InvalidateData();
@@ -205,11 +206,8 @@ class InventoryLists extends MovieClip
 		tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
 		tabBar.addEventListener("tabPress", this, "onTabPress");
 		
-		if (categoryList.dividerIndex != -1) {
-//			tabBar.setLabelText(categoryList.entryList[0].text, categoryList.entryList[categoryList.dividerIndex + 1].text);
-//			categoryList.entryList[0].text = categoryList.entryList[categoryList.dividerIndex + 1].text = "$ALL";
+		if (categoryList.dividerIndex != -1)
 			tabBar.setLabelText(_leftTabText, _rightTabText);
-		}
 	}
 	
 	public function onColumnSelectButtonPress(event: Object): Void
@@ -255,34 +253,35 @@ class InventoryLists extends MovieClip
 	}
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var bCaught = false;
-
 		if (_currentState == SHOW_PANEL) {
 			
 			if (GlobalFunc.IsKeyPressed(details)) {
 
 				// Search hotkey (default space)
 				if (details.code == _searchKey) {
-					bCaught = true;
 					searchWidget.startInput();
+					return true;
+				}
 					
 				// Toggle tab (default ALT)
-				} else if (tabBar != undefined && (details.code == _tabToggleKey || (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8))) {
-					
-					bCaught = true;
+				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
+				if (tabBar != undefined && (details.code == _tabToggleKey || bGamepadBackPressed)) {
 					tabBar.tabToggle();
+					return true;
 				}
 			}
 			
-			if (!bCaught)
-				bCaught = categoryList.handleInput(details, pathToFocus);
+			if (categoryList.handleInput(details, pathToFocus))
+				return true;
 			
-			if (!bCaught)
-				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+			var nextClip = pathToFocus.shift();
+			
+			if (nextClip.handleInput(details, pathToFocus))
+				return true;
 		}
-		return bCaught;
+		return false;
 	}
 
 	public function getContentBounds():Array

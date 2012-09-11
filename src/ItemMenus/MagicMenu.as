@@ -1,6 +1,7 @@
 ﻿import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
@@ -13,6 +14,7 @@ class MagicMenu extends ItemMenu
   
 	private var _hideButtonFlag: Number = 0;
 	private var _bMenuClosing: Boolean = false;
+	private var _bSwitchMenus: Boolean = false;
 
 	private var _magicButtonArt: Object;
 	private var _categoryListIconArt: Array;
@@ -23,7 +25,7 @@ class MagicMenu extends ItemMenu
 	public var hideButtonFlag: Number;
 	
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function MagicMenu()
 	{
@@ -45,9 +47,6 @@ class MagicMenu extends ItemMenu
 							   "mag_destruction", "mag_conjuration", "mag_restoration", "mag_shouts",
 							   "mag_powers", "mag_activeeffects"];
 	}
-	
-	
-  /* PUBLIC FUNCTIONS */
 
 	public function InitExtensions(): Void
 	{
@@ -72,22 +71,29 @@ class MagicMenu extends ItemMenu
 		itemList.addDataProcessor(new PropertyDataExtender('magicProperties', 'magicIcons', 'magicCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("MagicListLayout");
 	}
+	
+  /* PUBLIC FUNCTIONS */
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		if (bFadedIn && ! pathToFocus[0].handleInput(details,pathToFocus.slice(1))) {
-			if (Shared.GlobalFunc.IsKeyPressed(details)) {
-				if (inventoryLists.currentState == InventoryLists.SHOW_PANEL && details.navEquivalent == NavigationCode.RIGHT) {
-					startMenuFade();
-					GameDelegate.call("ShowTweenMenu",[]);
-				} else if (details.navEquivalent == NavigationCode.TAB) {
-					startMenuFade();
-					GameDelegate.call("CloseTweenMenu",[]);
-				} else if (!inventoryLists.itemList.disableInput)  {
-					if (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8 && _platform != 0)
-						openInventoryMenu();
-				}
+		if (!bFadedIn)
+			return true;
+		
+		var nextClip = pathToFocus.shift();
+			
+		if (nextClip.handleInput(details, pathToFocus))
+			return true;
+			
+		if (Shared.GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.TAB) {
+				startMenuFade();
+				GameDelegate.call("CloseTweenMenu",[]);
+			} else if (!inventoryLists.itemList.disableInput) {
+				// Gamepad back || ALT (default) || 'I'
+				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
+				if (bGamepadBackPressed || (_tabToggleKey && details.code == _tabToggleKey) || details.code == 73)
+					openInventoryMenu(true);
 			}
 		}
 		return true;
@@ -102,8 +108,14 @@ class MagicMenu extends ItemMenu
 
 	public function onFadeCompletion(): Void
 	{
-		if (_bMenuClosing)
-			GameDelegate.call("CloseMenu",[]);
+		if (!_bMenuClosing)
+			return;
+
+		GameDelegate.call("CloseMenu", []);
+		if (_bSwitchMenus) {
+			GameDelegate.call("CloseTweenMenu",[]);
+			skse.OpenMenu("InventoryMenu");
+		}
 	}
 
 	// @override ItemMenu
@@ -158,17 +170,21 @@ class MagicMenu extends ItemMenu
 		GameDelegate.call("ShowShoutFail",[]);
 	}
 	
-	// currently only used for controller users when pressing the BACK button
-	private function openInventoryMenu(): Void
-	{
-		saveIndices();
-		GameDelegate.call("CloseMenu",[]);
-		GameDelegate.call("CloseTweenMenu",[]);
-		skse.OpenMenu("Inventory Menu");
-	}
-	
 	
   /* PRIVATE FUNCTIONS */
+	
+	private function openInventoryMenu(a_bFade: Boolean): Void
+	{
+		if (a_bFade) {
+			_bSwitchMenus = true;
+			startMenuFade();
+		} else {
+			saveIndices();
+			GameDelegate.call("CloseMenu",[]);
+			GameDelegate.call("CloseTweenMenu",[]);
+			skse.OpenMenu("InventoryMenu");
+		}
+	}
 	
 	private function updateButtonText(): Void
 	{

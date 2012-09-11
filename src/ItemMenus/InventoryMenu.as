@@ -1,6 +1,7 @@
 ﻿import gfx.io.GameDelegate;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
@@ -11,7 +12,8 @@ class InventoryMenu extends ItemMenu
 {
   /* PRIVATE VARIABLES */
   
-	private var _bMenuClosing:Boolean;
+	private var _bMenuClosing: Boolean = false;
+	private var _bSwitchMenus: Boolean = false;
 
 	private var _equipButtonArt: Object;
 	private var _altButtonArt: Object;
@@ -28,13 +30,11 @@ class InventoryMenu extends ItemMenu
 	public var bPCControlsReady: Boolean = true;
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function InventoryMenu()
 	{
 		super();
-		
-		_bMenuClosing = false;
 		
 		_equipButtonArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"};
 		_altButtonArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
@@ -52,10 +52,7 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
-
-
-  /* PUBLIC FUNCTIONS */
-
+	
 	// @override ItemMenu
 	public function InitExtensions(): Void
 	{		
@@ -81,19 +78,28 @@ class InventoryMenu extends ItemMenu
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");
 	}
 
+  /* PUBLIC FUNCTIONS */
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		if (bFadedIn && !pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
-			if (GlobalFunc.IsKeyPressed(details)) {
-				if (details.navEquivalent == NavigationCode.TAB) {
-					startMenuFade();
-					GameDelegate.call("CloseTweenMenu", []);
-				}
+		if (!bFadedIn)
+			return true;
+		
+		var nextClip = pathToFocus.shift();
+			
+		if (nextClip.handleInput(details, pathToFocus))
+			return true;
+			
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.TAB) {
+				startMenuFade();
+				GameDelegate.call("CloseTweenMenu", []);
 			} else if (!inventoryLists.itemList.disableInput) {
-				if (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8 && _platform != 0)
-					openMagicMenu();
+				// Gamepad back || ALT (default) || 'P'
+				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
+				if (bGamepadBackPressed || (_tabToggleKey && details.code == _tabToggleKey) || details.code == 80)
+					openMagicMenu(true);
 			}
 		}
 		
@@ -117,8 +123,14 @@ class InventoryMenu extends ItemMenu
 
 	public function onFadeCompletion(): Void
 	{
-		if (_bMenuClosing)
-			GameDelegate.call("CloseMenu", []);
+		if (!_bMenuClosing)
+			return;
+
+		GameDelegate.call("CloseMenu", []);
+		if (_bSwitchMenus) {
+			GameDelegate.call("CloseTweenMenu",[]);
+			skse.OpenMenu("MagicMenu");
+		}
 	}
 
 	// @override ItemMenu
@@ -242,13 +254,17 @@ class InventoryMenu extends ItemMenu
 	
   /* PRIVATE FUNCTIONS */
 	
-	// currently only used for controller users when pressing the BACK button
-	private function openMagicMenu(): Void
+	private function openMagicMenu(a_bFade: Boolean): Void
 	{
-		saveIndices();
-		GameDelegate.call("CloseMenu",[]);
-		GameDelegate.call("CloseTweenMenu",[]);
-		skse.OpenMenu("Magic Menu");
+		if (a_bFade) {
+			_bSwitchMenus = true;
+			startMenuFade();
+		} else {
+			saveIndices();
+			GameDelegate.call("CloseMenu",[]);
+			GameDelegate.call("CloseTweenMenu",[]);
+			skse.OpenMenu("MagicMenu");
+		}
 	}
 	
 	private function updateBottomBarButtons(): Void

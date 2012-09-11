@@ -1,5 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 
 import skyui.components.list.EntryClipManager;
@@ -80,7 +81,7 @@ class CategoryList extends BasicList
 	}
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function CategoryList()
 	{
@@ -207,22 +208,21 @@ class CategoryList extends BasicList
 	}
 	
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var processed = false;
-
-		if (!disableInput) {
-			if (GlobalFunc.IsKeyPressed(details)) {
-				if (details.navEquivalent == NavigationCode.LEFT) {
-					moveSelectionLeft();
-					processed = true;
-				} else if (details.navEquivalent == NavigationCode.RIGHT) {
-					moveSelectionRight();
-					processed = true;
-				}
+		if (disableInput)
+			return false;
+			
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.LEFT) {
+				moveSelectionLeft();
+				return true;
+			} else if (details.navEquivalent == NavigationCode.RIGHT) {
+				moveSelectionRight();
+				return true;
 			}
 		}
-		return processed;
+		return false;
 	}
 	
 	// @override BasicList

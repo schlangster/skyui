@@ -1,6 +1,7 @@
 ﻿import gfx.io.GameDelegate;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import skyui.util.ConfigManager;
 
@@ -41,6 +42,8 @@ class ItemMenu extends MovieClip
 	public var exitMenuRect: MovieClip;
 	public var skseWarning: MovieClip;
 	
+	private var _tabToggleKey: Number;
+	
 	
   /* PROPERTIES */
 	
@@ -55,7 +58,7 @@ class ItemMenu extends MovieClip
 	private var bFadedIn: Boolean;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function ItemMenu()
 	{
@@ -76,10 +79,7 @@ class ItemMenu extends MovieClip
 		_3DIconWideZSettingStr = "fInventory3DItemPosZWide:Interface";
 		_3DIconWideScaleSettingStr = "fInventory3DItemPosScaleWide:Interface";
 	}
-
-
-  /* PUBLIC FUNCTIONS */
-
+	
 	// @API
 	public function InitExtensions(a_bPlayBladeSound): Void
 	{
@@ -145,10 +145,14 @@ class ItemMenu extends MovieClip
 			}
 		}
 	}
+
+
+  /* PUBLIC FUNCTIONS */
 	
 	public function onConfigLoad(event: Object): Void
 	{
 		_config = event.config;
+		_tabToggleKey = _config.Input.hotkey.tabToggle;
 	}
 
 	// @API
@@ -167,12 +171,14 @@ class ItemMenu extends MovieClip
 	}
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		if (!bFadedIn)
 			return true;
 			
-		if (pathToFocus[0].handleInput(details, pathToFocus.slice(1)))
+		var nextClip = pathToFocus.shift();
+			
+		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 			
 		if (GlobalFunc.IsKeyPressed(details) && details.navEquivalent == NavigationCode.TAB)

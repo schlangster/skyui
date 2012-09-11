@@ -9,7 +9,7 @@ class skyui.util.DialogManager
   /* PRIVATE VARIABLES */
   
 	// There can only be one open dialog at a time.
-	private static var _activeDialog: MovieClip;
+	private static var _activeDialog: BasicDialog;
 	private static var _previousFocus: Object;
 	private static var _closeCallback: Function;
 	

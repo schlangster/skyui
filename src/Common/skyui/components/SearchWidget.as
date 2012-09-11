@@ -1,10 +1,10 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 
 import skyui.util.ConfigManager;
-import skyui.util.Translator;
 
 
 class skyui.components.SearchWidget extends MovieClip
@@ -37,7 +37,7 @@ class skyui.components.SearchWidget extends MovieClip
 	public var isDisabled: Boolean = false;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function SearchWidget()
 	{
@@ -148,10 +148,8 @@ class skyui.components.SearchWidget extends MovieClip
 	}
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var bCaught = false;
-
 		if (GlobalFunc.IsKeyPressed(details)) {
 			
 			if (details.navEquivalent == NavigationCode.ENTER && details.code != 32) {
@@ -162,12 +160,12 @@ class skyui.components.SearchWidget extends MovieClip
 				endInput();
 			}
 
-			if (!bCaught) {
-				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
-			}
+			var nextClip = pathToFocus.shift();
+			if (nextClip.handleInput(details, pathToFocus))
+				return true;
 		}
 		
-		return bCaught;
+		return false;
 	}
 	
 	

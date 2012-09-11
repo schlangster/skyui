@@ -1,6 +1,4 @@
 ﻿import gfx.events.EventDispatcher;
-import gfx.ui.NavigationCode;
-import Shared.GlobalFunc;
 
 import skyui.filter.ItemSortingFilter;
 
@@ -53,7 +51,7 @@ class skyui.components.TabBar extends MovieClip
 	}
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function TabBar()
 	{
@@ -62,42 +60,7 @@ class skyui.components.TabBar extends MovieClip
 
 		activeTab = LEFT_TAB;
 	}
-
-
-  /* PUBLIC FUNCTIONS */
-
-	// @mixin by gfx.events.EventDispatcher
-	public var dispatchEvent: Function;
-	public var dispatchQueue: Function;
-	public var hasEventListener: Function;
-	public var addEventListener: Function;
-	public var removeEventListener: Function;
-	public var removeAllEventListeners: Function;
-	public var cleanUpEvents: Function;
 	
-	public function setIcons(a_leftName: String, a_rightName: String): Void
-	{
-		leftIcon.gotoAndStop(a_leftName);
-		rightIcon.gotoAndStop(a_rightName);
-	}
-
-	public function setLabelText(a_leftText: String, a_rightText: String): Void
-	{
-		leftLabel.SetText(a_leftText.toUpperCase());
-		rightLabel.SetText(a_rightText.toUpperCase());
-	}
-
-	public function tabPress(a_tabIndex: Number): Void
-	{
-		
-		dispatchEvent({type:"tabPress", index:a_tabIndex});
-	}
-	
-	public function tabToggle(): Void
-	{
-		tabPress(_activeTab == LEFT_TAB ? RIGHT_TAB : LEFT_TAB);
-	}
-
 	// @override MovieClip
 	public function onLoad(): Void
 	{
@@ -156,5 +119,40 @@ class skyui.components.TabBar extends MovieClip
 				_parent.rightLabel._alpha = 50;
 			}
 		};
+	}
+
+
+  /* PUBLIC FUNCTIONS */
+
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
+	
+	public function setIcons(a_leftName: String, a_rightName: String): Void
+	{
+		leftIcon.gotoAndStop(a_leftName);
+		rightIcon.gotoAndStop(a_rightName);
+	}
+
+	public function setLabelText(a_leftText: String, a_rightText: String): Void
+	{
+		leftLabel.SetText(a_leftText.toUpperCase());
+		rightLabel.SetText(a_rightText.toUpperCase());
+	}
+
+	public function tabPress(a_tabIndex: Number): Void
+	{
+		
+		dispatchEvent({type:"tabPress", index:a_tabIndex});
+	}
+	
+	public function tabToggle(): Void
+	{
+		tabPress(_activeTab == LEFT_TAB ? RIGHT_TAB : LEFT_TAB);
 	}
 }

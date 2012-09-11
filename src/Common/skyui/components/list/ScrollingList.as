@@ -1,5 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 
 import skyui.components.list.EntryClipManager;
@@ -75,7 +76,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	}
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function ScrollingList()
 	{
@@ -101,29 +102,30 @@ class skyui.components.list.ScrollingList extends BasicList
 	}
 
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var processed = false;
-
 		if (disableInput)
 			return false;
 
-		var entry = getClipByIndex(selectedIndex - scrollPosition);
-		var processed = entry != undefined && entry.handleInput != undefined && entry.handleInput(details, pathToFocus.slice(1));
+		// That makes no sense, does it?
+		var entry = getClipByIndex(selectedIndex);
+		var bHandled = entry != undefined && entry.handleInput != undefined && entry.handleInput(details, pathToFocus.slice(1));
+		if (bHandled)
+			return true;
 
-		if (!processed && GlobalFunc.IsKeyPressed(details)) {
+		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.UP || details.navEquivalent == NavigationCode.PAGE_UP) {
 				moveSelectionUp(details.navEquivalent == NavigationCode.PAGE_UP);
-				processed = true;
+				return true;
 			} else if (details.navEquivalent == NavigationCode.DOWN || details.navEquivalent == NavigationCode.PAGE_DOWN) {
 				moveSelectionDown(details.navEquivalent == NavigationCode.PAGE_DOWN);
-				processed = true;
+				return true;
 			} else if (!disableSelection && details.navEquivalent == NavigationCode.ENTER) {
 				onItemPress();
-				processed = true;
+				return true;
 			}
 		}
-		return processed;
+		return false;
 	}
 
 	// @GFx

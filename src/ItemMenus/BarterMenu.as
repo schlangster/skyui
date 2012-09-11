@@ -27,7 +27,7 @@ class BarterMenu extends ItemMenu
 	public var bEnableTabs: Boolean = true;
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function BarterMenu()
 	{
@@ -37,9 +37,6 @@ class BarterMenu extends ItemMenu
 		_tabBarIconArt = ["buy", "sell"];
 	}
 	
-	
-  /* PUBLIC FUNCTIONS */
-
 	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
@@ -69,6 +66,9 @@ class BarterMenu extends ItemMenu
 		itemList.addDataProcessor(new PropertyDataExtender('itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
 		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 
 	public function onExitButtonPress(): Void
 	{
@@ -112,8 +112,6 @@ class BarterMenu extends ItemMenu
 		super.onHideItemsList(event);
 		bottomBar.SetButtonsText("","$Exit");
 	}
-
-
 
 	// @override ItemMenu
 	public function onQuantityMenuSelect(event: Object): Void
