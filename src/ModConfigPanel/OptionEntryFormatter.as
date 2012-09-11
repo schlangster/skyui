@@ -1,6 +1,8 @@
 ﻿import skyui.components.list.BasicList;
 import skyui.components.list.IEntryFormatter;
 
+import skyui.util.GlobalFunctions;
+
 class OptionEntryFormatter implements IEntryFormatter
 {
   /* CONSTANTS */
@@ -68,7 +70,7 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var valueTextField = a_entryClip.valueTextField;
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.strValue);
+				valueTextField.SetText(a_entryObject.strValue.toUpperCase());
 				
 				break;
 				
@@ -96,7 +98,10 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var valueTextField = a_entryClip.valueTextField;
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.numValue);
+				if (a_entryObject.strValue)
+					valueTextField.SetText(GlobalFunctions.format(a_entryObject.strValue, a_entryObject.numValue).toUpperCase());
+				else
+					valueTextField.SetText(Math.round(a_entryObject.numValue * 100) / 100);
 			
 				var sliderIcon = a_entryClip.sliderIcon;
 				sliderIcon._x = valueTextField.getLineMetrics(0).x - sliderIcon._width;
@@ -113,7 +118,7 @@ class OptionEntryFormatter implements IEntryFormatter
 				
 				var valueTextField = a_entryClip.valueTextField;
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.strValue);
+				valueTextField.SetText(a_entryObject.strValue.toUpperCase());
 				
 				var menuIcon = a_entryClip.menuIcon;
 				menuIcon._x = valueTextField.getLineMetrics(0).x - menuIcon._width;

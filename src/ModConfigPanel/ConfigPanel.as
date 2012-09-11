@@ -43,11 +43,14 @@ class ConfigPanel extends MovieClip
 	
 	private var _titleText: String = "";
 	private var _infoText: String = "";
+	private var	_dialogTitleText: String = "";
 	
 	private var _highlightIndex: Number = -1;
 	private var _highlightIntervalID: Number;
 	
 	private var _menuDialogOptions: Array;
+	
+	private var	_sliderDialogFormatString: String = "";
 	
 	
   /* STAGE ELEMENTS */
@@ -193,8 +196,9 @@ class ConfigPanel extends MovieClip
 	
 	public function setOptionStrValueBuffer(/* values */): Void
 	{
-		for (var i = 0; i < arguments.length; i++)
-			_optionStrValueBuffer[i] = arguments[i];
+		for (var i = 0; i < arguments.length; i++) {
+			_optionStrValueBuffer[i] = arguments[i] === "None" ? null : arguments[i];
+		}
 	}
 	
 	public function setOptionNumValueBuffer(/* values */): Void
@@ -203,12 +207,23 @@ class ConfigPanel extends MovieClip
 			_optionNumValueBuffer[i] = arguments[i];
 	}
 
-	public function setSliderDialogParams(a_value: Number, a_default: Number, a_max: Number, a_min: Number,
-										  a_interval: Number, a_decimal: Number): Void
+	public function setSliderDialogParams(a_value: Number, a_default: Number, a_min: Number, a_max: Number, a_interval: Number): Void
 	{
 		_state = DIALOG;
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
+		var initObj = {
+			_x: 562, _y: 265,
+			titleText: _dialogTitleText,
+			optionMode: OptionChangeDialog.MODE_SLIDER,
+			sliderValue: a_value,
+			sliderDefault: a_default,
+			sliderMax: a_max,
+			sliderMin: a_min,
+			sliderInterval: a_interval,
+			sliderFormatString: _sliderDialogFormatString
+		};
+		
+		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");
@@ -224,7 +239,16 @@ class ConfigPanel extends MovieClip
 	{
 		_state = DIALOG;
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", {_x: 562, _y: 265});
+		var initObj = {
+			_x: 562, _y: 265,
+			titleText: _dialogTitleText,
+			optionMode: OptionChangeDialog.MODE_MENU,
+			menuOptions: _menuDialogOptions,
+			menuStartIndex: a_startIndex,
+			menuDefaultIndex: a_defaultIndex
+		};
+		
+		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");
@@ -401,11 +425,14 @@ class ConfigPanel extends MovieClip
 				
 			case OptionEntryFormatter.OPTION_SLIDER:
 				_state = WAIT_FOR_SLIDER_DATA;
+				_dialogTitleText = e.text;
+				_sliderDialogFormatString = e.strValue;
 				skse.SendModEvent("SKICP_sliderSelected", null, a_index);
 				break;
 				
 			case OptionEntryFormatter.OPTION_MENU:
 				_state = WAIT_FOR_MENU_DATA;
+				_dialogTitleText = e.text;
 				skse.SendModEvent("SKICP_menuSelected", null, a_index);
 				break;
 		}

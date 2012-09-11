@@ -37,11 +37,17 @@ event OnInit()
 	RegisterForModEvent("SKICP_dialogCanceled", "OnDialogCancel")
 	RegisterForMenu(JOURNAL_MENU)
 	
-	CleanUp()
+	; Wait a few seconds until any initial menus have registered for events
+	RegisterForSingleUpdate(3)
+endEvent
+
+event OnUpdate()
+	OnGameReload()
 endEvent
 
 event OnGameReload()
 	CleanUp()
+	SendModEvent("SKICP_configManagerReady")
 endEvent
 
 function CleanUp()
@@ -89,7 +95,7 @@ endEvent
 
 event OnOptionHighlight(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
-	_activeConfig.OnOptionHighlight(optionIndex)
+	_activeConfig.HighlightOption(optionIndex)
 endEvent
 
 event OnOptionSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)

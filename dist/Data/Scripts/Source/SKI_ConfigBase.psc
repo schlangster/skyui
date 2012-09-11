@@ -12,13 +12,18 @@ int property		OPTION_TOGGLE	= 3 autoReadonly
 int property 		OPTION_SLIDER	= 4 autoReadonly
 int property		OPTION_MENU		= 5 autoReadonly
 
+int property		LEFT_TO_RIGHT	= 1	autoReadonly
+int property		TOP_TO_BOTTOM	= 2 autoReadonly
+
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
-SKI_ConfigManager	_configPanel
+SKI_ConfigManager	_configManager
 bool				_initialized	= false
 int					_configID		= -1
-int					_optionCount	= 0
+
+int					_cursorPosition	= 0
+int					_cursorFillMode	= 1 ;LEFT_TO_RIGHT
 
 ; Local buffers
 float[]				_optionTypeBuf
@@ -31,6 +36,8 @@ float[]				_menuParams
 
 int					_activeOption	= -1
 
+string				_infoText
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -42,8 +49,6 @@ string property		CurrentPage auto hidden
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	_configPanel = Game.GetFormFromFile(0x00000802, "SkyUI.esp") As SKI_ConfigManager
-	
 	_optionTypeBuf	= new float[128]
 	_textBuf		= new string[128]
 	_strValueBuf	= new string[128]
@@ -54,27 +59,31 @@ event OnInit()
 	; 2 minValue
 	; 3 maxValue
 	; 4 interval
-	; 5 decimal
-	_sliderParams	= new float[6]
+	_sliderParams	= new float[5]
 
 	; 0 startIndex
 	; 1 defaultIndex
 	_menuParams		= new float[2]
 	
-	gotoState("_INIT")
-	RegisterForSingleUpdate(3)
+	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
 endEvent
 
-state _INIT
-	event OnUpdate()
-		gotoState("")
-		_configID = _configPanel.RegisterMod(self, ModName)
-		if (_configID != -1)
-			OnConfigRegister()
-			_initialized = true
-		endIf
-	endEvent
-endState
+event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	SKI_ConfigManager newManager = a_sender as SKI_ConfigManager
+	
+	; Already registered?
+	if (_configManager == newManager)
+		return
+	endIf
+	
+	_configManager =  newManager
+	
+	_configID = _configManager.RegisterMod(self, ModName)
+	if (_configID != -1)
+		OnConfigRegister()
+		_initialized = true
+	endIf
+endEvent
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
@@ -112,7 +121,7 @@ event OnOptionMenuOpen(int a_option)
 endEvent
 
 ; @interface
-event OnOptionMenuAccept(int a_option, int a_menu)
+event OnOptionMenuAccept(int a_option, int a_index)
 endEvent
 
 
@@ -133,19 +142,22 @@ function SetPage(string a_page)
 endFunction
 
 int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue)
-	
-	if (_optionCount >= 127)
+	int id = _cursorPosition
+	if (id == -1)
 		return -1
 	endIf
 	
-	int id = _optionCount
 	
 	_optionTypeBuf[id] = a_optionType
 	_textBuf[id] = a_text
 	_strValueBuf[id] = a_strValue
 	_numValueBuf[id] = a_numValue
 	
-	_optionCount += 1
+	; Just use numerical value of fill mode
+	_cursorPosition += _cursorFillMode
+	if (_cursorPosition >= 128)
+		_cursorPosition = -1
+	endIf
 	
 	return id
 endFunction
@@ -153,14 +165,36 @@ endFunction
 function FlushOptionBuffers()
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
+	int t = OPTION_EMPTY
+	int i = 0
+	int optionCount = 0;
+
+	; Tell UI where to cut off the buffer
+	i = 0
+	while (i < 128)
+		if (_optionTypeBuf[i] != t)
+			optionCount = i + 1
+		endif
+		i += 1
+	endWhile
 	
 	UI.InvokeNumberA(menu, root + ".setOptionTypeBuffer", _optionTypeBuf)
 	UI.InvokeStringA(menu, root + ".setOptionTextBuffer", _textBuf)
 	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
 	UI.InvokeNumberA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
-	UI.InvokeNumber(menu, root + ".flushOptionBuffers", _optionCount)
-	
-	_optionCount = 0
+	UI.InvokeNumber(menu, root + ".flushOptionBuffers", optionCount)
+
+	i = 0
+	while (i < 128)
+		_optionTypeBuf[i] = t
+		_textBuf[i] = none
+		_strValueBuf[i] = none
+		_numValueBuf[i] = 0
+		i += 1
+	endWhile
+
+	_cursorPosition	= 0
+	_cursorFillMode	= LEFT_TO_RIGHT
 endFunction
 
 function SetOptionStrValue(int a_option, string a_strValue)
@@ -200,7 +234,6 @@ function RequestSliderDialogData(int a_index)
 	_sliderParams[2] = 0
 	_sliderParams[3] = 1
 	_sliderParams[4] = 1
-	_sliderParams[5] = 0
 
 	OnOptionSliderOpen(a_index)
 
@@ -225,8 +258,15 @@ function SetSliderValue(float a_value)
 endFunction
 
 function SetMenuIndex(int a_index)
-	OnOptionSliderAccept(_activeOption, a_index)
+	OnOptionMenuAccept(_activeOption, a_index)
 	_activeOption = -1
+endFunction
+
+
+function HighlightOption(int a_index)
+	_infoText = ""
+	OnOptionHighlight(a_index)
+	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", _infoText)
 endFunction
 
 ; @interface
@@ -236,7 +276,21 @@ endFunction
 
 ; @interface
 function SetInfoText(string a_text)
-	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", a_text)
+	_infoText = a_text
+endFunction
+
+; @interface
+function SetCursorPosition(int a_position)
+	if (a_position < 128)
+		_cursorPosition = a_position
+	endIf
+endFunction
+
+; @interface
+function SetCursorFillMode(int a_fillMode)
+	if (a_fillMode == LEFT_TO_RIGHT || a_fillMode == TOP_TO_BOTTOM)
+		_cursorFillMode = a_fillMode
+	endIf
 endFunction
 
 ; @interface
@@ -260,8 +314,8 @@ int function AddToggleOption(string a_text, bool a_checked)
 endfunction
 
 ; @interface
-int function AddSliderOption(string a_text, float a_value, string a_displayValue = "")
-	return AddOption(OPTION_SLIDER, a_text, none, a_value)
+int function AddSliderOption(string a_text, float a_value, string a_formatString = "")
+	return AddOption(OPTION_SLIDER, a_text, a_formatString, a_value)
 endFunction
 
 ; @interface
@@ -290,8 +344,8 @@ function SetToggleOptionValue(int a_option, bool a_checked)
 endfunction
 
 ; @interface
-function SetSliderOptionValue(int a_option, float a_value, string a_displayValue = "")
-	SetOptionValues(a_option, a_displayValue, a_value)
+function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "")
+	SetOptionValues(a_option, a_formatString, a_value)
 endFunction
 
 ; @interface
@@ -322,11 +376,6 @@ endFunction
 ; @interface
 function SetSliderDialogInterval(float a_value)
 	_sliderParams[4] = a_value
-endFunction
-
-; @interface
-function SetSliderDialogDecimal(int a_value)
-	_sliderParams[5] = a_value
 endFunction
 
 ; @interface
