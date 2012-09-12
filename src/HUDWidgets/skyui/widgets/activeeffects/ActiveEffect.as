@@ -9,6 +9,10 @@ import com.greensock.easing.Linear;
 
 class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 {
+  /* CONSTANTS */
+  	static private var METER_WIDTH: Number = 15;
+  	static private var METER_PADDING: Number = 5;
+
   /* STAGE ELEMENTS */
 	private var content: MovieClip;
 	private var background: MovieClip;
@@ -18,8 +22,9 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 	// initObject
 	public var index: Number;
-	public var iconLocation: String;
 	public var effectData: Object;
+	public var iconLocation: String;
+	
 	
   /* PRIVATE VARIABLES */
   	// Meter
@@ -27,9 +32,6 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	
 	private var _meterEmptyIdx: Number;
 	private var _meterFullIdx: Number;
-	
-	private var _meterWidth: Number = 15;
-	private var _meterPadding: Number = 5;
 	
 	// Icon
 	private var _iconLoader: MovieClipLoader;
@@ -41,12 +43,6 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	public function ActiveEffect()
 	{
 		super();
-		
-		/*	initObject data from ActiveEffectsColumns attachMovie():
-			var initObject: Object = {index: _effectsArray.length,
-									iconLocation: ICON_LOCATION,
-									effectData: a_effectData,
-									_y: effectIdx * (128+10)}; */
 		
 		_iconLoader = new MovieClipLoader();
 		_iconLoader.addListener(this);
@@ -96,7 +92,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		if (effectData.duration - effectData.elapsed > 1) {
 			// Effect with duration, e.g. Potion of Fortifty Health
 			// TODO, make it scale. All the icons we use are 128*128 so it doesn't matter
-			_iconHolder._width = _iconHolder._height = (_iconHolder._width - _meterPadding - _meterWidth);
+			_iconHolder._width = _iconHolder._height = (_iconHolder._width - METER_PADDING - METER_WIDTH);
 			_iconHolder._y = (background._height - _iconHolder._height) / 2;
 
 			initMeter();
@@ -109,7 +105,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 	private function initMeter(): Void
 	{
-		_meter = content.attachMovie("SimpleMeter", "meter", content.getNextHighestDepth(), {_x: (background._width - _meterWidth), _y: _iconHolder._y, _width: _meterWidth, _height: _iconHolder._height});
+		_meter = content.attachMovie("SimpleMeter", "meter", content.getNextHighestDepth(), {_x: (background._width - METER_WIDTH), _y: _iconHolder._y, _width: METER_WIDTH, _height: _iconHolder._height});
 		_meter.background._alpha = 50;
 		_meter.gotoAndStop("Empty");
 		_meterEmptyIdx = _meter._currentframe;

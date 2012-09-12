@@ -8,20 +8,27 @@ import com.greensock.easing.Linear;
 
 class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 {
-
+  /* CONSTANTS */
 	static private var EFFECT_LIST_LENGTH: Number = 3;
 	static private var COLUMN_SPACING: Number = 10;
 
+	static private var ICON_LOCATION: String = "./skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
+	static private var EFFECT_FADE_IN_DURATION: Number = 0.25;
+	static private var EFFECT_FADE_OUT_DURATION: Number = 0.75;
+	static private var EFFECT_SPACING: Number = 10;
+
+  /* PRIVATE VARIABLES */
 	private var _marker: Number = 1;
 	private var _sortFlag: Boolean = true;
 
 	private var _effectsHash: Object;
 	private var _effectsColumns: Array;
 
-	// @SKSE
+  /* PUBLIC VARIABLES */
+	// Passed from SKSE
 	public var effectDataArray: Array;
 
-	// @Config
+	// Config
 	public var updateInterval: Number = 150;
 
 	public function ActiveEffectsWidget()
@@ -46,8 +53,11 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_global.setTimeout(this,"timeout", 1000);
 		_global.setTimeout(this,"timeout2",3000);//*/
 
-		setInterval(this, "onIntervalUpdate", updateInterval);
+		///* // Test: Uncomment when testing
+		setInterval(this, "onIntervalUpdate", updateInterval); //*/
 	}
+
+  /* PUBLIC FUNCTIONS */
 
 	public function removeColumn(a_column: MovieClip): Void
 	{
@@ -64,6 +74,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			TweenLite.to(effectsColumn, 1, {_x: i * (128 + COLUMN_SPACING), overwrite: "AUTO", easing: Linear.easeNone});
 		}	
 	}
+
+  /* PRIVATE FUNCTIONS */
 
 	private function timeout()
 	{
@@ -103,7 +115,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			// Make sure oldest effects are at the top
 			effectDataArray.sortOn("elapsed", Array.DESCENDING | Array.NUMERIC);
 			_sortFlag = false;
-		}//*/
+		} //*/
 
 		var effectData: Object;
 		var effectClip: MovieClip;
@@ -162,8 +174,15 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			}
 		}
 
+		var initObject: Object = {index: newColumnIdx,
+									iconLocation: ICON_LOCATION,
+									effectFadeInDuration: EFFECT_FADE_IN_DURATION,
+									effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
+									effectSpacing: EFFECT_SPACING,
+									_x: newColumnIdx * (128 + COLUMN_SPACING)};
+
 		if (freeEffectsColumn == undefined) {
-			effectsColumn = attachMovie("ActiveEffectsColumn", "effectsColumn" + newColumnIdx, getNextHighestDepth(), {index: newColumnIdx, _x: newColumnIdx * (128 + COLUMN_SPACING)});
+			effectsColumn = attachMovie("ActiveEffectsColumn", "effectsColumn" + newColumnIdx, getNextHighestDepth(), initObject);
 			_effectsColumns.push(effectsColumn);
 
 			freeEffectsColumn = effectsColumn;
