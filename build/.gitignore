@@ -1,5 +1,7 @@
 
 *.swf
+fontconfig.txt
 !/fonts_console.swf
 !/fonts_en.swf
 !/gfxfontlib.swf
+!/fontconfig.txt
