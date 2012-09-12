@@ -2,7 +2,7 @@
 {
   /* CONSTANTS */
 	
-	private var MODES = ["All", "StealthMode"];
+	private var MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
 	
 	
   /* PRIVATE VARIABLES */
