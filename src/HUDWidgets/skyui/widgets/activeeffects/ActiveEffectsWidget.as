@@ -9,13 +9,16 @@ import com.greensock.easing.Linear;
 class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 {
   /* CONSTANTS */
-	static private var EFFECT_LIST_LENGTH: Number = 3;
-	static private var COLUMN_SPACING: Number = 10;
+	// TODO: Make these config vars.
+	static private var COLUMN_MOVE_DURATION: Number = 1.00;
+	private var _columnSpacing: Number; // 1/10 of effectBaseSize
 
 	static private var ICON_LOCATION: String = "./skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
+	private var _effectBaseSize: Number; // 32, 48, 64 = small, medium, large
+	private var _effectSpacing: Number; // 1/10 of effectBaseSize
 	static private var EFFECT_FADE_IN_DURATION: Number = 0.25;
 	static private var EFFECT_FADE_OUT_DURATION: Number = 0.75;
-	static private var EFFECT_SPACING: Number = 10;
+	static private var EFFECT_MOVE_DURATION: Number = 1.00;
 
   /* PRIVATE VARIABLES */
 	private var _marker: Number = 1;
@@ -23,6 +26,12 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	private var _effectsHash: Object;
 	private var _effectsColumns: Array;
+
+	private var _yMin: Number;
+
+	private var _maxEffectsColumnLength: Number;
+
+	private var _intervalId: Number
 
   /* PUBLIC VARIABLES */
 	// Passed from SKSE
@@ -38,6 +47,13 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		effectDataArray = new Array();
 
+		_effectBaseSize = 32;
+		_columnSpacing = _effectSpacing = _effectBaseSize/10;
+
+		// _yMin -> ["yMax"] because it wants the largest _y value of the object
+		_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
+		var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
+		_maxEffectsColumnLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1;
 		
 		/* // TEST: Comment when testing
 		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
@@ -46,20 +62,33 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
 							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 59661324496, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 1000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5964613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966143296, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 2000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966134442496, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132966, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132449666, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 1500, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5964613296666, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 450, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966143296666, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 1000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 59661344424946, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 20, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
 							];
 
 		onIntervalUpdate();
-		_global.setTimeout(this,"timeout", 1000);
-		_global.setTimeout(this,"timeout2",3000);//*/
+		/*
+		//_global.setTimeout(this,"timeout", 1000);
+		//_global.setTimeout(this,"timeout2",3000);
+		setInterval(this, "testEffectSize", 3000);
+		//*/
 
 		///* // Test: Uncomment when testing
-		setInterval(this, "onIntervalUpdate", updateInterval); //*/
+		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
+		//*/
 	}
 
   /* PUBLIC FUNCTIONS */
 
-	public function removeColumn(a_column: MovieClip): Void
+	public function onColumnRemoved(a_column: MovieClip): Void
 	{
 		var removedColumn: MovieClip = a_column;
 		var columnIdx: Number = removedColumn.index;
@@ -70,13 +99,38 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		var effectsColumn: MovieClip;
 		for (var i: Number = columnIdx; i < _effectsColumns.length; i++) {
 			effectsColumn = _effectsColumns[i];
-			effectsColumn.index = i;
-			TweenLite.to(effectsColumn, 1, {_x: i * (128 + COLUMN_SPACING), overwrite: "AUTO", easing: Linear.easeNone});
+			effectsColumn.updatePosition(i);
 		}	
+	}
+
+	public function setEffectSize(a_effectBaseSize: Number): Void
+	{
+		clearInterval(_intervalId);
+		_sortFlag = true;
+
+		_effectBaseSize = a_effectBaseSize;
+		_columnSpacing = _effectSpacing = _effectBaseSize/10.0;
+
+		_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
+		var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
+		_maxEffectsColumnLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1;
+
+		var effectsColumn: MovieClip;
+		for (var i: Number = 0; i < _effectsColumns.length; i++) {
+			effectsColumn = _effectsColumns[i];
+			effectsColumn.removeMovieClip();
+		}
+
+		_effectsHash = new Object();
+		_effectsColumns = new Array();
+
+		onIntervalUpdate();
+		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
 
   /* PRIVATE FUNCTIONS */
 
+	/*
 	private function timeout()
 	{
 		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
@@ -92,7 +146,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	private function timeout2()
 	{
-		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
+		effectDataArray = [//{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
 							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
 							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
@@ -100,8 +154,15 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
 							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
 							];
+
 		onIntervalUpdate();
 	}
+
+	private function testEffectSize()
+	{
+		setEffectSize((_effectBaseSize == 32) ? (48): (_effectBaseSize == 48) ? 64 : 32);
+	}
+	*/
 
 
 	private function onIntervalUpdate(): Void
@@ -132,7 +193,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 				_effectsHash[effectData.id] = effectClip;
 			} else {
 				// Current Effect
-				effectClip.update(effectData);
+				effectClip.updateEffect(effectData);
 			}
 
 			effectClip.marker = _marker;
@@ -142,13 +203,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			effectClip = _effectsHash[s];
 
 			if (effectClip.marker != _marker) {
-				// Three ways to do this
-				/*
 				effectClip.remove();
-				TweenLite.to(effectClip, 1, {_alpha: 0, onCompleteScope: effectClip._parent, onComplete: effectClip._parent.onEffectRemoved, onCompleteParams: [effectClip], overwrite: "AUTO", easing: Linear.easeNone});
-				*/
-				effectsColumn = effectClip._parent;
-				effectsColumn.removeEffect(effectClip);
 				
 				delete(_effectsHash[s]);
 			}
@@ -168,7 +223,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		for (var i: Number = 0; i < newColumnIdx; i++) {
 			effectsColumn = _effectsColumns[i];
 
-			if (effectsColumn.length < EFFECT_LIST_LENGTH) {
+			if (effectsColumn.length < _maxEffectsColumnLength) {
 				freeEffectsColumn = effectsColumn;
 				break;
 			}
@@ -176,10 +231,14 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		var initObject: Object = {index: newColumnIdx,
 									iconLocation: ICON_LOCATION,
+									columnMoveDuration: COLUMN_MOVE_DURATION,
+									columnSpacing: _columnSpacing,
+									effectBaseSize: _effectBaseSize,
+									effectSpacing: _effectSpacing,
 									effectFadeInDuration: EFFECT_FADE_IN_DURATION,
 									effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
-									effectSpacing: EFFECT_SPACING,
-									_x: newColumnIdx * (128 + COLUMN_SPACING)};
+									effectMoveDuration: EFFECT_MOVE_DURATION,
+									_y: _yMin};
 
 		if (freeEffectsColumn == undefined) {
 			effectsColumn = attachMovie("ActiveEffectsColumn", "effectsColumn" + newColumnIdx, getNextHighestDepth(), initObject);

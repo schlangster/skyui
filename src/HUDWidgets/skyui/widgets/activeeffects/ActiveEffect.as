@@ -1,11 +1,9 @@
 import skyui.util.Defines;
 import Shared.GlobalFunc;
 
-// Only used in remove();
-/*
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
-*/
+
 
 class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 {
@@ -24,6 +22,12 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	public var index: Number;
 	public var effectData: Object;
 	public var iconLocation: String;
+	public var effectBaseSize: Number;
+	public var effectSpacing: Number;
+	public var effectFadeInDuration: Number;
+	public var effectFadeOutDuration: Number;
+	public var effectMoveDuration: Number;
+	
 	
 	
   /* PRIVATE VARIABLES */
@@ -50,18 +54,25 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_iconHolder = content.iconContent;
 		_icon = _iconHolder.createEmptyMovieClip("icon", getNextHighestDepth());
 		_iconLoader.loadClip(iconLocation, _icon);
+
+		_width = _height = effectBaseSize;
+		_y = index * (effectBaseSize + effectSpacing);
 		
 		initEffect();
 		
-		update(effectData);
+		updateEffect(effectData);
 		
 		background._alpha = 0;
 		_iconHolder.iconBackground._alpha = 0;
+
+
+
+		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: "AUTO", easing: Linear.easeNone})
 	}
 
   /* PUBLIC FUNCTIONS */
 	
-	public function update(a_effectData: Object): Void
+	public function updateEffect(a_effectData: Object): Void
 	{
 		if (_meter == undefined) {
 			// Constant effects, no timer (e.g. Healing)
@@ -76,13 +87,17 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_meter.gotoAndStop(meterFrame);
 	}
 
-	// Now uses effectsColumn.removeEffect(effectClip); to be more consistent with effectsColumn.addEffect(effectData);
-	/*
+	public function updatePosition(a_newIndex): Void
+	{
+		index = a_newIndex;
+
+		TweenLite.to(this, effectMoveDuration, {_y:  index * (effectBaseSize + effectSpacing), overwrite: "AUTO", easing: Linear.easeNone});
+	}
+
 	public function remove(): Void
 	{
-		TweenLite.to(this, 1, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onEffectRemoved, onCompleteParams: [this], overwrite: "AUTO", easing: Linear.easeNone});
+		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onEffectRemoved, onCompleteParams: [this], overwrite: "AUTO", easing: Linear.easeNone});
 	}
-	*/
 
   /* PRIVATE FUNCTIONS */
 	
