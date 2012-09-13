@@ -115,7 +115,7 @@ class InventoryMenu extends ItemMenu
 
 	private function startMenuFade(): Void
 	{
-		inventoryLists.hideCategoriesList();
+		inventoryLists.hidePanel();
 		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;

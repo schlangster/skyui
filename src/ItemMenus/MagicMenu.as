@@ -31,13 +31,6 @@ class MagicMenu extends ItemMenu
 	{
 		super();
 		
-		_3DIconXSettingStr = "fMagic3DItemPosX:Interface";
-		_3DIconZSettingStr = "fMagic3DItemPosZ:Interface";
-		_3DIconScaleSettingStr = "fMagic3DItemPosScale:Interface";
-		_3DIconWideXSettingStr = "fMagic3DItemPosXWide:Interface";
-		_3DIconWideZSettingStr = "fMagic3DItemPosZWide:Interface";
-		_3DIconWideScaleSettingStr = "fMagic3DItemPosScaleWide:Interface";
-		
 		_magicButtonArt = [{PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"},
 						  {PCArt:"F",XBoxArt:"360_Y", PS3Art:"PS3_Y"},
 						  {PCArt:"R",XBoxArt:"360_X", PS3Art:"PS3_X"},
@@ -85,7 +78,7 @@ class MagicMenu extends ItemMenu
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 			
-		if (Shared.GlobalFunc.IsKeyPressed(details)) {
+		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
 				startMenuFade();
 				GameDelegate.call("CloseTweenMenu",[]);
@@ -201,7 +194,7 @@ class MagicMenu extends ItemMenu
 	
 	private function startMenuFade(): Void
 	{
-		inventoryLists.hideCategoriesList();
+		inventoryLists.hidePanel();
 		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;

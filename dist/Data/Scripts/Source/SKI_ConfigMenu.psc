@@ -2,25 +2,40 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
-; Option IDs
-int	_toggleOption1
-int	_toggleOption2
-int	_toggleOption3
-int _textOption1
-int _counterOption
-int _sliderFormatOption
-int _difficultyMenuOption
+; Lists
+string[]	_alignments
+string[]	_iconSizes
+
+; OIDs (T:Text B:Toggle S:Slider M:Menu)
+int			_itemcardAlignOID_T
+int			_itemcardXOffsetOID_S
+int			_itemcardYOffsetOID_S
+
+int			_3DItemXOffsetOID_S
+int			_3DItemYOffsetOID_S
+int			_3DItemScaleOID_S
+
+int			_AEIconSizeOID_T
 
 ; State
-bool	_toggleState1 = false
-bool	_toggleState2 = false
-bool	_toggleState3 = false
-int		_counter = 0
-float	_sliderPercent = 50.0
-int		_curDifficulty = 5
+int			_itemcardAlignIdx	= 2
+float		_itemcardXOffset	= 0.0
+float		_itemcardYOffset	= 0.0
 
-; Submenu options
-string[]	_difficultyList
+float		_3DItemXOffset		= 0.0
+float		_3DItemYOffset		= 0.0
+float		_3DItemScale		= 1.5
+
+int			_AEIconSizeIdx		= 1
+
+; Internal
+float		_itemXBase
+
+
+; PROPERTIES --------------------------------------------------------------------------------------
+
+; @autoFill
+SKI_SettingsManager property SKI_SettingsManagerInstance auto
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -29,19 +44,52 @@ string[]	_difficultyList
 event OnInit()
 	parent.OnInit()
 
-	_difficultyList = new string[8]
-	_difficultyList[0] = "Casual"
-	_difficultyList[1] = "Very Easy"
-	_difficultyList[2] = "Easy"
-	_difficultyList[3] = "What used to be Easy"
-	_difficultyList[4] = "Normal"
-	_difficultyList[5] = "Hard"
-	_difficultyList[6] = "Very Hard"
-	_difficultyList[7] = "Why am I doing this?"
+	_iconSizes = new string[3]
+	_iconSizes[0] = "Small"
+	_iconSizes[1] = "Medium"
+	_iconSizes[2] = "Large"
+
+	_alignments = new string[3]
+	_alignments[0] = "Left"
+	_alignments[1] = "Right"
+	_alignments[2] = "Center"
+
+	ApplySettings()
 endEvent
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
+
+; @implements SKI_QuestBase
+event OnGameReload()
+	ApplySettings()
+endEvent
+
+function ApplySettings()
+	float h = Utility.GetINIInt("iSize H:Display")
+	float w = Utility.GetINIInt("iSize W:Display")
+	if ((w / h) == 1.6)
+		_itemXBase = -32.458335876465
+	else
+		_itemXBase = -29.122497558594
+	endIf
+
+	; Item
+	Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
+	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
+	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
+
+	; Magic
+	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
+	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+	Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
+endFunction
 
 ; @implements SKI_ConfigBase
 event OnPageReset(string a_page)
@@ -58,36 +106,19 @@ event OnPageReset(string a_page)
 	if (a_page == Pages[0])
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
-		AddHeaderOption("Toggle Options")
-		_toggleOption1		= AddToggleOption("Toggle Option 1", _toggleState1)
-		_toggleOption2		= AddToggleOption("Toggle Option 2", _toggleState2)
-		_toggleOption3		= AddToggleOption("On or Off?", _toggleState3)
+		AddHeaderOption("Item Card")
+		_itemcardAlignOID_T		= AddTextOption("Align", _alignments[_itemcardAlignIdx])
+		_itemcardXOffsetOID_S	= AddSliderOption("Horizontal Offset", _itemcardXOffset)
+		_itemcardYOffsetOID_S	= AddSliderOption("Vertical Offset", _itemcardYOffset)
+
 		AddEmptyOption()
 
-		AddHeaderOption("Text Options")
-		_textOption1		= AddTextOption("Text Option 1", "CLICK ME")
-		_counterOption		= AddTextOption("Number of Clicks", _counter)
+		AddHeaderOption("3D Item")
+		_3DItemXOffsetOID_S		= AddSliderOption("Horizontal Offset", _3DItemXOffset)
+		_3DItemYOffsetOID_S		= AddSliderOption("Vertical Offset", _3DItemYOffset)
+		_3DItemScaleOID_S		= AddSliderOption("Scale", _3DItemScale, "{1}")
 
 		SetCursorPosition(1)
-
-		AddHeaderOption("All option types")
-		AddTextOption("Text", "VALUE")
-		AddToggleOption("Toggle", false)
-		AddSliderOption("Slider", 1.75)
-		_sliderFormatOption = AddSliderOption("Slider (format string)", _sliderPercent, "At {0}%")
-		_difficultyMenuOption = AddMenuOption("Difficulty", _difficultyList[_curDifficulty])
-	
-	elseIf (a_page == Pages[1])
-		SetTitleText("Custom title text")
-		SetCursorFillMode(LEFT_TO_RIGHT)
-
-		AddHeaderOption("Hitpoints")
-		AddEmptyOption()
-		AddSliderOption("Player Endurance Multiplier", 10)
-		AddSliderOption("NPC Endurance Multiplier", 7)
-		AddSliderOption("Player Level Multiplier", 0)
-		AddSliderOption("NPC Level Multiplier", 0)
-		
 	endIf
 endEvent
 
@@ -99,25 +130,14 @@ event OnOptionSelect(int a_option)
 	string page = CurrentPage
 	
 	if (page == Pages[0])
-		if (a_option == _toggleOption1)
-			_toggleState1 = !_toggleState1
-			SetToggleOptionValue(a_option, _toggleState1)
-
-		elseIf (a_option == _toggleOption2)
-			_toggleState2 = !_toggleState2
-			SetToggleOptionValue(a_option, _toggleState2)
-
-		elseIf (a_option == _toggleOption3)
-			_toggleState3 = !_toggleState3
-			SetToggleOptionValue(a_option, _toggleState3)
-
-		elseIf (a_option == _textOption1)
-			; Do something
-			SetTextOptionValue(a_option, "GOOD BOY")
-
-		elseIf (a_option == _counterOption)
-			_counter += 1
-			SetTextOptionValue(a_option, _counter)
+		if (a_option == _itemcardAlignOID_T)
+			if (_itemcardAlignIdx < _alignments.length - 1)
+				_itemcardAlignIdx += 1
+			else
+				_itemcardAlignIdx = 0
+			endif
+			SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
+			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
 		endIf
 	endIf
 endEvent
@@ -129,12 +149,38 @@ event OnOptionSliderOpen(int a_option)
 	string page = CurrentPage
 
 	if (page == Pages[0])
-		if (a_option == _sliderFormatOption)
-			SetSliderDialogStartValue(_sliderPercent)
-			SetSliderDialogDefaultValue(50)
-			SetSliderDialogMinValue(0)
-			SetSliderDialogMaxValue(100)
-			SetSliderDialogInterval(2)
+		if (a_option == _itemcardXOffsetOID_S)
+			SetSliderDialogStartValue(_itemcardXOffset)
+			SetSliderDialogDefaultValue(0)
+			SetSliderDialogMinValue(-1000)
+			SetSliderDialogMaxValue(1000)
+			SetSliderDialogInterval(1)
+		elseIf (a_option == _itemcardYOffsetOID_S)
+			SetSliderDialogStartValue(_itemcardYOffset)
+			SetSliderDialogDefaultValue(0)
+			SetSliderDialogMinValue(-1000)
+			SetSliderDialogMaxValue(1000)
+			SetSliderDialogInterval(1)
+
+		elseIf (a_option == _3DItemXOffsetOID_S)
+			SetSliderDialogStartValue(_3DItemXOffset)
+			SetSliderDialogDefaultValue(0)
+			SetSliderDialogMinValue(-128)
+			SetSliderDialogMaxValue(128)
+			SetSliderDialogInterval(1)
+		elseIf (a_option == _3DItemYOffsetOID_S)
+			SetSliderDialogStartValue(_3DItemYOffset)
+			SetSliderDialogDefaultValue(0)
+			SetSliderDialogMinValue(-128)
+			SetSliderDialogMaxValue(128)
+			SetSliderDialogInterval(1)
+		elseIf (a_option == _3DItemScaleOID_S)
+			SetSliderDialogStartValue(_3DItemScale)
+			SetSliderDialogDefaultValue(1.5)
+			SetSliderDialogMinValue(0.5)
+			SetSliderDialogMaxValue(5)
+			SetSliderDialogInterval(0.1)
+
 		endIf
 	endIf
 endEvent
@@ -146,9 +192,36 @@ event OnOptionSliderAccept(int a_option, float a_value)
 	string page = CurrentPage
 
 	if (page == Pages[0])
-		if (a_option == _sliderFormatOption)
-			_sliderPercent = a_value
-			SetSliderOptionValue(a_option, a_value, "At {0}%")
+		if (a_option == _itemcardXOffsetOID_S)
+			_itemcardXOffset = a_value
+			SetSliderOptionValue(a_option, _itemcardXOffset)
+			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
+		elseIf (a_option == _itemcardYOffsetOID_S)
+			_itemcardYOffset = a_value
+			SetSliderOptionValue(a_option, _itemcardYOffset)
+			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
+
+		elseIf (a_option == _3DItemXOffsetOID_S)
+			_3DItemXOffset = a_value
+			SetSliderOptionValue(a_option, _3DItemXOffset)
+			Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+			Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+			Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+			Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+		elseIf (a_option == _3DItemYOffsetOID_S)
+			_3DItemYOffset = a_value
+			SetSliderOptionValue(a_option, _3DItemYOffset)
+			Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+			Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
+			Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+			Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
+		elseIf (a_option == _3DItemScaleOID_S)
+			_3DItemScale = a_value
+			SetSliderOptionValue(a_option, _3DItemScale, "{1}")
+			Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
+			Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
+			Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
+			Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
 		endIf
 	endIf
 endEvent
@@ -160,11 +233,6 @@ event OnOptionMenuOpen(int a_option)
 	string page = CurrentPage
 
 	if (page == Pages[0])
-		if (a_option == _difficultyMenuOption)
-			SetMenuDialogStartIndex(_curDifficulty)
-			SetMenuDialogDefaultIndex(5)
-			SetMenuDialogOptions(_difficultyList)
-		endIf
 	endIf
 endEvent
 
@@ -175,10 +243,6 @@ event OnOptionMenuAccept(int a_option, int a_index)
 	string page = CurrentPage
 
 	if (page == Pages[0])
-		if (a_option == _difficultyMenuOption)
-			_curDifficulty = a_index
-			SetMenuOptionValue(a_option, _difficultyList[_curDifficulty])
-		endIf
 	endIf
 endEvent
 
@@ -190,12 +254,22 @@ event OnOptionHighlight(int a_option)
 	
 	; Options
 	if (page == Pages[0])
-		if (a_option == _toggleOption1)
-			SetInfoText("Info text for toggle option 1.")
-		elseIf (a_option == _toggleOption2)
-			SetInfoText("Info text for toggle option 2.")
-		elseIf (a_option == _toggleOption3)
-			SetInfoText("Sometimes choice can be a burden...")
+		if (a_option == _itemcardAlignOID_T)
+			SetInfoText("Default: Center")
+		elseIf (a_option == _itemcardXOffsetOID_S)
+			SetInfoText("Default: 0")
+		elseIf (a_option == _itemcardYOffsetOID_S)
+			SetInfoText("Default: 0")
+
+		elseIf (a_option == _3DItemXOffsetOID_S)
+			SetInfoText("Default: 0")
+		elseIf (a_option == _3DItemYOffsetOID_S)
+			SetInfoText("Default: 0")
+		elseIf (a_option == _3DItemScaleOID_S)
+			SetInfoText("Default: 1.5")
+
+		elseIf (a_option == _AEIconSizeOID_T)
+			SetInfoText("Default: Medium")
 		endIf
 	endIf
 endEvent

@@ -5,7 +5,7 @@ scriptname SKI_ConfigManager extends SKI_QuestBase hidden
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MENU_ROOT		= "_root.ConfigPanelFader.configPanel" autoReadonly
 string property		DIALOG_SLIDER	= 0 autoReadonly
-string property		DIALOG_MENU	= 1 autoReadonly
+string property		DIALOG_MENU		= 1 autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -45,6 +45,7 @@ event OnUpdate()
 	OnGameReload()
 endEvent
 
+; @implements SKI_QuestBase
 event OnGameReload()
 	CleanUp()
 	SendModEvent("SKICP_configManagerReady")

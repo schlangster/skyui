@@ -16,18 +16,12 @@ class ItemMenu extends MovieClip
   /* PRIVATE VARIABLES */
   
 	private var _platform: Number;
-	private var _bItemCardFadedIn: Boolean;
-	
-	private var _3DIconXSettingStr: String;
-	private var _3DIconZSettingStr: String;
-	private var _3DIconScaleSettingStr: String;
-	private var _3DIconWideXSettingStr: String;
-	private var _3DIconWideZSettingStr: String;
-	private var _3DIconWideScaleSettingStr: String;
+	private var _bItemCardFadedIn: Boolean = false;
+	private var _bItemCardPositioned: Boolean = false;
 	
 	private var _config: Object;
 	
-
+	private var _tabToggleKey: Number;
 	
 	
   /* STAGE ELEMENTS */
@@ -42,8 +36,6 @@ class ItemMenu extends MovieClip
 	public var exitMenuRect: MovieClip;
 	public var skseWarning: MovieClip;
 	
-	private var _tabToggleKey: Number;
-	
 	
   /* PROPERTIES */
 	
@@ -55,7 +47,7 @@ class ItemMenu extends MovieClip
 	// @Mysterious GFx
 	public var bPCControlsReady: Boolean = true;
 	
-	private var bFadedIn: Boolean;
+	public var bFadedIn: Boolean = true;
 	
 	
   /* INITIALIZATION */
@@ -71,13 +63,6 @@ class ItemMenu extends MovieClip
 		
 		bFadedIn = true;
 		_bItemCardFadedIn = false;
-		
-		_3DIconXSettingStr = "fInventory3DItemPosX:Interface";
-		_3DIconZSettingStr = "fInventory3DItemPosZ:Interface";
-		_3DIconScaleSettingStr = "fInventory3DItemPosScale:Interface";
-		_3DIconWideXSettingStr = "fInventory3DItemPosXWide:Interface";
-		_3DIconWideZSettingStr = "fInventory3DItemPosZWide:Interface";
-		_3DIconWideScaleSettingStr = "fInventory3DItemPosScaleWide:Interface";
 	}
 	
 	// @API
@@ -103,10 +88,10 @@ class ItemMenu extends MovieClip
 		
 		itemCard.addEventListener("quantitySelect",this,"onQuantityMenuSelect");
 		itemCard.addEventListener("subMenuAction",this,"onItemCardSubMenuAction");
-
-		positionElements();
 		
-		inventoryLists.showCategoriesList(a_bPlayBladeSound);
+		positionFixedElements();
+		
+		inventoryLists.showPanel(a_bPlayBladeSound);
 		
 		itemCard._visible = false;
 		bottomBar.HideButtons();
@@ -153,6 +138,8 @@ class ItemMenu extends MovieClip
 	{
 		_config = event.config;
 		_tabToggleKey = _config.Input.hotkey.tabToggle;
+		
+		positionFloatingElements();
 	}
 
 	// @API
@@ -213,11 +200,15 @@ class ItemMenu extends MovieClip
 		if (event.index != -1) {
 			if (!_bItemCardFadedIn) {
 				_bItemCardFadedIn = true;
-				itemCard.FadeInCard();
+				
+				if (_bItemCardPositioned)
+					itemCard.FadeInCard();
 				bottomBar.ShowButtons();
 			}
 			
-			GameDelegate.call("UpdateItem3D",[true]);
+			if (_bItemCardPositioned)
+				GameDelegate.call("UpdateItem3D",[true]);
+				
 			GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
 			
 		} else {
@@ -362,7 +353,7 @@ class ItemMenu extends MovieClip
 		GameDelegate.call("SaveIndices", [a]);
 	}
 	
-	private function positionElements(): Void
+	private function positionFixedElements(): Void
 	{
 		GlobalFunc.SetLockFunction();
 		
@@ -372,11 +363,24 @@ class ItemMenu extends MovieClip
 		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
 		
+		bottomBar.PositionElements(leftEdge, rightEdge);
+		
+		MovieClip(exitMenuRect).Lock("TL");
+		exitMenuRect._x = exitMenuRect._x - Stage.safeRect.x;
+		exitMenuRect._y = exitMenuRect._y - Stage.safeRect.y;
+		
+		if (skseWarning != undefined)
+			skseWarning.Lock("TR");
+	}
+	
+	private function positionFloatingElements(): Void
+	{
+		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
+		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
+		
 		var a = inventoryLists.getContentBounds();
 		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
 		var panelEdge = inventoryLists._x + a[0] + a[2] + 25;
-		
-		bottomBar.PositionElements(leftEdge, rightEdge);
 
 		var itemCardContainer = itemCard._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
@@ -399,31 +403,21 @@ class ItemMenu extends MovieClip
 			itemCardContainer._x = panelEdge + itemcardPosition.xOffset + (Stage.visibleRect.x + Stage.visibleRect.width - panelEdge - itemCardContainer._width) / 2;
 
 		itemCardContainer._y = itemCardContainer._y + itemcardPosition.yOffset;
-		
-		MovieClip(exitMenuRect).Lock("TL");
-		exitMenuRect._x = exitMenuRect._x - Stage.safeRect.x;
-		exitMenuRect._y = exitMenuRect._y - Stage.safeRect.y;
-		
-		
-		var iconX = GlobalFunc.Lerp(0, 128, Stage.visibleRect.x, (Stage.visibleRect.x + Stage.visibleRect.width), (itemCardContainer._x + (itemCardContainer._width / 2)));
-		iconX = -(iconX - 64);
-		
-		skse.SetINISetting(_3DIconWideScaleSettingStr, (itemiconPosition.scale));
-		skse.SetINISetting(_3DIconWideXSettingStr, (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting(_3DIconWideZSettingStr, (12 + itemiconPosition.yOffset));
-		skse.SetINISetting(_3DIconScaleSettingStr, (itemiconPosition.scale));
-		skse.SetINISetting(_3DIconXSettingStr, (iconX + itemiconPosition.xOffset));
-		skse.SetINISetting(_3DIconZSettingStr, (16 + itemiconPosition.yOffset));
 
 		if (mouseRotationRect != undefined) {
 			MovieClip(mouseRotationRect).Lock("T");
 			mouseRotationRect._x = itemCard._parent._x;
-			mouseRotationRect._width = itemCard._parent._width;
+			mouseRotationRect._width = itemCardContainer._width;
 			mouseRotationRect._height = 0.55 * Stage.visibleRect.height;
 		}
+			
+		_bItemCardPositioned = true;
 		
-		if (skseWarning != undefined)
-			skseWarning.Lock("TR");
+		// Delayed fade in if positioned wasn't set
+		if (_bItemCardFadedIn) {
+			GameDelegate.call("UpdateItem3D",[true]);
+			itemCard.FadeInCard();
+		}
 	}
 	
 	private function shouldProcessItemsListInput(abCheckIfOverRect: Boolean): Boolean

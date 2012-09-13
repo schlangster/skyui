@@ -188,6 +188,24 @@ class InventoryLists extends MovieClip
 	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
 	
+	public function showPanel(a_bPlayBladeSound: Boolean): Void
+	{
+		_currentState = TRANSITIONING_TO_SHOW_PANEL;
+		gotoAndPlay("PanelShow");
+
+		dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
+
+		if (a_bPlayBladeSound != false)
+			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+	}
+
+	public function hidePanel(): Void
+	{
+		_currentState = TRANSITIONING_TO_HIDE_PANEL;
+		gotoAndPlay("PanelHide");
+		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
+	}
+	
 	public function onFilterChange(): Void
 	{
 		itemList.InvalidateData();
@@ -293,24 +311,6 @@ class InventoryLists extends MovieClip
 	public function restoreCategoryIndex(): Void
 	{
 		categoryList.selectedIndex = _currCategoryIndex;
-	}
-
-	public function showCategoriesList(a_bPlayBladeSound: Boolean): Void
-	{
-		_currentState = TRANSITIONING_TO_SHOW_PANEL;
-		gotoAndPlay("PanelShow");
-
-		dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
-
-		if (a_bPlayBladeSound != false)
-			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-	}
-
-	public function hideCategoriesList(): Void
-	{
-		_currentState = TRANSITIONING_TO_HIDE_PANEL;
-		gotoAndPlay("PanelHide");
-		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 	
 	public function showItemsList(): Void
@@ -470,8 +470,9 @@ class InventoryLists extends MovieClip
 		for (var i = 0; i < categoryList.entryList.length; i++)
 			categoryList.entryList[i].filterFlag = categoryList.entryList[i].bDontHide ? 1 : 0;
 
-		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
 		itemList.InvalidateData();
+
+		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
 		for (var i = 0; i < itemList.entryList.length; i++) {
 			for (var j = 0; j < categoryList.entryList.length; ++j) {
 				if (categoryList.entryList[j].filterFlag != 0)
