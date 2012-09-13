@@ -4,7 +4,9 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 
 ; Lists
 string[]	_alignments
-string[]	_iconSizes
+
+string[]	_effectSizes
+float[]		_AEEffectSizeValues
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu)
 int			_itemcardAlignOID_T
@@ -15,7 +17,7 @@ int			_3DItemXOffsetOID_S
 int			_3DItemYOffsetOID_S
 int			_3DItemScaleOID_S
 
-int			_AEIconSizeOID_T
+int			_AEEffectSizeOID_T
 
 ; State
 int			_itemcardAlignIdx	= 2
@@ -26,7 +28,7 @@ float		_3DItemXOffset		= 0.0
 float		_3DItemYOffset		= 0.0
 float		_3DItemScale		= 1.5
 
-int			_AEIconSizeIdx		= 1
+int			_AEEffectSizeIdx	= 1
 
 ; Internal
 float		_itemXBase
@@ -37,6 +39,8 @@ float		_itemXBase
 ; @autoFill
 SKI_SettingsManager property SKI_SettingsManagerInstance auto
 
+SKI_ActiveEffectsWidget property SKI_ActiveEffectsWidgetInstance auto
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -44,15 +48,20 @@ SKI_SettingsManager property SKI_SettingsManagerInstance auto
 event OnInit()
 	parent.OnInit()
 
-	_iconSizes = new string[3]
-	_iconSizes[0] = "Small"
-	_iconSizes[1] = "Medium"
-	_iconSizes[2] = "Large"
-
 	_alignments = new string[3]
 	_alignments[0] = "Left"
 	_alignments[1] = "Right"
 	_alignments[2] = "Center"
+
+	_effectSizes = new string[3]
+	_effectSizes[0] = "Small"
+	_effectSizes[1] = "Medium"
+	_effectSizes[2] = "Large"
+
+	_AEEffectSizeValues = new float[3]
+	_AEEffectSizeValues[0] = 32.0
+	_AEEffectSizeValues[1] = 48.0
+	_AEEffectSizeValues[2] = 64.0
 
 	ApplySettings()
 endEvent
@@ -97,7 +106,7 @@ event OnPageReset(string a_page)
 
 	; Load custom .swf for animated logo
 	if (a_page == "")
-		LoadCustomContent("skyui_splash.swf")
+		LoadCustomContent("skyui/skyui_splash.swf")
 		return
 	else
 		UnloadCustomContent()
@@ -119,6 +128,12 @@ event OnPageReset(string a_page)
 		_3DItemScaleOID_S		= AddSliderOption("Scale", _3DItemScale, "{1}")
 
 		SetCursorPosition(1)
+	elseIf (a_page == Pages[1])
+		SetCursorFillMode(TOP_TO_BOTTOM)
+
+		AddHeaderOption("Active Effects")
+
+		_AEEffectSizeOID_T = AddTextOption("Effect Size", _effectSizes[_AEEffectSizeIdx])
 	endIf
 endEvent
 
@@ -138,6 +153,18 @@ event OnOptionSelect(int a_option)
 			endif
 			SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
 			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
+		endIf
+
+	elseIf (page == Pages[1])
+		if (a_option == _AEEffectSizeOID_T)
+			if (_AEEffectSizeIdx < _effectSizes.length - 1)
+				_AEEffectSizeIdx += 1
+			else
+				_AEEffectSizeIdx = 0
+			endif
+			SetTextOptionValue(a_option, _effectSizes[_AEEffectSizeIdx])
+			;SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
+			SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
 		endIf
 	endIf
 endEvent
@@ -267,8 +294,9 @@ event OnOptionHighlight(int a_option)
 			SetInfoText("Default: 0")
 		elseIf (a_option == _3DItemScaleOID_S)
 			SetInfoText("Default: 1.5")
-
-		elseIf (a_option == _AEIconSizeOID_T)
+		endIf
+	elseIf (page == Pages[1])
+		If (a_option == _AEEffectSizeOID_T)
 			SetInfoText("Default: Medium")
 		endIf
 	endIf

@@ -31,7 +31,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	private var _maxEffectsColumnLength: Number;
 
-	private var _intervalId: Number
+	private var _intervalId: Number;
 
   /* PUBLIC VARIABLES */
 	// Passed from SKSE
@@ -42,18 +42,20 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	public function ActiveEffectsWidget()
 	{
+		super();
+
 		_effectsHash = new Object();
 		_effectsColumns = new Array();
 
 		effectDataArray = new Array();
 
-		_effectBaseSize = 32;
-		_columnSpacing = _effectSpacing = _effectBaseSize/10;
+		//_effectBaseSize = 32;
+		//_columnSpacing = _effectSpacing = _effectBaseSize/10;
 
 		// _yMin -> ["yMax"] because it wants the largest _y value of the object
-		_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
+		/*_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
 		var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
-		_maxEffectsColumnLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1;
+		_maxEffectsColumnLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1; */
 		
 		/* // TEST: Comment when testing
 		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
@@ -82,26 +84,29 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		//*/
 
 		///* // Test: Uncomment when testing
-		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
+		//_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 		//*/
 	}
 
   /* PUBLIC FUNCTIONS */
-
-	public function onColumnRemoved(a_column: MovieClip): Void
+	// Papyrus interface
+	public function initNumbers(a_effectSize: Number): Void
 	{
-		var removedColumn: MovieClip = a_column;
-		var columnIdx: Number = removedColumn.index;
-
-		_effectsColumns.splice(columnIdx, 1);
-		removedColumn.removeMovieClip();
-
-		var effectsColumn: MovieClip;
-		for (var i: Number = columnIdx; i < _effectsColumns.length; i++) {
-			effectsColumn = _effectsColumns[i];
-			effectsColumn.updatePosition(i);
-		}	
+		_effectBaseSize = a_effectSize;
 	}
+
+
+	public function initCommit(): Void
+	{
+		_columnSpacing = _effectSpacing = _effectBaseSize/10;
+
+		_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
+		var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
+		_maxEffectsColumnLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1;
+
+		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
+	}
+
 
 	public function setEffectSize(a_effectBaseSize: Number): Void
 	{
@@ -127,6 +132,23 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		onIntervalUpdate();
 		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
+
+	//
+	public function onColumnRemoved(a_column: MovieClip): Void
+	{
+		var removedColumn: MovieClip = a_column;
+		var columnIdx: Number = removedColumn.index;
+
+		_effectsColumns.splice(columnIdx, 1);
+		removedColumn.removeMovieClip();
+
+		var effectsColumn: MovieClip;
+		for (var i: Number = columnIdx; i < _effectsColumns.length; i++) {
+			effectsColumn = _effectsColumns[i];
+			effectsColumn.updatePosition(i);
+		}	
+	}
+
 
   /* PRIVATE FUNCTIONS */
 
