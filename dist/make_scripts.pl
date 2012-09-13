@@ -43,7 +43,7 @@ unlink($_) foreach (<Data/Scripts/*.pex>);
 	"-i=Data\\Scripts\\Source; $scriptPath",
 	"-o=Data\\Scripts",
 	"-f=$compilerFlagPath",
-	"-op",
+#	"-op",
 	"-all"
 );
 	
