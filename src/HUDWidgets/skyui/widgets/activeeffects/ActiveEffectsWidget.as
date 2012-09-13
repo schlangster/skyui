@@ -11,11 +11,11 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
   /* CONSTANTS */
 	// TODO: Make these config vars.
 	static private var COLUMN_MOVE_DURATION: Number = 1.00;
-	private var _columnSpacing: Number; // 1/10 of effectBaseSize
+	private var _columnSpacing: Number; // _effectBaseSize/10
 
 	static private var ICON_LOCATION: String = "./skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
-	private var _effectBaseSize: Number; // 32, 48, 64 = small, medium, large
-	private var _effectSpacing: Number; // 1/10 of effectBaseSize
+	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
+	private var _effectSpacing: Number; // _effectBaseSize/10
 	static private var EFFECT_FADE_IN_DURATION: Number = 0.25;
 	static private var EFFECT_FADE_OUT_DURATION: Number = 0.75;
 	static private var EFFECT_MOVE_DURATION: Number = 1.00;
@@ -49,16 +49,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		effectDataArray = new Array();
 
-		//_effectBaseSize = 32;
-		//_columnSpacing = _effectSpacing = _effectBaseSize/10;
-
-		// _yMin -> ["yMax"] because it wants the largest _y value of the object
-		/*_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
-		var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
-		_maxEffectsColumnLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1; */
-		
-		/* // TEST: Comment when testing
-		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
+		/* // TEST: init
+		effectDataArray = [
+							{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
@@ -76,16 +69,14 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 							{elapsed: 20, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
 							];
 
-		onIntervalUpdate();
-		/*
-		//_global.setTimeout(this,"timeout", 1000);
-		//_global.setTimeout(this,"timeout2",3000);
+		initNumbers(48.0);
+		initCommit();
+
 		setInterval(this, "testEffectSize", 3000);
+		_global.setTimeout(this,"timeout", 1000);
+		_global.setTimeout(this,"timeout2",3000);
 		//*/
 
-		///* // Test: Uncomment when testing
-		//_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
-		//*/
 	}
 
   /* PUBLIC FUNCTIONS */
@@ -133,7 +124,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
 
-	//
+	// Called from ActiveEffectsColumn
 	public function onColumnRemoved(a_column: MovieClip): Void
 	{
 		var removedColumn: MovieClip = a_column;
@@ -151,42 +142,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 
   /* PRIVATE FUNCTIONS */
-
-	/*
-	private function timeout()
-	{
-		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
-							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
-							];
-		onIntervalUpdate();
-	}
-
-	private function timeout2()
-	{
-		effectDataArray = [//{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
-							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
-							];
-
-		onIntervalUpdate();
-	}
-
-	private function testEffectSize()
-	{
-		setEffectSize((_effectBaseSize == 32) ? (48): (_effectBaseSize == 48) ? 64 : 32);
-	}
-	*/
-
-
 	private function onIntervalUpdate(): Void
 	{
 		
@@ -198,7 +153,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			// Make sure oldest effects are at the top
 			effectDataArray.sortOn("elapsed", Array.DESCENDING | Array.NUMERIC);
 			_sortFlag = false;
-		} //*/
+		}
+		//*/
 
 		var effectData: Object;
 		var effectClip: MovieClip;
@@ -272,4 +228,37 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		return freeEffectsColumn;
 	}
 
+	/*// TEST: functions
+	private function testEffectSize()
+	{
+		setEffectSize((_effectBaseSize == 32) ? (48): (_effectBaseSize == 48) ? 64 : 32);
+	}
+
+	private function timeout()
+	{
+		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
+							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
+							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
+							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
+							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
+							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
+							];
+		onIntervalUpdate();
+	}
+
+	private function timeout2()
+	{
+		effectDataArray = [//{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
+							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
+							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
+							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
+							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
+							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
+							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
+							];
+
+		onIntervalUpdate();
+	}
+	//*/
 }
