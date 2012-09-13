@@ -3,8 +3,8 @@
 class WidgetLoader
 {
   /* CONSTANTS */
-
-	private static var WIDGET_PATH = "./widgets/";
+	// NO './', bsa doesn't like it!
+	private static var WIDGET_PATH = "widgets/";
 	
 	
   /* PRIVATE VARIABLES */

@@ -4,7 +4,7 @@ Interface\inventorymenu.swf
 Interface\magicmenu.swf
 Interface\quest_journal.swf
 Interface\hudmenu.swf
-Interface\skyui_slpash.swf
+Interface\skyui_splash.swf
 Interface\skyui\config.txt
 Interface\skyui\inventorylists.swf
 Interface\skyui\configpanel.swf
@@ -12,6 +12,7 @@ Interface\skyui\skyui_icons_celtic.swf
 Interface\skyui\skyui_icons_curved.swf
 Interface\skyui\skyui_icons_psychosteve.swf
 Interface\skyui\skyui_icons_straight.swf
+Interface\widgets\activeeffects.swf
 Interface\widgets\status.swf
 Interface\translations\SkyUI_czech.txt
 Interface\translations\SkyUI_english.txt
