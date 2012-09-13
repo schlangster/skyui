@@ -3,21 +3,36 @@ import com.greensock.easing.Linear;
 
 class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 {
-	static private var ICON_LOCATION: String = "./skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
-
-	static private var EFFECT_FADE_IN_DURATION: Number = 0.25;
-	static private var EFFECT_FADE_OUT_DURATION: Number = 0.75;
-	static private var EFFECT_SPACING: Number = 10;
-
+  /* PRIVATE VARIABLES */
 	private var _effectsArray: Array
 
+  /* PUBLIC VARIABLES */
+  	// initObject
 	public var index: Number;
+	public var columnMoveDuration: Number;
+	public var columnSpacing: Number;
+	public var iconLocation: String;
+	public var effectBaseSize: Number;
+	public var effectSpacing: Number;
+	public var effectFadeInDuration: Number;
+	public var effectFadeOutDuration: Number;
+	public var effectMoveDuration: Number;
 
 	public function ActiveEffectsColumn()
 	{
 		super();
+		
 		_effectsArray = new Array();
+
+		_x = Stage.safeRect.width - effectBaseSize - (index * (effectBaseSize + columnSpacing));
+		// _y is set by initObject since it's constant
+		/*
+		_y = Stage.safeRect.width;
+		//*/
+
 	}
+
+  /* PUBLIC FUNCTIONS */
 
 	public function get length(): Number
 	{
@@ -36,27 +51,31 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 	{
 		var effectIdx: Number = _effectsArray.length;
 		var initObject: Object = {index: _effectsArray.length,
-									iconLocation: ICON_LOCATION,
 									effectData: a_effectData,
-									_y: effectIdx * (128 + EFFECT_SPACING)};
+									iconLocation: iconLocation,
+									effectBaseSize: effectBaseSize,
+									effectSpacing: effectSpacing,
+									effectFadeInDuration: effectFadeInDuration,
+									effectFadeOutDuration: effectFadeOutDuration,
+									effectMoveDuration: effectMoveDuration};
 		var effectClip: MovieClip = attachMovie("ActiveEffect", a_effectData.id, getNextHighestDepth(), initObject);
 		_effectsArray.push(effectClip);
-
-		TweenLite.from(effectClip, EFFECT_FADE_IN_DURATION, {_alpha: 0, overwrite: "AUTO", easing: Linear.easeNone})
 
 		return effectClip;
 	}
 
-	public function removeEffect(a_effectClip: MovieClip): Void
+	public function updatePosition(a_newIndex: Number): Void
 	{
-		var effectClip: MovieClip = a_effectClip;
-		TweenLite.to(effectClip, EFFECT_FADE_OUT_DURATION, {_alpha: 0, onCompleteScope: this, onComplete: onEffectRemoved, onCompleteParams: [effectClip], overwrite: "AUTO", easing: Linear.easeNone});
+		index = a_newIndex;
+		var x: Number = Stage.safeRect.width - effectBaseSize - (index * (effectBaseSize + columnSpacing));
+
+		TweenLite.to(this, 1, {_x: x, overwrite: "AUTO", easing: Linear.easeNone});
 	}
 
-	private function onEffectRemoved(a_effectClip: MovieClip): Void
+	public function onEffectRemoved(a_effectClip: MovieClip): Void
 	{
 		var removedEffectClip: MovieClip = a_effectClip;
-		var effectIdx: Number = a_effectClip.index;
+		var effectIdx: Number = removedEffectClip.index;
 
 		_effectsArray.splice(effectIdx, 1);
 		removedEffectClip.removeMovieClip();
@@ -66,12 +85,23 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 
 			for (var i: Number = effectIdx; i < _effectsArray.length; i++) {
 				effectClip = _effectsArray[i];
-				effectClip.index = i;
-
-				TweenLite.to(effectClip, 1, {_y:  i * (128 + EFFECT_SPACING), overwrite: "AUTO", easing: Linear.easeNone});
+				effectClip.updatePosition(i);
 			}
 		} else {
-			_parent.removeColumn(this);
+			// If the column had a background, for example, we'd call
+			// this.remove()
+			// which would fade out the column then, onComplete, call
+			// _parent.onColumnRemoved(this);
+			_parent.onColumnRemoved(this);
 		}
 	}
+
+  /* PRIVATE FUNCTIONS */
+  	// Not needed, see onEffectRemoved();
+  	/*
+  	private function remove(): Void
+  	{
+		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onColumnRemoved, onCompleteParams: [this], overwrite: "AUTO", easing: Linear.easeNone});
+  	}
+  	*/
 }
