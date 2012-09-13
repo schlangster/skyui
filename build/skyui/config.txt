@@ -19,10 +19,6 @@ itemcard.align = center
 itemcard.xOffset = 0
 itemcard.yOffset = 0
 
-itemicon.xOffset = 0
-itemicon.yOffset = 0
-itemicon.scale = 1.5
-
 
 ; =====================================================================================================================
 [Appearance] 
@@ -1228,6 +1224,3 @@ props.defaultEffectIcon.filter = <>
 props.defaultEffectIcon.defaultValues = <'iconLabel': 'default_effect'>
 
 magicIcons = <destructionSpellIcon, spellIcon, powerIcon, shoutIcon, activeEffectIcon, defaultEffectIcon>
-
-; Properties that should be translated -------------------------------------------------------
-translateProperties = <'subTypeDisplay', 'materialDisplay', 'weightClassDisplay'>

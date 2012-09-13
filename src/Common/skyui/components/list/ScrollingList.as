@@ -149,7 +149,7 @@ class skyui.components.list.ScrollingList extends BasicList
 	// @override BasicList
 	public function UpdateList(): Void
 	{
-		updateCount++;
+		skse.Log(this + " UPDATED");
 		
 		// Prepare clips
 		setClipCount(_maxListIndex);

@@ -5,7 +5,6 @@ import skyui.components.list.IListProcessor;
 import skyui.props.PropertyLookup;
 import skyui.props.CompoundProperty;
 import skyui.util.ConfigManager;
-import skyui.util.Translator;
 
 class skyui.props.PropertyDataExtender implements IListProcessor
 {
@@ -23,21 +22,18 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	public var propertiesVar: String;
 	public var iconsVar: String;
 	public var compoundPropVar: String;
-	public var translatePropVar: String;
 	
   /* CONSTRUCTORS */
 	
-	public function PropertyDataExtender(a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String, a_translatePropVar: String)
+	public function PropertyDataExtender(a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String)
 	{
 		propertiesVar = a_propertiesVar;
 		iconsVar = a_iconsVar;
 		compoundPropVar = a_compoundPropVar;
-		translatePropVar = a_translatePropVar;
 		
 		_propertyList = new Array();
 		_iconList = new Array();
 		_compoundPropertyList = new Array();
-		_translateProperties = new Array();
 		
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
@@ -88,10 +84,6 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 				}
 			}
 		}
-		
-		if (translatePropVar)
-			if (sectionData[translatePropVar] instanceof Array)
-				_translateProperties = sectionData[translatePropVar];
 	}
 	
   	// @override IListProcessor
@@ -123,13 +115,6 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		// Process compound properties 
 		// (concatenate several properties together, used for sorting)
 		for (var i=0; i<_compoundPropertyList.length; i++)
-			_compoundPropertyList[i].processCompoundProperty(a_entryObject);
-		
-		// Translate any properties that require it
-		for (var i=0; i<_translateProperties.length; i++) {
-			var prop = _translateProperties[i];
-			if (a_entryObject[prop] != undefined && a_entryObject[prop].constructor == String)
-				a_entryObject[prop] = Translator.translate(a_entryObject[prop]);
-		}		
+			_compoundPropertyList[i].processCompoundProperty(a_entryObject);		
 	}
 }

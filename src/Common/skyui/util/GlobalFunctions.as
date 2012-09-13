@@ -151,9 +151,14 @@
 				return a_str;
 				
 			buf += a_str.slice(pos, start);
-			var decimal = Math.pow(10, Number(a_str.slice(start+1, end)));
-			var val = Math.round(arguments[i] * decimal) / decimal;
-			buf += val;
+			var decimal = Number(a_str.slice(start+1, end));
+			var mult = Math.pow(10, decimal);
+			var valStr = (Math.round(arguments[i] * mult) / mult).toString();
+			var t = valStr.split(".");
+			var fractLen = t[1].length;
+			while (fractLen++ < decimal)
+				valStr += "0";
+			buf += valStr;
 			pos = end+1;
 		}
 		

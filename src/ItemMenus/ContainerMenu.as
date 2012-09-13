@@ -79,8 +79,9 @@ class ContainerMenu extends ItemMenu
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
 		itemList.addDataProcessor(new InventoryDataExtender());
-		itemList.addDataProcessor(new PropertyDataExtender('itemProperties', 'itemIcons', 'itemCompoundProperties', 'translateProperties'));
-		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
+		itemList.addDataProcessor(new PropertyDataExtender("itemProperties", "itemIcons", "itemCompoundProperties"));
+
+		ListLayoutManager.instance.bind(itemList, "ItemListLayout");
 
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
 		GameDelegate.addCallBack("XButtonPress", this, "onXButtonPress");

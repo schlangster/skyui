@@ -1,16 +1,18 @@
 ﻿import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import skyui.util.ConfigLoader;
 import skyui.util.GlobalFunctions;
 import skyui.components.list.ListLayout;
+import skyui.components.list.IListLayoutSubscriber;
 import skyui.components.list.SortedListHeader;
 import skyui.components.list.FilteredEnumeration;
 import skyui.components.list.ScrollingList;
 import skyui.filter.IFilter;
 
 
-class skyui.components.list.TabularList extends ScrollingList
+class skyui.components.list.TabularList extends ScrollingList implements IListLayoutSubscriber
 {
   /* STAGE ELEMENTS */
   
@@ -47,6 +49,12 @@ class skyui.components.list.TabularList extends ScrollingList
 
 
   /* PUBLIC FUNCTIONS */
+  
+  	// @implements IListLayoutSubscriber
+  	public function setLayout(a_layout: ListLayout):Void
+	{
+		layout = a_layout;
+	}
 	
 	public function onLayoutChange(event: Object): Void
 	{
@@ -57,29 +65,29 @@ class skyui.components.list.TabularList extends ScrollingList
 		if (_layout.sortAttributes && _layout.sortOptions)
 			dispatchEvent({type:"sortChange", attributes: _layout.sortAttributes, options:  _layout.sortOptions});
 		
-		UpdateList();
+		requestUpdate();
 	}
 	
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var processed = super.handleInput(details, pathToFocus);;
+		if (super.handleInput(details, pathToFocus))
+			return true;
 
-		if (!disableInput && !processed && _platform != 0) {
-
+		if (!disableInput && _platform != 0) {
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.navEquivalent == NavigationCode.GAMEPAD_L1) {
 					_layout.selectColumn(_layout.activeColumnIndex - 1);
-					processed = true;					
+					return true;
 				} else if (details.navEquivalent == NavigationCode.GAMEPAD_R1) {
 					_layout.selectColumn(_layout.activeColumnIndex + 1);
-					processed = true;
+					return true;
 				} else if (details.navEquivalent == NavigationCode.GAMEPAD_L3) {
 					_layout.selectColumn(_layout.activeColumnIndex);
-					processed = true;
+					return true;
 				}
 			}
 		}
-		return processed;
+		return false;
 	}
 }

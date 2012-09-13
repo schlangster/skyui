@@ -147,9 +147,10 @@ class skyui.components.list.BasicList extends BSList
 	// If timing is imporant (like for scrolling), use UpdateList() directly.
 	public function requestUpdate(): Void
 	{
-//		_bUpdateRequested = true;
-// TODO optimize this later, for now lets get everything working
-		UpdateList();
+		skse.Log("REQUEST UPDATE");
+		
+		if (!_updateRequestID)
+			_updateRequestID = setInterval(this, "commitUpdate", 1);
 	}
 	
 	public function addDataProcessor(a_dataProcessor: IListProcessor): Void
@@ -162,19 +163,15 @@ class skyui.components.list.BasicList extends BSList
 		_entryList.splice(0);
 	}
 	
-	var updateCount = 0;
+	var _updateRequestID = 0;
 	
 	// @override MovieClip
-	public function onEnterFrame(): Void
+	public function commitUpdate(): Void
 	{
-		if (updateCount > 0)
-			skse.Log("Update count was " + updateCount);
-		updateCount = 0;
+		clearInterval(_updateRequestID);
+		delete _updateRequestID;
 		
-		if (!_bUpdateRequested)
-			return;
-			
-		_bUpdateRequested = false;
+		skse.Log("COMMIT UPDATE");
 		UpdateList();
 	}
 	

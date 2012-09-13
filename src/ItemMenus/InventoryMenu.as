@@ -51,6 +51,8 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("DropItem", this, "DropItem");
 		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
+		
+		InitExtensions();
 	}
 	
 	// @override ItemMenu
@@ -72,8 +74,9 @@ class InventoryMenu extends ItemMenu
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
 		itemList.addDataProcessor(new InventoryDataExtender());
-		itemList.addDataProcessor(new PropertyDataExtender("itemProperties", "itemIcons", "itemCompoundProperties", "translateProperties"));
-		itemList.layout = ListLayoutManager.instance.getLayoutByName("ItemListLayout");
+		itemList.addDataProcessor(new PropertyDataExtender("itemProperties", "itemIcons", "itemCompoundProperties"));
+
+		ListLayoutManager.instance.bind(itemList, "ItemListLayout");
 
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");
 	}

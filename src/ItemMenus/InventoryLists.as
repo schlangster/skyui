@@ -63,7 +63,7 @@ class InventoryLists extends MovieClip
   /* PROPERTIES */
 
 	public var itemList: TabularList;
-	
+
 	public var categoryList: CategoryList;
 	
 	public var tabBar: TabBar;
@@ -208,6 +208,7 @@ class InventoryLists extends MovieClip
 	
 	public function onFilterChange(): Void
 	{
+		skse.Log("Invalidating");
 		itemList.InvalidateData();
 	}
 	
@@ -327,9 +328,9 @@ class InventoryLists extends MovieClip
 			// Set filter type
 			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
 			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
-		} else {
-			itemList.UpdateList();
 		}
+		
+		itemList.requestUpdate();
 		
 		dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 

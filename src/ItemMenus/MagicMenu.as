@@ -61,8 +61,9 @@ class MagicMenu extends ItemMenu
 		entryFormatter.maxTextLength = 80;
 		itemList.entryFormatter = entryFormatter;
 		itemList.addDataProcessor(new MagicDataExtender());
-		itemList.addDataProcessor(new PropertyDataExtender('magicProperties', 'magicIcons', 'magicCompoundProperties', 'translateProperties'));
-		itemList.layout = ListLayoutManager.instance.getLayoutByName("MagicListLayout");
+		itemList.addDataProcessor(new PropertyDataExtender('magicProperties', 'magicIcons', 'magicCompoundProperties'));
+		
+		ListLayoutManager.instance.bind(itemList, "MagicListLayout");
 	}
 	
   /* PUBLIC FUNCTIONS */
