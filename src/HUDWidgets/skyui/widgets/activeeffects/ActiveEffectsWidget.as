@@ -13,7 +13,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	static private var COLUMN_MOVE_DURATION: Number = 1.00;
 	private var _columnSpacing: Number; // _effectBaseSize/10
 
-	static private var ICON_LOCATION: String = "./skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
+	// NO './', bsa doesn't like it!
+	static private var ICON_LOCATION: String = "skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
 	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
 	private var _effectSpacing: Number; // _effectBaseSize/10
 	static private var EFFECT_FADE_IN_DURATION: Number = 0.25;
