@@ -2,6 +2,7 @@
 
 use File::Basename;
 use File::Copy;
+use File::Path;
 
 sub error
 {
@@ -13,6 +14,7 @@ sub error
 
 sub copyFile
 {
+	mkpath(dirname($_[1]));
 	if (copy($_[0], $_[1])) {
 		print "Copy $_[0] to $_[1]\n";
 	} else {
@@ -20,7 +22,7 @@ sub copyFile
 	}
 }
 
-$skyrimPath			= 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim'; #$ENV{'SkyrimPath'} or error("\$SkyrimPath env var not set.");
+$skyrimPath			= $ENV{'SkyrimPath'} or error("\$SkyrimPath env var not set.");
 $scriptPath			= $skyrimPath . "\\Data\\Scripts\\Source";
 $compilerPath		= $skyrimPath . "\\Papyrus Compiler\\PapyrusCompiler.exe";
 $compilerFlagPath	= $scriptPath . "\\TESV_Papyrus_Flags.flg";
