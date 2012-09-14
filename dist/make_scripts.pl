@@ -20,7 +20,7 @@ sub copyFile
 	}
 }
 
-$skyrimPath			= 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim'; #$ENV{'SkyrimPath'} or error("\$SkyrimPath env var not set.");
+$skyrimPath			= $ENV{'SkyrimPath'} or error("\$SkyrimPath env var not set.");
 $scriptPath			= $skyrimPath . "\\Data\\Scripts\\Source";
 $compilerPath		= $skyrimPath . "\\Papyrus Compiler\\PapyrusCompiler.exe";
 $compilerFlagPath	= $scriptPath . "\\TESV_Papyrus_Flags.flg";
