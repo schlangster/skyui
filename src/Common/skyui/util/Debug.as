@@ -1,39 +1,39 @@
-import skse;
+﻿import skse;
 import Date;
 
 class skyui.util.Debug
 {
-	static function trace(/* arguments */)
+  /* PRIVATE VARIABLES */
+  
+	private static var _buffer: Array = [];
+	
+	
+	public static function log(a_text: String)
 	{
-		
 		var date: Date = new Date;
-		
-		var MM: String = String(date.getMonth() + 1);
-		var DD: String = String(date.getDate());
-		var YYYY: String = String(date.getFullYear());
-		var hours: Number = date.getHours();
-		var hh: String;
+		var hh: String = String(date.getHours());
 		var mm: String = String(date.getMinutes());
 		var ss: String = String(date.getSeconds());
-		var ap: String;
 		
-		if (hours > 12) {
-			hh = String(hours - 12);
-			ap = "PM"
-		} else {
-			hh = String(hours);
-			ap = "AM"
-		}
-		
-		var dateTime: String = "[" + ((MM.length < 2) ? "0" + MM : MM);
-		dateTime += "/" + ((DD.length < 2) ? "0" + DD : DD);
-		dateTime += "/" + YYYY;
-		dateTime += " - " + ((hh.length < 2) ? "0" + hh : hh);
+		var dateTime: String = "[" + ((hh.length < 2) ? "0" + hh : hh);
 		dateTime += ":" + ((mm.length < 2) ? "0" + mm : mm);
 		dateTime += ":" + ((ss.length < 2) ? "0" + ss : ss);
-		dateTime += ap + "]";
-		
-		for(var i: Number = 0; i < arguments.length; i++)
-			skse.Log(dateTime + " " + String(arguments[i]));
+		dateTime += "]";
+
+		// Flush buffer
+		if (_global.skse && _buffer.length > 0) {
+			for(var i = 0; i < _buffer.length; i++)
+				skse.Log(_buffer[i]);			
+			_buffer.splice(0);
+		}
+
+		for(var i = 0; i < arguments.length; i++) {
+			var str = dateTime + " " + a_text;
+			
+			if (_global.skse)
+				skse.Log(str);
+			else
+				_buffer.push(str);
+		}
 	}
 }
