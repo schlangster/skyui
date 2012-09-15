@@ -53,27 +53,27 @@ class Shared.GlobalFunc
 
 	static function SetLockFunction(): Void
 	{
-		MovieClip.prototype.Lock = function (aPosition: String)
+		MovieClip.prototype.Lock = function (aPosition: String): Void
 		{
-			var maxXY: Object = {x: Stage.visibleRect.x + Stage.safeRect.x, y: Stage.visibleRect.y + Stage.safeRect.y};
-			var minXY: Object = {x: Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
-			this._parent.globalToLocal(maxXY);
+			var minXY: Object = {x: Stage.visibleRect.x + Stage.safeRect.x, y: Stage.visibleRect.y + Stage.safeRect.y};
+			var maxXY: Object = {x: Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
 			this._parent.globalToLocal(minXY);
-			
-			//  (maxXY.x, maxXY.y) _____________ (minXY.x, maxXY.y)
+			this._parent.globalToLocal(maxXY);
+
+			//  (minXY.x, minXY.y) _____________ (maxXY.x, minXY.y)
 			//                    |             |
 			//                    |     THE     |
 			//                    |    STAGE    |
-			//  (maxXY.x, minXY.y)|_____________|(minXY.x, minXY.y)
+			//  (minXY.x, maxXY.y)|_____________|(maxXY.x, maxXY.y)
 			
 			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR") 
-				this._y = maxXY.y;
-			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR") 
 				this._y = minXY.y;
+			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR") 
+				this._y = maxXY.y;
 			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL") 
-				this._x = maxXY.x;
-			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR") 
 				this._x = minXY.x;
+			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR") 
+				this._x = maxXY.x;
 		};
 	}
 
