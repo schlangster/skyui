@@ -17,7 +17,7 @@ class skyui.util.Debug
 		var dateTime: String = "[" + ((hh.length < 2) ? "0" + hh : hh);
 		dateTime += ":" + ((mm.length < 2) ? "0" + mm : mm);
 		dateTime += ":" + ((ss.length < 2) ? "0" + ss : ss);
-		dateTime += ":" + ((ff.length < 2) ? "00" + ff : (ff.length < 3) ? "0" + ff : ff);
+		dateTime += "." + ((ff.length < 2) ? "00" + ff : (ff.length < 3) ? "0" + ff : ff);
 		dateTime += "]";
 
 		// Flush buffer
@@ -66,25 +66,41 @@ class skyui.util.Debug
 				/*
 				_global.ASSetPropFlags (target: Object, propList, ft: Number, ff: Number): Void
 
-				PARAMETERS:
+					PARAMETERS:
+						target, the target object to be set prop flags.
+						propList, list of property names, Array of Strings or a comma delimited String, null for all properties.
+						ft, flag bits to be added to the target properties.
+						ff, flag bits to be removed from target properties.
 
-				target, the target object to be set prop flags. propList, list of property names, Array of Strings or a comma delimited String, null for all properties. ft, flag bits to be added to the target properties. ff, flag bits to be removed from target properties.
+					RETURN:
+						Nothing.
 
-				RETURN:
+					DESCRIPTION:
+						Flag is a 3-bits binary,
+							bit 0x01, enumeration-protected;
+							bit 0x02, deletion-protected;
+							bit 0x04, write-protected.
 
-				Nothing.
-
-				DESCRIPTION:
-
-				Flag is a 3-bits binary, bit 0x01, enumeration-protected; bit 0x02, deletion-protected; bit 0x04, write-protected.
-
-				ASSetPropFlags uses the following formula to calculate the new flag from the old one: fn=fo & (~ff) | ft, where fo is the original flag, ff and ft from the parameters.
+						ASSetPropFlags uses the following formula to calculate the new flag from the old one:
+							fn=fo & (~ff) | ft,
+							 where fo is the original flag, ff and ft from the parameters.
 				*/
+
+				// Save enumerable property names
+				var enumerable: Array = new Array();
+				for (var t: String in instance)
+					enumerable.push(t);
+
+				// Set all properties to enumerable
 				_global.ASSetPropFlags(instance, null, 0x00, 0x01);
 				for (var t: String in instance)
 					if(instance[t] == func)
 						return (s + "." + t);
+				// Set all properties to unenumerable
 				_global.ASSetPropFlags(instance, null, 0x01, 0x00);
+
+				// Reset all enumerable properties to enumerable
+				_global.ASSetPropFlags(instance, enumerable, 0x00, 0x01);
 			}
 		}
 
