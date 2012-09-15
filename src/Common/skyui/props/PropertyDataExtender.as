@@ -4,7 +4,6 @@ import skyui.components.list.BasicList;
 import skyui.components.list.IListProcessor;
 import skyui.props.PropertyLookup;
 import skyui.props.CompoundProperty;
-import skyui.util.ConfigManager;
 
 class skyui.props.PropertyDataExtender implements IListProcessor
 {
@@ -25,7 +24,7 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	
   /* CONSTRUCTORS */
 	
-	public function PropertyDataExtender(a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String)
+	public function PropertyDataExtender(a_dataSource: Object, a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String)
 	{
 		propertiesVar = a_propertiesVar;
 		iconsVar = a_iconsVar;
@@ -35,26 +34,16 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		_iconList = new Array();
 		_compoundPropertyList = new Array();
 		
-		ConfigManager.registerLoadCallback(this, "onConfigLoad");
-	}
-	
-	
-  /* PUBLIC FUNCTIONS */
-  
-	public function onConfigLoad(event)
-	{
-		var sectionData = event.config["Properties"];
 		var propertyLevel = "props";
 		var compoundLevel = "compoundProps";
-
-		// Set up our arrays with information from the config for use in ProcessConfigVars()
 		
+		// Set up our arrays with information from the config for use in ProcessConfigVars()
 		if (propertiesVar) {
-			var configProperties = sectionData[propertiesVar];
+			var configProperties = a_dataSource[propertiesVar];
 			if (configProperties instanceof Array) {
 				for (var i=0; i<configProperties.length; i++) {
 					var propName = configProperties[i];
-					var propertyData = sectionData[propertyLevel][propName];
+					var propertyData = a_dataSource[propertyLevel][propName];
 					var propLookup = new PropertyLookup(propertyData);
 					_propertyList.push(propLookup);
 				}
@@ -62,11 +51,11 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		}
 		
 		if (iconsVar) {
-			var configIcons = sectionData[iconsVar];
+			var configIcons = a_dataSource[iconsVar];
 			if (configIcons instanceof Array) {
 				for (var i=0; i<configIcons.length; i++) {
 					var propName = configIcons[i];
-					var propertyData = sectionData[propertyLevel][propName];
+					var propertyData = a_dataSource[propertyLevel][propName];
 					var propLookup = new PropertyLookup(propertyData);
 					_iconList.push(propLookup);
 				}
@@ -74,11 +63,11 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		}
 
 		if (compoundPropVar) {
-			var configCompoundList = sectionData[compoundPropVar];
+			var configCompoundList = a_dataSource[compoundPropVar];
 			if (configCompoundList instanceof Array) {
 				for (var i=0; i<configCompoundList.length; i++) {
 					var propName = configCompoundList[i];
-					var propertyData = sectionData[compoundLevel][propName];
+					var propertyData = a_dataSource[compoundLevel][propName];
 					var compoundProperty = new CompoundProperty(propertyData);
 					_compoundPropertyList.push(compoundProperty);
 				}
@@ -86,9 +75,15 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		}
 	}
 	
+	
+  /* PUBLIC FUNCTIONS */
+	
   	// @override IListProcessor
 	public function processList(a_list: BasicList): Void
 	{
+		skyui.util.Debug.log("processing list");
+		
+		
 		var entryList = a_list.entryList;
 		
 		for (var i=0; i<entryList.length; i++) {

@@ -71,6 +71,8 @@ class ItemMenu extends MovieClip
 		skse.ExtendData(true);
 		skse.ForceContainerCategorization(true);
 		
+		inventoryLists.InitExtensions();
+		
 		if (bEnableTabs)
 			inventoryLists.enableTabBar();
 		
@@ -91,7 +93,7 @@ class ItemMenu extends MovieClip
 		
 		positionFixedElements();
 		
-		inventoryLists.showPanel(a_bPlayBladeSound);
+//		inventoryLists.showPanel(a_bPlayBladeSound);
 		
 		itemCard._visible = false;
 		bottomBar.HideButtons();
@@ -136,8 +138,14 @@ class ItemMenu extends MovieClip
 	
 	public function onConfigLoad(event: Object): Void
 	{
-		_config = event.config;
-		_tabToggleKey = _config.Input.hotkey.tabToggle;
+		setConfig(event.config);
+		inventoryLists.showPanel(true);
+	}
+	
+	public function setConfig(a_config: Object): Void
+	{
+		_config = a_config;
+		_tabToggleKey = a_config.Input.hotkey.tabToggle;
 		
 		positionFloatingElements();
 	}

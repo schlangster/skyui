@@ -22,6 +22,9 @@ class skyui.util.ConfigManager
 		NUMERIC: Array.NUMERIC
 	};
 	
+	// Contains names of classes
+	private static var _extConstantTableNames = [];
+	// Contains the actual classes.
 	private static var _extConstantTables = [];
 	
 	private static var _eventDummy: Object;
@@ -40,9 +43,6 @@ class skyui.util.ConfigManager
   
 	private static function initialize(): Boolean
 	{
-		if (_initialized)
-			return;
-			
 		GlobalFunctions.addArrayFunctions();
 		
 		_eventDummy = {};
@@ -89,9 +89,11 @@ class skyui.util.ConfigManager
 			delete _timeoutID;
 			
 			_loadPhase = 2;
-			_eventDummy.dispatchEvent({type: "configLoad", config: _config});
+			skyui.util.Debug.log("Dispatching configLoad");
+			_eventDummy.dispatchEvent({type: "configLoad", config: _config});			
 		} else {
 			// Timeout
+			skyui.util.Debug.log("Dispatching configUpdate");
 			_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 		}
 	}
@@ -118,6 +120,8 @@ class skyui.util.ConfigManager
 	
 	public static function setConstant(a_name: String, a_value): Void
 	{
+		skyui.util.Debug.log("setConstant setConstant setConstant: " + a_name + " " + a_value);
+		
 		var type = typeof(a_value);
 		if (type != "number" && type != "boolean" && type != "string")
 			return;
@@ -126,13 +130,14 @@ class skyui.util.ConfigManager
 	}
 	
 	
-	public static function addConstantTable(a_tbl: Object): Void
+	public static function addConstantTable(a_name: String): Void
 	{
-		_extConstantTables.push(a_tbl);
+		_extConstantTableNames.push(a_name);
 	}
 	
 	public static function getConstant(a_name: String)
 	{
+		
 		if (_constantTable[a_name] != undefined)
 			return _constantTable[a_name];
 			
@@ -244,6 +249,15 @@ class skyui.util.ConfigManager
 	{
 		_config = {};
 		
+		// Resolve constant tables
+		for (var i=0; i<_extConstantTableNames.length; i++) {
+			var a = _extConstantTableNames[i].split(".");
+			var tbl = _global[a[0]];
+			for (var j=1; j<a.length; j++)
+				tbl = tbl[a[j]];
+			_extConstantTables.push(tbl);
+		}
+		
 		var lines = a_data.split("\r\n");
 		if (lines.length == 1)
 			lines = a_data.split("\n");
@@ -306,6 +320,7 @@ class skyui.util.ConfigManager
 
 		if (_loadPhase < 2) {
 			_loadPhase = 2;
+			skyui.util.Debug.log("Dispatching configLoad (delayed)");
 			_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 		}
 	}

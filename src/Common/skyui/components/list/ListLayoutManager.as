@@ -1,7 +1,6 @@
 ﻿import skyui.util.ConfigManager;
 import skyui.components.list.ListLayout;
 import skyui.components.list.IListLayoutSubscriber;
-import skyui.util.Defines;
 
 /*
  * Connect layout data provided by ConfigManager and clients that need to access it.
@@ -20,9 +19,11 @@ class skyui.components.list.ListLayoutManager
 		ConfigManager.setConstant("EQUIP_ICON", ListLayout.COL_TYPE_EQUIP_ICON);
 		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
 		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
+
+//		trace("ListLayoutManager: " + skyui.util.Defines);
 		
-		ConfigManager.addConstantTable(Defines);
-		ConfigManager.addConstantTable(InventoryDefines);
+		ConfigManager.addConstantTable("skyui.util.Defines");
+		ConfigManager.addConstantTable("InventoryDefines");
 		
 		_instance = new ListLayoutManager();
 		return true;
@@ -118,6 +119,7 @@ class skyui.components.list.ListLayoutManager
 		for (var t in _sectionData.layouts) {
 			var layoutData = _sectionData.layouts[t];
 			if (layoutData.name == a_name) {
+				skyui.util.Debug.log("Creating layout: " + layoutData + " " + _viewData);
 				_layouts[a_name] = new ListLayout(layoutData, _viewData, _columnData, _defaultsData);
 				return _layouts[a_name];
 			}

@@ -133,7 +133,6 @@ class InventoryEntryFormatter extends TabularEntryFormatter
 		
 		if (a_entryObject["iconColor"] != undefined) {
 			var iconColor: Number = Number(a_entryObject["iconColor"]);
-			skse.Log("Setting icon color of " + a_entryObject.text + " to " + iconColor);
 			changeIconColor(MovieClip(a_entryField), iconColor);
 			a_entryClip.iconColor = iconColor;
 			

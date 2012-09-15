@@ -146,10 +146,35 @@ class skyui.components.list.ScrollingList extends BasicList
 		isMouseDrivenNav = true;
 	}
 
+
+	var updateCount = 0;
+	var invalidateCount = 0;
+
+	public function onEnterFrame()
+	{
+		if (updateCount > 0) {
+			skyui.util.Debug.log("Update count was " + updateCount);
+			updateCount = 0;
+		}
+		
+		if (invalidateCount > 0) {
+			skyui.util.Debug.log("Invalidate count was " + invalidateCount);
+			invalidateCount = 0;
+		}
+	}
+
 	// @override BasicList
 	public function UpdateList(): Void
 	{
-		skse.Log(this + " UPDATED");
+		if (_bSuspended) {
+			skyui.util.Debug.log("Ignored update while suspended");
+			_bRequestUpdate = true;
+			return;
+		}
+		
+		updateCount++;
+		
+		skyui.util.Debug.log("EXECUTING UPDATE, caller: " + skyui.util.Debug.getFunctionName(arguments.caller));
 		
 		// Prepare clips
 		setClipCount(_maxListIndex);
@@ -202,6 +227,16 @@ class skyui.components.list.ScrollingList extends BasicList
 	// @override BasicList
 	public function InvalidateData(): Void
 	{
+		if (_bSuspended) {
+			skyui.util.Debug.log("Delay invalidate while suspended");
+			_bRequestInvalidate = true;
+			return;
+		}
+		
+		invalidateCount++;
+
+		skyui.util.Debug.log("EXECUTING INVALIDATE, caller: " + skyui.util.Debug.getFunctionName(arguments.caller));
+		
 		for (var i = 0; i < _entryList.length; i++) {
 			_entryList[i].itemIndex = i;
 			_entryList[i].clipIndex = undefined;
@@ -219,7 +254,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		listEnumeration.invalidate();
 		
 		calculateMaxScrollPosition();		
-		requestUpdate();
+		UpdateList();
 		
 		// TODO: This might be a problem when doing delayed updating.
 		

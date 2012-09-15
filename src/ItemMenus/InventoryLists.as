@@ -19,6 +19,7 @@ import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 import skyui.util.DialogManager;
+import skyui.util.Debug;
 
 
 class InventoryLists extends MovieClip
@@ -173,6 +174,12 @@ class InventoryLists extends MovieClip
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 	}
 	
+	public function InitExtensions(): Void
+	{
+		// Delay updates until config is ready
+		itemList.suspended = true;
+	}
+	
 	
   /* PUBLIC FUNCTIONS */
 
@@ -190,6 +197,9 @@ class InventoryLists extends MovieClip
 	
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
+		// Release itemlist for updating
+		itemList.suspended = false;
+		
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
@@ -208,8 +218,7 @@ class InventoryLists extends MovieClip
 	
 	public function onFilterChange(): Void
 	{
-		skse.Log("Invalidating");
-		itemList.InvalidateData();
+		itemList.requestInvalidate();
 	}
 	
 	public function enableTabBar(): Void
@@ -327,7 +336,7 @@ class InventoryLists extends MovieClip
 		if (categoryList.selectedEntry != undefined) {
 			// Set filter type
 			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
-			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
+			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);			
 		}
 		
 		itemList.requestUpdate();

@@ -105,14 +105,14 @@ class CategoryList extends BasicList
   
   	// Clears the list. For the category list, that's ok since the entryList isn't manipulated directly.
 	// @override BasicList
-	function clearList()
+	function clearList(): Void
 	{
 		dividerIndex = -1;
 		_entryList.splice(0);
 	}
 	
 	// Switch to given category index to restore the last selection.
-	public function restoreCategory(a_newIndex: Number)
+	public function restoreCategory(a_newIndex: Number): Void
 	{
 		onItemPress(a_newIndex, SELECT_KEYBOARD);
 	}
