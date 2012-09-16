@@ -68,7 +68,7 @@ class skyui.components.list.EntryClipManager
 		
 		for (var i=0; i<a_size; i++) {
 			var entryClip = _list.attachMovie(entryRenderer, entryRenderer + _nextIndex, _list.getNextHighestDepth());
-			entryClip.initialize(_nextIndex, _list);
+			entryClip.initialize(_nextIndex, _list.listState);
 
 			_clipPool[_nextIndex] = entryClip;
 			_nextIndex++;

@@ -146,10 +146,35 @@ class skyui.components.list.ScrollingList extends BasicList
 		isMouseDrivenNav = true;
 	}
 
+
+	var updateCount = 0;
+	var invalidateCount = 0;
+
+	public function onEnterFrame()
+	{
+		if (updateCount > 0) {
+			skyui.util.Debug.log("Update count was " + updateCount);
+			updateCount = 0;
+		}
+		
+		if (invalidateCount > 0) {
+			skyui.util.Debug.log("Invalidate count was " + invalidateCount);
+			invalidateCount = 0;
+		}
+	}
+
 	// @override BasicList
 	public function UpdateList(): Void
 	{
+		if (_bSuspended) {
+			skyui.util.Debug.log("Ignored update while suspended");
+			_bRequestUpdate = true;
+			return;
+		}
+		
 		updateCount++;
+		
+		skyui.util.Debug.log("EXECUTING UPDATE, caller: " + skyui.util.Debug.getFunctionName(arguments.caller));
 		
 		// Prepare clips
 		setClipCount(_maxListIndex);
@@ -172,7 +197,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			entryClip.itemIndex = entryItem.itemIndex;
 			entryItem.clipIndex = _listIndex;
 			
-			setEntry(entryClip, entryItem);
+			entryClip.setEntry(entryItem, listState);
 
 			entryClip._x = xStart;
 			entryClip._y = yStart + h;
@@ -202,6 +227,16 @@ class skyui.components.list.ScrollingList extends BasicList
 	// @override BasicList
 	public function InvalidateData(): Void
 	{
+		if (_bSuspended) {
+			skyui.util.Debug.log("Delay invalidate while suspended");
+			_bRequestInvalidate = true;
+			return;
+		}
+		
+		invalidateCount++;
+
+		skyui.util.Debug.log("EXECUTING INVALIDATE, caller: " + skyui.util.Debug.getFunctionName(arguments.caller));
+		
 		for (var i = 0; i < _entryList.length; i++) {
 			_entryList[i].itemIndex = i;
 			_entryList[i].clipIndex = undefined;
@@ -219,7 +254,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		listEnumeration.invalidate();
 		
 		calculateMaxScrollPosition();		
-		requestUpdate();
+		UpdateList();
 		
 		// TODO: This might be a problem when doing delayed updating.
 		
@@ -311,8 +346,10 @@ class skyui.components.list.ScrollingList extends BasicList
 		_selectedIndex = a_newIndex;
 
 		// Old entry was mapped to a clip? Then clear with setEntry now that selectedIndex has been updated
-		if (oldEntry.clipIndex != undefined)
-			setEntry(getClipByIndex(oldEntry.clipIndex), oldEntry);
+		if (oldEntry.clipIndex != undefined) {
+			var clip = getClipByIndex(oldEntry.clipIndex);
+			clip.setEntry(oldEntry, listState);
+		}
 			
 			
 		// Select valid entry
@@ -321,16 +358,18 @@ class skyui.components.list.ScrollingList extends BasicList
 			var enumIndex = getSelectedListEnumIndex();
 			
 			// New entry before visible portion, move scroll window up
-			if (enumIndex < _scrollPosition)
+			if (enumIndex < _scrollPosition) {
 				scrollPosition = enumIndex;
 				
 			// New entry below visible portion, move scroll window down
-			else if (enumIndex >= _scrollPosition + _listIndex)
+			} else if (enumIndex >= _scrollPosition + _listIndex) {
 				scrollPosition = Math.min(enumIndex - _listIndex + 1, _maxScrollPosition);
 				
 			// No need to change the scroll window, just select new entry
-			else
-				setEntry(getClipByIndex(selectedEntry.clipIndex), selectedEntry);
+			} else {
+				var clip = getClipByIndex(selectedEntry.clipIndex);
+				clip.setEntry(selectedEntry, listState);
+			}
 				
 			_curClipIndex = selectedEntry.clipIndex;
 			

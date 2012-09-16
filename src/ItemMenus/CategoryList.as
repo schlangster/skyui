@@ -105,14 +105,14 @@ class CategoryList extends BasicList
   
   	// Clears the list. For the category list, that's ok since the entryList isn't manipulated directly.
 	// @override BasicList
-	function clearList()
+	function clearList(): Void
 	{
 		dividerIndex = -1;
 		_entryList.splice(0);
 	}
 	
 	// Switch to given category index to restore the last selection.
-	public function restoreCategory(a_newIndex: Number)
+	public function restoreCategory(a_newIndex: Number): Void
 	{
 		onItemPress(a_newIndex, SELECT_KEYBOARD);
 	}
@@ -120,6 +120,11 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function InvalidateData(): Void
 	{
+		if (_bSuspended) {
+			_bRequestInvalidate = true;
+			return;
+		}
+		
 		listEnumeration.invalidate();
 		calculateSegmentParams();
 		
@@ -132,6 +137,11 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function UpdateList(): Void
 	{
+		if (_bSuspended) {
+			_bRequestUpdate = true;
+			return;
+		}
+		
 		setClipCount(_segmentLength);
 
 		var cw = 0;
@@ -139,7 +149,7 @@ class CategoryList extends BasicList
 		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);
 
-			setEntry(entryClip, listEnumeration.at(i + _segmentOffset));
+			entryClip.setEntry(listEnumeration.at(i + _segmentOffset), listState);
 
 			listEnumeration.at(i + _segmentOffset).clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;

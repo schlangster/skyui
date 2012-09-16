@@ -4,7 +4,6 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 
-
 sub error
 {
 	print	"\n=========================\n\n"
@@ -16,7 +15,6 @@ sub error
 sub copyFile
 {
 	mkpath(dirname($_[1]));
-
 	if (copy($_[0], $_[1])) {
 		print "Copy $_[0] to $_[1]\n";
 	} else {

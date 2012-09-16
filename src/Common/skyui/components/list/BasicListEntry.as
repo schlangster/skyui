@@ -1,5 +1,5 @@
 ﻿import skyui.components.list.BasicList;
-import skyui.components.list.IEntryClipBuilder;
+import skyui.components.list.ListState;
 
 
 class skyui.components.list.BasicListEntry extends MovieClip
@@ -57,4 +57,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 	{
 		// Do nothing.
 	}
+	
+	// @abstract
+	public function setEntry(a_entryObject: Object, a_state: ListState): Void {}
 }

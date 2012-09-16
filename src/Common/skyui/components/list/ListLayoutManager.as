@@ -1,11 +1,15 @@
 ﻿import skyui.util.ConfigManager;
 import skyui.components.list.ListLayout;
-import skyui.util.Defines;
+import skyui.components.list.IListLayoutSubscriber;
 
-
+/*
+ * Connect layout data provided by ConfigManager and clients that need to access it.
+ * Allows objects to subscribe for layout events while ignoring any timing details
+ * associated with delayed config loading.
+ */
 class skyui.components.list.ListLayoutManager
 {
-  /* SINGLETON */
+  /* INITIALIZATION */
   
   	static private var _initialized = initialize();
 	
@@ -16,75 +20,27 @@ class skyui.components.list.ListLayoutManager
 		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
 		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
 		
-		ConfigManager.addConstantTable(Defines);
-		ConfigManager.addConstantTable(InventoryDefines);
+		ConfigManager.addConstantTable("skyui.util.Defines");
+		ConfigManager.addConstantTable("InventoryDefines");
 		
-		_instance = new ListLayoutManager();
 		return true;
-	}
-	
-	static private var _instance: ListLayoutManager;
-	
-	static public function get instance()
-	{
-		return _instance;
-	}
-	
-	
-  /* PRIVATE VARIABLES */
-	
-	private var _sectionData: Object;
-	private var _viewData: Object;
-	private var _columnData: Object;
-	private var _defaultsData: Object;
-	
-	// Store created layouts
-	private var _layouts: Object;
-	
-	
-  /* CONSTRUCTORS */
-	
-	public function ListLayoutManager()
-	{
-		_layouts = {};
-		
-		ConfigManager.registerLoadCallback(this, "onConfigLoad");
-		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
   
-	public function onConfigLoad(event: Object): Void
+	public static function createLayout(a_sectionData: Object, a_name: String): ListLayout
 	{
-		if (event.config == undefined)
-			return;
-			
-		_sectionData = event.config["ListLayout"];
-		_viewData = _sectionData.views;
-		_columnData = _sectionData.columns;
-		_defaultsData = _sectionData.defaults;
-	}
-	
-	public function onConfigUpdate(event: Object): Void
-	{
-		for (var k in _layouts)
-			_layouts[k].refresh();
-	}
-	
-	// Create on-demand and cache
-	public function getLayoutByName(a_name: String)
-	{
-		// Exists?
-		if (_layouts[a_name] != undefined)
-			return _layouts[a_name];
+		var viewData = a_sectionData.views;
+		var columnData = a_sectionData.columns;
+		var defaultsData = a_sectionData.defaults;
 		
 		// Otherwise create
-		for (var t in _sectionData.layouts) {
-			var layoutData = _sectionData.layouts[t];
+		for (var t in a_sectionData.layouts) {
+			var layoutData = a_sectionData.layouts[t];
 			if (layoutData.name == a_name) {
-				_layouts[a_name] = new ListLayout(layoutData, _viewData, _columnData, _defaultsData);
-				return _layouts[a_name];
+				skyui.util.Debug.log("Creating layout: " + layoutData + " " + viewData);
+				return new ListLayout(layoutData, viewData, columnData, defaultsData);
 			}
 		}
 				

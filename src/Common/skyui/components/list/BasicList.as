@@ -8,9 +8,9 @@ import skyui.components.list.IEntryClipBuilder;
 import skyui.components.list.BasicEntryFactory;
 import skyui.components.list.IEntryEnumeration;
 import skyui.components.list.BasicEnumeration;
-import skyui.components.list.IEntryFormatter;
 import skyui.components.list.IListProcessor;
 import skyui.components.list.BSList;
+import skyui.components.list.ListState
 
 
 // @abstract
@@ -30,8 +30,11 @@ class skyui.components.list.BasicList extends BSList
 	
 	
   /* PRIVATE VARIABLES */
-  
-  	private var _bUpdateRequested: Boolean = false;
+
+  	private var _bRequestInvalidate: Boolean = false;
+  	private var _bRequestUpdate: Boolean = false;
+	private var _invalidateRequestID: Number;
+	private var _updateRequestID: Number;
 	
 	private var _entryClipManager: EntryClipManager;
 	
@@ -104,7 +107,7 @@ class skyui.components.list.BasicList extends BSList
 	
 	public var listEnumeration: IEntryEnumeration;
 	
-	public var entryFormatter: IEntryFormatter;
+	public var listState: ListState;
 	
 	public function get itemCount(): Number
 	{
@@ -118,6 +121,40 @@ class skyui.components.list.BasicList extends BSList
 	}
 	
 	
+	private var _bSuspended: Boolean = false;
+	
+	public function get suspended(): Boolean
+	{
+		return _bSuspended;
+	}
+	
+	public function set suspended(a_flag: Boolean)
+	{
+		if (_bSuspended == a_flag)
+			return;
+		
+		// Lock
+		if (a_flag) {
+			skyui.util.Debug.log("Suspended list");
+			_bSuspended = true;
+		} else {
+			skyui.util.Debug.log("Released list");
+			_bSuspended = false;
+			
+			if (_bRequestInvalidate) {
+				skyui.util.Debug.log("Exec delayed request");
+				InvalidateData();
+			} else if(_bRequestUpdate) {
+				skyui.util.Debug.log("Exec delayed update");
+				UpdateList();
+			}
+			_bRequestInvalidate = false;
+			_bRequestUpdate = false;
+		}
+	}
+	
+	
+	
   /* CONSTRUCTORS */
   
 	public function BasicList()
@@ -126,6 +163,7 @@ class skyui.components.list.BasicList extends BSList
 		
 		_entryClipManager = new EntryClipManager(this);
 		_dataProcessors = [];
+		listState = new ListState(this);
 
 		EventDispatcher.initialize(this);
 		Mouse.addListener(this);
@@ -143,15 +181,6 @@ class skyui.components.list.BasicList extends BSList
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	// Queue an update for the next frame to avoid multiple updates in this one.
-	// If timing is imporant (like for scrolling), use UpdateList() directly.
-	public function requestUpdate(): Void
-	{
-//		_bUpdateRequested = true;
-// TODO optimize this later, for now lets get everything working
-		UpdateList();
-	}
-	
 	public function addDataProcessor(a_dataProcessor: IListProcessor): Void
 	{
 		_dataProcessors.push(a_dataProcessor);
@@ -162,25 +191,78 @@ class skyui.components.list.BasicList extends BSList
 		_entryList.splice(0);
 	}
 	
-	var updateCount = 0;
-	
-	// @override MovieClip
-	public function onEnterFrame(): Void
+	public function requestInvalidate(): Void
 	{
-		if (updateCount > 0)
-			skse.Log("Update count was " + updateCount);
-		updateCount = 0;
+		skyui.util.Debug.log("Requsted invalidate: " + skyui.util.Debug.getFunctionName(arguments.caller));
+		_bRequestInvalidate = true;
 		
-		if (!_bUpdateRequested)
+		// Invalidate request replaces update request
+		if (_updateRequestID) {
+			_bRequestUpdate = false;
+			clearInterval(_updateRequestID);
+			delete _updateRequestID;
+		}
+		
+		// If suspsend, the unsuspend will trigger the requested invaliate.
+		if (!_bSuspended && !_invalidateRequestID)
+			_invalidateRequestID = setInterval(this, "commitInvalidate", 1);
+	}
+	
+	public function requestUpdate(): Void
+	{
+		skyui.util.Debug.log("Requested update: " + skyui.util.Debug.getFunctionName(arguments.caller));
+		_bRequestUpdate = true;
+		
+		// Invalidate already requested? Includes update
+		if (_invalidateRequestID)
 			return;
 			
-		_bUpdateRequested = false;
+		// If suspsend, the unsuspend will trigger the requested invaliate.
+		if (!_bSuspended && !_invalidateRequestID)
+			_updateRequestID = setInterval(this, "commitUpdate", 1);
+	}
+	
+	public function commitInvalidate(): Void
+	{
+		clearInterval(_invalidateRequestID);
+		delete _invalidateRequestID;
+		
+		// Invalidate request replaces update request
+		if (_updateRequestID) {
+			_bRequestUpdate = false;
+			clearInterval(_updateRequestID);
+			delete _updateRequestID;
+		}
+		
+		_bRequestInvalidate = false;
+
+		
+		skyui.util.Debug.log("COMMIT INVALIDATE");
+		InvalidateData();
+	}
+	
+	public function commitUpdate(): Void
+	{
+		clearInterval(_invalidateRequestID);
+		delete _invalidateRequestID;
+		
+		_bRequestUpdate = false;
+		
+		skyui.util.Debug.log("COMMIT UPDATE");
 		UpdateList();
 	}
 	
 	// @override BSList
 	public function InvalidateData(): Void
 	{
+		if (_bSuspended) {
+			skyui.util.Debug.log("Ignored invalidate while suspended");
+			_bRequestInvalidate = true;
+			return;
+		}
+		
+		skyui.util.Debug.log("EXECUTING INVALIDATE");		
+		
 		for (var i = 0; i < _entryList.length; i++) {
 			_entryList[i].itemIndex = i;
 			_entryList[i].clipIndex = undefined;
@@ -194,7 +276,7 @@ class skyui.components.list.BasicList extends BSList
 		if (_selectedIndex >= listEnumeration.size())
 			_selectedIndex = listEnumeration.size() - 1;
 
-		requestUpdate();
+		UpdateList();
 	}
 
 	// @override BSList
@@ -253,11 +335,15 @@ class skyui.components.list.BasicList extends BSList
 		var oldIndex = _selectedIndex;
 		_selectedIndex = a_newIndex;
 
-		if (oldIndex != -1)
-			setEntry(_entryClipManager.getClip(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+		if (oldIndex != -1) {
+			var clip = _entryClipManager.getClip(_entryList[oldIndex].clipIndex);
+			clip.setEntry(_entryList[oldIndex], listState);
+		}
 
-		if (_selectedIndex != -1)
-			setEntry(_entryClipManager.getClip(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+		if (_selectedIndex != -1) {
+			var clip = _entryClipManager.getClip(_entryList[_selectedIndex].clipIndex);
+			clip.setEntry(_entryList[_selectedIndex], listState);
+		}
 
 		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
 	}
@@ -270,11 +356,6 @@ class skyui.components.list.BasicList extends BSList
 	private function setClipCount(a_count: Number)
 	{
 		_entryClipManager.clipCount = a_count;
-	}
-	
-	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		entryFormatter.setEntry(a_entryClip, a_entryObject);
 	}
 	
 	private function getSelectedListEnumIndex(): Number

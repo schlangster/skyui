@@ -4,8 +4,6 @@ import skyui.components.list.BasicList;
 import skyui.components.list.IListProcessor;
 import skyui.props.PropertyLookup;
 import skyui.props.CompoundProperty;
-import skyui.util.ConfigManager;
-import skyui.util.Translator;
 
 class skyui.props.PropertyDataExtender implements IListProcessor
 {
@@ -23,42 +21,29 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	public var propertiesVar: String;
 	public var iconsVar: String;
 	public var compoundPropVar: String;
-	public var translatePropVar: String;
 	
   /* CONSTRUCTORS */
 	
-	public function PropertyDataExtender(a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String, a_translatePropVar: String)
+	public function PropertyDataExtender(a_dataSource: Object, a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String)
 	{
 		propertiesVar = a_propertiesVar;
 		iconsVar = a_iconsVar;
 		compoundPropVar = a_compoundPropVar;
-		translatePropVar = a_translatePropVar;
 		
 		_propertyList = new Array();
 		_iconList = new Array();
 		_compoundPropertyList = new Array();
-		_translateProperties = new Array();
 		
-		ConfigManager.registerLoadCallback(this, "onConfigLoad");
-	}
-	
-	
-  /* PUBLIC FUNCTIONS */
-  
-	public function onConfigLoad(event)
-	{
-		var sectionData = event.config["Properties"];
 		var propertyLevel = "props";
 		var compoundLevel = "compoundProps";
-
-		// Set up our arrays with information from the config for use in ProcessConfigVars()
 		
+		// Set up our arrays with information from the config for use in ProcessConfigVars()
 		if (propertiesVar) {
-			var configProperties = sectionData[propertiesVar];
+			var configProperties = a_dataSource[propertiesVar];
 			if (configProperties instanceof Array) {
 				for (var i=0; i<configProperties.length; i++) {
 					var propName = configProperties[i];
-					var propertyData = sectionData[propertyLevel][propName];
+					var propertyData = a_dataSource[propertyLevel][propName];
 					var propLookup = new PropertyLookup(propertyData);
 					_propertyList.push(propLookup);
 				}
@@ -66,11 +51,11 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		}
 		
 		if (iconsVar) {
-			var configIcons = sectionData[iconsVar];
+			var configIcons = a_dataSource[iconsVar];
 			if (configIcons instanceof Array) {
 				for (var i=0; i<configIcons.length; i++) {
 					var propName = configIcons[i];
-					var propertyData = sectionData[propertyLevel][propName];
+					var propertyData = a_dataSource[propertyLevel][propName];
 					var propLookup = new PropertyLookup(propertyData);
 					_iconList.push(propLookup);
 				}
@@ -78,25 +63,27 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		}
 
 		if (compoundPropVar) {
-			var configCompoundList = sectionData[compoundPropVar];
+			var configCompoundList = a_dataSource[compoundPropVar];
 			if (configCompoundList instanceof Array) {
 				for (var i=0; i<configCompoundList.length; i++) {
 					var propName = configCompoundList[i];
-					var propertyData = sectionData[compoundLevel][propName];
+					var propertyData = a_dataSource[compoundLevel][propName];
 					var compoundProperty = new CompoundProperty(propertyData);
 					_compoundPropertyList.push(compoundProperty);
 				}
 			}
 		}
-		
-		if (translatePropVar)
-			if (sectionData[translatePropVar] instanceof Array)
-				_translateProperties = sectionData[translatePropVar];
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 	
   	// @override IListProcessor
 	public function processList(a_list: BasicList): Void
 	{
+		skyui.util.Debug.log("processing list");
+		
+		
 		var entryList = a_list.entryList;
 		
 		for (var i=0; i<entryList.length; i++) {
@@ -123,13 +110,6 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		// Process compound properties 
 		// (concatenate several properties together, used for sorting)
 		for (var i=0; i<_compoundPropertyList.length; i++)
-			_compoundPropertyList[i].processCompoundProperty(a_entryObject);
-		
-		// Translate any properties that require it
-		for (var i=0; i<_translateProperties.length; i++) {
-			var prop = _translateProperties[i];
-			if (a_entryObject[prop] != undefined && a_entryObject[prop].constructor == String)
-				a_entryObject[prop] = Translator.translate(a_entryObject[prop]);
-		}		
+			_compoundPropertyList[i].processCompoundProperty(a_entryObject);		
 	}
 }

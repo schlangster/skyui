@@ -23,6 +23,8 @@ class ItemMenu extends MovieClip
 	
 	private var _tabToggleKey: Number;
 	
+	private var _bPlayBladeSound: Boolean;
+	
 	
   /* STAGE ELEMENTS */
 	
@@ -71,6 +73,17 @@ class ItemMenu extends MovieClip
 		skse.ExtendData(true);
 		skse.ForceContainerCategorization(true);
 		
+		var test: Number = 10101.10000000149012;
+		skse.Log("#1 Number: " + test);
+		var rounded: Number = Math.round(test);
+		skse.Log("#1 Rounded: " + rounded);
+		var div: Number = rounded / 10;
+		skse.Log("#1 Div: " + div);
+		
+		_bPlayBladeSound = a_bPlayBladeSound
+		
+		inventoryLists.InitExtensions();
+		
 		if (bEnableTabs)
 			inventoryLists.enableTabBar();
 		
@@ -90,8 +103,6 @@ class ItemMenu extends MovieClip
 		itemCard.addEventListener("subMenuAction",this,"onItemCardSubMenuAction");
 		
 		positionFixedElements();
-		
-		inventoryLists.showPanel(a_bPlayBladeSound);
 		
 		itemCard._visible = false;
 		bottomBar.HideButtons();
@@ -134,12 +145,52 @@ class ItemMenu extends MovieClip
 
   /* PUBLIC FUNCTIONS */
 	
+	var tmpID: Number;
+	
 	public function onConfigLoad(event: Object): Void
 	{
-		_config = event.config;
-		_tabToggleKey = _config.Input.hotkey.tabToggle;
+		var test: Number = 10101.10000000149012;
+		skse.Log("#2 Number: " + test);
+		var rounded: Number = Math.round(test);
+		skse.Log("#2 Rounded: " + rounded);
+		var div: Number = rounded / 10;
+		skse.Log("#2 Div: " + div);
+		
+		setConfig(event.config);
+		inventoryLists.showPanel(_bPlayBladeSound);
+		
+		tmpID = setInterval(this, "testFunc", 1);
+	}
+	
+	public function testFunc(): Void
+	{
+		clearInterval(tmpID);
+		delete(tmpID);
+	}
+	
+	public function setConfig(a_config: Object): Void
+	{
+		_config = a_config;
+		_tabToggleKey = a_config.Input.hotkey.tabToggle;
 		
 		positionFloatingElements();
+		
+		var itemListState = inventoryLists.itemList.listState;
+		var categoryListState = inventoryLists.categoryList.listState;
+		var section = a_config["Appearance"];
+		
+		categoryListState.iconSource = section.icons.source;
+		
+		itemListState.iconSource = section.icons.source;
+		itemListState.showStolenIcon = section.icons.showStolen;
+		itemListState.defaultEnabledColor = section.colors.enabled.text;
+		itemListState.negativeEnabledColor = section.colors.enabled.negative;
+		itemListState.stolenEnabledColor = section.colors.enabled.stolen;
+		itemListState.defaultDisabledColor = section.colors.disabled.text;
+		itemListState.negativeDisabledColor = section.colors.disabled.negative;
+		itemListState.stolenDisabledColor = section.colors.disabled.stolen;
+		
+		skyui.util.Debug.log("Init'ed list state");
 	}
 
 	// @API
@@ -179,7 +230,7 @@ class ItemMenu extends MovieClip
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
 			if (e == mouseRotationRect && shouldProcessItemsListInput(false) || !bFadedIn && delta == -1) {
 				GameDelegate.call("ZoomItemModel",[delta]);
-				continue;
+				break;
 			}
 		}
 	}

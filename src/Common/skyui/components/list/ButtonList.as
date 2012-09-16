@@ -85,7 +85,7 @@ class skyui.components.list.ButtonList extends BasicList
 			entryClip.itemIndex = i;
 			entryItem.clipIndex = i;
 			
-			setEntry(entryClip, entryItem);
+			entryClip.setData(entryItem,null);
 
 
 			entryClip._y = topBorder + h;
