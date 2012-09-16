@@ -134,7 +134,7 @@
 	}
 	
 	// Ex: format("Last {2}% longer", 100.66666)
-	public static function format(a_str: String /*, ... */): String
+	public static function formatString(a_str: String /*, ... */): String
 	{
 		if (arguments.length < 2)
 			return a_str;
@@ -165,5 +165,18 @@
 		buf += a_str.slice(pos);
 		
 		return buf;
+	}
+	
+	function RoundDecimal(aNumber: Number, aPrecision: Number): Number
+	{
+		var significantFigures = Math.pow(10, aPrecision);
+		return Math.round(significantFigures * aNumber) / significantFigures;
+	}
+	
+	public static function formatNumber(a_number: Number, a_decimal: Number): String
+	{
+		var mult = Math.pow(10, a_decimal);
+		var t: String = String((Math.round(a_number * mult) / mult));
+		return "";
 	}
 }

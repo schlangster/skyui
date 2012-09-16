@@ -197,7 +197,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			entryClip.itemIndex = entryItem.itemIndex;
 			entryItem.clipIndex = _listIndex;
 			
-			setEntry(entryClip, entryItem);
+			entryClip.setEntry(entryItem, listState);
 
 			entryClip._x = xStart;
 			entryClip._y = yStart + h;
@@ -346,8 +346,10 @@ class skyui.components.list.ScrollingList extends BasicList
 		_selectedIndex = a_newIndex;
 
 		// Old entry was mapped to a clip? Then clear with setEntry now that selectedIndex has been updated
-		if (oldEntry.clipIndex != undefined)
-			setEntry(getClipByIndex(oldEntry.clipIndex), oldEntry);
+		if (oldEntry.clipIndex != undefined) {
+			var clip = getClipByIndex(oldEntry.clipIndex);
+			clip.setEntry(oldEntry, listState);
+		}
 			
 			
 		// Select valid entry
@@ -356,16 +358,18 @@ class skyui.components.list.ScrollingList extends BasicList
 			var enumIndex = getSelectedListEnumIndex();
 			
 			// New entry before visible portion, move scroll window up
-			if (enumIndex < _scrollPosition)
+			if (enumIndex < _scrollPosition) {
 				scrollPosition = enumIndex;
 				
 			// New entry below visible portion, move scroll window down
-			else if (enumIndex >= _scrollPosition + _listIndex)
+			} else if (enumIndex >= _scrollPosition + _listIndex) {
 				scrollPosition = Math.min(enumIndex - _listIndex + 1, _maxScrollPosition);
 				
 			// No need to change the scroll window, just select new entry
-			else
-				setEntry(getClipByIndex(selectedEntry.clipIndex), selectedEntry);
+			} else {
+				var clip = getClipByIndex(selectedEntry.clipIndex);
+				clip.setEntry(selectedEntry, listState);
+			}
 				
 			_curClipIndex = selectedEntry.clipIndex;
 			

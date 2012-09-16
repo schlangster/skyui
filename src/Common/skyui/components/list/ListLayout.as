@@ -42,9 +42,6 @@ class skyui.components.list.ListLayout
 	
 	private var _stateData: Object;
 	
-	// 1 .. n
-
-	
 	private var _defaultEntryTextFormat: TextFormat;
 	private var _defaultLabelTextFormat: TextFormat;
 	
@@ -58,7 +55,6 @@ class skyui.components.list.ListLayout
 	
 	
   /* PROPERTIES */
-
 	
 	public function get currentView(): Object
 	{
@@ -194,6 +190,8 @@ class skyui.components.list.ListLayout
 	
 	public function changeFilterFlag(a_flag: Number): Void
 	{
+		skyui.util.Debug.log("Setting filter flag to " + a_flag);
+		
 		_lastFilterFlag = a_flag;
 		
 		// Find a matching view, or use last index

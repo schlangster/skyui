@@ -5,6 +5,7 @@ import gfx.ui.InputDetails;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
+import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
 
@@ -51,8 +52,6 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("DropItem", this, "DropItem");
 		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
-		
-		InitExtensions();
 	}
 	
 	// @override ItemMenu
@@ -68,13 +67,6 @@ class InventoryMenu extends ItemMenu
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
-		
-		var itemList: TabularList = inventoryLists.itemList;		
-		var entryFormatter = new InventoryEntryFormatter(itemList);
-		entryFormatter.maxTextLength = 80;
-		itemList.entryFormatter = entryFormatter;
-		
-		ListLayoutManager.instance.bind(itemList, "ItemListLayout");
 
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");
 	}
@@ -86,11 +78,18 @@ class InventoryMenu extends ItemMenu
 	{
 		super.setConfig(a_config);
 		
-		skyui.util.Debug.log("Setting config" + a_config["Properties"]);
+		skyui.util.Debug.log("Setting config");
 		
 		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new InventoryDataExtender());
-		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));		
+		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
+		
+		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
+		itemList.layout = layout
+
+		// Not 100% happy with doing this here, but has to do for now.
+		if (inventoryLists.categoryList.selectedEntry)
+			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
 	}
 
 	// @GFx

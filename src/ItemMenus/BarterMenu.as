@@ -2,6 +2,7 @@
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
+import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
 
@@ -53,23 +54,32 @@ class BarterMenu extends ItemMenu
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
-
-		// Save this to modify multipliers later.
-		_dataExtender = new BarterDataExtender();
-
-		var itemList: TabularList = inventoryLists.itemList;		
-		var entryFormatter = new InventoryEntryFormatter(itemList);
-
-		entryFormatter.maxTextLength = 80;
-		itemList.entryFormatter = entryFormatter;
-		itemList.addDataProcessor(_dataExtender);
-		itemList.addDataProcessor(new PropertyDataExtender('itemProperties', 'itemIcons', 'itemCompoundProperties'));
-		
-		ListLayoutManager.instance.bind(itemList, "ItemListLayout");
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
+
+	// @override ItemMenu
+	public function setConfig(a_config: Object): Void
+	{
+		super.setConfig(a_config);
+		
+		skyui.util.Debug.log("Setting config");
+		
+		// Save this to modify multipliers later.
+		_dataExtender = new BarterDataExtender();
+
+		var itemList: TabularList = inventoryLists.itemList;		
+		itemList.addDataProcessor(_dataExtender);
+		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
+		
+		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
+		itemList.layout = layout
+
+		// Not 100% happy with doing this here, but has to do for now.
+		if (inventoryLists.categoryList.selectedEntry)
+			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
+	}
 
 	public function onExitButtonPress(): Void
 	{

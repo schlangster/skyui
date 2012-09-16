@@ -1,5 +1,5 @@
-﻿import skyui.components.list.BasicListEntry;
-import skyui.util.ConfigManager;
+﻿import skyui.components.list.ListState;
+import skyui.components.list.BasicListEntry;
 
 
 class CategoryListEntry extends BasicListEntry
@@ -12,15 +12,31 @@ class CategoryListEntry extends BasicListEntry
   /* STAGE ELMENTS */
   
   	public var icon: MovieClip;
-	
+
 	
   /* PUBLIC FUNCTIONS */
 	
-	public function initialize(a_index: Number, a_list: CategoryList): Void
+	public function initialize(a_index: Number, a_state: ListState): Void
 	{
-		if (a_list.iconArt[a_index] != undefined) {
-			iconLabel = a_list.iconArt[a_index];
-			icon.loadMovie(ConfigManager.getValue("Appearance", "icons.source").toString());
+		var iconArt: String = CategoryList(a_state.list).iconArt[a_index];
+		
+		if (iconArt != undefined) {
+			iconLabel = iconArt;
+			icon.loadMovie(a_state.iconSource);
+		}
+	}
+	
+	public function setEntry(a_entryObject: Object, a_state: ListState): Void
+	{
+		if (a_entryObject.filterFlag == 0 && !a_entryObject.bDontHide) {
+			_alpha = 15;
+			enabled = false;
+		} else if (a_entryObject == a_state.list.selectedEntry) {
+			_alpha = 100;
+			enabled = true;
+		} else {
+			_alpha = 50;
+			enabled = true;
 		}
 	}
 }

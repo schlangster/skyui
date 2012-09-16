@@ -195,6 +195,9 @@ class skyui.util.ConfigManager
 	// Provide static accessor to the config to retrieve trivial values
 	public static function getValue(a_section: String, a_key: String): Object
 	{
+		if (_loadPhase < 2)
+			return undefined;
+		
 		var a = a_key.split(".");
 		var loc = _config[a_section];
 		for (var j=0; j<a.length; j++) {

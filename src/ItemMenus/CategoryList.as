@@ -120,6 +120,11 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function InvalidateData(): Void
 	{
+		if (_bSuspended) {
+			_bRequestInvalidate = true;
+			return;
+		}
+		
 		listEnumeration.invalidate();
 		calculateSegmentParams();
 		
@@ -132,6 +137,11 @@ class CategoryList extends BasicList
 	// @override BasicList
 	public function UpdateList(): Void
 	{
+		if (_bSuspended) {
+			_bRequestUpdate = true;
+			return;
+		}
+		
 		setClipCount(_segmentLength);
 
 		var cw = 0;
@@ -139,7 +149,7 @@ class CategoryList extends BasicList
 		for (var i = 0; i < _segmentLength; i++) {
 			var entryClip = getClipByIndex(i);
 
-			setEntry(entryClip, listEnumeration.at(i + _segmentOffset));
+			entryClip.setEntry(listEnumeration.at(i + _segmentOffset), listState);
 
 			listEnumeration.at(i + _segmentOffset).clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;

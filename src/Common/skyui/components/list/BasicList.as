@@ -8,9 +8,9 @@ import skyui.components.list.IEntryClipBuilder;
 import skyui.components.list.BasicEntryFactory;
 import skyui.components.list.IEntryEnumeration;
 import skyui.components.list.BasicEnumeration;
-import skyui.components.list.IEntryFormatter;
 import skyui.components.list.IListProcessor;
 import skyui.components.list.BSList;
+import skyui.components.list.ListState
 
 
 // @abstract
@@ -107,7 +107,7 @@ class skyui.components.list.BasicList extends BSList
 	
 	public var listEnumeration: IEntryEnumeration;
 	
-	public var entryFormatter: IEntryFormatter;
+	public var listState: ListState;
 	
 	public function get itemCount(): Number
 	{
@@ -163,6 +163,7 @@ class skyui.components.list.BasicList extends BSList
 		
 		_entryClipManager = new EntryClipManager(this);
 		_dataProcessors = [];
+		listState = new ListState(this);
 
 		EventDispatcher.initialize(this);
 		Mouse.addListener(this);
@@ -334,11 +335,15 @@ class skyui.components.list.BasicList extends BSList
 		var oldIndex = _selectedIndex;
 		_selectedIndex = a_newIndex;
 
-		if (oldIndex != -1)
-			setEntry(_entryClipManager.getClip(_entryList[oldIndex].clipIndex),_entryList[oldIndex]);
+		if (oldIndex != -1) {
+			var clip = _entryClipManager.getClip(_entryList[oldIndex].clipIndex);
+			clip.setEntry(_entryList[oldIndex], listState);
+		}
 
-		if (_selectedIndex != -1)
-			setEntry(_entryClipManager.getClip(_entryList[_selectedIndex].clipIndex),_entryList[_selectedIndex]);
+		if (_selectedIndex != -1) {
+			var clip = _entryClipManager.getClip(_entryList[_selectedIndex].clipIndex);
+			clip.setEntry(_entryList[_selectedIndex], listState);
+		}
 
 		dispatchEvent({type: "selectionChange", index: _selectedIndex, keyboardOrMouse: a_keyboardOrMouse});
 	}
@@ -351,11 +356,6 @@ class skyui.components.list.BasicList extends BSList
 	private function setClipCount(a_count: Number)
 	{
 		_entryClipManager.clipCount = a_count;
-	}
-	
-	private function setEntry(a_entryClip: MovieClip, a_entryObject: Object)
-	{
-		entryFormatter.setEntry(a_entryClip, a_entryObject);
 	}
 	
 	private function getSelectedListEnumIndex(): Number

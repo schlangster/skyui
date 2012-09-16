@@ -38,7 +38,6 @@ class ColumnSelectDialog extends BasicDialog
 	public function onLoad(): Void
 	{
 		list.listEnumeration = new BasicEnumeration(list.entryList);
-		list.entryFormatter = new ButtonEntryFormatter(list);
 		
 		list.addEventListener("itemPress", this, "onColumnToggle");
 		layout.addEventListener("layoutChange", this, "onLayoutChange");

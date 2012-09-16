@@ -135,6 +135,7 @@ class InventoryLists extends MovieClip
 		columnSelectButton = panelContainer.columnSelectButton;
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
+		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
 	// Apparently it's not safe to use stage elements in the constructor (as it doesn't work).
@@ -142,14 +143,15 @@ class InventoryLists extends MovieClip
 	public function onLoad(): Void
 	{
 		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
-		categoryList.entryFormatter = new CategoryEntryFormatter(categoryList);
 
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
 		listEnumeration.addFilter(_nameFilter);
 		listEnumeration.addFilter(_sortFilter);
 		itemList.listEnumeration = listEnumeration;
-		// entry formatter and data fetcher are initialized by the top-level menu since they differ in each case
+		// data processors are initialized by the top-level menu since they differ in each case
+		
+		itemList.listState.maxTextLength = 80;
 
 		_typeFilter.addEventListener("filterChange", this, "onFilterChange");
 		_nameFilter.addEventListener("filterChange", this, "onFilterChange");
@@ -177,6 +179,7 @@ class InventoryLists extends MovieClip
 	public function InitExtensions(): Void
 	{
 		// Delay updates until config is ready
+		categoryList.suspended = true;
 		itemList.suspended = true;
 	}
 	
@@ -198,6 +201,7 @@ class InventoryLists extends MovieClip
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
 		// Release itemlist for updating
+		categoryList.suspended = false;
 		itemList.suspended = false;
 		
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
@@ -271,6 +275,11 @@ class InventoryLists extends MovieClip
 		_searchKey = _config.Input.hotkey.search;
 		_tabToggleKey = _config.Input.hotkey.tabToggle;
 	}
+	
+	public function onConfigUpdate(event: Object): Void
+	{
+		itemList.layout.refresh();
+	}
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean)
 	{
@@ -336,7 +345,9 @@ class InventoryLists extends MovieClip
 		if (categoryList.selectedEntry != undefined) {
 			// Set filter type
 			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
-			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);			
+			
+			// Not set yet before the config is loaded
+			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
 		}
 		
 		itemList.requestUpdate();
