@@ -8,7 +8,7 @@ class InventoryDataExtender extends ItemcardDataExtender
 	private static var OVERRIDE_ORDER = [2, 1, 3, 4, 7, 8, 9, 5, 6, 10, 11, 0, 12];
 	
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
   
 	public function InventoryDataExtender()
 	{
@@ -18,14 +18,7 @@ class InventoryDataExtender extends ItemcardDataExtender
 
   /* PUBLIC FUNCTIONS */
 	
-	
-	function RoundDecimal(aNumber: Number, aPrecision: Number): Number
-	{
-		var significantFigures = Math.pow(10, aPrecision);
-		return Math.round(significantFigures * aNumber) / significantFigures;
-	}
-	
-  	// @override ItemcardDataFetcher
+  	// @override ItemcardDataExtender
 	public function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
 		switch (a_itemInfo.type) {
@@ -55,14 +48,7 @@ class InventoryDataExtender extends ItemcardDataExtender
 				a_entryObject.infoIsEnchanted = false;
 		}
 
-		a_entryObject.infoValue = Math.round(a_itemInfo.value);
-		
-		skse.Log("Original: " + a_itemInfo.weight + " " + a_entryObject.text);
-		skse.Log("Weight: " + (Math.round(a_itemInfo.weight * 10) / 10));
-
-		var test: Number = 0.10000000149012;
-		skse.Log("Test 2: " + (Math.round(test * 10) / 10));
-		
+		a_entryObject.infoValue = Math.round(a_itemInfo.value);		
 		a_entryObject.infoWeight = Math.round(a_itemInfo.weight * 10) / 10;
 		
 		a_entryObject.infoType = a_itemInfo.type;

@@ -2,9 +2,10 @@ scriptname SKI_SettingsManager extends SKI_QuestBase
 
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
+string property		MENU_ROOT		= "_global.skyui.util.ConfigManager" autoReadonly
+
 string property		INVENTORY_MENU	= "InventoryMenu" autoReadonly
 string property		MAGIC_MENU		= "MagicMenu" autoReadonly
-string property		MENU_ROOT		= "_global.skyui.util.ConfigManager" autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -12,7 +13,6 @@ string property		MENU_ROOT		= "_global.skyui.util.ConfigManager" autoReadonly
 int			_overrideCount	= 0
 string[]	_overrideKeys
 string[]	_overrideValues
-string		_currentMenu
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -33,17 +33,16 @@ event OnInit()
 	RegisterForModEvent("SKICO_setConfigOverride", "OnSetConfigOverride")
 endEvent
 
-
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnMenuOpen(string a_menuName)
-	GotoState("MENU_OPEN")
-	_currentMenu = a_menuName
-	UI.InvokeStringA(a_menuName, MENU_ROOT + ".setExternalOverrideKeys", _overrideKeys)
-	UI.InvokeStringA(a_menuName, MENU_ROOT + ".setExternalOverrideValues", _overrideValues)
-endEvent
-
-event OnMenuClose(string a_menuName)
+	GotoState("LOCKED")
+	; Check if it's still open
+	if (UI.IsMenuOpen(a_menuName))
+		UI.InvokeStringA(a_menuName, MENU_ROOT + ".setExternalOverrideKeys", _overrideKeys)
+		UI.InvokeStringA(a_menuName, MENU_ROOT + ".setExternalOverrideValues", _overrideValues)
+	endIf
+	GotoState("")
 endEvent
 
 event OnSetConfigOverride(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -54,15 +53,9 @@ event OnSetConfigOverride(string a_eventName, string a_strArg, float a_numArg, F
 endEvent
 
 ; ----------------------------------------------
-state MENU_OPEN
+state LOCKED
 
 event OnMenuOpen(string a_menuName)
-endEvent
-
-event OnMenuClose(string a_menuName)
-	if (a_menuName == _currentMenu)
-		GotoState("")
-	endif
 endEvent
 
 endState

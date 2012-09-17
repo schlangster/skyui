@@ -106,6 +106,7 @@ class ColumnSelectDialog extends BasicDialog
 		
 		for (var i=0; i<columnDescriptors.length; i++) {
 			var col = columnDescriptors[i];
+			
 			if (col.type == ListLayout.COL_TYPE_TEXT)
 				list.entryList.push({enabled: true, text: col.longName, value: col.hidden, state: (col.hidden ? "off" : "on"), id: col.identifier});
 		}

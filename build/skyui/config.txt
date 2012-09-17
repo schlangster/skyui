@@ -120,7 +120,6 @@ columns.itemNameColumn.state4.label.text = '$ENCHANTED'
 columns.itemNameColumn.state4.entry.text = @text
 columns.itemNameColumn.state4.sortAttributes = <infoIsEnchanted, text>
 columns.itemNameColumn.state4.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.itemNameColumn.state4.playerOnly = true
 
 
 ; ARMOR RATING COLUMN -------------------------------------------------------
@@ -203,7 +202,7 @@ columns.magnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING 
 
 ; DURATION COLUMN -------------------------------------------------------
 columns.durationColumn.type = TEXT
-columns.durationColumn.type = '$TIME'
+columns.durationColumn.name = '$TIME'
 columns.durationColumn.states = 2
 columns.durationColumn.width = 0.09
 columns.durationColumn.border = a_textBorder
@@ -241,7 +240,7 @@ columns.magicMagnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCEN
 
 ; MAGIC DURATION COLUMN -------------------------------------------------------
 columns.magicDurationColumn.type = TEXT
-columns.magicDurationColumn.type = '$TIME'
+columns.magicDurationColumn.name = '$TIME'
 columns.magicDurationColumn.states = 2
 columns.magicDurationColumn.width = 0.15
 columns.magicDurationColumn.border = a_textBorder
@@ -595,7 +594,7 @@ layouts.magicListLayout.views = <shoutsView, powersView, activeEffectView, allMa
 ; .keywords.keywordname.set = <'propertyToSet': valueToSet>
 ; For setting properties based on dataMembers:
 ; .dataMember#.filter = <'dataMemberToMatch': valueToMatch>
-; .dataNenber#.set = <'propertyToSet': valueToSet>
+; .dataMember#.set = <'propertyToSet': valueToSet>
 
 props.armorMaterial.propertiesToSet = <'material', 'materialDisplay'>
 props.armorMaterial.filter = <'formType': FORMTYPE_ARMOR>

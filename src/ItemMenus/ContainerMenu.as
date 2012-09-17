@@ -93,10 +93,10 @@ class ContainerMenu extends ItemMenu
 		
 		var itemList: TabularList = inventoryLists.itemList;		
 		itemList.addDataProcessor(new InventoryDataExtender());
-		itemList.addDataProcessor(new PropertyDataExtender("itemProperties", "itemIcons", "itemCompoundProperties"));
+		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
-		itemList.layout = layout
+		itemList.layout = layout;
 
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)

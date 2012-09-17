@@ -1,15 +1,15 @@
 ﻿import skyui.components.list.BasicList;
-import skyui.components.list.IListEntry;
+import skyui.components.list.ListState;
 import skyui.components.list.BasicListEntry;
 
 
 /*
- *  A generic entry formatter.
+ *  A generic entry.
  *  Sets selectIndicator visible for the selected entry, if defined.
  *  Sets textField to obj.text.
  *  Forwards to label obj.state, if defined.
  */
-class skyui.components.list.ButtonListEntry extends BasicListEntry implements IListEntry
+class skyui.components.list.ButtonListEntry extends BasicListEntry
 {
   /* PRIVATE VARIABLES */
 	
@@ -31,12 +31,12 @@ class skyui.components.list.ButtonListEntry extends BasicListEntry implements IL
 	
   /* PUBLIC FUNCTIONS */
 	
-	public function setEntry(a_entryObject: Object, a_state: Object): Void
+	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{
 		enabled = a_entryObject.enabled;
 		
 		// TODO
-		var isSelected = a_entryObject == a_state.selectedEntry;
+		var isSelected = a_entryObject == a_state.list.selectedEntry;
 		var isActive = (a_state.activeEntry != undefined && a_entryObject == a_state.activeEntry);
 
 		if (a_entryObject.state != undefined)

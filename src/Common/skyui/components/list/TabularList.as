@@ -12,7 +12,7 @@ import skyui.components.list.ScrollingList;
 import skyui.filter.IFilter;
 
 
-class skyui.components.list.TabularList extends ScrollingList implements IListLayoutSubscriber
+class skyui.components.list.TabularList extends ScrollingList
 {
   /* STAGE ELEMENTS */
   
@@ -49,12 +49,6 @@ class skyui.components.list.TabularList extends ScrollingList implements IListLa
 
 
   /* PUBLIC FUNCTIONS */
-  
-  	// @implements IListLayoutSubscriber
-  	public function setLayout(a_layout: ListLayout):Void
-	{
-		layout = a_layout;
-	}
 	
 	public function onLayoutChange(event: Object): Void
 	{

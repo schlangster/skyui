@@ -85,7 +85,7 @@ class InventoryMenu extends ItemMenu
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
-		itemList.layout = layout
+		itemList.layout = layout;
 
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)
@@ -123,14 +123,6 @@ class InventoryMenu extends ItemMenu
 	{
 		startMenuFade();
 		GameDelegate.call("ShowTweenMenu", []);
-	}
-
-	private function startMenuFade(): Void
-	{
-		inventoryLists.hidePanel();
-		ToggleMenuFade();
-		saveIndices();
-		_bMenuClosing = true;
 	}
 
 	public function onFadeCompletion(): Void
@@ -277,6 +269,14 @@ class InventoryMenu extends ItemMenu
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("MagicMenu");
 		}
+	}
+	
+	private function startMenuFade(): Void
+	{
+		inventoryLists.hidePanel();
+		ToggleMenuFade();
+		saveIndices();
+		_bMenuClosing = true;
 	}
 	
 	private function updateBottomBarButtons(): Void

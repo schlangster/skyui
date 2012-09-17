@@ -190,8 +190,6 @@ class skyui.components.list.ListLayout
 	
 	public function changeFilterFlag(a_flag: Number): Void
 	{
-		skyui.util.Debug.log("Setting filter flag to " + a_flag);
-		
 		_lastFilterFlag = a_flag;
 		
 		// Find a matching view, or use last index

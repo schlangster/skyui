@@ -71,6 +71,11 @@ class skyui.components.list.ButtonList extends BasicList
 	// @override BasicList
 	public function UpdateList(): Void
 	{
+		if (_bSuspended) {
+			_bRequestUpdate = true;
+			return;
+		}
+		
 		setClipCount(getListEnumSize());
 		
 		var h = 0;
@@ -85,8 +90,7 @@ class skyui.components.list.ButtonList extends BasicList
 			entryClip.itemIndex = i;
 			entryItem.clipIndex = i;
 			
-			entryClip.setData(entryItem,null);
-
+			entryClip.setEntry(entryItem, listState);
 
 			entryClip._y = topBorder + h;
 			entryClip._visible = true;
@@ -112,8 +116,6 @@ class skyui.components.list.ButtonList extends BasicList
 		background._height = topBorder + h + bottomBorder;
 
 		background._x = (_align == ALIGN_LEFT) ? 0 : -background._width;
-
-
 	}
 	
 	// @GFx
