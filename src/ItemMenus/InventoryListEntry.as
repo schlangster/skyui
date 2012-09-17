@@ -32,8 +32,9 @@ class InventoryListEntry extends TabularListEntry
 	public var favIcon: MovieClip;
 	
 	
-  /* PUBLIC FUNCTIONS */
+  /* INITIALIZATION */
 	
+  	// @override TabularListEntry
 	public function initialize(a_index: Number, a_state: ListState): Void
 	{
 		super.initialize();
@@ -46,19 +47,11 @@ class InventoryListEntry extends TabularListEntry
 		for (var i = 0; this["textField" + i] != undefined; i++)
 			this["textField" + i]._visible = false;
 	}
-
-
-  /* INITIALIZATION */
-	
-	public function InventoryListEntry(a_list: TabularList)
-	{
-		super(a_list);
-	}
 	
 	
   /* PUBLIC FUNCTIONS */
 	
-  	// @override TabularEntryFormatter
+  	// @override TabularListEntry
 	public function setSpecificEntryLayout(a_entryObject: Object, a_state: ListState): Void
 	{
 		var iconY = TabularList(a_state.list).layout.entryHeight * 0.25;
@@ -77,7 +70,7 @@ class InventoryListEntry extends TabularListEntry
 		enchIcon._y = iconY;
 	}
 
-  	// @override TabularEntryFormatter
+  	// @override TabularListEntry
 	public function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
 	{
 		if (a_entryObject != undefined && a_entryObject.equipState != undefined) {
@@ -87,7 +80,7 @@ class InventoryListEntry extends TabularListEntry
 		}
 	}
 
-  	// @override TabularEntryFormatter
+  	// @override TabularListEntry
 	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState)
 	{
 		var curIconLabel = a_entryObject["iconLabel"] != undefined ? a_entryObject["iconLabel"] : "default_misc";
@@ -110,7 +103,7 @@ class InventoryListEntry extends TabularListEntry
 		}
 	}
 
-  	// @override TabularEntryFormatter
+  	// @override TabularListEntry
 	public function formatName(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
 	{
 		if (a_entryObject.text == undefined) {
@@ -190,7 +183,7 @@ class InventoryListEntry extends TabularListEntry
 		}
 	}
 	
-  	// @override TabularEntryFormatter
+  	// @override TabularEntry
 	public function formatText(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
 	{
 		formatColor(a_entryField, a_entryObject, a_state);

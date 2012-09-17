@@ -9,7 +9,6 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 {
   /* PRIVATE VARIABLES */
 	
-	// Config information
 	private var _propertyList;
 	private var _iconList;
 	private var _compoundPropertyList;
@@ -81,9 +80,6 @@ class skyui.props.PropertyDataExtender implements IListProcessor
   	// @override IListProcessor
 	public function processList(a_list: BasicList): Void
 	{
-		skyui.util.Debug.log("processing list");
-		
-		
 		var entryList = a_list.entryList;
 		
 		for (var i=0; i<entryList.length; i++) {
@@ -94,7 +90,10 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		}
 	}
 	
-	public function processEntry(a_entryObject: Object): Void
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function processEntry(a_entryObject: Object): Void
 	{
 		// Use the information from the arrays from the config to fill in additional info
 		

@@ -58,6 +58,7 @@ class MagicMenu extends ItemMenu
 		categoryList.iconArt = _categoryListIconArt;
 	}
 	
+	
   /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
@@ -69,10 +70,10 @@ class MagicMenu extends ItemMenu
 		
 		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new MagicDataExtender());
-		itemList.addDataProcessor(new PropertyDataExtender('magicProperties', 'magicIcons', 'magicCompoundProperties'));
+		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "magicProperties", "magicIcons", "magicCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "MagicListLayout");
-		itemList.layout = layout
+		itemList.layout = layout;
 
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)

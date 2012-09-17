@@ -38,6 +38,7 @@ colors.disabled.negative = 0x800000
 [ListLayout] 
 ; =====================================================================================================================
 vars.a_textBorder.value = <0, 0, 1.1, 0> ; left right top bottom
+vars.n_iconSize.value = 18
 
 defaults.entryWidth = 530
 
@@ -74,13 +75,13 @@ columns.equipColumn.type = EQUIP_ICON
 columns.equipColumn.passive = true
 columns.equipColumn.states = 1
 columns.equipColumn.indent = -28
-columns.equipColumn.icon.size = 18
+columns.equipColumn.icon.size = n_iconSize
 columns.equipColumn.border = <0, 10, 3, 3> ; left right top bottom
 columns.equipColumn.state1.label.text = ' '
 
 columns.iconColumn.type = ITEM_ICON
 columns.iconColumn.states = 2
-columns.iconColumn.icon.size = 18
+columns.iconColumn.icon.size = n_iconSize
 columns.iconColumn.border = <0, 3, 3, 3> ; left right top bottom
 
 columns.iconColumn.state1.label.text = ' '
@@ -120,7 +121,6 @@ columns.itemNameColumn.state4.label.text = '$ENCHANTED'
 columns.itemNameColumn.state4.entry.text = @text
 columns.itemNameColumn.state4.sortAttributes = <infoIsEnchanted, text>
 columns.itemNameColumn.state4.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.itemNameColumn.state4.playerOnly = true
 
 
 ; ARMOR RATING COLUMN -------------------------------------------------------
@@ -203,7 +203,7 @@ columns.magnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING 
 
 ; DURATION COLUMN -------------------------------------------------------
 columns.durationColumn.type = TEXT
-columns.durationColumn.type = '$TIME'
+columns.durationColumn.name = '$TIME'
 columns.durationColumn.states = 2
 columns.durationColumn.width = 0.09
 columns.durationColumn.border = a_textBorder
@@ -241,7 +241,7 @@ columns.magicMagnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCEN
 
 ; MAGIC DURATION COLUMN -------------------------------------------------------
 columns.magicDurationColumn.type = TEXT
-columns.magicDurationColumn.type = '$TIME'
+columns.magicDurationColumn.name = '$TIME'
 columns.magicDurationColumn.states = 2
 columns.magicDurationColumn.width = 0.15
 columns.magicDurationColumn.border = a_textBorder
@@ -595,7 +595,7 @@ layouts.magicListLayout.views = <shoutsView, powersView, activeEffectView, allMa
 ; .keywords.keywordname.set = <'propertyToSet': valueToSet>
 ; For setting properties based on dataMembers:
 ; .dataMember#.filter = <'dataMemberToMatch': valueToMatch>
-; .dataNenber#.set = <'propertyToSet': valueToSet>
+; .dataMember#.set = <'propertyToSet': valueToSet>
 
 props.armorMaterial.propertiesToSet = <'material', 'materialDisplay'>
 props.armorMaterial.filter = <'formType': FORMTYPE_ARMOR>

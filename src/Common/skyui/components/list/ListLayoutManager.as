@@ -1,12 +1,8 @@
 ﻿import skyui.util.ConfigManager;
 import skyui.components.list.ListLayout;
-import skyui.components.list.IListLayoutSubscriber;
+import skyui.util.Defines;
 
-/*
- * Connect layout data provided by ConfigManager and clients that need to access it.
- * Allows objects to subscribe for layout events while ignoring any timing details
- * associated with delayed config loading.
- */
+
 class skyui.components.list.ListLayoutManager
 {
   /* INITIALIZATION */
@@ -20,8 +16,8 @@ class skyui.components.list.ListLayoutManager
 		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
 		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
 		
-		ConfigManager.addConstantTable("skyui.util.Defines");
-		ConfigManager.addConstantTable("InventoryDefines");
+		ConfigManager.addConstantTable("skyui.util.Defines", skyui.util.Defines);
+		ConfigManager.addConstantTable("InventoryDefines", InventoryDefines);
 		
 		return true;
 	}
@@ -44,6 +40,6 @@ class skyui.components.list.ListLayoutManager
 			}
 		}
 				
-		return undefined;
+		return null;
 	}
 }

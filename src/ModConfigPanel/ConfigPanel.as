@@ -87,13 +87,8 @@ class ConfigPanel extends MovieClip
 		super.onLoad();
 		
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
-		_modList.entryFormatter = new ButtonEntryFormatter(_modList);
-		
 		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
-		_subList.entryFormatter = new ButtonEntryFormatter(_subList);
-		
 		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
-		_optionsList.entryFormatter = new OptionEntryFormatter(_optionsList);
 		
 		_modList.addEventListener("itemPress", this, "onModListPress");
 		_subList.addEventListener("itemPress", this, "onSubListPress");
@@ -214,7 +209,6 @@ class ConfigPanel extends MovieClip
 		var initObj = {
 			_x: 562, _y: 265,
 			titleText: _dialogTitleText,
-			optionMode: OptionChangeDialog.MODE_SLIDER,
 			sliderValue: a_value,
 			sliderDefault: a_default,
 			sliderMax: a_max,
@@ -223,7 +217,7 @@ class ConfigPanel extends MovieClip
 			sliderFormatString: _sliderDialogFormatString
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", initObj);
+		_optionChangeDialog = DialogManager.open(this, "OptionSliderDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");
@@ -242,13 +236,12 @@ class ConfigPanel extends MovieClip
 		var initObj = {
 			_x: 562, _y: 265,
 			titleText: _dialogTitleText,
-			optionMode: OptionChangeDialog.MODE_MENU,
 			menuOptions: _menuDialogOptions,
 			menuStartIndex: a_startIndex,
 			menuDefaultIndex: a_defaultIndex
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", initObj);
+		_optionChangeDialog = DialogManager.open(this, "OptionMenuDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");
@@ -377,7 +370,7 @@ class ConfigPanel extends MovieClip
 		if (_state != READY)
 			return;
 		
-		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = null;
+		_subList.listState.activeEntry = null;
 		_subList.clearList();
 		_subList.InvalidateData();
 		
@@ -396,7 +389,7 @@ class ConfigPanel extends MovieClip
 		if (a_entry == undefined)
 			return;
 		
-		ButtonEntryFormatter(_subList.entryFormatter).activeEntry = a_entry;
+		_subList.listState.activeEntry = a_entry;
 		_subList.UpdateList();
 		
 		_state = WAIT_FOR_OPTION_DATA;
@@ -413,24 +406,24 @@ class ConfigPanel extends MovieClip
 			return;
 		
 		switch (e.optionType) {
-			case OptionEntryFormatter.OPTION_EMPTY:
-			case OptionEntryFormatter.OPTION_HEADER:
+			case OptionsListEntry.OPTION_EMPTY:
+			case OptionsListEntry.OPTION_HEADER:
 				break;
 				
-			case OptionEntryFormatter.OPTION_TEXT:
-			case OptionEntryFormatter.OPTION_TOGGLE:
+			case OptionsListEntry.OPTION_TEXT:
+			case OptionsListEntry.OPTION_TOGGLE:
 				_state = WAIT_FOR_SELECT;
 				skse.SendModEvent("SKICP_optionSelected", null, a_index);
 				break;
 				
-			case OptionEntryFormatter.OPTION_SLIDER:
+			case OptionsListEntry.OPTION_SLIDER:
 				_state = WAIT_FOR_SLIDER_DATA;
 				_dialogTitleText = e.text;
 				_sliderDialogFormatString = e.strValue;
 				skse.SendModEvent("SKICP_sliderSelected", null, a_index);
 				break;
 				
-			case OptionEntryFormatter.OPTION_MENU:
+			case OptionsListEntry.OPTION_MENU:
 				_state = WAIT_FOR_MENU_DATA;
 				_dialogTitleText = e.text;
 				skse.SendModEvent("SKICP_menuSelected", null, a_index);

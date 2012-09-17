@@ -3,7 +3,7 @@
 
 class MagicDataExtender extends ItemcardDataExtender
 {
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
   
 	public function MagicDataExtender()
 	{

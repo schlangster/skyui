@@ -243,8 +243,8 @@ class skyui.components.list.BasicList extends BSList
 	
 	public function commitUpdate(): Void
 	{
-		clearInterval(_invalidateRequestID);
-		delete _invalidateRequestID;
+		clearInterval(_updateRequestID);
+		delete _updateRequestID;
 		
 		_bRequestUpdate = false;
 		

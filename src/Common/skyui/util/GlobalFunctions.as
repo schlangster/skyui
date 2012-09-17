@@ -167,12 +167,6 @@
 		return buf;
 	}
 	
-	function RoundDecimal(aNumber: Number, aPrecision: Number): Number
-	{
-		var significantFigures = Math.pow(10, aPrecision);
-		return Math.round(significantFigures * aNumber) / significantFigures;
-	}
-	
 	public static function formatNumber(a_number: Number, a_decimal: Number): String
 	{
 		var mult = Math.pow(10, a_decimal);

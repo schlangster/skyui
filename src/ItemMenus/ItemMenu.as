@@ -10,7 +10,8 @@ class ItemMenu extends MovieClip
 {
   /* CONSTANTS */
   
-	private var SKSE_REQ_RELEASE_IDX = 9;
+	private static var SKSE_REQ_RELEASE_IDX = 9;
+	private static var SKSE_REQ_VERSION = "1.4.8";
 
 
   /* PRIVATE VARIABLES */
@@ -73,13 +74,6 @@ class ItemMenu extends MovieClip
 		skse.ExtendData(true);
 		skse.ForceContainerCategorization(true);
 		
-		var test: Number = 10101.10000000149012;
-		skse.Log("#1 Number: " + test);
-		var rounded: Number = Math.round(test);
-		skse.Log("#1 Rounded: " + rounded);
-		var div: Number = rounded / 10;
-		skse.Log("#1 Div: " + div);
-		
 		_bPlayBladeSound = a_bPlayBladeSound
 		
 		inventoryLists.InitExtensions();
@@ -118,23 +112,25 @@ class ItemMenu extends MovieClip
 			// Default message
 			if (_global.skse == undefined) {
 				skseWarning._visible = true;
-				skseWarning.message.text = "SkyUI could not detect the Skyrim Script Extender (SKSE).\n"
-					+ "SkyUI will not work correctly!\n"
-					+ "\n"
-					+ "This message may also appear if a new Skyrim Patch has been released.\n"
-					+ "In this case, wait until SKSE has been updated, then install the new version.\n"
-					+ "\n"
-					+ "For more information, see the mod description.";
+				skseWarning.message.text =
+					"SkyUI could not detect the Skyrim Script Extender (SKSE).\n" +
+					"SkyUI will not work correctly!\n" +
+					"\n" +
+					"This message may also appear if a new Skyrim Patch has been released.\n" +
+					"In this case, wait until SKSE has been updated, then install the new version.\n" +
+					"\n" +
+					"For more information, see the mod description.";
 					
 			} else if (_global.skse.version.releaseIdx < SKSE_REQ_RELEASE_IDX) {
 				skseWarning._visible = true;
-				skseWarning.message.text = "Your Skyrim Script Extender (SKSE) is outdated.\n"
-					+ "SkyUI will not work correctly!\n"
-					+ "\n"
-					+ "Installed version: " + _global.skse.version.major + "." + _global.skse.version.minor + "." + _global.skse.version.beta + "\n"
-					+ "Required version: 1.4.8\n"
-					+ "\n"
-					+ "For more information, see the mod description.";
+				skseWarning.message.text =
+					"Your Skyrim Script Extender (SKSE) is outdated.\n"	+
+					"SkyUI will not work correctly!\n" +
+					"\n" +
+					"Installed version: " + _global.skse.version.major + "." + _global.skse.version.minor + "." + _global.skse.version.beta + "\n" +
+					"Required version: " + SKSE_REQ_VERSION + "\n" +
+					"\n" +
+					"For more information, see the mod description.";
 					
 			} else {
 				skseWarning._visible = false;
@@ -145,27 +141,10 @@ class ItemMenu extends MovieClip
 
   /* PUBLIC FUNCTIONS */
 	
-	var tmpID: Number;
-	
 	public function onConfigLoad(event: Object): Void
 	{
-		var test: Number = 10101.10000000149012;
-		skse.Log("#2 Number: " + test);
-		var rounded: Number = Math.round(test);
-		skse.Log("#2 Rounded: " + rounded);
-		var div: Number = rounded / 10;
-		skse.Log("#2 Div: " + div);
-		
 		setConfig(event.config);
 		inventoryLists.showPanel(_bPlayBladeSound);
-		
-		tmpID = setInterval(this, "testFunc", 1);
-	}
-	
-	public function testFunc(): Void
-	{
-		clearInterval(tmpID);
-		delete(tmpID);
 	}
 	
 	public function setConfig(a_config: Object): Void

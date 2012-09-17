@@ -21,6 +21,7 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 	
   /* PUBLIC FUNCTIONS */
 	
+	// @override BasicListEntry
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{
 		var layout: ListLayout = TabularList(a_state.list).layout;
@@ -69,7 +70,26 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 		}
 	}
 	
-	public function setEntryLayout(a_entryObject: Object, a_state: ListState): Void
+	// Do any clip-specific tasks when the view was changed for this entry.
+	// @abstract
+	public function setSpecificEntryLayout(a_entryObject: Object, a_state: ListState): Void {}
+
+	// @abstract
+	public function formatName(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
+	
+	// @abstract
+	public function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
+
+	// @abstract
+	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
+	
+	// @abstract
+	public function formatText(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function setEntryLayout(a_entryObject: Object, a_state: ListState): Void
 	{
 		var layout: ListLayout = TabularList(a_state.list).layout;
 			
@@ -101,22 +121,5 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 		
 		for (var i=0; i<hiddenStageNames.length; i++)
 			this[hiddenStageNames[i]]._visible = false;
-
 	}
-	
-	// Do any clip-specific tasks when the view was changed for this entry.
-	// @abstract
-	public function setSpecificEntryLayout(a_entryObject: Object, a_state: ListState): Void {}
-
-	// @abstract
-	public function formatName(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
-	
-	// @abstract
-	public function formatEquipIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
-
-	// @abstract
-	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
-	
-	// @abstract
-	public function formatText(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void {}
 }

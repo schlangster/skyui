@@ -1,4 +1,5 @@
-﻿import gfx.events.EventDispatcher;
+﻿import flash.utils.*;
+import gfx.events.EventDispatcher;
 
 import skyui.components.list.ListLayout;
 import skyui.util.GlobalFunctions;
@@ -9,7 +10,11 @@ class skyui.util.ConfigManager
   /* CONSTANTS */
   
 	private static var CONFIG_PATH = "skyui/config.txt";
-	private static var LOAD_TIMEOUT = 1000;
+	private static var TIMEOUT = 1000;
+	
+	private static var LOAD_NONE = 0;
+	private static var LOAD_FILE = 1;
+	private static var LOAD_PAPYRUS = 2;
 	
 	
   /* PRIVATE VARIABLES */
@@ -30,7 +35,7 @@ class skyui.util.ConfigManager
 	private static var _eventDummy: Object;
 	
 	// 0: Waiting for file, 1: Waiting for override 2: Loaded
-	private static var _loadPhase: Number = 0;
+	private static var _loadPhase: Number = LOAD_NONE;
 	
 	private static var _config: Object;
 	
@@ -73,7 +78,7 @@ class skyui.util.ConfigManager
 	public static function setExternalOverrideValues()
 	{
 		// Received overrides before file? This can't be right.
-		if (_loadPhase < 1)
+		if (_loadPhase == LOAD_NONE)
 			return;
 		
 		// Update happens in 2 phases.
@@ -84,11 +89,11 @@ class skyui.util.ConfigManager
 				parseExternalOverride(t, arguments[i]);
 		}
 		
-		if (_loadPhase < 2) {
+		if (_loadPhase != LOAD_PAPYRUS) {
 			clearInterval(_timeoutID);
 			delete _timeoutID;
 			
-			_loadPhase = 2;
+			_loadPhase = LOAD_PAPYRUS;
 			skyui.util.Debug.log("Dispatching configLoad");
 			_eventDummy.dispatchEvent({type: "configLoad", config: _config});			
 		} else {
@@ -103,14 +108,7 @@ class skyui.util.ConfigManager
   
 	public static function registerLoadCallback(a_scope: Object, a_callBack: String): Void
 	{
-		// Not completely loaded yet
-		if (_loadPhase < 2) {
-			_eventDummy.addEventListener("configLoad", a_scope, a_callBack);
-			return;
-		}
-		
-		// Already loaded, instantly generate event.
-		a_scope[a_callBack]({type: "configLoad", config: _config});
+		_eventDummy.addEventListener("configLoad", a_scope, a_callBack);
 	}
 	
 	public static function registerUpdateCallback(a_scope: Object, a_callBack: String): Void
@@ -120,8 +118,6 @@ class skyui.util.ConfigManager
 	
 	public static function setConstant(a_name: String, a_value): Void
 	{
-		skyui.util.Debug.log("setConstant setConstant setConstant: " + a_name + " " + a_value);
-		
 		var type = typeof(a_value);
 		if (type != "number" && type != "boolean" && type != "string")
 			return;
@@ -130,7 +126,7 @@ class skyui.util.ConfigManager
 	}
 	
 	
-	public static function addConstantTable(a_name: String): Void
+	public static function addConstantTable(a_name: String, a_class: Function): Void
 	{
 		_extConstantTableNames.push(a_name);
 	}
@@ -192,11 +188,12 @@ class skyui.util.ConfigManager
 		_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 	}
 	
-	// Provide static accessor to the config to retrieve trivial values
+	// (Unsafe) Provide static accessor to the config to retrieve trivial values
+	/*
 	public static function getValue(a_section: String, a_key: String): Object
 	{
-		if (_loadPhase < 2)
-			return undefined;
+		if (_loadPhase < LOAD_PAPYRUS)
+			return null;
 		
 		var a = a_key.split(".");
 		var loc = _config[a_section];
@@ -207,7 +204,7 @@ class skyui.util.ConfigManager
 		}
 		
 		return loc;
-	}
+	}*/
 
 
   /* PRIVATE FUNCTIONS */
@@ -258,6 +255,7 @@ class skyui.util.ConfigManager
 			var tbl = _global[a[0]];
 			for (var j=1; j<a.length; j++)
 				tbl = tbl[a[j]];
+				
 			_extConstantTables.push(tbl);
 		}
 		
@@ -311,7 +309,7 @@ class skyui.util.ConfigManager
 		}
 		
 		_loadPhase = 1;
-		_timeoutID = setInterval(onTimeout, LOAD_TIMEOUT);
+		_timeoutID = setInterval(onTimeout, TIMEOUT);
 		
 //		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
@@ -321,8 +319,8 @@ class skyui.util.ConfigManager
 		clearInterval(_timeoutID);
 		delete _timeoutID;
 
-		if (_loadPhase < 2) {
-			_loadPhase = 2;
+		if (_loadPhase != LOAD_PAPYRUS) {
+			_loadPhase = LOAD_PAPYRUS;
 			skyui.util.Debug.log("Dispatching configLoad (delayed)");
 			_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 		}
