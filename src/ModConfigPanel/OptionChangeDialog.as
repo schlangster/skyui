@@ -106,14 +106,14 @@ class OptionChangeDialog extends BasicDialog
 		if (e == undefined)
 			return;
 		
-		ButtonEntryFormatter(menuList.entryFormatter).activeEntry = e;
+		menuList.listState.activeEntry = e;
 		menuList.UpdateList();
 	}
 	
 	public function onScroll(event: Object): Void
 	{
 		sliderValue = event.position * sliderInterval;
-		var t = sliderFormatString	? GlobalFunctions.format(sliderFormatString, sliderValue)
+		var t = sliderFormatString	? GlobalFunctions.formatString(sliderFormatString, sliderValue)
 									: t = Math.round(sliderValue * 100) / 100;
 		sliderPanel.valueTextField.SetText(t);
 	}
@@ -148,13 +148,12 @@ class OptionChangeDialog extends BasicDialog
 		menuList.addEventListener("itemPress", this, "onMenuListPress");
 		
 		menuList.listEnumeration = new BasicEnumeration(menuList.entryList);
-		menuList.entryFormatter = new ButtonEntryFormatter(menuList);
 		
 		for (var i=0; i<menuOptions.length; i++) {
 			var entry = {text: menuOptions[i], align: "center", enabled: true, state: "normal"};
 			menuList.entryList.push(entry);
 			if (i == menuStartIndex)
-				ButtonEntryFormatter(menuList.entryFormatter).activeEntry = entry;
+				menuList.listState.activeEntry = entry
 		}
 		
 		menuList.InvalidateData();
@@ -193,17 +192,16 @@ class OptionChangeDialog extends BasicDialog
 			setActiveMenuIndex(menuDefaultIndex);
 	}
 	
-	// Not so great...
 	private function setActiveMenuIndex(a_index: Number): Void
 	{
 		var e = menuList.entryList[a_index];
-		ButtonEntryFormatter(menuList.entryFormatter).activeEntry = e;
+		menuList.listState.activeEntry = e;
 		menuList.UpdateList();
 	}
 	
 	private function getActiveMenuIndex(): Number
 	{
-		var index = ButtonEntryFormatter(menuList.entryFormatter).activeEntry.itemIndex
+		var index = menuList.listState.activeEntry.itemIndex
 		return (index ? index : -1);
 	}
 }
