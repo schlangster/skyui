@@ -56,7 +56,7 @@ class OptionsListEntry extends BasicListEntry
 	
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{
-		var entryWidth = _width;
+		var entryWidth = background._width;
 		var isSelected = a_entryObject == a_state.list.selectedEntry;
 		
 		selectIndicator._visible = isSelected;

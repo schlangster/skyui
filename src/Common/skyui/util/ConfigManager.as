@@ -128,8 +128,6 @@ class skyui.util.ConfigManager
 	
 	public static function addConstantTable(a_name: String, a_class: Function): Void
 	{
-		skyui.util.Debug.log("Added constant table");
-		trace("Added constant table: " +a_name);
 		_extConstantTableNames.push(a_name);
 	}
 	

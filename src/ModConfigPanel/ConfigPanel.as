@@ -209,7 +209,6 @@ class ConfigPanel extends MovieClip
 		var initObj = {
 			_x: 562, _y: 265,
 			titleText: _dialogTitleText,
-			optionMode: OptionChangeDialog.MODE_SLIDER,
 			sliderValue: a_value,
 			sliderDefault: a_default,
 			sliderMax: a_max,
@@ -218,7 +217,7 @@ class ConfigPanel extends MovieClip
 			sliderFormatString: _sliderDialogFormatString
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", initObj);
+		_optionChangeDialog = DialogManager.open(this, "OptionSliderDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");
@@ -237,13 +236,12 @@ class ConfigPanel extends MovieClip
 		var initObj = {
 			_x: 562, _y: 265,
 			titleText: _dialogTitleText,
-			optionMode: OptionChangeDialog.MODE_MENU,
 			menuOptions: _menuDialogOptions,
 			menuStartIndex: a_startIndex,
 			menuDefaultIndex: a_defaultIndex
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionChangeDialog", initObj);
+		_optionChangeDialog = DialogManager.open(this, "OptionMenuDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");

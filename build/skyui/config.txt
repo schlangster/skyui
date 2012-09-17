@@ -38,6 +38,7 @@ colors.disabled.negative = 0x800000
 [ListLayout] 
 ; =====================================================================================================================
 vars.a_textBorder.value = <0, 0, 1.1, 0> ; left right top bottom
+vars.n_iconSize.value = 18
 
 defaults.entryWidth = 530
 
@@ -74,13 +75,13 @@ columns.equipColumn.type = EQUIP_ICON
 columns.equipColumn.passive = true
 columns.equipColumn.states = 1
 columns.equipColumn.indent = -28
-columns.equipColumn.icon.size = 18
+columns.equipColumn.icon.size = n_iconSize
 columns.equipColumn.border = <0, 10, 3, 3> ; left right top bottom
 columns.equipColumn.state1.label.text = ' '
 
 columns.iconColumn.type = ITEM_ICON
 columns.iconColumn.states = 2
-columns.iconColumn.icon.size = 18
+columns.iconColumn.icon.size = n_iconSize
 columns.iconColumn.border = <0, 3, 3, 3> ; left right top bottom
 
 columns.iconColumn.state1.label.text = ' '
