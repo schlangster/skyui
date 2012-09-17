@@ -5,8 +5,8 @@ class skyui.util.Debug
   /* PRIVATE VARIABLES */
 	private static var _buffer: Array = [];
 
-  /* STATIC PUBLIC FUNCTIONS */
-	static public function log(a_text: String): Void
+  /* PUBLIC STATIC FUNCTIONS */
+	public static function log(a_text: String /* , a_text2: String ... */): Void
 	{
 		var date: Date = new Date;
 		var hh: String = String(date.getHours());
@@ -28,23 +28,25 @@ class skyui.util.Debug
 		}
 
 		for(var i = 0; i < arguments.length; i++) {
-			var str = dateTime + " " + a_text;
+			var str = dateTime + " " + arguments[i];
 
 			if (_global.skse)
 				skse.Log(str);
+			else if (_global.gfxPlayer)
+				trace(str);
 			else
 				_buffer.push(str);
 		}
 	}
 
-	static public function getFunctionName(a_func: Function): String
+	public static function getFunctionName(a_func: Function): String
 	{
 		var name: String = getFunctionNameRecursive(a_func, _global);
 		//if (!name) name = getFunctionNameRecursive(a_func, _root);
 		return name;
 	}
 
-	static public function getFunctionNameRecursive(a_func: Function, a_root: Object): String
+	public static function getFunctionNameRecursive(a_func: Function, a_root: Object): String
 	{
 		var func: Function = a_func;
 		var root: Object = a_root;
