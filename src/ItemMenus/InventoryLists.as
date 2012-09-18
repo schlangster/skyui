@@ -292,44 +292,36 @@ class InventoryLists extends MovieClip
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		if (_currentState == SHOW_PANEL) {
+		if (_currentState != SHOW_PANEL)
+			return false;
 			
-			if (GlobalFunc.IsKeyPressed(details)) {
+		if (GlobalFunc.IsKeyPressed(details)) {
 
-				// Search hotkey (default space)
-				if (details.code == _searchKey) {
-					searchWidget.startInput();
-					return true;
-				}
-					
-				// Toggle tab (default ALT)
-				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-				if (tabBar != undefined && (details.code == _tabToggleKey || bGamepadBackPressed)) {
-					tabBar.tabToggle();
-					return true;
-				}
+			// Search hotkey (default space)
+			if (details.code == _searchKey) {
+				searchWidget.startInput();
+				return true;
 			}
-			
-			if (categoryList.handleInput(details, pathToFocus))
+				
+			// Toggle tab (default ALT)
+			var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
+			if (tabBar != undefined && (details.code == _tabToggleKey || bGamepadBackPressed)) {
+				tabBar.tabToggle();
 				return true;
-			
-			var nextClip = pathToFocus.shift();
-			
-			if (nextClip.handleInput(details, pathToFocus))
-				return true;
+			}
 		}
-		return false;
+		
+		if (categoryList.handleInput(details, pathToFocus))
+			return true;
+		
+		var nextClip = pathToFocus.shift();
+		return nextClip.handleInput(details, pathToFocus);
 	}
 
 	public function getContentBounds():Array
 	{
 		var lb = panelContainer.ListBackground;
 		return [lb._x, lb._y, lb._width, lb._height];
-	}
-
-	public function restoreCategoryIndex(): Void
-	{
-		categoryList.selectedIndex = _currCategoryIndex;
 	}
 	
 	public function showItemsList(): Void

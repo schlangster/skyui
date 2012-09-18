@@ -99,7 +99,6 @@ class InventoryMenu extends ItemMenu
 			return true;
 		
 		var nextClip = pathToFocus.shift();
-			
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 			

@@ -111,12 +111,6 @@ class CategoryList extends BasicList
 		_entryList.splice(0);
 	}
 	
-	// Switch to given category index to restore the last selection.
-	public function restoreCategory(a_newIndex: Number): Void
-	{
-		onItemPress(a_newIndex, SELECT_KEYBOARD);
-	}
-	
 	// @override BasicList
 	public function InvalidateData(): Void
 	{

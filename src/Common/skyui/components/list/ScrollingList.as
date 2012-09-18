@@ -256,8 +256,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		calculateMaxScrollPosition();		
 		UpdateList();
 		
-		// TODO: This might be a problem when doing delayed updating.
-		
 		// Restore selection
 		if (_curClipIndex != undefined && _curClipIndex != -1 && _listIndex > 0) {
 			if (_curClipIndex >= _listIndex)

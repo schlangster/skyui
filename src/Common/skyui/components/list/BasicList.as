@@ -150,6 +150,10 @@ class skyui.components.list.BasicList extends BSList
 			}
 			_bRequestInvalidate = false;
 			_bRequestUpdate = false;
+			
+			// Allow custom handlers
+			if (onUnsuspend != undefined)
+				onUnsuspend();
 		}
 	}
 	
@@ -180,6 +184,9 @@ class skyui.components.list.BasicList extends BSList
 	public var removeEventListener: Function;
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
+	
+	// Custom handlers
+	public var onUnsuspend: Function;
 	
 	public function addDataProcessor(a_dataProcessor: IListProcessor): Void
 	{

@@ -357,15 +357,33 @@ class ItemMenu extends MovieClip
 	// @API
 	public function RestoreIndices(): Void
 	{
-		if (arguments[0] != undefined && arguments[0] != -1 && arguments.length == 3) {
-			inventoryLists.categoryList.restoreCategory(arguments[0]);
-			inventoryLists.itemList.scrollPosition = arguments[2];
-			inventoryLists.itemList.selectedIndex = arguments[1];
-		} else {
-			inventoryLists.categoryList.restoreCategory(1); // ALL
-		}
+		var categoryList = inventoryLists.categoryList;
+		var itemList = inventoryLists.itemList;
 		
-		inventoryLists.categoryList.UpdateList();
+		if (arguments[0] != undefined && arguments[0] != -1 && arguments.length == 3) {
+			categoryList.listState.restoredItem = arguments[0];
+			categoryList.onUnsuspend = function()
+			{
+				this.onItemPress(this.listState.restoredItem, 0);
+				delete this.onUnsuspend;
+			};
+			
+			itemList.listState.restoredScrollPosition = arguments[2];
+			itemList.listState.restoredSelectedIndex = arguments[1];
+			itemList.onUnsuspend = function()
+			{
+				this.scrollPosition = this.listState.restoredScrollPosition;
+				this.selectedIndex = this.listState.restoredSelectedIndex;
+				delete this.onUnsuspend;
+			};
+		} else {
+			var categoryList = inventoryLists.categoryList;
+			categoryList.onUnsuspend = function()
+			{
+				this.onItemPress(1, 0); // ALL
+				delete this.onUnsuspend;
+			};
+		}
 	}
 	
 	

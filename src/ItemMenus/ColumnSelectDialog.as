@@ -1,6 +1,7 @@
 ﻿import gfx.io.GameDelegate;
 import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 
 import skyui.components.list.ButtonEntryFormatter;
@@ -69,22 +70,18 @@ class ColumnSelectDialog extends BasicDialog
 	}
 	
 	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		var bCaught = false;
-
-		if (GlobalFunc.IsKeyPressed(details)) {
+		if (! GlobalFunc.IsKeyPressed(details))
+			return false;
 				
-			if (details.navEquivalent == NavigationCode.LEFT || details.navEquivalent == NavigationCode.RIGHT) {
-				DialogManager.close();
-				bCaught = true;
-			}
-
-			if (!bCaught)
-				bCaught = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+		if (details.navEquivalent == NavigationCode.LEFT || details.navEquivalent == NavigationCode.RIGHT) {
+			DialogManager.close();
+			return true;
 		}
-		
-		return bCaught;
+			
+		var nextClip = pathToFocus.shift();
+		return nextClip.handleInput(details, pathToFocus);
 	}
 	
 	public function onMouseDown(): Void

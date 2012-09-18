@@ -21,10 +21,11 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 	public function ActiveEffectsColumn()
 	{
 		super();
-		
-		_effectsArray = new Array();
 
-		_x = Stage.safeRect.width - effectBaseSize - (index * (effectBaseSize + columnSpacing));
+		_effectsArray = new Array();
+		// Stage right - effectSize + yOffset - (index * (effect size + columnPadding))
+		_x = (Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x) - effectBaseSize - columnSpacing - (index * (effectBaseSize + columnSpacing));
+
 		// _y is set by initObject since it's constant
 		/*
 		_y = Stage.safeRect.width;
