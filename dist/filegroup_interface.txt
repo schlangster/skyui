@@ -12,6 +12,8 @@ Interface\skyui\skyui_icons_curved.swf
 Interface\skyui\skyui_icons_psychosteve.swf
 Interface\skyui\skyui_icons_straight.swf
 Interface\skyui\skyui_splash.swf
+Interface\skyui\mcm_splash.swf
+Interface\skyui\res\mcm_logo.dds
 Interface\widgets\activeeffects.swf
 Interface\widgets\status.swf
 Interface\translations\SkyUI_czech.txt
