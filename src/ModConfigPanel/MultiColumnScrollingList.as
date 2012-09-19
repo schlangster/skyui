@@ -15,10 +15,11 @@ class MultiColumnScrollingList extends ScrollingList
 	{
 		super();
 		
-		_separators = [];
-		
 		scrollDelta = columnCount;
 		_maxListIndex *= columnCount;
+		
+		if (_separators == null)
+			_separators = [];
 	}
 	
 	public function get columnCount(): Number
@@ -33,10 +34,11 @@ class MultiColumnScrollingList extends ScrollingList
 		refreshSeparators();
 	}
 	
-
-	
 	private function refreshSeparators()
 	{
+		if (_separators == null)
+			_separators = [];
+		
 		while (_separators.length > 0) {
 			var e = _separators.pop();
 			e.removeMovieClip();
@@ -115,5 +117,11 @@ class MultiColumnScrollingList extends ScrollingList
 			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 				if (e._parent == this && e._visible && e.itemIndex != undefined)
 					doSetSelectedIndex(e.itemIndex, SELECT_MOUSE);
+
+
+					
+		var bShowSeparators = _listIndex > 0;
+		for (var i=0; i<_separators.length; i++)
+			_separators[i]._visible = bShowSeparators;
 	}
 }

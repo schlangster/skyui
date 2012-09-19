@@ -324,7 +324,11 @@ int function AddMenuOption(string a_text, string a_value)
 endFunction
 
 ; @interface
-function LoadCustomContent(string a_source)
+function LoadCustomContent(string a_source, float a_x = 0.0, float a_y = 0.0)
+	float[] params = new float[2]
+	params[0] = a_x
+	params[1] = a_y
+	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setCustomContentParams", params)
 	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".loadCustomContent", a_source)
 endFunction
 

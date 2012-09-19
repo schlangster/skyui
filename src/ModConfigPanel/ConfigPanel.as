@@ -30,7 +30,10 @@ class ConfigPanel extends MovieClip
 	private var _modList: ScrollingList;
 	private var _subList: ScrollingList;
 	private var _optionsList: MultiColumnScrollingList;
+
 	private var _customContent: MovieClip;
+	private var _customContentX: Number = 0;
+	private var _customContentY: Number = 0;
 	
 	private var _optionChangeDialog: MovieClip;
 	
@@ -85,7 +88,9 @@ class ConfigPanel extends MovieClip
 	private function onLoad()
 	{
 		super.onLoad();
-		
+
+		_global.skyui.platform = 0;
+
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
 		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
@@ -95,15 +100,33 @@ class ConfigPanel extends MovieClip
 		_optionsList.addEventListener("itemPress", this, "onOptionPress");
 		_optionsList.addEventListener("selectionChange", this, "onOptionChange");
 		
-		// Debug
-		Shared.GlobalFunc.MaintainTextFormat();
-		
-		_global.skyui.platform = 0;
-		
-//		startPage();
-//		loadCustomContent("skyui_splash.swf");
+		_modListPanel.addEventListener("modListEnter", this, "onModListEnter");
+		_modListPanel.addEventListener("modListExit", this, "onModListExit");
+		_modListPanel.addEventListener("subListEnter", this, "onSubListEnter");
+		_modListPanel.addEventListener("subListExit", this, "onSubListExit");
 
 		_optionsList._visible = false;
+		showWelcomeScreen();
+	}
+	
+	public function onModListEnter(event: Object): Void
+	{
+		showWelcomeScreen();
+	}
+	
+	public function onModListExit(event: Object): Void
+	{
+	}
+	
+	public function onSubListEnter(event: Object): Void
+	{
+	}
+	
+	public function onSubListExit(event: Object): Void
+	{
+		_optionsList.clearList();
+		_optionsList.InvalidateData();
+		unloadCustomContent();
 	}
 	
 	
@@ -136,6 +159,12 @@ class ConfigPanel extends MovieClip
 		_subList.InvalidateData();
 	}
 	
+	public function setCustomContentParams(a_x: Number, a_y: Number): Void
+	{
+		_customContentX = a_x;
+		_customContentY = a_y;
+	}
+	
 	public function loadCustomContent(a_source: String): Void
 	{
 		unloadCustomContent();
@@ -143,6 +172,8 @@ class ConfigPanel extends MovieClip
 		var optionsPanel: MovieClip = contentHolder.optionsPanel;
 		
 		_customContent = optionsPanel.createEmptyMovieClip("customContent", optionsPanel.getNextHighestDepth());
+		_customContent._x = _customContentX;
+		_customContent._y = _customContentY;
 		_customContent.loadMovie(a_source);
 		
 		_optionsList._visible = false;
@@ -298,14 +329,7 @@ class ConfigPanel extends MovieClip
 	{
 		GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		_parent.gotoAndPlay("fadeIn");
-			
-//		for (var i=0; i<48; i++)
-//			_optionsList.entryList.push({optionType: Math.floor(Math.random()*6), enabled: true, text: "Label " + i, strValue: "OPTION " + i, numValue: 123.45});
-		
-
 	}
-	
-
 	
 	public function endPage(): Void
 	{
@@ -374,10 +398,13 @@ class ConfigPanel extends MovieClip
 		_subList.clearList();
 		_subList.InvalidateData();
 		
+		_optionsList.clearList();
+		_optionsList.InvalidateData();
+		unloadCustomContent();
+		
 		_state = WAIT_FOR_OPTION_DATA;
 		skse.SendModEvent("SKICP_modSelected", null, a_entry.modIndex);
-
-//		unloadCustomContent();
+		
 		contentHolder.modListPanel.showSublist();
 	}
 	
@@ -477,5 +504,14 @@ class ConfigPanel extends MovieClip
 		} else {
 			t.background._height = 32;
 		}
+	}
+	
+	private function showWelcomeScreen(): Void
+	{
+		setCustomContentParams(150, 50);
+		loadCustomContent("skyui/mcm_splash.swf");
+
+		setTitleText("MOD CONFIGURATION");
+		setInfoText("");
 	}
 }

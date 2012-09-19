@@ -1,6 +1,9 @@
-﻿import mx.transitions.Tween;
+﻿import gfx.events.EventDispatcher;
+
+import mx.transitions.Tween;
 import mx.transitions.easing.Strong;
 import mx.utils.Delegate;
+
 import skyui.components.list.ScrollingList;
 
 
@@ -51,10 +54,21 @@ class ModListPanel extends MovieClip
 	{
 		_modList = modListFader.list;
 		_subList = subListFader.list;
+		
+		EventDispatcher.initialize(this);
 	}
 	
 
   /* PUBLIC FUNCTIONS */
+  
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
 	
 	// @override MovieClip
 	public function onLoad(): Void
@@ -94,6 +108,7 @@ class ModListPanel extends MovieClip
 				if (modListFader.getDepth() < subListFader.getDepth())
 					modListFader.swapDepths(subListFader);
 					
+				dispatchEvent({type: "modListEnter"});
 				break;
 				
 			case SUBLIST_ACTIVE:
@@ -104,6 +119,7 @@ class ModListPanel extends MovieClip
 					subListFader.swapDepths(modListFader);
 				decorTitle.onPress = onDecorPressFunc;
 				
+				dispatchEvent({type: "subListEnter"});
 				break;
 				
 			case TRANSITION_TO_SUBLIST:
@@ -120,6 +136,7 @@ class ModListPanel extends MovieClip
 				
 				sublistIndicator._visible = false;
 				
+				dispatchEvent({type: "modListExit"});
 				break;
 				
 			case TRANSITION_TO_LIST:
@@ -131,7 +148,8 @@ class ModListPanel extends MovieClip
 				_subList.selectedIndex = -1;
 				_subList.disableInput = true;
 				_subList.disableSelection = true;
-
+				
+				dispatchEvent({type: "subListExit"});
 				break;
 				
 			default:
