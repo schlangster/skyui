@@ -17,6 +17,8 @@ string[]			_modes
 float				_x = 0.0
 float				_y = 0.0
 float				_alpha = 100.0
+string				_hAlign = "left"
+string				_vAlign = "top"
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -94,6 +96,34 @@ float property Alpha
 		_alpha = a_val
 		if (Initialized)
 			UpdateWidgetAlpha()
+		endIf
+	endFunction
+endProperty
+
+float property HAlign
+	{Horizontal align of the widget left, center, right}
+	float function get()
+		return _hAlign
+	endFunction
+	
+	function set(float a_val)
+		_hAlign = a_val
+		if (Initialized)
+			UpdateWidgetHAlign()
+		endIf
+	endFunction
+endProperty
+
+float property VAlign
+	{Vertical align of the widget top, center, bottom}
+	float function get()
+		return _vAlign
+	endFunction
+	
+	function set(float a_val)
+		_vAlign = a_val
+		if (Initialized)
+			UpdateWidgetVAlign()
 		endIf
 	endFunction
 endProperty
@@ -176,15 +206,23 @@ function UpdateWidgetClientInfo()
 endFunction
 
 function UpdateWidgetPositionX()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "._x", X)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + ".setPositionX", X)
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "._y", Y)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + ".setPositionY", Y)
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.SetNumber(HUD_MENU, _widgetRoot + "._alpha", Alpha)
+	UI.InvokeNumber(HUD_MENU, _widgetRoot + ".setAlpha", Alpha)
+endFunction
+
+function UpdateWidgetHAlign()
+	UI.InvokeString(HUD_MENU, _widgetRoot + ".setHAlign", HAlign)
+endFunction
+
+function UpdateWidgetVAlign()
+	UI.InvokeString(HUD_MENU, _widgetRoot + ".setVAlign", VAlign)
 endFunction
 
 function UpdateWidgetModes()

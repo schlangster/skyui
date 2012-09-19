@@ -1,8 +1,16 @@
-﻿class skyui.widgets.WidgetBase extends MovieClip
+﻿import Shared.GlobalFunc;
+
+class skyui.widgets.WidgetBase extends MovieClip
 {
   /* CONSTANTS */
 	
-	private var MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
+	private static var MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
+
+	private static var ALIGN_LEFT: String = "left";
+	private static var ALIGN_RIGHT: String = "right";
+	private static var ALIGN_CENTER: String = "center";
+	private static var ALIGN_TOP: String = "top";
+	private static var ALIGN_BOTTOM: String = "bottom";
 	
 	
   /* PRIVATE VARIABLES */
@@ -10,6 +18,9 @@
 	private var _clientInfo: Object;
 	private var _widgetID: String;
 	private var _widgetHolder: MovieClip;
+
+	private var _vAlign: String;
+	private var _hAlign: String;
 	
 	
   /* INITIALIZATION */
@@ -31,7 +42,7 @@
   /* PUBLIC FUNCTIONS */
   
 	// @Papyrus
-	public function setModes(/* a_visibleModes [] */): Void
+	public function setModes(/* a_visibleMode0: String, a_visibleMode1: String, ... */): Void
 	{
 		var numValidModes: Number = 0;
 		// Clear all modes
@@ -71,4 +82,84 @@
 		
 		widget.clientInfo = clientInfo;
 	}
+
+	// @Papyrus
+	public function setVAlign(a_vAlign: String): Void
+	{
+		var vAlign: String = a_vAlign.toLowerCase();
+
+		if (_vAlign == vAlign)
+			return;
+
+		_vAlign = vAlign;
+
+		invalidateSize();
+	}
+
+	// @Papyrus
+	public function setHAlign(a_hAlign: String): Void
+	{
+		var hAlign: String = a_hAlign.toLowerCase();
+
+		if (_hAlign == hAlign)
+			return;
+
+		_hAlign = hAlign;
+
+		invalidateSize();
+	}
+
+	private function invalidateSize(): Void
+	{
+		updateAlign();
+	}
+
+	private function updateAlign(): Void
+	{
+		var xOffset: Number = getWidth();
+		var yOffset: Number = getHeight();
+
+		if (_hAlign == ALIGN_RIGHT)
+			_widgetHolder._x = -xOffset;
+		else if (_hAlign == ALIGN_CENTER)
+			_widgetHolder._x = -xOffset/2;
+		else
+			_widgetHolder._x = 0;
+
+		if (_vAlign == ALIGN_BOTTOM)
+			_widgetHolder._y = -yOffset;
+		else if (_vAlign == ALIGN_CENTER)
+			_widgetHolder._y = -yOffset/2;
+		else
+			_widgetHolder._y = 0;
+	}
+
+	// Override if widget width depends on a property other than _width
+	public function getWidth(): Number {
+		return _width
+	}
+
+	// Override if widget height depends on a property other than _height
+	public function getHeight(): Number {
+		return _height;
+	}
+
+	public function setPositionX(a_positionX: Number): Void
+	{
+		var minX: Number = 0; //Stage.visibleRect.x + Stage.safeRect.x;
+		var maxX: Number = Stage.visibleRect.width - 2*Stage.safeRect.x; //Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
+		var newX: Number = GlobalFunc.Lerp(minX, maxX, 0, 100, a_positionX, true);
+
+		_x = newX;
+	}
+
+	public function setPositionY(a_positionY: Number): Void
+	{
+		var minY: Number = 0; //Stage.visibleRect.y + Stage.safeRect.y;
+		var maxY: Number = Stage.visibleRect.height - 2*Stage.safeRect.y; //Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y;
+		var newY: Number = GlobalFunc.Lerp(minY, maxY, 0, 100, a_positionY, true);
+
+		_y = newY;
+	}
+
 }
