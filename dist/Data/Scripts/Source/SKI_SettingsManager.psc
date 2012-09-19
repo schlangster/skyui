@@ -6,6 +6,8 @@ string property		MENU_ROOT		= "_global.skyui.util.ConfigManager" autoReadonly
 
 string property		INVENTORY_MENU	= "InventoryMenu" autoReadonly
 string property		MAGIC_MENU		= "MagicMenu" autoReadonly
+string property		CONTAINER_MENU	= "ContainerMenu" autoReadonly
+string property		BARTER_MENU		= "BarterMenu" autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -30,8 +32,11 @@ event OnInit()
 
 	RegisterForMenu(INVENTORY_MENU)
 	RegisterForMenu(MAGIC_MENU)
+	RegisterForMenu(CONTAINER_MENU)
+	RegisterForMenu(BARTER_MENU)
 	RegisterForModEvent("SKICO_setConfigOverride", "OnSetConfigOverride")
 endEvent
+
 
 ; EVENTS ------------------------------------------------------------------------------------------
 
