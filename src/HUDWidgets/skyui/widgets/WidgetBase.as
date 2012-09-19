@@ -109,6 +109,36 @@ class skyui.widgets.WidgetBase extends MovieClip
 		invalidateSize();
 	}
 
+	// @Papyrus
+	public function setPositionX(a_positionX: Number): Void
+	{
+		var minX: Number = 0; //Stage.visibleRect.x + Stage.safeRect.x;
+		var maxX: Number = Stage.visibleRect.width - 2*Stage.safeRect.x; //Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
+		var newX: Number = GlobalFunc.Lerp(minX, maxX, 0, 100, a_positionX, true);
+
+		_x = newX;
+	}
+
+	// @Papyrus
+	public function setPositionY(a_positionY: Number): Void
+	{
+		var minY: Number = 0; //Stage.visibleRect.y + Stage.safeRect.y;
+		var maxY: Number = Stage.visibleRect.height - 2*Stage.safeRect.y; //Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y;
+		var newY: Number = GlobalFunc.Lerp(minY, maxY, 0, 100, a_positionY, true);
+
+		_y = newY;
+	}
+
+  /* PRIVATE FUNCTIONS */
+	// Override if widget dimensions depend properties other than _width and _height
+	private function getWidth(): Number {
+		return _width
+	}
+
+	private function getHeight(): Number {
+		return _height;
+	}
+
 	private function invalidateSize(): Void
 	{
 		updateAlign();
@@ -133,33 +163,4 @@ class skyui.widgets.WidgetBase extends MovieClip
 		else
 			_widgetHolder._y = 0;
 	}
-
-	// Override if widget width depends on a property other than _width
-	public function getWidth(): Number {
-		return _width
-	}
-
-	// Override if widget height depends on a property other than _height
-	public function getHeight(): Number {
-		return _height;
-	}
-
-	public function setPositionX(a_positionX: Number): Void
-	{
-		var minX: Number = 0; //Stage.visibleRect.x + Stage.safeRect.x;
-		var maxX: Number = Stage.visibleRect.width - 2*Stage.safeRect.x; //Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-		var newX: Number = GlobalFunc.Lerp(minX, maxX, 0, 100, a_positionX, true);
-
-		_x = newX;
-	}
-
-	public function setPositionY(a_positionY: Number): Void
-	{
-		var minY: Number = 0; //Stage.visibleRect.y + Stage.safeRect.y;
-		var maxY: Number = Stage.visibleRect.height - 2*Stage.safeRect.y; //Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y;
-		var newY: Number = GlobalFunc.Lerp(minY, maxY, 0, 100, a_positionY, true);
-
-		_y = newY;
-	}
-
 }

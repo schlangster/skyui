@@ -1,11 +1,8 @@
 Log: Archive.log
 New Archive
+Check: Compress Archive
 Check: Menus
-Check: Meshes
 Check: Misc
-Check: Sounds
-Check: Textures
-Check: Voices
 Check: Retain Directory Names
 Check: Retain File Names
 Set File Group Root: Data\
