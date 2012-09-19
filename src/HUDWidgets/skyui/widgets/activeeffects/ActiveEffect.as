@@ -67,7 +67,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 
 
-		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: "AUTO", easing: Linear.easeNone})
+		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: 0, easing: Linear.easeNone})
 	}
 
   /* PUBLIC FUNCTIONS */
@@ -91,12 +91,12 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	{
 		index = a_newIndex;
 
-		TweenLite.to(this, effectMoveDuration, {_y:  index * (effectBaseSize + effectSpacing), overwrite: "AUTO", easing: Linear.easeNone});
+		TweenLite.to(this, effectMoveDuration, {_y:  index * (effectBaseSize + effectSpacing), overwrite: 0, easing: Linear.easeNone});
 	}
 
 	public function remove(): Void
 	{
-		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onEffectRemoved, onCompleteParams: [this], overwrite: "AUTO", easing: Linear.easeNone});
+		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onEffectRemoved, onCompleteParams: [this], overwrite: 0, easing: Linear.easeNone});
 	}
 
   /* PRIVATE FUNCTIONS */
@@ -202,4 +202,17 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 				(m != 0 || d || h ? (m + "m ") : "") +
 				(s + "s"));
 	}
+
+	//todo
+	/*private function determinePosition(a_index: Number): Number
+	{
+		var newY: Number
+
+		if (hGrowDirection == "right")
+			newY = +(index * (effectBaseSize + columnSpacing))
+		else if (hGrowDirection == "left")
+			newY = -(index * (effectBaseSize + columnSpacing))
+
+		return newY
+	}*/
 }

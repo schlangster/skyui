@@ -1,7 +1,7 @@
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
 
-class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
+class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 {
   /* PRIVATE VARIABLES */
 	private var _effectsArray: Array
@@ -9,8 +9,8 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
   /* PUBLIC VARIABLES */
   	// initObject
 	public var index: Number;
-	public var columnMoveDuration: Number;
-	public var columnSpacing: Number;
+	public var groupMoveDuration: Number;
+	public var groupSpacing: Number;
 	public var iconLocation: String;
 	public var effectBaseSize: Number;
 	public var effectSpacing: Number;
@@ -18,19 +18,25 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 	public var effectFadeOutDuration: Number;
 	public var effectMoveDuration: Number;
 
-	public function ActiveEffectsColumn()
+	public var hGrowDirection: String;
+
+	public function ActiveEffectsGroup()
 	{
 		super();
 
 		_effectsArray = new Array();
-		// Stage right - effectSize + yOffset - (index * (effect size + columnPadding))
-		_x = (Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x) - effectBaseSize - columnSpacing - (index * (effectBaseSize + columnSpacing));
+		// Stage right - effectSize + yOffset - (index * (effect size + groupPadding))
+		//_x = (Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x) - effectBaseSize - groupSpacing - (index * (effectBaseSize + groupSpacing));
 
 		// _y is set by initObject since it's constant
 		/*
 		_y = Stage.safeRect.width;
 		//*/
+	}
 
+	public function onLoad()
+	{
+		_x = determinePosition(index);
 	}
 
   /* PUBLIC FUNCTIONS */
@@ -40,7 +46,7 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 		return _effectsArray.length;
 	}
 
-	// Used if you want to access effectsColumn.effects[effectIndex]; for instance
+	// Used if you want to access effectsGroup.effects[effectIndex]; for instance
 	/*
 	public function get effects(): Array
 	{
@@ -68,9 +74,9 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 	public function updatePosition(a_newIndex: Number): Void
 	{
 		index = a_newIndex;
-		var x: Number = Stage.safeRect.width - effectBaseSize - (index * (effectBaseSize + columnSpacing));
+		//var x: Number = Stage.safeRect.width - effectBaseSize - (index * (effectBaseSize + groupSpacing));
 
-		TweenLite.to(this, 1, {_x: x, overwrite: "AUTO", easing: Linear.easeNone});
+		TweenLite.to(this, 1, {_x: determinePosition(index), overwrite: 0, easing: Linear.easeNone});
 	}
 
 	public function onEffectRemoved(a_effectClip: MovieClip): Void
@@ -89,11 +95,11 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
 				effectClip.updatePosition(i);
 			}
 		} else {
-			// If the column had a background, for example, we'd call
+			// If the group had a background, for example, we'd call
 			// this.remove()
-			// which would fade out the column then, onComplete, call
-			// _parent.onColumnRemoved(this);
-			_parent.onColumnRemoved(this);
+			// which would fade out the group then, onComplete, call
+			// _parent.onGroupRemoved(this);
+			_parent.onGroupRemoved(this);
 		}
 	}
 
@@ -102,7 +108,19 @@ class skyui.widgets.activeeffects.ActiveEffectsColumn extends MovieClip
   	/*
   	private function remove(): Void
   	{
-		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onColumnRemoved, onCompleteParams: [this], overwrite: "AUTO", easing: Linear.easeNone});
+		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onGroupRemoved, onCompleteParams: [this], overwrite: 2, easing: Linear.easeNone});
   	}
   	*/
+
+	private function determinePosition(a_index: Number): Number
+	{
+  		var newX: Number;
+
+		if (hGrowDirection == "right")
+			newX = +(index * (effectBaseSize + groupSpacing));
+		else if (hGrowDirection == "left")
+			newX = -(index * (effectBaseSize + groupSpacing));
+
+		return newX
+  	}
 }
