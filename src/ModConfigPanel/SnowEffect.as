@@ -1,4 +1,4 @@
-import com.greensock.TweenNano;
+﻿import com.greensock.TweenNano;
 import com.greensock.easing.Quad;
 import com.greensock.easing.Linear;
 
@@ -76,7 +76,7 @@ class SnowEffect extends ParticleEmitter
 	private function yLoop(a_particle: MovieClip): Void {
 		if (a_particle._y > _effectHeight + effectBuffer) {
 			a_particle._y = Math.random() * -effectBuffer;
-			if (Math.floor(2000*Math.random()) == 0 && _particles.length > 375)
+			if (Math.floor(4096*Math.random()) == 0 && _particles.length > 375)
 				a_particle.gotoAndStop("snow2");
 			else if (a_particle.frameLabel != particleFrameLabel)
 				a_particle.gotoAndStop(particleFrameLabel);
