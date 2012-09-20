@@ -58,7 +58,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		effectDataArray = new Array();
 
-		///* // TEST: init
+		/* // TEST: init
 		effectDataArray = [
 							{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
 							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
@@ -77,9 +77,15 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 							{elapsed: 1000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 59661344424946, actorValue: 54, effectFlags: 4201474, archetype: 11},
 							{elapsed: 20, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
 							];
+		// Set via property in CK					
+		setHAlign("left");
+		setVAlign("top");
+		setPositionX(0);
+		setPositionY(0);
 
-		initNumbers(100, 0, 48.0, 3);
-		initStrings("right", "top", "left", "down");
+
+		initNumbers(48.0, 3);
+		initStrings("right", "down");
 		initCommit();
 
 		//setInterval(this, "testEffectSize", 3000);
@@ -91,19 +97,14 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
   /* PUBLIC FUNCTIONS */
 	// Papyrus interface
-	public function initNumbers(a_positionX: Number, a_positionY: Number, a_effectSize: Number, a_groupLength: Number): Void
+	public function initNumbers(a_effectSize: Number, a_maxEffectsGroupLength: Number): Void
 	{
-		setPositionX(a_positionX);
-		setPositionY(a_positionY);
-
 		_effectBaseSize = a_effectSize;
-		_maxEffectsGroupLength = a_groupLength;
+		_maxEffectsGroupLength = a_maxEffectsGroupLength;
 	}
 
-	public function initStrings(a_hAlign: String, a_vAlign: String, a_hGrowDirection: String, a_vGrowDirection: String): Void
+	public function initStrings(a_hGrowDirection: String, a_vGrowDirection: String): Void
 	{
-		_hAlign = a_hAlign.toLowerCase();
-		_vAlign = a_vAlign.toLowerCase();
 		_hGrowDirection = a_hGrowDirection.toLowerCase();
 		_vGrowDirection = a_vGrowDirection.toLowerCase();
 	}
@@ -111,41 +112,27 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	public function initCommit(): Void
 	{
 		_groupSpacing = _effectSpacing = _effectBaseSize/10;
-
-		//_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
-		//var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
-		//_maxEffectsGroupLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1;
-
 		invalidateSize();
+
 		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
 
-
+	// @Papyrus
 	public function setEffectSize(a_effectBaseSize: Number): Void
 	{
-		clearInterval(_intervalId);
-		_sortFlag = true;
-
 		_effectBaseSize = a_effectBaseSize;
 		_groupSpacing = _effectSpacing = _effectBaseSize/10.0;
 
-		//_yMin = (_root.HUDMovieBaseInstance.LocationLockBase)? _root.HUDMovieBaseInstance.LocationLockBase.getBounds(this)["yMax"]: Stage.safeRect.top;
-		//var _yMax: Number = ((_root.HUDMovieBaseInstance.ArrowInfoInstance)? (_root.HUDMovieBaseInstance.ArrowInfoInstance.getBounds(this)["yMin"]): Stage.safeRect.bottom) - _effectBaseSize;
-		//_maxEffectsGroupLength = Math.floor((_yMax - _yMin)/(_effectBaseSize + _effectSpacing)) + 1;
+		//Redraw effects, but before the redraw reset the align
+		invalidateEffects(true);
+	}
 
-		var effectsGroup: MovieClip;
-		for (var i: Number = 0; i < _effectsGroups.length; i++) {
-			effectsGroup = _effectsGroups[i];
-			effectsGroup.removeMovieClip();
-		}
+	// @Papyrus
+	public function setGroupLength(a_maxEffectsGroupLength: Number): Void
+	{
+		_maxEffectsGroupLength = a_maxEffectsGroupLength;
 
-		invalidateSize(); // Invalidate after all clips are removed
-
-		_effectsHash = new Object();
-		_effectsGroups = new Array();
-
-		onIntervalUpdate();
-		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
+		invalidateEffects();
 	}
 
 	// Called from ActiveEffectsGroup
@@ -169,7 +156,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private function onIntervalUpdate(): Void
 	{
 		
-		/* // TEST: Uncomment when testing.
+		///* // TEST: Uncomment when testing.
 		effectDataArray.splice(0);
 		skse.RequestActivePlayerEffects(effectDataArray);
 
@@ -216,12 +203,10 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	private function getFreeEffectsGroup(): MovieClip
 	{
-		var effectsGroup: MovieClip;
 		var newGroupIdx: Number = _effectsGroups.length;
 
+		var effectsGroup: MovieClip;
 		var freeEffectsGroup: MovieClip;
-
-
 		for (var i: Number = 0; i < newGroupIdx; i++) {
 			effectsGroup = _effectsGroups[i];
 
@@ -231,18 +216,17 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			}
 		}
 
-		var initObject: Object = {index: newGroupIdx,
-									iconLocation: ICON_LOCATION,
-									groupMoveDuration: GROUP_MOVE_DURATION,
-									groupSpacing: _groupSpacing,
-									effectBaseSize: _effectBaseSize,
-									effectSpacing: _effectSpacing,
-									effectFadeInDuration: EFFECT_FADE_IN_DURATION,
-									effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
-									effectMoveDuration: EFFECT_MOVE_DURATION,
-									hGrowDirection: _hGrowDirection}; //String
-
 		if (freeEffectsGroup == undefined) {
+			var initObject: Object = {index: newGroupIdx,
+										iconLocation: ICON_LOCATION,
+										groupMoveDuration: GROUP_MOVE_DURATION,
+										groupSpacing: _groupSpacing,
+										effectBaseSize: _effectBaseSize,
+										effectSpacing: _effectSpacing,
+										effectFadeInDuration: EFFECT_FADE_IN_DURATION,
+										effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
+										effectMoveDuration: EFFECT_MOVE_DURATION,
+										hGrowDirection: _hGrowDirection}; //String
 			effectsGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + newGroupIdx, getNextHighestDepth(), initObject);
 			_effectsGroups.push(effectsGroup);
 
@@ -250,6 +234,27 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		}
 
 		return freeEffectsGroup;
+	}
+
+	private function invalidateEffects(a_invalidateSize: Boolean): Void
+	{
+		clearInterval(_intervalId);
+		_sortFlag = true;
+
+		var effectsGroup: MovieClip;
+		for (var i: Number = 0; i < _effectsGroups.length; i++) {
+			effectsGroup = _effectsGroups[i];
+			effectsGroup.removeMovieClip();
+		}
+
+		if (a_invalidateSize)
+			invalidateSize();
+
+		_effectsHash = new Object();
+		_effectsGroups = new Array();
+
+		onIntervalUpdate();
+		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
 
 
@@ -286,9 +291,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 
 
-
-
-	///*// TEST: functions
+	/*// TEST: functions
 	private function testEffectSize()
 	{
 		setEffectSize((_effectBaseSize == 32) ? (48): (_effectBaseSize == 48) ? 64 : 32);

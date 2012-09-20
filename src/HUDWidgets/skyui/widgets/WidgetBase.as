@@ -114,7 +114,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 	{
 		var minX: Number = 0; //Stage.visibleRect.x + Stage.safeRect.x;
 		var maxX: Number = Stage.visibleRect.width - 2*Stage.safeRect.x; //Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-		var newX: Number = GlobalFunc.Lerp(minX, maxX, 0, 100, a_positionX, true);
+		var newX: Number = GlobalFunc.Lerp(minX, maxX, 0, 1280, a_positionX, true);
 
 		_x = newX;
 	}
@@ -124,7 +124,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 	{
 		var minY: Number = 0; //Stage.visibleRect.y + Stage.safeRect.y;
 		var maxY: Number = Stage.visibleRect.height - 2*Stage.safeRect.y; //Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y;
-		var newY: Number = GlobalFunc.Lerp(minY, maxY, 0, 100, a_positionY, true);
+		var newY: Number = GlobalFunc.Lerp(minY, maxY, 0, 720, a_positionY, true);
 
 		_y = newY;
 	}
