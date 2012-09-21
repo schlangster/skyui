@@ -381,12 +381,10 @@ event OnOptionSliderAccept(int a_option, float a_value)
 			_AEPositionX = a_value
 			SetSliderOptionValue(a_option, _AEPositionX)
 			SKI_ActiveEffectsWidgetInstance.X = _AEPositionX
-			SetInfoText("Default: " + Math.floor(_AEPositionXDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
 		elseIf (a_option == _AEPositionYOID_S)
 			_AEPositionY = a_value
 			SetSliderOptionValue(a_option, _AEPositionY)
 			SKI_ActiveEffectsWidgetInstance.Y = _AEPositionY
-			SetInfoText("Default: " + Math.floor(_AEPositionYDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
 		endIf
 	endIf
 endEvent
