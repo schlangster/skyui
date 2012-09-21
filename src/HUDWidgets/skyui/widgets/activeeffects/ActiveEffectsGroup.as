@@ -19,28 +19,20 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	public var effectMoveDuration: Number;
 
 	public var hGrowDirection: String;
+	public var vGrowDirection: String;
+	public var growAxis: String;
 
 	public function ActiveEffectsGroup()
 	{
 		super();
 
 		_effectsArray = new Array();
-		// Stage right - effectSize + yOffset - (index * (effect size + groupPadding))
-		//_x = (Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x) - effectBaseSize - groupSpacing - (index * (effectBaseSize + groupSpacing));
 
-		// _y is set by initObject since it's constant
-		/*
-		_y = Stage.safeRect.width;
-		//*/
+		_x = determinePosition(index)[0];
+		_y = determinePosition(index)[1];
 	}
 
-	public function onLoad()
-	{
-		_x = determinePosition(index);
-	}
-
-  /* PUBLIC FUNCTIONS */
-
+  /* PROPERTIES */
 	public function get length(): Number
 	{
 		return _effectsArray.length;
@@ -54,6 +46,7 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	}
 	*/
 
+  /* PUBLIC FUNCTIONS */
 	public function addEffect(a_effectData: Object): MovieClip
 	{
 		var effectIdx: Number = _effectsArray.length;
@@ -64,7 +57,10 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 									effectSpacing: effectSpacing,
 									effectFadeInDuration: effectFadeInDuration,
 									effectFadeOutDuration: effectFadeOutDuration,
-									effectMoveDuration: effectMoveDuration};
+									effectMoveDuration: effectMoveDuration,
+									hGrowDirection: hGrowDirection,
+									vGrowDirection: vGrowDirection,
+									growAxis: growAxis};
 		var effectClip: MovieClip = attachMovie("ActiveEffect", a_effectData.id, getNextHighestDepth(), initObject);
 		_effectsArray.push(effectClip);
 
@@ -74,9 +70,8 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	public function updatePosition(a_newIndex: Number): Void
 	{
 		index = a_newIndex;
-		//var x: Number = Stage.safeRect.width - effectBaseSize - (index * (effectBaseSize + groupSpacing));
 
-		TweenLite.to(this, 1, {_x: determinePosition(index), overwrite: 0, easing: Linear.easeNone});
+		TweenLite.to(this, 1, {_x: determinePosition(index)[0], _y: determinePosition(index)[1], overwrite: 0, easing: Linear.easeNone});
 	}
 
 	public function onEffectRemoved(a_effectClip: MovieClip): Void
@@ -104,6 +99,37 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	}
 
   /* PRIVATE FUNCTIONS */
+	private function determinePosition(a_index: Number): Array
+	{
+		// defaults to vertical
+		//             vertical -> left
+		//          or horizontal -> down
+
+		var newX: Number = 0;
+		var newY: Number = 0;
+
+		// Grow Axis the axis in which new effects will be added to after the total number of effects > GroupEffectCount
+		if (growAxis == "horizontal") {
+			// Orientation is vertical so...
+			// Group is a column, so next group will be shifted horizontally
+			if (hGrowDirection == "left") {
+				newX = -(index * (effectBaseSize + groupSpacing));
+			} else {
+				newX = +(index * (effectBaseSize + groupSpacing));
+			}
+		} else {
+			// Group is a row, so next group will be shifted vertically
+			if (vGrowDirection == "up") {
+				newY = -(index * (effectBaseSize + groupSpacing));
+			} else {
+				newY = +(index * (effectBaseSize + groupSpacing));
+			}
+
+		}
+
+		return [newX, newY];
+	}
+
   	// Not needed, see onEffectRemoved();
   	/*
   	private function remove(): Void
@@ -112,15 +138,6 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
   	}
   	*/
 
-	private function determinePosition(a_index: Number): Number
-	{
-  		var newX: Number;
-
-		if (hGrowDirection == "right")
-			newX = +(index * (effectBaseSize + groupSpacing));
-		else if (hGrowDirection == "left")
-			newX = -(index * (effectBaseSize + groupSpacing));
-
-		return newX
-  	}
 }
+
+

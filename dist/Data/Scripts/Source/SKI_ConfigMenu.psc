@@ -7,6 +7,8 @@ string[]	_alignments
 
 string[]	_sizes
 
+string[]	_corners
+
 ; OIDs (T:Text B:Toggle S:Slider M:Menu)
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -17,6 +19,9 @@ int			_3DItemYOffsetOID_S
 int			_3DItemScaleOID_S
 
 int			_AEEffectSizeOID_T
+int			_AEClampCornerOID_T
+int			_AEPositionXOID_S
+int			_AEPositionYOID_S
 
 int			_itemlistFontSizeOID_T
 
@@ -31,6 +36,11 @@ float		_3DItemScale			= 1.5
 
 float[]		_AEEffectSizeValues
 int			_AEEffectSizeIdx		= 1
+int			_AEClampCornerIdx		= 1
+float		_AEPositionX			= 1280.0
+float[]		_AEPositionXDefaults
+float		_AEPositionY			= 30.0 ; Actually 30.05
+float[]		_AEPositionYDefaults
 
 int			_itemlistFontSizeIdx	= 1
 
@@ -62,10 +72,28 @@ event OnInit()
 	_sizes[1] = "Medium"
 	_sizes[2] = "Large"
 
+	_corners = new string[4]
+	_corners[0] = "TL"
+	_corners[1] = "TR"
+	_corners[2] = "BR"
+	_corners[3] = "BL"
+
 	_AEEffectSizeValues = new float[3]
 	_AEEffectSizeValues[0] = 32.0
 	_AEEffectSizeValues[1] = 48.0
 	_AEEffectSizeValues[2] = 64.0
+
+	_AEPositionXDefaults = new float[4]
+	_AEPositionXDefaults[0] = 0.0
+	_AEPositionXDefaults[1] = 1280.0
+	_AEPositionXDefaults[2] = 1280.0
+	_AEPositionXDefaults[3] = 0.0
+
+	_AEPositionYDefaults = new float[4]
+	_AEPositionYDefaults[0] = 0.0
+	_AEPositionYDefaults[1] = 30.0 ; Actually 30.05
+	_AEPositionYDefaults[2] = 720.0
+	_AEPositionYDefaults[3] = 720.0
 
 	ApplySettings()
 endEvent
@@ -145,6 +173,9 @@ event OnPageReset(string a_page)
 		AddHeaderOption("Active Effects")
 
 		_AEEffectSizeOID_T = AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
+		_AEClampCornerOID_T = AddTextOption("Clamp to Corner", _corners[_AEClampCornerIdx])
+		_AEPositionXOID_S = AddSliderOption("X Offset", _AEPositionX, "{1}")
+		_AEPositionYOID_S = AddSliderOption("Y Offset", _AEPositionY, "{1}")
 
 	; -------------------------------------------------------
 	elseIf (a_page == "Advanced")
@@ -221,6 +252,24 @@ event OnOptionSelect(int a_option)
 			endif
 			SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
 			SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
+
+		elseIf (a_option == _AEClampCornerOID_T)
+			if (_AEClampCornerIdx < _corners.length - 1)
+				_AEClampCornerIdx += 1
+			else
+				_AEClampCornerIdx = 0
+			endif
+			SetTextOptionValue(a_option, _corners[_AEClampCornerIdx])
+			SKI_ActiveEffectsWidgetInstance.ClampCorner = _corners[_AEClampCornerIdx]
+
+			_AEPositionX = _AEPositionXDefaults[_AEClampCornerIdx]
+			SetSliderOptionValue(_AEPositionXOID_S, _AEPositionX)
+			SKI_ActiveEffectsWidgetInstance.X = _AEPositionX
+
+
+			_AEPositionY = _AEPositionYDefaults[_AEClampCornerIdx]
+			SetSliderOptionValue(_AEPositionYOID_S, _AEPositionY)
+			SKI_ActiveEffectsWidgetInstance.Y = _AEPositionY
 		endIf
 	endIf
 endEvent
@@ -265,7 +314,22 @@ event OnOptionSliderOpen(int a_option)
 			SetSliderDialogMinValue(0.5)
 			SetSliderDialogMaxValue(5)
 			SetSliderDialogInterval(0.1)
+		endIf
 
+	; -------------------------------------------------------
+	elseif (page == "Widgets")
+		if (a_option == _AEPositionXOID_S)
+			SetSliderDialogStartValue(_AEPositionX)
+			SetSliderDialogDefaultValue(_AEPositionXDefaults[_AEClampCornerIdx])
+			SetSliderDialogMinValue(0)
+			SetSliderDialogMaxValue(1280)
+			SetSliderDialogInterval(0.5)
+		elseIf (a_option == _AEPositionYOID_S)
+			SetSliderDialogStartValue(_AEPositionY)
+			SetSliderDialogDefaultValue(_AEPositionYDefaults[_AEClampCornerIdx])
+			SetSliderDialogMinValue(0)
+			SetSliderDialogMaxValue(720)
+			SetSliderDialogInterval(0.5)
 		endIf
 	endIf
 endEvent
@@ -309,6 +373,20 @@ event OnOptionSliderAccept(int a_option, float a_value)
 			Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
 			Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
 			Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+		endIf
+
+	; -------------------------------------------------------
+	elseif (page == "Widgets")
+		if (a_option == _AEPositionXOID_S)
+			_AEPositionX = a_value
+			SetSliderOptionValue(a_option, _AEPositionX)
+			SKI_ActiveEffectsWidgetInstance.X = _AEPositionX
+			SetInfoText("Default: " + Math.floor(_AEPositionXDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
+		elseIf (a_option == _AEPositionYOID_S)
+			_AEPositionY = a_value
+			SetSliderOptionValue(a_option, _AEPositionY)
+			SKI_ActiveEffectsWidgetInstance.Y = _AEPositionY
+			SetInfoText("Default: " + Math.floor(_AEPositionYDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
 		endIf
 	endIf
 endEvent
@@ -362,8 +440,45 @@ event OnOptionHighlight(int a_option)
 
 	; -------------------------------------------------------
 	elseIf (page == "Widgets")
-		If (a_option == _AEEffectSizeOID_T)
+		if (a_option == _AEEffectSizeOID_T)
 			SetInfoText("Default: Medium")
+		elseif (a_option == _AEClampCornerOID_T)
+			SetInfoText("Default: TR - Note: X and Y offsets reset to thier respective defaults if this option is changed")
+		elseif (a_option == _AEPositionXOID_S)
+			SetInfoText("Default: " + Math.floor(_AEPositionXDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
+		elseif (a_option == _AEPositionYOID_S)
+			SetInfoText("Default: " + Math.floor(_AEPositionYDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
 		endIf
 	endIf
 endEvent
+
+string function FormatNumber(float a_number, int a_dp)
+	int mult = 1;
+
+	if (a_dp > 0)
+		int temp = 0
+		while (temp < a_dp)
+			mult = mult * 10
+			temp = temp + 1
+		endWhile
+	endIf
+
+	string valStr = (Math.floor((a_number * mult as float) + 0.5) / mult as float) as string
+
+	int dotLoc = StringUtil.Find(valStr, ".")
+	if (dotLoc < 0)
+		dotLoc = 0
+	endIf
+
+	int fracLen = StringUtil.GetLength(StringUtil.Substring(valStr, dotLoc))
+
+	while(fracLen < dotLoc)
+		valStr += "0"
+		fracLen = fracLen + 1
+	endWhile
+
+	Debug.Trace(a_number as string)
+	Debug.Trace(a_dp as string)
+	Debug.Trace(valStr)
+	return valStr
+endFunction

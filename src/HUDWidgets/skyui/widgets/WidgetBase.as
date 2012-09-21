@@ -148,7 +148,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 	{
 		var xOffset: Number = getWidth();
 		var yOffset: Number = getHeight();
-
+		
 		if (_hAlign == ALIGN_RIGHT)
 			_widgetHolder._x = -xOffset;
 		else if (_hAlign == ALIGN_CENTER)
