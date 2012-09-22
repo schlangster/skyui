@@ -8,8 +8,8 @@ import com.greensock.easing.Linear;
 class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 {
   /* CONSTANTS */
-  	static private var METER_WIDTH: Number = 15;
-  	static private var METER_PADDING: Number = 5;
+	private static var METER_WIDTH: Number = 15;
+	private static var METER_PADDING: Number = 5;
 
   /* STAGE ELEMENTS */
 	private var content: MovieClip;
@@ -27,11 +27,15 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	public var effectFadeInDuration: Number;
 	public var effectFadeOutDuration: Number;
 	public var effectMoveDuration: Number;
+
+	public var hGrowDirection: String;
+	public var vGrowDirection: String;
+	public var growAxis: String;
 	
 	
 	
   /* PRIVATE VARIABLES */
-  	// Meter
+	// Meter
 	private var _meter: MovieClip;
 	
 	private var _meterEmptyIdx: Number;
@@ -56,7 +60,10 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_iconLoader.loadClip(iconLocation, _icon);
 
 		_width = _height = effectBaseSize;
-		_y = index * (effectBaseSize + effectSpacing);
+
+		// Force position
+		_x = determinePosition(index)[0];
+		_y = determinePosition(index)[1];
 		
 		initEffect();
 		
@@ -65,13 +72,10 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		background._alpha = 0;
 		_iconHolder.iconBackground._alpha = 0;
 
-
-
-		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: 0, easing: Linear.easeNone})
+		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: 0, easing: Linear.easeNone});
 	}
 
   /* PUBLIC FUNCTIONS */
-	
 	public function updateEffect(a_effectData: Object): Void
 	{
 		if (_meter == undefined) {
@@ -91,7 +95,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	{
 		index = a_newIndex;
 
-		TweenLite.to(this, effectMoveDuration, {_y:  index * (effectBaseSize + effectSpacing), overwrite: 0, easing: Linear.easeNone});
+		TweenLite.to(this, effectMoveDuration, {_x: determinePosition(index)[0], _y: determinePosition(index)[1], overwrite: 0, easing: Linear.easeNone});
 	}
 
 	public function remove(): Void
@@ -156,8 +160,6 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		errorTextField.text = "No Icon\nSource";
 	}
 	
-	
-	
 	private function determineIconLabel(): String
 	{
 		if (!effectData.actorValue)
@@ -203,16 +205,32 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 				(s + "s"));
 	}
 
-	//todo
-	/*private function determinePosition(a_index: Number): Number
+	private function determinePosition(a_index: Number): Array
 	{
-		var newY: Number
+		var newX: Number = 0;
+		var newY: Number = 0;
 
-		if (hGrowDirection == "right")
-			newY = +(index * (effectBaseSize + columnSpacing))
-		else if (hGrowDirection == "left")
-			newY = -(index * (effectBaseSize + columnSpacing))
+		// Grow Axis the axis in which new effects will be added to after the total number of effects > GroupEffectCount
+		if (growAxis == "horizontal") {
+			// Orientation is vertical so...
+			// This effect is in a column, next effect will be shifted vertically
+			if (vGrowDirection == "up") {
+				newY = -(index * (effectBaseSize + effectSpacing));
+			} else {
+				newY = +(index * (effectBaseSize + effectSpacing));
+			}
+		} else {
+			// This effect is in a column, next effect will be shifted horizontally
+			if (hGrowDirection == "left") {
+				newX = -(index * (effectBaseSize + effectSpacing));
+			} else {
+				newX = +(index * (effectBaseSize + effectSpacing));
+			}
+		}
 
-		return newY
-	}*/
+		return [newX, newY];
+	}
 }
+
+
+

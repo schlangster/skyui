@@ -9,16 +9,16 @@ string property		HUD_MENU = "HUD Menu" autoReadOnly
 
 SKI_WidgetManager	_widgetManager
 
-bool				_initialized = false
-int					_widgetID = -1
-string				_type = ""
-string				_widgetRoot = ""
+bool				_initialized	= false
+int					_widgetID		= -1
+string				_type			= ""
+string				_widgetRoot		= ""
 string[]			_modes
-float				_x = 0.0
-float				_y = 0.0
-float				_alpha = 100.0
-string				_hAlign = "left"
-string				_vAlign = "top"
+float				_x				= 0.0
+float				_y				= 0.0
+float				_alpha			= 100.0
+string				_hAlign			= "left"
+string				_vAlign			= "top"
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -100,13 +100,13 @@ float property Alpha
 	endFunction
 endProperty
 
-float property HAlign
+string property HAlign
 	{Horizontal align of the widget left, center, right}
-	float function get()
+	string function get()
 		return _hAlign
 	endFunction
 	
-	function set(float a_val)
+	function set(string a_val)
 		_hAlign = a_val
 		if (Initialized)
 			UpdateWidgetHAlign()
@@ -114,13 +114,13 @@ float property HAlign
 	endFunction
 endProperty
 
-float property VAlign
+string property VAlign
 	{Vertical align of the widget top, center, bottom}
-	float function get()
+	string function get()
 		return _vAlign
 	endFunction
 	
-	function set(float a_val)
+	function set(string a_val)
 		_vAlign = a_val
 		if (Initialized)
 			UpdateWidgetVAlign()
@@ -183,6 +183,8 @@ endEvent
 event OnWidgetReset()
 	; Reset base properties except modes to prevent widget from being drawn too early.
 	UpdateWidgetClientInfo()
+	UpdateWidgetHAlign()
+	UpdateWidgetVAlign()
 	UpdateWidgetPositionX()
 	UpdateWidgetPositionY()
 	UpdateWidgetAlpha()
