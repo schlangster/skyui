@@ -82,6 +82,8 @@ class ConfigPanel extends MovieClip
 		_optionNumValueBuffer = [];
 		
 		_menuDialogOptions = [];
+
+		contentHolder.infoPanel.textField.verticalAutoSize = "top";
 	}
 	
 	// @override MovieClip
@@ -107,8 +109,6 @@ class ConfigPanel extends MovieClip
 
 		_optionsList._visible = false;
 		showWelcomeScreen();
-		
-		setModNames();
 	}
 	
 	public function onModListEnter(event: Object): Void
