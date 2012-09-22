@@ -62,7 +62,7 @@ class InventoryMenu extends ItemMenu
 		GlobalFunc.AddReverseFunctions();
 		
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
-		bottomBar.SetButtonArt(_chargeButtonArt, 3);
+		bottomBar.setButtonArt(_chargeButtonArt, 3);
 	
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
@@ -158,7 +158,7 @@ class InventoryMenu extends ItemMenu
 	public function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		bottomBar.UpdatePerItemInfo({type:InventoryDefines.ICT_NONE});
+		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_NONE});
 	}
 
 	// @override ItemMenu
@@ -226,11 +226,11 @@ class InventoryMenu extends ItemMenu
 		
 		if (event.menu == "list") {
 			if (event.opening == true) {
-				_prevButtonArt = bottomBar.GetButtonsArt();
-				bottomBar.SetButtonsText("$Select", "$Cancel");
-				bottomBar.SetButtonsArt(_itemCardListButtonArt);
+				_prevButtonArt = bottomBar.getButtonsArt();
+				bottomBar.setButtonsText("$Select", "$Cancel");
+				bottomBar.setButtonsArt(_itemCardListButtonArt);
 			} else {
-				bottomBar.SetButtonsArt(_prevButtonArt);
+				bottomBar.setButtonsArt(_prevButtonArt);
 				_prevButtonArt = undefined;
 				GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
 				updateBottomBarButtons();
@@ -280,41 +280,41 @@ class InventoryMenu extends ItemMenu
 	
 	private function updateBottomBarButtons(): Void
 	{
-		bottomBar.SetButtonArt(_altButtonArt, 0);
+		bottomBar.setButtonArt(_altButtonArt, 0);
 		
 		switch (itemCard.itemInfo.type) {
 			case InventoryDefines.ICT_ARMOR :
-				bottomBar.SetButtonText("$Equip", 0);
+				bottomBar.setButtonText("$Equip", 0);
 				break;
 
 			case InventoryDefines.ICT_BOOK :
-				bottomBar.SetButtonText("$Read", 0);
+				bottomBar.setButtonText("$Read", 0);
 				break;
 
 			case InventoryDefines.ICT_POTION :
-				bottomBar.SetButtonText("$Use", 0);
+				bottomBar.setButtonText("$Use", 0);
 				break;
 
 			case InventoryDefines.ICT_FOOD :
 			case InventoryDefines.ICT_INGREDIENT :
-				bottomBar.SetButtonText("$Eat", 0);
+				bottomBar.setButtonText("$Eat", 0);
 				break;
 
 			default :
-				bottomBar.SetButtonArt(_equipButtonArt, 0);
-				bottomBar.SetButtonText("$Equip", 0);
+				bottomBar.setButtonArt(_equipButtonArt, 0);
+				bottomBar.setButtonText("$Equip", 0);
 		}
 
-		bottomBar.SetButtonText("$Drop", 1);
+		bottomBar.setButtonText("$Drop", 1);
 		
 		if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-			bottomBar.SetButtonText("$Unfavorite", 2);
+			bottomBar.setButtonText("$Unfavorite", 2);
 		else
-			bottomBar.SetButtonText("$Favorite", 2);
+			bottomBar.setButtonText("$Favorite", 2);
 
 		if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
-			bottomBar.SetButtonText("$Charge", 3);
+			bottomBar.setButtonText("$Charge", 3);
 		else
-			bottomBar.SetButtonText("", 3);
+			bottomBar.setButtonText("", 3);
 	}
 }

@@ -107,6 +107,8 @@ class ConfigPanel extends MovieClip
 
 		_optionsList._visible = false;
 		showWelcomeScreen();
+		
+		setModNames();
 	}
 	
 	public function onModListEnter(event: Object): Void
@@ -139,8 +141,8 @@ class ConfigPanel extends MovieClip
 	
 	public function setModNames(/* names */): Void
 	{
-		skse.Log("Called setConfigPanelModNames");
-		
+		skse.Log("Called setConfigPanelModNamesDBG");
+			
 		_modList.clearList();
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")

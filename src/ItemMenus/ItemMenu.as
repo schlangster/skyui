@@ -33,7 +33,7 @@ class ItemMenu extends MovieClip
 	
 	public var itemCardFadeHolder: MovieClip;
 
-	public var bottomBar: MovieClip;
+	public var bottomBar: BottomBar;
 	
 	public var mouseRotationRect: MovieClip;
 	public var exitMenuRect: MovieClip;
@@ -99,7 +99,7 @@ class ItemMenu extends MovieClip
 		positionFixedElements();
 		
 		itemCard._visible = false;
-		bottomBar.HideButtons();
+		bottomBar.hideButtons();
 		
 		exitMenuRect.onMouseDown = function()
 		{
@@ -170,6 +170,10 @@ class ItemMenu extends MovieClip
 		itemListState.stolenDisabledColor = section.colors.disabled.stolen;
 		
 		skyui.util.Debug.log("Init'ed list state");
+		
+		skyui.util.Debug.log("Control: " + skse.GetMappedKey("ChargeItem", 0, 4));
+		skyui.util.Debug.log("Control: " + skse.GetMappedKey("ChargeItem", 1, 4));
+		skyui.util.Debug.log("Control: " + skse.GetMappedKey("ChargeItem", 2, 4));
 	}
 
 	// @API
@@ -178,7 +182,7 @@ class ItemMenu extends MovieClip
 		_platform = a_platform;
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
 		itemCard.SetPlatform(a_platform,a_bPS3Switch);
-		bottomBar.SetPlatform(a_platform,a_bPS3Switch);
+		bottomBar.setPlatform(a_platform,a_bPS3Switch);
 	}
 
 	// @API
@@ -233,7 +237,7 @@ class ItemMenu extends MovieClip
 				
 				if (_bItemCardPositioned)
 					itemCard.FadeInCard();
-				bottomBar.ShowButtons();
+				bottomBar.showButtons();
 			}
 			
 			if (_bItemCardPositioned)
@@ -261,7 +265,7 @@ class ItemMenu extends MovieClip
 	{
 		GameDelegate.call("UpdateItem3D",[false]);
 		itemCard.FadeOutCard();
-		bottomBar.HideButtons();
+		bottomBar.hideButtons();
 	}
 
 	public function onItemSelect(event: Object): Void
@@ -284,14 +288,14 @@ class ItemMenu extends MovieClip
 	// @API
 	public function UpdatePlayerInfo(aUpdateObj: Object): Void
 	{
-		bottomBar.UpdatePlayerInfo(aUpdateObj,itemCard.itemInfo);
+		bottomBar.updatePlayerInfo(aUpdateObj,itemCard.itemInfo);
 	}
 
 	// @API
 	public function UpdateItemCardInfo(aUpdateObj: Object): Void
 	{
 		itemCard.itemInfo = aUpdateObj;
-		bottomBar.UpdatePerItemInfo(aUpdateObj);
+		bottomBar.updatePerItemInfo(aUpdateObj);
 	}
 
 	public function onItemCardSubMenuAction(event: Object): Void
@@ -411,7 +415,7 @@ class ItemMenu extends MovieClip
 		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
 		
-		bottomBar.PositionElements(leftEdge, rightEdge);
+		bottomBar.positionElements(leftEdge, rightEdge);
 		
 		MovieClip(exitMenuRect).Lock("TL");
 		exitMenuRect._x = exitMenuRect._x - Stage.safeRect.x;

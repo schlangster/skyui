@@ -45,9 +45,10 @@ class BarterMenu extends ItemMenu
 		
 		itemCard.addEventListener("messageConfirm",this,"onTransactionConfirm");
 		itemCard.addEventListener("sliderChange",this,"onQuantitySliderChange");
-		bottomBar.SetButtonArt({PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"},1);
-		bottomBar.Button1.addEventListener("click",this,"onExitButtonPress");
-		bottomBar.Button1.disabled = false;
+		bottomBar.setButtonArt({PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"},1);
+
+		bottomBar.buttons[1].addEventListener("click",this,"onExitButtonPress");
+		bottomBar.buttons[1].disabled = false;
 		
 		inventoryLists.tabBarIconArt = _tabBarIconArt;
 		
@@ -93,7 +94,7 @@ class BarterMenu extends ItemMenu
 		_sellMult = a_sellMult;
 		_dataExtender.barterSellMult = a_sellMult;
 		_dataExtender.barterBuyMult = a_buyMult;
-		bottomBar.SetButtonsText("","$Exit");
+		bottomBar.setButtonsText("","$Exit");
 	}
 	
 	// @override ItemMenu
@@ -109,9 +110,9 @@ class BarterMenu extends ItemMenu
 	{
 		if (event.index != -1) {
 			if (isViewingVendorItems())
-				bottomBar.SetButtonsText("$Buy","$Exit");
+				bottomBar.setButtonsText("$Buy","$Exit");
 			else
-				bottomBar.SetButtonsText("$Sell","$Exit");
+				bottomBar.setButtonsText("$Sell","$Exit");
 		}
 
 		super.onItemHighlightChange(event);
@@ -121,7 +122,7 @@ class BarterMenu extends ItemMenu
 	public function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		bottomBar.SetButtonsText("","$Exit");
+		bottomBar.setButtonsText("","$Exit");
 	}
 
 	// @override ItemMenu
@@ -159,7 +160,7 @@ class BarterMenu extends ItemMenu
 		}
 		a_updateObj.value = Math.floor(a_updateObj.value + 0.5);
 		itemCard.itemInfo = a_updateObj;
-		bottomBar.SetBarterPerItemInfo(a_updateObj,_playerInfoObj);
+		bottomBar.setBarterPerItemInfo(a_updateObj,_playerInfoObj);
 	}
 
 	// @override ItemMenu
@@ -167,7 +168,7 @@ class BarterMenu extends ItemMenu
 	{
 		_vendorGold = a_vendorGold;
 		_playerGold = a_playerGold;
-		bottomBar.SetBarterInfo(a_playerGold,a_vendorGold,undefined,a_vendorName);
+		bottomBar.setBarterInfo(a_playerGold,a_vendorGold,undefined,a_vendorName);
 		_playerInfoObj = a_updateObj;
 	}
 
@@ -177,7 +178,7 @@ class BarterMenu extends ItemMenu
 		if (isViewingVendorItems()) {
 			price = price * -1;
 		}
-		bottomBar.SetBarterInfo(_playerGold,_vendorGold,price);
+		bottomBar.setBarterInfo(_playerGold,_vendorGold,price);
 	}
 
 	// @override ItemMenu
@@ -189,7 +190,7 @@ class BarterMenu extends ItemMenu
 				onQuantitySliderChange({value:itemCard.itemInfo.count});
 				return;
 			}
-			bottomBar.SetBarterInfo(_playerGold,_vendorGold);
+			bottomBar.setBarterInfo(_playerGold,_vendorGold);
 		}
 	}
 	

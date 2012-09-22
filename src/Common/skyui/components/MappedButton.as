@@ -5,9 +5,11 @@ class skyui.components.MappedButton extends gfx.controls.Button
   /* PRIVATE VARIABLES */
 
 	private var _platform: Number;
-	private var _keyCode: Number;
 	
-	private var _buttonArt: MovieClip;
+	private var _keyCodes: Array;
+	
+	private var _iconCount: Number = 0;
+	private var _icons: Array;
 	
 	private var _bShowBackground = false;
 	
@@ -16,6 +18,11 @@ class skyui.components.MappedButton extends gfx.controls.Button
 	
 	public var background: MovieClip;
 	public var textField: TextField;
+	
+	
+  /* PROPERTIES */
+  
+  	public var iconRenderer: MovieClip;
 
 
   /* INITIALIZATION */
@@ -24,6 +31,8 @@ class skyui.components.MappedButton extends gfx.controls.Button
 	{
 		super();
 		_bShowBackground = a_bShowBackground;
+		_keyCodes = [];
+		_icons = [];
 	}
 
 	function onLoad(): Void
@@ -43,7 +52,7 @@ class skyui.components.MappedButton extends gfx.controls.Button
 		refreshArt();
 	}
 
-	public function setMappedKey(a_name: String, a_context: Number): Void
+	public function setMappedControls(/* a_name1: String, a_context1: Number, ... */): Void
 	{
 		_keyCode = -1;
 		if (_platform == 1) {

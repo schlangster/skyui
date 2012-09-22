@@ -8,7 +8,7 @@ class BottomBar extends MovieClip
 	private var _lastItemType: Number;
 	private var _leftOffset: Number;
 	
-	private var _buttons: Array;
+
 	
 	private var _healthMeter: Meter;
 	private var _magickaMeter: Meter;
@@ -23,6 +23,11 @@ class BottomBar extends MovieClip
 	public var playerInfoCard: MovieClip;
 	
 	
+  /* PROPERTIES */
+  
+	public var buttons: Array;
+	
+	
   /* INITIALIZATION */
 
 	public function BottomBar()
@@ -33,10 +38,10 @@ class BottomBar extends MovieClip
 		_magickaMeter = new Meter(playerInfoCard.MagickaRect.MeterInstance.Meter_mc);
 		_staminaMeter = new Meter(playerInfoCard.StaminaRect.MeterInstance.Meter_mc);
 		_levelMeter = new Meter(playerInfoCard.LevelMeterInstance.Meter_mc);
-		_buttons = [];
+		buttons = [];
 		
-		for (var i: Number = 0; this["Button" + i] != undefined; i++)
-			_buttons.push(this["Button" + i]);
+		for (var i: Number = 0; this["button" + i] != undefined; i++)
+			buttons.push(this["button" + i]);
 	}
 	
 	
@@ -49,17 +54,17 @@ class BottomBar extends MovieClip
 		playerInfoCard._x = a_rightOffset - playerInfoCard._width;
 	}
 
-	public function ShowPlayerInfo(): Void
+	public function showPlayerInfo(): Void
 	{
 		playerInfoCard._alpha = 100;
 	}
 
-	public function HidePlayerInfo(): Void
+	public function hidePlayerInfo(): Void
 	{
 		playerInfoCard._alpha = 0;
 	}
 
-	public function UpdatePerItemInfo(a_itemUpdateObj: Object): Void
+	public function updatePerItemInfo(a_itemUpdateObj: Object): Void
 	{
 		var infoCard = playerInfoCard;
 		
@@ -165,19 +170,19 @@ class BottomBar extends MovieClip
 		}
 	}
 
-	public function UpdatePlayerInfo(a_playerUpdateObj: Object, a_itemUpdateObj: Object): Void
+	public function updatePlayerInfo(a_playerUpdateObj: Object, a_itemUpdateObj: Object): Void
 	{
 		_playerInfoObj = a_playerUpdateObj;
-		UpdatePerItemInfo(a_itemUpdateObj);
+		updatePerItemInfo(a_itemUpdateObj);
 	}
 
-	public function UpdateCraftingInfo(aSkillName: String, aiLevelStart: Number, afLevelPercent: Number): Void
+	public function updateCraftingInfo(aSkillName: String, aiLevelStart: Number, afLevelPercent: Number): Void
 	{
 		playerInfoCard.gotoAndStop("Crafting");
 		updateSkillBar(aSkillName, aiLevelStart, afLevelPercent);
 	}
 
-	public function SetBarterInfo(aiPlayerGold: Number, aiVendorGold: Number, aiGoldDelta: Number, astrVendorName: String): Void
+	public function setBarterInfo(aiPlayerGold: Number, aiVendorGold: Number, aiGoldDelta: Number, astrVendorName: String): Void
 	{
 		var infoCard = playerInfoCard;
 		
@@ -201,7 +206,7 @@ class BottomBar extends MovieClip
 		infoCard.PlayerGoldLabel._x = infoCard.PlayerGoldValue._x + infoCard.PlayerGoldValue.getLineMetrics(0).x - infoCard.PlayerGoldLabel._width - 5;
 	}
 
-	function SetBarterPerItemInfo(a_itemUpdateObj: Object, a_playerInfoObj: Object): Void
+	public function setBarterPerItemInfo(a_itemUpdateObj: Object, a_playerInfoObj: Object): Void
 	{
 		var infoCard = playerInfoCard;
 		
@@ -245,78 +250,72 @@ class BottomBar extends MovieClip
 		}
 	}
 
-	function SetGiftInfo(aiFavorPoints: Number): Void
+	public function setGiftInfo(aiFavorPoints: Number): Void
 	{
 		playerInfoCard.gotoAndStop("Gift");
 	}
 
-	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		for (var i: Number = 0; i < _buttons.length; i++)
-			_buttons[i].SetPlatform(a_platform, a_bPS3Switch);
+		for (var i: Number = 0; i < buttons.length; i++)
+			buttons[i].SetPlatform(a_platform, a_bPS3Switch);
 	}
 
-	function ShowButtons(): Void
+	public function showButtons(): Void
 	{
-		for (var i: Number = 0; i < _buttons.length; i++)
-			_buttons[i]._visible = _buttons[i].label.length > 0;
+		for (var i: Number = 0; i < buttons.length; i++)
+			buttons[i]._visible = buttons[i].label.length > 0;
 	}
 
-	function HideButtons(): Void
+	public function hideButtons(): Void
 	{
-		for (var i: Number = 0; i < _buttons.length; i++)
-			_buttons[i]._visible = false;
+		for (var i: Number = 0; i < buttons.length; i++)
+			buttons[i]._visible = false;
 	}
 
-	function SetButtonsText(): Void
+	public function setButtonsText(): Void
 	{
-		for (var i: Number = 0; i < _buttons.length; i++) {
-			_buttons[i].label = i >= arguments.length ? "" : arguments[i];
-			_buttons[i]._visible = _buttons[i].label.length > 0;
+		for (var i: Number = 0; i < buttons.length; i++) {
+			buttons[i].label = i >= arguments.length ? "" : arguments[i];
+			buttons[i]._visible = buttons[i].label.length > 0;
 		}
 		positionButtons();
 	}
 
-	function SetButtonText(aText: String, a_index: Number): Void
+	public function setButtonText(a_text: String, a_index: Number): Void
 	{
-		if (a_index < _buttons.length) {
-			_buttons[a_index].label = aText;
-			_buttons[a_index]._visible = aText.length > 0;
+		if (a_index < buttons.length) {
+			buttons[a_index].label = a_text;
+			buttons[a_index]._visible = a_text.length > 0;
 			positionButtons();
 		}
 	}
 
-	function SetButtonsArt(a_buttonArt: Object): Void
+	public function setButtonsArt(a_buttonArt: Object): Void
 	{
 		for (var i: Number = 0; i < a_buttonArt.length; i++)
-			SetButtonArt(a_buttonArt[i], i);
+			setButtonArt(a_buttonArt[i], i);
 	}
 
-	function AttachDualButton(a_buttonArtObj: Object, a_index: Number): Void
+	public function getButtonsArt(): Array
 	{
-		if (a_index < _buttons.length) 
-			_buttons[a_index].AttachDualButton(a_buttonArtObj);
-	}
-
-	function GetButtonsArt(): Array
-	{
-		var ButtonsArt = new Array(_buttons.length);
-		for (var i: Number = 0; i < _buttons.length; i++)
-			ButtonsArt[i] = _buttons[i].GetArt();
+		var ButtonsArt = new Array(buttons.length);
+		for (var i: Number = 0; i < buttons.length; i++)
+			ButtonsArt[i] = buttons[i].GetArt();
 		return ButtonsArt;
 	}
 
-	function GetButtonArt(a_index: Number): Object
+	function getButtonArt(a_index: Number): Object
 	{
-		if (a_index < _buttons.length) 
-			return _buttons[a_index].GetArt();
+		if (a_index < buttons.length) 
+			return buttons[a_index].GetArt();
 		return undefined;
 	}
 
-	function SetButtonArt(a_platformArt: Object, a_index: Number): Void
+	function setButtonArt(a_platformArt: Object, a_index: Number): Void
 	{
-		if (a_index < _buttons.length) {
-			var aButton = _buttons[a_index];
+		if (a_index < buttons.length) {
+			var aButton = buttons[a_index];
 			aButton.PCArt = a_platformArt.PCArt;
 			aButton.XBoxArt = a_platformArt.XBoxArt;
 			aButton.PS3Art = a_platformArt.PS3Art;
@@ -329,15 +328,15 @@ class BottomBar extends MovieClip
 
 	private function positionButtons(): Void
 	{
-		var RightOffset: Number = 10;
+		var rightOffset: Number = 10;
 		var LeftOffset: Number = _leftOffset;
 		
-		for (var i: Number = 0; i < _buttons.length; i++) {
-			if (_buttons[i].label.length > 0) {
-				_buttons[i]._x = LeftOffset + _buttons[i].ButtonArt._width;
-				if (_buttons[i].ButtonArt2 != undefined) 
-					_buttons[i]._x = _buttons[i]._x + _buttons[i].ButtonArt2._width;
-				LeftOffset = _buttons[i]._x + _buttons[i].textField.getLineMetrics(0).width + RightOffset;
+		for (var i: Number = 0; i < buttons.length; i++) {
+			if (buttons[i].label.length > 0) {
+				buttons[i]._x = LeftOffset + buttons[i].ButtonArt._width;
+				if (buttons[i].ButtonArt2 != undefined) 
+					buttons[i]._x = buttons[i]._x + buttons[i].ButtonArt2._width;
+				LeftOffset = buttons[i]._x + buttons[i].textField.getLineMetrics(0).width + rightOffset;
 			}
 		}
 	}

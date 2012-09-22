@@ -250,15 +250,15 @@ class ContainerMenu extends ItemMenu
 	private function hideButtons(): Void
 	{
 		if (isViewingContainer()) {
-			bottomBar.SetButtonText("",0);
-			bottomBar.SetButtonText("",1);
-			bottomBar.SetButtonText(bNPCMode ? "" : "$Take All",2);
-			bottomBar.SetButtonText("$Exit",3);
+			bottomBar.setButtonText("",0);
+			bottomBar.setButtonText("",1);
+			bottomBar.setButtonText(bNPCMode ? "" : "$Take All",2);
+			bottomBar.setButtonText("$Exit",3);
 		} else {
-			bottomBar.SetButtonText("",0);
-			bottomBar.SetButtonText("",1);
-			bottomBar.SetButtonText("",2);
-			bottomBar.SetButtonText("$Exit",3);
+			bottomBar.setButtonText("",0);
+			bottomBar.setButtonText("",1);
+			bottomBar.setButtonText("",2);
+			bottomBar.setButtonText("$Exit",3);
 		}
 	}
 
@@ -266,9 +266,9 @@ class ContainerMenu extends ItemMenu
 	{
 		
 		if (isViewingContainer())
-			bottomBar.SetButtonsArt(_containerButtonArt);
+			bottomBar.setButtonsArt(_containerButtonArt);
 		else
-			bottomBar.SetButtonsArt(_inventoryButtonArt);
+			bottomBar.setButtonsArt(_inventoryButtonArt);
 		
 		if (inventoryLists.itemList.selectedIndex == -1 || inventoryLists.currentState != InventoryLists.SHOW_PANEL) {
 			hideButtons();
@@ -277,21 +277,21 @@ class ContainerMenu extends ItemMenu
 
 		if (isViewingContainer()) {
 			if (_bShowEquipButtonHelp) {
-				bottomBar.SetButtonText(InventoryDefines.GetEquipText(itemCard.itemInfo.type),0);
-				bottomBar.SetButtonText("$Take",1);
-				bottomBar.SetButtonText(bNPCMode ? "" : "$Take All",2);
+				bottomBar.setButtonText(InventoryDefines.GetEquipText(itemCard.itemInfo.type),0);
+				bottomBar.setButtonText("$Take",1);
+				bottomBar.setButtonText(bNPCMode ? "" : "$Take All",2);
 			} else {
-				bottomBar.SetButtonText("",0);
-				bottomBar.SetButtonText("$Take",1);
-				bottomBar.SetButtonText(bNPCMode ? "" : "$Take All",2);
+				bottomBar.setButtonText("",0);
+				bottomBar.setButtonText("$Take",1);
+				bottomBar.setButtonText(bNPCMode ? "" : "$Take All",2);
 			}
-			bottomBar.SetButtonText("$Exit",3);
+			bottomBar.setButtonText("$Exit",3);
 		} else {
-			bottomBar.SetButtonArt(_bShowEquipButtonHelp ? _equipHelpArt : _defaultEquipArt,0);
-			bottomBar.SetButtonText(InventoryDefines.GetEquipText(itemCard.itemInfo.type),0);
-			bottomBar.SetButtonText(bNPCMode ? "$Give" : "$Store",1);
-			bottomBar.SetButtonText(itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite",2);
-			bottomBar.SetButtonText("$Exit",3);
+			bottomBar.setButtonArt(_bShowEquipButtonHelp ? _equipHelpArt : _defaultEquipArt,0);
+			bottomBar.setButtonText(InventoryDefines.GetEquipText(itemCard.itemInfo.type),0);
+			bottomBar.setButtonText(bNPCMode ? "$Give" : "$Store",1);
+			bottomBar.setButtonText(itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite",2);
+			bottomBar.setButtonText("$Exit",3);
 		}
 	}
 

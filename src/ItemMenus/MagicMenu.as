@@ -49,9 +49,9 @@ class MagicMenu extends ItemMenu
 		GameDelegate.addCallBack("DragonSoulSpent", this, "DragonSoulSpent");
 		GameDelegate.addCallBack("AttemptEquip", this , "AttemptEquip");
 		
-		bottomBar.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
+		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
 		
-		bottomBar.SetButtonsArt(_magicButtonArt);
+		bottomBar.setButtonsArt(_magicButtonArt);
 		
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
@@ -155,7 +155,7 @@ class MagicMenu extends ItemMenu
 	{
 		super.onHideItemsList(event);
 		
-		bottomBar.UpdatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
+		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
 	}
 	
 	// @API
@@ -199,9 +199,9 @@ class MagicMenu extends ItemMenu
 			var unlockStr = itemCard.itemInfo.showUnlocked ? "$Unlock":"";
 			
 			if ((inventoryLists.itemList.selectedEntry.filterFlag & _hideButtonFlag) != 0)
-				bottomBar.HideButtons();
+				bottomBar.hideButtons();
 			else
-				bottomBar.SetButtonsText("$Equip", favStr, unlockStr);
+				bottomBar.setButtonsText("$Equip", favStr, unlockStr);
 		}
 	}
 	
