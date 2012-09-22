@@ -141,21 +141,23 @@
 		
 		var buf: String = "";
 		var pos: Number = 0;
-		for (var i=1; i<arguments.length; i++) {
-			var start = a_str.indexOf("{", pos);
+		for (var i: Number = 1; i < arguments.length; i++) {
+			var start: Number = a_str.indexOf("{", pos);
 			if (start == -1)
 				return a_str;
 				
-			var end = a_str.indexOf("}", pos);
+			var end: Number = a_str.indexOf("}", pos);
 			if (end == -1)
 				return a_str;
 				
 			buf += a_str.slice(pos, start);
-			var decimal = Number(a_str.slice(start+1, end));
-			var mult = Math.pow(10, decimal);
-			var valStr = (Math.round(arguments[i] * mult) / mult).toString();
-			var t = valStr.split(".");
-			var fractLen = t[1].length;
+			var decimal: Number = Number(a_str.slice(start+1, end));
+			var mult: Number = Math.pow(10, decimal);
+			var valStr: String = (Math.round(arguments[i] * mult) / mult).toString();
+			if (valStr.indexOf(".") == -1)
+				valStr += ".";
+			var t: Array = valStr.split(".");
+			var fractLen: Number = t[1].length;
 			while (fractLen++ < decimal)
 				valStr += "0";
 			buf += valStr;
@@ -169,8 +171,28 @@
 	
 	public static function formatNumber(a_number: Number, a_decimal: Number): String
 	{
+		var valStr: String = a_number.toString().toLowerCase();
+		var floatComponents: Array = valStr.split("e", 2);
 		var mult = Math.pow(10, a_decimal);
-		var t: String = String((Math.round(a_number * mult) / mult));
-		return "";
+
+		valStr = String((Math.round(parseFloat(floatComponents[0]) * mult) / mult));
+		
+		
+		if (a_decimal > 0) {
+				var dotIdx: Number = valStr.indexOf(".")
+				if (dotIdx == -1) {
+					dotIdx = valStr.length
+					valStr += ".";
+				}
+		
+				var decLen: Number = valStr.length - (dotIdx + 1);
+				for (var i: Number = 0; decLen + i < a_decimal; i++)
+					valStr += "0";
+		}
+			
+		if (floatComponents[1] != undefined)
+			valStr += "E" + floatComponents[1]
+		
+		return valStr;
 	}
 }
