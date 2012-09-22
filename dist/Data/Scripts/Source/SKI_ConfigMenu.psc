@@ -20,8 +20,9 @@ int			_3DItemScaleOID_S
 
 int			_AEEffectSizeOID_T
 int			_AEClampCornerOID_T
-int			_AEPositionXOID_S
-int			_AEPositionYOID_S
+int			_AEGroupEffectCountOID_S
+int			_AEOffsetXOID_S
+int			_AEOffsetYOID_S
 
 int			_itemlistFontSizeOID_T
 
@@ -37,10 +38,11 @@ float		_3DItemScale			= 1.5
 float[]		_AEEffectSizeValues
 int			_AEEffectSizeIdx		= 1
 int			_AEClampCornerIdx		= 1
-float		_AEPositionX			= 1280.0
-float[]		_AEPositionXDefaults
-float		_AEPositionY			= 30.0 ; Actually 30.05
-float[]		_AEPositionYDefaults
+int			_AEGroupEffectCount		= 8
+float[]		_AEBaseX
+float		_AEOffsetX				= 0.0
+float[]		_AEBaseY
+float		_AEOffsetY				= 0.0
 
 int			_itemlistFontSizeIdx	= 1
 
@@ -83,17 +85,17 @@ event OnInit()
 	_AEEffectSizeValues[1] = 48.0
 	_AEEffectSizeValues[2] = 64.0
 
-	_AEPositionXDefaults = new float[4]
-	_AEPositionXDefaults[0] = 0.0
-	_AEPositionXDefaults[1] = 1280.0
-	_AEPositionXDefaults[2] = 1280.0
-	_AEPositionXDefaults[3] = 0.0
+	_AEBaseX = new float[4]
+	_AEBaseX[0] = 0.0
+	_AEBaseX[1] = 1280.0
+	_AEBaseX[2] = 1280.0
+	_AEBaseX[3] = 0.0
 
-	_AEPositionYDefaults = new float[4]
-	_AEPositionYDefaults[0] = 0.0
-	_AEPositionYDefaults[1] = 30.0 ; Actually 30.05
-	_AEPositionYDefaults[2] = 720.0
-	_AEPositionYDefaults[3] = 720.0
+	_AEBaseY = new float[4]
+	_AEBaseY[0] = 0.0
+	_AEBaseY[1] = 30.05 ; Actually 30.05
+	_AEBaseY[2] = 720.0
+	_AEBaseY[3] = 720.0
 
 	ApplySettings()
 endEvent
@@ -171,11 +173,11 @@ event OnPageReset(string a_page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("Active Effects")
-
-		_AEEffectSizeOID_T = AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
-		_AEClampCornerOID_T = AddTextOption("Clamp to Corner", _corners[_AEClampCornerIdx])
-		_AEPositionXOID_S = AddSliderOption("X Offset", _AEPositionX, "{1}")
-		_AEPositionYOID_S = AddSliderOption("Y Offset", _AEPositionY, "{1}")
+		_AEEffectSizeOID_T			= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
+		_AEClampCornerOID_T			= AddTextOption("Clamp to Corner", _corners[_AEClampCornerIdx])
+		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
+		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX, "{1}")
+		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY, "{1}")
 
 	; -------------------------------------------------------
 	elseIf (a_page == "Advanced")
@@ -244,12 +246,12 @@ event OnOptionSelect(int a_option)
 
 	; -------------------------------------------------------
 	elseIf (page == "Widgets")
-		if (a_option == _AEEffectSizeOID_T)
+		If (a_option == _AEEffectSizeOID_T)
 			if (_AEEffectSizeIdx < _sizes.length - 1)
 				_AEEffectSizeIdx += 1
 			else
 				_AEEffectSizeIdx = 0
-			endif
+			endIf
 			SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
 			SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
 
@@ -258,18 +260,11 @@ event OnOptionSelect(int a_option)
 				_AEClampCornerIdx += 1
 			else
 				_AEClampCornerIdx = 0
-			endif
+			endIf
 			SetTextOptionValue(a_option, _corners[_AEClampCornerIdx])
 			SKI_ActiveEffectsWidgetInstance.ClampCorner = _corners[_AEClampCornerIdx]
-
-			_AEPositionX = _AEPositionXDefaults[_AEClampCornerIdx]
-			SetSliderOptionValue(_AEPositionXOID_S, _AEPositionX)
-			SKI_ActiveEffectsWidgetInstance.X = _AEPositionX
-
-
-			_AEPositionY = _AEPositionYDefaults[_AEClampCornerIdx]
-			SetSliderOptionValue(_AEPositionYOID_S, _AEPositionY)
-			SKI_ActiveEffectsWidgetInstance.Y = _AEPositionY
+			SKI_ActiveEffectsWidgetInstance.X = _AEBaseX[_AEClampCornerIdx] + _AEOffsetX
+			SKI_ActiveEffectsWidgetInstance.Y = _AEBaseY[_AEClampCornerIdx] + _AEOffsetY
 		endIf
 	endIf
 endEvent
@@ -318,16 +313,22 @@ event OnOptionSliderOpen(int a_option)
 
 	; -------------------------------------------------------
 	elseif (page == "Widgets")
-		if (a_option == _AEPositionXOID_S)
-			SetSliderDialogStartValue(_AEPositionX)
-			SetSliderDialogDefaultValue(_AEPositionXDefaults[_AEClampCornerIdx])
-			SetSliderDialogMinValue(0)
+		if (a_option == _AEGroupEffectCountOID_S)
+			SetSliderDialogStartValue(_AEGroupEffectCount)
+			SetSliderDialogDefaultValue(8)
+			SetSliderDialogMinValue(1)
+			SetSliderDialogMaxValue(16)
+			SetSliderDialogInterval(1)
+		elseIf (a_option == _AEOffsetXOID_S)
+			SetSliderDialogStartValue(_AEOffsetX)
+			SetSliderDialogDefaultValue(0)
+			SetSliderDialogMinValue(-1280)
 			SetSliderDialogMaxValue(1280)
 			SetSliderDialogInterval(0.5)
-		elseIf (a_option == _AEPositionYOID_S)
-			SetSliderDialogStartValue(_AEPositionY)
-			SetSliderDialogDefaultValue(_AEPositionYDefaults[_AEClampCornerIdx])
-			SetSliderDialogMinValue(0)
+		elseIf (a_option == _AEOffsetYOID_S)
+			SetSliderDialogStartValue(_AEOffsetY)
+			SetSliderDialogDefaultValue(0)
+			SetSliderDialogMinValue(-720)
 			SetSliderDialogMaxValue(720)
 			SetSliderDialogInterval(0.5)
 		endIf
@@ -377,14 +378,18 @@ event OnOptionSliderAccept(int a_option, float a_value)
 
 	; -------------------------------------------------------
 	elseif (page == "Widgets")
-		if (a_option == _AEPositionXOID_S)
-			_AEPositionX = a_value
-			SetSliderOptionValue(a_option, _AEPositionX)
-			SKI_ActiveEffectsWidgetInstance.X = _AEPositionX
-		elseIf (a_option == _AEPositionYOID_S)
-			_AEPositionY = a_value
-			SetSliderOptionValue(a_option, _AEPositionY)
-			SKI_ActiveEffectsWidgetInstance.Y = _AEPositionY
+		if (a_option == _AEGroupEffectCountOID_S)
+			_AEGroupEffectCount = a_value as int
+			SetSliderOptionValue(a_option, _AEGroupEffectCount)
+			SKI_ActiveEffectsWidgetInstance.GroupEffectCount = _AEGroupEffectCount
+		elseIf (a_option == _AEOffsetXOID_S)
+			_AEOffsetX = a_value
+			SetSliderOptionValue(a_option, _AEOffsetX)
+			SKI_ActiveEffectsWidgetInstance.X = _AEBaseX[_AEClampCornerIdx] + _AEOffsetX
+		elseIf (a_option == _AEOffsetYOID_S)
+			_AEOffsetY = a_value
+			SetSliderOptionValue(a_option, _AEOffsetY)
+			SKI_ActiveEffectsWidgetInstance.Y = _AEBaseY[_AEClampCornerIdx] + _AEOffsetY
 		endIf
 	endIf
 endEvent
@@ -441,16 +446,19 @@ event OnOptionHighlight(int a_option)
 		if (a_option == _AEEffectSizeOID_T)
 			SetInfoText("Default: Medium")
 		elseif (a_option == _AEClampCornerOID_T)
-			SetInfoText("Default: TR - Note: X and Y offsets reset to thier respective defaults if this option is changed")
-		elseif (a_option == _AEPositionXOID_S)
-			SetInfoText("Default: " + Math.floor(_AEPositionXDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
-		elseif (a_option == _AEPositionYOID_S)
-			SetInfoText("Default: " + Math.floor(_AEPositionYDefaults[_AEClampCornerIdx] + 0.5) as string + " (for Clamp Corner " + _corners[_AEClampCornerIdx] + ")")
+			SetInfoText("Default: TR")
+		elseIf (a_option == _AEGroupEffectCountOID_S)
+			SetInfoText("Default: 8")
+		elseif (a_option == _AEOffsetXOID_S)
+			SetInfoText("Default: 0")
+		elseif (a_option == _AEOffsetYOID_S)
+			SetInfoText("Default: 0")
 		endIf
 	endIf
 endEvent
 
 string function FormatNumber(float a_number, int a_dp)
+	{max DP is 6}
 	int mult = 1;
 
 	if (a_dp > 0)
@@ -463,20 +471,49 @@ string function FormatNumber(float a_number, int a_dp)
 
 	string valStr = (Math.floor((a_number * mult as float) + 0.5) / mult as float) as string
 
-	int dotLoc = StringUtil.Find(valStr, ".")
-	if (dotLoc < 0)
-		dotLoc = 0
+	int dotIdx = StringUtil.Find(valStr, ".")
+	if (dotIdx != -1)
+		valStr = StringUtil.Substring(valStr, 0, dotIdx + a_dp + 1)
 	endIf
 
-	int fracLen = StringUtil.GetLength(StringUtil.Substring(valStr, dotLoc))
+	return valStr
+endFunction
 
-	while(fracLen < dotLoc)
-		valStr += "0"
-		fracLen = fracLen + 1
-	endWhile
 
-	Debug.Trace(a_number as string)
-	Debug.Trace(a_dp as string)
-	Debug.Trace(valStr)
+string function FormatExponent(float a_number, int a_dp)
+	{max DP is 6}
+	string valStr = a_number as String
+	float mantissa = a_number
+	string expStr = ""
+
+	;  float myFloat = 0.0000000000123456
+	; Debug.Trace("myFloat: " + myFloat as string)
+	; > 0.000000
+	; Incorrect? Should be 1.234560E-11
+
+	int expIdx = StringUtil.Find(valStr, "E")
+	if (expIdx != -1)
+		mantissa = StringUtil.Substring(valStr, 0, expIdx + 1) as float ; |1.23456|E-78
+		expStr = StringUtil.Substring(valStr, expIdx, 0) ; 1.123456|E-78|
+	endIf
+
+	int mult = 1;
+	if (a_dp > 0)
+		int temp = 0
+		while (temp < a_dp)
+			mult = mult * 10
+			temp = temp + 1
+		endWhile
+	endIf
+
+	valStr = (Math.floor((mantissa * mult as float) + 0.5) / mult as float) as string
+
+	int dotIdx = StringUtil.Find(valStr, ".")
+	if (dotIdx != -1)
+		valStr = StringUtil.Substring(valStr, 0, dotIdx + a_dp + 1)
+	endIf
+
+	valStr = valStr + expStr
+
 	return valStr
 endFunction
