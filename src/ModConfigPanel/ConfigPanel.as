@@ -82,6 +82,8 @@ class ConfigPanel extends MovieClip
 		_optionNumValueBuffer = [];
 		
 		_menuDialogOptions = [];
+
+		contentHolder.infoPanel.textField.verticalAutoSize = "top";
 	}
 	
 	// @override MovieClip
