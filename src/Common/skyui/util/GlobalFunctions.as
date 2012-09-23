@@ -154,12 +154,14 @@
 			var decimal: Number = Number(a_str.slice(start+1, end));
 			var mult: Number = Math.pow(10, decimal);
 			var valStr: String = (Math.round(arguments[i] * mult) / mult).toString();
-			if (valStr.indexOf(".") == -1)
-				valStr += ".";
-			var t: Array = valStr.split(".");
-			var fractLen: Number = t[1].length;
-			while (fractLen++ < decimal)
-				valStr += "0";
+			if (decimal > 0) {
+				if (valStr.indexOf(".") == -1)
+					valStr += ".";
+				var t: Array = valStr.split(".");
+				var fractLen: Number = t[1].length;
+				while (fractLen++ < decimal)
+					valStr += "0";
+			}
 			buf += valStr;
 			pos = end+1;
 		}
