@@ -1,6 +1,7 @@
 ﻿import gfx.controls.OptionStepper;
 import gfx.controls.ScrollBar;
 import Shared.GlobalFunc;
+import gfx.ui.InputDetails;
 import gfx.ui.NavigationCode;
 import gfx.io.GameDelegate;
 
@@ -144,7 +145,7 @@ class SettingsOptionItem extends MovieClip
 		CheckBox_mc._alpha = abSelected ? 100 : 30;
 	}
 
-	function handleInput(details: gfx.ui.InputDetails, pathToFocus: Array): Boolean
+	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bhandledInput: Boolean = false;
 		

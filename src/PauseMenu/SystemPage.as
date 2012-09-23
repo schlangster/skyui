@@ -103,7 +103,7 @@ class SystemPage extends MovieClip
 		CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
 		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
 		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
-		CategoryList.disableInput = true;
+		CategoryList.disableInput = true; // Bugfix for vanilla
 		ConfirmPanel.handleInput = function () {
 			return false;
 		};
@@ -136,7 +136,7 @@ class SystemPage extends MovieClip
 
 	function startPage(): Void
 	{
-		CategoryList.disableInput = false;
+		CategoryList.disableInput = false; // Bugfix for vanilla
 		if (!bUpdated) {
 			currentState = SystemPage.MAIN_STATE;
 			GameDelegate.call("SetVersionText", [VersionText]);
@@ -154,7 +154,7 @@ class SystemPage extends MovieClip
 	{
 		BottomBar_mc.SetButtonVisibility(1, false, 100);
 		BottomBar_mc.SetButtonVisibility(2, false, 100);
-		CategoryList.disableInput = true;
+		CategoryList.disableInput = true; // Bugfix for vanilla
 	}
 
 	function get currentState(): Number
