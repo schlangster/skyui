@@ -34,6 +34,8 @@ event OnInit()
 	RegisterForModEvent("SKICP_sliderAccepted", "OnSliderAccept")
 	RegisterForModEvent("SKICP_menuSelected", "OnMenuSelect")
 	RegisterForModEvent("SKICP_menuAccepted", "OnMenuAccept")
+	RegisterForModEvent("SKICP_colorSelected", "OnColorSelect")
+	RegisterForModEvent("SKICP_colorAccepted", "OnColorAccept")
 	RegisterForModEvent("SKICP_dialogCanceled", "OnDialogCancel")
 	RegisterForMenu(JOURNAL_MENU)
 	
@@ -124,6 +126,17 @@ endEvent
 event OnMenuAccept(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int value = a_numArg as int
 	_activeConfig.SetMenuIndex(value)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
+endEvent
+
+event OnColorSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	_activeConfig.RequestColorDialogData(optionIndex)
+endEvent
+
+event OnColorAccept(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int color = a_numArg as int
+	_activeConfig.SetColor(color)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 

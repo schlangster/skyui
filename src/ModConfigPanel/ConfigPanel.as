@@ -279,6 +279,23 @@ class ConfigPanel extends MovieClip
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		gotoAndPlay("dimOut");
 	}
+
+	public function setColorDialogParams(a_currentColor: Number, a_defaultColor: Number): Void
+	{
+		_state = DIALOG;
+		
+		var initObj = {
+			_x: 562, _y: 265,
+			titleText: _dialogTitleText,
+			currentColor: a_currentColor,
+			defaultColor: a_defaultColor
+		};
+		
+		_optionChangeDialog = DialogManager.open(this, "OptionColorDialog", initObj);
+		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		gotoAndPlay("dimOut");
+	}
 	
 	public function flushOptionBuffers(a_optionCount: Number): Void
 	{
@@ -456,6 +473,12 @@ class ConfigPanel extends MovieClip
 				_state = WAIT_FOR_MENU_DATA;
 				_dialogTitleText = e.text;
 				skse.SendModEvent("SKICP_menuSelected", null, a_index);
+				break;
+
+			case OptionsListEntry.OPTION_COLOR:
+				_state = WAIT_FOR_MENU_DATA;
+				_dialogTitleText = e.text;
+				skse.SendModEvent("SKICP_colorSelected", null, a_index);
 				break;
 		}
 	}
