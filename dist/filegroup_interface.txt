@@ -7,6 +7,7 @@ Interface\hudmenu.swf
 Interface\skyui\config.txt
 Interface\skyui\inventorylists.swf
 Interface\skyui\bottombar.swf
+Interface\skyui\buttonart.swf
 Interface\skyui\configpanel.swf
 Interface\skyui\skyui_icons_celtic.swf
 Interface\skyui\skyui_icons_curved.swf
