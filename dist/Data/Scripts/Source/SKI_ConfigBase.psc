@@ -11,6 +11,7 @@ int property		OPTION_TEXT		= 2 autoReadonly
 int property		OPTION_TOGGLE	= 3 autoReadonly
 int property 		OPTION_SLIDER	= 4 autoReadonly
 int property		OPTION_MENU		= 5 autoReadonly
+int property		OPTION_COLOR	= 6 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly
@@ -33,6 +34,7 @@ float[]				_numValueBuf
 
 float[]				_sliderParams
 float[]				_menuParams
+float[]				_colorParams
 
 int					_activeOption	= -1
 
@@ -64,6 +66,10 @@ event OnInit()
 	; 0 startIndex
 	; 1 defaultIndex
 	_menuParams		= new float[2]
+
+	; 0 currentColor
+	; 1 defaultColor
+	_colorParams	= new float[2]
 	
 	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
 endEvent
@@ -122,6 +128,14 @@ endEvent
 
 ; @interface
 event OnOptionMenuAccept(int a_option, int a_index)
+endEvent
+
+; @interface
+event OnColorMenuOpen(int a_option)
+endEvent
+
+; @interface
+event OnColorMenuAccept(int a_option, int a_color)
 endEvent
 
 
@@ -252,6 +266,18 @@ function RequestMenuDialogData(int a_index)
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
 endFunction
 
+function RequestColorDialogData(int a_index)
+	_activeOption = a_index
+
+	; Defaults
+	_colorParams[0] = -1
+	_colorParams[1] = -1
+
+	OnColorMenuOpen(a_index)
+
+	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
+endFunction
+
 function SetSliderValue(float a_value)
 	OnOptionSliderAccept(_activeOption, a_value)
 	_activeOption = -1
@@ -262,6 +288,10 @@ function SetMenuIndex(int a_index)
 	_activeOption = -1
 endFunction
 
+function SetColor(int a_color)
+	OnColorMenuAccept(_activeOption, a_color)
+	_activeOption = -1
+endFunction
 
 function HighlightOption(int a_index)
 	_infoText = ""
@@ -324,6 +354,11 @@ int function AddMenuOption(string a_text, string a_value)
 endFunction
 
 ; @interface
+int function AddColorOption(string a_text, int a_color)
+	return AddOption(OPTION_COLOR, a_text, none, a_color)
+endFunction
+
+; @interface
 function LoadCustomContent(string a_source, float a_x = 0.0, float a_y = 0.0)
 	float[] params = new float[2]
 	params[0] = a_x
@@ -355,6 +390,11 @@ endFunction
 ; @interface
 function SetMenuOptionValue(int a_option, string a_value)
 	SetOptionStrValue(a_option, a_value)
+endFunction
+
+; @interface
+function SetColorOptionValue(int a_option, int a_color)
+	SetOptionNumValue(a_option, a_color)
 endFunction
 
 ; @interface
@@ -395,4 +435,14 @@ endFunction
 ; @interface
 function SetMenuDialogOptions(string[] a_options)
 	UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogOptions", a_options)
+endFunction
+
+; @interface
+function SetColorDialogCurrentColor(int a_color)
+	_colorParams[0] = a_color
+endFunction
+
+; @interface
+function SetColorDialogDefaultColor(int a_color)
+	_colorParams[1] = a_color
 endFunction

@@ -9,7 +9,7 @@ string[]	_sizes
 
 string[]	_corners
 
-; OIDs (T:Text B:Toggle S:Slider M:Menu)
+; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color)
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
 int			_itemcardYOffsetOID_S
@@ -23,6 +23,7 @@ int			_AEClampCornerOID_T
 int			_AEGroupEffectCountOID_S
 int			_AEOffsetXOID_S
 int			_AEOffsetYOID_S
+int			_MXTestColorOID_C
 
 int			_itemlistFontSizeOID_T
 
@@ -43,6 +44,7 @@ float[]		_AEBaseX
 float		_AEOffsetX				= 0.0
 float[]		_AEBaseY
 float		_AEOffsetY				= 0.0
+int			_MXTestColor			= 0x162274
 
 int			_itemlistFontSizeIdx	= 1
 
@@ -178,6 +180,7 @@ event OnPageReset(string a_page)
 		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
 		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX, "{1}")
 		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY, "{1}")
+		_MXTestColorOID_C			= AddColorOption("A Color", _MXTestColor)
 
 	; -------------------------------------------------------
 	elseIf (a_page == "Advanced")
@@ -414,6 +417,33 @@ event OnOptionMenuAccept(int a_option, int a_index)
 
 	; -------------------------------------------------------
 	if (page == "General")
+	endIf
+endEvent
+
+; -------------------------------------------------------------------------------------------------
+; @implements SKI_ConfigBase
+event OnColorMenuOpen(int a_option)
+	{Called when the user selects a color option}
+	string page = CurrentPage
+
+	if (page == "Widgets")
+		if (a_option == _MXTestColorOID_C)
+			SetColorDialogCurrentColor(_MXTestColor)
+			SetColorDialogDefaultColor(0x162274)
+		endIf
+	endIf
+endEvent
+
+; @implements SKI_ConfigBase
+event OnColorMenuAccept(int a_option, int a_color)
+	{Called when the user selects a new color}
+	string page = CurrentPage
+
+	if (page == "Widgets")
+		if (a_option == _MXTestColorOID_C)
+			_MXTestColor = a_color;
+			SetColorOptionValue(a_option, a_color)
+		endIf
 	endIf
 endEvent
 

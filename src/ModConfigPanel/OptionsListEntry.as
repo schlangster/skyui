@@ -4,7 +4,6 @@ import skyui.components.list.BasicListEntry;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 
-
 class OptionsListEntry extends BasicListEntry
 {
   /* CONSTANTS */
@@ -15,6 +14,7 @@ class OptionsListEntry extends BasicListEntry
 	public static var OPTION_TOGGLE = 3;
 	public static var OPTION_SLIDER = 4;
 	public static var OPTION_MENU = 5;
+	public static var OPTION_COLOR = 6;
 	
 	public static var ALPHA_SELECTED = 100;
 	public static var ALPHA_ACTIVE = 75;
@@ -31,6 +31,7 @@ class OptionsListEntry extends BasicListEntry
 	public var sliderIcon: MovieClip;
 	public var menuIcon: MovieClip;
 	public var toggleIcon: MovieClip;
+	public var colorIcon: MovieClip;
 	
 	
   /* PROPERTIES */
@@ -104,7 +105,7 @@ class OptionsListEntry extends BasicListEntry
 				
 				labelTextField._width = entryWidth;
 				labelTextField.SetText(a_entryObject.text);
-				labelTextField._alpha = isSelected ? 100 : ALPHA_ACTIVE;
+				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
 				if (a_entryObject.strValue)
@@ -127,6 +128,20 @@ class OptionsListEntry extends BasicListEntry
 				valueTextField.SetText(a_entryObject.strValue.toUpperCase());
 				
 				menuIcon._x = valueTextField.getLineMetrics(0).x - menuIcon._width;
+				
+				break;
+
+			case OPTION_COLOR:
+				gotoAndStop("color");
+				
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
+				
+				colorIcon._x = entryWidth - colorIcon._width;
+
+				var color: Color = new Color(colorIcon.pigment);
+				color.setRGB(a_entryObject.numValue);
 				
 				break;
 				

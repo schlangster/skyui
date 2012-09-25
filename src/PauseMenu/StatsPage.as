@@ -29,13 +29,13 @@ class StatsPage extends MovieClip
 		CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
 		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
 		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
-		CategoryList.disableInput = true;
+		CategoryList.disableInput = true; // Bugfix for vanilla
 		_StatsList.disableSelection = true;
 	}
 
 	function startPage(): Void
 	{
-		CategoryList.disableInput = false;
+		CategoryList.disableInput = false; // Bugfix for vanilla
 		FocusHandler.instance.setFocus(CategoryList, 0);
 		if (bUpdated) {
 			return;
@@ -46,7 +46,7 @@ class StatsPage extends MovieClip
 
 	function endPage(): Void
 	{
-		CategoryList.disableInput = true;
+		CategoryList.disableInput = true; // Bugfix for vanilla
 	}
 
 	function PopulateStatsList(): Void

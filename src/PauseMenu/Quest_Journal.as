@@ -83,9 +83,6 @@ class Quest_Journal extends MovieClip
 
 	function SwitchPageToFront(aiTab: Number, abForceFade: Boolean): Void
 	{
-		if (bTabsDisabled) {
-			return;
-		}
 		if (TopmostPage != PageArray[iCurrentTab]._parent) 
 		{
 			TopmostPage.gotoAndStop("hide");
@@ -161,16 +158,14 @@ class Quest_Journal extends MovieClip
 		}
 		if (iOldTab != iCurrentTab) {
 			PageArray[iOldTab].endPage();
+			// Moved SwitchPageToFront to within this statement
+			// if you click the same tab it won't reload it
+			SwitchPageToFront(iCurrentTab, false); // Bugfix for vanilla
 		}
-		
-		SwitchPageToFront(iCurrentTab, false);
 	}
 
 	function onTabChange(event: Object): Void
 	{
-		if (bTabsDisabled) {
-			return;
-		}
 		event.item.gotoAndPlay("selecting");
 		PageArray[iCurrentTab].startPage();
 		GameDelegate.call("PlaySound", ["UIJournalTabsSD"]);

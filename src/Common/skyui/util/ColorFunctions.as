@@ -20,18 +20,21 @@ class skyui.util.ColorFunctions
 		return rgbToHsv(hexToRgb(a_RRGGBB));
 	}
 
+	public static function hexToHsl(a_RRGGBB: Number): Array
+	{
+		return rgbToHsl(hexToRgb(a_RRGGBB));
+	}
+
 	public static function hexToStr(a_RRGGBB: Number, a_prefix: Boolean): String
 	{
-		prefix = a_prefix | false;
-
-		var str:String = a_color.toString(16).toUpperCase();
+		var str:String = a_RRGGBB.toString(16).toUpperCase();
 
 		var padding: String = '';
 		for (var i: Number = str.length; i < 6; i++) {
 			padding += '0';
 		}
 
-		str = ((prefix)? "0x": "") + padding + str;
+		str = ((a_prefix)? "0x": "") + padding + str;
 
 		return str;
 
@@ -189,11 +192,11 @@ class skyui.util.ColorFunctions
 
 		return [R, G, B];
 	}
-	public static function hsvToHex(a_HSL): Number { return rgbToHex(hsvToRgb(a_HSL)); }
+	public static function hsvToHex(a_HSV): Number { return rgbToHex(hsvToRgb(a_HSV)); }
 
 	// HSB (alias for HSV)
-	public static function hsbToRgb(a_HSV: Array): Array { return hsvToRgb(a_RGB); }
-	public static function hsbToHex(a_HSL): Number { return hsvToHex(a_HSL); }
+	public static function hsbToRgb(a_HSB: Array): Array { return hsvToRgb(a_HSB); }
+	public static function hsbToHex(a_HSB): Number { return hsvToHex(a_HSB); }
 
 	// HSL
 	public static function hslToRgb(a_HSL: Array): Array
@@ -271,12 +274,12 @@ class skyui.util.ColorFunctions
 	public static function hslToHex(a_HSL): Number { return rgbToHex(hslToRgb(a_HSL)); }
 
   /* PRIVATE FUNCTIONS */
-	private function clampValue(a_val: Number, a_min: Number, a_max: Number): Number
+	private static function clampValue(a_val: Number, a_min: Number, a_max: Number): Number
 	{
 		return Math.min(a_max, Math.max(a_min, a_val));
 	}
 
-	private function valLoop(a_val: Number, a_max: Number): Number
+	private static function valLoop(a_val: Number, a_max: Number): Number
 	{
 		// $ trace(valLoop(360.1012, 180))
 		// > 0.10120000000001

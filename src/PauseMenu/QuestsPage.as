@@ -49,14 +49,14 @@ class QuestsPage extends MovieClip
 		TitleList.addEventListener("listMovedUp", this, "onTitleListMoveUp");
 		TitleList.addEventListener("listMovedDown", this, "onTitleListMoveDown");
 		TitleList.addEventListener("selectionChange", this, "onTitleListMouseSelectionChange");
-		TitleList.disableInput = true;
+		TitleList.disableInput = true; // Bugfix for vanilla
 		ObjectiveList.addEventListener("itemPress", this, "onObjectiveListSelect");
 		ObjectiveList.addEventListener("selectionChange", this, "onObjectiveListHighlight");
 	}
 
 	function startPage()
 	{
-		TitleList.disableInput = false;
+		TitleList.disableInput = false; // Bugfix for vanilla
 		if (!bUpdated) {
 			ShowOnMapButton = _parent._parent.BottomBar_mc.Button2_mc;
 			GameDelegate.call("RequestQuestsData", [TitleList], this, "onQuestsDataComplete");
@@ -68,7 +68,7 @@ class QuestsPage extends MovieClip
 
 	function endPage()
 	{
-		TitleList.disableInput = true;
+		TitleList.disableInput = true; // Bugfix for vanilla
 	}
 
 	function get selectedQuestID(): Number
