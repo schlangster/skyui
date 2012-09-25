@@ -25,10 +25,8 @@ event OnInit()
 	RegisterForModEvent("widgetError", "OnWidgetError")
 	
 	; Wait a few seconds until all widgets have registered their callbacks
-	RegisterForSingleUpdate(3)
-endEvent
-
-event OnUpdate()
+	Utility.Wait(3)
+	
 	OnGameReload()
 endEvent
 

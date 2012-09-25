@@ -40,10 +40,8 @@ event OnInit()
 	RegisterForMenu(JOURNAL_MENU)
 	
 	; Wait a few seconds until any initial menus have registered for events
-	RegisterForSingleUpdate(3)
-endEvent
-
-event OnUpdate()
+	Utility.Wait(3)
+	
 	OnGameReload()
 endEvent
 
