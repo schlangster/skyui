@@ -26,6 +26,18 @@ class ItemMenu extends MovieClip
 	
 	private var _bPlayBladeSound: Boolean;
 	
+	private var _equipControls: Array;
+	private var _xButtonControls: Array;
+	private var _yButtonControls: Array;
+	private var _waitControls: Array;
+	private var _searchControls: Array;
+	private var _tabControls: Array;
+	private var _useControls: Array;
+	private var _acceptPCControls: Array;
+	private var _acceptGPControls: Array;
+	private var _cancelPCControls: Array;
+	private var _cancelGPControls: Array;
+	
 	
   /* STAGE ELEMENTS */
 	
@@ -58,6 +70,21 @@ class ItemMenu extends MovieClip
 	public function ItemMenu()
 	{
 		super();
+
+		_equipControls = [
+			{name: "RightEquip", context: skseDefines.kContext_ItemMenu},
+			{name: "LeftEquip", context: skseDefines.kContext_ItemMenu}
+		];
+		_xButtonControls = [{name: "XButton", context: skseDefines.kContext_ItemMenu}];
+		_yButtonControls = [{name: "YButton", context: skseDefines.kContext_ItemMenu}];
+		_waitControls = [{name: "Wait", context: skseDefines.kContext_Gameplay}];
+		_acceptPCControls = [{keyCode: 28}];
+		_acceptGPControls = [{name: "Accept", context: skseDefines.kContext_MenuMode}];
+		_cancelPCControls = [{keyCode: 15}];
+		_cancelGPControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
+		_searchControls = [{keyCode: 57}];
+		_tabControls = [{name: "Sprint", context: skseDefines.kContext_Gameplay}];
+		_useControls = [{name: "Activate", context: skseDefines.kContext_Gameplay}];
 		
 		itemCard = itemCardFadeHolder.ItemCard_mc;
 		
@@ -168,12 +195,6 @@ class ItemMenu extends MovieClip
 		itemListState.defaultDisabledColor = section.colors.disabled.text;
 		itemListState.negativeDisabledColor = section.colors.disabled.negative;
 		itemListState.stolenDisabledColor = section.colors.disabled.stolen;
-		
-		skyui.util.Debug.log("Init'ed list state");
-		
-		skyui.util.Debug.log("Control: " + skse.GetMappedKey("ChargeItem", 0, 4));
-		skyui.util.Debug.log("Control: " + skse.GetMappedKey("ChargeItem", 1, 4));
-		skyui.util.Debug.log("Control: " + skse.GetMappedKey("ChargeItem", 2, 4));
 	}
 
 	// @API
@@ -237,7 +258,6 @@ class ItemMenu extends MovieClip
 				
 				if (_bItemCardPositioned)
 					itemCard.FadeInCard();
-				bottomBar.showButtons();
 			}
 			
 			if (_bItemCardPositioned)
@@ -265,7 +285,6 @@ class ItemMenu extends MovieClip
 	{
 		GameDelegate.call("UpdateItem3D",[false]);
 		itemCard.FadeOutCard();
-		bottomBar.hideButtons();
 	}
 
 	public function onItemSelect(event: Object): Void
@@ -516,5 +535,36 @@ class ItemMenu extends MovieClip
 		saveIndices();
 		GameDelegate.call("CloseMenu",[]);
 		skse.OpenMenu("Inventory Menu");
+	}
+	
+	
+	private function getEquipButtonData(a_itemType: Number): Object
+	{
+		var btnData = {};
+		
+		switch (a_itemType) {
+			case InventoryDefines.ICT_ARMOR :
+				btnData.text = "$Equip";
+				btnData.controls = _useControls;
+				break;
+			case InventoryDefines.ICT_BOOK :
+				btnData.text = "$Read";
+				btnData.controls = _useControls;
+				break;
+			case InventoryDefines.ICT_POTION :
+				btnData.text = "$Use";
+				btnData.controls = _useControls;
+				break;
+			case InventoryDefines.ICT_FOOD :
+			case InventoryDefines.ICT_INGREDIENT :
+				btnData.text = "$Eat";
+				btnData.controls = _useControls;
+				break;
+			default :
+				btnData.text = "$Equip";
+				btnData.controls = _equipControls;
+		}
+		
+		return btnData;
 	}
 }

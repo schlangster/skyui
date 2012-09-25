@@ -22,6 +22,7 @@ class BarterMenu extends ItemMenu
 	
 	private var _dataExtender: BarterDataExtender;
 	
+	
   /* PROPERTIES */
 	
 	// @override ItemMenu
@@ -45,10 +46,6 @@ class BarterMenu extends ItemMenu
 		
 		itemCard.addEventListener("messageConfirm",this,"onTransactionConfirm");
 		itemCard.addEventListener("sliderChange",this,"onQuantitySliderChange");
-		bottomBar.setButtonArt({PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"},1);
-
-		bottomBar.buttons[1].addEventListener("click",this,"onExitButtonPress");
-		bottomBar.buttons[1].disabled = false;
 		
 		inventoryLists.tabBarIconArt = _tabBarIconArt;
 		
@@ -94,7 +91,7 @@ class BarterMenu extends ItemMenu
 		_sellMult = a_sellMult;
 		_dataExtender.barterSellMult = a_sellMult;
 		_dataExtender.barterBuyMult = a_buyMult;
-		bottomBar.setButtonsText("","$Exit");
+		updateBottomBarButtons(false);
 	}
 	
 	// @override ItemMenu
@@ -108,12 +105,8 @@ class BarterMenu extends ItemMenu
 	// @override ItemMenu
 	public function onItemHighlightChange(event: Object): Void
 	{
-		if (event.index != -1) {
-			if (isViewingVendorItems())
-				bottomBar.setButtonsText("$Buy","$Exit");
-			else
-				bottomBar.setButtonsText("$Sell","$Exit");
-		}
+		if (event.index != -1)
+			updateBottomBarButtons(true);
 
 		super.onItemHighlightChange(event);
 	}
@@ -122,7 +115,7 @@ class BarterMenu extends ItemMenu
 	public function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		bottomBar.setButtonsText("","$Exit");
+		updateBottomBarButtons(false);
 	}
 
 	// @override ItemMenu
@@ -205,6 +198,21 @@ class BarterMenu extends ItemMenu
 	private function isViewingVendorItems(): Boolean
 	{
 		return inventoryLists.categoryList.activeSegment == 0;
+	}
+	
+	private function updateBottomBarButtons(a_bSelected: Boolean): Void
+	{
+		bottomBar.clearButtons();
+		
+		if (a_bSelected) {
+			bottomBar.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: _useControls});
+		} else {
+			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			bottomBar.addButton({text: "$Switch Tab", controls: _tabControls});
+		}
+		
+		bottomBar.positionButtons();
 	}
 
 }

@@ -23,30 +23,4 @@
 	static var ES_RIGHT_EQUIPPED = 3;
 	static var ES_BOTH_EQUIPPED = 4;
 	static var QUANTITY_MENU_COUNT_LIMIT = 5;
-
-	static function GetEquipText(aiItemType)
-	{
-		switch (aiItemType) {
-			case ICT_ARMOR :
-				return ("$Equip");
-				break;
-
-			case ICT_BOOK :
-				return ("$Read");
-				break;
-
-			case ICT_POTION :
-				return ("$Use");
-				break;
-
-			case ICT_FOOD :
-			case ICT_INGREDIENT :
-				return ("$Eat");
-				break;
-
-			default :
-				return ("$Equip");
-				break;
-		}
-	}
 }

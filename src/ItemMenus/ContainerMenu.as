@@ -20,13 +20,11 @@ class ContainerMenu extends ItemMenu
 
   /* PRIVATE VARIABLES */
 
-	private var _bShowEquipButtonHelp: Boolean = false;
+	private var _bEquipMode: Boolean = false;
 	private var _equipHand: Number;
-	private var _equipHelpArt: Object;
-	private var _defaultEquipArt: Object;
-
-	private var _containerButtonArt: Object;
-	private var _inventoryButtonArt: Object;
+	
+	private var _equipModeControls: Array;
+	
 	private var _categoryListIconArt: Array;
 	private var _tabBarIconArt: Array;
 	
@@ -46,19 +44,7 @@ class ContainerMenu extends ItemMenu
 	{
 		super();
 		
-		_containerButtonArt = [{PCArt: "M1M2", XBoxArt: "360_LTRT", PS3Art: "PS3_LBRB"},
-							  {PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"},
-							  {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"},
-							  {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
-		
-		_inventoryButtonArt = [{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"},
-							   {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"},
-							   {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"},
-							   {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
-
-		_defaultEquipArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
-		
-		_equipHelpArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"};
+		_equipModeControls = [{keyCode: 42}];
 		
 		_categoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 		
@@ -78,7 +64,6 @@ class ContainerMenu extends ItemMenu
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
 		GameDelegate.addCallBack("XButtonPress", this, "onXButtonPress");
 		itemCardFadeHolder.StealTextInstance._visible = false;
-		updateButtons();
 	}
 
 
@@ -117,30 +102,12 @@ class ContainerMenu extends ItemMenu
 
 		if (shouldProcessItemsListInput(false)) {
 			if (_platform == 0 && details.code == 16 && inventoryLists.itemList.selectedIndex != -1) {
-				_bShowEquipButtonHelp = details.value != "keyUp";
-				updateButtons();
+				_bEquipMode = details.value != "keyUp";
+				updateBottomBar(true);
 			}
 		}
 
 		return true;
-	}
-
-	// @API
-	public function onXButtonPress(): Void
-	{
-		// If we are zoomed into an item, do nothing
-		if (!bFadedIn)
-			return;
-		
-		if (isViewingContainer() && !bNPCMode) {
-			GameDelegate.call("TakeAllItems",[]);
-			return;
-		}
-
-		if (isViewingContainer())
-			return;
-
-		startItemTransfer();
 	}
 
 	// @override ItemMenu
@@ -148,7 +115,7 @@ class ContainerMenu extends ItemMenu
 	{
 		super.UpdateItemCardInfo(a_updateObj);
 
-		updateButtons();
+		updateBottomBar(true);
 
 		if (a_updateObj.pickpocketChance != undefined) {
 			itemCardFadeHolder.StealTextInstance._visible = true;
@@ -162,8 +129,8 @@ class ContainerMenu extends ItemMenu
 	// @override ItemMenu
 	public function onItemHighlightChange(event: Object): Void
 	{
-		updateButtons();
 		super.onItemHighlightChange(event);
+		updateBottomBar(true);
 	}
 
 	// @override ItemMenu
@@ -176,7 +143,7 @@ class ContainerMenu extends ItemMenu
 	public function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		updateButtons();
+		updateBottomBar(false);
 	}
 
 	public function onMouseRotationFastClick(a_mouseButton:Number): Void
@@ -204,23 +171,35 @@ class ContainerMenu extends ItemMenu
 	public function AttemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
 	{
 		var bCheckOverList = a_bCheckOverList == undefined ? true : a_bCheckOverList;
-
-		if (shouldProcessItemsListInput(bCheckOverList) && confirmSelectedEntry()) {
-			if (_platform == 0) {
-				if (!isViewingContainer() || _bShowEquipButtonHelp)
-					startItemEquip(a_slot);
-				else
-					startItemTransfer();
-			} else {
+		
+		if (!shouldProcessItemsListInput(bCheckOverList) || !confirmSelectedEntry())
+			return;
+			
+		if (_platform == 0) {
+			if (_bEquipMode)
 				startItemEquip(a_slot);
-			}
+			else
+				startItemTransfer();
+		} else {
+			startItemEquip(a_slot);
 		}
+	}
+
+	// @API
+	public function onXButtonPress(): Void
+	{
+		// If we are zoomed into an item, do nothing
+		if (!bFadedIn)
+			return;
+		
+		if (isViewingContainer() && !bNPCMode)
+			GameDelegate.call("TakeAllItems",[]);
 	}
 
 	public function onItemSelect(event: Object): Void
 	{
 		if (event.keyboardOrMouse != 0) {
-			if (!isViewingContainer())
+			if (_bEquipMode)
 				startItemEquip(ContainerMenu.NULL_HAND);
 			else
 				startItemTransfer();
@@ -240,59 +219,47 @@ class ContainerMenu extends ItemMenu
 	{
 		super.SetPlatform(a_platform,a_bPS3Switch);
 
+		updateBottomBar(false);
+
 		_platform = a_platform;
-		_bShowEquipButtonHelp = a_platform != 0;
+		_bEquipMode = a_platform != 0;
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
-
-	private function hideButtons(): Void
+	
+	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
-		if (isViewingContainer()) {
-			bottomBar.setButtonText("",0);
-			bottomBar.setButtonText("",1);
-			bottomBar.setButtonText(bNPCMode ? "" : "$Take All",2);
-			bottomBar.setButtonText("$Exit",3);
-		} else {
-			bottomBar.setButtonText("",0);
-			bottomBar.setButtonText("",1);
-			bottomBar.setButtonText("",2);
-			bottomBar.setButtonText("$Exit",3);
-		}
-	}
-
-	private function updateButtons(): Void
-	{
+		bottomBar.clearButtons();
 		
-		if (isViewingContainer())
-			bottomBar.setButtonsArt(_containerButtonArt);
-		else
-			bottomBar.setButtonsArt(_inventoryButtonArt);
-		
-		if (inventoryLists.itemList.selectedIndex == -1 || inventoryLists.currentState != InventoryLists.SHOW_PANEL) {
-			hideButtons();
-			return;
-		}
-
-		if (isViewingContainer()) {
-			if (_bShowEquipButtonHelp) {
-				bottomBar.setButtonText(InventoryDefines.GetEquipText(itemCard.itemInfo.type),0);
-				bottomBar.setButtonText("$Take",1);
-				bottomBar.setButtonText(bNPCMode ? "" : "$Take All",2);
+		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
+			if (isViewingContainer()) {
+				if (_bEquipMode)
+					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+				else
+					bottomBar.addButton({text: "$Take", controls: _useControls});
+				if (!bNPCMode)
+					bottomBar.addButton({text: "$Take All", controls: _xButtonControls});
 			} else {
-				bottomBar.setButtonText("",0);
-				bottomBar.setButtonText("$Take",1);
-				bottomBar.setButtonText(bNPCMode ? "" : "$Take All",2);
+				if (_bEquipMode)
+					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+				else
+					bottomBar.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+				bottomBar.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: _yButtonControls});
 			}
-			bottomBar.setButtonText("$Exit",3);
+			if (!_bEquipMode)
+				bottomBar.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
-			bottomBar.setButtonArt(_bShowEquipButtonHelp ? _equipHelpArt : _defaultEquipArt,0);
-			bottomBar.setButtonText(InventoryDefines.GetEquipText(itemCard.itemInfo.type),0);
-			bottomBar.setButtonText(bNPCMode ? "$Give" : "$Store",1);
-			bottomBar.setButtonText(itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite",2);
-			bottomBar.setButtonText("$Exit",3);
+			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			bottomBar.addButton({text: "$Switch Tab", controls: _tabControls});
+			
+			if (isViewingContainer() && !bNPCMode)
+				bottomBar.addButton({text: "$Take All", controls: _xButtonControls});			
+
 		}
+		
+		bottomBar.positionButtons();
 	}
 
 	private function startItemTransfer(): Void
