@@ -199,7 +199,7 @@ class ContainerMenu extends ItemMenu
 	public function onItemSelect(event: Object): Void
 	{
 		if (event.keyboardOrMouse != 0) {
-			if (_bEquipMode)
+			if (_platform == 0 && _bEquipMode)
 				startItemEquip(ContainerMenu.NULL_HAND);
 			else
 				startItemTransfer();
@@ -234,17 +234,28 @@ class ContainerMenu extends ItemMenu
 		
 		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
 			if (isViewingContainer()) {
-				if (_bEquipMode)
-					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
-				else
+				if (_platform != 0) {
 					bottomBar.addButton({text: "$Take", controls: _useControls});
+					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
+				} else {
+					if (_bEquipMode)
+						bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+					else
+						bottomBar.addButton({text: "$Take", controls: _useControls});
+				}
 				if (!bNPCMode)
 					bottomBar.addButton({text: "$Take All", controls: _xButtonControls});
 			} else {
-				if (_bEquipMode)
-					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
-				else
+				if (_platform != 0) {
 					bottomBar.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
+				} else {
+					if (_bEquipMode)
+						bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+					else
+						bottomBar.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+				}
+
 				bottomBar.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: _yButtonControls});
 			}
 			if (!_bEquipMode)
@@ -252,7 +263,11 @@ class ContainerMenu extends ItemMenu
 		} else {
 			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
 			bottomBar.addButton({text: "$Search", controls: _searchControls});
-			bottomBar.addButton({text: "$Switch Tab", controls: _tabControls});
+			if (_platform != 0) {
+				bottomBar.addButton({text: "$Column", controls: _sortColumnControls});
+				bottomBar.addButton({text: "$Order", controls: _sortOrderControls});
+			}
+			bottomBar.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
 			
 			if (isViewingContainer() && !bNPCMode)
 				bottomBar.addButton({text: "$Take All", controls: _xButtonControls});			

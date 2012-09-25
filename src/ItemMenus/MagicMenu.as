@@ -211,7 +211,11 @@ class MagicMenu extends ItemMenu
 		} else {
 			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
 			bottomBar.addButton({text: "$Search", controls: _searchControls});
-			bottomBar.addButton({text: "$Inventory", controls: _tabControls});
+			if (_platform != 0) {
+				bottomBar.addButton({text: "$Column", controls: _sortColumnControls});
+				bottomBar.addButton({text: "$Order", controls: _sortOrderControls});
+			}
+			bottomBar.addButton({text: "$Inventory", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
 		}
 		
 		bottomBar.positionButtons();

@@ -286,7 +286,11 @@ class InventoryMenu extends ItemMenu
 		} else {
 			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
 			bottomBar.addButton({text: "$Search", controls: _searchControls});
-			bottomBar.addButton({text: "$Magic", controls: _tabControls});
+			if (_platform != 0) {
+				bottomBar.addButton({text: "$Column", controls: _sortColumnControls});
+				bottomBar.addButton({text: "$Order", controls: _sortOrderControls});
+			}
+			bottomBar.addButton({text: "$Magic", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
 		}
 		
 		bottomBar.positionButtons();
