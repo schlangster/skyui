@@ -1,6 +1,8 @@
 ﻿import gfx.io.GameDelegate;
 import Components.Meter;
 
+import skyui.components.MappedButton;
+
 class BottomBar extends MovieClip
 {
   /* PRIVATE VARIABLES */	
@@ -8,14 +10,15 @@ class BottomBar extends MovieClip
 	private var _lastItemType: Number;
 	private var _leftOffset: Number;
 	
-
-	
 	private var _healthMeter: Meter;
 	private var _magickaMeter: Meter;
 	private var _staminaMeter: Meter;
 	private var _levelMeter: Meter;
 
 	private var _playerInfoObj: Object;
+	
+	// Number of buttons that are actually in use
+	private var _buttonCount: Number = 0;
 	
 	
   /* STAGE ELEMENTS */
@@ -38,8 +41,8 @@ class BottomBar extends MovieClip
 		_magickaMeter = new Meter(playerInfoCard.MagickaRect.MeterInstance.Meter_mc);
 		_staminaMeter = new Meter(playerInfoCard.StaminaRect.MeterInstance.Meter_mc);
 		_levelMeter = new Meter(playerInfoCard.LevelMeterInstance.Meter_mc);
+
 		buttons = [];
-		
 		for (var i: Number = 0; this["button" + i] != undefined; i++)
 			buttons.push(this["button" + i]);
 	}
@@ -67,9 +70,9 @@ class BottomBar extends MovieClip
 	public function updatePerItemInfo(a_itemUpdateObj: Object): Void
 	{
 		var infoCard = playerInfoCard;
-		
 		var itemType: Number = a_itemUpdateObj.type;
 		var bHasWeightandValue = true;
+		
 		if (itemType == undefined) {
 			itemType = _lastItemType;
 			if (a_itemUpdateObj == undefined)
@@ -176,13 +179,13 @@ class BottomBar extends MovieClip
 		updatePerItemInfo(a_itemUpdateObj);
 	}
 
-	public function updateCraftingInfo(aSkillName: String, aiLevelStart: Number, afLevelPercent: Number): Void
+	public function updateCraftingInfo(a_skillName: String, a_levelStart: Number, a_levelPercent: Number): Void
 	{
 		playerInfoCard.gotoAndStop("Crafting");
-		updateSkillBar(aSkillName, aiLevelStart, afLevelPercent);
+		updateSkillBar(a_skillName, a_levelStart, a_levelPercent);
 	}
 
-	public function setBarterInfo(aiPlayerGold: Number, aiVendorGold: Number, aiGoldDelta: Number, astrVendorName: String): Void
+	public function setBarterInfo(a_playerGold: Number, a_vendorGold: Number, a_goldDelta: Number, a_vendorName: String): Void
 	{
 		var infoCard = playerInfoCard;
 		
@@ -190,16 +193,16 @@ class BottomBar extends MovieClip
 			infoCard.gotoAndStop("Barter");
 		infoCard.PlayerGoldValue.textAutoSize = "shrink";
 		infoCard.VendorGoldValue.textAutoSize = "shrink";
-		if (aiGoldDelta == undefined) 
-			infoCard.PlayerGoldValue.SetText(aiPlayerGold.toString(), true);
-		else if (aiGoldDelta >= 0) 
-			infoCard.PlayerGoldValue.SetText(aiPlayerGold.toString() + " <font color=\'#189515\'>(+" + aiGoldDelta.toString() + ")</font>", true);
+		if (a_goldDelta == undefined) 
+			infoCard.PlayerGoldValue.SetText(a_playerGold.toString(), true);
+		else if (a_goldDelta >= 0) 
+			infoCard.PlayerGoldValue.SetText(a_playerGold.toString() + " <font color=\'#189515\'>(+" + a_goldDelta.toString() + ")</font>", true);
 		else 
-			infoCard.PlayerGoldValue.SetText(aiPlayerGold.toString() + " <font color=\'#FF0000\'>(" + aiGoldDelta.toString() + ")</font>", true);
-		infoCard.VendorGoldValue.SetText(aiVendorGold.toString());
-		if (astrVendorName != undefined) {
+			infoCard.PlayerGoldValue.SetText(a_playerGold.toString() + " <font color=\'#FF0000\'>(" + a_goldDelta.toString() + ")</font>", true);
+		infoCard.VendorGoldValue.SetText(a_vendorGold.toString());
+		if (a_vendorName != undefined) {
 			infoCard.VendorGoldLabel.SetText("$Gold");
-			infoCard.VendorGoldLabel.SetText(astrVendorName + " " + infoCard.VendorGoldLabel.text);
+			infoCard.VendorGoldLabel.SetText(a_vendorName + " " + infoCard.VendorGoldLabel.text);
 		}
 		infoCard.VendorGoldLabel._x = infoCard.VendorGoldValue._x + infoCard.VendorGoldValue.getLineMetrics(0).x - infoCard.VendorGoldLabel._width - 5;
 		infoCard.PlayerGoldValue._x = infoCard.VendorGoldLabel._x + infoCard.VendorGoldLabel.getLineMetrics(0).x - infoCard.PlayerGoldValue._width - 20;
@@ -250,121 +253,92 @@ class BottomBar extends MovieClip
 		}
 	}
 
-	public function setGiftInfo(aiFavorPoints: Number): Void
+	public function setGiftInfo(a_favorPoints: Number): Void
 	{
 		playerInfoCard.gotoAndStop("Gift");
 	}
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		for (var i: Number = 0; i < buttons.length; i++)
-			buttons[i].SetPlatform(a_platform, a_bPS3Switch);
+		for (var i=0; i < buttons.length; i++)
+			buttons[i].setPlatform(a_platform, a_bPS3Switch);
 	}
 
 	public function showButtons(): Void
 	{
-		for (var i: Number = 0; i < buttons.length; i++)
+		for (var i=0; i < buttons.length; i++)
 			buttons[i]._visible = buttons[i].label.length > 0;
 	}
 
 	public function hideButtons(): Void
 	{
-		for (var i: Number = 0; i < buttons.length; i++)
+		for (var i=0; i < buttons.length; i++)
 			buttons[i]._visible = false;
 	}
-
-	public function setButtonsText(): Void
+	
+	public function clearButtons(): Void
 	{
-		for (var i: Number = 0; i < buttons.length; i++) {
-			buttons[i].label = i >= arguments.length ? "" : arguments[i];
-			buttons[i]._visible = buttons[i].label.length > 0;
-		}
-		positionButtons();
-	}
-
-	public function setButtonText(a_text: String, a_index: Number): Void
-	{
-		if (a_index < buttons.length) {
-			buttons[a_index].label = a_text;
-			buttons[a_index]._visible = a_text.length > 0;
-			positionButtons();
+		_buttonCount = 0;
+		for (var i=0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			btn._visible = false;
+			btn.label = "";
 		}
 	}
-
-	public function setButtonsArt(a_buttonArt: Object): Void
+	
+	public function addButton(a_buttonData: Object): MovieClip
 	{
-		for (var i: Number = 0; i < a_buttonArt.length; i++)
-			setButtonArt(a_buttonArt[i], i);
+		if (_buttonCount >= buttons.length)
+			return;
+		
+		var btn = buttons[_buttonCount];
+		btn.setButtonData(a_buttonData);
+		btn._visible = true;
+		_buttonCount++;
+		
+		return btn;
 	}
-
-	public function getButtonsArt(): Array
+	
+	public function positionButtons(): Void
 	{
-		var ButtonsArt = new Array(buttons.length);
-		for (var i: Number = 0; i < buttons.length; i++)
-			ButtonsArt[i] = buttons[i].GetArt();
-		return ButtonsArt;
-	}
-
-	function getButtonArt(a_index: Number): Object
-	{
-		if (a_index < buttons.length) 
-			return buttons[a_index].GetArt();
-		return undefined;
-	}
-
-	function setButtonArt(a_platformArt: Object, a_index: Number): Void
-	{
-		if (a_index < buttons.length) {
-			var aButton = buttons[a_index];
-			aButton.PCArt = a_platformArt.PCArt;
-			aButton.XBoxArt = a_platformArt.XBoxArt;
-			aButton.PS3Art = a_platformArt.PS3Art;
-			aButton.RefreshArt();
+		var leftOffset: Number = _leftOffset;
+		
+		for (var i=0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			if (btn.label.length > 0) {
+				btn._x = leftOffset;
+				leftOffset += btn.width + 10;
+			}
 		}
 	}
 
 
   /* PRIVATE FUNCTIONS */
-
-	private function positionButtons(): Void
+	
+	private function updateStatMeter(a_meterRect: MovieClip, a_meterObj: Meter, a_currValue: Number, a_maxValue: Number, a_colorStr: String): Void
 	{
-		var rightOffset: Number = 10;
-		var LeftOffset: Number = _leftOffset;
-		
-		for (var i: Number = 0; i < buttons.length; i++) {
-			if (buttons[i].label.length > 0) {
-				buttons[i]._x = LeftOffset + buttons[i].ButtonArt._width;
-				if (buttons[i].ButtonArt2 != undefined) 
-					buttons[i]._x = buttons[i]._x + buttons[i].ButtonArt2._width;
-				LeftOffset = buttons[i]._x + buttons[i].textField.getLineMetrics(0).width + rightOffset;
+		if (a_colorStr == undefined) 
+			a_colorStr = "#FFFFFF";
+		if (a_meterRect._alpha > 0) {
+			if (a_meterRect.MeterText != undefined) {
+				a_meterRect.MeterText.textAutoSize = "shrink";
+				a_meterRect.MeterText.html = true;
+				a_meterRect.MeterText.SetText("<font color=\'" + a_colorStr + "\'>" + Math.floor(a_currValue) + "/" + Math.floor(a_maxValue) + "</font>", true);
 			}
+			a_meterRect.MeterInstance.gotoAndStop("Pause");
+			a_meterObj.SetPercent(a_currValue / a_maxValue * 100);
 		}
 	}
 	
-	private function updateStatMeter(aMeterRect: MovieClip, aMeterObj: Components.Meter, aiCurrValue: Number, aiMaxValue: Number, aColor: String): Void
-	{
-		if (aColor == undefined) 
-			aColor = "#FFFFFF";
-		if (aMeterRect._alpha > 0) {
-			if (aMeterRect.MeterText != undefined) {
-				aMeterRect.MeterText.textAutoSize = "shrink";
-				aMeterRect.MeterText.html = true;
-				aMeterRect.MeterText.SetText("<font color=\'" + aColor + "\'>" + Math.floor(aiCurrValue) + "/" + Math.floor(aiMaxValue) + "</font>", true);
-			}
-			aMeterRect.MeterInstance.gotoAndStop("Pause");
-			aMeterObj.SetPercent(aiCurrValue / aiMaxValue * 100);
-		}
-	}
-	
-	private function updateSkillBar(aSkillName: String, aiLevelStart: Number, afLevelPercent: Number): Void
+	private function updateSkillBar(a_skillName: String, a_levelStart: Number, a_levelPercent: Number): Void
 	{
 		var infoCard = playerInfoCard;
 		
-		infoCard.SkillLevelLabel.SetText(aSkillName);
-		infoCard.SkillLevelCurrent.SetText(aiLevelStart);
-		infoCard.SkillLevelNext.SetText(aiLevelStart + 1);
+		infoCard.SkillLevelLabel.SetText(a_skillName);
+		infoCard.SkillLevelCurrent.SetText(a_levelStart);
+		infoCard.SkillLevelNext.SetText(a_levelStart + 1);
 		infoCard.LevelMeterInstance.gotoAndStop("Pause");
-		_levelMeter.SetPercent(afLevelPercent);
+		_levelMeter.SetPercent(a_levelPercent);
 	}
 
 }

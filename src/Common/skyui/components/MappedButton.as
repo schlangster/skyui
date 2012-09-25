@@ -1,17 +1,13 @@
 ﻿import Shared.ButtonChange;
+import gfx.controls.Button;
 
-class skyui.components.MappedButton extends gfx.controls.Button
+class skyui.components.MappedButton extends Button
 {
   /* PRIVATE VARIABLES */
 
 	private var _platform: Number;
 	
 	private var _keyCodes: Array;
-	
-	private var _iconCount: Number = 0;
-	private var _icons: Array;
-	
-	private var _bShowBackground = false;
 	
 	
   /* STAGE ELEMENTS */
@@ -22,17 +18,43 @@ class skyui.components.MappedButton extends gfx.controls.Button
 	
   /* PROPERTIES */
   
-  	public var iconRenderer: MovieClip;
+  	public function set hiddenBackground(a_flag: Boolean)
+	{
+		background._visible = false;
+	}
+	
+	public function get hiddenBackground(): Boolean
+	{
+		return background._visible;
+	}
+	
+	public function get width(): Number
+	{
+		return background._width;
+	}
+	
+	public function set width(a_value: Number)
+	{
+		background._width = a_value;
+	}
+  
+  	public var buttonArt: Array;
 
 
   /* INITIALIZATION */
 
-	function MappedButton(a_bShowBackground: Boolean)
+	function MappedButton()
 	{
 		super();
-		_bShowBackground = a_bShowBackground;
+		_bShowBackground = false;
+		
+		textField.autoSize = "left";
+		
 		_keyCodes = [];
-		_icons = [];
+		
+		buttonArt = [];
+		for (var i=0; this["buttonArt" + i] != undefined; i++)
+			buttonArt.push(this["buttonArt" + i]);
 	}
 
 	function onLoad(): Void
@@ -49,18 +71,42 @@ class skyui.components.MappedButton extends gfx.controls.Button
 	{
 		if (a_platform != null) 
 			_platform = a_platform;
+			
 		refreshArt();
 	}
-
-	public function setMappedControls(/* a_name1: String, a_context1: Number, ... */): Void
+	
+	public function setButtonData(a_buttonData: Object)
 	{
-		_keyCode = -1;
-		if (_platform == 1) {
-			_keyCode = skse.GetMappedKey(a_name, skse.kDevice_Gamepad, a_context);
-		} else {
-			_keyCode = skse.GetMappedKey(a_name, skse.kDevice_Mouse, a_context);
-			if (keyCode == -1)
-				_keyCode = skse.GetMappedKey(a_controlName, skse.kDevice_Keyboard, a_context);
+		label = a_buttonData.text;
+		setMappedControls(a_buttonData.controls);
+	}
+
+	public function setMappedControls(a_controls: Array): Void
+	{
+		_keyCodes.splice(0);
+		
+		for (var i=0; i<a_controls.length; i++) {
+			var controlInfo = a_controls[i];
+			
+			// Setting keycode manually overrides auto-detection
+			if (controlInfo.keyCode != null) {
+				_keyCodes.push(controlInfo.keyCode);
+				continue;
+			}
+			
+			var name = controlInfo.name;
+			var context = controlInfo.context;
+			
+			var keyCode = -1;
+			if (_platform == 0) {
+				keyCode = skse.GetMappedKey(name, skseDefines.kDevice_Keyboard, context);
+				if (keyCode == -1)
+					keyCode = skse.GetMappedKey(name, skseDefines.kDevice_Mouse, context);
+
+			} else {
+				keyCode = skse.GetMappedKey(name, skseDefines.kDevice_Gamepad, context);
+			}
+			_keyCodes.push(keyCode);
 		}
 		refreshArt();
 	}
@@ -70,13 +116,24 @@ class skyui.components.MappedButton extends gfx.controls.Button
 	
 	private function refreshArt(): Void
 	{
-		if (!_buttonArt)
-			_buttonArt = attachMovie("ButtonArt", "ButtonArt", getNextHighestDepth());
+		var xOffset = 0;
 		
-		_buttonArt.gotoAndStop(keyCode);
-		_buttonArt._x = _buttonArt._x - _buttonArt._width;
-		_buttonArt._y = (_height - _buttonArt._height) / 2;
-
-		background._visible = _bShowBackground;
+		for (var i=0; i<buttonArt.length; i++) {
+			var icon: MovieClip = buttonArt[i];
+			
+			if (_keyCodes[i] > 0) {
+				icon._visible = true;			
+				icon.gotoAndStop(_keyCodes[i]);
+				icon._x = xOffset
+				icon._y = (_height - icon._height) / 2;
+				xOffset += icon._width - 2;
+			} else {
+				icon._visible = false;
+			}
+		}
+		
+		textField._x = xOffset + 1;
+		xOffset += textField.textWidth + 1;
+		background._width = xOffset;
 	}
 }

@@ -16,11 +16,6 @@ class InventoryMenu extends ItemMenu
 	private var _bMenuClosing: Boolean = false;
 	private var _bSwitchMenus: Boolean = false;
 
-	private var _equipButtonArt: Object;
-	private var _altButtonArt: Object;
-	private var _chargeButtonArt: Object;
-	private var _prevButtonArt: Object;
-	private var _itemCardListButtonArt: Array;
 	private var _categoryListIconArt: Array;
 	
 	
@@ -36,13 +31,6 @@ class InventoryMenu extends ItemMenu
 	public function InventoryMenu()
 	{
 		super();
-		
-		_equipButtonArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"};
-		_altButtonArt = {PCArt:"E", XBoxArt:"360_A", PS3Art:"PS3_A"};
-		_chargeButtonArt = {PCArt:"T", XBoxArt:"360_RB", PS3Art:"PS3_RT"};
-		_itemCardListButtonArt = [{PCArt:"Enter", XBoxArt:"360_A", PS3Art:"PS3_A"}, {PCArt:"Tab", XBoxArt:"360_B", PS3Art:"PS3_B"}];
-		
-		_prevButtonArt = undefined;
 		
 		_categoryListIconArt = ["cat_favorites", "inv_all", "inv_weapons", "inv_armor",
 							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
@@ -62,7 +50,6 @@ class InventoryMenu extends ItemMenu
 		GlobalFunc.AddReverseFunctions();
 		
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
-		bottomBar.setButtonArt(_chargeButtonArt, 3);
 	
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
@@ -142,7 +129,7 @@ class InventoryMenu extends ItemMenu
 		super.onShowItemsList(event);
 		
 		if (event.index != -1)
-			updateBottomBarButtons();
+			updateBottomBar(true);
 	}
 
 	public function onItemHighlightChange(event: Object): Void
@@ -150,7 +137,7 @@ class InventoryMenu extends ItemMenu
 		super.onItemHighlightChange(event);
 		
 		if (event.index != -1)
-			updateBottomBarButtons();
+			updateBottomBar(true);
 			
 	}
 
@@ -159,6 +146,7 @@ class InventoryMenu extends ItemMenu
 	{
 		super.onHideItemsList(event);
 		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_NONE});
+		updateBottomBar(false);
 	}
 
 	// @override ItemMenu
@@ -226,14 +214,13 @@ class InventoryMenu extends ItemMenu
 		
 		if (event.menu == "list") {
 			if (event.opening == true) {
-				_prevButtonArt = bottomBar.getButtonsArt();
-				bottomBar.setButtonsText("$Select", "$Cancel");
-				bottomBar.setButtonsArt(_itemCardListButtonArt);
+				bottomBar.clearButtons();
+				bottomBar.addButton({text: "$Select", controls: (_platform == 0 ? _acceptPCControls : _acceptGPControls)});
+				bottomBar.addButton({text: "$Cancel", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+				bottomBar.positionButtons();
 			} else {
-				bottomBar.setButtonsArt(_prevButtonArt);
-				_prevButtonArt = undefined;
 				GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
-				updateBottomBarButtons();
+				updateBottomBar(true);
 			}
 		}
 	}
@@ -246,6 +233,8 @@ class InventoryMenu extends ItemMenu
 		inventoryLists.zoomButtonHolder.ZoomButton.SetPlatform(a_platform, a_bPS3Switch);
 		
 		super.SetPlatform(a_platform, a_bPS3Switch);
+		
+		updateBottomBar(false);
 	}
 
 	// @API
@@ -278,43 +267,28 @@ class InventoryMenu extends ItemMenu
 		_bMenuClosing = true;
 	}
 	
-	private function updateBottomBarButtons(): Void
+	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
-		bottomBar.setButtonArt(_altButtonArt, 0);
+		bottomBar.clearButtons();
 		
-		switch (itemCard.itemInfo.type) {
-			case InventoryDefines.ICT_ARMOR :
-				bottomBar.setButtonText("$Equip", 0);
-				break;
-
-			case InventoryDefines.ICT_BOOK :
-				bottomBar.setButtonText("$Read", 0);
-				break;
-
-			case InventoryDefines.ICT_POTION :
-				bottomBar.setButtonText("$Use", 0);
-				break;
-
-			case InventoryDefines.ICT_FOOD :
-			case InventoryDefines.ICT_INGREDIENT :
-				bottomBar.setButtonText("$Eat", 0);
-				break;
-
-			default :
-				bottomBar.setButtonArt(_equipButtonArt, 0);
-				bottomBar.setButtonText("$Equip", 0);
+		if (a_bSelected) {
+			bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+			bottomBar.addButton({text: "$Drop", controls: _xButtonControls});
+			
+			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
+				bottomBar.addButton({text: "$Unfavorite", controls: _yButtonControls});
+			else
+				bottomBar.addButton({text: "$Favorite", controls: _yButtonControls});
+	
+			if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
+				bottomBar.addButton({text: "$Charge", controls: _waitControls});
+				
+		} else {
+			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			bottomBar.addButton({text: "$Magic", controls: _tabControls});
 		}
-
-		bottomBar.setButtonText("$Drop", 1);
 		
-		if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-			bottomBar.setButtonText("$Unfavorite", 2);
-		else
-			bottomBar.setButtonText("$Favorite", 2);
-
-		if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
-			bottomBar.setButtonText("$Charge", 3);
-		else
-			bottomBar.setButtonText("", 3);
+		bottomBar.positionButtons();
 	}
 }

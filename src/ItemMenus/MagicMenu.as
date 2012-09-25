@@ -17,7 +17,6 @@ class MagicMenu extends ItemMenu
 	private var _bMenuClosing: Boolean = false;
 	private var _bSwitchMenus: Boolean = false;
 
-	private var _magicButtonArt: Object;
 	private var _categoryListIconArt: Array;
 	
 	
@@ -32,11 +31,6 @@ class MagicMenu extends ItemMenu
 	{
 		super();
 		
-		_magicButtonArt = [{PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LBRB"},
-						  {PCArt:"F",XBoxArt:"360_Y", PS3Art:"PS3_Y"},
-						  {PCArt:"R",XBoxArt:"360_X", PS3Art:"PS3_X"},
-						  {PCArt:"Tab",XBoxArt:"360_B", PS3Art:"PS3_B"}];
-		
 		_categoryListIconArt = ["cat_favorites", "mag_all", "mag_alteration", "mag_illusion",
 							   "mag_destruction", "mag_conjuration", "mag_restoration", "mag_shouts",
 							   "mag_powers", "mag_activeeffects"];
@@ -50,8 +44,6 @@ class MagicMenu extends ItemMenu
 		GameDelegate.addCallBack("AttemptEquip", this , "AttemptEquip");
 		
 		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
-		
-		bottomBar.setButtonsArt(_magicButtonArt);
 		
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
@@ -123,6 +115,13 @@ class MagicMenu extends ItemMenu
 			skse.OpenMenu("InventoryMenu");
 		}
 	}
+	
+	// @override ItemMenu
+	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{		
+		super.SetPlatform(a_platform, a_bPS3Switch);		
+		updateBottomBar(false);
+	}
 
 	// @override ItemMenu
 	public function onShowItemsList(event: Object): Void
@@ -130,7 +129,7 @@ class MagicMenu extends ItemMenu
 		super.onShowItemsList(event);
 		
 		if (event.index != -1)
-			updateButtonText();
+			updateBottomBar(true);
 	}
 
 	// @override ItemMenu
@@ -139,14 +138,14 @@ class MagicMenu extends ItemMenu
 		super.onItemHighlightChange(event);
 		
 		if (event.index != -1)
-			updateButtonText();
+			updateBottomBar(true);
 	}
 
 	// @API
 	public function DragonSoulSpent(): Void
 	{
 		itemCard.itemInfo.soulSpent = true;
-		updateButtonText();
+		updateBottomBar();
 	}
 
 
@@ -156,6 +155,8 @@ class MagicMenu extends ItemMenu
 		super.onHideItemsList(event);
 		
 		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_SPELL_DEFAULT});
+		
+		updateBottomBar(false);
 	}
 	
 	// @API
@@ -192,17 +193,28 @@ class MagicMenu extends ItemMenu
 		}
 	}
 	
-	private function updateButtonText(): Void
+	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
-		if (inventoryLists.itemList.selectedEntry != undefined) {
-			var favStr = (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag) != 0 ? "$Unfavorite" : "$Favorite";
-			var unlockStr = itemCard.itemInfo.showUnlocked ? "$Unlock":"";
+		bottomBar.clearButtons();
+		
+		if (a_bSelected && (inventoryLists.itemList.selectedEntry.filterFlag & skyui.util.Defines.FLAG_MAGIC_ACTIVE_EFFECT) == 0) {
+			bottomBar.addButton({text: "$Equip", controls: _equipControls});
 			
-			if ((inventoryLists.itemList.selectedEntry.filterFlag & _hideButtonFlag) != 0)
-				bottomBar.hideButtons();
+			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
+				bottomBar.addButton({text: "$Unfavorite", controls: _yButtonControls});
 			else
-				bottomBar.setButtonsText("$Equip", favStr, unlockStr);
+				bottomBar.addButton({text: "$Favorite", controls: _yButtonControls});
+	
+			if (itemCard.itemInfo.showUnlocked)
+				bottomBar.addButton({text: "$Unlock", controls: _xButtonControls});
+				
+		} else {
+			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			bottomBar.addButton({text: "$Inventory", controls: _tabControls});
 		}
+		
+		bottomBar.positionButtons();
 	}
 	
 	private function startMenuFade(): Void
