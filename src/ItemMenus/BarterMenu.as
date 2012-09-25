@@ -202,21 +202,21 @@ class BarterMenu extends ItemMenu
 	
 	private function updateBottomBarButtons(a_bSelected: Boolean): Void
 	{
-		bottomBar.clearButtons();
+		navPanel.clearButtons();
 		
 		if (a_bSelected) {
-			bottomBar.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: _useControls});
+			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: _useControls});
 		} else {
-			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				bottomBar.addButton({text: "$Column", controls: _sortColumnControls});
-				bottomBar.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
 			}
-			bottomBar.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
 		}
 		
-		bottomBar.positionButtons();
+		navPanel.positionButtons();
 	}
 
 }

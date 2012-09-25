@@ -195,30 +195,30 @@ class MagicMenu extends ItemMenu
 	
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
-		bottomBar.clearButtons();
+		navPanel.clearButtons();
 		
 		if (a_bSelected && (inventoryLists.itemList.selectedEntry.filterFlag & skyui.util.Defines.FLAG_MAGIC_ACTIVE_EFFECT) == 0) {
-			bottomBar.addButton({text: "$Equip", controls: _equipControls});
+			navPanel.addButton({text: "$Equip", controls: _equipControls});
 			
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-				bottomBar.addButton({text: "$Unfavorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Unfavorite", controls: _yButtonControls});
 			else
-				bottomBar.addButton({text: "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Favorite", controls: _yButtonControls});
 	
 			if (itemCard.itemInfo.showUnlocked)
-				bottomBar.addButton({text: "$Unlock", controls: _xButtonControls});
+				navPanel.addButton({text: "$Unlock", controls: _xButtonControls});
 				
 		} else {
-			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				bottomBar.addButton({text: "$Column", controls: _sortColumnControls});
-				bottomBar.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
 			}
-			bottomBar.addButton({text: "$Inventory", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Inventory", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
 		}
 		
-		bottomBar.positionButtons();
+		navPanel.positionButtons();
 	}
 	
 	private function startMenuFade(): Void

@@ -1,14 +1,14 @@
 ﻿import gfx.io.GameDelegate;
 import Components.Meter;
 
-import skyui.components.MappedButton;
+import skyui.components.NavigationPanel;
+
 
 class BottomBar extends MovieClip
 {
   /* PRIVATE VARIABLES */	
   
 	private var _lastItemType: Number;
-	private var _leftOffset: Number;
 	
 	private var _healthMeter: Meter;
 	private var _magickaMeter: Meter;
@@ -16,9 +16,6 @@ class BottomBar extends MovieClip
 	private var _levelMeter: Meter;
 
 	private var _playerInfoObj: Object;
-	
-	// Number of buttons that are actually in use
-	private var _buttonCount: Number = 0;
 	
 	
   /* STAGE ELEMENTS */
@@ -28,7 +25,7 @@ class BottomBar extends MovieClip
 	
   /* PROPERTIES */
   
-	public var buttons: Array;
+	public var navPanel: NavigationPanel;
 	
 	
   /* INITIALIZATION */
@@ -41,10 +38,6 @@ class BottomBar extends MovieClip
 		_magickaMeter = new Meter(playerInfoCard.MagickaRect.MeterInstance.Meter_mc);
 		_staminaMeter = new Meter(playerInfoCard.StaminaRect.MeterInstance.Meter_mc);
 		_levelMeter = new Meter(playerInfoCard.LevelMeterInstance.Meter_mc);
-
-		buttons = [];
-		for (var i: Number = 0; this["button" + i] != undefined; i++)
-			buttons.push(this["button" + i]);
 	}
 	
 	
@@ -52,8 +45,9 @@ class BottomBar extends MovieClip
 
 	public function positionElements(a_leftOffset: Number, a_rightOffset: Number): Void
 	{
-		_leftOffset = a_leftOffset;
-		positionButtons();
+//		navPanel.leftOffset = a_leftOffset;
+		navPanel._x = a_leftOffset;
+		navPanel.positionButtons();
 		playerInfoCard._x = a_rightOffset - playerInfoCard._width;
 	}
 
@@ -260,56 +254,7 @@ class BottomBar extends MovieClip
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		for (var i=0; i < buttons.length; i++)
-			buttons[i].setPlatform(a_platform, a_bPS3Switch);
-	}
-
-	public function showButtons(): Void
-	{
-		for (var i=0; i < buttons.length; i++)
-			buttons[i]._visible = buttons[i].label.length > 0;
-	}
-
-	public function hideButtons(): Void
-	{
-		for (var i=0; i < buttons.length; i++)
-			buttons[i]._visible = false;
-	}
-	
-	public function clearButtons(): Void
-	{
-		_buttonCount = 0;
-		for (var i=0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			btn._visible = false;
-			btn.label = "";
-		}
-	}
-	
-	public function addButton(a_buttonData: Object): MovieClip
-	{
-		if (_buttonCount >= buttons.length)
-			return;
-		
-		var btn = buttons[_buttonCount];
-		btn.setButtonData(a_buttonData);
-		btn._visible = true;
-		_buttonCount++;
-		
-		return btn;
-	}
-	
-	public function positionButtons(): Void
-	{
-		var leftOffset: Number = _leftOffset;
-		
-		for (var i=0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			if (btn.label.length > 0) {
-				btn._x = leftOffset;
-				leftOffset += btn.width + 10;
-			}
-		}
+		navPanel.setPlatform(a_platform, a_bPS3Switch);
 	}
 
 

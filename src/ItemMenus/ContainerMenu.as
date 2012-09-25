@@ -230,51 +230,51 @@ class ContainerMenu extends ItemMenu
 	
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
-		bottomBar.clearButtons();
+		navPanel.clearButtons();
 		
 		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
 			if (isViewingContainer()) {
 				if (_platform != 0) {
-					bottomBar.addButton({text: "$Take", controls: _useControls});
-					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
+					navPanel.addButton({text: "$Take", controls: _useControls});
+					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
-						bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						bottomBar.addButton({text: "$Take", controls: _useControls});
+						navPanel.addButton({text: "$Take", controls: _useControls});
 				}
 				if (!bNPCMode)
-					bottomBar.addButton({text: "$Take All", controls: _xButtonControls});
+					navPanel.addButton({text: "$Take All", controls: _xButtonControls});
 			} else {
 				if (_platform != 0) {
-					bottomBar.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
-					bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
+					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
-						bottomBar.addButton(getEquipButtonData(itemCard.itemInfo.type));
+						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						bottomBar.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
 				}
 
-				bottomBar.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: _yButtonControls});
 			}
 			if (!_bEquipMode)
-				bottomBar.addButton({text: "$Equip Mode", controls: _equipModeControls});
+				navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
-			bottomBar.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			bottomBar.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
+			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				bottomBar.addButton({text: "$Column", controls: _sortColumnControls});
-				bottomBar.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
 			}
-			bottomBar.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
 			
 			if (isViewingContainer() && !bNPCMode)
-				bottomBar.addButton({text: "$Take All", controls: _xButtonControls});			
+				navPanel.addButton({text: "$Take All", controls: _xButtonControls});			
 
 		}
 		
-		bottomBar.positionButtons();
+		navPanel.positionButtons();
 	}
 
 	private function startItemTransfer(): Void
