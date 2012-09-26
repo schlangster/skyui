@@ -330,41 +330,40 @@ class HUDMenu extends Shared.PlatformChangeUser
 
 	function ShowElements(aMode: String, abShow: Boolean): Void
 	{
-		var HUDMode: String = "All";
-		var aHUDMode = HUDModes.length - 1;
+		var newHUDMode: String = "All";
+		var HUDModeIdx: Number = HUDModes.length - 1;
 
 		if (abShow) {
-			while (aHUDMode >= 0) {
-				if (HUDModes[aHUDMode] == aMode)
-					HUDModes.splice(aHUDMode, 1);
-				--aHUDMode;
+			while (HUDModeIdx >= 0) {
+				if (HUDModes[HUDModeIdx] == aMode)
+					HUDModes.splice(HUDModeIdx, 1);
+				HUDModeIdx--;
 			}
 			HUDModes.push(aMode);
-			HUDMode = aMode;
+			newHUDMode = aMode;
 		} else {
 			if (aMode.length > 0) {
-				var ModeFound = false;
-				
-				while (aHUDMode >= 0 && !ModeFound) {
-					if (HUDModes[aHUDMode] == aMode) {
-						HUDModes.splice(aHUDMode, 1);
-						ModeFound = true;
+				var found: Boolean = false;
+				while (HUDModeIdx >= 0 && !found) {
+					if (HUDModes[HUDModeIdx] == aMode) {
+						HUDModes.splice(HUDModeIdx, 1);
+						found = true;
 					}
-					--aHUDMode;
+					HUDModeIdx--;
 				}
 			} else {
 				HUDModes.pop();
 			}
 			if (HUDModes.length > 0) {
-				HUDMode = String(HUDModes[HUDModes.length - 1]);
+				newHUDMode = String(HUDModes[HUDModes.length - 1]);
 			}
 		}
 		
 		for(var i: Number = 0; i < HudElements.length; i++) {
 			if (HudElements[i] != undefined) {
-				HudElements[i]._visible = HudElements[i].hasOwnProperty(HUDMode);
+				HudElements[i]._visible = HudElements[i].hasOwnProperty(newHUDMode);
 				if (HudElements[i].onModeChange != undefined)
-					HudElements[i].onModeChange(HUDMode);
+					HudElements[i].onModeChange(newHUDMode);
 			}
 		}
 		

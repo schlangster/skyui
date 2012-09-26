@@ -142,9 +142,9 @@
 	static function RestartAnimations(): Void
 	{
 		var aQuestUpdateBase: MovieClip = QuestNotification.Instance.AnimLetter._parent;
-		for (var i: String in aQuestUpdateBase) {
-			if (aQuestUpdateBase[i] instanceof AnimatedLetter && aQuestUpdateBase[i] != QuestNotification.Instance.AnimLetter) {
-				aQuestUpdateBase[i].gotoAndPlay(aQuestUpdateBase[i]._currentFrame);
+		for (var s: String in aQuestUpdateBase) {
+			if (aQuestUpdateBase[s] instanceof AnimatedLetter && aQuestUpdateBase[s] != QuestNotification.Instance.AnimLetter) {
+				aQuestUpdateBase[s].gotoAndPlay(aQuestUpdateBase[s]._currentFrame);
 			}
 		}
 	}
