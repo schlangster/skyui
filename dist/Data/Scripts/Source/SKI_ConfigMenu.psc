@@ -48,7 +48,7 @@ float[]		_AEBaseXValues
 float		_AEOffsetX				= 0.0
 float[]		_AEBaseYValues
 float		_AEOffsetY				= 0.0
-int			_AEOrientationIdx		= 0
+int			_AEOrientationIdx		= 1
 int			_MXTestColor			= 0x162274
 
 int			_itemlistFontSizeIdx	= 1
@@ -443,7 +443,6 @@ event OnOptionMenuAccept(int a_option, int a_index)
 	elseif (page == "Widgets")
 		if (a_option == _AEClampCornerOID_M)
 			_AEClampCornerIdx = a_index
-			Debug.trace("_AEClampCornerIdx: " + _AEClampCornerIdx)
 			SetMenuOptionValue(a_option, _corners[_AEClampCornerIdx])
 			SKI_ActiveEffectsWidgetInstance.ClampCorner = _cornerValues[_AEClampCornerIdx]
 			SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
@@ -518,64 +517,3 @@ event OnOptionHighlight(int a_option)
 		endIf
 	endIf
 endEvent
-
-string function FormatNumber(float a_number, int a_dp)
-	{max DP is 6}
-	int mult = 1;
-
-	if (a_dp > 0)
-		int temp = 0
-		while (temp < a_dp)
-			mult = mult * 10
-			temp = temp + 1
-		endWhile
-	endIf
-
-	string valStr = (Math.floor((a_number * mult as float) + 0.5) / mult as float) as string
-
-	int dotIdx = StringUtil.Find(valStr, ".")
-	if (dotIdx != -1)
-		valStr = StringUtil.Substring(valStr, 0, dotIdx + a_dp + 1)
-	endIf
-
-	return valStr
-endFunction
-
-
-string function FormatExponent(float a_number, int a_dp)
-	{max DP is 6}
-	string valStr = a_number as String
-	float mantissa = a_number
-	string expStr = ""
-
-	;  float myFloat = 0.0000000000123456
-	; Debug.Trace("myFloat: " + myFloat as string)
-	; > 0.000000
-	; Incorrect? Should be 1.234560E-11
-
-	int expIdx = StringUtil.Find(valStr, "E")
-	if (expIdx != -1)
-		mantissa = StringUtil.Substring(valStr, 0, expIdx + 1) as float ; |1.23456|E-78
-		expStr = StringUtil.Substring(valStr, expIdx, 0) ; 1.123456|E-78|
-	endIf
-
-	int mult = 1;
-	if (a_dp > 0)
-		int temp = 0
-		while (temp < a_dp)
-			mult = mult * 10
-			temp = temp + 1
-		endWhile
-	endIf
-
-	valStr = (Math.floor((mantissa * mult as float) + 0.5) / mult as float) as string
-
-	int dotIdx = StringUtil.Find(valStr, ".")
-	if (dotIdx != -1)
-		valStr = StringUtil.Substring(valStr, 0, dotIdx + a_dp + 1)
-	endIf
-
-	valStr = valStr + expStr
-
-	return valStr
-endFunction

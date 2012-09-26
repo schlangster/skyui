@@ -60,42 +60,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_effectsGroups = new Array();
 
 		effectDataArray = new Array();
-
-		/* // TEST: init
-		effectDataArray = [
-							{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 59661324496, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 1000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5964613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966143296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 2000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966134442496, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132966, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132449666, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 1500, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5964613296666, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 450, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966143296666, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 1000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 59661344424946, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 20, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
-							];
-		// Set via property in CK					
-		setHAlign("left"); //Registeration point
-		setVAlign("top");
-		setPositionX(0);
-		setPositionY(0);
-
-
-		initNumbers(48.0, 3);
-		initStrings("righdt", "dodwn", "horizdontal");
-		initCommit();
-
-		//setInterval(this, "testEffectSize", 3000);
-		//_global.setTimeout(this,"timeout", 1000);
-		//_global.setTimeout(this,"timeout2",2000);
-		//*/
-
 	}
 
   /* PUBLIC FUNCTIONS */
@@ -211,8 +175,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
   /* PRIVATE FUNCTIONS */
 	private function onIntervalUpdate(): Void
 	{
-		
-		///* // TEST: Uncomment when testing.
 		effectDataArray.splice(0);
 		skse.RequestActivePlayerEffects(effectDataArray);
 
@@ -221,7 +183,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			effectDataArray.sortOn("elapsed", Array.DESCENDING | Array.NUMERIC);
 			_sortFlag = false;
 		}
-		//*/
 
 		var effectData: Object;
 		var effectClip: MovieClip;
@@ -284,8 +245,10 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 										effectMoveDuration: EFFECT_MOVE_DURATION,
 										hGrowDirection: _hGrowDirection,
 										vGrowDirection: _vGrowDirection,
-										orientation: _orientation}; //String
-			effectsGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + newGroupIdx, getNextHighestDepth(), initObject);
+										orientation: _orientation};
+										
+			// Name needs to be unique so append getNextHighestDepth() to the name
+			effectsGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + getNextHighestDepth(), getNextHighestDepth(), initObject);
 			_effectsGroups.push(effectsGroup);
 
 			freeEffectsGroup = effectsGroup;
@@ -308,78 +271,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_effectsHash = new Object();
 		_effectsGroups = new Array();
 
-		// Redraw
-		//onIntervalUpdate();
-
 		// Logic here to check if in the right HUD Mode, avoid unnecessary updates
 		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*// TEST: functions
-	private function testEffectSize()
-	{
-		setEffectSize((_effectBaseSize == 32) ? (48): (_effectBaseSize == 48) ? 64 : 32);
-	}
-
-	private function timeout()
-	{
-		effectDataArray = [{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}//, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
-							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
-							];
-		onIntervalUpdate();
-	}
-
-	private function timeout2()
-	{
-		effectDataArray = [//{elapsed: 5, magicType: 4294967295, duration: 7, subType: 22, id: 567786304, actorValue: 107, effectFlags: 2099458, archetype: 34},
-							{elapsed: 3.1780076026917, magicType: 4294967295, duration: 60, subType: 4294967295, id: 596614304, actorValue: 135, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration:50, subType: 4294967295, id: 596613744, actorValue: 17, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 9, subType: 4294967295, id: 596613856, actorValue: 142, effectFlags: 2099202, archetype: 34}, 
-							//{elapsed: 3.1780076026917, magicType: 4294967295, duration: 40, subType: 4294967295, id: 596613632, actorValue: 142, effectFlags: 2099202, archetype: 34}, // <-- remove
-							//{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 596613296, actorValue: 54, effectFlags: 4201474, archetype: 11},
-							{elapsed: 3000, magicType: 4294967295, duration: 3001, subType: 4294967295, id: 5966132999, actorValue: 54, effectFlags: 4201474, archetype: 11}
-							];
-
-		onIntervalUpdate();
-	}
-	//*/
 }
