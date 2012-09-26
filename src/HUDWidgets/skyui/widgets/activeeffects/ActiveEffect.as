@@ -30,7 +30,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 	public var hGrowDirection: String;
 	public var vGrowDirection: String;
-	public var growAxis: String;
+	public var orientation: String;
 	
 	
 	
@@ -210,8 +210,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		var newX: Number = 0;
 		var newY: Number = 0;
 
-		// Grow Axis the axis in which new effects will be added to after the total number of effects > GroupEffectCount
-		if (growAxis == "horizontal") {
+		// orientation the axis in which new effects will be added to after the total number of effects > GroupEffectCount
+		if (orientation == "horizontal") {
 			// Orientation is vertical so...
 			// This effect is in a column, next effect will be shifted vertically
 			if (vGrowDirection == "up") {
