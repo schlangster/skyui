@@ -4,12 +4,8 @@ scriptname SKI_ActiveEffectsWidget extends SKI_WidgetBase
 ; Config
 ; Make sure defaults match those in ConfigMenuInstance
 float	_effectSize				= 48.0
-
-; private
 int		_groupEffectCount	= 8
-string	_hGrowDirection		= "left"
-string	_vGrowDirection		= "down"
-string	_growAxis			= "horizontal"
+string	_orientation		= "horizontal"
 string	_clampCorner		= "TR"
 
 string function GetWidgetType()
@@ -49,34 +45,6 @@ int property GroupEffectCount
 	endFunction
 endProperty
 
-string property HGrowDirection
-	{Direction in which new effects get added on the vertical axis}
-	string function get()
-		return _hGrowDirection
-	endFunction
-
-	function set(string a_val)
-		_hGrowDirection = a_val
-		if (Initialized)
-			UI.InvokeString(HUD_MENU, WidgetRoot + ".setHGrowDirection", _hGrowDirection) 
-		endIf
-	endFunction
-endProperty
-
-string property VGrowDirection
-	{Direction in which new effects get added on the horizontal axis}
-	string function get()
-		return _vGrowDirection
-	endFunction
-
-	function set(string a_val)
-		_vGrowDirection = a_val
-		if (Initialized)
-			UI.InvokeString(HUD_MENU, WidgetRoot + ".setVGrowDirection", _vGrowDirection) 
-		endIf
-	endFunction
-endProperty
-
 string property ClampCorner
 	{Corner at which the first effect is}
 	string function get()
@@ -86,21 +54,37 @@ string property ClampCorner
 	function set(string a_val)
 		_clampCorner = a_val
 		if (Initialized)
+
+			if (_clampCorner == "BR")
+				HAlign = "right"
+				VAlign = "bottom"
+			elseIf (_clampCorner == "BL")
+				HAlign = "left"
+				VAlign = "bottom"
+			elseIf (_clampCorner == "TL")
+				HAlign = "left"
+				VAlign = "top"
+			else
+				_clampCorner == "TR"
+				HAlign = "right"
+				VAlign = "top"
+			endIf
+
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setClampCorner", _clampCorner) 
 		endIf
 	endFunction
 endProperty
 
-string property GrowAxis
+string property Orientation
 	{The axis in which new effects will be added to after the total number of effects > GroupEffectCount}
 	string function get()
-		return _growAxis
+		return _orientation
 	endFunction
 
 	function set(string a_val)
-		_growAxis = a_val
+		_orientation = a_val
 		if (Initialized)
-			UI.InvokeString(HUD_MENU, WidgetRoot + ".setGrowAxis", _growAxis) 
+			UI.InvokeString(HUD_MENU, WidgetRoot + ".setOrientation", _orientation) 
 		endIf
 	endFunction
 endProperty
@@ -118,7 +102,7 @@ event OnWidgetReset()
 	; Init strings
 	string[] stringArgs = new string[2]
 	stringArgs[0] = _clampCorner
-	stringArgs[1] = _growAxis
+	stringArgs[1] = _orientation
 	UI.InvokeStringA(HUD_MENU, WidgetRoot + ".initStrings", stringArgs)
 
 	; Init commit

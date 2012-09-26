@@ -9,23 +9,25 @@ import com.greensock.easing.Linear;
 class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 {
   /* CONSTANTS */
-	// TODO: Make these config vars.
-
-	private static var ORIENTATION_H: String = "horizontal";
-	private static var ORIENTATION_V: String = "vertical";
-
-	static private var GROUP_MOVE_DURATION: Number = 1.00;
-	private var _groupSpacing: Number; // _effectBaseSize/10
-
-	// NO './', bsa doesn't like it!
-	static private var ICON_LOCATION: String = "skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
-
-	// config
-	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
-	private var _effectSpacing: Number; // _effectBaseSize/10
 	private static var EFFECT_FADE_IN_DURATION: Number = 0.25;
 	private static var EFFECT_FADE_OUT_DURATION: Number = 0.75;
 	private static var EFFECT_MOVE_DURATION: Number = 1.00;
+	private static var GROUP_MOVE_DURATION: Number = 1.00;
+
+	// NO './', bsa doesn't like it!
+	private static var ICON_LOCATION: String = "skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
+
+	// config
+	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
+	private var _groupEffectCount: Number;
+	private var _clampCorner: String;
+	private var _orientation: String;
+
+
+
+	private var _effectSpacing: Number; // _effectBaseSize/10
+	private var _groupSpacing: Number; // _effectBaseSize/10
+
 
   /* PRIVATE VARIABLES */
 	private var _marker: Number = 1;
@@ -34,17 +36,14 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private var _effectsHash: Object;
 	private var _effectsGroups: Array;
 
-	private var _yMin: Number;
-
-	private var _groupEffectCount: Number;
+	
 
 	private var _intervalId: Number;
 
 	//Grow dir
 	private var _hGrowDirection: String;
 	private var _vGrowDirection: String;
-	private var _growAxis: String;
-	private var _clampCorner: String;
+	
 
   /* PUBLIC VARIABLES */
 	// Passed from SKSE
@@ -135,12 +134,10 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
 	// @Papyrus
-	public function initStrings(a_clampCorner: String, a_growAxis: String): Void
+	public function initStrings(a_clampCorner: String, a_orientation: String): Void
 	{
-		//_hGrowDirection = a_hGrowDirection.toLowerCase();
-		//_vGrowDirection = a_vGrowDirection.toLowerCase();
 		updateClampCorner(a_clampCorner);
-		_growAxis = a_growAxis.toLowerCase();
+		_orientation = a_orientation.toLowerCase();
 	}
 
 	// @Papyrus
@@ -158,9 +155,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_effectBaseSize = a_effectBaseSize;
 		_groupSpacing = _effectSpacing = _effectBaseSize/10.0;
 
-		// Redraw effects, but before the redraw reset the align
-		// Align needs to be reset because its offset is determiend by the base size of the widget, _effectBaseSize
-		invalidateEffects(true);
+		invalidateSize();
+		invalidateEffects();
 	}
 
 	// @Papyrus
@@ -172,27 +168,11 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
 	// @Papyrus
-	public function setHGrowDirection(a_hGrowDirection: String): Void
-	{
-		_hGrowDirection = a_hGrowDirection.toLowerCase();
-
-		invalidateEffects();
-	}
-
-	// @Papyrus
-	public function setVGrowDirection(a_vGrowDirection: String): Void
-	{
-		_vGrowDirection = a_vGrowDirection.toLowerCase();
-
-		invalidateEffects();
-	}
-
-	// @Papyrus
 	public function setClampCorner(a_clampCorner: String): Void
 	{
 		updateClampCorner(a_clampCorner);
 
-		invalidateEffects(true);
+		invalidateEffects();
 	}
 
 	// Helper function for setClampCorner
@@ -201,36 +181,28 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_clampCorner = a_clampCorner.toUpperCase();
 		switch(_clampCorner) {
 			case "BR":
-				_hAlign = "right";
-				_vAlign = "bottom";
 				_hGrowDirection = "left";
 				_vGrowDirection = "up";
 				break;
 			case "BL":
-				_hAlign = "left";
-				_vAlign = "bottom";
 				_hGrowDirection = "right";
 				_vGrowDirection = "up";
 				break;
 			case "TL":
-				_hAlign = "left";
-				_vAlign = "top";
 				_hGrowDirection = "right";
 				_vGrowDirection = "down";
 				break;
-			case "TR":
 			default:
-				_hAlign = "right";
-				_vAlign = "top";
+				_clampCorner = "TR";
 				_hGrowDirection = "left";
 				_vGrowDirection = "down";
 		}
 	}
 
 	// @Papyrus
-	public function setGrowAxis(a_growAxis: String): Void
+	public function setOrientation(a_orientation: String): Void
 	{
-		_growAxis = a_growAxis.toLowerCase();
+		_orientation = a_orientation.toLowerCase();
 
 		invalidateEffects();
 	}
@@ -312,7 +284,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 										effectMoveDuration: EFFECT_MOVE_DURATION,
 										hGrowDirection: _hGrowDirection,
 										vGrowDirection: _vGrowDirection,
-										growAxis: _growAxis}; //String
+										orientation: _orientation}; //String
 			effectsGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + newGroupIdx, getNextHighestDepth(), initObject);
 			_effectsGroups.push(effectsGroup);
 
@@ -322,7 +294,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		return freeEffectsGroup;
 	}
 
-	private function invalidateEffects(a_invalidateSize: Boolean): Void
+	private function invalidateEffects(): Void
 	{
 		clearInterval(_intervalId);
 		_sortFlag = true;
@@ -333,16 +305,13 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			effectsGroup.removeMovieClip();
 		}
 
-		if (a_invalidateSize)
-			invalidateSize();
-
 		_effectsHash = new Object();
 		_effectsGroups = new Array();
 
 		// Redraw
-		onIntervalUpdate();
+		//onIntervalUpdate();
 
-		// Logic here to check if in the right HUD Mode, avoid unnecessary 
+		// Logic here to check if in the right HUD Mode, avoid unnecessary updates
 		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
 	}
 
