@@ -97,7 +97,7 @@ class MenuDialog extends OptionDialog
 	
 	private function getActiveMenuIndex(): Number
 	{
-		var index = menuList.listState.activeEntry.itemIndex
-		return (index ? index : -1);
+		var index = menuList.listState.activeEntry.itemIndex;
+		return (index != undefined ? index : -1);
 	}
 }
