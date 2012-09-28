@@ -5,7 +5,7 @@ scriptname SKI_ActiveEffectsWidget extends SKI_WidgetBase
 ; Make sure defaults match those in ConfigMenuInstance
 float	_effectSize				= 48.0
 int		_groupEffectCount	= 8
-string	_orientation		= "horizontal"
+string	_orientation		= "vertical"
 string	_clampCorner		= "TR"
 
 string function GetWidgetType()

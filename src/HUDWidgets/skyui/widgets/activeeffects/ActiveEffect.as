@@ -139,8 +139,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 		// TODO, make it scale w/ icon size. All the icons we use are 128*128 so it doesn't matter
 		_icon._width = _icon._height = _iconHolder.iconBackground._width;
-		//_icon.gotoAndStop(determineIconLabel());
-		_icon.gotoAndStop(Math.floor(1 + Math.random() * 126));
+		_icon.gotoAndStop(determineIconLabel());
+		//_icon.gotoAndStop(Math.floor(1 + Math.random() * 126));
 	}
 
 	private function onLoadError(a_mc: MovieClip, a_errorCode: String): Void
@@ -211,7 +211,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		var newY: Number = 0;
 
 		// orientation the axis in which new effects will be added to after the total number of effects > GroupEffectCount
-		if (orientation == "horizontal") {
+		if (orientation == "vertical") {
 			// Orientation is vertical so...
 			// This effect is in a column, next effect will be shifted vertically
 			if (vGrowDirection == "up") {
@@ -220,7 +220,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 				newY = +(index * (effectBaseSize + effectSpacing));
 			}
 		} else {
-			// This effect is in a column, next effect will be shifted horizontally
+			// This effect is in a row, next effect will be shifted horizontally
 			if (hGrowDirection == "left") {
 				newX = -(index * (effectBaseSize + effectSpacing));
 			} else {

@@ -109,7 +109,7 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		var newY: Number = 0;
 
 		// orientation the axis in which new effects will be added to after the total number of effects > GroupEffectCount
-		if (orientation == "horizontal") {
+		if (orientation == "vertical") {
 			// Orientation is vertical so...
 			// Group is a column, so next group will be shifted horizontally
 			if (hGrowDirection == "left") {
