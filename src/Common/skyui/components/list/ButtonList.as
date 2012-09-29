@@ -171,7 +171,7 @@ class skyui.components.list.ButtonList extends BasicList
 			doSetSelectedIndex(getListEnumLastIndex(), SELECT_KEYBOARD);
 			isMouseDrivenNav = false;
 		} else if (getSelectedListEnumIndex() > 0) {
-			doSetSelectedIndex(getListEnumPredecessorIndex(), SELECT_KEYBOARD);
+			doSetSelectedIndex(getListEnumRelativeIndex(-1), SELECT_KEYBOARD);
 			isMouseDrivenNav = false;
 			dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: true});
 		}
@@ -186,7 +186,7 @@ class skyui.components.list.ButtonList extends BasicList
 			doSetSelectedIndex(getListEnumFirstIndex(), SELECT_KEYBOARD);
 			isMouseDrivenNav = false;
 		} else if (getSelectedListEnumIndex() < getListEnumSize() - 1) {
-			doSetSelectedIndex(getListEnumSuccessorIndex(), SELECT_KEYBOARD);
+			doSetSelectedIndex(getListEnumRelativeIndex(+1), SELECT_KEYBOARD);
 			isMouseDrivenNav = false;
 			dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 		}

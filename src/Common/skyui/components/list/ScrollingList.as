@@ -146,35 +146,13 @@ class skyui.components.list.ScrollingList extends BasicList
 		isMouseDrivenNav = true;
 	}
 
-
-	var updateCount = 0;
-	var invalidateCount = 0;
-
-	public function onEnterFrame()
-	{
-		if (updateCount > 0) {
-			skyui.util.Debug.log("Update count was " + updateCount);
-			updateCount = 0;
-		}
-		
-		if (invalidateCount > 0) {
-			skyui.util.Debug.log("Invalidate count was " + invalidateCount);
-			invalidateCount = 0;
-		}
-	}
-
 	// @override BasicList
 	public function UpdateList(): Void
 	{
 		if (_bSuspended) {
-			skyui.util.Debug.log("Ignored update while suspended");
 			_bRequestUpdate = true;
 			return;
 		}
-		
-		updateCount++;
-		
-		skyui.util.Debug.log("EXECUTING UPDATE, caller: " + skyui.util.Debug.getFunctionName(arguments.caller));
 		
 		// Prepare clips
 		setClipCount(_maxListIndex);
@@ -228,14 +206,9 @@ class skyui.components.list.ScrollingList extends BasicList
 	public function InvalidateData(): Void
 	{
 		if (_bSuspended) {
-			skyui.util.Debug.log("Delay invalidate while suspended");
 			_bRequestInvalidate = true;
 			return;
 		}
-		
-		invalidateCount++;
-
-		skyui.util.Debug.log("EXECUTING INVALIDATE, caller: " + skyui.util.Debug.getFunctionName(arguments.caller));
 		
 		for (var i = 0; i < _entryList.length; i++) {
 			_entryList[i].itemIndex = i;
@@ -272,8 +245,8 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (!disableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(false);
-			} else if (getSelectedListEnumIndex() > 0) {
-				doSetSelectedIndex(getListEnumPredecessorIndex(), SELECT_KEYBOARD);
+			} else if (getSelectedListEnumIndex() >= scrollDelta) {
+				doSetSelectedIndex(getListEnumRelativeIndex(-scrollDelta), SELECT_KEYBOARD);
 				isMouseDrivenNav = false;
 				dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: true});
 			}
@@ -291,8 +264,8 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (!disableSelection && !a_bScrollPage) {
 			if (_selectedIndex == -1) {
 				selectDefaultIndex(true);
-			} else if (getSelectedListEnumIndex() < getListEnumSize() - 1) {
-				doSetSelectedIndex(getListEnumSuccessorIndex(), SELECT_KEYBOARD);
+			} else if (getSelectedListEnumIndex() < getListEnumSize() - scrollDelta) {
+				doSetSelectedIndex(getListEnumRelativeIndex(scrollDelta), SELECT_KEYBOARD);
 				isMouseDrivenNav = false;
 				dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 			}
@@ -313,11 +286,11 @@ class skyui.components.list.ScrollingList extends BasicList
 		if (a_bBottom) {
 			var firstClip = getClipByIndex(0);
 			if (firstClip.itemIndex != undefined)
-				selectedIndex = firstClip.itemIndex;
+				doSetSelectedIndex(firstClip.itemIndex, SELECT_KEYBOARD);
 		} else {
 			var lastClip = getClipByIndex(_listIndex - 1);
 			if (lastClip.itemIndex != undefined)
-				selectedIndex = lastClip.itemIndex;
+				doSetSelectedIndex(lastClip.itemIndex, SELECT_KEYBOARD);
 		}
 	}
 

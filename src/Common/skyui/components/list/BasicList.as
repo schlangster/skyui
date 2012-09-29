@@ -135,19 +135,15 @@ class skyui.components.list.BasicList extends BSList
 		
 		// Lock
 		if (a_flag) {
-			skyui.util.Debug.log("Suspended list");
 			_bSuspended = true;
 		} else {
-			skyui.util.Debug.log("Released list");
 			_bSuspended = false;
 			
-			if (_bRequestInvalidate) {
-				skyui.util.Debug.log("Exec delayed request");
+			if (_bRequestInvalidate)
 				InvalidateData();
-			} else if(_bRequestUpdate) {
-				skyui.util.Debug.log("Exec delayed update");
+			else if(_bRequestUpdate)
 				UpdateList();
-			}
+
 			_bRequestInvalidate = false;
 			_bRequestUpdate = false;
 			
@@ -158,8 +154,7 @@ class skyui.components.list.BasicList extends BSList
 	}
 	
 	
-	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
   
 	public function BasicList()
 	{
@@ -200,7 +195,6 @@ class skyui.components.list.BasicList extends BSList
 	
 	public function requestInvalidate(): Void
 	{
-		skyui.util.Debug.log("Requsted invalidate: " + skyui.util.Debug.getFunctionName(arguments.caller));
 		_bRequestInvalidate = true;
 		
 		// Invalidate request replaces update request
@@ -217,7 +211,6 @@ class skyui.components.list.BasicList extends BSList
 	
 	public function requestUpdate(): Void
 	{
-		skyui.util.Debug.log("Requested update: " + skyui.util.Debug.getFunctionName(arguments.caller));
 		_bRequestUpdate = true;
 		
 		// Invalidate already requested? Includes update
@@ -242,9 +235,6 @@ class skyui.components.list.BasicList extends BSList
 		}
 		
 		_bRequestInvalidate = false;
-
-		
-		skyui.util.Debug.log("COMMIT INVALIDATE");
 		InvalidateData();
 	}
 	
@@ -254,8 +244,6 @@ class skyui.components.list.BasicList extends BSList
 		delete _updateRequestID;
 		
 		_bRequestUpdate = false;
-		
-		skyui.util.Debug.log("COMMIT UPDATE");
 		UpdateList();
 	}
 	
@@ -263,12 +251,9 @@ class skyui.components.list.BasicList extends BSList
 	public function InvalidateData(): Void
 	{
 		if (_bSuspended) {
-			skyui.util.Debug.log("Ignored invalidate while suspended");
 			_bRequestInvalidate = true;
 			return;
 		}
-		
-		skyui.util.Debug.log("EXECUTING INVALIDATE");		
 		
 		for (var i = 0; i < _entryList.length; i++) {
 			_entryList[i].itemIndex = i;
@@ -295,6 +280,9 @@ class skyui.components.list.BasicList extends BSList
 		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
 			
+		if (a_keyboardOrMouse == undefined)
+			a_keyboardOrMouse = SELECT_KEYBOARD;
+			
 		dispatchEvent({type: "itemPress", index: _selectedIndex, entry: selectedEntry, clip: selectedClip, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
@@ -302,6 +290,9 @@ class skyui.components.list.BasicList extends BSList
 	{
 		if (disableInput || disableSelection || _selectedIndex == -1 || a_buttonIndex != 1)
 			return;
+			
+		if (a_keyboardOrMouse == undefined)
+			a_keyboardOrMouse = SELECT_KEYBOARD;
 		
 		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, clip: selectedClip, keyboardOrMouse: a_keyboardOrMouse});
 	}
@@ -388,16 +379,6 @@ class skyui.components.list.BasicList extends BSList
 	private function getListEnumEntry(a_index: Number): Object
 	{
 		return listEnumeration.at(a_index);
-	}
-	
-	private function getListEnumPredecessorIndex(): Number
-	{
-		return listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() - 1);
-	}
-	
-	private function getListEnumSuccessorIndex(): Number
-	{
-		return listEnumeration.lookupEntryIndex(getSelectedListEnumIndex() + 1);
 	}
 	
 	private function getListEnumFirstIndex(): Number

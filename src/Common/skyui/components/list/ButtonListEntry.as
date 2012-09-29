@@ -35,7 +35,6 @@ class skyui.components.list.ButtonListEntry extends BasicListEntry
 	{
 		enabled = a_entryObject.enabled;
 		
-		// TODO
 		var isSelected = a_entryObject == a_state.list.selectedEntry;
 		var isActive = (a_state.activeEntry != undefined && a_entryObject == a_state.activeEntry);
 

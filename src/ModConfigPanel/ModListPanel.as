@@ -1,4 +1,6 @@
 ﻿import gfx.events.EventDispatcher;
+import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import mx.transitions.Tween;
 import mx.transitions.easing.Strong;
@@ -99,7 +101,6 @@ class ModListPanel extends MovieClip
 	
 	private function setState(a_state: Number): Void
 	{
-		trace("Setting state to " + a_state);
 		switch (a_state) {
 			case LIST_ACTIVE:
 				modListFader.gotoAndStop("show");
@@ -161,8 +162,6 @@ class ModListPanel extends MovieClip
 	
 	public function onAnimFinish(a_animID: Number): Void
 	{
-		trace("onAnimFinish: state " + _state + " anim " + a_animID);
-		
 		switch (a_animID) {
 			case ANIM_DECORTITLE_FADE_IN:
 				// Should happen at the same time as ANIM_LIST_FADE_OUT, we just need to handle one of them.
@@ -194,8 +193,23 @@ class ModListPanel extends MovieClip
 	
 	public function onSubListPress(a_event: Object): Void
 	{
-
+		if (a_event.keyboardOrMouse == 1)
+			_subList.selectedIndex = -1;
+	}
+	
+	// @GFx
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{		
+		if (_state == LIST_ACTIVE) {
+			if (_modList.handleInput(details, pathToFocus))
+				return true;
+		} else if (_state == SUBLIST_ACTIVE) {
+			if (_subList.handleInput(details, pathToFocus))
+				return true;
+		}
 		
+		var nextClip = pathToFocus.shift();
+		return nextClip.handleInput(details, pathToFocus);
 	}
 
 

@@ -65,6 +65,7 @@ class OptionsListEntry extends BasicListEntry
 		switch (a_entryObject.optionType) {
 			
 			case OPTION_HEADER:
+				enabled = false;
 				gotoAndStop("header");
 				
 				labelTextField._width = entryWidth;
@@ -77,6 +78,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_TEXT:
+				enabled = true;
 				gotoAndStop("text");
 				
 				labelTextField._width = entryWidth;
@@ -89,6 +91,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_TOGGLE:
+				enabled = true;
 				gotoAndStop("toggle");
 				
 				labelTextField._width = entryWidth;
@@ -101,6 +104,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_SLIDER:
+				enabled = true;
 				gotoAndStop("slider");
 				
 				labelTextField._width = entryWidth;
@@ -118,6 +122,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_MENU:
+				enabled = true;
 				gotoAndStop("menu");
 				
 				labelTextField._width = entryWidth;
@@ -132,6 +137,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 
 			case OPTION_COLOR:
+				enabled = true;
 				gotoAndStop("color");
 				
 				labelTextField._width = entryWidth;
@@ -147,6 +153,7 @@ class OptionsListEntry extends BasicListEntry
 				
 			case OPTION_EMPTY:
 			default:
+				enabled = false;
 				gotoAndStop("empty");
 		}
 	}

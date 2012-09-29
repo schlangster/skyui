@@ -1,26 +1,23 @@
 ﻿import skyui.components.list.ScrollingList;
+import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
+import Shared.GlobalFunc;
+
 
 class MultiColumnScrollingList extends ScrollingList
 {
-	private var _columnCount: Number = 1;
+  /* PRIVATE VARIABLES */ 
+	
+	private var _separators: Array;
+	
+	
+  /* PROPERTIES */
 	
 	public var columnSpacing: Number = 0;
 	
 	public var separatorRenderer: String;
 	
-	private var _separators: Array;
-	
-
-	public function MultiColumnScrollingList()
-	{
-		super();
-		
-		scrollDelta = columnCount;
-		_maxListIndex *= columnCount;
-		
-		if (_separators == null)
-			_separators = [];
-	}
+	private var _columnCount: Number = 1;
 	
 	public function get columnCount(): Number
 	{
@@ -34,35 +31,22 @@ class MultiColumnScrollingList extends ScrollingList
 		refreshSeparators();
 	}
 	
-	private function refreshSeparators()
+
+  /* INITIALIZATION */
+
+	public function MultiColumnScrollingList()
 	{
+		super();
+		
+		scrollDelta = columnCount;
+		_maxListIndex *= columnCount;
+		
 		if (_separators == null)
 			_separators = [];
-		
-		while (_separators.length > 0) {
-			var e = _separators.pop();
-			e.removeMovieClip();
-		}
-		
-		// Create separators
-		if (!separatorRenderer)
-			return;
-			
-		var columnWidth = (background._width - leftBorder - rightBorder - (columnCount-1) * columnSpacing) / columnCount;
-		var t = background._x + leftBorder;
-		var d = columnSpacing/2;
-		
-		for (var i=0; i < columnCount-1; i++) {
-			var e = attachMovie(separatorRenderer, separatorRenderer + i, getNextHighestDepth());
-			t += columnWidth + d;
-			e._x = t;
-			e._y = background._y;
-			e._height = background._height;
-			e._alpha = 50;
-			_separators.push(e);
-			t += d;
-		}
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 	
 	// @override ScrollingList
 	public function UpdateList(): Void
@@ -117,11 +101,89 @@ class MultiColumnScrollingList extends ScrollingList
 			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
 				if (e._parent == this && e._visible && e.itemIndex != undefined)
 					doSetSelectedIndex(e.itemIndex, SELECT_MOUSE);
-
-
 					
 		var bShowSeparators = _listIndex > 0;
 		for (var i=0; i<_separators.length; i++)
 			_separators[i]._visible = bShowSeparators;
+	}
+	
+	// @GFx
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		if (disableInput)
+			return false;
+			
+		if (super.handleInput(details, pathToFocus))
+			return true;
+
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.LEFT) {
+				moveSelectionLeft();
+				return true;
+			} else if (details.navEquivalent == NavigationCode.RIGHT) {
+				moveSelectionRight();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function moveSelectionLeft(): Void
+	{
+		if (disableSelection)
+			return;
+
+		if (_selectedIndex == -1) {
+			selectDefaultIndex(false);
+		} else if ((getSelectedListEnumIndex() % columnCount) > 0) {
+			doSetSelectedIndex(getListEnumRelativeIndex(-1), SELECT_KEYBOARD);
+			isMouseDrivenNav = false;
+		}
+	}
+
+	public function moveSelectionRight(): Void
+	{
+		if (disableSelection)
+			return;
+
+		if (_selectedIndex == -1) {
+			selectDefaultIndex(false);
+		} else if ((getSelectedListEnumIndex() % columnCount) < (columnCount - 1)) {
+			doSetSelectedIndex(getListEnumRelativeIndex(1), SELECT_KEYBOARD);
+			isMouseDrivenNav = false;
+		}
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function refreshSeparators()
+	{
+		if (_separators == null)
+			_separators = [];
+		
+		while (_separators.length > 0) {
+			var e = _separators.pop();
+			e.removeMovieClip();
+		}
+		
+		// Create separators
+		if (!separatorRenderer)
+			return;
+			
+		var columnWidth = (background._width - leftBorder - rightBorder - (columnCount-1) * columnSpacing) / columnCount;
+		var t = background._x + leftBorder;
+		var d = columnSpacing/2;
+		
+		for (var i=0; i < columnCount-1; i++) {
+			var e = attachMovie(separatorRenderer, separatorRenderer + i, getNextHighestDepth());
+			t += columnWidth + d;
+			e._x = t;
+			e._y = background._y;
+			e._height = background._height;
+			e._alpha = 50;
+			_separators.push(e);
+			t += d;
+		}
 	}
 }

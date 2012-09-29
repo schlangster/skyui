@@ -21,6 +21,7 @@ class ConfigPanel extends MovieClip
 	private var WAIT_FOR_SELECT = 4;
 	private var DIALOG = 5;
 	
+	
   /* PRIVATE VARIABLES */
   
 	// Quest_Journal_mc
@@ -38,6 +39,7 @@ class ConfigPanel extends MovieClip
 	private var _optionChangeDialog: MovieClip;
 	
 	private var _state: Number;
+	private var _bOptionsFocused: Boolean = false;
 	
 	private var _optionTypeBuffer: Array;
 	private var _optionTextBuffer: Array;
@@ -141,8 +143,6 @@ class ConfigPanel extends MovieClip
 	
 	public function setModNames(/* names */): Void
 	{
-		skse.Log("Called setConfigPanelModNamesDBG");
-			
 		_modList.clearList();
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")
@@ -152,8 +152,6 @@ class ConfigPanel extends MovieClip
 	
 	public function setPageNames(/* names */): Void
 	{
-		skse.Log("Called setConfigPanelPageNames");
-		
 		_subList.clearList();
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")
@@ -304,11 +302,15 @@ class ConfigPanel extends MovieClip
 			_optionsList.entryList.push({optionType: _optionTypeBuffer[i], 
 										 text: _optionTextBuffer[i],
  										 strValue: _optionStrValueBuffer[i],
-										 numValue: _optionNumValueBuffer[i],
-										 enabled: true});
+										 numValue: _optionNumValueBuffer[i]});
 		}
+		
+		// Pad uneven option count with empty option keyboard selection area is symmetrical
+		if ((_optionsList.entryList.length % 2) != 0)
+			_optionsList.entryList.push({optionType: OptionsListEntry.OPTION_EMPTY});
 			
 		_optionsList.InvalidateData();
+		_optionsList.selectedIndex = -1;
 		
 		_optionTypeBuffer.splice(0);
 		_optionTextBuffer.splice(0);
@@ -322,6 +324,8 @@ class ConfigPanel extends MovieClip
 		
 		_infoText = "";
 		applyInfoText();
+		
+		setOptionListFocus(_optionsList._visible && _optionsList.entryList.length > 0);
 	}
 	
 	public var optionCursorIndex = -1;
@@ -336,11 +340,6 @@ class ConfigPanel extends MovieClip
 		_optionsList.InvalidateData();
 	}
 	
-	private function startModSelectMode(): Void
-	{
-		
-	}
-	
 	
   /* PUBLIC FUNCTIONS */
 	
@@ -348,6 +347,8 @@ class ConfigPanel extends MovieClip
 	{
 		GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		_parent.gotoAndPlay("fadeIn");
+		
+		setOptionListFocus(false);
 	}
 	
 	public function endPage(): Void
@@ -424,7 +425,7 @@ class ConfigPanel extends MovieClip
 		_state = WAIT_FOR_OPTION_DATA;
 		skse.SendModEvent("SKICP_modSelected", null, a_entry.modIndex);
 		
-		contentHolder.modListPanel.showSublist();
+		_modListPanel.showSublist();
 	}
 	
 	private function selectPage(a_entry: Object): Void
@@ -440,6 +441,8 @@ class ConfigPanel extends MovieClip
 		
 		_state = WAIT_FOR_OPTION_DATA;
 		skse.SendModEvent("SKICP_pageSelected", a_entry.text);
+		
+		FocusHandler.instance.setFocus(_optionsList, 0);
 	}
 	
 	private function selectOption(a_index: Number): Void
@@ -495,7 +498,7 @@ class ConfigPanel extends MovieClip
 		_highlightIndex = a_index;
 		
 		clearInterval(_highlightIntervalID);
-		_highlightIntervalID = setInterval(doHighlightOption, 300, a_index);
+		_highlightIntervalID = setInterval(doHighlightOption, 200, a_index);
 	}
 	
 	private function doHighlightOption(a_index: Number): Void
@@ -529,6 +532,12 @@ class ConfigPanel extends MovieClip
 		} else {
 			t.background._height = 32;
 		}
+	}
+	
+	private function setOptionListFocus(a_bFocused: Boolean): Void
+	{
+		_bOptionsFocused = a_bFocused;
+		FocusHandler.instance.setFocus(a_bFocused ? _optionsList : _modListPanel, 0);
 	}
 	
 	private function showWelcomeScreen(): Void
