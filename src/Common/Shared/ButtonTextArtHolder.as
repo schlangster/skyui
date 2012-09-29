@@ -29,7 +29,7 @@ class Shared.ButtonTextArtHolder extends MovieClip
 				if (strButtonName == undefined) {
 					strTextWithButtons = strTextWithButtons + aInputText.text.substring(iReplacerStart, iReplacerEnd + 1);
 				} else {
-					var ButtonImage: BitmapData = flash.display.BitmapData.loadBitmap(strButtonName + ".png");
+					var ButtonImage: BitmapData = BitmapData.loadBitmap(strButtonName + ".png");
 					if (ButtonImage != undefined && ButtonImage.height > 0) {
 						var iMaxHeight: Number = 26;
 						var iScaledWidth: Number = Math.floor(iMaxHeight / ButtonImage.height * ButtonImage.width);
