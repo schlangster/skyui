@@ -30,6 +30,7 @@ event OnInit()
 	RegisterForModEvent("SKICP_pageSelected", "OnPageSelect")
 	RegisterForModEvent("SKICP_optionHighlighted", "OnOptionHighlight")
 	RegisterForModEvent("SKICP_optionSelected", "OnOptionSelect")
+	RegisterForModEvent("SKICP_keymapChanged", "OnKeymapChange")
 	RegisterForModEvent("SKICP_sliderSelected", "OnSliderSelect")
 	RegisterForModEvent("SKICP_sliderAccepted", "OnSliderAccept")
 	RegisterForModEvent("SKICP_menuSelected", "OnMenuSelect")
@@ -37,6 +38,7 @@ event OnInit()
 	RegisterForModEvent("SKICP_colorSelected", "OnColorSelect")
 	RegisterForModEvent("SKICP_colorAccepted", "OnColorAccept")
 	RegisterForModEvent("SKICP_dialogCanceled", "OnDialogCancel")
+	
 	RegisterForMenu(JOURNAL_MENU)
 	
 	; Wait a few seconds until any initial menus have registered for events
@@ -105,6 +107,13 @@ event OnOptionSelect(string a_eventName, string a_strArg, float a_numArg, Form a
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
+event OnKeymapChange(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	int keyCode = UI.GetNumber(JOURNAL_MENU, MENU_ROOT + ".selectedKeyCode") as int
+	_activeConfig.OnOptionKeyMapChange(optionIndex, keyCode)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
+endEvent
+
 event OnSliderSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
 	_activeConfig.RequestSliderDialogData(optionIndex)
@@ -134,7 +143,7 @@ endEvent
 
 event OnColorAccept(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int color = a_numArg as int
-	_activeConfig.SetColor(color)
+	_activeConfig.SetColorValue(color)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 

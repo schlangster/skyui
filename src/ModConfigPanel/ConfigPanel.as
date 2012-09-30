@@ -57,6 +57,10 @@ class ConfigPanel extends MovieClip
 	
 	private var	_sliderDialogFormatString: String = "";
 	
+	private var _currentRemapOption: Number = -1;
+	private var _bRemapMode = false;
+	private var _remapDelayID: Number;
+	
 	
   /* STAGE ELEMENTS */
 
@@ -328,6 +332,7 @@ class ConfigPanel extends MovieClip
 		setOptionListFocus(_optionsList._visible && _optionsList.entryList.length > 0);
 	}
 	
+	// Direct access to option data
 	public var optionCursorIndex = -1;
 	
 	public function get optionCursor(): Object
@@ -340,6 +345,9 @@ class ConfigPanel extends MovieClip
 		_optionsList.InvalidateData();
 	}
 	
+	// Holds last selected key
+	public var selectedKeyCode = -1;
+	
 	
   /* PUBLIC FUNCTIONS */
 	
@@ -349,6 +357,7 @@ class ConfigPanel extends MovieClip
 		_parent.gotoAndPlay("fadeIn");
 		
 		setOptionListFocus(false);
+		showWelcomeScreen();
 	}
 	
 	public function endPage(): Void
@@ -396,6 +405,9 @@ class ConfigPanel extends MovieClip
 		
 		if (pathToFocus != undefined && pathToFocus.length > 0)
 			bHandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+			
+		if (_bRemapMode)
+			return true;
 	
 		if (!bHandledInput && GlobalFunc.IsKeyPressed(details, false)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
@@ -483,7 +495,37 @@ class ConfigPanel extends MovieClip
 				_dialogTitleText = e.text;
 				skse.SendModEvent("SKICP_colorSelected", null, a_index);
 				break;
+				
+			case OptionsListEntry.OPTION_KEYMAP:
+				if (!_bRemapMode) {
+					_optionsList.disableSelection = true;
+					_optionsList.disableInput = true;
+					_bRemapMode = true;
+					_currentRemapOption = a_index;
+					skse.StartRemapMode(this);
+				}
+				break;
 		}
+	}
+	
+	// @SKSE
+	public function EndRemapMode(a_keyCode: Number): Void
+	{
+		selectedKeyCode = a_keyCode;
+		_state = WAIT_FOR_SELECT;
+		skse.SendModEvent("SKICP_keymapChanged", null, _currentRemapOption);
+		_remapDelayID = setInterval(this, "clearRemap", 200);
+	}
+	
+	public function clearRemap(): Void
+	{
+		clearInterval(_remapDelayID);
+		delete _remapDelayID;
+		
+		_optionsList.disableSelection = false;
+		_optionsList.disableInput = false;
+		_bRemapMode = false;
+		_currentRemapOption = -1;
 	}
 	
 	private function initHighlightOption(a_index: Number): Void

@@ -12,6 +12,7 @@ int property		OPTION_TOGGLE	= 3 autoReadonly
 int property 		OPTION_SLIDER	= 4 autoReadonly
 int property		OPTION_MENU		= 5 autoReadonly
 int property		OPTION_COLOR	= 6 autoReadonly
+int property		OPTION_KEYMAP	= 7 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly
@@ -131,11 +132,15 @@ event OnOptionMenuAccept(int a_option, int a_index)
 endEvent
 
 ; @interface
-event OnColorMenuOpen(int a_option)
+event OnOptionColorOpen(int a_option)
 endEvent
 
 ; @interface
-event OnColorMenuAccept(int a_option, int a_color)
+event OnOptionColorAccept(int a_option, int a_color)
+endEvent
+
+; @interface
+event OnOptionKeyMapChange(int a_option, int a_keyCode)
 endEvent
 
 
@@ -273,7 +278,7 @@ function RequestColorDialogData(int a_index)
 	_colorParams[0] = -1
 	_colorParams[1] = -1
 
-	OnColorMenuOpen(a_index)
+	OnOptionColorOpen(a_index)
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
 endFunction
@@ -288,8 +293,8 @@ function SetMenuIndex(int a_index)
 	_activeOption = -1
 endFunction
 
-function SetColor(int a_color)
-	OnColorMenuAccept(_activeOption, a_color)
+function SetColorValue(int a_color)
+	OnOptionColorAccept(_activeOption, a_color)
 	_activeOption = -1
 endFunction
 
@@ -359,6 +364,11 @@ int function AddColorOption(string a_text, int a_color)
 endFunction
 
 ; @interface
+int function AddKeyMapOption(string a_text, int a_keyCode)
+	return AddOption(OPTION_KEYMAP, a_text, none, a_keyCode)
+endFunction
+
+; @interface
 function LoadCustomContent(string a_source, float a_x = 0.0, float a_y = 0.0)
 	float[] params = new float[2]
 	params[0] = a_x
@@ -395,6 +405,11 @@ endFunction
 ; @interface
 function SetColorOptionValue(int a_option, int a_color)
 	SetOptionNumValue(a_option, a_color)
+endFunction
+
+; @interface
+function SetKeyMapOptionValue(int a_option, int a_keyCode)
+	SetOptionNumValue(a_option, a_keyCode)
 endFunction
 
 ; @interface
@@ -438,7 +453,7 @@ function SetMenuDialogOptions(string[] a_options)
 endFunction
 
 ; @interface
-function SetColorDialogCurrentColor(int a_color)
+function SetColorDialogStartColor(int a_color)
 	_colorParams[0] = a_color
 endFunction
 

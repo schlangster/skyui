@@ -12,7 +12,7 @@ string[]	_cornerValues
 
 string[]	_orientations
 
-; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color)
+; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
 int			_itemcardYOffsetOID_S
@@ -30,6 +30,10 @@ int			_AEOrientationOID_T
 int			_MXTestColorOID_C
 
 int			_itemlistFontSizeOID_T
+
+int			_hotkey1OID_K
+int			_hotkey2OID_K
+int			_hotkey3OID_K
 
 ; State
 int			_itemcardAlignIdx		= 2
@@ -185,6 +189,10 @@ event OnPageReset(string a_page)
 		AddHeaderOption("Item List")
 		_itemlistFontSizeOID_T	= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
 
+		_hotkey1OID_K = AddKeyMapOption("Hotkey 1", Input.GetMappedKey("Jump"))
+		_hotkey2OID_K = AddKeyMapOption("Hotkey 2", Input.GetMappedKey("Jump"))
+		_hotkey3OID_K = AddKeyMapOption("Hotkey 3", Input.GetMappedKey("Jump"))
+
 	; -------------------------------------------------------
 	elseIf (a_page == "Widgets")
 		SetCursorFillMode(TOP_TO_BOTTOM)
@@ -202,6 +210,25 @@ event OnPageReset(string a_page)
 	elseIf (a_page == "Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
+	endIf
+endEvent
+
+; -------------------------------------------------------------------------------------------------
+; @implements SKI_ConfigBase
+; @interface
+event OnOptionKeyMapChange(int a_option, int a_keyCode)
+
+	string page = CurrentPage
+
+	; -------------------------------------------------------
+	if (page == "General")
+		if (a_option == _hotkey1OID_K)
+			SetKeyMapOptionValue(a_option, a_keyCode)
+		elseIf (a_option == _hotkey2OID_K)
+			SetKeyMapOptionValue(a_option, a_keyCode)
+		elseIf (a_option == _hotkey3OID_K)
+			SetKeyMapOptionValue(a_option, a_keyCode)
+		endIf
 	endIf
 endEvent
 
@@ -459,7 +486,7 @@ event OnColorMenuOpen(int a_option)
 
 	if (page == "Widgets")
 		if (a_option == _MXTestColorOID_C)
-			SetColorDialogCurrentColor(_MXTestColor)
+			SetColorDialogStartColor(_MXTestColor)
 			SetColorDialogDefaultColor(0x162274)
 		endIf
 	endIf

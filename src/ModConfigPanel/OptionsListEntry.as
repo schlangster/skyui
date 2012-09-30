@@ -15,6 +15,7 @@ class OptionsListEntry extends BasicListEntry
 	public static var OPTION_SLIDER = 4;
 	public static var OPTION_MENU = 5;
 	public static var OPTION_COLOR = 6;
+	public static var OPTION_KEYMAP = 7;
 	
 	public static var ALPHA_SELECTED = 100;
 	public static var ALPHA_ACTIVE = 75;
@@ -32,6 +33,7 @@ class OptionsListEntry extends BasicListEntry
 	public var menuIcon: MovieClip;
 	public var toggleIcon: MovieClip;
 	public var colorIcon: MovieClip;
+	public var buttonArt: MovieClip;
 	
 	
   /* PROPERTIES */
@@ -148,6 +150,19 @@ class OptionsListEntry extends BasicListEntry
 
 				var color: Color = new Color(colorIcon.pigment);
 				color.setRGB(a_entryObject.numValue);
+				
+				break;
+				
+			case OPTION_KEYMAP:
+				enabled = true;
+				gotoAndStop("keymap");
+				
+				labelTextField._width = entryWidth;
+				labelTextField.SetText(a_entryObject.text);
+				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
+				
+				buttonArt.gotoAndStop(a_entryObject.numValue);
+				buttonArt._x = entryWidth - buttonArt._width;
 				
 				break;
 				
