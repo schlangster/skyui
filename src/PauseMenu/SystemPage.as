@@ -394,6 +394,8 @@ class SystemPage extends MovieClip
 						GameDelegate.call("PopulateHelpTopics", [HelpList.entryList]);
 						HelpList.entryList.sort(doABCSort);
 						HelpList.InvalidateData();
+					}
+					if (HelpList.entryList.length == 0) {
 						GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 					} else {
 						StartState(SystemPage.HELP_LIST_STATE);
