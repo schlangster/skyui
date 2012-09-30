@@ -51,9 +51,9 @@ class skyui.util.ColorFunctions
 	{
 		// in: [R [0-255], G [0-255], B [0-255]]
 		// out: [H [0-360), S [0, 100], V [0, 100]]
-		var R: Number = a_RGB[0]/255;
-		var G: Number = a_RGB[1]/255;
-		var B: Number = a_RGB[2]/255;
+		var R: Number = clampValue(a_RGB[0], 0, 255)/255;
+		var G: Number = clampValue(a_RGB[1], 0, 255)/255;
+		var B: Number = clampValue(a_RGB[2], 0, 255)/255;
 
 		var H, S, V: Number;
 
@@ -88,9 +88,9 @@ class skyui.util.ColorFunctions
 	{
 		// in: [R [0-255], G [0-255], B [0-255]]
 		// out: [H [0-360), S [0, 100], L [0, 100]]
-		var R: Number = a_RGB[0]/255;
-		var G: Number = a_RGB[1]/255;
-		var B: Number = a_RGB[2]/255;
+		var R: Number = clampValue(a_RGB[0], 0, 255)/255;
+		var G: Number = clampValue(a_RGB[1], 0, 255)/255;
+		var B: Number = clampValue(a_RGB[2], 0, 255)/255;
 
 		var H, S, L: Number;
 
@@ -125,9 +125,9 @@ class skyui.util.ColorFunctions
 	{
 		// in: [H [0-360), S [0, 100], V [0, 100]]
 		// out: [R [0-255], G [0-255], B [0-255]]
-		var H: Number = a_HSV[0];
-		var S: Number = a_HSV[1]/100;
-		var V: Number = a_HSV[2]/100;
+		var H: Number = loopValue(a_HSV[0], 360);
+		var S: Number = clampValue(a_HSV[1], 0, 100)/100;
+		var V: Number = clampValue(a_HSV[2], 0, 100)/100;
 
 		var R, G, B: Number;
 
@@ -203,9 +203,9 @@ class skyui.util.ColorFunctions
 	{
 		// in: [H [0-360), S [0, 100], L [0, 100]]
 		// out: [R [0-255], G [0-255], B [0-255]]
-		var H: Number = a_HSL[0];
-		var S: Number = a_HSL[1]/100;
-		var L: Number = a_HSL[2]/100;
+		var H: Number = loopValue(a_HSL[0], 360);
+		var S: Number = clampValue(a_HSL[1], 0, 100)/100;
+		var L: Number = clampValue(a_HSL[2], 0, 100)/100;
 
 		var R, G, B: Number;
 
@@ -276,19 +276,25 @@ class skyui.util.ColorFunctions
   /* PRIVATE FUNCTIONS */
 	private static function clampValue(a_val: Number, a_min: Number, a_max: Number): Number
 	{
+		// $ trace(clampValue(1000, 0, 100))
+		// > 100
+		// $ trace(clampValue(-1000, -50, 100))
+		// > -50
 		return Math.min(a_max, Math.max(a_min, a_val));
 	}
 
-	private static function valLoop(a_val: Number, a_max: Number): Number
+	private static function loopValue(a_val: Number, a_max: Number, a_allowMax: Boolean): Number
 	{
-		// $ trace(valLoop(360.1012, 180))
+		// $ trace(loopValue(360.1012, 180))
 		// > 0.10120000000001
-		// $ trace(valLoop(-2*Math.PI, Math.PI))
+		// $ trace(loopValue(-2*Math.PI, Math.PI))
 		// > -3.1415926535898
+		// $ trace(loopValue(360, 180))
+		// > 0
+		// $ trace(loopValue(360, 180, true))
+		// > 180
 		var val = Math.abs(a_val);
 		var sign: Number = ((a_val > 0)? 1: ((a_val < 0) ? -1 : 0));
-
-		return sign * (val - a_max * (Math.ceil(val/a_max) - 1));
+		return sign * (val - a_max * (Math.ceil(val/a_max) - ((a_allowMax)? 1: ((val < a_max)? 1 : 0))));
 	}
-
 }
