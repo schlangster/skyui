@@ -61,11 +61,8 @@ class Quest_Journal extends MovieClip
 		GameDelegate.addCallBack("StartCloseMenu", this, "CloseMenu");
 		
 		BottomBar_mc.InitBar();
-
-		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
-		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-
-		_root.ConfigPanelFader._x = (rightEdge - leftEdge - _root.ConfigPanelFader._width) / 2;
+		
+		ConfigPanel.initExtensions();
 	}
 
 	function RestoreSavedSettings(aiSavedTab: Number, abTabsDisabled: Boolean): Void
@@ -210,7 +207,7 @@ class Quest_Journal extends MovieClip
 		SystemTab.disabled = abEnable;
 	}
 	
-	function ConfigPanelOpen()
+	function ConfigPanelOpen(): Void
 	{
 		DisableTabs(true);
 		SystemFader.Page_mc.endPage();
@@ -220,7 +217,7 @@ class Quest_Journal extends MovieClip
 		ConfigPanel.startPage();
 	}
 	
-	function ConfigPanelClose()
+	function ConfigPanelClose(): Void
 	{
 		ConfigPanel.endPage();
 		_root.QuestJournalFader.swapDepths(_root.ConfigPanelFader);

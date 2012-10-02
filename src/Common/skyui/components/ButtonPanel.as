@@ -1,4 +1,4 @@
-﻿class skyui.components.NavigationPanel extends MovieClip
+﻿class skyui.components.ButtonPanel extends MovieClip
 {
   /* PRIVATE VARIABLES */	
 	
@@ -10,10 +10,12 @@
   
 	public var buttons: Array;
 	
+	public var isReversed: Boolean = false;
+	
 
   /* INITIALIZATION */
   
- 	public function NavigationPanel()
+ 	public function ButtonPanel()
 	{
 		buttons = [];
 		for (var i = 0; this["button" + i] != undefined; i++)
@@ -66,13 +68,17 @@
 	
 	public function positionButtons(): Void
 	{
-		var leftOffset = 0;
-		
+		var offset = 0;
 		for (var i=0; i < buttons.length; i++) {
 			var btn = buttons[i];
 			if (btn.label.length > 0) {
-				btn._x = leftOffset;
-				leftOffset += btn.width + 10;
+				if (isReversed) {
+					offset -= btn.width + 10;
+					btn._x = offset;
+				} else {
+					btn._x = offset;
+					offset += btn.width + 10;
+				}
 			}
 		}
 	}

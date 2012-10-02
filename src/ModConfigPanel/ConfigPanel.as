@@ -7,7 +7,11 @@ import Shared.GlobalFunc;
 import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ButtonEntryFormatter;
 import skyui.components.list.ScrollingList;
+import skyui.components.ButtonPanel;
 import skyui.util.DialogManager;
+
+import com.greensock.TweenLite;
+import com.greensock.easing.Linear;
 
 
 class ConfigPanel extends MovieClip
@@ -26,6 +30,10 @@ class ConfigPanel extends MovieClip
   
 	// Quest_Journal_mc
 	private var _parentMenu: MovieClip;
+	private var _buttonPanelL: ButtonPanel;
+	private var _buttonPanelR: ButtonPanel;
+	
+	private var _bottomBarStartY: Number;
 	
 	private var _modListPanel: ModListPanel;
 	private var _modList: ScrollingList;
@@ -61,6 +69,13 @@ class ConfigPanel extends MovieClip
 	private var _bRemapMode = false;
 	private var _remapDelayID: Number;
 	
+	private var _selectControls: Array;
+	private var _cancelPCControls: Array;
+	private var _cancelGPControls: Array;
+	private var _exitPCControls: Array;
+	private var _exitGPControls: Array;
+	private var _xButtonControls: Array;
+	
 	
   /* STAGE ELEMENTS */
 
@@ -68,17 +83,23 @@ class ConfigPanel extends MovieClip
 	
 	public var titlebar: MovieClip;
 	
+	public var bottomBar: MovieClip;
+	
 	
   /* INITIALIATZION */
 	
 	function ConfigPanel()
 	{
+		// A bit hackish but w/e
 		_parentMenu = _root.QuestJournalFader.Menu_mc;
 
 		_modListPanel = contentHolder.modListPanel;
 		_modList = _modListPanel.modListFader.list;
 		_subList = _modListPanel.subListFader.list;
 		_optionsList = contentHolder.optionsPanel.optionsList;
+		
+		_buttonPanelL = bottomBar.buttonPanelL;
+		_buttonPanelR = bottomBar.buttonPanelR;
 		
 		_state = READY;
 		
@@ -90,6 +111,13 @@ class ConfigPanel extends MovieClip
 		_menuDialogOptions = [];
 
 		contentHolder.infoPanel.textField.verticalAutoSize = "top";
+		
+		_selectControls = [{name: "Activate", context: skseDefines.kContext_Gameplay}];
+		_cancelPCControls = [{keyCode: 15}];
+		_cancelGPControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
+		_exitPCControls = [{keyCode: 1}];
+		_exitGPControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
+		_xButtonControls = [{name: "XButton", context: skseDefines.kContext_ItemMenu}];
 	}
 	
 	// @override MovieClip
@@ -114,6 +142,29 @@ class ConfigPanel extends MovieClip
 		_modListPanel.addEventListener("subListExit", this, "onSubListExit");
 
 		_optionsList._visible = false;
+	}
+	
+	public function initExtensions(): Void
+	{
+		bottomBar.Lock("B");
+		_bottomBarStartY = bottomBar._y;
+		
+		// Temp
+		_buttonPanelL.setPlatform(0, false);
+		_buttonPanelR.setPlatform(0, false);
+
+		_buttonPanelR.isReversed = true;
+
+		_buttonPanelL.clearButtons();
+		_buttonPanelL.addButton({text: "$Select", controls: _selectControls});
+		_buttonPanelL.addButton({text: "$Default", controls: _xButtonControls});
+		_buttonPanelL.positionButtons();
+
+		_buttonPanelR.clearButtons();
+		_buttonPanelR.addButton({text: "$Exit", controls: _exitPCControls});
+		_buttonPanelR.addButton({text: "$Back", controls: _cancelPCControls});
+		_buttonPanelR.positionButtons();
+		
 		showWelcomeScreen();
 	}
 	
@@ -242,7 +293,7 @@ class ConfigPanel extends MovieClip
 		_state = DIALOG;
 		
 		var initObj = {
-			_x: 562, _y: 265,
+			_x: 719, _y: 265,
 			titleText: _dialogTitleText,
 			sliderValue: a_value,
 			sliderDefault: a_default,
@@ -255,7 +306,7 @@ class ConfigPanel extends MovieClip
 		_optionChangeDialog = DialogManager.open(this, "OptionSliderDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
-		gotoAndPlay("dimOut");
+		dimOut();
 	}
 	
 	public function setMenuDialogOptions(/* values */): Void
@@ -279,7 +330,7 @@ class ConfigPanel extends MovieClip
 		_optionChangeDialog = DialogManager.open(this, "OptionMenuDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
-		gotoAndPlay("dimOut");
+		dimOut();
 	}
 
 	public function setColorDialogParams(a_currentColor: Number, a_defaultColor: Number): Void
@@ -296,7 +347,7 @@ class ConfigPanel extends MovieClip
 		_optionChangeDialog = DialogManager.open(this, "OptionColorDialog", initObj);
 		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
 		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
-		gotoAndPlay("dimOut");
+		dimOut();
 	}
 	
 	public function flushOptionBuffers(a_optionCount: Number): Void
@@ -388,7 +439,7 @@ class ConfigPanel extends MovieClip
 	
 	public function onOptionChangeDialogClosing(event: Object): Void
 	{
-		gotoAndPlay("dimIn");
+		dimIn();
 	}
 	
 	
@@ -580,6 +631,18 @@ class ConfigPanel extends MovieClip
 	{
 		_bOptionsFocused = a_bFocused;
 		FocusHandler.instance.setFocus(a_bFocused ? _optionsList : _modListPanel, 0);
+	}
+	
+	private function dimOut(): Void
+	{
+		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
+		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
+	}
+	
+	private function dimIn(): Void
+	{
+		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
+		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
 	}
 	
 	private function showWelcomeScreen(): Void

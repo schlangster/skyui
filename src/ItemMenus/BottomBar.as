@@ -1,7 +1,7 @@
 ﻿import gfx.io.GameDelegate;
 import Components.Meter;
 
-import skyui.components.NavigationPanel;
+import skyui.components.ButtonPanel;
 
 
 class BottomBar extends MovieClip
@@ -25,7 +25,7 @@ class BottomBar extends MovieClip
 	
   /* PROPERTIES */
   
-	public var navPanel: NavigationPanel;
+	public var buttonPanel: ButtonPanel;
 	
 	
   /* INITIALIZATION */
@@ -45,9 +45,8 @@ class BottomBar extends MovieClip
 
 	public function positionElements(a_leftOffset: Number, a_rightOffset: Number): Void
 	{
-//		navPanel.leftOffset = a_leftOffset;
-		navPanel._x = a_leftOffset;
-		navPanel.positionButtons();
+		buttonPanel._x = a_leftOffset;
+		buttonPanel.positionButtons();
 		playerInfoCard._x = a_rightOffset - playerInfoCard._width;
 	}
 
@@ -254,7 +253,7 @@ class BottomBar extends MovieClip
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		navPanel.setPlatform(a_platform, a_bPS3Switch);
+		buttonPanel.setPlatform(a_platform, a_bPS3Switch);
 	}
 
 
