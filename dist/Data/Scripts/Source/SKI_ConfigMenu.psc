@@ -158,7 +158,6 @@ endFunction
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnPageReset(string a_page)
-	{Called when a new page is selected, including the initial empty page}
 
 	; Load custom .swf for animated logo
 	if (a_page == "")
@@ -217,7 +216,6 @@ endEvent
 ; @implements SKI_ConfigBase
 ; @interface
 event OnOptionKeyMapChange(int a_option, int a_keyCode)
-
 	string page = CurrentPage
 
 	; -------------------------------------------------------
@@ -236,8 +234,6 @@ endEvent
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionSelect(int a_option)
-	{Called when the user selects a non-dialog option}
-
 	string page = CurrentPage
 	
 	; -------------------------------------------------------
@@ -315,8 +311,6 @@ endEvent
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionSliderOpen(int a_option)
-	{Called when the user selects a slider option}
-
 	string page = CurrentPage
 
 	; -------------------------------------------------------
@@ -381,8 +375,6 @@ endEvent
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionSliderAccept(int a_option, float a_value)
-	{Called when the user accepts a new slider value}
-
 	string page = CurrentPage
 
 	; -------------------------------------------------------
@@ -440,8 +432,6 @@ endEvent
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionMenuOpen(int a_option)
-	{Called when the user selects a menu option}
-
 	string page = CurrentPage
 
 	; -------------------------------------------------------
@@ -459,8 +449,6 @@ endEvent
 
 ; @implements SKI_ConfigBase
 event OnOptionMenuAccept(int a_option, int a_index)
-	{Called when the user accepts a new menu entry}
-
 	string page = CurrentPage
 
 	; -------------------------------------------------------
@@ -481,7 +469,6 @@ endEvent
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnColorMenuOpen(int a_option)
-	{Called when the user selects a color option}
 	string page = CurrentPage
 
 	if (page == "Widgets")
@@ -494,7 +481,6 @@ endEvent
 
 ; @implements SKI_ConfigBase
 event OnColorMenuAccept(int a_option, int a_color)
-	{Called when the user selects a new color}
 	string page = CurrentPage
 
 	if (page == "Widgets")
@@ -508,8 +494,6 @@ endEvent
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionHighlight(int a_option)
-	{Called when the user highlights an option}
-
 	string page = CurrentPage
 	
 	; -------------------------------------------------------

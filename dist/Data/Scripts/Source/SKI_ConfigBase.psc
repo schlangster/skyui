@@ -101,46 +101,57 @@ endEvent
 
 ; @interface
 event OnPageReset(string a_page)
+	{Called when a new page is selected, including the initial empty page}
 endEvent
 
 ; @interface
 event OnOptionHighlight(int a_option)
+	{Called when highlighting an option}
 endEvent
 
 ; @interface
 event OnOptionSelect(int a_option)
+	{Called when a non-interactive option has been selected}
 endEvent
 
 ; @interface
 event OnOptionDefault(int a_option)
+	{Called when resetting an option to its default value}
 endEvent
 
 ; @interface
 event OnOptionSliderOpen(int a_option)
+	{Called when a slider option has been selected}
 endEvent
 
 ; @interface
 event OnOptionSliderAccept(int a_option, float a_value)
+	{Called when a new slider value has been accepted}
 endEvent
 
 ; @interface
 event OnOptionMenuOpen(int a_option)
+	{Called when a menu option has been selected}
 endEvent
 
 ; @interface
 event OnOptionMenuAccept(int a_option, int a_index)
+	{Called when a menu entry has been accepted}
 endEvent
 
 ; @interface
 event OnOptionColorOpen(int a_option)
+	{Called when a color option has been selected}
 endEvent
 
 ; @interface
 event OnOptionColorAccept(int a_option, int a_color)
+	{Called when a new color has been accepted}
 endEvent
 
 ; @interface
 event OnOptionKeyMapChange(int a_option, int a_keyCode)
+	{Called when a key has been remapped}
 endEvent
 
 
