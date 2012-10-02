@@ -5,29 +5,22 @@
 
 ########################################################################################################################################
 
-Team:			snakster, T3T, Mardoxx
+Team:			snakster, Mardoxx, T3T
 
-Contributors:	ianpatt, behippo, Indie, gibbed, GreatClone, Gopher, Kratos
+Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		2.1
+Version:		3.0
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
+
+Development:	https://github.com/schlangster/skyui
 
 ########################################################################################################################################
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.4.8 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.1 or newer
 	http://skse.silverlock.org/
-
-* The Nexus Mod Manager (NMM) is recommended for properly installing and setting up SkyUI.
-	http://skyrimnexus.com/content/modmanager/
-
-------------------------------------------------------------
-
-If you're using GreatClone's Celtic Icon theme that comes with SkyUI, you can get the latest version directly from the author:
-* GreatClone Celtic Icons, by GreatClone
-	http://www.skyrimnexus.com/downloads/file.php?id=3979
 
 ########################################################################################################################################
 
@@ -82,6 +75,10 @@ For a more detailed description, please see our mod description on SkyrimNexus.
 ========================================================================================================================================
  2. Changelog
 ========================================================================================================================================
+
+------------------------------------------------------------
+3.0:
+- TODO
 
 ------------------------------------------------------------
 2.1:
@@ -286,6 +283,15 @@ Ismelda:
 Wakeupbrandon:
 	His mock-up inspired the overall layout of the new inventory.
 
+MisterPete:
+	Implemented many additional column types for improved sorting.
+
+Psychosteve:
+	Created our new primary icon theme for version 3.0.
+
+
+SkyUI is utilizing TweenLite, a high-performance tweening library (http://www.greensock.com/tweenlite/).
+	Thanks to Jack Doyle and his team for creating it and allowing us to use it under their “No Charge” license.
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
 	ToJKa, HellKnight, xporc, MadCat221, Ismelda, Gribbles, freesta, Cartrodus, TheCastle (in random order)
