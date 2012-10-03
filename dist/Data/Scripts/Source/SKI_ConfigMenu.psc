@@ -468,7 +468,7 @@ endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
-event OnColorMenuOpen(int a_option)
+event OnOptionColorOpen(int a_option)
 	string page = CurrentPage
 
 	if (page == "Widgets")
@@ -480,7 +480,7 @@ event OnColorMenuOpen(int a_option)
 endEvent
 
 ; @implements SKI_ConfigBase
-event OnColorMenuAccept(int a_option, int a_color)
+event OnOptionColorAccept(int a_option, int a_color)
 	string page = CurrentPage
 
 	if (page == "Widgets")
