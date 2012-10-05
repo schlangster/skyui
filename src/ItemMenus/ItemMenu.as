@@ -4,7 +4,7 @@ import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
 import skyui.util.ConfigManager;
-import skyui.components.NavigationPanel;
+import skyui.components.ButtonPanel;
 
 
 class ItemMenu extends MovieClip
@@ -60,7 +60,7 @@ class ItemMenu extends MovieClip
 	
 	public var itemCard: MovieClip;
 	
-	public var navPanel: NavigationPanel;
+	public var navPanel: ButtonPanel;
 	
 	// @override ItemMenu
 	public var bEnableTabs: Boolean = false;
@@ -99,7 +99,7 @@ class ItemMenu extends MovieClip
 		_sortOrderControls = [{keyCode: 272}];
 		
 		itemCard = itemCardFadeHolder.ItemCard_mc;
-		navPanel = bottomBar.navPanel;
+		navPanel = bottomBar.buttonPanel;
 		
 		Mouse.addListener(this);
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");

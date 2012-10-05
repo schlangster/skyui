@@ -20,7 +20,7 @@ class skyui.components.MappedButton extends Button
   
   	public function set hiddenBackground(a_flag: Boolean)
 	{
-		background._visible = false;
+		background._visible = !a_flag;
 	}
 	
 	public function get hiddenBackground(): Boolean
@@ -108,6 +108,7 @@ class skyui.components.MappedButton extends Button
 			}
 			_keyCodes.push(keyCode);
 		}
+
 		refreshArt();
 	}
 

@@ -28,6 +28,8 @@ class ConfigPanel extends MovieClip
 	
   /* PRIVATE VARIABLES */
   
+	private var _platform: Number;
+  
 	// Quest_Journal_mc
 	private var _parentMenu: MovieClip;
 	private var _buttonPanelL: ButtonPanel;
@@ -49,7 +51,7 @@ class ConfigPanel extends MovieClip
 	private var _state: Number;
 	private var _bOptionsFocused: Boolean = false;
 	
-	private var _optionTypeBuffer: Array;
+	private var _optionFlagsBuffer: Array;
 	private var _optionTextBuffer: Array;
 	private var _optionStrValueBuffer: Array;
 	private var _optionNumValueBuffer: Array;
@@ -103,7 +105,7 @@ class ConfigPanel extends MovieClip
 		
 		_state = READY;
 		
-		_optionTypeBuffer = [];
+		_optionFlagsBuffer = [];
 		_optionTextBuffer = [];
 		_optionStrValueBuffer = [];
 		_optionNumValueBuffer = [];
@@ -124,8 +126,6 @@ class ConfigPanel extends MovieClip
 	private function onLoad()
 	{
 		super.onLoad();
-
-		_global.skyui.platform = 0;
 
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
@@ -149,9 +149,15 @@ class ConfigPanel extends MovieClip
 		bottomBar.Lock("B");
 		_bottomBarStartY = bottomBar._y;
 		
-		// Temp
-		_buttonPanelL.setPlatform(0, false);
-		_buttonPanelR.setPlatform(0, false);
+		showWelcomeScreen();
+	}
+	
+	function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{
+		_platform = a_platform;
+		
+		_buttonPanelL.setPlatform(a_platform, a_bPS3Switch);
+		_buttonPanelR.setPlatform(a_platform, a_bPS3Switch);
 
 		_buttonPanelR.isReversed = true;
 
@@ -164,8 +170,6 @@ class ConfigPanel extends MovieClip
 		_buttonPanelR.addButton({text: "$Exit", controls: _exitPCControls});
 		_buttonPanelR.addButton({text: "$Back", controls: _cancelPCControls});
 		_buttonPanelR.positionButtons();
-		
-		showWelcomeScreen();
 	}
 	
 	public function onModListEnter(event: Object): Void
@@ -190,6 +194,9 @@ class ConfigPanel extends MovieClip
 	
 	
   /* PAPYRUS INTERFACE */
+  
+	// Holds last selected key
+	public var selectedKeyCode = -1;
   
   	public function unlock(): Void
 	{
@@ -263,10 +270,10 @@ class ConfigPanel extends MovieClip
 			applyInfoText();
 	}
 	
-	public function setOptionTypeBuffer(/* values */): Void
+	public function setOptionFlagsBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			_optionTypeBuffer[i] = arguments[i];
+			_optionFlagsBuffer[i] = arguments[i];
 	}
 	
 	public function setOptionTextBuffer(/* values */): Void
@@ -277,9 +284,8 @@ class ConfigPanel extends MovieClip
 	
 	public function setOptionStrValueBuffer(/* values */): Void
 	{
-		for (var i = 0; i < arguments.length; i++) {
+		for (var i = 0; i < arguments.length; i++)
 			_optionStrValueBuffer[i] = arguments[i] === "None" ? null : arguments[i];
-		}
 	}
 	
 	public function setOptionNumValueBuffer(/* values */): Void
@@ -294,6 +300,7 @@ class ConfigPanel extends MovieClip
 		
 		var initObj = {
 			_x: 719, _y: 265,
+			platform: _platform,
 			titleText: _dialogTitleText,
 			sliderValue: a_value,
 			sliderDefault: a_default,
@@ -320,7 +327,8 @@ class ConfigPanel extends MovieClip
 		_state = DIALOG;
 		
 		var initObj = {
-			_x: 562, _y: 265,
+			_x: 719, _y: 265,
+			platform: _platform,
 			titleText: _dialogTitleText,
 			menuOptions: _menuDialogOptions,
 			menuStartIndex: a_startIndex,
@@ -338,7 +346,8 @@ class ConfigPanel extends MovieClip
 		_state = DIALOG;
 		
 		var initObj = {
-			_x: 562, _y: 265,
+			_x: 719, _y: 265,
+			platform: _platform,
 			titleText: _dialogTitleText,
 			currentColor: a_currentColor,
 			defaultColor: a_defaultColor
@@ -354,10 +363,15 @@ class ConfigPanel extends MovieClip
 	{
 		_optionsList.clearList();
 		for (var i=0; i<a_optionCount; i++) {
-			_optionsList.entryList.push({optionType: _optionTypeBuffer[i], 
+			// Both option type and flags are passed in the flags buffer
+			var optionType = _optionFlagsBuffer[i] & 0xFF;
+			var flags = (_optionFlagsBuffer[i] >>> 8) & 0xFF;
+			
+			_optionsList.entryList.push({optionType: optionType, 
 										 text: _optionTextBuffer[i],
  										 strValue: _optionStrValueBuffer[i],
-										 numValue: _optionNumValueBuffer[i]});
+										 numValue: _optionNumValueBuffer[i],
+										 flags: flags});
 		}
 		
 		// Pad uneven option count with empty option keyboard selection area is symmetrical
@@ -367,7 +381,7 @@ class ConfigPanel extends MovieClip
 		_optionsList.InvalidateData();
 		_optionsList.selectedIndex = -1;
 		
-		_optionTypeBuffer.splice(0);
+		_optionFlagsBuffer.splice(0);
 		_optionTextBuffer.splice(0);
 		_optionStrValueBuffer.splice(0);
 		_optionNumValueBuffer.splice(0);
@@ -396,8 +410,12 @@ class ConfigPanel extends MovieClip
 		_optionsList.InvalidateData();
 	}
 	
-	// Holds last selected key
-	public var selectedKeyCode = -1;
+	public function setOptionFlags(/* values */): Void
+	{
+		var index = arguments[0];
+		var flags = arguments[1] >>> 8;
+		_optionsList.entryList[index].flags = flags;
+	}
 	
 	
   /* PUBLIC FUNCTIONS */

@@ -8,17 +8,24 @@ class OptionsListEntry extends BasicListEntry
 {
   /* CONSTANTS */
 	
-	public static var OPTION_EMPTY = 0;
-	public static var OPTION_HEADER = 1;
-	public static var OPTION_TEXT = 2;
-	public static var OPTION_TOGGLE = 3;
-	public static var OPTION_SLIDER = 4;
-	public static var OPTION_MENU = 5;
-	public static var OPTION_COLOR = 6;
-	public static var OPTION_KEYMAP = 7;
+	// 1 byte
+	public static var OPTION_EMPTY = 0x00;
+	public static var OPTION_HEADER = 0x01;
+	public static var OPTION_TEXT = 0x02;
+	public static var OPTION_TOGGLE = 0x03;
+	public static var OPTION_SLIDER = 0x04;
+	public static var OPTION_MENU = 0x05;
+	public static var OPTION_COLOR = 0x06;
+	public static var OPTION_KEYMAP = 0x07;
+	
+	// 1 byte
+	public static var FLAG_DISABLED = 0x01;
 	
 	public static var ALPHA_SELECTED = 100;
 	public static var ALPHA_ACTIVE = 75;
+
+	public static var ALPHA_ENABLED = 100;
+	public static var ALPHA_DISABLED = 50;
 	
 	
   /* STAGE ELMENTS */
@@ -61,8 +68,13 @@ class OptionsListEntry extends BasicListEntry
 	{
 		var entryWidth = background._width;
 		var isSelected = a_entryObject == a_state.list.selectedEntry;
+
+		var flags = a_entryObject.flags;
+		var isEnabled = !(flags & FLAG_DISABLED);
 		
 		selectIndicator._visible = isSelected;
+		
+		_alpha = isEnabled ? ALPHA_ENABLED : ALPHA_DISABLED;
 			
 		switch (a_entryObject.optionType) {
 			
@@ -80,7 +92,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_TEXT:
-				enabled = true;
+				enabled = isEnabled;
 				gotoAndStop("text");
 				
 				labelTextField._width = entryWidth;
@@ -93,7 +105,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_TOGGLE:
-				enabled = true;
+				enabled = isEnabled;
 				gotoAndStop("toggle");
 				
 				labelTextField._width = entryWidth;
@@ -106,7 +118,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_SLIDER:
-				enabled = true;
+				enabled = isEnabled;
 				gotoAndStop("slider");
 				
 				labelTextField._width = entryWidth;
@@ -124,7 +136,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_MENU:
-				enabled = true;
+				enabled = isEnabled;
 				gotoAndStop("menu");
 				
 				labelTextField._width = entryWidth;
@@ -139,7 +151,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 
 			case OPTION_COLOR:
-				enabled = true;
+				enabled = isEnabled;
 				gotoAndStop("color");
 				
 				labelTextField._width = entryWidth;
@@ -154,7 +166,7 @@ class OptionsListEntry extends BasicListEntry
 				break;
 				
 			case OPTION_KEYMAP:
-				enabled = true;
+				enabled = isEnabled;
 				gotoAndStop("keymap");
 				
 				labelTextField._width = entryWidth;

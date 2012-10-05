@@ -5,14 +5,23 @@ scriptname SKI_ConfigBase extends SKI_QuestBase
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MENU_ROOT		= "_root.ConfigPanelFader.configPanel" autoReadonly
 
-int property		OPTION_EMPTY	= 0 autoReadonly
-int property		OPTION_HEADER	= 1 autoReadonly
-int property		OPTION_TEXT		= 2 autoReadonly
-int property		OPTION_TOGGLE	= 3 autoReadonly
-int property 		OPTION_SLIDER	= 4 autoReadonly
-int property		OPTION_MENU		= 5 autoReadonly
-int property		OPTION_COLOR	= 6 autoReadonly
-int property		OPTION_KEYMAP	= 7 autoReadonly
+int property		STATE_DEFAULT	= 0 autoReadonly
+int property		STATE_RESET		= 1 autoReadonly
+int property		STATE_SLIDER	= 2 autoReadonly
+int property		STATE_MENU		= 3 autoReadonly
+int property		STATE_COLOR		= 4 autoReadonly
+
+int property		OPTION_TYPE_EMPTY	= 0x00 autoReadonly
+int property		OPTION_TYPE_HEADER	= 0x01 autoReadonly
+int property		OPTION_TYPE_TEXT	= 0x02 autoReadonly
+int property		OPTION_TYPE_TOGGLE	= 0x03 autoReadonly
+int property 		OPTION_TYPE_SLIDER	= 0x04 autoReadonly
+int property		OPTION_TYPE_MENU	= 0x05 autoReadonly
+int property		OPTION_TYPE_COLOR	= 0x06 autoReadonly
+int property		OPTION_TYPE_KEYMAP	= 0x07 autoReadonly
+
+int property		OPTION_FLAG_NONE		= 0x0000 autoReadonly
+int property		OPTION_FLAG_DISABLED	= 0x0100 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly
@@ -24,11 +33,14 @@ SKI_ConfigManager	_configManager
 bool				_initialized	= false
 int					_configID		= -1
 
+; Keep track of what we're doing at the moment for stupidity checks
+int					_state			= 0
+
 int					_cursorPosition	= 0
 int					_cursorFillMode	= 1 ;LEFT_TO_RIGHT
 
 ; Local buffers
-float[]				_optionTypeBuf
+float[]				_optionFlagsBuf	; byte 1 type, byte 2 flags
 string[]			_textBuf
 string[]			_strValueBuf
 float[]				_numValueBuf
@@ -52,7 +64,7 @@ string property		CurrentPage auto hidden
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	_optionTypeBuf	= new float[128]
+	_optionFlagsBuf	= new float[128]
 	_textBuf		= new string[128]
 	_strValueBuf	= new string[128]
 	_numValueBuf	= new float[128]
@@ -77,7 +89,7 @@ endEvent
 
 event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	SKI_ConfigManager newManager = a_sender as SKI_ConfigManager
-	
+
 	; Already registered?
 	if (_configManager == newManager)
 		return
@@ -157,6 +169,10 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
+function Error(string a_msg)
+	Debug.Trace(self + " ERROR: " +  a_msg)
+endFunction
+
 function SetPage(string a_page)
 	CurrentPage = a_page
 	
@@ -167,18 +183,24 @@ function SetPage(string a_page)
 		SetTitleText(ModName)
 	endIf
 	
+	_state = STATE_RESET
 	OnPageReset(a_page)
+	_state = STATE_DEFAULT
 	FlushOptionBuffers()
 endFunction
 
-int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue)
+int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue, int a_flags)
+	if (_state != STATE_RESET)
+		Error("Cannot add option " + a_text + " outside of OnPageReset()")
+		return -1
+	endIf
+
 	int id = _cursorPosition
 	if (id == -1)
 		return -1
 	endIf
 	
-	
-	_optionTypeBuf[id] = a_optionType
+	_optionFlagsBuf[id] = a_optionType + a_flags
 	_textBuf[id] = a_text
 	_strValueBuf[id] = a_strValue
 	_numValueBuf[id] = a_numValue
@@ -195,20 +217,20 @@ endFunction
 function FlushOptionBuffers()
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
-	int t = OPTION_EMPTY
+	int t = OPTION_TYPE_EMPTY
 	int i = 0
 	int optionCount = 0;
 
 	; Tell UI where to cut off the buffer
 	i = 0
 	while (i < 128)
-		if (_optionTypeBuf[i] != t)
+		if (_optionFlagsBuf[i] != t)
 			optionCount = i + 1
 		endif
 		i += 1
 	endWhile
 	
-	UI.InvokeNumberA(menu, root + ".setOptionTypeBuffer", _optionTypeBuf)
+	UI.InvokeNumberA(menu, root + ".setOptionFlagsBuffer", _optionFlagsBuf)
 	UI.InvokeStringA(menu, root + ".setOptionTextBuffer", _textBuf)
 	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
 	UI.InvokeNumberA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
@@ -216,7 +238,7 @@ function FlushOptionBuffers()
 
 	i = 0
 	while (i < 128)
-		_optionTypeBuf[i] = t
+		_optionFlagsBuf[i] = t
 		_textBuf[i] = none
 		_strValueBuf[i] = none
 		_numValueBuf[i] = 0
@@ -227,32 +249,53 @@ function FlushOptionBuffers()
 	_cursorFillMode	= LEFT_TO_RIGHT
 endFunction
 
-function SetOptionStrValue(int a_option, string a_strValue)
+function SetOptionStrValue(int a_option, string a_strValue, bool noUpdate)
+	if (_state == STATE_RESET)
+		Error("Cannot modify option data while in OnPageReset()")
+		return
+	endIf
+
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
 	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
-	UI.Invoke(menu, root + ".invalidateOptionData")
+	if (!noUpdate)
+		UI.Invoke(menu, root + ".invalidateOptionData")
+	endIf
 endFunction
 
-function SetOptionNumValue(int a_option, float a_numValue)
+function SetOptionNumValue(int a_option, float a_numValue, bool noUpdate)
+	if (_state == STATE_RESET)
+		Error("Cannot modify option data while in OnPageReset()")
+		return
+	endIf
+
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
 	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
 	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
-	UI.Invoke(menu, root + ".invalidateOptionData")
+	if (!noUpdate)
+		UI.Invoke(menu, root + ".invalidateOptionData")
+	endIf
 endFunction
 
-function SetOptionValues(int a_option, string a_strValue, float a_numValue)
+function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool noUpdate)
+	if (_state == STATE_RESET)
+		Error("Cannot modify option data while in OnPageReset()")
+		return
+	endIf
+
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
 	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
 	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
-	UI.Invoke(menu, root + ".invalidateOptionData")
+	if (!noUpdate)
+		UI.Invoke(menu, root + ".invalidateOptionData")
+	endIf
 endFunction
 
 function RequestSliderDialogData(int a_index)
@@ -265,7 +308,9 @@ function RequestSliderDialogData(int a_index)
 	_sliderParams[3] = 1
 	_sliderParams[4] = 1
 
+	_state = STATE_SLIDER
 	OnOptionSliderOpen(a_index)
+	_state = STATE_DEFAULT
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
 endFunction
@@ -277,7 +322,9 @@ function RequestMenuDialogData(int a_index)
 	_menuParams[0] = -1
 	_menuParams[1] = -1
 
+	_state = STATE_MENU
 	OnOptionMenuOpen(a_index)
+	_state = STATE_DEFAULT
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
 endFunction
@@ -289,7 +336,9 @@ function RequestColorDialogData(int a_index)
 	_colorParams[0] = -1
 	_colorParams[1] = -1
 
+	_state = STATE_COLOR
 	OnOptionColorOpen(a_index)
+	_state = STATE_DEFAULT
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
 endFunction
@@ -341,42 +390,42 @@ endFunction
 
 ; @interface
 int function AddEmptyOption()
-	return AddOption(OPTION_EMPTY, none, none, 0)
+	return AddOption(OPTION_TYPE_EMPTY, none, none, 0, 0)
 endFunction
 
 ; @interface
-int function AddHeaderOption(string a_text)
-	return AddOption(OPTION_HEADER, a_text, none, 0)
+int function AddHeaderOption(string a_text, int a_flags = 0)
+	return AddOption(OPTION_TYPE_HEADER, a_text, none, 0, a_flags)
 endFunction
 
 ; @interface
-int function AddTextOption(string a_text, string a_value)
-	return AddOption(OPTION_TEXT, a_text, a_value, 0)
+int function AddTextOption(string a_text, string a_value, int a_flags = 0)
+	return AddOption(OPTION_TYPE_TEXT, a_text, a_value, 0, a_flags)
 endFunction
 
 ; @interface
-int function AddToggleOption(string a_text, bool a_checked)
-	return AddOption(OPTION_TOGGLE, a_text, none, a_checked as int)
+int function AddToggleOption(string a_text, bool a_checked, int a_flags = 0)
+	return AddOption(OPTION_TYPE_TOGGLE, a_text, none, a_checked as int, a_flags)
 endfunction
 
 ; @interface
-int function AddSliderOption(string a_text, float a_value, string a_formatString = "")
-	return AddOption(OPTION_SLIDER, a_text, a_formatString, a_value)
+int function AddSliderOption(string a_text, float a_value, string a_formatString = "", int a_flags = 0)
+	return AddOption(OPTION_TYPE_SLIDER, a_text, a_formatString, a_value, a_flags)
 endFunction
 
 ; @interface
-int function AddMenuOption(string a_text, string a_value)
-	return AddOption(OPTION_MENU, a_text, a_value, 0)
+int function AddMenuOption(string a_text, string a_value, int a_flags = 0)
+	return AddOption(OPTION_TYPE_MENU, a_text, a_value, 0, a_flags)
 endFunction
 
 ; @interface
-int function AddColorOption(string a_text, int a_color)
-	return AddOption(OPTION_COLOR, a_text, none, a_color)
+int function AddColorOption(string a_text, int a_color, int a_flags = 0)
+	return AddOption(OPTION_TYPE_COLOR, a_text, none, a_color, a_flags)
 endFunction
 
 ; @interface
-int function AddKeyMapOption(string a_text, int a_keyCode)
-	return AddOption(OPTION_KEYMAP, a_text, none, a_keyCode)
+int function AddKeyMapOption(string a_text, int a_keyCode, int a_flags = 0)
+	return AddOption(OPTION_TYPE_KEYMAP, a_text, none, a_keyCode, a_flags)
 endFunction
 
 ; @interface
@@ -394,81 +443,138 @@ function UnloadCustomContent()
 endFunction
 
 ; @interface
-function SetTextOptionValue(int a_option, string a_value)
-	SetOptionStrValue(a_option, a_value)
+function SetOptionFlags(int a_option, int a_flags, bool noUpdate = false)
+	if (_state == STATE_RESET)
+		Error("Cannot set option flags while in OnPageReset(). Pass flags to AddOption instead")
+		return
+	endIf
+
+	float[] params = new float[2]
+	params[0] = a_option
+	params[1] = a_flags
+	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setOptionFlags", params)
+	if (!noUpdate)
+		UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".invalidateOptionData")
+	endIf
 endFunction
 
 ; @interface
-function SetToggleOptionValue(int a_option, bool a_checked)
-	SetOptionNumValue(a_option, a_checked as int)
+function SetTextOptionValue(int a_option, string a_value, bool noUpdate = false)
+	SetOptionStrValue(a_option, a_value, noUpdate)
+endFunction
+
+; @interface
+function SetToggleOptionValue(int a_option, bool a_checked, bool noUpdate = false)
+	SetOptionNumValue(a_option, a_checked as int, noUpdate)
 endfunction
 
 ; @interface
-function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "")
-	SetOptionValues(a_option, a_formatString, a_value)
+function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool noUpdate = false)
+	SetOptionValues(a_option, a_formatString, a_value, noUpdate)
 endFunction
 
 ; @interface
-function SetMenuOptionValue(int a_option, string a_value)
-	SetOptionStrValue(a_option, a_value)
+function SetMenuOptionValue(int a_option, string a_value, bool noUpdate = false)
+	SetOptionStrValue(a_option, a_value, noUpdate)
 endFunction
 
 ; @interface
-function SetColorOptionValue(int a_option, int a_color)
-	SetOptionNumValue(a_option, a_color)
+function SetColorOptionValue(int a_option, int a_color, bool noUpdate = false)
+	SetOptionNumValue(a_option, a_color, noUpdate)
 endFunction
 
 ; @interface
-function SetKeyMapOptionValue(int a_option, int a_keyCode)
-	SetOptionNumValue(a_option, a_keyCode)
+function SetKeyMapOptionValue(int a_option, int a_keyCode, bool noUpdate = false)
+	SetOptionNumValue(a_option, a_keyCode, noUpdate)
 endFunction
 
 ; @interface
 function SetSliderDialogStartValue(float a_value)
+	if (_state != STATE_SLIDER)
+		Error("Cannot set slider dialog params while outside OnOptionSliderOpen()")
+		return
+	endIf
+
 	_sliderParams[0] = a_value
 endFunction
 
 ; @interface
 function SetSliderDialogDefaultValue(float a_value)
+	if (_state != STATE_SLIDER)
+		Error("Cannot set slider dialog params while outside OnOptionSliderOpen()")
+		return
+	endIf
+
 	_sliderParams[1] = a_value
 endFunction
 
 ; @interface
-function SetSliderDialogMinValue(float a_value)
-	_sliderParams[2] = a_value
-endFunction
+function SetSliderDialogRange(float a_minValue, float a_maxValue)
+	if (_state != STATE_SLIDER)
+		Error("Cannot set slider dialog params while outside OnOptionSliderOpen()")
+		return
+	endIf
 
-; @interface
-function SetSliderDialogMaxValue(float a_value)
-	_sliderParams[3] = a_value
+	_sliderParams[2] = a_minValue
+	_sliderParams[3] = a_maxValue
 endFunction
 
 ; @interface
 function SetSliderDialogInterval(float a_value)
+	if (_state != STATE_SLIDER)
+		Error("Cannot set slider dialog params while outside OnOptionSliderOpen()")
+		return
+	endIf
+
 	_sliderParams[4] = a_value
 endFunction
 
 ; @interface
 function SetMenuDialogStartIndex(int a_value)
+	if (_state != STATE_MENU)
+		Error("Cannot set menu dialog params while outside OnOptionMenuOpen()")
+		return
+	endIf
+
 	_menuParams[0] = a_value
 endFunction
 
 ; @interface
 function SetMenuDialogDefaultIndex(int a_value)
+	if (_state != STATE_MENU)
+		Error("Cannot set menu dialog params while outside OnOptionMenuOpen()")
+		return
+	endIf
+
 	_menuParams[1] = a_value
 endFunction
 
 ; @interface
 function SetMenuDialogOptions(string[] a_options)
+	if (_state != STATE_MENU)
+		Error("Cannot set menu dialog params while outside OnOptionMenuOpen()")
+		return
+	endIf
+
 	UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogOptions", a_options)
 endFunction
 
 ; @interface
 function SetColorDialogStartColor(int a_color)
+	if (_state != STATE_COLOR)
+		Error("Cannot set color dialog params while outside OnOptionColorOpen()")
+		return
+	endIf
+
 	_colorParams[0] = a_color
 endFunction
 
 ; @interface
 function SetColorDialogDefaultColor(int a_color)
+	if (_state != STATE_COLOR)
+		Error("Cannot set color dialog params while outside OnOptionColorOpen()")
+		return
+	endIf
+
 	_colorParams[1] = a_color
 endFunction
