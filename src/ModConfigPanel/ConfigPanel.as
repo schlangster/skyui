@@ -49,7 +49,7 @@ class ConfigPanel extends MovieClip
 	private var _state: Number;
 	private var _bOptionsFocused: Boolean = false;
 	
-	private var _optionTypeBuffer: Array;
+	private var _optionFlagsBuffer: Array;
 	private var _optionTextBuffer: Array;
 	private var _optionStrValueBuffer: Array;
 	private var _optionNumValueBuffer: Array;
@@ -103,7 +103,7 @@ class ConfigPanel extends MovieClip
 		
 		_state = READY;
 		
-		_optionTypeBuffer = [];
+		_optionFlagsBuffer = [];
 		_optionTextBuffer = [];
 		_optionStrValueBuffer = [];
 		_optionNumValueBuffer = [];
@@ -191,6 +191,9 @@ class ConfigPanel extends MovieClip
 	
   /* PAPYRUS INTERFACE */
   
+	// Holds last selected key
+	public var selectedKeyCode = -1;
+  
   	public function unlock(): Void
 	{
 		_state = READY;
@@ -263,10 +266,10 @@ class ConfigPanel extends MovieClip
 			applyInfoText();
 	}
 	
-	public function setOptionTypeBuffer(/* values */): Void
+	public function setOptionFlagsBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			_optionTypeBuffer[i] = arguments[i];
+			_optionFlagsBuffer[i] = arguments[i];
 	}
 	
 	public function setOptionTextBuffer(/* values */): Void
@@ -277,9 +280,8 @@ class ConfigPanel extends MovieClip
 	
 	public function setOptionStrValueBuffer(/* values */): Void
 	{
-		for (var i = 0; i < arguments.length; i++) {
+		for (var i = 0; i < arguments.length; i++)
 			_optionStrValueBuffer[i] = arguments[i] === "None" ? null : arguments[i];
-		}
 	}
 	
 	public function setOptionNumValueBuffer(/* values */): Void
@@ -354,10 +356,15 @@ class ConfigPanel extends MovieClip
 	{
 		_optionsList.clearList();
 		for (var i=0; i<a_optionCount; i++) {
-			_optionsList.entryList.push({optionType: _optionTypeBuffer[i], 
+			// Both option type and flags are passed in the flags buffer
+			var optionType = _optionFlagsBuffer[i] & 0xFF;
+			var flags = (_optionFlagsBuffer[i] >>> 8) & 0xFF;
+			
+			_optionsList.entryList.push({optionType: optionType, 
 										 text: _optionTextBuffer[i],
  										 strValue: _optionStrValueBuffer[i],
-										 numValue: _optionNumValueBuffer[i]});
+										 numValue: _optionNumValueBuffer[i],
+										 flags: flags});
 		}
 		
 		// Pad uneven option count with empty option keyboard selection area is symmetrical
@@ -367,7 +374,7 @@ class ConfigPanel extends MovieClip
 		_optionsList.InvalidateData();
 		_optionsList.selectedIndex = -1;
 		
-		_optionTypeBuffer.splice(0);
+		_optionFlagsBuffer.splice(0);
 		_optionTextBuffer.splice(0);
 		_optionStrValueBuffer.splice(0);
 		_optionNumValueBuffer.splice(0);
@@ -396,8 +403,12 @@ class ConfigPanel extends MovieClip
 		_optionsList.InvalidateData();
 	}
 	
-	// Holds last selected key
-	public var selectedKeyCode = -1;
+	public function setOptionFlags(/* values */): Void
+	{
+		var index = arguments[0];
+		var flags = arguments[1] >>> 8;
+		_optionsList.entryList[index].flags = flags;
+	}
 	
 	
   /* PUBLIC FUNCTIONS */
