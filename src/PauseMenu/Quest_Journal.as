@@ -185,9 +185,8 @@ class Quest_Journal extends MovieClip
 		}
 		BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
 		TabButtonHelp.gotoAndStop(aiPlatform + 1);
-
-		_global.skyui.platform = aiPlatform;
-		_global.skyui.bPS3Switch = abPS3Switch;
+		
+		ConfigPanel.setPlatform(aiPlatform, abPS3Switch);
 	}
 
 	function DoHideMenu(): Void

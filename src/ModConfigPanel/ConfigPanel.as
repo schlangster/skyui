@@ -28,6 +28,8 @@ class ConfigPanel extends MovieClip
 	
   /* PRIVATE VARIABLES */
   
+	private var _platform: Number;
+  
 	// Quest_Journal_mc
 	private var _parentMenu: MovieClip;
 	private var _buttonPanelL: ButtonPanel;
@@ -125,8 +127,6 @@ class ConfigPanel extends MovieClip
 	{
 		super.onLoad();
 
-		_global.skyui.platform = 0;
-
 		_modList.listEnumeration = new BasicEnumeration(_modList.entryList);
 		_subList.listEnumeration = new BasicEnumeration(_subList.entryList);
 		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
@@ -149,9 +149,15 @@ class ConfigPanel extends MovieClip
 		bottomBar.Lock("B");
 		_bottomBarStartY = bottomBar._y;
 		
-		// Temp
-		_buttonPanelL.setPlatform(0, false);
-		_buttonPanelR.setPlatform(0, false);
+		showWelcomeScreen();
+	}
+	
+	function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{
+		_platform = a_platform;
+		
+		_buttonPanelL.setPlatform(a_platform, a_bPS3Switch);
+		_buttonPanelR.setPlatform(a_platform, a_bPS3Switch);
 
 		_buttonPanelR.isReversed = true;
 
@@ -164,8 +170,6 @@ class ConfigPanel extends MovieClip
 		_buttonPanelR.addButton({text: "$Exit", controls: _exitPCControls});
 		_buttonPanelR.addButton({text: "$Back", controls: _cancelPCControls});
 		_buttonPanelR.positionButtons();
-		
-		showWelcomeScreen();
 	}
 	
 	public function onModListEnter(event: Object): Void
@@ -296,6 +300,7 @@ class ConfigPanel extends MovieClip
 		
 		var initObj = {
 			_x: 719, _y: 265,
+			platform: _platform,
 			titleText: _dialogTitleText,
 			sliderValue: a_value,
 			sliderDefault: a_default,
@@ -322,7 +327,8 @@ class ConfigPanel extends MovieClip
 		_state = DIALOG;
 		
 		var initObj = {
-			_x: 562, _y: 265,
+			_x: 719, _y: 265,
+			platform: _platform,
 			titleText: _dialogTitleText,
 			menuOptions: _menuDialogOptions,
 			menuStartIndex: a_startIndex,
@@ -340,7 +346,8 @@ class ConfigPanel extends MovieClip
 		_state = DIALOG;
 		
 		var initObj = {
-			_x: 562, _y: 265,
+			_x: 719, _y: 265,
+			platform: _platform,
 			titleText: _dialogTitleText,
 			currentColor: a_currentColor,
 			defaultColor: a_defaultColor

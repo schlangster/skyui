@@ -24,6 +24,8 @@ class OptionDialog extends BasicDialog
 	
   /* PROPERTIES */
   
+	public var platform: Number;
+	
 	public var titleText: String;
 	
 	
@@ -83,13 +85,28 @@ class OptionDialog extends BasicDialog
 	
 	private function initButtons(): Void
 	{
-		var platform = _global.skyui.platform;
-		confirmButton.SetPlatform(platform, false);
-		cancelButton.SetPlatform(platform, false);
-		defaultButton.SetPlatform(platform, false);
-
+		var acceptControls: Object;
+		var cancelControls: Object;
+		var defaultControls = [{name: "XButton", context: skseDefines.kContext_ItemMenu}];
+		
+		if (platform == 0) {
+			acceptControls = [{keyCode: 28}];
+			cancelControls = [{keyCode: 15}];
+		} else {
+			acceptControls = [{name: "Accept", context: skseDefines.kContext_MenuMode}];
+			cancelControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
+		}
+		
+		confirmButton.setPlatform(platform);
+		confirmButton.setButtonData({text: "$Accept", controls: acceptControls});
 		confirmButton.addEventListener("press", this, "onConfirmPress");
+		
+		cancelButton.setPlatform(platform);
+		cancelButton.setButtonData({text: "$Cancel", controls: cancelControls});
 		cancelButton.addEventListener("press", this, "onCancelPress");
+		
+		defaultButton.setPlatform(platform);
+		defaultButton.setButtonData({text: "$Default", controls: defaultControls});
 		defaultButton.addEventListener("press", this, "onDefaultPress");
 
 		_updateButtonID = setInterval(this, "updateButtonPositions", 1);
@@ -100,8 +117,8 @@ class OptionDialog extends BasicDialog
 		clearInterval(_updateButtonID);
 		delete _updateButtonID;
 		
-		confirmButton._x = (background._width / 2) - confirmButton.textField.textWidth - 30;
-		cancelButton._x = confirmButton._x - cancelButton.textField.textWidth - 50;
-		defaultButton._x = -(background._width / 2) + 55;
+		confirmButton._x = -(background._width / 2) + 30;
+		defaultButton._x = confirmButton._x + confirmButton.width + 1;
+		cancelButton._x = (background._width / 2) - cancelButton.width - 20;
 	}
 }
