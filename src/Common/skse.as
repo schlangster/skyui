@@ -4,6 +4,7 @@
 	static function AllowTextInput(a_flag:Boolean):Void;
 	static function GetMappedKey(a_name:String, a_deviceType: Number, a_context: Number):Number;
 	static function StartRemapMode(a_scope:Object):Void;
+	static function GetLastControl(a_bKeyDown:Boolean):String;
 	static function SetINISetting(a_key:String, a_value:Number):Void;
 	static function GetINISetting(a_key:String):Number;
 	static function OpenMenu(a_menu:String):Void;

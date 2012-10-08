@@ -1,23 +1,32 @@
-dynamic class gfx.ui.InputDetails
+﻿class gfx.ui.InputDetails
 {
-	var code;
-	var controllerIdx;
-	var navEquivalent;
-	var type;
-	var value;
+  /* PROPERTIES */
+  
+	public var code: Number;
+	public var controllerIdx: Number;
+	public var navEquivalent: String;
+	public var type: String;			// "key"
+	public var value: String;			// "keyDown"/"keyUp"
+	public var control: String;			//  "Jump"
+	
 
-	function InputDetails(type, code, value, navEquivalent, controllerIdx)
+  /* INITIALIZATION */
+
+	public function InputDetails(a_type: String, a_code: Number, a_value, a_navEquivalent: String, a_controllerIdx: Number, a_control: String)
 	{
-		this.type = type;
-		this.code = code;
-		this.value = value;
-		this.navEquivalent = navEquivalent;
-		this.controllerIdx = controllerIdx;
+		type = a_type;
+		code = a_code;
+		value = a_value;
+		navEquivalent = a_navEquivalent;
+		controllerIdx = a_controllerIdx;
+		control = a_control;
 	}
 
-	function toString()
-	{
-		return ["[InputDelegate", "code=" + this.code, "type=" + this.type, "value=" + this.value, "navEquivalent=" + this.navEquivalent, "controllerIdx=" + this.controllerIdx + "]"].toString();
-	}
 
+  /* PUBLIC FUNCTIONS */
+
+	public function toString(): String
+	{
+		return ["[InputDelegate", "code=" + code, "type=" + type, "value=" + value, "navEquivalent=" + navEquivalent, "controllerIdx=" + controllerIdx + "]"].toString();
+	}
 }
