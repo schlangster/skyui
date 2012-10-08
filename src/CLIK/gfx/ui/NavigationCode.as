@@ -1,4 +1,4 @@
-dynamic class gfx.ui.NavigationCode
+﻿class gfx.ui.NavigationCode
 {
 	static var UP: String = "up";
 	static var DOWN: String = "down";
@@ -26,9 +26,4 @@ dynamic class gfx.ui.NavigationCode
 	static var PAGE_UP: String = "pageUp";
 	static var TAB: String = "tab";
 	static var SHIFT_TAB: String = "shifttab";
-
-	function NavigationCode()
-	{
-	}
-
 }

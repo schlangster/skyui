@@ -1,5 +1,7 @@
-dynamic class gfx.events.EventDispatcher
+﻿class gfx.events.EventDispatcher
 {
+	static var _instance;
+	
 	var _listeners;
 
 	function EventDispatcher()
