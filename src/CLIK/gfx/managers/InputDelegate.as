@@ -133,5 +133,6 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 106:	return NavigationCode.GAMEPAD_START;
 			case 107:	return NavigationCode.GAMEPAD_BACK;
 		}
+		return null;
 	}
 }
