@@ -36,21 +36,19 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private var _effectsHash: Object;
 	private var _effectsGroups: Array;
 
-	
-
 	private var _intervalId: Number;
+	private var _updateInterval: Number = 150; // Put in config?
 
 	//Grow dir
 	private var _hGrowDirection: String;
 	private var _vGrowDirection: String;
+
+	private var _enabled: Boolean;
 	
 
   /* PUBLIC VARIABLES */
 	// Passed from SKSE
 	public var effectDataArray: Array;
-
-	// Config
-	public var updateInterval: Number = 150;
 
 	public function ActiveEffectsWidget()
 	{
@@ -91,8 +89,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	// Papyrus interface
 	// @Papyrus
-	public function initNumbers(a_effectSize: Number, a_groupEffectCount: Number): Void
+	public function initNumbers(a_enabled: Boolean, a_effectSize: Number, a_groupEffectCount: Number): Void
 	{
+		_enabled = a_enabled;
 		_effectBaseSize = a_effectSize;
 		_groupEffectCount = a_groupEffectCount;
 	}
@@ -110,7 +109,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_groupSpacing = _effectSpacing = _effectBaseSize/10;
 		invalidateSize();
 
-		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
+		if (_enabled)
+			drawEffects();
 	}
 
 	// @Papyrus
@@ -139,7 +139,19 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		invalidateEffects();
 	}
 
-	// Helper function for setClampCorner
+	// @Papyrus
+	public function setEnabled(a_enabled: Boolean): Void
+	{
+		_enabled = a_enabled;
+
+		if (_enabled) {
+			drawEffects();
+		} else {
+			eraseEffects();
+		}
+	}
+
+	// Helper function for setClampCorner and initStrings
 	private function updateClampCorner(a_clampCorner: String): Void
 	{
 		_clampCorner = a_clampCorner.toUpperCase();
@@ -170,7 +182,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		invalidateEffects();
 	}
-
 
   /* PRIVATE FUNCTIONS */
 	private function onIntervalUpdate(): Void
@@ -257,21 +268,35 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		return freeEffectsGroup;
 	}
 
-	private function invalidateEffects(): Void
+	private function eraseEffects(): Void
 	{
 		clearInterval(_intervalId);
-		_sortFlag = true;
 
 		var effectsGroup: MovieClip;
 		for (var i: Number = 0; i < _effectsGroups.length; i++) {
 			effectsGroup = _effectsGroups[i];
 			effectsGroup.removeMovieClip();
 		}
-
 		_effectsHash = new Object();
 		_effectsGroups = new Array();
+	}
 
-		// Logic here to check if in the right HUD Mode, avoid unnecessary updates
-		_intervalId = setInterval(this, "onIntervalUpdate", updateInterval);
+	private function drawEffects(): Void
+	{
+		clearInterval(_intervalId);
+
+		_sortFlag = true;
+		_intervalId = setInterval(this, "onIntervalUpdate", _updateInterval);
+	}
+
+	private function invalidateEffects(): Void
+	{
+		if (!_enabled)
+			return;
+
+		eraseEffects();
+
+		// Logic here to check if in the right HUD Mode, avoid unnecessary updates?
+		drawEffects();
 	}
 }

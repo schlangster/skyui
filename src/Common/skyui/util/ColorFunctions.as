@@ -283,18 +283,14 @@ class skyui.util.ColorFunctions
 		return Math.min(a_max, Math.max(a_min, a_val));
 	}
 
-	private static function loopValue(a_val: Number, a_max: Number, a_allowMax: Boolean): Number
+	private static function loopValue(a_val: Number, a_max: Number): Number
 	{
-		// $ trace(loopValue(360.1012, 180))
+		// $ trace(loopValue(360.1012, 360))
 		// > 0.10120000000001
-		// $ trace(loopValue(-2*Math.PI, Math.PI))
-		// > -3.1415926535898
-		// $ trace(loopValue(360, 180))
+		// $ trace(loopValue(360, 360))
 		// > 0
-		// $ trace(loopValue(360, 180, true))
-		// > 180
-		var val = Math.abs(a_val);
-		var sign: Number = ((a_val > 0)? 1: ((a_val < 0) ? -1 : 0));
-		return sign * (val - a_max * (Math.ceil(val/a_max) - ((a_allowMax)? 1: ((val < a_max)? 1 : 0))));
+		// $ trace(loopValue(-1, 360))
+		// > 359
+		return (a_val % a_max);
 	}
 }

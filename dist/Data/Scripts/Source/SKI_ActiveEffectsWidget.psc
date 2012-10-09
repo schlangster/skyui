@@ -3,7 +3,8 @@ scriptname SKI_ActiveEffectsWidget extends SKI_WidgetBase
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 ; Config
 ; Make sure defaults match those in ConfigMenuInstance
-float	_effectSize				= 48.0
+bool	_enabled			= true
+float	_effectSize			= 48.0
 int		_groupEffectCount	= 8
 string	_orientation		= "vertical"
 string	_clampCorner		= "TR"
@@ -16,6 +17,20 @@ endFunction
 ;event onInit()
 ;	parent.onInit()
 ;endEvent
+
+bool Property Enabled
+	{Whether the active effects are displayed or not}
+	bool function get()
+		return _enabled
+	endFunction
+
+	function set(bool a_val)
+		_enabled = a_val
+		if (Initialized)
+			UI.InvokeNumber(HUD_MENU, WidgetRoot + ".setEnabled", _enabled as float) 
+		endIf
+	endFunction
+endProperty
 
 float property EffectSize
 	{Size of each effect in pixels at a resolution of 1280x720}
@@ -46,7 +61,7 @@ int property GroupEffectCount
 endProperty
 
 string property ClampCorner
-	{Corner at which the first effect is}
+	{Corner at which the first effect is displayed}
 	string function get()
 		return _clampCorner
 	endFunction
@@ -94,9 +109,10 @@ event OnWidgetReset()
 	parent.OnWidgetReset()
 
 	; Init numbers
-	float[] numberArgs = new float[2]
-	numberArgs[0] = _effectSize
-	numberArgs[1] = _groupEffectCount
+	float[] numberArgs = new float[3]
+	numberArgs[0] = _enabled as float
+	numberArgs[1] = _effectSize
+	numberArgs[2] = _groupEffectCount
 	UI.InvokeNumberA(HUD_MENU, WidgetRoot + ".initNumbers", numberArgs)
 
 	; Init strings

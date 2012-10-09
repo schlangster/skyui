@@ -21,6 +21,7 @@ int			_3DItemXOffsetOID_S
 int			_3DItemYOffsetOID_S
 int			_3DItemScaleOID_S
 
+int			_AEEnabledOID_B
 int			_AEEffectSizeOID_T
 int			_AEClampCornerOID_M
 int			_AEGroupEffectCountOID_S
@@ -44,6 +45,7 @@ float		_3DItemXOffset			= 0.0
 float		_3DItemYOffset			= 0.0
 float		_3DItemScale			= 1.5
 
+bool		_AEEnabled				= true
 float[]		_AEEffectSizeValues
 int			_AEEffectSizeIdx		= 1
 int			_AEClampCornerIdx		= 1
@@ -53,6 +55,7 @@ float		_AEOffsetX				= 0.0
 float[]		_AEBaseYValues
 float		_AEOffsetY				= 0.0
 int			_AEOrientationIdx		= 1
+
 int			_MXTestColor			= 0x162274
 
 int			_itemlistFontSizeIdx	= 1
@@ -114,7 +117,7 @@ event OnInit()
 
 	_AEBaseYValues = new float[4]
 	_AEBaseYValues[0] = 0.0
-	_AEBaseYValues[1] = 30.05 ; Actually 30.05
+	_AEBaseYValues[1] = 30.05
 	_AEBaseYValues[2] = 720.0
 	_AEBaseYValues[3] = 720.0
 
@@ -173,7 +176,6 @@ event OnPageReset(string a_page)
 
 		AddHeaderOption("Item Card")
 		_itemcardAlignOID_T		= AddTextOption("Align", _alignments[_itemcardAlignIdx])
-		SetOptionFlags(_itemcardAlignOID_T, OPTION_FLAG_DISABLED)
 		_itemcardXOffsetOID_S	= AddSliderOption("Horizontal Offset", _itemcardXOffset)
 		_itemcardYOffsetOID_S	= AddSliderOption("Vertical Offset", _itemcardYOffset)
 
@@ -198,6 +200,7 @@ event OnPageReset(string a_page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("Active Effects")
+		_AEEnabledOID_B				= AddToggleOption("Enabled", _AEEnabled)
 		_AEEffectSizeOID_T			= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
 		_AEClampCornerOID_M			= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
 		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
@@ -289,7 +292,11 @@ event OnOptionSelect(int a_option)
 
 	; -------------------------------------------------------
 	elseIf (page == "Widgets")
-		If (a_option == _AEEffectSizeOID_T)
+		if (a_option == _AEEnabledOID_B)
+			_AEEnabled = !_AEEnabled
+			SetToggleOptionValue(a_option, _AEEnabled)
+			SKI_ActiveEffectsWidgetInstance.Enabled = _AEEnabled
+		elseif (a_option == _AEEffectSizeOID_T)
 			if (_AEEffectSizeIdx < _sizes.length - 1)
 				_AEEffectSizeIdx += 1
 			else
