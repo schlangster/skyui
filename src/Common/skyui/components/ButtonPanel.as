@@ -5,6 +5,8 @@
 	// Number of buttons that are actually in use
 	private var _buttonCount: Number = 0;
 	
+	private var _updateID: Number;
+	
 	
   /* PROPERTIES */
   
@@ -12,14 +14,33 @@
 	
 	public var isReversed: Boolean = false;
 	
+	public var buttonRenderer: String;
+	
+	public var maxButtons: Number = 0;
+	
+	public var buttonInitializer: Object;
+	
 
   /* INITIALIZATION */
   
- 	public function ButtonPanel()
+ 	public function ButtonPanel(a_buttonRenderer: String, a_maxButtons: Number, a_buttonInitializer: Object)
 	{
 		buttons = [];
-		for (var i = 0; this["button" + i] != undefined; i++)
-			buttons.push(this["button" + i]);
+		
+		if (a_buttonRenderer != undefined)
+			buttonRenderer = a_buttonRenderer;
+			
+		if (a_maxButtons != undefined)
+			maxButtons = a_maxButtons;
+			
+		if (a_buttonInitializer != undefined)
+			buttonInitializer = a_buttonInitializer;
+		
+		for (var i=0; i<maxButtons; i++) {
+			var btn = attachMovie(buttonRenderer, "button" + i, getNextHighestDepth(), buttonInitializer);
+			btn._visible = false;
+			buttons.push(btn);
+		}
 	}
 	
 
@@ -60,21 +81,40 @@
 		
 		var btn = buttons[_buttonCount];
 		btn.setButtonData(a_buttonData);
-		btn._visible = true;
+
 		_buttonCount++;
 		
 		return btn;
 	}
 	
-	public function positionButtons(): Void
+	public function updateButtons(a_bInstant: Boolean): Void
 	{
+		if (a_bInstant)
+			doUpdateButtons();
+		else if (!_updateID)
+			_updateID = setInterval(this, "doUpdateButtons", 1);
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function doUpdateButtons(): Void
+	{
+		clearInterval(_updateID);
+		delete _updateID;
+		
 		var offset = 0;
 		for (var i=0; i < buttons.length; i++) {
 			var btn = buttons[i];
+			
 			if (btn.label.length > 0) {
+				btn._visible = true;
+				btn.update();
+				
 				if (isReversed) {
-					offset -= btn.width + 10;
+					offset -= btn.width;
 					btn._x = offset;
+					offset -= 10;
 				} else {
 					btn._x = offset;
 					offset += btn.width + 10;
