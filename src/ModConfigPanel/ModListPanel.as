@@ -1,6 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
+import Shared.GlobalFunc;
 
 import mx.transitions.Tween;
 import mx.transitions.easing.Strong;
@@ -60,6 +61,19 @@ class ModListPanel extends MovieClip
 		EventDispatcher.initialize(this);
 	}
 	
+	
+  /* PROPERTIES */
+	
+	public function get selectedEntry(): Object
+	{
+		if (_state == LIST_ACTIVE)
+			return _modList.selectedEntry;
+		else if (_state == SUBLIST_ACTIVE)
+			return _subList.selectedEntry;
+		else
+			return null;
+	}
+	
 
   /* PUBLIC FUNCTIONS */
   
@@ -93,7 +107,7 @@ class ModListPanel extends MovieClip
 	
 	public function showSublist(): Void
 	{
-		if (_modList.selectedClip == undefined || _modList.selectedEntry == undefined)
+		if (_modList.selectedClip == null || _modList.selectedEntry == null)
 			return;
 
 		setState(TRANSITION_TO_SUBLIST);
@@ -193,23 +207,32 @@ class ModListPanel extends MovieClip
 	
 	public function onSubListPress(a_event: Object): Void
 	{
-		if (a_event.keyboardOrMouse == 1)
-			_subList.selectedIndex = -1;
 	}
 	
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{		
+	{
+		var nextClip = pathToFocus.shift();
+		if (nextClip && nextClip.handleInput(details, pathToFocus))
+			return true;
+		
 		if (_state == LIST_ACTIVE) {
 			if (_modList.handleInput(details, pathToFocus))
 				return true;
 		} else if (_state == SUBLIST_ACTIVE) {
+			
+			if (GlobalFunc.IsKeyPressed(details, false)) {
+				if (details.navEquivalent == NavigationCode.TAB) {
+					showList();
+					return true;
+				}
+			}
+			
 			if (_subList.handleInput(details, pathToFocus))
 				return true;
 		}
 		
-		var nextClip = pathToFocus.shift();
-		return nextClip.handleInput(details, pathToFocus);
+		return false;
 	}
 
 
