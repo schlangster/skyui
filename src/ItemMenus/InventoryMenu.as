@@ -22,7 +22,6 @@ class InventoryMenu extends ItemMenu
   /* PROPERTIES */
   
 	// @GFx
-	// @Mysterious
 	public var bPCControlsReady: Boolean = true;
 
 
@@ -58,14 +57,13 @@ class InventoryMenu extends ItemMenu
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");
 	}
 
+
   /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
 	public function setConfig(a_config: Object): Void
 	{
 		super.setConfig(a_config);
-		
-		skyui.util.Debug.log("Setting config");
 		
 		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new InventoryDataExtender());
@@ -96,7 +94,7 @@ class InventoryMenu extends ItemMenu
 			} else if (!inventoryLists.itemList.disableInput) {
 				// Gamepad back || ALT (default) || 'P'
 				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-				if (bGamepadBackPressed || (_tabToggleKey && details.code == _tabToggleKey) || details.code == 80)
+				if (bGamepadBackPressed || details.control == "Sprint" || details.control == "Quick Magic")
 					openMagicMenu(true);
 			}
 		}
@@ -215,9 +213,9 @@ class InventoryMenu extends ItemMenu
 		if (event.menu == "list") {
 			if (event.opening == true) {
 				navPanel.clearButtons();
-				navPanel.addButton({text: "$Select", controls: (_platform == 0 ? _acceptPCControls : _acceptGPControls)});
-				navPanel.addButton({text: "$Cancel", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-				navPanel.positionButtons();
+				navPanel.addButton({text: "$Select", controls: _acceptControls});
+				navPanel.addButton({text: "$Cancel", controls: _cancelControls});
+				navPanel.updateButtons(true);
 			} else {
 				GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
 				updateBottomBar(true);
@@ -227,7 +225,7 @@ class InventoryMenu extends ItemMenu
 
 	// @override ItemMenu
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
-	{
+	{		
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
 		inventoryLists.zoomButtonHolder.ZoomButton._visible = a_platform != 0;
 		inventoryLists.zoomButtonHolder.ZoomButton.SetPlatform(a_platform, a_bPS3Switch);
@@ -273,26 +271,26 @@ class InventoryMenu extends ItemMenu
 		
 		if (a_bSelected) {
 			navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
-			navPanel.addButton({text: "$Drop", controls: _xButtonControls});
+			navPanel.addButton({text: "$Drop", controls: InputDefines.XButton});
 			
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-				navPanel.addButton({text: "$Unfavorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Unfavorite", controls: InputDefines.YButton});
 			else
-				navPanel.addButton({text: "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Favorite", controls: InputDefines.YButton});
 	
 			if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
-				navPanel.addButton({text: "$Charge", controls: _waitControls});
+				navPanel.addButton({text: "$Charge", controls: InputDefines.ChargeItem});
 				
 		} else {
-			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
+				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
 			}
-			navPanel.addButton({text: "$Magic", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Magic", controls: _switchControls});
 		}
 		
-		navPanel.positionButtons();
+		navPanel.updateButtons(true);
 	}
 }

@@ -40,7 +40,7 @@ class skyui.components.dialog.BasicDialog extends MovieClip
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	public function openDialog()
+	public function openDialog(): Void
 	{
 		setDialogState(OPENING);
 		
@@ -54,7 +54,7 @@ class skyui.components.dialog.BasicDialog extends MovieClip
 		_fadeTween.onMotionFinished = Delegate.create(this, fadedInFunc);
 	}
 	
-	public function closeDialog()
+	public function closeDialog(): Void
 	{
 		setDialogState(CLOSING);
 		

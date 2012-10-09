@@ -90,7 +90,7 @@ class MagicMenu extends ItemMenu
 			} else if (!inventoryLists.itemList.disableInput) {
 				// Gamepad back || ALT (default) || 'I'
 				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-				if (bGamepadBackPressed || (_tabToggleKey && details.code == _tabToggleKey) || details.code == 73)
+				if (bGamepadBackPressed || details.control == "Sprint" || details.control == "Quick Inventory")
 					openInventoryMenu(true);
 			}
 		}
@@ -198,27 +198,27 @@ class MagicMenu extends ItemMenu
 		navPanel.clearButtons();
 		
 		if (a_bSelected && (inventoryLists.itemList.selectedEntry.filterFlag & skyui.util.Defines.FLAG_MAGIC_ACTIVE_EFFECT) == 0) {
-			navPanel.addButton({text: "$Equip", controls: _equipControls});
+			navPanel.addButton({text: "$Equip", controls: InputDefines.Equip});
 			
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-				navPanel.addButton({text: "$Unfavorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Unfavorite", controls: InputDefines.YButton});
 			else
-				navPanel.addButton({text: "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Favorite", controls: InputDefines.YButton});
 	
 			if (itemCard.itemInfo.showUnlocked)
-				navPanel.addButton({text: "$Unlock", controls: _xButtonControls});
+				navPanel.addButton({text: "$Unlock", controls: InputDefines.XButton});
 				
 		} else {
-			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
+				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
 			}
-			navPanel.addButton({text: "$Inventory", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}
 		
-		navPanel.positionButtons();
+		navPanel.updateButtons(true);
 	}
 	
 	private function startMenuFade(): Void

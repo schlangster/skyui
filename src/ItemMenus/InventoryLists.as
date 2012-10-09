@@ -40,8 +40,6 @@ class InventoryLists extends MovieClip
 
   /* PRIVATE VARIABLES */
 
-	private var _config: Object;
-
 	private var _typeFilter: ItemTypeFilter;
 	private var _nameFilter: ItemNameFilter;
 	private var _sortFilter: ItemSorter;
@@ -50,9 +48,6 @@ class InventoryLists extends MovieClip
 	
 	private var _currCategoryIndex: Number;
 	private var _savedSelectionIndex: Number = -1;
-
-	private var _searchKey: Number;
-	private var _tabToggleKey: Number;
 	
 	private var _bTabbed = false;
 	private var _leftTabText: String;
@@ -124,9 +119,6 @@ class InventoryLists extends MovieClip
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new ItemNameFilter();
 		_sortFilter = new ItemSorter();
-
-		_searchKey = undefined;
-		_tabToggleKey = undefined;
 		
 		categoryList = panelContainer.categoryList;
 		categoryLabel = panelContainer.categoryLabel;
@@ -134,7 +126,6 @@ class InventoryLists extends MovieClip
 		searchWidget = panelContainer.searchWidget;
 		columnSelectButton = panelContainer.columnSelectButton;
 
-		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
@@ -268,13 +259,6 @@ class InventoryLists extends MovieClip
 		
 		itemList.selectedIndex = _savedSelectionIndex;
 	}
-
-	public function onConfigLoad(event: Object): Void
-	{
-		_config = event.config;
-		_searchKey = _config.Input.hotkey.search;
-		_tabToggleKey = _config.Input.hotkey.tabToggle;
-	}
 	
 	public function onConfigUpdate(event: Object): Void
 	{
@@ -296,16 +280,16 @@ class InventoryLists extends MovieClip
 			return false;
 			
 		if (GlobalFunc.IsKeyPressed(details)) {
-
+			
 			// Search hotkey (default space)
-			if (details.code == _searchKey) {
+			if (details.control == "Jump") {
 				searchWidget.startInput();
 				return true;
 			}
 				
 			// Toggle tab (default ALT)
 			var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-			if (tabBar != undefined && (details.code == _tabToggleKey || bGamepadBackPressed)) {
+			if (tabBar != undefined && (details.control == "Sprint" || bGamepadBackPressed)) {
 				tabBar.tabToggle();
 				return true;
 			}

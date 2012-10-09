@@ -152,7 +152,7 @@ class skyui.components.SearchWidget extends MovieClip
 	{
 		if (GlobalFunc.IsKeyPressed(details)) {
 			
-			if (details.navEquivalent == NavigationCode.ENTER && details.code != 32) {
+			if (details.navEquivalent == NavigationCode.ENTER) {
 				endInput();
 				
 			} else if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE) {

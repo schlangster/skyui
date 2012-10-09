@@ -23,24 +23,11 @@ class ItemMenu extends MovieClip
 	
 	private var _config: Object;
 	
-	private var _tabToggleKey: Number;
-	
 	private var _bPlayBladeSound: Boolean;
 	
-	private var _equipControls: Array;
-	private var _xButtonControls: Array;
-	private var _yButtonControls: Array;
-	private var _waitControls: Array;
-	private var _searchControls: Array;
-	private var _tabPCControls: Array;
-	private var _tabGPControls: Array;
-	private var _useControls: Array;
-	private var _acceptPCControls: Array;
-	private var _acceptGPControls: Array;
-	private var _cancelPCControls: Array;
-	private var _cancelGPControls: Array;
-	private var _sortColumnControls: Array;
-	private var _sortOrderControls: Array;
+	private var _acceptControls: Object;
+	private var _cancelControls: Object;
+	private var _switchControls: Object;
 	
 	
   /* STAGE ELEMENTS */
@@ -62,10 +49,9 @@ class ItemMenu extends MovieClip
 	
 	public var navPanel: ButtonPanel;
 	
-	// @override ItemMenu
 	public var bEnableTabs: Boolean = false;
 	
-	// @Mysterious GFx
+	// @GFx
 	public var bPCControlsReady: Boolean = true;
 	
 	public var bFadedIn: Boolean = true;
@@ -76,27 +62,6 @@ class ItemMenu extends MovieClip
 	public function ItemMenu()
 	{
 		super();
-
-		_equipControls = [
-			{name: "RightEquip", context: skseDefines.kContext_ItemMenu},
-			{name: "LeftEquip", context: skseDefines.kContext_ItemMenu}
-		];
-		_xButtonControls = [{name: "XButton", context: skseDefines.kContext_ItemMenu}];
-		_yButtonControls = [{name: "YButton", context: skseDefines.kContext_ItemMenu}];
-		_waitControls = [{name: "Wait", context: skseDefines.kContext_Gameplay}];
-		_acceptPCControls = [{keyCode: 28}];
-		_acceptGPControls = [{name: "Accept", context: skseDefines.kContext_MenuMode}];
-		_cancelPCControls = [{keyCode: 15}];
-		_cancelGPControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
-		_searchControls = [{keyCode: 57}];
-		_tabPCControls = [{name: "Sprint", context: skseDefines.kContext_Gameplay}];
-		_tabGPControls = [{keyCode: 271}];
-		_useControls = [{name: "Activate", context: skseDefines.kContext_Gameplay}];
-		_sortColumnControls = [
-			{keyCode: 274},
-			{keyCode: 275}
-		];
-		_sortOrderControls = [{keyCode: 272}];
 		
 		itemCard = itemCardFadeHolder.ItemCard_mc;
 		navPanel = bottomBar.buttonPanel;
@@ -190,7 +155,6 @@ class ItemMenu extends MovieClip
 	public function setConfig(a_config: Object): Void
 	{
 		_config = a_config;
-		_tabToggleKey = a_config.Input.hotkey.tabToggle;
 		
 		positionFloatingElements();
 		
@@ -214,6 +178,17 @@ class ItemMenu extends MovieClip
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
+		
+		if (a_platform == 0) {
+			_acceptControls = InputDefines.Enter;
+			_cancelControls = InputDefines.Escape;
+			_switchControls = InputDefines.Sprint;
+		} else {
+			_acceptControls = InputDefines.Accept;
+			_cancelControls = InputDefines.Cancel;
+			_switchControls = InputDefines.GamepadBack;
+		}
+		
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
 		itemCard.SetPlatform(a_platform,a_bPS3Switch);
 		bottomBar.setPlatform(a_platform,a_bPS3Switch);
@@ -555,27 +530,30 @@ class ItemMenu extends MovieClip
 	{
 		var btnData = {};
 		
+		var useControls = InputDefines.Activate;
+		var equipControls = InputDefines.Equip;
+		
 		switch (a_itemType) {
 			case InventoryDefines.ICT_ARMOR :
 				btnData.text = "$Equip";
-				btnData.controls = a_bAlwaysEquip ? _equipControls : _useControls;
+				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
 			case InventoryDefines.ICT_BOOK :
 				btnData.text = "$Read";
-				btnData.controls = a_bAlwaysEquip ? _equipControls : _useControls;
+				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
 			case InventoryDefines.ICT_POTION :
 				btnData.text = "$Use";
-				btnData.controls = a_bAlwaysEquip ? _equipControls : _useControls;
+				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
 			case InventoryDefines.ICT_FOOD :
 			case InventoryDefines.ICT_INGREDIENT :
 				btnData.text = "$Eat";
-				btnData.controls = a_bAlwaysEquip ? _equipControls : _useControls;
+				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
 			default :
 				btnData.text = "$Equip";
-				btnData.controls = _equipControls;
+				btnData.controls = equipControls;
 		}
 		
 		return btnData;

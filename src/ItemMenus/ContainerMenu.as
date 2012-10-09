@@ -235,46 +235,46 @@ class ContainerMenu extends ItemMenu
 		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
 			if (isViewingContainer()) {
 				if (_platform != 0) {
-					navPanel.addButton({text: "$Take", controls: _useControls});
+					navPanel.addButton({text: "$Take", controls: InputDefines.Activate});
 					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
 						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						navPanel.addButton({text: "$Take", controls: _useControls});
+						navPanel.addButton({text: "$Take", controls: InputDefines.Activate});
 				}
 				if (!bNPCMode)
-					navPanel.addButton({text: "$Take All", controls: _xButtonControls});
+					navPanel.addButton({text: "$Take All", controls: InputDefines.XButton});
 			} else {
 				if (_platform != 0) {
-					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: InputDefines.Activate});
 					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
 						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: InputDefines.Activate});
 				}
 
-				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: InputDefines.YButton});
 			}
 			if (!_bEquipMode)
 				navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
+				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
 			}
-			navPanel.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 			
 			if (isViewingContainer() && !bNPCMode)
-				navPanel.addButton({text: "$Take All", controls: _xButtonControls});			
+				navPanel.addButton({text: "$Take All", controls: InputDefines.XButton});			
 
 		}
 		
-		navPanel.positionButtons();
+		navPanel.updateButtons(true);
 	}
 
 	private function startItemTransfer(): Void
