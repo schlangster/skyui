@@ -30,6 +30,7 @@ event OnInit()
 	RegisterForModEvent("SKICP_pageSelected", "OnPageSelect")
 	RegisterForModEvent("SKICP_optionHighlighted", "OnOptionHighlight")
 	RegisterForModEvent("SKICP_optionSelected", "OnOptionSelect")
+	RegisterForModEvent("SKICP_optionDefaulted", "OnOptionDefault")
 	RegisterForModEvent("SKICP_keymapChanged", "OnKeymapChange")
 	RegisterForModEvent("SKICP_sliderSelected", "OnSliderSelect")
 	RegisterForModEvent("SKICP_sliderAccepted", "OnSliderAccept")
@@ -104,6 +105,12 @@ endEvent
 event OnOptionSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
 	_activeConfig.OnOptionSelect(optionIndex)
+	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
+endEvent
+
+event OnOptionDefault(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int optionIndex = a_numArg as int
+	_activeConfig.OnOptionDefault(optionIndex)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 

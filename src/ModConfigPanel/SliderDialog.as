@@ -121,12 +121,13 @@ class SliderDialog extends OptionDialog
 			if (details.navEquivalent == NavigationCode.TAB) {
 				onExitPress();
 				return true;
-			} else if (details.control == "Ready Weapon") {
+			} else if (details.control == InputDefines.ReadyWeapon.name) {
 				onDefaultPress();
 				return true;
 			}
 		}
 
-		return true; // Don't want to process any further input
+		// Don't forward to higher level
+		return true;
 	}
 }

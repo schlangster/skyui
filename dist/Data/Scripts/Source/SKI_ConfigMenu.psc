@@ -218,22 +218,17 @@ endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
-; @interface
-event OnOptionKeyMapChange(int a_option, int a_keyCode)
+event OnOptionDefault(int a_option)
 	string page = CurrentPage
-
+	
 	; -------------------------------------------------------
-	if (page == "General")
-		if (a_option == _hotkey1OID_K)
-			SetKeyMapOptionValue(a_option, a_keyCode)
-		elseIf (a_option == _hotkey2OID_K)
-			SetKeyMapOptionValue(a_option, a_keyCode)
-		elseIf (a_option == _hotkey3OID_K)
-			SetKeyMapOptionValue(a_option, a_keyCode)
+	if (page == "Widgets")
+		if (a_option == _AEEnabledOID_B)
+			_AEEnabled = true
+			SetToggleOptionValue(a_option, _AEEnabled)
 		endIf
 	endIf
 endEvent
-
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
@@ -447,6 +442,7 @@ event OnOptionMenuOpen(int a_option)
 	endIf
 endEvent
 
+; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionMenuAccept(int a_option, int a_index)
 	string page = CurrentPage
@@ -487,6 +483,23 @@ event OnOptionColorAccept(int a_option, int a_color)
 		if (a_option == _MXTestColorOID_C)
 			_MXTestColor = a_color;
 			SetColorOptionValue(a_option, a_color)
+		endIf
+	endIf
+endEvent
+
+; -------------------------------------------------------------------------------------------------
+; @implements SKI_ConfigBase
+event OnOptionKeyMapChange(int a_option, int a_keyCode)
+	string page = CurrentPage
+
+	; -------------------------------------------------------
+	if (page == "General")
+		if (a_option == _hotkey1OID_K)
+			SetKeyMapOptionValue(a_option, a_keyCode)
+		elseIf (a_option == _hotkey2OID_K)
+			SetKeyMapOptionValue(a_option, a_keyCode)
+		elseIf (a_option == _hotkey3OID_K)
+			SetKeyMapOptionValue(a_option, a_keyCode)
 		endIf
 	endIf
 endEvent

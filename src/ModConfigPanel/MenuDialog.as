@@ -100,10 +100,14 @@ class MenuDialog extends OptionDialog
 			if (details.navEquivalent == NavigationCode.TAB) {
 				onExitPress();
 				return true;
+			} else if (details.control == InputDefines.ReadyWeapon.name) {
+				onDefaultPress();
+				return true;
 			}
 		}
 		
-		return false;
+		// Don't forward to higher level
+		return true;
 	}
 	
 	public function onMenuListPress(a_event: Object): Void
