@@ -40,7 +40,10 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
-	
+
+
+  /* PUBLIC FUNCTIONS */
+  
 	// @override ItemMenu
 	public function InitExtensions(): Void
 	{		
@@ -56,9 +59,6 @@ class InventoryMenu extends ItemMenu
 
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");
 	}
-
-
-  /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
 	public function setConfig(a_config: Object): Void
@@ -102,58 +102,6 @@ class InventoryMenu extends ItemMenu
 		return true;
 	}
 
-	// @override ItemMenu
-	public function onExitMenuRectClick(): Void
-	{
-		startMenuFade();
-		GameDelegate.call("ShowTweenMenu", []);
-	}
-
-	public function onFadeCompletion(): Void
-	{
-		if (!_bMenuClosing)
-			return;
-
-		GameDelegate.call("CloseMenu", []);
-		if (_bSwitchMenus) {
-			GameDelegate.call("CloseTweenMenu",[]);
-			skse.OpenMenu("MagicMenu");
-		}
-	}
-
-	// @override ItemMenu
-	public function onShowItemsList(event: Object): Void
-	{
-		super.onShowItemsList(event);
-		
-		if (event.index != -1)
-			updateBottomBar(true);
-	}
-
-	public function onItemHighlightChange(event: Object): Void
-	{
-		super.onItemHighlightChange(event);
-		
-		if (event.index != -1)
-			updateBottomBar(true);
-			
-	}
-
-	// @override ItemMenu
-	public function onHideItemsList(event: Object): Void
-	{
-		super.onHideItemsList(event);
-		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_NONE});
-		updateBottomBar(false);
-	}
-
-	// @override ItemMenu
-	public function onItemSelect(event: Object): Void
-	{
-		if (event.entry.enabled && event.keyboardOrMouse != 0)
-			GameDelegate.call("ItemSelect", []);
-	}
-
 	// @API
 	public function AttemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
 	{
@@ -184,46 +132,6 @@ class InventoryMenu extends ItemMenu
 	}
 
 	// @override ItemMenu
-	public function onQuantityMenuSelect(event: Object): Void
-	{
-		GameDelegate.call("ItemDrop", [event.amount]);
-		
-		// Bug Fix: ItemCard does not update when attempting to drop quest items through the quantity menu
-		//   so let's request an update even though it may be redundant.
-		GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
-	}
-
-
-	public function onMouseRotationFastClick(aiMouseButton: Number): Void
-	{
-		GameDelegate.call("CheckForMouseEquip", [aiMouseButton], this, "AttemptEquip");
-	}
-
-	public function onItemCardListPress(event: Object): Void
-	{
-		GameDelegate.call("ItemCardListCallback", [event.index]);
-	}
-
-	// @override ItemMenu
-	public function onItemCardSubMenuAction(event: Object): Void
-	{
-		super.onItemCardSubMenuAction(event);
-		GameDelegate.call("QuantitySliderOpen", [event.opening]);
-		
-		if (event.menu == "list") {
-			if (event.opening == true) {
-				navPanel.clearButtons();
-				navPanel.addButton({text: "$Select", controls: _acceptControls});
-				navPanel.addButton({text: "$Cancel", controls: _cancelControls});
-				navPanel.updateButtons(true);
-			} else {
-				GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
-				updateBottomBar(true);
-			}
-		}
-	}
-
-	// @override ItemMenu
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{		
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
@@ -243,6 +151,98 @@ class InventoryMenu extends ItemMenu
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+	// @override ItemMenu
+	private function onExitMenuRectClick(): Void
+	{
+		startMenuFade();
+		GameDelegate.call("ShowTweenMenu", []);
+	}
+
+	private function onFadeCompletion(): Void
+	{
+		if (!_bMenuClosing)
+			return;
+
+		GameDelegate.call("CloseMenu", []);
+		if (_bSwitchMenus) {
+			GameDelegate.call("CloseTweenMenu",[]);
+			skse.OpenMenu("MagicMenu");
+		}
+	}
+
+	// @override ItemMenu
+	private function onShowItemsList(event: Object): Void
+	{
+		super.onShowItemsList(event);
+		
+		if (event.index != -1)
+			updateBottomBar(true);
+	}
+
+	private function onItemHighlightChange(event: Object): Void
+	{
+		super.onItemHighlightChange(event);
+		
+		if (event.index != -1)
+			updateBottomBar(true);
+			
+	}
+
+	// @override ItemMenu
+	private function onHideItemsList(event: Object): Void
+	{
+		super.onHideItemsList(event);
+		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_NONE});
+		updateBottomBar(false);
+	}
+
+	// @override ItemMenu
+	private function onItemSelect(event: Object): Void
+	{
+		if (event.entry.enabled && event.keyboardOrMouse != 0)
+			GameDelegate.call("ItemSelect", []);
+	}
+
+	// @override ItemMenu
+	private function onQuantityMenuSelect(event: Object): Void
+	{
+		GameDelegate.call("ItemDrop", [event.amount]);
+		
+		// Bug Fix: ItemCard does not update when attempting to drop quest items through the quantity menu
+		//   so let's request an update even though it may be redundant.
+		GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
+	}
+
+
+	private function onMouseRotationFastClick(aiMouseButton: Number): Void
+	{
+		GameDelegate.call("CheckForMouseEquip", [aiMouseButton], this, "AttemptEquip");
+	}
+
+	private function onItemCardListPress(event: Object): Void
+	{
+		GameDelegate.call("ItemCardListCallback", [event.index]);
+	}
+
+	// @override ItemMenu
+	private function onItemCardSubMenuAction(event: Object): Void
+	{
+		super.onItemCardSubMenuAction(event);
+		GameDelegate.call("QuantitySliderOpen", [event.opening]);
+		
+		if (event.menu == "list") {
+			if (event.opening == true) {
+				navPanel.clearButtons();
+				navPanel.addButton({text: "$Select", controls: _acceptControls});
+				navPanel.addButton({text: "$Cancel", controls: _cancelControls});
+				navPanel.updateButtons(true);
+			} else {
+				GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
+				updateBottomBar(true);
+			}
+		}
+	}
 	
 	private function openMagicMenu(a_bFade: Boolean): Void
 	{

@@ -128,24 +128,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		return false;
 	}
 
-	// @GFx
-	public function onMouseWheel(a_delta: Number): Void
-	{
-		if (disableInput)
-			return;
-			
-		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
-			if (target == this) {
-				if (a_delta < 0)
-					scrollPosition = scrollPosition + scrollDelta;
-				else if (a_delta > 0)
-					scrollPosition = scrollPosition - scrollDelta;
-			}
-		}
-		
-		isMouseDrivenNav = true;
-	}
-
 	// @override BasicList
 	public function UpdateList(): Void
 	{
@@ -293,14 +275,32 @@ class skyui.components.list.ScrollingList extends BasicList
 				doSetSelectedIndex(lastClip.itemIndex, SELECT_KEYBOARD);
 		}
 	}
-
-	public function onScroll(event: Object): Void
-	{
-		updateScrollPosition(Math.floor(event.position + 0.5));
-	}
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+	// @GFx
+	private function onMouseWheel(a_delta: Number): Void
+	{
+		if (disableInput)
+			return;
+			
+		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
+			if (target == this) {
+				if (a_delta < 0)
+					scrollPosition = scrollPosition + scrollDelta;
+				else if (a_delta > 0)
+					scrollPosition = scrollPosition - scrollDelta;
+			}
+		}
+		
+		isMouseDrivenNav = true;
+	}
+
+	private function onScroll(event: Object): Void
+	{
+		updateScrollPosition(Math.floor(event.position + 0.5));
+	}
   
   	// @override BasicList
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void

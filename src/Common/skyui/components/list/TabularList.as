@@ -3,11 +3,8 @@ import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
 import skyui.util.ConfigLoader;
-import skyui.util.GlobalFunctions;
 import skyui.components.list.ListLayout;
-import skyui.components.list.IListLayoutSubscriber;
 import skyui.components.list.SortedListHeader;
-import skyui.components.list.FilteredEnumeration;
 import skyui.components.list.ScrollingList;
 import skyui.filter.IFilter;
 
@@ -40,7 +37,7 @@ class skyui.components.list.TabularList extends ScrollingList
 	}
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function TabularList()
 	{
@@ -49,18 +46,6 @@ class skyui.components.list.TabularList extends ScrollingList
 
 
   /* PUBLIC FUNCTIONS */
-	
-	public function onLayoutChange(event: Object): Void
-	{
-		entryHeight = _layout.entryHeight;
-		
-		_maxListIndex = Math.floor((_listHeight / entryHeight) + 0.05);
-		
-		if (_layout.sortAttributes && _layout.sortOptions)
-			dispatchEvent({type:"sortChange", attributes: _layout.sortAttributes, options:  _layout.sortOptions});
-		
-		requestUpdate();
-	}
 	
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -83,5 +68,20 @@ class skyui.components.list.TabularList extends ScrollingList
 			}
 		}
 		return false;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function onLayoutChange(event: Object): Void
+	{
+		entryHeight = _layout.entryHeight;
+		
+		_maxListIndex = Math.floor((_listHeight / entryHeight) + 0.05);
+		
+		if (_layout.sortAttributes && _layout.sortOptions)
+			dispatchEvent({type:"sortChange", attributes: _layout.sortAttributes, options:  _layout.sortOptions});
+		
+		requestUpdate();
 	}
 }

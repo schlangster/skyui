@@ -5,11 +5,10 @@ class BarterDataExtender extends InventoryDataExtender
   /* PROPERTIES */
   
 	public var barterSellMult: Number;
-	
 	public var barterBuyMult: Number;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	function BarterDataExtender()
 	{
@@ -20,7 +19,6 @@ class BarterDataExtender extends InventoryDataExtender
 	
 	
   /* PUBLIC FUNCTIONS */
-	
 	
   	// @override InventoryDataExtender
 	function processEntry(a_entryObject: Object, a_itemInfo: Object): Void

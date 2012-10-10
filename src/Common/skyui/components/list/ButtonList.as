@@ -58,7 +58,7 @@ class skyui.components.list.ButtonList extends BasicList
 	}
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function ButtonList()
 	{
@@ -143,24 +143,6 @@ class skyui.components.list.ButtonList extends BasicList
 		}
 		return processed;
 	}
-
-	// @GFx
-	public function onMouseWheel(delta)
-	{
-		if (disableInput)
-			return;
-			
-		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
-			if (target == this) {
-				if (delta < 0)
-					moveSelectionDown();
-				else if (delta > 0)
-					moveSelectionUp();
-			}
-		}
-		
-		isMouseDrivenNav = true;
-	}
 	
 	public function moveSelectionUp(): Void
 	{
@@ -190,5 +172,26 @@ class skyui.components.list.ButtonList extends BasicList
 			isMouseDrivenNav = false;
 			dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 		}
+	}
+
+
+  /* PRIVATE FUNCTIONS */
+
+	// @GFx
+	private function onMouseWheel(delta)
+	{
+		if (disableInput)
+			return;
+			
+		for (var target = Mouse.getTopMostEntity(); target && target != undefined; target = target._parent) {
+			if (target == this) {
+				if (delta < 0)
+					moveSelectionDown();
+				else if (delta > 0)
+					moveSelectionUp();
+			}
+		}
+		
+		isMouseDrivenNav = true;
 	}
 }

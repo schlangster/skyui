@@ -33,7 +33,7 @@ class skyui.components.list.SortedListHeader extends MovieClip
 	}
 	
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function SortedListHeader()
 	{
@@ -96,7 +96,7 @@ class skyui.components.list.SortedListHeader extends MovieClip
 		return columnButton;
 	}
 	
-	public function onLayoutChange(event): Void
+	private function onLayoutChange(event): Void
 	{
 		clearColumns();
 		

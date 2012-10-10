@@ -40,7 +40,7 @@ class skyui.components.list.EntryClipManager
 	}
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
   
 	public function EntryClipManager(a_list: BasicList)
 	{

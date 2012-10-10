@@ -72,7 +72,9 @@ class ItemMenu extends MovieClip
 		bFadedIn = true;
 		_bItemCardFadedIn = false;
 	}
-	
+
+  /* PUBLIC FUNCTIONS */
+  
 	// @API
 	public function InitExtensions(a_bPlayBladeSound): Void
 	{
@@ -142,15 +144,6 @@ class ItemMenu extends MovieClip
 			}
 		}
 	}
-
-
-  /* PUBLIC FUNCTIONS */
-	
-	public function onConfigLoad(event: Object): Void
-	{
-		setConfig(event.config);
-		inventoryLists.showPanel(_bPlayBladeSound);
-	}
 	
 	public function setConfig(a_config: Object): Void
 	{
@@ -217,81 +210,6 @@ class ItemMenu extends MovieClip
 		return true;
 	}
 
-	public function onMouseWheel(delta: Number): Void
-	{
-		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
-			if (e == mouseRotationRect && shouldProcessItemsListInput(false) || !bFadedIn && delta == -1) {
-				GameDelegate.call("ZoomItemModel",[delta]);
-				break;
-			}
-		}
-	}
-
-	public function onExitMenuRectClick(): Void
-	{
-		GameDelegate.call("CloseMenu",[]);
-	}
-
-	public function onCategoryChange(event: Object): Void
-	{
-	}
-	
-	public function onItemHighlightChange(event: Object): Void
-	{
-		super.onItemHighlightChange(event);
-		
-		if (event.index != -1) {
-			if (!_bItemCardFadedIn) {
-				_bItemCardFadedIn = true;
-				
-				if (_bItemCardPositioned)
-					itemCard.FadeInCard();
-			}
-			
-			if (_bItemCardPositioned)
-				GameDelegate.call("UpdateItem3D",[true]);
-				
-			GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
-			
-		} else {
-			if (!bFadedIn)
-				resetMenu();
-			
-			if (_bItemCardFadedIn) {
-				_bItemCardFadedIn = false;
-				onHideItemsList();
-			}
-		}
-	}
-
-	public function onShowItemsList(event: Object): Void
-	{
-		onItemHighlightChange(event);
-	}
-
-	public function onHideItemsList(event: Object): Void
-	{
-		GameDelegate.call("UpdateItem3D",[false]);
-		itemCard.FadeOutCard();
-	}
-
-	public function onItemSelect(event: Object): Void
-	{
-		if (event.entry.enabled) {
-			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
-				itemCard.ShowQuantityMenu(event.entry.count);
-			else
-				onQuantityMenuSelect({amount:1});
-		} else {
-			GameDelegate.call("DisabledItemSelect",[]);
-		}
-	}
-
-	public function onQuantityMenuSelect(event: Object): Void
-	{
-		GameDelegate.call("ItemSelect",[event.amount]);
-	}
-
 	// @API
 	public function UpdatePlayerInfo(aUpdateObj: Object): Void
 	{
@@ -303,41 +221,6 @@ class ItemMenu extends MovieClip
 	{
 		itemCard.itemInfo = aUpdateObj;
 		bottomBar.updatePerItemInfo(aUpdateObj);
-	}
-
-	public function onItemCardSubMenuAction(event: Object): Void
-	{
-		if (event.opening == true) {
-			inventoryLists.itemList.disableSelection = true;
-			inventoryLists.itemList.disableInput = true;
-			inventoryLists.categoryList.disableSelection = true;
-			inventoryLists.categoryList.disableInput = true;
-		} else if (event.opening == false) {
-			inventoryLists.itemList.disableSelection = false;
-			inventoryLists.itemList.disableInput = false;
-			inventoryLists.categoryList.disableSelection = false;
-			inventoryLists.categoryList.disableInput = false;
-		}
-	}
-
-	public function onMouseRotationStart(): Void
-	{
-		GameDelegate.call("StartMouseRotation",[]);
-		inventoryLists.categoryList.disableSelection = true;
-		inventoryLists.itemList.disableSelection = true;
-	}
-
-	public function onMouseRotationStop(): Void
-	{
-		GameDelegate.call("StopMouseRotation",[]);
-		inventoryLists.categoryList.disableSelection = false;
-		inventoryLists.itemList.disableSelection = false;
-	}
-
-	public function onMouseRotationFastClick(): Void
-	{
-		if (shouldProcessItemsListInput(false))
-			onItemSelect({entry:inventoryLists.itemList.selectedEntry, keyboardOrMouse:0});
 	}
 
 	// @API
@@ -399,6 +282,123 @@ class ItemMenu extends MovieClip
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+
+	public function onItemCardSubMenuAction(event: Object): Void
+	{
+		if (event.opening == true) {
+			inventoryLists.itemList.disableSelection = true;
+			inventoryLists.itemList.disableInput = true;
+			inventoryLists.categoryList.disableSelection = true;
+			inventoryLists.categoryList.disableInput = true;
+		} else if (event.opening == false) {
+			inventoryLists.itemList.disableSelection = false;
+			inventoryLists.itemList.disableInput = false;
+			inventoryLists.categoryList.disableSelection = false;
+			inventoryLists.categoryList.disableInput = false;
+		}
+	}
+	
+	private function onConfigLoad(event: Object): Void
+	{
+		setConfig(event.config);
+		inventoryLists.showPanel(_bPlayBladeSound);
+	}
+
+	private function onMouseWheel(delta: Number): Void
+	{
+		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent) {
+			if (e == mouseRotationRect && shouldProcessItemsListInput(false) || !bFadedIn && delta == -1) {
+				GameDelegate.call("ZoomItemModel",[delta]);
+				break;
+			}
+		}
+	}
+
+	private function onExitMenuRectClick(): Void
+	{
+		GameDelegate.call("CloseMenu",[]);
+	}
+
+	private function onCategoryChange(event: Object): Void
+	{
+	}
+	
+	private function onItemHighlightChange(event: Object): Void
+	{
+		super.onItemHighlightChange(event);
+		
+		if (event.index != -1) {
+			if (!_bItemCardFadedIn) {
+				_bItemCardFadedIn = true;
+				
+				if (_bItemCardPositioned)
+					itemCard.FadeInCard();
+			}
+			
+			if (_bItemCardPositioned)
+				GameDelegate.call("UpdateItem3D",[true]);
+				
+			GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
+			
+		} else {
+			if (!bFadedIn)
+				resetMenu();
+			
+			if (_bItemCardFadedIn) {
+				_bItemCardFadedIn = false;
+				onHideItemsList();
+			}
+		}
+	}
+
+	private function onShowItemsList(event: Object): Void
+	{
+		onItemHighlightChange(event);
+	}
+
+	private function onHideItemsList(event: Object): Void
+	{
+		GameDelegate.call("UpdateItem3D",[false]);
+		itemCard.FadeOutCard();
+	}
+
+	private function onItemSelect(event: Object): Void
+	{
+		if (event.entry.enabled) {
+			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
+				itemCard.ShowQuantityMenu(event.entry.count);
+			else
+				onQuantityMenuSelect({amount:1});
+		} else {
+			GameDelegate.call("DisabledItemSelect",[]);
+		}
+	}
+
+	private function onQuantityMenuSelect(event: Object): Void
+	{
+		GameDelegate.call("ItemSelect",[event.amount]);
+	}
+
+	private function onMouseRotationStart(): Void
+	{
+		GameDelegate.call("StartMouseRotation",[]);
+		inventoryLists.categoryList.disableSelection = true;
+		inventoryLists.itemList.disableSelection = true;
+	}
+
+	private function onMouseRotationStop(): Void
+	{
+		GameDelegate.call("StopMouseRotation",[]);
+		inventoryLists.categoryList.disableSelection = false;
+		inventoryLists.itemList.disableSelection = false;
+	}
+
+	private function onMouseRotationFastClick(): Void
+	{
+		if (shouldProcessItemsListInput(false))
+			onItemSelect({entry:inventoryLists.itemList.selectedEntry, keyboardOrMouse:0});
+	}
 
 	private function saveIndices(): Void
 	{

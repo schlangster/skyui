@@ -129,9 +129,7 @@ class InventoryLists extends MovieClip
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
-	// Apparently it's not safe to use stage elements in the constructor (as it doesn't work).
-	// That's why they are initialized in onLoad.
-	public function onLoad(): Void
+	private function onLoad(): Void
 	{
 		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
 
@@ -167,13 +165,6 @@ class InventoryLists extends MovieClip
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 	}
 	
-	public function InitExtensions(): Void
-	{
-		// Delay updates until config is ready
-		categoryList.suspended = true;
-		itemList.suspended = true;
-	}
-	
 	
   /* PUBLIC FUNCTIONS */
 
@@ -188,6 +179,13 @@ class InventoryLists extends MovieClip
 	
 	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
+	
+	public function InitExtensions(): Void
+	{
+		// Delay updates until config is ready
+		categoryList.suspended = true;
+		itemList.suspended = true;
+	}
 	
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
@@ -211,58 +209,11 @@ class InventoryLists extends MovieClip
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 	
-	public function onFilterChange(): Void
-	{
-		itemList.requestInvalidate();
-	}
-	
 	public function enableTabBar(): Void
 	{
 		_bTabbed = true;
 		panelContainer.gotoAndPlay("tabbed");
 		itemList.listHeight = 480;
-	}
-	
-	public function onTabBarLoad(): Void
-	{
-		tabBar = panelContainer.tabBar;
-		tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
-		tabBar.addEventListener("tabPress", this, "onTabPress");
-		
-		if (categoryList.dividerIndex != -1)
-			tabBar.setLabelText(_leftTabText, _rightTabText);
-	}
-	
-	public function onColumnSelectButtonPress(event: Object): Void
-	{
-		if (_columnSelectDialog) {
-			DialogManager.close();
-			return;
-		}
-		
-		_savedSelectionIndex = itemList.selectedIndex;
-		itemList.selectedIndex = -1;
-		
-		categoryList.disableSelection = categoryList.disableInput = true;
-		itemList.disableSelection = itemList.disableInput = true;
-		searchWidget.isDisabled = true;
-			
-		_columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
-		_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
-	}
-	
-	public function onColumnSelectDialogClosed(event: Object): Void
-	{
-		categoryList.disableSelection = categoryList.disableInput = false;
-		itemList.disableSelection = itemList.disableInput = false;
-		searchWidget.isDisabled = false;
-		
-		itemList.selectedIndex = _savedSelectionIndex;
-	}
-	
-	public function onConfigUpdate(event: Object): Void
-	{
-		itemList.layout.refresh();
 	}
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean)
@@ -333,100 +284,6 @@ class InventoryLists extends MovieClip
 		itemList.disableInput = false;
 	}
 
-	public function onCategoriesItemPress(): Void
-	{
-		showItemsList();
-	}
-	
-	public function onTabPress(event: Object): Void
-	{
-		if (categoryList.disableSelection || categoryList.disableInput || itemList.disableSelection || itemList.disableInput)
-			return;
-		
-		if (event.index == TabBar.LEFT_TAB) {
-			tabBar.activeTab = TabBar.LEFT_TAB;
-			categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
-		} else if (event.index == TabBar.RIGHT_TAB) {
-			tabBar.activeTab = TabBar.RIGHT_TAB;
-			categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
-		}
-		
-		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-		showItemsList();
-	}
-
-	public function onCategoriesListMoveUp(event: Object): Void
-	{
-		doCategorySelectionChange(event);
-	}
-
-	public function onCategoriesListMoveDown(event: Object): Void
-	{
-		doCategorySelectionChange(event);
-	}
-
-	public function onCategoriesListMouseSelectionChange(event: Object): Void
-	{
-		if (event.keyboardOrMouse == 0)
-			doCategorySelectionChange(event);
-	}
-
-	public function onItemsListMoveUp(event: Object): Void
-	{
-		doItemsSelectionChange(event);
-	}
-
-	public function onItemsListMoveDown(event: Object): Void
-	{
-		doItemsSelectionChange(event);
-	}
-
-	public function onItemsListMouseSelectionChange(event: Object): Void
-	{
-		if (event.keyboardOrMouse == 0)
-			doItemsSelectionChange(event);
-	}
-
-	public function doCategorySelectionChange(event: Object): Void
-	{
-		dispatchEvent({type:"categoryChange", index:event.index});
-		
-		if (event.index != -1)
-			GameDelegate.call("PlaySound",["UIMenuFocus"]);
-	}
-
-	public function doItemsSelectionChange(event: Object): Void
-	{
-		dispatchEvent({type:"itemHighlightChange", index:event.index});
-
-		if (event.index != -1)
-			GameDelegate.call("PlaySound",["UIMenuFocus"]);
-	}
-
-	public function onSortChange(event: Object): Void
-	{
-		_sortFilter.setSortBy(event.attributes, event.options);
-	}
-
-	public function onSearchInputStart(event: Object): Void
-	{
-		categoryList.disableSelection = categoryList.disableInput = true;
-		itemList.disableSelection = itemList.disableInput = true
-		_nameFilter.filterText = "";
-	}
-
-	public function onSearchInputChange(event: Object)
-	{
-		_nameFilter.filterText = event.data;
-	}
-
-	public function onSearchInputEnd(event: Object)
-	{
-		categoryList.disableSelection = categoryList.disableInput = false;
-		itemList.disableSelection = itemList.disableInput = false;
-		_nameFilter.filterText = event.data;
-	}
-
 	// Called to initially set the category list.
 	// @API 
 	public function SetCategoriesList(): Void
@@ -493,5 +350,149 @@ class InventoryLists extends MovieClip
 			dispatchEvent({type:"showItemsList", index: -1});
 		else
 			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+  
+	private function onFilterChange(): Void
+	{
+		itemList.requestInvalidate();
+	}
+	
+	private function onTabBarLoad(): Void
+	{
+		tabBar = panelContainer.tabBar;
+		tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
+		tabBar.addEventListener("tabPress", this, "onTabPress");
+		
+		if (categoryList.dividerIndex != -1)
+			tabBar.setLabelText(_leftTabText, _rightTabText);
+	}
+	
+	private function onColumnSelectButtonPress(event: Object): Void
+	{
+		if (_columnSelectDialog) {
+			DialogManager.close();
+			return;
+		}
+		
+		_savedSelectionIndex = itemList.selectedIndex;
+		itemList.selectedIndex = -1;
+		
+		categoryList.disableSelection = categoryList.disableInput = true;
+		itemList.disableSelection = itemList.disableInput = true;
+		searchWidget.isDisabled = true;
+			
+		_columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
+		_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
+	}
+	
+	private function onColumnSelectDialogClosed(event: Object): Void
+	{
+		categoryList.disableSelection = categoryList.disableInput = false;
+		itemList.disableSelection = itemList.disableInput = false;
+		searchWidget.isDisabled = false;
+		
+		itemList.selectedIndex = _savedSelectionIndex;
+	}
+	
+	private function onConfigUpdate(event: Object): Void
+	{
+		itemList.layout.refresh();
+	}
+
+	private function onCategoriesItemPress(): Void
+	{
+		showItemsList();
+	}
+	
+	private function onTabPress(event: Object): Void
+	{
+		if (categoryList.disableSelection || categoryList.disableInput || itemList.disableSelection || itemList.disableInput)
+			return;
+		
+		if (event.index == TabBar.LEFT_TAB) {
+			tabBar.activeTab = TabBar.LEFT_TAB;
+			categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
+		} else if (event.index == TabBar.RIGHT_TAB) {
+			tabBar.activeTab = TabBar.RIGHT_TAB;
+			categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
+		}
+		
+		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+		showItemsList();
+	}
+
+	private function onCategoriesListMoveUp(event: Object): Void
+	{
+		doCategorySelectionChange(event);
+	}
+
+	private function onCategoriesListMoveDown(event: Object): Void
+	{
+		doCategorySelectionChange(event);
+	}
+
+	private function onCategoriesListMouseSelectionChange(event: Object): Void
+	{
+		if (event.keyboardOrMouse == 0)
+			doCategorySelectionChange(event);
+	}
+
+	private function onItemsListMoveUp(event: Object): Void
+	{
+		doItemsSelectionChange(event);
+	}
+
+	private function onItemsListMoveDown(event: Object): Void
+	{
+		doItemsSelectionChange(event);
+	}
+
+	private function onItemsListMouseSelectionChange(event: Object): Void
+	{
+		if (event.keyboardOrMouse == 0)
+			doItemsSelectionChange(event);
+	}
+
+	private function doCategorySelectionChange(event: Object): Void
+	{
+		dispatchEvent({type:"categoryChange", index:event.index});
+		
+		if (event.index != -1)
+			GameDelegate.call("PlaySound",["UIMenuFocus"]);
+	}
+
+	private function doItemsSelectionChange(event: Object): Void
+	{
+		dispatchEvent({type:"itemHighlightChange", index:event.index});
+
+		if (event.index != -1)
+			GameDelegate.call("PlaySound",["UIMenuFocus"]);
+	}
+
+	private function onSortChange(event: Object): Void
+	{
+		_sortFilter.setSortBy(event.attributes, event.options);
+	}
+
+	private function onSearchInputStart(event: Object): Void
+	{
+		categoryList.disableSelection = categoryList.disableInput = true;
+		itemList.disableSelection = itemList.disableInput = true
+		_nameFilter.filterText = "";
+	}
+
+	private function onSearchInputChange(event: Object)
+	{
+		_nameFilter.filterText = event.data;
+	}
+
+	private function onSearchInputEnd(event: Object)
+	{
+		categoryList.disableSelection = categoryList.disableInput = false;
+		itemList.disableSelection = itemList.disableInput = false;
+		_nameFilter.filterText = event.data;
 	}
 }
