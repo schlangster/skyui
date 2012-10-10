@@ -8,7 +8,7 @@ class skyui.components.list.BasicEnumeration implements IEntryEnumeration
 	private var _entryData: Array;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function BasicEnumeration(a_data: Array)
 	{

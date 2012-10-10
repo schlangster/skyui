@@ -275,7 +275,10 @@ class skyui.components.list.BasicList extends BSList
 	// @abstract
 	public function UpdateList(): Void { }
 	
-	public function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
+	
+  /* PRIVATE FUNCTIONS */
+  
+	private function onItemPress(a_index: Number, a_keyboardOrMouse: Number): Void
 	{
 		if (disableInput || disableSelection || _selectedIndex == -1)
 			return;
@@ -297,7 +300,7 @@ class skyui.components.list.BasicList extends BSList
 		dispatchEvent({type: "itemPressAux", index: _selectedIndex, entry: selectedEntry, clip: selectedClip, keyboardOrMouse: a_keyboardOrMouse});
 	}
 	
-	public function onItemRollOver(a_index: Number): Void
+	private function onItemRollOver(a_index: Number): Void
 	{
 		if (isListAnimating || disableSelection || disableInput)
 			return;
@@ -306,7 +309,7 @@ class skyui.components.list.BasicList extends BSList
 		isMouseDrivenNav = true;
 	}
 
-	public function onItemRollOut(a_index: Number): Void
+	private function onItemRollOut(a_index: Number): Void
 	{
 		if (!isAutoUnselect)
 			return;
@@ -317,9 +320,6 @@ class skyui.components.list.BasicList extends BSList
 		doSetSelectedIndex(-1, SELECT_MOUSE);
 		isMouseDrivenNav = true;
 	}
-	
-	
-  /* PRIVATE FUNCTIONS */
 
 	private function doSetSelectedIndex(a_newIndex: Number, a_keyboardOrMouse: Number): Void
 	{

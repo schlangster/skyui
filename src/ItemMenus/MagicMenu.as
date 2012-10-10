@@ -35,6 +35,9 @@ class MagicMenu extends ItemMenu
 							   "mag_destruction", "mag_conjuration", "mag_restoration", "mag_shouts",
 							   "mag_powers", "mag_activeeffects"];
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 
 	public function InitExtensions(): Void
 	{
@@ -49,9 +52,6 @@ class MagicMenu extends ItemMenu
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
 	}
-	
-	
-  /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
 	public function setConfig(a_config: Object): Void
@@ -90,21 +90,56 @@ class MagicMenu extends ItemMenu
 			} else if (!inventoryLists.itemList.disableInput) {
 				// Gamepad back || ALT (default) || 'I'
 				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-				if (bGamepadBackPressed || (_tabToggleKey && details.code == _tabToggleKey) || details.code == 73)
+				if (bGamepadBackPressed || details.control == "Sprint" || details.control == "Quick Inventory")
 					openInventoryMenu(true);
 			}
 		}
 		return true;
 	}
-
+	
 	// @override ItemMenu
-	public function onExitMenuRectClick(): Void
+	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{		
+		super.SetPlatform(a_platform, a_bPS3Switch);		
+		updateBottomBar(false);
+	}
+
+	// @API
+	public function DragonSoulSpent(): Void
+	{
+		itemCard.itemInfo.soulSpent = true;
+		updateBottomBar();
+	}
+	
+	// @API
+	public function AttemptEquip(a_slot: Number): Void
+	{
+		if (shouldProcessItemsListInput(true) && confirmSelectedEntry())
+			GameDelegate.call("ItemSelect",[a_slot]);
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+  
+	// @override ItemMenu
+	private function onItemSelect(event: Object): Void
+	{
+		if (event.entry.enabled) {
+			if (event.keyboardOrMouse != 0)
+				GameDelegate.call("ItemSelect",[]);
+			return;
+		}
+		GameDelegate.call("ShowShoutFail",[]);
+	}
+  
+	// @override ItemMenu
+	private function onExitMenuRectClick(): Void
 	{
 		startMenuFade();
 		GameDelegate.call("ShowTweenMenu",[]);
 	}
 
-	public function onFadeCompletion(): Void
+	private function onFadeCompletion(): Void
 	{
 		if (!_bMenuClosing)
 			return;
@@ -115,16 +150,9 @@ class MagicMenu extends ItemMenu
 			skse.OpenMenu("InventoryMenu");
 		}
 	}
-	
-	// @override ItemMenu
-	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
-	{		
-		super.SetPlatform(a_platform, a_bPS3Switch);		
-		updateBottomBar(false);
-	}
 
 	// @override ItemMenu
-	public function onShowItemsList(event: Object): Void
+	private function onShowItemsList(event: Object): Void
 	{
 		super.onShowItemsList(event);
 		
@@ -133,7 +161,7 @@ class MagicMenu extends ItemMenu
 	}
 
 	// @override ItemMenu
-	public function onItemHighlightChange(event: Object)
+	private function onItemHighlightChange(event: Object)
 	{
 		super.onItemHighlightChange(event);
 		
@@ -141,16 +169,8 @@ class MagicMenu extends ItemMenu
 			updateBottomBar(true);
 	}
 
-	// @API
-	public function DragonSoulSpent(): Void
-	{
-		itemCard.itemInfo.soulSpent = true;
-		updateBottomBar();
-	}
-
-
 	// @override ItemMenu
-	public function onHideItemsList(event: Object): Void
+	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
 		
@@ -158,27 +178,6 @@ class MagicMenu extends ItemMenu
 		
 		updateBottomBar(false);
 	}
-	
-	// @API
-	public function AttemptEquip(a_slot: Number): Void
-	{
-		if (shouldProcessItemsListInput(true) && confirmSelectedEntry())
-			GameDelegate.call("ItemSelect",[a_slot]);
-	}
-
-	// @override ItemMenu
-	public function onItemSelect(event: Object): Void
-	{
-		if (event.entry.enabled) {
-			if (event.keyboardOrMouse != 0)
-				GameDelegate.call("ItemSelect",[]);
-			return;
-		}
-		GameDelegate.call("ShowShoutFail",[]);
-	}
-	
-	
-  /* PRIVATE FUNCTIONS */
 	
 	private function openInventoryMenu(a_bFade: Boolean): Void
 	{
@@ -198,27 +197,27 @@ class MagicMenu extends ItemMenu
 		navPanel.clearButtons();
 		
 		if (a_bSelected && (inventoryLists.itemList.selectedEntry.filterFlag & skyui.util.Defines.FLAG_MAGIC_ACTIVE_EFFECT) == 0) {
-			navPanel.addButton({text: "$Equip", controls: _equipControls});
+			navPanel.addButton({text: "$Equip", controls: InputDefines.Equip});
 			
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-				navPanel.addButton({text: "$Unfavorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Unfavorite", controls: InputDefines.YButton});
 			else
-				navPanel.addButton({text: "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: "$Favorite", controls: InputDefines.YButton});
 	
 			if (itemCard.itemInfo.showUnlocked)
-				navPanel.addButton({text: "$Unlock", controls: _xButtonControls});
+				navPanel.addButton({text: "$Unlock", controls: InputDefines.XButton});
 				
 		} else {
-			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
+				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
 			}
-			navPanel.addButton({text: "$Inventory", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}
 		
-		navPanel.positionButtons();
+		navPanel.updateButtons(true);
 	}
 	
 	private function startMenuFade(): Void

@@ -50,7 +50,10 @@ class ContainerMenu extends ItemMenu
 		
 		_tabBarIconArt = ["take", "give"];
 	}
-	
+
+
+  /* PUBLIC FUNCTIONS */
+  
 	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
@@ -65,9 +68,6 @@ class ContainerMenu extends ItemMenu
 		GameDelegate.addCallBack("XButtonPress", this, "onXButtonPress");
 		itemCardFadeHolder.StealTextInstance._visible = false;
 	}
-
-
-  /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
 	public function setConfig(a_config: Object): Void
@@ -126,47 +126,6 @@ class ContainerMenu extends ItemMenu
 		}
 	}
 
-	// @override ItemMenu
-	public function onItemHighlightChange(event: Object): Void
-	{
-		super.onItemHighlightChange(event);
-		updateBottomBar(true);
-	}
-
-	// @override ItemMenu
-	public function onShowItemsList(event: Object): Void
-	{
-		inventoryLists.showItemsList();
-	}
-
-	// @override ItemMenu
-	public function onHideItemsList(event: Object): Void
-	{
-		super.onHideItemsList(event);
-		updateBottomBar(false);
-	}
-
-	public function onMouseRotationFastClick(a_mouseButton:Number): Void
-	{
-		GameDelegate.call("CheckForMouseEquip",[a_mouseButton],this,"AttemptEquip");
-	}
-
-	public function onQuantityMenuSelect(event: Object): Void
-	{
-		if (_equipHand != undefined) {
-			GameDelegate.call("EquipItem",[_equipHand, event.amount]);
-			_equipHand = undefined;
-			return;
-		}
-
-		if (inventoryLists.itemList.selectedEntry.enabled) {
-			GameDelegate.call("ItemTransfer",[event.amount, isViewingContainer()]);
-			return;
-		}
-
-		GameDelegate.call("DisabledItemSelect",[]);
-	}
-
 	// @API
 	public function AttemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
 	{
@@ -196,24 +155,6 @@ class ContainerMenu extends ItemMenu
 			GameDelegate.call("TakeAllItems",[]);
 	}
 
-	public function onItemSelect(event: Object): Void
-	{
-		if (event.keyboardOrMouse != 0) {
-			if (_platform == 0 && _bEquipMode)
-				startItemEquip(ContainerMenu.NULL_HAND);
-			else
-				startItemTransfer();
-		}
-	}
-
-	public function onItemCardSubMenuAction(event: Object): Void
-	{
-		super.onItemCardSubMenuAction(event);
-
-		if (event.menu == "quantity")
-			GameDelegate.call("QuantitySliderOpen", [event.opening]);
-	}
-
 	// @API
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
@@ -227,6 +168,65 @@ class ContainerMenu extends ItemMenu
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+	private function onItemSelect(event: Object): Void
+	{
+		if (event.keyboardOrMouse != 0) {
+			if (_platform == 0 && _bEquipMode)
+				startItemEquip(ContainerMenu.NULL_HAND);
+			else
+				startItemTransfer();
+		}
+	}
+
+	private function onItemCardSubMenuAction(event: Object): Void
+	{
+		super.onItemCardSubMenuAction(event);
+
+		if (event.menu == "quantity")
+			GameDelegate.call("QuantitySliderOpen", [event.opening]);
+	}
+  
+	// @override ItemMenu
+	private function onItemHighlightChange(event: Object): Void
+	{
+		super.onItemHighlightChange(event);
+		updateBottomBar(true);
+	}
+
+	// @override ItemMenu
+	private function onShowItemsList(event: Object): Void
+	{
+		inventoryLists.showItemsList();
+	}
+
+	// @override ItemMenu
+	private function onHideItemsList(event: Object): Void
+	{
+		super.onHideItemsList(event);
+		updateBottomBar(false);
+	}
+
+	private function onMouseRotationFastClick(a_mouseButton:Number): Void
+	{
+		GameDelegate.call("CheckForMouseEquip",[a_mouseButton],this,"AttemptEquip");
+	}
+
+	private function onQuantityMenuSelect(event: Object): Void
+	{
+		if (_equipHand != undefined) {
+			GameDelegate.call("EquipItem",[_equipHand, event.amount]);
+			_equipHand = undefined;
+			return;
+		}
+
+		if (inventoryLists.itemList.selectedEntry.enabled) {
+			GameDelegate.call("ItemTransfer",[event.amount, isViewingContainer()]);
+			return;
+		}
+
+		GameDelegate.call("DisabledItemSelect",[]);
+	}
 	
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
@@ -235,46 +235,46 @@ class ContainerMenu extends ItemMenu
 		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
 			if (isViewingContainer()) {
 				if (_platform != 0) {
-					navPanel.addButton({text: "$Take", controls: _useControls});
+					navPanel.addButton({text: "$Take", controls: InputDefines.Activate});
 					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
 						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						navPanel.addButton({text: "$Take", controls: _useControls});
+						navPanel.addButton({text: "$Take", controls: InputDefines.Activate});
 				}
 				if (!bNPCMode)
-					navPanel.addButton({text: "$Take All", controls: _xButtonControls});
+					navPanel.addButton({text: "$Take All", controls: InputDefines.XButton});
 			} else {
 				if (_platform != 0) {
-					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: InputDefines.Activate});
 					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
 						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: _useControls});
+						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: InputDefines.Activate});
 				}
 
-				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: _yButtonControls});
+				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: InputDefines.YButton});
 			}
 			if (!_bEquipMode)
 				navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
+				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
 			}
-			navPanel.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 			
 			if (isViewingContainer() && !bNPCMode)
-				navPanel.addButton({text: "$Take All", controls: _xButtonControls});			
+				navPanel.addButton({text: "$Take All", controls: InputDefines.XButton});			
 
 		}
 		
-		navPanel.positionButtons();
+		navPanel.updateButtons(true);
 	}
 
 	private function startItemTransfer(): Void

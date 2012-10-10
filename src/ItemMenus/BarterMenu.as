@@ -39,6 +39,9 @@ class BarterMenu extends ItemMenu
 		_tabBarIconArt = ["buy", "sell"];
 	}
 	
+	
+  /* PUBLIC FUNCTIONS */
+  
 	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
@@ -53,9 +56,6 @@ class BarterMenu extends ItemMenu
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
 	}
-	
-	
-  /* PUBLIC FUNCTIONS */
 
 	// @override ItemMenu
 	public function setConfig(a_config: Object): Void
@@ -79,7 +79,7 @@ class BarterMenu extends ItemMenu
 			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
 	}
 
-	public function onExitButtonPress(): Void
+	private function onExitButtonPress(): Void
 	{
 		GameDelegate.call("CloseMenu",[]);
 	}
@@ -93,53 +93,11 @@ class BarterMenu extends ItemMenu
 		_dataExtender.barterBuyMult = a_buyMult;
 		updateBottomBarButtons(false);
 	}
-	
-	// @override ItemMenu
-	public function onShowItemsList(event: Object): Void
-	{
-		inventoryLists.showItemsList();
-
-		//super.onShowItemsList(event);
-	}
-
-	// @override ItemMenu
-	public function onItemHighlightChange(event: Object): Void
-	{
-		if (event.index != -1)
-			updateBottomBarButtons(true);
-
-		super.onItemHighlightChange(event);
-	}
-
-	// @override ItemMenu
-	public function onHideItemsList(event: Object): Void
-	{
-		super.onHideItemsList(event);
-		updateBottomBarButtons(false);
-	}
-
-	// @override ItemMenu
-	public function onQuantityMenuSelect(event: Object): Void
-	{
-		var price = event.amount * itemCard.itemInfo.value;
-		if (price > _vendorGold && !isViewingVendorItems()) {
-			_confirmAmount = event.amount;
-			GameDelegate.call("GetRawDealWarningString", [price], this, "ShowRawDealWarning");
-			return;
-		}
-		doTransaction(event.amount);
-	}
 
 	// @API
 	public function ShowRawDealWarning(a_warning: String): Void
 	{
 		itemCard.ShowConfirmMessage(a_warning);
-	}
-
-	public function onTransactionConfirm(): Void
-	{
-		doTransaction(_confirmAmount);
-		_confirmAmount = 0;
 	}
 	
 	// @override ItemMenu
@@ -164,8 +122,35 @@ class BarterMenu extends ItemMenu
 		bottomBar.setBarterInfo(a_playerGold,a_vendorGold,undefined,a_vendorName);
 		_playerInfoObj = a_updateObj;
 	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+  
+	// @override ItemMenu
+	private function onShowItemsList(event: Object): Void
+	{
+		inventoryLists.showItemsList();
 
-	public function onQuantitySliderChange(event: Object): Void
+		//super.onShowItemsList(event);
+	}
+
+	// @override ItemMenu
+	private function onItemHighlightChange(event: Object): Void
+	{
+		if (event.index != -1)
+			updateBottomBarButtons(true);
+
+		super.onItemHighlightChange(event);
+	}
+
+	// @override ItemMenu
+	private function onHideItemsList(event: Object): Void
+	{
+		super.onHideItemsList(event);
+		updateBottomBarButtons(false);
+	}
+	
+	private function onQuantitySliderChange(event: Object): Void
 	{
 		var price = itemCard.itemInfo.value * event.value;
 		if (isViewingVendorItems()) {
@@ -173,9 +158,21 @@ class BarterMenu extends ItemMenu
 		}
 		bottomBar.setBarterInfo(_playerGold,_vendorGold,price);
 	}
+	
+	// @override ItemMenu
+	private function onQuantityMenuSelect(event: Object): Void
+	{
+		var price = event.amount * itemCard.itemInfo.value;
+		if (price > _vendorGold && !isViewingVendorItems()) {
+			_confirmAmount = event.amount;
+			GameDelegate.call("GetRawDealWarningString", [price], this, "ShowRawDealWarning");
+			return;
+		}
+		doTransaction(event.amount);
+	}
 
 	// @override ItemMenu
-	public function onItemCardSubMenuAction(event: Object): Void
+	private function onItemCardSubMenuAction(event: Object): Void
 	{
 		super.onItemCardSubMenuAction(event);
 		if (event.menu == "quantity") {
@@ -187,8 +184,11 @@ class BarterMenu extends ItemMenu
 		}
 	}
 	
-	
-  /* PRIVATE FUNCTIONS */
+	private function onTransactionConfirm(): Void
+	{
+		doTransaction(_confirmAmount);
+		_confirmAmount = 0;
+	}
 	
 	private function doTransaction(a_amount: Number): Void
 	{
@@ -205,18 +205,18 @@ class BarterMenu extends ItemMenu
 		navPanel.clearButtons();
 		
 		if (a_bSelected) {
-			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: _useControls});
+			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: InputDefines.Activate});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: (_platform == 0 ? _cancelPCControls : _cancelGPControls)});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
+				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
 			}
-			navPanel.addButton({text: "$Switch Tab", controls: (_platform == 0 ? _tabPCControls : _tabGPControls)});
+			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 		}
 		
-		navPanel.positionButtons();
+		navPanel.updateButtons(true);
 	}
 
 }

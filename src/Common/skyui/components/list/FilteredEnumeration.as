@@ -10,7 +10,7 @@ class skyui.components.list.FilteredEnumeration extends BasicEnumeration
 	private var _filterChain:Array;
 	
 	
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 	
 	public function FilteredEnumeration(a_data: Array)
 	{

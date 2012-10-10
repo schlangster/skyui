@@ -6,11 +6,16 @@ import skyui.components.dialog.BasicDialog;
 import skyui.util.DialogManager;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
+import Shared.GlobalFunc;
+import gfx.ui.NavigationCode;
 
 
 class SliderDialog extends OptionDialog
 {
   /* PRIVATE VARIABLES */
+  
+  	private var _defaultButton: MovieClip;
+  	private var _closeButton: MovieClip;
 	
 
   /* STAGE ELEMENTS */
@@ -39,6 +44,28 @@ class SliderDialog extends OptionDialog
   /* PUBLIC FUNCTIONS */
   
 	// @override OptionDialog
+	private function initButtons(): Void
+	{
+		var closeControls: Object;
+		
+		if (platform == 0) {
+			closeControls = InputDefines.Escape;
+		} else {
+			closeControls = InputDefines.Cancel;
+		}
+		
+		leftButtonPanel.clearButtons();
+		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+		_defaultButton.addEventListener("press", this, "onDefaultPress");
+		leftButtonPanel.updateButtons();
+		
+		rightButtonPanel.clearButtons();
+		_closeButton = rightButtonPanel.addButton({text: "$Exit", controls: closeControls});
+		_closeButton.addEventListener("press", this, "onExitPress");
+		rightButtonPanel.updateButtons();
+	}
+  
+	// @override OptionDialog
 	public function initContent(): Void
 	{		
 		var d = sliderInterval;
@@ -47,21 +74,12 @@ class SliderDialog extends OptionDialog
 		sliderPanel.slider.position = sliderValue / d;
 	}
 	
-	// @override OptionDialog
-	public function onCancelPress(): Void
-	{
-		skse.SendModEvent("SKICP_dialogCanceled");
-		DialogManager.close();
-	}
-	
-	// @override OptionDialog
-	public function onConfirmPress(): Void
+	public function onExitPress(): Void
 	{
 		skse.SendModEvent("SKICP_sliderAccepted", null, sliderValue);
 		DialogManager.close();
 	}
 	
-	// @override OptionDialog
 	public function onDefaultPress(): Void
 	{
 		sliderPanel.slider.position = sliderDefault / sliderInterval;
@@ -70,9 +88,18 @@ class SliderDialog extends OptionDialog
 	// @GFx
 	public function handleInput(details, pathToFocus): Boolean
 	{
-		var bCaught = false;
+		var nextClip = pathToFocus.shift();
+		if (nextClip.handleInput(details, pathToFocus))
+			return true;
 		
-		return bCaught;
+		if (GlobalFunc.IsKeyPressed(details, false)) {
+			if (details.navEquivalent == NavigationCode.TAB) {
+				onExitPress();
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public function onScroll(event: Object): Void

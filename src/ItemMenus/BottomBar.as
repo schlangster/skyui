@@ -46,7 +46,7 @@ class BottomBar extends MovieClip
 	public function positionElements(a_leftOffset: Number, a_rightOffset: Number): Void
 	{
 		buttonPanel._x = a_leftOffset;
-		buttonPanel.positionButtons();
+		buttonPanel.updateButtons(true);
 		playerInfoCard._x = a_rightOffset - playerInfoCard._width;
 	}
 

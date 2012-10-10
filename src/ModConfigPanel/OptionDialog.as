@@ -1,7 +1,8 @@
 ﻿import gfx.io.GameDelegate;
-import Components.CrossPlatformButtons
-
+import gfx.ui.NavigationCode;
+import Shared.GlobalFunc;
 import skyui.components.dialog.BasicDialog;
+import skyui.components.ButtonPanel;
 
 
 // @abstract
@@ -15,9 +16,8 @@ class OptionDialog extends BasicDialog
   /* STAGE ELEMENTS */
 
 	public var background: MovieClip;
-	public var confirmButton: CrossPlatformButtons;
-	public var cancelButton: CrossPlatformButtons;
-	public var defaultButton: CrossPlatformButtons;
+	public var leftButtonPanel: ButtonPanel;
+	public var rightButtonPanel: ButtonPanel;
 	
 	public var titleTextField: TextField;
 
@@ -37,8 +37,11 @@ class OptionDialog extends BasicDialog
 	}
 	
 	// @override MovieClip
-	public function onLoad(): Void
+	private function onLoad(): Void
 	{
+		leftButtonPanel.setPlatform(platform, false);
+		rightButtonPanel.setPlatform(platform, false);
+		
 		initButtons();
 
 		titleTextField.textAutoSize = "shrink";
@@ -49,76 +52,10 @@ class OptionDialog extends BasicDialog
 	
 	
   /* PUBLIC FUNCTIONS */
-	
-	public function onDialogOpening(): Void
-	{
-		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-	}
-	
-	public function onDialogClosing(): Void
-	{
-		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-	}
-	
-	// @GFx
-	public function handleInput(details, pathToFocus): Boolean
-	{
-		var bCaught = false;
-		
-		return bCaught;
-	}
+
+	// @abstract
+	public function initButtons(): Void {}
 	
 	// @abstract
 	public function initContent(): Void {}
-	
-	// @abstract
-	public function onCancelPress(): Void {}
-	
-	// @abstract
-	public function onConfirmPress(): Void {}
-	
-	// @abstract
-	public function onDefaultPress(): Void {}
-	
-	
-  /* PRIVATE FUNCTIONS */
-	
-	private function initButtons(): Void
-	{
-		var acceptControls: Object;
-		var cancelControls: Object;
-		var defaultControls = [{name: "XButton", context: skseDefines.kContext_ItemMenu}];
-		
-		if (platform == 0) {
-			acceptControls = [{keyCode: 28}];
-			cancelControls = [{keyCode: 15}];
-		} else {
-			acceptControls = [{name: "Accept", context: skseDefines.kContext_MenuMode}];
-			cancelControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
-		}
-		
-		confirmButton.setPlatform(platform);
-		confirmButton.setButtonData({text: "$Accept", controls: acceptControls});
-		confirmButton.addEventListener("press", this, "onConfirmPress");
-		
-		cancelButton.setPlatform(platform);
-		cancelButton.setButtonData({text: "$Cancel", controls: cancelControls});
-		cancelButton.addEventListener("press", this, "onCancelPress");
-		
-		defaultButton.setPlatform(platform);
-		defaultButton.setButtonData({text: "$Default", controls: defaultControls});
-		defaultButton.addEventListener("press", this, "onDefaultPress");
-
-		_updateButtonID = setInterval(this, "updateButtonPositions", 1);
-	}
-	
-	private function updateButtonPositions(): Void
-	{
-		clearInterval(_updateButtonID);
-		delete _updateButtonID;
-		
-		confirmButton._x = -(background._width / 2) + 30;
-		defaultButton._x = confirmButton._x + confirmButton.width + 1;
-		cancelButton._x = (background._width / 2) - cancelButton.width - 20;
-	}
 }

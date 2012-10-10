@@ -5,6 +5,8 @@ class skyui.components.MappedButton extends Button
 {
   /* PRIVATE VARIABLES */
 
+	private static var _arrayWrap = [];
+
 	private var _platform: Number;
 	
 	private var _keyCodes: Array;
@@ -46,7 +48,6 @@ class skyui.components.MappedButton extends Button
 	function MappedButton()
 	{
 		super();
-		_bShowBackground = false;
 		
 		textField.autoSize = "left";
 		
@@ -69,10 +70,9 @@ class skyui.components.MappedButton extends Button
 
 	public function setPlatform(a_platform: Number): Void
 	{
-		if (a_platform != null) 
-			_platform = a_platform;
-			
-		refreshArt();
+		_platform = a_platform;
+		if (label != null && label.length > 0)
+			update();
 	}
 	
 	public function setButtonData(a_buttonData: Object)
@@ -81,12 +81,21 @@ class skyui.components.MappedButton extends Button
 		setMappedControls(a_buttonData.controls);
 	}
 
-	public function setMappedControls(a_controls: Array): Void
+	public function setMappedControls(a_controls): Void
 	{
 		_keyCodes.splice(0);
 		
-		for (var i=0; i<a_controls.length; i++) {
-			var controlInfo = a_controls[i];
+		// Accept either single object or array for multiple icons
+		var controls: Array;
+		if (a_controls instanceof Array) {
+			controls = a_controls;
+		} else {
+			_arrayWrap[0] = a_controls;
+			controls = _arrayWrap;
+		}
+		
+		for (var i=0; i<controls.length; i++) {
+			var controlInfo = controls[i];
 			
 			// Setting keycode manually overrides auto-detection
 			if (controlInfo.keyCode != null) {
@@ -99,23 +108,20 @@ class skyui.components.MappedButton extends Button
 			
 			var keyCode = -1;
 			if (_platform == 0) {
-				keyCode = skse.GetMappedKey(name, skseDefines.kDevice_Keyboard, context);
+				keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_KEYBOARD, context);
 				if (keyCode == -1)
-					keyCode = skse.GetMappedKey(name, skseDefines.kDevice_Mouse, context);
+					keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_MOUSE, context);
 
 			} else {
-				keyCode = skse.GetMappedKey(name, skseDefines.kDevice_Gamepad, context);
+				keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_GAMEPAD, context);
 			}
 			_keyCodes.push(keyCode);
 		}
-
-		refreshArt();
+		
+		update();
 	}
-
-
-  /* PRIVATE FUNCTIONS */
 	
-	private function refreshArt(): Void
+	public function update(): Void
 	{
 		var xOffset = 0;
 		
@@ -134,7 +140,8 @@ class skyui.components.MappedButton extends Button
 		}
 		
 		textField._x = xOffset + 1;
-		xOffset += textField.textWidth + 1;
+		xOffset += textField.getLineMetrics(0).width + 6;
+		
 		background._width = xOffset;
 	}
 }

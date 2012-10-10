@@ -1,7 +1,7 @@
 ﻿import gfx.managers.FocusHandler;
 import gfx.ui.InputDetails;
-import gfx.ui.NavigationCode;
 import gfx.io.GameDelegate;
+import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
 import skyui.components.list.BasicEnumeration;
@@ -18,12 +18,15 @@ class ConfigPanel extends MovieClip
 {
   /* CONSTANTS */
   
-  	private var READY = 0;
-	private var WAIT_FOR_OPTION_DATA = 1;
-	private var WAIT_FOR_SLIDER_DATA = 2;
-	private var WAIT_FOR_MENU_DATA = 3;
-	private var WAIT_FOR_SELECT = 4;
-	private var DIALOG = 5;
+  	private static var READY = 0;
+	private static var WAIT_FOR_OPTION_DATA = 1;
+	private static var WAIT_FOR_SLIDER_DATA = 2;
+	private static var WAIT_FOR_MENU_DATA = 3;
+	private static var WAIT_FOR_SELECT = 4;
+	private static var DIALOG = 5;
+	
+	private static var FOCUS_MODLIST = 0;
+	private static var FOCUS_OPTIONS = 1;
 	
 	
   /* PRIVATE VARIABLES */
@@ -49,7 +52,7 @@ class ConfigPanel extends MovieClip
 	private var _optionChangeDialog: MovieClip;
 	
 	private var _state: Number;
-	private var _bOptionsFocused: Boolean = false;
+	private var _focus: Number;
 	
 	private var _optionFlagsBuffer: Array;
 	private var _optionTextBuffer: Array;
@@ -71,12 +74,9 @@ class ConfigPanel extends MovieClip
 	private var _bRemapMode = false;
 	private var _remapDelayID: Number;
 	
-	private var _selectControls: Array;
-	private var _cancelPCControls: Array;
-	private var _cancelGPControls: Array;
-	private var _exitPCControls: Array;
-	private var _exitGPControls: Array;
-	private var _xButtonControls: Array;
+	private var _acceptControls: Object;
+	private var _cancelControls: Object;
+	private var _defaultControls: Object;
 	
 	
   /* STAGE ELEMENTS */
@@ -113,13 +113,6 @@ class ConfigPanel extends MovieClip
 		_menuDialogOptions = [];
 
 		contentHolder.infoPanel.textField.verticalAutoSize = "top";
-		
-		_selectControls = [{name: "Activate", context: skseDefines.kContext_Gameplay}];
-		_cancelPCControls = [{keyCode: 15}];
-		_cancelGPControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
-		_exitPCControls = [{keyCode: 1}];
-		_exitGPControls = [{name: "Cancel", context: skseDefines.kContext_MenuMode}];
-		_xButtonControls = [{name: "XButton", context: skseDefines.kContext_ItemMenu}];
 	}
 	
 	// @override MovieClip
@@ -132,7 +125,11 @@ class ConfigPanel extends MovieClip
 		_optionsList.listEnumeration = new BasicEnumeration(_optionsList.entryList);
 		
 		_modList.addEventListener("itemPress", this, "onModListPress");
+		_modList.addEventListener("selectionChange", this, "onModListChange");
+		
 		_subList.addEventListener("itemPress", this, "onSubListPress");
+		_subList.addEventListener("selectionChange", this, "onSubListChange");
+		
 		_optionsList.addEventListener("itemPress", this, "onOptionPress");
 		_optionsList.addEventListener("selectionChange", this, "onOptionChange");
 		
@@ -142,54 +139,6 @@ class ConfigPanel extends MovieClip
 		_modListPanel.addEventListener("subListExit", this, "onSubListExit");
 
 		_optionsList._visible = false;
-	}
-	
-	public function initExtensions(): Void
-	{
-		bottomBar.Lock("B");
-		_bottomBarStartY = bottomBar._y;
-		
-		showWelcomeScreen();
-	}
-	
-	function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
-	{
-		_platform = a_platform;
-		
-		_buttonPanelL.setPlatform(a_platform, a_bPS3Switch);
-		_buttonPanelR.setPlatform(a_platform, a_bPS3Switch);
-
-		_buttonPanelR.isReversed = true;
-
-		_buttonPanelL.clearButtons();
-		_buttonPanelL.addButton({text: "$Select", controls: _selectControls});
-		_buttonPanelL.addButton({text: "$Default", controls: _xButtonControls});
-		_buttonPanelL.positionButtons();
-
-		_buttonPanelR.clearButtons();
-		_buttonPanelR.addButton({text: "$Exit", controls: _exitPCControls});
-		_buttonPanelR.addButton({text: "$Back", controls: _cancelPCControls});
-		_buttonPanelR.positionButtons();
-	}
-	
-	public function onModListEnter(event: Object): Void
-	{
-		showWelcomeScreen();
-	}
-	
-	public function onModListExit(event: Object): Void
-	{
-	}
-	
-	public function onSubListEnter(event: Object): Void
-	{
-	}
-	
-	public function onSubListExit(event: Object): Void
-	{
-		_optionsList.clearList();
-		_optionsList.InvalidateData();
-		unloadCustomContent();
 	}
 	
 	
@@ -206,6 +155,8 @@ class ConfigPanel extends MovieClip
 	public function setModNames(/* names */): Void
 	{
 		_modList.clearList();
+		_modList.listState.savedIndex = null;
+		
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")
 				_modList.entryList.push({modIndex: i, text: arguments[i], align: "right", enabled: true});
@@ -215,10 +166,13 @@ class ConfigPanel extends MovieClip
 	public function setPageNames(/* names */): Void
 	{
 		_subList.clearList();
+		_subList.listState.savedIndex = null;
+		
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")
 				_subList.entryList.push({text: arguments[i], align: "right", enabled: true});
 		_subList.InvalidateData();
+
 	}
 	
 	public function setCustomContentParams(a_x: Number, a_y: Number): Void
@@ -362,6 +316,8 @@ class ConfigPanel extends MovieClip
 	public function flushOptionBuffers(a_optionCount: Number): Void
 	{
 		_optionsList.clearList();
+		_optionsList.listState.savedIndex = null;
+		
 		for (var i=0; i<a_optionCount; i++) {
 			// Both option type and flags are passed in the flags buffer
 			var optionType = _optionFlagsBuffer[i] & 0xFF;
@@ -393,8 +349,6 @@ class ConfigPanel extends MovieClip
 		
 		_infoText = "";
 		applyInfoText();
-		
-		setOptionListFocus(_optionsList._visible && _optionsList.entryList.length > 0);
 	}
 	
 	// Direct access to option data
@@ -419,13 +373,39 @@ class ConfigPanel extends MovieClip
 	
 	
   /* PUBLIC FUNCTIONS */
+  
+	public function initExtensions(): Void
+	{
+		bottomBar.Lock("B");
+		_bottomBarStartY = bottomBar._y;
+		
+		showWelcomeScreen();
+	}
 	
+	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{
+		_platform = a_platform;
+		
+		if (a_platform == 0) {
+			_acceptControls = InputDefines.Enter;
+			_cancelControls = InputDefines.Escape;
+		} else {
+			_acceptControls = InputDefines.Accept;
+			_cancelControls = InputDefines.Cancel;
+		}
+		
+		_buttonPanelL.setPlatform(a_platform, a_bPS3Switch);
+		_buttonPanelR.setPlatform(a_platform, a_bPS3Switch);
+		
+		updateModListButtons(false);
+	}
+
 	public function startPage(): Void
 	{
 		GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		_parent.gotoAndPlay("fadeIn");
 		
-		setOptionListFocus(false);
+		changeFocus(FOCUS_MODLIST);
 		showWelcomeScreen();
 	}
 	
@@ -435,60 +415,127 @@ class ConfigPanel extends MovieClip
 		_parent.gotoAndPlay("fadeOut");
 	}
 	
-	public function onModListPress(a_event: Object): Void
+	// @GFx
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		if (_bRemapMode)
+			return true;
+		
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (_focus == FOCUS_OPTIONS) {
+				var valid = _optionsList.selectedIndex % 2 == 0 && _subList.entryList.length > 0 && _subList._visible;
+				if (valid && details.navEquivalent == NavigationCode.LEFT) {
+					changeFocus(FOCUS_MODLIST);
+					_optionsList.listState.savedIndex = _optionsList.selectedIndex;
+					_optionsList.selectedIndex = -1;
+					
+					var restored = _subList.listState.savedIndex;
+					_subList.selectedIndex = restored ? restored : _subList.listState.activeEntry.itemIndex;
+					return true;
+				}
+			} else if (_focus == FOCUS_MODLIST) {
+				var valid = _optionsList.entryList.length > 0 && _optionsList._visible;
+				if (valid && details.navEquivalent == NavigationCode.RIGHT) {
+					changeFocus(FOCUS_OPTIONS);
+					_subList.listState.savedIndex = _subList.selectedIndex;
+					_subList.selectedIndex = -1;
+					
+					var restored = _optionsList.listState.savedIndex;
+					_optionsList.selectedIndex = restored ? restored : 0;
+					return true;
+				}
+			}
+		}
+		
+		var nextClip = pathToFocus.shift();
+		if (nextClip && nextClip.handleInput(details, pathToFocus))
+			return true;
+	
+		if (GlobalFunc.IsKeyPressed(details, false)) {
+			if (details.navEquivalent == NavigationCode.TAB) {
+				_parentMenu.ConfigPanelClose();
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+  
+	private function onModListEnter(event: Object): Void
+	{
+		showWelcomeScreen();
+	}
+	
+	private function onModListExit(event: Object): Void
+	{
+	}
+	
+	private function onSubListEnter(event: Object): Void
+	{
+	}
+	
+	private function onSubListExit(event: Object): Void
+	{
+		_optionsList.clearList();
+		_optionsList.InvalidateData();
+		unloadCustomContent();
+	}
+	
+	private function onModListPress(a_event: Object): Void
 	{
 		selectMod(a_event.entry);
 	}
 	
-	public function onSubListPress(a_event: Object): Void
+	private function onModListChange(a_event: Object): Void
+	{
+		if (a_event.index != -1)
+			changeFocus(FOCUS_MODLIST);
+			
+		updateModListButtons(false);
+	}
+	
+	private function onSubListPress(a_event: Object): Void
 	{
 		selectPage(a_event.entry);
 	}
 	
-	public function onOptionPress(a_event: Object): Void
+	private function onSubListChange(a_event: Object): Void
+	{
+		if (a_event.index != -1)
+			changeFocus(FOCUS_MODLIST);
+			
+		updateModListButtons(true);
+	}
+	
+	private function onOptionPress(a_event: Object): Void
 	{
 		selectOption(a_event.index);
 	}
 	
-	public function onOptionChange(a_event: Object): Void
+	private function onOptionChange(a_event: Object): Void
 	{
+		if (a_event.index != -1)
+			changeFocus(FOCUS_OPTIONS);
+		
 		initHighlightOption(a_event.index);
+		updateOptionButtons();
 	}
 	
-	public function onOptionChangeDialogClosing(event: Object): Void
+	private function onOptionChangeDialogClosing(event: Object): Void
 	{
 		dimIn();
 	}
 	
 	
-	public function onOptionChangeDialogClosed(event: Object): Void
+	private function onOptionChangeDialogClosed(event: Object): Void
 	{
 //		categoryList.disableSelection = categoryList.disableInput = false;
 //		itemList.disableSelection = itemList.disableInput = false;
 //		searchWidget.isDisabled = false;
 	}
-	
-	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{
-		var bHandledInput = false;
-		
-		if (pathToFocus != undefined && pathToFocus.length > 0)
-			bHandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
-			
-		if (_bRemapMode)
-			return true;
-	
-		if (!bHandledInput && GlobalFunc.IsKeyPressed(details, false)) {
-			if (details.navEquivalent == NavigationCode.TAB) {
-				_parentMenu.ConfigPanelClose(); // Close the config panel and return to System Page
-				bHandledInput = true;
-			}
-		}
-		return bHandledInput;
-	}
-	
-	
-  /* PRIVATE FUNCTIONS */
 	
 	private function selectMod(a_entry: Object): Void
 	{		
@@ -522,8 +569,6 @@ class ConfigPanel extends MovieClip
 		
 		_state = WAIT_FOR_OPTION_DATA;
 		skse.SendModEvent("SKICP_pageSelected", a_entry.text);
-		
-		FocusHandler.instance.setFocus(_optionsList, 0);
 	}
 	
 	private function selectOption(a_index: Number): Void
@@ -567,26 +612,36 @@ class ConfigPanel extends MovieClip
 				
 			case OptionsListEntry.OPTION_KEYMAP:
 				if (!_bRemapMode) {
-					_optionsList.disableSelection = true;
-					_optionsList.disableInput = true;
-					_bRemapMode = true;
 					_currentRemapOption = a_index;
-					skse.StartRemapMode(this);
+					initRemapMode();
 				}
 				break;
 		}
 	}
 	
+	private function initRemapMode(): Void
+	{
+		dimOut();
+		var dialog = DialogManager.open(this, "KeymapDialog", {_x: 719, _y: 240});
+		dialog.background._width = dialog.textField.textWidth + 100;
+		
+		_bRemapMode = true;
+		skse.StartRemapMode(this);
+	}
+	
 	// @SKSE
-	public function EndRemapMode(a_keyCode: Number): Void
+	private function EndRemapMode(a_keyCode: Number): Void
 	{
 		selectedKeyCode = a_keyCode;
 		_state = WAIT_FOR_SELECT;
 		skse.SendModEvent("SKICP_keymapChanged", null, _currentRemapOption);
 		_remapDelayID = setInterval(this, "clearRemap", 200);
+		
+		DialogManager.close();
+		dimIn();
 	}
 	
-	public function clearRemap(): Void
+	private function clearRemap(): Void
 	{
 		clearInterval(_remapDelayID);
 		delete _remapDelayID;
@@ -645,20 +700,26 @@ class ConfigPanel extends MovieClip
 		}
 	}
 	
-	private function setOptionListFocus(a_bFocused: Boolean): Void
+	private function changeFocus(a_focus: Number): Void
 	{
-		_bOptionsFocused = a_bFocused;
-		FocusHandler.instance.setFocus(a_bFocused ? _optionsList : _modListPanel, 0);
+		_focus = a_focus;
+		FocusHandler.instance.setFocus(a_focus == FOCUS_OPTIONS ? _optionsList : _modListPanel, 0);
 	}
 	
 	private function dimOut(): Void
 	{
+		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+		_optionsList.disableSelection = true;
+		_optionsList.disableInput = true;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
 	}
 	
 	private function dimIn(): Void
 	{
+		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
+		_optionsList.disableSelection = false;
+		_optionsList.disableInput = false;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
 	}
@@ -670,5 +731,61 @@ class ConfigPanel extends MovieClip
 
 		setTitleText("MOD CONFIGURATION");
 		setInfoText("");
+
+	}
+	
+	private function updateModListButtons(a_bSubList: Boolean): Void
+	{
+		var entry = _modListPanel.selectedEntry;
+		
+		_buttonPanelL.clearButtons();
+		if (entry != null)
+			_buttonPanelL.addButton({text: "$Select", controls: _acceptControls});
+		_buttonPanelL.updateButtons(true);
+
+		_buttonPanelR.clearButtons();
+		_buttonPanelR.addButton({text: a_bSubList? "$Back" : "$Exit", controls: _cancelControls});
+		_buttonPanelR.updateButtons(true);
+	}
+	
+	private function updateOptionButtons(): Void
+	{
+		var entry = _optionsList.selectedEntry;
+		
+		_buttonPanelL.clearButtons();
+		
+		if (entry != null) {
+			var type = entry.optionType;
+			switch (type) {
+				case OptionsListEntry.OPTION_EMPTY:
+				case OptionsListEntry.OPTION_HEADER:
+					break;
+				case OptionsListEntry.OPTION_TOGGLE:
+					_buttonPanelL.addButton({text: "$Toggle", controls: _acceptControls});
+					break;
+				case OptionsListEntry.OPTION_TEXT:
+					_buttonPanelL.addButton({text: "$Select", controls: _acceptControls});
+					break;
+				case OptionsListEntry.OPTION_SLIDER:
+					_buttonPanelL.addButton({text: "$Open Slider", controls: _acceptControls});
+					break;
+				case OptionsListEntry.OPTION_MENU:
+					_buttonPanelL.addButton({text: "$Open Menu", controls: _acceptControls});
+					break;
+				case OptionsListEntry.OPTION_COLOR:
+					_buttonPanelL.addButton({text: "$Pick Color", controls: _acceptControls});
+					break;
+				case OptionsListEntry.OPTION_KEYMAP:
+					_buttonPanelL.addButton({text: "$Remap", controls: _acceptControls});
+					break;
+			}			
+			_buttonPanelL.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+		}
+		
+		_buttonPanelL.updateButtons(true);
+
+		_buttonPanelR.clearButtons();
+		_buttonPanelR.addButton({text: "$Back", controls: _cancelControls});
+		_buttonPanelR.updateButtons(true);
 	}
 }
