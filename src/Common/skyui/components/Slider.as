@@ -1,4 +1,5 @@
 import gfx.ui.InputDetails;
+import gfx.ui.NavigationCode;
 import gfx.controls.Button;
 import gfx.utils.Constraints;
 
@@ -16,21 +17,21 @@ class skyui.components.Slider extends gfx.controls.Slider
 	{
 		if (super.handleInput(details, pathToFocus))
 			return true;
-
+		skyui.util.Debug.log("handleInput in Slider...", details.navEquivalent)
 		var keyPress: Boolean = (details.value == "keyDown" || details.value == "keyHold");
 
 		switch (details.navEquivalent) {
 			case NavigationCode.PAGE_DOWN:
-			case NavigationCode.L1:
+			case NavigationCode.GAMEPAD_L1:
 				if (keyPress) {
-					value += maximum / 4;
+					value -= maximum / 4;
 					dispatchEventAndSound({type:"change"});
 				}
 				break;
 			case NavigationCode.PAGE_UP:
-			case NavigationCode.R1:
+			case NavigationCode.GAMEPAD_R1:
 				if (keyPress) {
-					value -= maximum / 4;
+					value += maximum / 4;
 					dispatchEventAndSound({type:"change"});
 				}
 				break;
