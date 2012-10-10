@@ -94,11 +94,9 @@ class skyui.util.ConfigManager
 			delete _timeoutID;
 			
 			_loadPhase = LOAD_PAPYRUS;
-			skyui.util.Debug.log("Dispatching configLoad");
 			_eventDummy.dispatchEvent({type: "configLoad", config: _config});			
 		} else {
 			// Timeout
-			skyui.util.Debug.log("Dispatching configUpdate");
 			_eventDummy.dispatchEvent({type: "configUpdate", config: _config});
 		}
 	}
@@ -321,7 +319,6 @@ class skyui.util.ConfigManager
 
 		if (_loadPhase != LOAD_PAPYRUS) {
 			_loadPhase = LOAD_PAPYRUS;
-			skyui.util.Debug.log("Dispatching configLoad (delayed)");
 			_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 		}
 	}

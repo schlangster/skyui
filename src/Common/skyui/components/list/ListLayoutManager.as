@@ -34,10 +34,8 @@ class skyui.components.list.ListLayoutManager
 		// Otherwise create
 		for (var t in a_sectionData.layouts) {
 			var layoutData = a_sectionData.layouts[t];
-			if (layoutData.name == a_name) {
-				skyui.util.Debug.log("Creating layout: " + layoutData + " " + viewData);
+			if (layoutData.name == a_name)
 				return new ListLayout(layoutData, viewData, columnData, defaultsData);
-			}
 		}
 				
 		return null;
