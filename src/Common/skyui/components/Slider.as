@@ -17,9 +17,9 @@ class skyui.components.Slider extends gfx.controls.Slider
 	{
 		if (super.handleInput(details, pathToFocus))
 			return true;
-		skyui.util.Debug.log("handleInput in Slider...", details.navEquivalent)
+		
 		var keyPress: Boolean = (details.value == "keyDown" || details.value == "keyHold");
-
+		
 		switch (details.navEquivalent) {
 			case NavigationCode.PAGE_DOWN:
 			case NavigationCode.GAMEPAD_L1:
