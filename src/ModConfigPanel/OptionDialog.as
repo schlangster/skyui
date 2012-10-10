@@ -37,7 +37,7 @@ class OptionDialog extends BasicDialog
 	}
 	
 	// @override MovieClip
-	public function onLoad(): Void
+	private function onLoad(): Void
 	{
 		leftButtonPanel.setPlatform(platform, false);
 		rightButtonPanel.setPlatform(platform, false);
@@ -52,18 +52,6 @@ class OptionDialog extends BasicDialog
 	
 	
   /* PUBLIC FUNCTIONS */
-	
-	// @override BasicDialog
-	public function onDialogOpening(): Void
-	{
-		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-	}
-	
-	// @override BasicDialog
-	public function onDialogClosing(): Void
-	{
-		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-	}
 
 	// @abstract
 	public function initButtons(): Void {}

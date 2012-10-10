@@ -61,6 +61,20 @@ class ModListPanel extends MovieClip
 		EventDispatcher.initialize(this);
 	}
 	
+	// @override MovieClip
+	private function onLoad(): Void
+	{
+		// Init state
+		hideDecorTitle(true);
+		modListFader.gotoAndStop("show");
+		subListFader.gotoAndStop("hide");
+		sublistIndicator._visible = false;
+		
+		_state = LIST_ACTIVE;
+		
+		_subList.addEventListener("itemPress", this, "onSubListPress");
+	}
+	
 	
   /* PROPERTIES */
 	
@@ -86,19 +100,6 @@ class ModListPanel extends MovieClip
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
-	// @override MovieClip
-	public function onLoad(): Void
-	{
-		// Init state
-		hideDecorTitle(true);
-		modListFader.gotoAndStop("show");
-		subListFader.gotoAndStop("hide");
-		sublistIndicator._visible = false;
-		
-		_state = LIST_ACTIVE;
-		
-		_subList.addEventListener("itemPress", this, "onSubListPress");
-	}
   
 	public function showList(): Void
 	{
@@ -113,6 +114,35 @@ class ModListPanel extends MovieClip
 		setState(TRANSITION_TO_SUBLIST);
 	}
 	
+	// @GFx
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		var nextClip = pathToFocus.shift();
+		if (nextClip && nextClip.handleInput(details, pathToFocus))
+			return true;
+		
+		if (_state == LIST_ACTIVE) {
+			if (_modList.handleInput(details, pathToFocus))
+				return true;
+		} else if (_state == SUBLIST_ACTIVE) {
+			
+			if (GlobalFunc.IsKeyPressed(details, false)) {
+				if (details.navEquivalent == NavigationCode.TAB) {
+					showList();
+					return true;
+				}
+			}
+			
+			if (_subList.handleInput(details, pathToFocus))
+				return true;
+		}
+		
+		return false;
+	}
+
+
+  /* PRIVATE FUNCTIONS */
+  
 	private function setState(a_state: Number): Void
 	{
 		switch (a_state) {
@@ -174,7 +204,7 @@ class ModListPanel extends MovieClip
 		_state = a_state;
 	}
 	
-	public function onAnimFinish(a_animID: Number): Void
+	private function onAnimFinish(a_animID: Number): Void
 	{
 		switch (a_animID) {
 			case ANIM_DECORTITLE_FADE_IN:
@@ -205,38 +235,9 @@ class ModListPanel extends MovieClip
 		}
 	}
 	
-	public function onSubListPress(a_event: Object): Void
+	private function onSubListPress(a_event: Object): Void
 	{
 	}
-	
-	// @GFx
-	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{
-		var nextClip = pathToFocus.shift();
-		if (nextClip && nextClip.handleInput(details, pathToFocus))
-			return true;
-		
-		if (_state == LIST_ACTIVE) {
-			if (_modList.handleInput(details, pathToFocus))
-				return true;
-		} else if (_state == SUBLIST_ACTIVE) {
-			
-			if (GlobalFunc.IsKeyPressed(details, false)) {
-				if (details.navEquivalent == NavigationCode.TAB) {
-					showList();
-					return true;
-				}
-			}
-			
-			if (_subList.handleInput(details, pathToFocus))
-				return true;
-		}
-		
-		return false;
-	}
-
-
-  /* PRIVATE FUNCTIONS */
 	
 	private function decorMotionFinishedFunc(): Void
 	{

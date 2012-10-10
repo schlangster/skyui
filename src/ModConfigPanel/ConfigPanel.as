@@ -415,80 +415,8 @@ class ConfigPanel extends MovieClip
 		_parent.gotoAndPlay("fadeOut");
 	}
 	
-	public function onModListEnter(event: Object): Void
-	{
-		showWelcomeScreen();
-	}
-	
-	public function onModListExit(event: Object): Void
-	{
-	}
-	
-	public function onSubListEnter(event: Object): Void
-	{
-	}
-	
-	public function onSubListExit(event: Object): Void
-	{
-		_optionsList.clearList();
-		_optionsList.InvalidateData();
-		unloadCustomContent();
-	}
-	
-	public function onModListPress(a_event: Object): Void
-	{
-		selectMod(a_event.entry);
-	}
-	
-	public function onModListChange(a_event: Object): Void
-	{
-		if (a_event.index != -1)
-			changeFocus(FOCUS_MODLIST);
-			
-		updateModListButtons(false);
-	}
-	
-	public function onSubListPress(a_event: Object): Void
-	{
-		selectPage(a_event.entry);
-	}
-	
-	public function onSubListChange(a_event: Object): Void
-	{
-		if (a_event.index != -1)
-			changeFocus(FOCUS_MODLIST);
-			
-		updateModListButtons(true);
-	}
-	
-	public function onOptionPress(a_event: Object): Void
-	{
-		selectOption(a_event.index);
-	}
-	
-	public function onOptionChange(a_event: Object): Void
-	{
-		if (a_event.index != -1)
-			changeFocus(FOCUS_OPTIONS);
-		
-		initHighlightOption(a_event.index);
-		updateOptionButtons();
-	}
-	
-	public function onOptionChangeDialogClosing(event: Object): Void
-	{
-		dimIn();
-	}
-	
-	
-	public function onOptionChangeDialogClosed(event: Object): Void
-	{
-//		categoryList.disableSelection = categoryList.disableInput = false;
-//		itemList.disableSelection = itemList.disableInput = false;
-//		searchWidget.isDisabled = false;
-	}
-	
-	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	// @GFx
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		if (_bRemapMode)
 			return true;
@@ -533,28 +461,81 @@ class ConfigPanel extends MovieClip
 		return false;
 	}
 	
-	// @SKSE
-	public function EndRemapMode(a_keyCode: Number): Void
-	{
-		selectedKeyCode = a_keyCode;
-		_state = WAIT_FOR_SELECT;
-		skse.SendModEvent("SKICP_keymapChanged", null, _currentRemapOption);
-		_remapDelayID = setInterval(this, "clearRemap", 200);
-	}
-	
-	public function clearRemap(): Void
-	{
-		clearInterval(_remapDelayID);
-		delete _remapDelayID;
-		
-		_optionsList.disableSelection = false;
-		_optionsList.disableInput = false;
-		_bRemapMode = false;
-		_currentRemapOption = -1;
-	}
-	
 	
   /* PRIVATE FUNCTIONS */
+  
+	private function onModListEnter(event: Object): Void
+	{
+		showWelcomeScreen();
+	}
+	
+	private function onModListExit(event: Object): Void
+	{
+	}
+	
+	private function onSubListEnter(event: Object): Void
+	{
+	}
+	
+	private function onSubListExit(event: Object): Void
+	{
+		_optionsList.clearList();
+		_optionsList.InvalidateData();
+		unloadCustomContent();
+	}
+	
+	private function onModListPress(a_event: Object): Void
+	{
+		selectMod(a_event.entry);
+	}
+	
+	private function onModListChange(a_event: Object): Void
+	{
+		if (a_event.index != -1)
+			changeFocus(FOCUS_MODLIST);
+			
+		updateModListButtons(false);
+	}
+	
+	private function onSubListPress(a_event: Object): Void
+	{
+		selectPage(a_event.entry);
+	}
+	
+	private function onSubListChange(a_event: Object): Void
+	{
+		if (a_event.index != -1)
+			changeFocus(FOCUS_MODLIST);
+			
+		updateModListButtons(true);
+	}
+	
+	private function onOptionPress(a_event: Object): Void
+	{
+		selectOption(a_event.index);
+	}
+	
+	private function onOptionChange(a_event: Object): Void
+	{
+		if (a_event.index != -1)
+			changeFocus(FOCUS_OPTIONS);
+		
+		initHighlightOption(a_event.index);
+		updateOptionButtons();
+	}
+	
+	private function onOptionChangeDialogClosing(event: Object): Void
+	{
+		dimIn();
+	}
+	
+	
+	private function onOptionChangeDialogClosed(event: Object): Void
+	{
+//		categoryList.disableSelection = categoryList.disableInput = false;
+//		itemList.disableSelection = itemList.disableInput = false;
+//		searchWidget.isDisabled = false;
+	}
 	
 	private function selectMod(a_entry: Object): Void
 	{		
@@ -631,14 +612,44 @@ class ConfigPanel extends MovieClip
 				
 			case OptionsListEntry.OPTION_KEYMAP:
 				if (!_bRemapMode) {
-					_optionsList.disableSelection = true;
-					_optionsList.disableInput = true;
-					_bRemapMode = true;
 					_currentRemapOption = a_index;
-					skse.StartRemapMode(this);
+					initRemapMode();
 				}
 				break;
 		}
+	}
+	
+	private function initRemapMode(): Void
+	{
+		dimOut();
+		var dialog = DialogManager.open(this, "KeymapDialog", {_x: 719, _y: 240});
+		dialog.background._width = dialog.textField.textWidth + 100;
+		
+		_bRemapMode = true;
+		skse.StartRemapMode(this);
+	}
+	
+	// @SKSE
+	private function EndRemapMode(a_keyCode: Number): Void
+	{
+		selectedKeyCode = a_keyCode;
+		_state = WAIT_FOR_SELECT;
+		skse.SendModEvent("SKICP_keymapChanged", null, _currentRemapOption);
+		_remapDelayID = setInterval(this, "clearRemap", 200);
+		
+		DialogManager.close();
+		dimIn();
+	}
+	
+	private function clearRemap(): Void
+	{
+		clearInterval(_remapDelayID);
+		delete _remapDelayID;
+		
+		_optionsList.disableSelection = false;
+		_optionsList.disableInput = false;
+		_bRemapMode = false;
+		_currentRemapOption = -1;
 	}
 	
 	private function initHighlightOption(a_index: Number): Void
@@ -697,12 +708,18 @@ class ConfigPanel extends MovieClip
 	
 	private function dimOut(): Void
 	{
+		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+		_optionsList.disableSelection = true;
+		_optionsList.disableInput = true;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
 	}
 	
 	private function dimIn(): Void
 	{
+		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
+		_optionsList.disableSelection = false;
+		_optionsList.disableInput = false;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
 	}
@@ -745,11 +762,9 @@ class ConfigPanel extends MovieClip
 					break;
 				case OptionsListEntry.OPTION_TOGGLE:
 					_buttonPanelL.addButton({text: "$Toggle", controls: _acceptControls});
-					_buttonPanelL.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
 					break;
 				case OptionsListEntry.OPTION_TEXT:
 					_buttonPanelL.addButton({text: "$Select", controls: _acceptControls});
-					_buttonPanelL.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
 					break;
 				case OptionsListEntry.OPTION_SLIDER:
 					_buttonPanelL.addButton({text: "$Open Slider", controls: _acceptControls});
@@ -763,7 +778,8 @@ class ConfigPanel extends MovieClip
 				case OptionsListEntry.OPTION_KEYMAP:
 					_buttonPanelL.addButton({text: "$Remap", controls: _acceptControls});
 					break;
-			}
+			}			
+			_buttonPanelL.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
 		}
 		
 		_buttonPanelL.updateButtons(true);
