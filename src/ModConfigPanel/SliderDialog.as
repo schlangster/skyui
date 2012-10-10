@@ -24,7 +24,7 @@ class SliderDialog extends OptionDialog
 
 
   /* PUBLIC VARIABLES */
-	public var focusTarget: MovieClip;
+	public var focusTarget;
 
 	
   /* PROPERTIES */
@@ -126,7 +126,7 @@ class SliderDialog extends OptionDialog
 				return true;
 			}
 		}
-		
-		return false;
+
+		return true; // Don't want to process any further input
 	}
 }

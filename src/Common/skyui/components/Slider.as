@@ -1,6 +1,5 @@
 import gfx.ui.InputDetails;
 import gfx.controls.Button;
-
 import gfx.utils.Constraints;
 
 class skyui.components.Slider extends gfx.controls.Slider
@@ -36,8 +35,9 @@ class skyui.components.Slider extends gfx.controls.Slider
 				}
 				break;
 			default:
-				return false;
+				return false;	
 		}
+
 		return true; // Only reaches here when the key press is handled.
 	}
 
@@ -48,6 +48,8 @@ class skyui.components.Slider extends gfx.controls.Slider
 		rightArrow.addEventListener("click", this, "scrollRight");
 		leftArrow.autoRepeat = true;
 		rightArrow.autoRepeat = true;
+		leftArrow.focusTarget = this;
+		rightArrow.focusTarget = this;
 
 		var r:Number = _rotation;
 		_rotation = 0;
@@ -57,8 +59,6 @@ class skyui.components.Slider extends gfx.controls.Slider
 
 		offsetLeft += leftArrow._width + thumb._width/2;
 		offsetRight += rightArrow._width + thumb._width/2;
-
-		height = 2000;
 	}
 	
 	private function scrollLeft(event: Object): Void
