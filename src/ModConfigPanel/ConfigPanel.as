@@ -423,7 +423,7 @@ class ConfigPanel extends MovieClip
 		
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (_focus == FOCUS_OPTIONS) {
-				var valid = _optionsList.selectedIndex % 2 == 0 && _subList.entryList.length > 0 && _subList._visible;
+				var valid = !_subList.disableInput && _optionsList.selectedIndex % 2 == 0 && _subList.entryList.length > 0 && _subList._visible;
 				if (valid && details.navEquivalent == NavigationCode.LEFT) {
 					changeFocus(FOCUS_MODLIST);
 					_optionsList.listState.savedIndex = _optionsList.selectedIndex;
@@ -434,7 +434,7 @@ class ConfigPanel extends MovieClip
 					return true;
 				}
 			} else if (_focus == FOCUS_MODLIST) {
-				var valid = _optionsList.entryList.length > 0 && _optionsList._visible;
+				var valid = !_optionsList.disableInput && _optionsList.entryList.length > 0 && _optionsList._visible;
 				if (valid && details.navEquivalent == NavigationCode.RIGHT) {
 					changeFocus(FOCUS_OPTIONS);
 					_subList.listState.savedIndex = _subList.selectedIndex;
@@ -709,8 +709,8 @@ class ConfigPanel extends MovieClip
 	private function dimOut(): Void
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-		_optionsList.disableSelection = true;
-		_optionsList.disableInput = true;
+		_optionsList.disableSelection = _subList.disableSelection = true;
+		_optionsList.disableInput = _subList.disableInput = true;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
 	}
@@ -718,8 +718,8 @@ class ConfigPanel extends MovieClip
 	private function dimIn(): Void
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-		_optionsList.disableSelection = false;
-		_optionsList.disableInput = false;
+		_optionsList.disableSelection = _subList.disableSelection = false;
+		_optionsList.disableInput = _subList.disableInput = false;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
 	}

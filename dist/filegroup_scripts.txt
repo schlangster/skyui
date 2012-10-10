@@ -1,3 +1,4 @@
+Scripts\ExampleMenu1.pex
 Scripts\SKI_ActiveEffectsWidget.pex
 Scripts\SKI_ConfigBase.pex
 Scripts\SKI_ConfigManager.pex
@@ -8,6 +9,7 @@ Scripts\SKI_SettingsManager.pex
 Scripts\SKI_StatusWidget.pex
 Scripts\SKI_WidgetBase.pex
 Scripts\SKI_WidgetManager.pex
+Scripts\Source\ExampleMenu1.psc
 Scripts\Source\SKI_ActiveEffectsWidget.psc
 Scripts\Source\SKI_ConfigBase.psc
 Scripts\Source\SKI_ConfigManager.psc

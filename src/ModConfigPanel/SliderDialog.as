@@ -22,6 +22,10 @@ class SliderDialog extends OptionDialog
   
 	public var sliderPanel: MovieClip;
 
+
+  /* PUBLIC VARIABLES */
+	public var focusTarget: MovieClip;
+
 	
   /* PROPERTIES */
 	
@@ -31,17 +35,18 @@ class SliderDialog extends OptionDialog
 	public var sliderMin: Number;
 	public var sliderInterval: Number;
 	public var sliderFormatString: String;
-	
+
 	
   /* INITIALIZATION */
   
 	public function SliderDialog()
 	{
 		super();
+		focusTarget = sliderPanel.slider;
 	}
 	
 	
-  /* PUBLIC FUNCTIONS */
+  /* PRIVATE FUNCTIONS */
   
 	// @override OptionDialog
 	private function initButtons(): Void
@@ -64,14 +69,33 @@ class SliderDialog extends OptionDialog
 		_closeButton.addEventListener("press", this, "onExitPress");
 		rightButtonPanel.updateButtons();
 	}
-  
+
+	private function onValueChange(event: Object): Void
+	{
+		sliderValue = event.target.value;
+		updateValueText();
+	}
+
+	private function updateValueText(): Void
+	{
+		var t = sliderFormatString	? GlobalFunctions.formatString(sliderFormatString, sliderValue)
+									: t = Math.round(sliderValue * 100) / 100;
+		sliderPanel.valueTextField.SetText(t);
+	}
+
+   /* PUBLIC FUNCTIONS */
+
 	// @override OptionDialog
 	public function initContent(): Void
-	{		
-		var d = sliderInterval;
-		sliderPanel.slider.setScrollProperties(((sliderMax - sliderMin) / d) / 10, sliderMin / d, sliderMax / d);
-		sliderPanel.slider.addEventListener("scroll", this, "onScroll");
-		sliderPanel.slider.position = sliderValue / d;
+	{
+		sliderPanel.slider.maximum = sliderMax;
+		sliderPanel.slider.minimum = sliderMin;
+		sliderPanel.slider.liveDragging = true;
+		sliderPanel.slider.snapInterval = sliderInterval;
+		sliderPanel.slider.snapping = true;
+		sliderPanel.slider.value = sliderValue;
+		updateValueText();	
+		sliderPanel.slider.addEventListener("change", this, "onValueChange");
 	}
 	
 	public function onExitPress(): Void
@@ -82,7 +106,8 @@ class SliderDialog extends OptionDialog
 	
 	public function onDefaultPress(): Void
 	{
-		sliderPanel.slider.position = sliderDefault / sliderInterval;
+		sliderValue = sliderPanel.slider.value = sliderDefault;
+		updateValueText();
 	}
 	
 	// @GFx
@@ -96,17 +121,12 @@ class SliderDialog extends OptionDialog
 			if (details.navEquivalent == NavigationCode.TAB) {
 				onExitPress();
 				return true;
+			} else if (details.control == "Ready Weapon") {
+				onDefaultPress();
+				return true;
 			}
 		}
 		
 		return false;
-	}
-	
-	public function onScroll(event: Object): Void
-	{
-		sliderValue = event.position * sliderInterval;
-		var t = sliderFormatString	? GlobalFunctions.formatString(sliderFormatString, sliderValue)
-									: t = Math.round(sliderValue * 100) / 100;
-		sliderPanel.valueTextField.SetText(t);
 	}
 }
