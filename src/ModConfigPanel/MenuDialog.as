@@ -18,6 +18,10 @@ class MenuDialog extends OptionDialog
 	
 	public var menuList: ScrollingList;
 
+
+  /* PUBLIC VARIABLES */
+	public var focusTarget;
+
 	
   /* PROPERTIES */
 	
@@ -31,6 +35,7 @@ class MenuDialog extends OptionDialog
 	public function MenuDialog()
 	{
 		super();
+		focusTarget = menuList;
 	}
 	
 	
@@ -68,13 +73,13 @@ class MenuDialog extends OptionDialog
 		for (var i=0; i<menuOptions.length; i++) {
 			var entry = {text: menuOptions[i], align: "center", enabled: true, state: "normal"};
 			menuList.entryList.push(entry);
-			if (i == menuStartIndex)
-				menuList.listState.activeEntry = entry
 		}
-		
+
+		var e = menuList.entryList[menuStartIndex];
+		menuList.listState.activeEntry = e;
+		menuList.selectedIndex = menuStartIndex;
+
 		menuList.InvalidateData();
-		
-		FocusHandler.instance.setFocus(menuList, 0);
 	}
 	
 	public function onDefaultPress(): Void
