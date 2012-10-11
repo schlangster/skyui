@@ -22,8 +22,10 @@ class ConfigPanel extends MovieClip
 	private static var WAIT_FOR_OPTION_DATA = 1;
 	private static var WAIT_FOR_SLIDER_DATA = 2;
 	private static var WAIT_FOR_MENU_DATA = 3;
-	private static var WAIT_FOR_SELECT = 4;
-	private static var DIALOG = 5;
+	private static var WAIT_FOR_COLOR_DATA = 4;
+	private static var WAIT_FOR_SELECT = 5;
+	private static var WAIT_FOR_DEFAULT = 6;
+	private static var DIALOG = 7;
 	
 	private static var FOCUS_MODLIST = 0;
 	private static var FOCUS_OPTIONS = 1;
@@ -71,12 +73,14 @@ class ConfigPanel extends MovieClip
 	private var	_sliderDialogFormatString: String = "";
 	
 	private var _currentRemapOption: Number = -1;
-	private var _bRemapMode = false;
+	private var _bRemapMode: Boolean = false;
 	private var _remapDelayID: Number;
 	
 	private var _acceptControls: Object;
 	private var _cancelControls: Object;
 	private var _defaultControls: Object;
+	
+	private var _bDefaultEnabled: Boolean = false;
 	
 	
   /* STAGE ELEMENTS */
@@ -90,7 +94,7 @@ class ConfigPanel extends MovieClip
 	
   /* INITIALIATZION */
 	
-	function ConfigPanel()
+	public function ConfigPanel()
 	{
 		// A bit hackish but w/e
 		_parentMenu = _root.QuestJournalFader.Menu_mc;
@@ -423,7 +427,7 @@ class ConfigPanel extends MovieClip
 		
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (_focus == FOCUS_OPTIONS) {
-				var valid = !_subList.disableInput && _optionsList.selectedIndex % 2 == 0 && _subList.entryList.length > 0 && _subList._visible;
+				var valid = !_optionsList.disableInput && _optionsList.selectedIndex % 2 == 0 && _subList.entryList.length > 0 && _subList._visible;
 				if (valid && details.navEquivalent == NavigationCode.LEFT) {
 					changeFocus(FOCUS_MODLIST);
 					_optionsList.listState.savedIndex = _optionsList.selectedIndex;
@@ -434,7 +438,7 @@ class ConfigPanel extends MovieClip
 					return true;
 				}
 			} else if (_focus == FOCUS_MODLIST) {
-				var valid = !_optionsList.disableInput && _optionsList.entryList.length > 0 && _optionsList._visible;
+				var valid = !_subList.disableInput && _optionsList.entryList.length > 0 && _optionsList._visible;
 				if (valid && details.navEquivalent == NavigationCode.RIGHT) {
 					changeFocus(FOCUS_OPTIONS);
 					_subList.listState.savedIndex = _subList.selectedIndex;
@@ -453,16 +457,36 @@ class ConfigPanel extends MovieClip
 	
 		if (GlobalFunc.IsKeyPressed(details, false)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
-				_parentMenu.ConfigPanelClose();
+				
+				if (_modListPanel.isSublistActive()) {
+					changeFocus(FOCUS_MODLIST);
+					_modListPanel.showList();
+				} else {
+					_parentMenu.ConfigPanelClose();
+				}
+				return true;
+			} else if (details.control == InputDefines.ReadyWeapon.name) {
+				requestDefaults();
 				return true;
 			}
 		}
 		
-		return false;
+		// Don't forward to higher level
+		return true;
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+	private function requestDefaults(): Void
+	{
+		var index = _optionsList.selectedIndex;
+		if (index == -1)
+			return;
+			
+		_state = WAIT_FOR_DEFAULT;
+		skse.SendModEvent("SKICP_optionDefaulted", null, index);
+	}
   
 	private function onModListEnter(event: Object): Void
 	{
@@ -592,21 +616,21 @@ class ConfigPanel extends MovieClip
 				break;
 				
 			case OptionsListEntry.OPTION_SLIDER:
-				_state = WAIT_FOR_SLIDER_DATA;
 				_dialogTitleText = e.text;
 				_sliderDialogFormatString = e.strValue;
+				_state = WAIT_FOR_SLIDER_DATA;
 				skse.SendModEvent("SKICP_sliderSelected", null, a_index);
 				break;
 				
 			case OptionsListEntry.OPTION_MENU:
-				_state = WAIT_FOR_MENU_DATA;
 				_dialogTitleText = e.text;
+				_state = WAIT_FOR_MENU_DATA;
 				skse.SendModEvent("SKICP_menuSelected", null, a_index);
 				break;
 
 			case OptionsListEntry.OPTION_COLOR:
-				_state = WAIT_FOR_MENU_DATA;
 				_dialogTitleText = e.text;
+				_state = WAIT_FOR_COLOR_DATA;
 				skse.SendModEvent("SKICP_colorSelected", null, a_index);
 				break;
 				
@@ -780,6 +804,9 @@ class ConfigPanel extends MovieClip
 					break;
 			}			
 			_buttonPanelL.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+			_bDefaultEnabled = true;
+		} else {
+			_bDefaultEnabled = false;
 		}
 		
 		_buttonPanelL.updateButtons(true);

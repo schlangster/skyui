@@ -58,8 +58,6 @@ class MagicMenu extends ItemMenu
 	{
 		super.setConfig(a_config);
 		
-		skyui.util.Debug.log("Setting config");
-		
 		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new MagicDataExtender());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "magicProperties", "magicIcons", "magicCompoundProperties"));

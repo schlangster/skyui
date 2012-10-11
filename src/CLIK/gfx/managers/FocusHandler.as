@@ -35,92 +35,71 @@ dynamic class gfx.managers.FocusHandler
 		this.inputDelegate.addEventListener("input", this, "handleInput");
 	}
 
-	function getFocus(focusIdx)
+	function getFocus(focusIdx: Number): MovieClip
 	{
-		return this.currentFocusLookup[focusIdx];
+		return currentFocusLookup[focusIdx];
 	}
 
-	function setFocus(focus, focusIdx)
+	function setFocus(focus: MovieClip, focusIdx: Number): Void
 	{
-		if (!this.inited) 
-		{
-			this.initialize();
-		}
-		while (focus.focusTarget != null) 
-		{
+		if (!inited) { initialize(); }
+
+		while (focus.focusTarget != null) {
 			focus = focus.focusTarget;
 		}
-		var __reg8 = this.actualFocusLookup[focusIdx];
-		var __reg5 = this.currentFocusLookup[focusIdx];
-		if (__reg5 != focus) 
-		{
-			__reg5.focused = __reg5.focused & ~(1 << focusIdx);
-			__reg5 = focus;
-			this.currentFocusLookup[focusIdx] = focus;
-			__reg5.focused = __reg5.focused | 1 << focusIdx;
+
+		var actualFocus: MovieClip = this.actualFocusLookup[focusIdx];
+		var currentFocus: MovieClip = this.currentFocusLookup[focusIdx];
+		if (currentFocus != focus) {
+			currentFocus.focused = currentFocus.focused & ~(1 << focusIdx);
+			currentFocus = focus;
+			currentFocusLookup[focusIdx] = focus;
+			currentFocus.focused = currentFocus.focused | (1 << focusIdx);
 		}
-		if (__reg8 != __reg5 && !(__reg8 instanceof TextField)) 
-		{
-			var __reg6 = Selection.getControllerMaskByFocusGroup(focusIdx);
-			var __reg2 = 0;
-			for (;;) 
-			{
-				if (__reg2 >= System.capabilities.numControllers) 
-				{
-					return;
+		if (actualFocus != currentFocus && !(actualFocus instanceof TextField)) {
+			var controllerMask: Number = Selection.getControllerMaskByFocusGroup(focusIdx);
+
+			for(var i: Number = 0; i < System.capabilities.numControllers; i++) {
+				var controllerHasIdx: Boolean = (controllerMask >> i & 0x1) != 0;
+				if (controllerHasIdx) {
+					Selection.setFocus(currentFocus, i);
 				}
-				var __reg4 = (__reg6 >> __reg2 & 1) != 0;
-				if (__reg4) 
-				{
-					Selection.setFocus(__reg5, __reg2);
-				}
-				++__reg2;
 			}
 		}
 	}
 
-	function handleInput(event)
+	function handleInput(event: Object): Void
 	{
-		var controllerIdx = event.details.controllerIdx;
-		var focusIdx = Selection.getControllerFocusGroup(controllerIdx);
-		var path = this.getPathToFocus(focusIdx);
-		if (path.length == 0 || path[0].handleInput == null || path[0].handleInput(event.details, path.slice(1)) != true) 
-		{
-			if (event.details.value != "keyUp") 
-			{
+		var controllerIdx: Number = event.details.controllerIdx;
+		var focusIdx: Number = Selection.getControllerFocusGroup(controllerIdx);
+		var path: Array = getPathToFocus(focusIdx);
+		if (path.length == 0 || path[0].handleInput == null || path[0].handleInput(event.details, path.slice(1)) != true) {
+			if (event.details.value != "keyUp") {
 				var nav = event.details.navEquivalent;
-				if (nav != null) 
-				{
+				if (nav != null) {
 					var focusedElem = eval(Selection.getFocus(controllerIdx));
 					var actualFocus = this.actualFocusLookup[focusIdx];
-					if (actualFocus instanceof TextField && focusedElem == actualFocus && this.textFieldHandleInput(nav, controllerIdx)) 
-					{
-						return undefined;
+					if (actualFocus instanceof TextField && focusedElem == actualFocus && this.textFieldHandleInput(nav, controllerIdx)) {
+						return;
 					}
 					var dirH = nav == gfx.ui.NavigationCode.LEFT || nav == gfx.ui.NavigationCode.RIGHT;
 					var dirV = nav == gfx.ui.NavigationCode.UP || nav == gfx.ui.NavigationCode.DOWN;
 					var focusContext = focusedElem._parent;
 					var focusMode = "default";
-					if (dirH || dirV) 
-					{
+					if (dirH || dirV) {
 						var focusProp = dirH ? "focusModeHorizontal" : "focusModeVertical";
-						while (focusContext) 
-						{
+						while (focusContext) {
 							focusMode = focusContext[focusProp];
-							if (focusMode && focusMode != "default") 
-							{
+							if (focusMode && focusMode != "default") {
 								break;
 							}
 							focusContext = focusContext._parent;
 						}
-					}
-					else 
-					{
+					} else {
 						focusContext = null;
 					}
-					var newFocus = Selection.findFocus(nav, focusContext, focusMode == "loop", null, false, controllerIdx);
-					if (newFocus) 
-					{
+					var newFocus: Object = Selection.findFocus(nav, focusContext, focusMode == "loop", null, false, controllerIdx);
+					if (newFocus) {
 						Selection.setFocus(newFocus, controllerIdx);
 					}
 				}

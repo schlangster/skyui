@@ -100,6 +100,10 @@ class ModListPanel extends MovieClip
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
 	
+	public function isSublistActive(): Boolean
+	{
+		return (_state == SUBLIST_ACTIVE);
+	}
   
 	public function showList(): Void
 	{

@@ -74,8 +74,6 @@ class ContainerMenu extends ItemMenu
 	{
 		super.setConfig(a_config);
 		
-		skyui.util.Debug.log("Setting config");
-		
 		var itemList: TabularList = inventoryLists.itemList;		
 		itemList.addDataProcessor(new InventoryDataExtender());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
