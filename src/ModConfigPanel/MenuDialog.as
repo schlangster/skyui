@@ -10,18 +10,15 @@ class MenuDialog extends OptionDialog
 {	
   /* PRIVATE VARIABLES */
   
-  	private var _selectButton: MovieClip;
   	private var _defaultButton: MovieClip;
   	private var _closeButton: MovieClip;
+
+  	private var _defaultControls: Object;
 	
 
   /* STAGE ELEMENTS */
 	
 	public var menuList: ScrollingList;
-
-
-  /* PUBLIC VARIABLES */
-	public var focusTarget;
 
 	
   /* PROPERTIES */
@@ -36,7 +33,6 @@ class MenuDialog extends OptionDialog
 	public function MenuDialog()
 	{
 		super();
-		focusTarget = menuList;
 	}
 	
 	
@@ -45,20 +41,18 @@ class MenuDialog extends OptionDialog
 	// @override OptionDialog
 	private function initButtons(): Void
 	{
-		var selectControls: Object;
 		var closeControls: Object;
 		
 		if (platform == 0) {
-			selectControls = InputDefines.Enter;
+			_defaultControls = InputDefines.ReadyWeapon;
 			closeControls = InputDefines.Escape;
 		} else {
-			selectControls = InputDefines.Accept;
+			_defaultControls = InputDefines.YButton;
 			closeControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_selectButton = leftButtonPanel.addButton({text: "$Select", controls: selectControls});
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
@@ -85,17 +79,19 @@ class MenuDialog extends OptionDialog
 		menuList.selectedIndex = menuStartIndex;
 
 		menuList.InvalidateData();
+
+		FocusHandler.instance.setFocus(menuList, 0);
 	}
 	
 	public function onDefaultPress(): Void
 	{
 		setActiveMenuIndex(menuDefaultIndex);
+		menuList.selectedIndex = menuDefaultIndex;
 	}
 	
 	public function onExitPress(): Void
 	{
 		skse.SendModEvent("SKICP_menuAccepted", null, getActiveMenuIndex());
-//		skse.SendModEvent("SKICP_dialogCanceled");
 		DialogManager.close();
 	}
 	
@@ -110,7 +106,7 @@ class MenuDialog extends OptionDialog
 			if (details.navEquivalent == NavigationCode.TAB) {
 				onExitPress();
 				return true;
-			} else if (details.control == InputDefines.ReadyWeapon.name) {
+			} else if (details.control == _defaultControls.name) {
 				onDefaultPress();
 				return true;
 			}

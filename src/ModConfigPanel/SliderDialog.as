@@ -1,8 +1,8 @@
 ﻿import skyui.util.DialogManager;
-import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
-import Shared.GlobalFunc;
+import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
+import Shared.GlobalFunc;
 
 
 class SliderDialog extends OptionDialog
@@ -12,15 +12,13 @@ class SliderDialog extends OptionDialog
 	private var _acceptButton: MovieClip;
 	private var _defaultButton: MovieClip;
 	private var _cancelButton: MovieClip;
+
+	private var _defaultControls: Object;
 	
 
   /* STAGE ELEMENTS */
   
 	public var sliderPanel: MovieClip;
-
-
-  /* PUBLIC VARIABLES */
-	public var focusTarget;
 
 	
   /* PROPERTIES */
@@ -38,7 +36,6 @@ class SliderDialog extends OptionDialog
 	public function SliderDialog()
 	{
 		super();
-		focusTarget = sliderPanel.slider;
 	}
 	
 	
@@ -46,19 +43,24 @@ class SliderDialog extends OptionDialog
   
 	// @override OptionDialog
 	private function initButtons(): Void
-	{
+	{	
+		var acceptControls: Object;
 		var cancelControls: Object;
 		
 		if (platform == 0) {
+			acceptControls = InputDefines.Enter;
+			_defaultControls = InputDefines.ReadyWeapon;
 			cancelControls = InputDefines.Escape;
 		} else {
+			acceptControls = InputDefines.Accept;
+			_defaultControls = InputDefines.YButton;
 			cancelControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: InputDefines.Accept});
+		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: acceptControls});
 		_acceptButton.addEventListener("press", this, "onAcceptPress");
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
@@ -94,11 +96,13 @@ class SliderDialog extends OptionDialog
 		sliderPanel.slider.value = sliderValue;
 		updateValueText();	
 		sliderPanel.slider.addEventListener("change", this, "onValueChange");
+
+		FocusHandler.instance.setFocus(sliderPanel.slider, 0);
 	}
 	
 	public function onAcceptPress(): Void
 	{
-		skse.SendModEvent("SKICP_sliderAccepted", null, sliderDefault);
+		skse.SendModEvent("SKICP_sliderAccepted", null, sliderValue);
 		DialogManager.close();
 	}
 	
@@ -122,13 +126,13 @@ class SliderDialog extends OptionDialog
 			return true;
 		
 		if (GlobalFunc.IsKeyPressed(details, false)) {
-			if (details.control == InputDefines.Cancel.name) {
+			if (details.navEquivalent == NavigationCode.TAB) {
 				onCancelPress();
 				return true;
-			} else if (details.control == InputDefines.Accept.name) {
+			} else if (details.navEquivalent == NavigationCode.ENTER) {
 				onAcceptPress();
 				return true;
-			} else if (details.control == InputDefines.ReadyWeapon.name) {
+			} else if (details.control == _defaultControls.name) {
 				onDefaultPress();
 				return true;
 			}

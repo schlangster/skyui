@@ -1,8 +1,8 @@
 ﻿import skyui.components.colorswatch.ColorSwatch;
 import skyui.util.DialogManager;
 import gfx.managers.FocusHandler;
-import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
+import Shared.GlobalFunc;
 
 
 class ColorDialog extends OptionDialog
@@ -14,16 +14,11 @@ class ColorDialog extends OptionDialog
 	private var _cancelButton: MovieClip;
 
 	private var _defaultControls: Object;
-	private var _cancelControls: Object;
 	
 
   /* STAGE ELEMENTS */
 	
 	public var colorSwatch: ColorSwatch;
-
-
-  /* PUBLIC VARIABLES */
-	public var focusTarget;
 	
 
   /* PROPERTIES */
@@ -37,7 +32,6 @@ class ColorDialog extends OptionDialog
 	public function ColorDialog()
 	{
 		super();
-		focusTarget = colorSwatch;
 	}
 	
 	
@@ -45,22 +39,24 @@ class ColorDialog extends OptionDialog
   
 	// @override OptionDialog
 	private function initButtons(): Void
-	{
-		var defaultControls: Object;
+	{	
+		var acceptControls: Object;
 		var cancelControls: Object;
 
 		if (platform == 0) {
-			defaultControls = InputDefines.ReadyWeapon;
+			acceptControls = InputDefines.Enter;
+			_defaultControls = InputDefines.ReadyWeapon;
 			cancelControls = InputDefines.Escape; //Raw
 		} else {
-			defaultControls = InputDefines.YButton;
+			acceptControls = InputDefines.Accept;
+			_defaultControls = InputDefines.YButton;
 			cancelControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: InputDefines.Accept});
+		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: acceptControls});
 		_acceptButton.addEventListener("press", this, "onAcceptPress");
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: defaultControls});
+		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
@@ -76,6 +72,8 @@ class ColorDialog extends OptionDialog
 		colorSwatch._x = -colorSwatch._width/2;
 		colorSwatch._y = -colorSwatch._height/2;
 		colorSwatch.selectedColor = currentColor;
+
+		FocusHandler.instance.setFocus(colorSwatch, 0);
 	}
 
 	public function onAcceptPress(): Void
@@ -103,13 +101,13 @@ class ColorDialog extends OptionDialog
 			return true;
 
 		if (GlobalFunc.IsKeyPressed(details, false)) {
-			if (details.control == InputDefines.Cancel.name) {
+			if (details.navEquivalent == NavigationCode.TAB) {
 				onCancelPress();
 				return true;
-			} else if (details.control == InputDefines.Accept.name) {
+			} else if (details.navEquivalent == NavigationCode.ENTER) {
 				onAcceptPress();
 				return true;
-			} else if (details.control == ((platform == 0)? InputDefines.ReadyWeapon.name: InputDefines.YButton.name)) {
+			} else if (details.control == _defaultControls.name) {
 				onDefaultPress();
 				return true;
 			}
