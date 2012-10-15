@@ -6,7 +6,7 @@ class skyui.util.Debug
 	private static var _buffer: Array = [];
 
   /* PUBLIC STATIC FUNCTIONS */
-	public static function log(a_text: String /* , a_text2: String ... */): Void
+	public static function log(/* a_text: String , a_text2: String ... */): Void
 	{
 		var date: Date = new Date;
 		var hh: String = String(date.getHours());
