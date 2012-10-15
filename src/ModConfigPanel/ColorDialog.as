@@ -17,11 +17,7 @@ class ColorDialog extends OptionDialog
 	
 	public var colorSwatch: ColorSwatch;
 
-
-  /* PUBLIC VARIABLES */
-	public var focusTarget;
 	
-
   /* PROPERTIES */
 	
 	public var currentColor: Number;
@@ -33,7 +29,6 @@ class ColorDialog extends OptionDialog
 	public function ColorDialog()
 	{
 		super();
-		focusTarget = colorSwatch;
 	}
 	
 	
@@ -67,6 +62,8 @@ class ColorDialog extends OptionDialog
 		colorSwatch._x = -colorSwatch._width/2;
 		colorSwatch._y = -colorSwatch._height/2;
 		colorSwatch.selectedColor = currentColor;
+
+		FocusHandler.instance.setFocus(colorSwatch, 0);
   	}
 	
 	public function onDefaultPress(): Void
