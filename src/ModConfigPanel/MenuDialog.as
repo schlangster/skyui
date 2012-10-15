@@ -10,7 +10,6 @@ class MenuDialog extends OptionDialog
 {	
   /* PRIVATE VARIABLES */
   
-  	private var _selectButton: MovieClip;
   	private var _defaultButton: MovieClip;
   	private var _closeButton: MovieClip;
 	
@@ -45,19 +44,15 @@ class MenuDialog extends OptionDialog
 	// @override OptionDialog
 	private function initButtons(): Void
 	{
-		var selectControls: Object;
 		var closeControls: Object;
 		
 		if (platform == 0) {
-			selectControls = InputDefines.Enter;
 			closeControls = InputDefines.Escape;
 		} else {
-			selectControls = InputDefines.Accept;
 			closeControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_selectButton = leftButtonPanel.addButton({text: "$Select", controls: selectControls});
 		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();

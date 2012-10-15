@@ -9,9 +9,8 @@ class ColorDialog extends OptionDialog
 {	
   /* PRIVATE VARIABLES */
 	
-	private var _acceptButton: MovieClip;
-	private var _defaultButton: MovieClip;
-	private var _cancelButton: MovieClip;
+  	private var _defaultButton: MovieClip;
+  	private var _closeButton: MovieClip;
 	
 
   /* STAGE ELEMENTS */
@@ -43,24 +42,22 @@ class ColorDialog extends OptionDialog
 	// @override OptionDialog
 	private function initButtons(): Void
 	{
-		var cancelControls: Object;
+		var closeControls: Object;
 		
 		if (platform == 0) {
-			cancelControls = InputDefines.Escape;
+			closeControls = InputDefines.Escape;
 		} else {
-			cancelControls = InputDefines.Cancel;
+			closeControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: InputDefines.Accept});
-		_acceptButton.addEventListener("press", this, "onAcceptPress");
 		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
 		rightButtonPanel.clearButtons();
-		_cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: cancelControls});
-		_cancelButton.addEventListener("press", this, "onCancelPress");
+		_closeButton = rightButtonPanel.addButton({text: "$Exit", controls: closeControls});
+		_closeButton.addEventListener("press", this, "onExitPress");
 		rightButtonPanel.updateButtons();
 	}
 
@@ -70,22 +67,16 @@ class ColorDialog extends OptionDialog
 		colorSwatch._x = -colorSwatch._width/2;
 		colorSwatch._y = -colorSwatch._height/2;
 		colorSwatch.selectedColor = currentColor;
-	}
-
-	public function onAcceptPress(): Void
-	{
-		skse.SendModEvent("SKICP_colorAccepted", null, colorSwatch.selectedColor);
-		DialogManager.close();
-	}
+  	}
 	
 	public function onDefaultPress(): Void
 	{
 		colorSwatch.selectedColor = defaultColor;
 	}
 	
-	public function onCancelPress(): Void
+	public function onExitPress(): Void
 	{
-		skse.SendModEvent("SKICP_dialogCanceled");
+		skse.SendModEvent("SKICP_colorAccepted", null, colorSwatch.selectedColor);
 		DialogManager.close();
 	}
 	
@@ -95,13 +86,10 @@ class ColorDialog extends OptionDialog
 		var nextClip = pathToFocus.shift();
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
-
+		
 		if (GlobalFunc.IsKeyPressed(details, false)) {
-			if (details.control == InputDefines.Cancel.name) {
-				onCancelPress();
-				return true;
-			} else if (details.control == InputDefines.Accept.name) {
-				onAcceptPress();
+			if (details.navEquivalent == NavigationCode.TAB) {
+				onExitPress();
 				return true;
 			} else if (details.control == InputDefines.ReadyWeapon.name) {
 				onDefaultPress();

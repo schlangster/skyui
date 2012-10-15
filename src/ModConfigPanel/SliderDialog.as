@@ -1,4 +1,9 @@
-﻿import skyui.util.DialogManager;
+﻿import skyui.components.list.ButtonEntryFormatter;
+import skyui.components.list.ButtonList;
+import skyui.components.list.BasicEnumeration;
+import skyui.components.list.ScrollingList;
+import skyui.components.dialog.BasicDialog;
+import skyui.util.DialogManager;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 import Shared.GlobalFunc;
@@ -8,10 +13,9 @@ import gfx.ui.NavigationCode;
 class SliderDialog extends OptionDialog
 {
   /* PRIVATE VARIABLES */
-	
-	private var _acceptButton: MovieClip;
-	private var _defaultButton: MovieClip;
-	private var _cancelButton: MovieClip;
+  
+  	private var _defaultButton: MovieClip;
+  	private var _closeButton: MovieClip;
 	
 
   /* STAGE ELEMENTS */
@@ -47,24 +51,22 @@ class SliderDialog extends OptionDialog
 	// @override OptionDialog
 	private function initButtons(): Void
 	{
-		var cancelControls: Object;
+		var closeControls: Object;
 		
 		if (platform == 0) {
-			cancelControls = InputDefines.Escape;
+			closeControls = InputDefines.Escape;
 		} else {
-			cancelControls = InputDefines.Cancel;
+			closeControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: InputDefines.Accept});
-		_acceptButton.addEventListener("press", this, "onAcceptPress");
 		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
 		rightButtonPanel.clearButtons();
-		_cancelButton = rightButtonPanel.addButton({text: "$Exit", controls: cancelControls});
-		_cancelButton.addEventListener("press", this, "onCancelPress");
+		_closeButton = rightButtonPanel.addButton({text: "$Exit", controls: closeControls});
+		_closeButton.addEventListener("press", this, "onExitPress");
 		rightButtonPanel.updateButtons();
 	}
 
@@ -96,9 +98,9 @@ class SliderDialog extends OptionDialog
 		sliderPanel.slider.addEventListener("change", this, "onValueChange");
 	}
 	
-	public function onAcceptPress(): Void
+	public function onExitPress(): Void
 	{
-		skse.SendModEvent("SKICP_sliderAccepted", null, sliderDefault);
+		skse.SendModEvent("SKICP_sliderAccepted", null, sliderValue);
 		DialogManager.close();
 	}
 	
@@ -106,12 +108,6 @@ class SliderDialog extends OptionDialog
 	{
 		sliderValue = sliderPanel.slider.value = sliderDefault;
 		updateValueText();
-	}
-
-	public function onCancelPress(): Void
-	{
-		skse.SendModEvent("SKICP_dialogCanceled");
-		DialogManager.close();
 	}
 	
 	// @GFx
@@ -122,18 +118,15 @@ class SliderDialog extends OptionDialog
 			return true;
 		
 		if (GlobalFunc.IsKeyPressed(details, false)) {
-			if (details.control == InputDefines.Cancel.name) {
-				onCancelPress();
-				return true;
-			} else if (details.control == InputDefines.Accept.name) {
-				onAcceptPress();
+			if (details.navEquivalent == NavigationCode.TAB) {
+				onExitPress();
 				return true;
 			} else if (details.control == InputDefines.ReadyWeapon.name) {
 				onDefaultPress();
 				return true;
 			}
 		}
-		
+
 		// Don't forward to higher level
 		return true;
 	}
