@@ -12,6 +12,9 @@ class ColorDialog extends OptionDialog
 	private var _acceptButton: MovieClip;
 	private var _defaultButton: MovieClip;
 	private var _cancelButton: MovieClip;
+
+	private var _defaultControls: Object;
+	private var _cancelControls: Object;
 	
 
   /* STAGE ELEMENTS */
@@ -43,18 +46,21 @@ class ColorDialog extends OptionDialog
 	// @override OptionDialog
 	private function initButtons(): Void
 	{
+		var defaultControls: Object;
 		var cancelControls: Object;
-		
+
 		if (platform == 0) {
-			cancelControls = InputDefines.Escape;
+			defaultControls = InputDefines.ReadyWeapon;
+			cancelControls = InputDefines.Escape; //Raw
 		} else {
+			defaultControls = InputDefines.YButton;
 			cancelControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
 		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: InputDefines.Accept});
 		_acceptButton.addEventListener("press", this, "onAcceptPress");
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: defaultControls});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
@@ -103,7 +109,7 @@ class ColorDialog extends OptionDialog
 			} else if (details.control == InputDefines.Accept.name) {
 				onAcceptPress();
 				return true;
-			} else if (details.control == InputDefines.ReadyWeapon.name) {
+			} else if (details.control == ((platform == 0)? InputDefines.ReadyWeapon.name: InputDefines.YButton.name)) {
 				onDefaultPress();
 				return true;
 			}

@@ -106,7 +106,7 @@ class skyui.components.colorswatch.ColorSwatch extends MovieClip
 			_buttonGroup.setSelectedButton(colorClip);
 		}
 
-		FocusHandler.instance.setFocus(colorClip);
+		Selection.setFocus(colorClip, 0);
 	}
 
   /* PUBLIC FUNCTIONS */
