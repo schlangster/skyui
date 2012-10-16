@@ -43,7 +43,7 @@ event OnInit()
 	RegisterForMenu(JOURNAL_MENU)
 	
 	; Wait a few seconds until any initial menus have registered for events
-	Utility.Wait(3)
+	Utility.Wait(2)
 	
 	OnGameReload()
 endEvent
@@ -85,6 +85,7 @@ event OnModSelect(string a_eventName, string a_strArg, float a_numArg, Form a_se
 	int configIndex = a_numArg as int
 	if (configIndex > -1)
 		_activeConfig = _modConfigs[configIndex]
+		_activeConfig.CheckVersion()
 		UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", _activeConfig.Pages)
 		_activeConfig.SetPage("")
 	endIf

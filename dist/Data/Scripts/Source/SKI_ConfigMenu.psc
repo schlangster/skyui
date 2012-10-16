@@ -45,7 +45,7 @@ float		_3DItemXOffset			= 0.0
 float		_3DItemYOffset			= 0.0
 float		_3DItemScale			= 1.5
 
-bool		_AEEnabled				= true
+bool		_AEEnabled				= false
 float[]		_AEEffectSizeValues
 int			_AEEffectSizeIdx		= 1
 int			_AEClampCornerIdx		= 1

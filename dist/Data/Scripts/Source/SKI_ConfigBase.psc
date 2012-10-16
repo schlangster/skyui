@@ -111,6 +111,10 @@ endEvent
 event OnConfigRegister()
 endEvent
 
+; @interface(SKI_QuestBase)
+event OnVersionUpdate(int a_version)
+endEvent
+
 ; @interface
 event OnPageReset(string a_page)
 	{Called when a new page is selected, including the initial empty page}
@@ -169,199 +173,9 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
-function Error(string a_msg)
-	Debug.Trace(self + " ERROR: " +  a_msg)
-endFunction
-
-function SetPage(string a_page)
-	CurrentPage = a_page
-	
-	; Set default title, can be overridden in OnPageReset
-	if (a_page != "")
-		SetTitleText(a_page)
-	else
-		SetTitleText(ModName)
-	endIf
-	
-	_state = STATE_RESET
-	OnPageReset(a_page)
-	_state = STATE_DEFAULT
-	FlushOptionBuffers()
-endFunction
-
-int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue, int a_flags)
-	if (_state != STATE_RESET)
-		Error("Cannot add option " + a_text + " outside of OnPageReset()")
-		return -1
-	endIf
-
-	int id = _cursorPosition
-	if (id == -1)
-		return -1
-	endIf
-	
-	_optionFlagsBuf[id] = a_optionType + a_flags
-	_textBuf[id] = a_text
-	_strValueBuf[id] = a_strValue
-	_numValueBuf[id] = a_numValue
-	
-	; Just use numerical value of fill mode
-	_cursorPosition += _cursorFillMode
-	if (_cursorPosition >= 128)
-		_cursorPosition = -1
-	endIf
-	
-	return id
-endFunction
-
-function FlushOptionBuffers()
-	string menu = JOURNAL_MENU
-	string root = MENU_ROOT
-	int t = OPTION_TYPE_EMPTY
-	int i = 0
-	int optionCount = 0;
-
-	; Tell UI where to cut off the buffer
-	i = 0
-	while (i < 128)
-		if (_optionFlagsBuf[i] != t)
-			optionCount = i + 1
-		endif
-		i += 1
-	endWhile
-	
-	UI.InvokeNumberA(menu, root + ".setOptionFlagsBuffer", _optionFlagsBuf)
-	UI.InvokeStringA(menu, root + ".setOptionTextBuffer", _textBuf)
-	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
-	UI.InvokeNumberA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
-	UI.InvokeNumber(menu, root + ".flushOptionBuffers", optionCount)
-
-	i = 0
-	while (i < 128)
-		_optionFlagsBuf[i] = t
-		_textBuf[i] = none
-		_strValueBuf[i] = none
-		_numValueBuf[i] = 0
-		i += 1
-	endWhile
-
-	_cursorPosition	= 0
-	_cursorFillMode	= LEFT_TO_RIGHT
-endFunction
-
-function SetOptionStrValue(int a_option, string a_strValue, bool noUpdate)
-	if (_state == STATE_RESET)
-		Error("Cannot modify option data while in OnPageReset()")
-		return
-	endIf
-
-	string menu = JOURNAL_MENU
-	string root = MENU_ROOT
-
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
-	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
-	if (!noUpdate)
-		UI.Invoke(menu, root + ".invalidateOptionData")
-	endIf
-endFunction
-
-function SetOptionNumValue(int a_option, float a_numValue, bool noUpdate)
-	if (_state == STATE_RESET)
-		Error("Cannot modify option data while in OnPageReset()")
-		return
-	endIf
-
-	string menu = JOURNAL_MENU
-	string root = MENU_ROOT
-
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
-	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
-	if (!noUpdate)
-		UI.Invoke(menu, root + ".invalidateOptionData")
-	endIf
-endFunction
-
-function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool noUpdate)
-	if (_state == STATE_RESET)
-		Error("Cannot modify option data while in OnPageReset()")
-		return
-	endIf
-
-	string menu = JOURNAL_MENU
-	string root = MENU_ROOT
-
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
-	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
-	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
-	if (!noUpdate)
-		UI.Invoke(menu, root + ".invalidateOptionData")
-	endIf
-endFunction
-
-function RequestSliderDialogData(int a_index)
-	_activeOption = a_index
-
-	; Defaults
-	_sliderParams[0] = 0
-	_sliderParams[1] = 0
-	_sliderParams[2] = 0
-	_sliderParams[3] = 1
-	_sliderParams[4] = 1
-
-	_state = STATE_SLIDER
-	OnOptionSliderOpen(a_index)
-	_state = STATE_DEFAULT
-
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
-endFunction
-
-function RequestMenuDialogData(int a_index)
-	_activeOption = a_index
-
-	; Defaults
-	_menuParams[0] = -1
-	_menuParams[1] = -1
-
-	_state = STATE_MENU
-	OnOptionMenuOpen(a_index)
-	_state = STATE_DEFAULT
-
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
-endFunction
-
-function RequestColorDialogData(int a_index)
-	_activeOption = a_index
-
-	; Defaults
-	_colorParams[0] = -1
-	_colorParams[1] = -1
-
-	_state = STATE_COLOR
-	OnOptionColorOpen(a_index)
-	_state = STATE_DEFAULT
-
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
-endFunction
-
-function SetSliderValue(float a_value)
-	OnOptionSliderAccept(_activeOption, a_value)
-	_activeOption = -1
-endFunction
-
-function SetMenuIndex(int a_index)
-	OnOptionMenuAccept(_activeOption, a_index)
-	_activeOption = -1
-endFunction
-
-function SetColorValue(int a_color)
-	OnOptionColorAccept(_activeOption, a_color)
-	_activeOption = -1
-endFunction
-
-function HighlightOption(int a_index)
-	_infoText = ""
-	OnOptionHighlight(a_index)
-	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", _infoText)
+; @interface(SKI_QuestBase)
+int function GetVersion()
+	return 1
 endFunction
 
 ; @interface
@@ -577,4 +391,199 @@ function SetColorDialogDefaultColor(int a_color)
 	endIf
 
 	_colorParams[1] = a_color
+endFunction
+
+function Error(string a_msg)
+	Debug.Trace(self + " ERROR: " +  a_msg)
+endFunction
+
+function SetPage(string a_page)
+	CurrentPage = a_page
+	
+	; Set default title, can be overridden in OnPageReset
+	if (a_page != "")
+		SetTitleText(a_page)
+	else
+		SetTitleText(ModName)
+	endIf
+	
+	_state = STATE_RESET
+	OnPageReset(a_page)
+	_state = STATE_DEFAULT
+	FlushOptionBuffers()
+endFunction
+
+int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue, int a_flags)
+	if (_state != STATE_RESET)
+		Error("Cannot add option " + a_text + " outside of OnPageReset()")
+		return -1
+	endIf
+
+	int id = _cursorPosition
+	if (id == -1)
+		return -1
+	endIf
+	
+	_optionFlagsBuf[id] = a_optionType + a_flags
+	_textBuf[id] = a_text
+	_strValueBuf[id] = a_strValue
+	_numValueBuf[id] = a_numValue
+	
+	; Just use numerical value of fill mode
+	_cursorPosition += _cursorFillMode
+	if (_cursorPosition >= 128)
+		_cursorPosition = -1
+	endIf
+	
+	return id
+endFunction
+
+function FlushOptionBuffers()
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+	int t = OPTION_TYPE_EMPTY
+	int i = 0
+	int optionCount = 0;
+
+	; Tell UI where to cut off the buffer
+	i = 0
+	while (i < 128)
+		if (_optionFlagsBuf[i] != t)
+			optionCount = i + 1
+		endif
+		i += 1
+	endWhile
+	
+	UI.InvokeNumberA(menu, root + ".setOptionFlagsBuffer", _optionFlagsBuf)
+	UI.InvokeStringA(menu, root + ".setOptionTextBuffer", _textBuf)
+	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
+	UI.InvokeNumberA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
+	UI.InvokeNumber(menu, root + ".flushOptionBuffers", optionCount)
+
+	i = 0
+	while (i < 128)
+		_optionFlagsBuf[i] = t
+		_textBuf[i] = none
+		_strValueBuf[i] = none
+		_numValueBuf[i] = 0
+		i += 1
+	endWhile
+
+	_cursorPosition	= 0
+	_cursorFillMode	= LEFT_TO_RIGHT
+endFunction
+
+function SetOptionStrValue(int a_option, string a_strValue, bool noUpdate)
+	if (_state == STATE_RESET)
+		Error("Cannot modify option data while in OnPageReset()")
+		return
+	endIf
+
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
+	if (!noUpdate)
+		UI.Invoke(menu, root + ".invalidateOptionData")
+	endIf
+endFunction
+
+function SetOptionNumValue(int a_option, float a_numValue, bool noUpdate)
+	if (_state == STATE_RESET)
+		Error("Cannot modify option data while in OnPageReset()")
+		return
+	endIf
+
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
+	if (!noUpdate)
+		UI.Invoke(menu, root + ".invalidateOptionData")
+	endIf
+endFunction
+
+function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool noUpdate)
+	if (_state == STATE_RESET)
+		Error("Cannot modify option data while in OnPageReset()")
+		return
+	endIf
+
+	string menu = JOURNAL_MENU
+	string root = MENU_ROOT
+
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
+	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
+	if (!noUpdate)
+		UI.Invoke(menu, root + ".invalidateOptionData")
+	endIf
+endFunction
+
+function RequestSliderDialogData(int a_index)
+	_activeOption = a_index
+
+	; Defaults
+	_sliderParams[0] = 0
+	_sliderParams[1] = 0
+	_sliderParams[2] = 0
+	_sliderParams[3] = 1
+	_sliderParams[4] = 1
+
+	_state = STATE_SLIDER
+	OnOptionSliderOpen(a_index)
+	_state = STATE_DEFAULT
+
+	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
+endFunction
+
+function RequestMenuDialogData(int a_index)
+	_activeOption = a_index
+
+	; Defaults
+	_menuParams[0] = -1
+	_menuParams[1] = -1
+
+	_state = STATE_MENU
+	OnOptionMenuOpen(a_index)
+	_state = STATE_DEFAULT
+
+	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
+endFunction
+
+function RequestColorDialogData(int a_index)
+	_activeOption = a_index
+
+	; Defaults
+	_colorParams[0] = -1
+	_colorParams[1] = -1
+
+	_state = STATE_COLOR
+	OnOptionColorOpen(a_index)
+	_state = STATE_DEFAULT
+
+	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
+endFunction
+
+function SetSliderValue(float a_value)
+	OnOptionSliderAccept(_activeOption, a_value)
+	_activeOption = -1
+endFunction
+
+function SetMenuIndex(int a_index)
+	OnOptionMenuAccept(_activeOption, a_index)
+	_activeOption = -1
+endFunction
+
+function SetColorValue(int a_color)
+	OnOptionColorAccept(_activeOption, a_color)
+	_activeOption = -1
+endFunction
+
+function HighlightOption(int a_index)
+	_infoText = ""
+	OnOptionHighlight(a_index)
+	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", _infoText)
 endFunction
