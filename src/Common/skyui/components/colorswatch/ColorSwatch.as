@@ -1,39 +1,38 @@
-import gfx.controls.ButtonGroup;
-
+﻿import gfx.controls.ButtonGroup;
 import Shared.GlobalFunc;
-
 import gfx.managers.FocusHandler;
-
 import gfx.ui.InputDetails;
 import gfx.ui.NavigationCode
-
 import skyui.util.GlobalFunctions;
 import skyui.components.colorswatch.ColorSquare;
 
+
 class skyui.components.colorswatch.ColorSwatch extends MovieClip
 {
-  /* CONSTANTS */
-	
   /* STAGE ELEMENTS */
-	public var background;
-
-  /* COMPONENT DEFINITIONS */
-	public var colorRows: Number = 2;
-	public var colorSize: Number = 25;
-	public var colorList: Array = [0x990033, 0xAD0073, 0xA17700, 0x803D0D, 0xBD4F19, 0x007A87, 0x162274, 0x4F2D7F, 0x56364D, 0x618E02, 0x008542, 0x5C4836, 0x999999, 0x000000,
-									0xCC0033, 0xE86BA5, 0xEAAB00, 0xB88454, 0xE37222, 0x99FFFF, 0x4060AF, 0x8C6CD0, 0x8F6678, 0x9EAB05, 0x19B271, 0xAA9C8F, 0xCCCCCC, 0xFFFFFF] 
+  
+	public var background: MovieClip;
+	
 
   /* PRIVATE VARIABLES */
+  
 	private var _buttonGroup: ButtonGroup;
 	private var _highestColorDepth: Number;
 	private var _colorCols: Number; //Calculated from colorList.length and colorRows
 	private var _selectedColor: Number;
 
+
+  /* INITIALIZATION */
+
 	public function ColorSwatch()
 	{
 		super();
+		
+		if (colorList == null) {
+			colorList = [0x990033, 0xAD0073, 0xA17700, 0x803D0D, 0xBD4F19, 0x007A87, 0x162274, 0x4F2D7F, 0x56364D, 0x618E02, 0x008542, 0x5C4836, 0x999999, 0x000000,
+						 0xCC0033, 0xE86BA5, 0xEAAB00, 0xB88454, 0xE37222, 0x99FFFF, 0x4060AF, 0x8C6CD0, 0x8F6678, 0x9EAB05, 0x19B271, 0xAA9C8F, 0xCCCCCC, 0xFFFFFF];
+		}
 
-		// Needed for array.indexOf()
 		GlobalFunctions.addArrayFunctions();
 
 		_colorCols = Math.floor(colorList.length/colorRows);
@@ -62,54 +61,27 @@ class skyui.components.colorswatch.ColorSwatch extends MovieClip
 		_highestColorDepth = ((colorClip != undefined && colorList.length > 0)? colorClip.getDepth(): getNextHighestDepth());
 	}
 
+
   /* PROPERTIES */
-	public function set selectedColor(a_color: Number): Void {
+  
+	public var colorRows: Number = 2;
+	public var colorSize: Number = 25;
+	public var colorList: Array;
+  
+	public function set selectedColor(a_color: Number): Void
+	{
 		_selectedColor = a_color;
 		attemptSelectColor(_selectedColor);
 	}
+	
 	public function get selectedColor(): Number
 	{
 		return _selectedColor;
 	}
-
-
-/* PRIVATE FUNCTIONS */
-	private function onColorClipSelect(event: Object): Void
-	{
-		var colorClip: ColorSquare = event.target;
-
-		if (colorClip.selected) {
-			_selectedColor = colorClip.color;
-
-			colorClip._x -= (colorSize * 0.5/2);
-			colorClip._y -= (colorSize * 0.5/2);
-			colorClip._width = colorClip._height = colorSize * 1.5;
-			colorClip.swapDepths(_highestColorDepth);
-			colorClip.selector._alpha = 100;
-		} else {
-			colorClip._x += (colorSize * 0.5/2);
-			colorClip._y += (colorSize * 0.5/2);
-			colorClip._width = colorClip._height = colorSize;
-			colorClip.selector._alpha = 0;
-		}
-	}
-
-	private function attemptSelectColor(a_color: Number): Void
-	{
-		var buttonIndex: Number = colorList.indexOf(a_color);
-
-		var colorClip: ColorSquare;
-		if (buttonIndex == undefined) {
-			colorClip = ColorSquare(_buttonGroup.getButtonAt(0));
-		} else {
-			colorClip = ColorSquare(_buttonGroup.getButtonAt(buttonIndex));
-			_buttonGroup.setSelectedButton(colorClip);
-		}
-
-		Selection.setFocus(colorClip, 0);
-	}
+	
 
   /* PUBLIC FUNCTIONS */
+  
 	public function handleInput(a_details: InputDetails, a_pathToFocus: Array): Boolean
 	{
 		var handledInput: Boolean = false;
@@ -195,4 +167,41 @@ class skyui.components.colorswatch.ColorSwatch extends MovieClip
 		return handledInput;
 	}
 
+
+  /* PRIVATE FUNCTIONS */
+  
+	private function onColorClipSelect(event: Object): Void
+	{
+		var colorClip: ColorSquare = event.target;
+
+		if (colorClip.selected) {
+			_selectedColor = colorClip.color;
+
+			colorClip._x -= (colorSize * 0.5/2);
+			colorClip._y -= (colorSize * 0.5/2);
+			colorClip._width = colorClip._height = colorSize * 1.5;
+			colorClip.swapDepths(_highestColorDepth);
+			colorClip.selector._alpha = 100;
+		} else {
+			colorClip._x += (colorSize * 0.5/2);
+			colorClip._y += (colorSize * 0.5/2);
+			colorClip._width = colorClip._height = colorSize;
+			colorClip.selector._alpha = 0;
+		}
+	}
+
+	private function attemptSelectColor(a_color: Number): Void
+	{
+		var buttonIndex: Number = colorList.indexOf(a_color);
+
+		var colorClip: ColorSquare;
+		if (buttonIndex == undefined) {
+			colorClip = ColorSquare(_buttonGroup.getButtonAt(0));
+		} else {
+			colorClip = ColorSquare(_buttonGroup.getButtonAt(buttonIndex));
+			_buttonGroup.setSelectedButton(colorClip);
+		}
+		
+		FocusHandler.instance.setFocus(colorClip, 0);
+	}
 }

@@ -45,7 +45,7 @@ class MenuDialog extends OptionDialog
 		
 		if (platform == 0) {
 			_defaultControls = InputDefines.ReadyWeapon;
-			closeControls = InputDefines.Escape;
+			closeControls = InputDefines.Tab;
 		} else {
 			_defaultControls = InputDefines.YButton;
 			closeControls = InputDefines.Cancel;

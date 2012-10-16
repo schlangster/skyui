@@ -50,7 +50,7 @@ class SliderDialog extends OptionDialog
 		if (platform == 0) {
 			acceptControls = InputDefines.Enter;
 			_defaultControls = InputDefines.ReadyWeapon;
-			cancelControls = InputDefines.Escape;
+			cancelControls = InputDefines.Tab;
 		} else {
 			acceptControls = InputDefines.Accept;
 			_defaultControls = InputDefines.YButton;
@@ -65,7 +65,7 @@ class SliderDialog extends OptionDialog
 		leftButtonPanel.updateButtons();
 		
 		rightButtonPanel.clearButtons();
-		_cancelButton = rightButtonPanel.addButton({text: "$Exit", controls: cancelControls});
+		_cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: cancelControls});
 		_cancelButton.addEventListener("press", this, "onCancelPress");
 		rightButtonPanel.updateButtons();
 	}

@@ -17,18 +17,23 @@ class skyui.components.Slider extends gfx.controls.Slider
 	{
 		super();
 	}
+	
+	
+  /* PROPERTIES */
+	
+	function get disabled(): Boolean
+	{
+		return super.disabled;
+	}
 
 	public function set disabled(a_val: Boolean): Void
 	{
-		if (_disabled == a_val)
-			return;
+		leftArrow.disabled =  _disabled;
+		rightArrow.disabled = _disabled;
+		
 		super.disabled = a_val;
-		if (!initialized)
-			return;
-		leftArrow.disabled = rightArrow.disabled = _disabled;	
-		invalidate();
-	}		
-
+	}
+	
 
   /* PUBLIC FUNCTIONS */
 
@@ -37,23 +42,19 @@ class skyui.components.Slider extends gfx.controls.Slider
 		if (super.handleInput(details, pathToFocus))
 			return true;
 
-		var keyPressed = (details.value == "keyDown" || details.value == "keyHold");
-
-		switch (details.navEquivalent) {
-			case NavigationCode.PAGE_DOWN:
-			case NavigationCode.GAMEPAD_L1:
-				if (keyPressed) {
+		if (details.value == "keyDown" || details.value == "keyHold") {
+			switch (details.navEquivalent) {
+				case NavigationCode.PAGE_DOWN:
+				case NavigationCode.GAMEPAD_L1:
 					value -= Math.abs(maximum - minimum) / 10;
 					dispatchEventAndSound({type:"change"});
-				}
-				return true;
-			case NavigationCode.PAGE_UP:
-			case NavigationCode.GAMEPAD_R1:
-				if (keyPressed) {
+					return true;
+				case NavigationCode.PAGE_UP:
+				case NavigationCode.GAMEPAD_R1:
 					value += Math.abs(maximum - minimum) / 10;
 					dispatchEventAndSound({type:"change"});
-				}
-				return true;
+					return true;
+			}
 		}
 
 		return false;

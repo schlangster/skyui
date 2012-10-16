@@ -393,7 +393,7 @@ class ConfigPanel extends MovieClip
 		if (a_platform == 0) {
 			_acceptControls = InputDefines.Enter;
 			_defaultControls = InputDefines.ReadyWeapon;
-			_cancelControls = InputDefines.Escape;
+			_cancelControls = InputDefines.Tab;
 		} else {
 			_acceptControls = InputDefines.Accept;
 			_defaultControls = InputDefines.YButton;

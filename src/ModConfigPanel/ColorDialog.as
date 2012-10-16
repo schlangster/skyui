@@ -46,7 +46,7 @@ class ColorDialog extends OptionDialog
 		if (platform == 0) {
 			acceptControls = InputDefines.Enter;
 			_defaultControls = InputDefines.ReadyWeapon;
-			cancelControls = InputDefines.Escape; //Raw
+			cancelControls = InputDefines.Tab;
 		} else {
 			acceptControls = InputDefines.Accept;
 			_defaultControls = InputDefines.YButton;

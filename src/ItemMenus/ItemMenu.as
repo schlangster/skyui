@@ -174,7 +174,7 @@ class ItemMenu extends MovieClip
 		
 		if (a_platform == 0) {
 			_acceptControls = InputDefines.Enter;
-			_cancelControls = InputDefines.Escape;
+			_cancelControls = InputDefines.Tab;
 			_switchControls = InputDefines.Sprint;
 		} else {
 			_acceptControls = InputDefines.Accept;
