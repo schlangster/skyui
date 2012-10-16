@@ -113,6 +113,7 @@ endEvent
 
 ; @interface(SKI_QuestBase)
 event OnVersionUpdate(int a_version)
+	{Called when a version update of this script has been detected}
 endEvent
 
 ; @interface
@@ -166,7 +167,7 @@ event OnOptionColorAccept(int a_option, int a_color)
 endEvent
 
 ; @interface
-event OnOptionKeyMapChange(int a_option, int a_keyCode)
+event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
 	{Called when a key has been remapped}
 endEvent
 
@@ -175,7 +176,14 @@ endEvent
 
 ; @interface(SKI_QuestBase)
 int function GetVersion()
+	{Returns version of this script}
 	return 1
+endFunction
+
+; @interface
+string function GetMappedControl(int a_keyCode)
+	{Returns the name of a custom control mapped to given keyCode, or "" if the key is not in use by this config}
+	return ""
 endFunction
 
 ; @interface

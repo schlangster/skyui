@@ -118,7 +118,25 @@ endEvent
 event OnKeymapChange(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
 	int keyCode = UI.GetNumber(JOURNAL_MENU, MENU_ROOT + ".selectedKeyCode") as int
-	_activeConfig.OnOptionKeyMapChange(optionIndex, keyCode)
+
+	; First test vanilla controls
+	string conflictControl = Input.GetMappedControl(keyCode)
+	string conflictName = ""
+
+	; Then test mod controls
+	int i = 0
+	while (conflictControl == "" && i < _modConfigs.length)
+		if (_modConfigs[i] != none)
+			conflictControl = _modConfigs[i].GetMappedControl(keyCode)
+			if (conflictControl != "")
+				conflictName = _modNames[i]
+			endIf
+		endIf
+			
+		i += 1
+	endWhile
+
+	_activeConfig.OnOptionKeyMapChange(optionIndex, keyCode, conflictControl, conflictName)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 

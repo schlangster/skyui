@@ -66,10 +66,8 @@ float		_itemXBase
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-; @autoFill
-SKI_SettingsManager property SKI_SettingsManagerInstance auto
-
-SKI_ActiveEffectsWidget property SKI_ActiveEffectsWidgetInstance auto
+SKI_SettingsManager property		SKI_SettingsManagerInstance auto
+SKI_ActiveEffectsWidget property	SKI_ActiveEffectsWidgetInstance auto
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -131,32 +129,6 @@ endEvent
 event OnGameReload()
 	ApplySettings()
 endEvent
-
-function ApplySettings()
-	float h = Utility.GetINIInt("iSize H:Display")
-	float w = Utility.GetINIInt("iSize W:Display")
-	if ((w / h) == 1.6)
-		_itemXBase = -32.458335876465
-	else
-		_itemXBase = -29.122497558594
-	endIf
-
-	; Item
-	Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
-	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
-	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
-	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
-
-	; Magic
-	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
-	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
-	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
-endFunction
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
@@ -489,8 +461,12 @@ endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
-event OnOptionKeyMapChange(int a_option, int a_keyCode)
+event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
 	string page = CurrentPage
+
+	if (a_conflictControl != "")
+		Debug.Trace("Keymap conflict detected. Control: " + a_conflictControl + ", Name: " + a_conflictName)
+	endIf
 
 	; -------------------------------------------------------
 	if (page == "General")
@@ -541,3 +517,37 @@ event OnOptionHighlight(int a_option)
 		endIf
 	endIf
 endEvent
+
+
+; FUNCTIONS ---------------------------------------------------------------------------------------
+
+; @overrides SKI_ConfigBase
+string function GetMappedControl(int a_keyCode)
+	return ""
+endFunction
+
+function ApplySettings()
+	float h = Utility.GetINIInt("iSize H:Display")
+	float w = Utility.GetINIInt("iSize W:Display")
+	if ((w / h) == 1.6)
+		_itemXBase = -32.458335876465
+	else
+		_itemXBase = -29.122497558594
+	endIf
+
+	; Item
+	Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
+	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
+	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
+
+	; Magic
+	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
+	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+	Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
+endFunction
