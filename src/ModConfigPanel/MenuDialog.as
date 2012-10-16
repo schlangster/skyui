@@ -12,6 +12,8 @@ class MenuDialog extends OptionDialog
   
   	private var _defaultButton: MovieClip;
   	private var _closeButton: MovieClip;
+
+  	private var _defaultControls: Object;
 	
 
   /* STAGE ELEMENTS */
@@ -42,13 +44,15 @@ class MenuDialog extends OptionDialog
 		var closeControls: Object;
 		
 		if (platform == 0) {
+			_defaultControls = InputDefines.ReadyWeapon;
 			closeControls = InputDefines.Escape;
 		} else {
+			_defaultControls = InputDefines.YButton;
 			closeControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
+		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
 		_defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
@@ -68,24 +72,26 @@ class MenuDialog extends OptionDialog
 		for (var i=0; i<menuOptions.length; i++) {
 			var entry = {text: menuOptions[i], align: "center", enabled: true, state: "normal"};
 			menuList.entryList.push(entry);
-			if (i == menuStartIndex)
-				menuList.listState.activeEntry = entry
 		}
-		
+
+		var e = menuList.entryList[menuStartIndex];
+		menuList.listState.activeEntry = e;
+		menuList.selectedIndex = menuStartIndex;
+
 		menuList.InvalidateData();
-		
+
 		FocusHandler.instance.setFocus(menuList, 0);
 	}
 	
 	public function onDefaultPress(): Void
 	{
 		setActiveMenuIndex(menuDefaultIndex);
+		menuList.selectedIndex = menuDefaultIndex;
 	}
 	
 	public function onExitPress(): Void
 	{
 		skse.SendModEvent("SKICP_menuAccepted", null, getActiveMenuIndex());
-//		skse.SendModEvent("SKICP_dialogCanceled");
 		DialogManager.close();
 	}
 	
@@ -100,7 +106,7 @@ class MenuDialog extends OptionDialog
 			if (details.navEquivalent == NavigationCode.TAB) {
 				onExitPress();
 				return true;
-			} else if (details.control == InputDefines.ReadyWeapon.name) {
+			} else if (details.control == _defaultControls.name) {
 				onDefaultPress();
 				return true;
 			}

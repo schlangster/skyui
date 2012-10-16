@@ -392,9 +392,11 @@ class ConfigPanel extends MovieClip
 		
 		if (a_platform == 0) {
 			_acceptControls = InputDefines.Enter;
+			_defaultControls = InputDefines.ReadyWeapon;
 			_cancelControls = InputDefines.Escape;
 		} else {
 			_acceptControls = InputDefines.Accept;
+			_defaultControls = InputDefines.YButton;
 			_cancelControls = InputDefines.Cancel;
 		}
 		
@@ -465,7 +467,7 @@ class ConfigPanel extends MovieClip
 					_parentMenu.ConfigPanelClose();
 				}
 				return true;
-			} else if (details.control == InputDefines.ReadyWeapon.name) {
+			} else if (details.control == _defaultControls.name) {
 				requestDefaults();
 				return true;
 			}
@@ -802,9 +804,14 @@ class ConfigPanel extends MovieClip
 				case OptionsListEntry.OPTION_KEYMAP:
 					_buttonPanelL.addButton({text: "$Remap", controls: _acceptControls});
 					break;
-			}			
-			_buttonPanelL.addButton({text: "$Default", controls: InputDefines.ReadyWeapon});
-			_bDefaultEnabled = true;
+			}
+
+			if (type != OptionsListEntry.OPTION_EMPTY && type != OptionsListEntry.OPTION_HEADER) {
+				_buttonPanelL.addButton({text: "$Default", controls: _defaultControls});
+				_bDefaultEnabled = true;
+			} else {
+				_bDefaultEnabled = false;
+			}
 		} else {
 			_bDefaultEnabled = false;
 		}

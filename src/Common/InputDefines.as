@@ -47,6 +47,6 @@
 	// Raw
 	static var GamepadBack = {keyCode: 271};
 	static var Enter = {keyCode: 28};
-	static var Escape = {keyCode: 15};
+	static var Escape = {keyCode: 15}; //Tab
 	static var SortOrder = {keyCode: 272};
 }

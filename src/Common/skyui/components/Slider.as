@@ -18,6 +18,17 @@ class skyui.components.Slider extends gfx.controls.Slider
 		super();
 	}
 
+	public function set disabled(a_val: Boolean): Void
+	{
+		if (_disabled == a_val)
+			return;
+		super.disabled = a_val;
+		if (!initialized)
+			return;
+		leftArrow.disabled = rightArrow.disabled = _disabled;	
+		invalidate();
+	}		
+
 
   /* PUBLIC FUNCTIONS */
 
@@ -56,10 +67,8 @@ class skyui.components.Slider extends gfx.controls.Slider
 		super.configUI();
 		leftArrow.addEventListener("click", this, "scrollLeft");
 		rightArrow.addEventListener("click", this, "scrollRight");
-		leftArrow.autoRepeat = true;
-		rightArrow.autoRepeat = true;
-		leftArrow.focusTarget = this;
-		rightArrow.focusTarget = this;
+		leftArrow.autoRepeat = rightArrow.autoRepeat = true;
+		leftArrow.focusTarget = rightArrow.focusTarget = this;
 
 		var r:Number = _rotation;
 		_rotation = 0;
@@ -67,8 +76,9 @@ class skyui.components.Slider extends gfx.controls.Slider
 		constraints.addElement(track, Constraints.LEFT | Constraints.RIGHT);
 		_rotation = r;
 
-		offsetLeft += leftArrow._width + thumb._width/2;
-		offsetRight += rightArrow._width + thumb._width/2;
+		// Override left and right offsets
+		offsetLeft = leftArrow._width + thumb._width/2;
+		offsetRight = rightArrow._width + thumb._width/2;
 	}
 	
 	private function scrollLeft(event: Object): Void
