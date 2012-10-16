@@ -595,7 +595,7 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
-; @override SKI_WidgetBase
+; @overrides SKI_WidgetBase
 string function GetWidgetType()
 	return "status"
 endFunction

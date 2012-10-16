@@ -367,7 +367,7 @@ class HUDMenu extends Shared.PlatformChangeUser
 			}
 		}
 		
-		skse.SendModEvent("hudModeChange", newHUDMode);
+		skse.SendModEvent("SKIWF_hudModeChange", newHUDMode);
 	}
 
 	function SetLocationName(aLocation: String): Void

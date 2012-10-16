@@ -139,7 +139,7 @@ event OnInit()
 		_modes[1] = "StealthMode"
 	endIf
 	
-	RegisterForModEvent("widgetManagerReady", "OnWidgetManagerReady")
+	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
 endEvent
 
 event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -163,9 +163,9 @@ event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	endIf
 endEvent
 
-; Do any custom widget initialization here.
 ; @interface
 event OnWidgetInit()
+	{Handles any custom widget initialization}
 endEvent
 
 

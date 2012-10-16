@@ -180,6 +180,7 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
+; @interface
 int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	if (_configCount >= 128)
 		return -1

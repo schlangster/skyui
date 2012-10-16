@@ -16,6 +16,8 @@ int			_overrideCount	= 0
 string[]	_overrideKeys
 string[]	_overrideValues
 
+string		_currentMenu
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -44,6 +46,7 @@ event OnMenuOpen(string a_menuName)
 	GotoState("LOCKED")
 	; Check if it's still open
 	if (UI.IsMenuOpen(a_menuName))
+		_currentMenu = a_menuName
 		UI.InvokeStringA(a_menuName, MENU_ROOT + ".setExternalOverrideKeys", _overrideKeys)
 		UI.InvokeStringA(a_menuName, MENU_ROOT + ".setExternalOverrideValues", _overrideValues)
 	endIf
@@ -52,7 +55,7 @@ endEvent
 
 event OnSetConfigOverride(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	string overrideKey = a_strArg
-	string overrideValue = UI.GetString(INVENTORY_MENU, MENU_ROOT + ".out_overrides." + overrideKey)
+	string overrideValue = UI.GetString(_currentMenu, MENU_ROOT + ".out_overrides." + overrideKey)
 
 	SetOverride(overrideKey, overrideValue)
 endEvent
@@ -77,7 +80,6 @@ bool function SetOverride(string a_key, string a_value)
 	; Existing override?
 	int index = _overrideKeys.Find(a_key)
 	if (index != -1)
-		Debug.Trace("Existing override")
 		_overrideValues[index] = a_value
 
 		return true
@@ -88,7 +90,6 @@ bool function SetOverride(string a_key, string a_value)
 			return false
 		endIf
 
-		Debug.Trace("New override")
 		index = NextFreeIndex()
 		if (index == -1)
 			return false

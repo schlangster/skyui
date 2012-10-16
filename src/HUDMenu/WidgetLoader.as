@@ -3,7 +3,7 @@
 class WidgetLoader
 {
   /* CONSTANTS */
-	// NO './', bsa doesn't like it!
+  
 	private static var WIDGET_PATH = "widgets/";
 	
 	
@@ -44,7 +44,7 @@ class WidgetLoader
 	{
 		if (a_widgetHolder.widget == undefined) {
 			// Widgets need to have main MovieClip on the root with an instance name of "widget" (i.e. _root.widget for the widget swf)
-			skse.SendModEvent("widgetError", "WidgetInitFailure", Number(a_widgetHolder._name));
+			skse.SendModEvent("SKIWF_widgetError", "WidgetInitFailure", Number(a_widgetHolder._name));
 			return;
 		}
 		
@@ -55,17 +55,16 @@ class WidgetLoader
 				widgetHolder.widget.onModeChange(a_HUDMode);
 		}
 		
-		skse.SendModEvent("widgetLoaded", a_widgetHolder._name);
+		skse.SendModEvent("SKIWF_widgetLoaded", a_widgetHolder._name);
 	}
 	
 	public function onLoadError(a_widgetHolder:MovieClip, a_errorCode: String): Void
 	{
-		skse.SendModEvent("widgetError", "WidgetLoadFailure", Number(a_widgetHolder._name));
+		skse.SendModEvent("SKIWF_widgetError", "WidgetLoadFailure", Number(a_widgetHolder._name));
 	}
 	
 	public function loadWidgets(/* widgetTypes (128) */): Void
 	{
-		skse.Log("WidgetLoader.as: loadWidgets(widgetTypes[] = " + arguments + ")");
 		if (_widgetContainer != undefined) {
 			for(var s: String in _widgetContainer) {
 				if (_widgetContainer[s] instanceof MovieClip) {
