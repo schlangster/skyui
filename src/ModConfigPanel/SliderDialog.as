@@ -8,12 +8,10 @@ import Shared.GlobalFunc;
 class SliderDialog extends OptionDialog
 {
   /* PRIVATE VARIABLES */
-	
-	private var _acceptButton: MovieClip;
-	private var _defaultButton: MovieClip;
-	private var _cancelButton: MovieClip;
 
+	private var _acceptControls: Object;
 	private var _defaultControls: Object;
+	private var _cancelControls: Object;
 	
 
   /* STAGE ELEMENTS */
@@ -38,52 +36,34 @@ class SliderDialog extends OptionDialog
 		super();
 	}
 	
-	
-  /* PRIVATE FUNCTIONS */
-  
+
+   /* PUBLIC FUNCTIONS */
+   
 	// @override OptionDialog
-	private function initButtons(): Void
+	public function initButtons(): Void
 	{	
-		var acceptControls: Object;
-		var cancelControls: Object;
-		
 		if (platform == 0) {
-			acceptControls = InputDefines.Enter;
+			_acceptControls = InputDefines.Enter;
 			_defaultControls = InputDefines.ReadyWeapon;
-			cancelControls = InputDefines.Tab;
+			_cancelControls = InputDefines.Tab;
 		} else {
-			acceptControls = InputDefines.Accept;
+			_acceptControls = InputDefines.Accept;
 			_defaultControls = InputDefines.YButton;
-			cancelControls = InputDefines.Cancel;
+			_cancelControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: acceptControls});
-		_acceptButton.addEventListener("press", this, "onAcceptPress");
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
-		_defaultButton.addEventListener("press", this, "onDefaultPress");
+		var acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: _acceptControls});
+		acceptButton.addEventListener("press", this, "onAcceptPress");
+		var defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
+		defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
 		rightButtonPanel.clearButtons();
-		_cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: cancelControls});
-		_cancelButton.addEventListener("press", this, "onCancelPress");
+		var cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: _cancelControls});
+		cancelButton.addEventListener("press", this, "onCancelPress");
 		rightButtonPanel.updateButtons();
 	}
-
-	private function onValueChange(event: Object): Void
-	{
-		sliderValue = event.target.value;
-		updateValueText();
-	}
-
-	private function updateValueText(): Void
-	{
-		var t = sliderFormatString	? GlobalFunctions.formatString(sliderFormatString, sliderValue)
-									: t = Math.round(sliderValue * 100) / 100;
-		sliderPanel.valueTextField.SetText(t);
-	}
-
-   /* PUBLIC FUNCTIONS */
 
 	// @override OptionDialog
 	public function initContent(): Void
@@ -98,24 +78,6 @@ class SliderDialog extends OptionDialog
 		sliderPanel.slider.addEventListener("change", this, "onValueChange");
 
 		FocusHandler.instance.setFocus(sliderPanel.slider, 0);
-	}
-	
-	public function onAcceptPress(): Void
-	{
-		skse.SendModEvent("SKICP_sliderAccepted", null, sliderValue);
-		DialogManager.close();
-	}
-	
-	public function onDefaultPress(): Void
-	{
-		sliderValue = sliderPanel.slider.value = sliderDefault;
-		updateValueText();
-	}
-
-	public function onCancelPress(): Void
-	{
-		skse.SendModEvent("SKICP_dialogCanceled");
-		DialogManager.close();
 	}
 	
 	// @GFx
@@ -140,5 +102,39 @@ class SliderDialog extends OptionDialog
 		
 		// Don't forward to higher level
 		return true;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+
+	private function onValueChange(event: Object): Void
+	{
+		sliderValue = event.target.value;
+		updateValueText();
+	}
+	
+	private function onAcceptPress(): Void
+	{
+		skse.SendModEvent("SKICP_sliderAccepted", null, sliderValue);
+		DialogManager.close();
+	}
+	
+	private function onDefaultPress(): Void
+	{
+		sliderValue = sliderPanel.slider.value = sliderDefault;
+		updateValueText();
+	}
+
+	private function onCancelPress(): Void
+	{
+		skse.SendModEvent("SKICP_dialogCanceled");
+		DialogManager.close();
+	}
+
+	private function updateValueText(): Void
+	{
+		var t = sliderFormatString	? GlobalFunctions.formatString(sliderFormatString, sliderValue)
+									: t = Math.round(sliderValue * 100) / 100;
+		sliderPanel.valueTextField.SetText(t);
 	}
 }

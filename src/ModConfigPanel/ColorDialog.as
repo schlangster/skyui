@@ -54,15 +54,15 @@ class ColorDialog extends OptionDialog
 		}
 		
 		leftButtonPanel.clearButtons();
-		_acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: acceptControls});
-		_acceptButton.addEventListener("press", this, "onAcceptPress");
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
-		_defaultButton.addEventListener("press", this, "onDefaultPress");
+		var acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: acceptControls});
+		acceptButton.addEventListener("press", this, "onAcceptPress");
+		var defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
+		defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
 		rightButtonPanel.clearButtons();
-		_cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: cancelControls});
-		_cancelButton.addEventListener("press", this, "onCancelPress");
+		var cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: cancelControls});
+		cancelButton.addEventListener("press", this, "onCancelPress");
 		rightButtonPanel.updateButtons();
 	}
 
@@ -74,23 +74,6 @@ class ColorDialog extends OptionDialog
 		colorSwatch.selectedColor = currentColor;
 
 		FocusHandler.instance.setFocus(colorSwatch, 0);
-	}
-
-	public function onAcceptPress(): Void
-	{
-		skse.SendModEvent("SKICP_colorAccepted", null, colorSwatch.selectedColor);
-		DialogManager.close();
-	}
-	
-	public function onDefaultPress(): Void
-	{
-		colorSwatch.selectedColor = defaultColor;
-	}
-	
-	public function onCancelPress(): Void
-	{
-		skse.SendModEvent("SKICP_dialogCanceled");
-		DialogManager.close();
 	}
 	
 	// @GFx
@@ -115,5 +98,25 @@ class ColorDialog extends OptionDialog
 		
 		// Don't forward to higher level
 		return true;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+
+	private function onAcceptPress(): Void
+	{
+		skse.SendModEvent("SKICP_colorAccepted", null, colorSwatch.selectedColor);
+		DialogManager.close();
+	}
+	
+	private function onDefaultPress(): Void
+	{
+		colorSwatch.selectedColor = defaultColor;
+	}
+	
+	private function onCancelPress(): Void
+	{
+		skse.SendModEvent("SKICP_dialogCanceled");
+		DialogManager.close();
 	}
 }

@@ -9,11 +9,9 @@ import Shared.GlobalFunc;
 class MenuDialog extends OptionDialog
 {	
   /* PRIVATE VARIABLES */
-  
-  	private var _defaultButton: MovieClip;
-  	private var _closeButton: MovieClip;
 
   	private var _defaultControls: Object;
+  	private var _closeControls: Object;
 	
 
   /* STAGE ELEMENTS */
@@ -39,31 +37,29 @@ class MenuDialog extends OptionDialog
   /* PUBLIC FUNCTIONS */
   
 	// @override OptionDialog
-	private function initButtons(): Void
+	public function initButtons(): Void
 	{
-		var closeControls: Object;
-		
 		if (platform == 0) {
 			_defaultControls = InputDefines.ReadyWeapon;
-			closeControls = InputDefines.Tab;
+			_closeControls = InputDefines.Tab;
 		} else {
 			_defaultControls = InputDefines.YButton;
-			closeControls = InputDefines.Cancel;
+			_closeControls = InputDefines.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
-		_defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
-		_defaultButton.addEventListener("press", this, "onDefaultPress");
+		var defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
+		defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
 		
 		rightButtonPanel.clearButtons();
-		_closeButton = rightButtonPanel.addButton({text: "$Exit", controls: closeControls});
-		_closeButton.addEventListener("press", this, "onExitPress");
+		var closeButton = rightButtonPanel.addButton({text: "$Exit", controls: _closeControls});
+		closeButton.addEventListener("press", this, "onExitPress");
 		rightButtonPanel.updateButtons();
 	}
 
 	// @override OptionDialog
-	private function initContent(): Void
+	public function initContent(): Void
 	{
 		menuList.addEventListener("itemPress", this, "onMenuListPress");
 
@@ -81,18 +77,6 @@ class MenuDialog extends OptionDialog
 		menuList.InvalidateData();
 
 		FocusHandler.instance.setFocus(menuList, 0);
-	}
-	
-	public function onDefaultPress(): Void
-	{
-		setActiveMenuIndex(menuDefaultIndex);
-		menuList.selectedIndex = menuDefaultIndex;
-	}
-	
-	public function onExitPress(): Void
-	{
-		skse.SendModEvent("SKICP_menuAccepted", null, getActiveMenuIndex());
-		DialogManager.close();
 	}
 	
 	// @GFx
@@ -116,7 +100,10 @@ class MenuDialog extends OptionDialog
 		return true;
 	}
 	
-	public function onMenuListPress(a_event: Object): Void
+	
+  /* PRIVATE FUNCTIONS */
+  
+	private function onMenuListPress(a_event: Object): Void
 	{
 		var e = a_event.entry;
 		if (e == undefined)
@@ -125,9 +112,18 @@ class MenuDialog extends OptionDialog
 		menuList.listState.activeEntry = e;
 		menuList.UpdateList();
 	}
+  
+	private function onDefaultPress(): Void
+	{
+		setActiveMenuIndex(menuDefaultIndex);
+		menuList.selectedIndex = menuDefaultIndex;
+	}
 	
-	
-  /* PRIVATE FUNCTIONS */
+	private function onExitPress(): Void
+	{
+		skse.SendModEvent("SKICP_menuAccepted", null, getActiveMenuIndex());
+		DialogManager.close();
+	}
 	
 	private function setActiveMenuIndex(a_index: Number): Void
 	{
