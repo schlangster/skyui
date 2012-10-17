@@ -11,6 +11,5 @@ intrinsic class Mouse
 	static function show():Number;
 	
 	// scaleform extensions
-	// static function getTopMostEntity(obj1:Object,obj2:Number,obj3:Boolean):Object;
-	static function getTopMostEntity():Object;
+	static function getTopMostEntity(arg1:Object,arg2:Number,arg3:Boolean):Object;
 }
