@@ -22,8 +22,8 @@ intrinsic class Selection
 	static var disableFocusRolloverEvent:Boolean;
 	static var numFocusGroups:Number;
 	static var alwaysEnableKeyboardPress:Boolean;
-	static function getControllerMaskByFocusGroup(arg1:Number):Number;
-	static function getControllerFocusGroup(arg1:Number):Number;
-	static function findFocus(arg1:String, arg2:Object, arg3:Boolean, arg4:Object, arg5:Boolean, arg6:Number):Object;
-	static function getFocusBitmask(arg1:Object):Number;
+	static function getControllerMaskByFocusGroup(focusGroupIdx:Number):Number;
+	static function getControllerFocusGroup(controllerIndex:Number):Number;
+	static function findFocus(keyToSimulate:String, parentMovie:Object, loop:Boolean, startFromMovie:Object, includeFocusEnabledChars:Boolean, controllerIndex:Number):Object;
+	static function getFocusBitmask(mc:Object):Number;
 }
