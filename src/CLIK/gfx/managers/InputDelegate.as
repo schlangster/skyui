@@ -1,4 +1,4 @@
-﻿import gfx.events.EventDispatcher;
+import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
@@ -112,6 +112,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 40:	return NavigationCode.DOWN;
 			case 37:	return NavigationCode.LEFT;
 			case 39:	return NavigationCode.RIGHT;
+			case 32:	// Added in 1.8.145.0
 			case 13:	return NavigationCode.ENTER;
 			case 8:		return NavigationCode.BACK;
 			case 9:		return Key.isDown(16) ? NavigationCode.SHIFT_TAB : NavigationCode.TAB;
