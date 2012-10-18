@@ -4,8 +4,6 @@ scriptname SKI_ConfigManager extends SKI_QuestBase hidden
 
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MENU_ROOT		= "_root.ConfigPanelFader.configPanel" autoReadonly
-string property		DIALOG_SLIDER	= 0 autoReadonly
-string property		DIALOG_MENU		= 1 autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -127,7 +125,7 @@ event OnKeymapChange(string a_eventName, string a_strArg, float a_numArg, Form a
 	int i = 0
 	while (conflictControl == "" && i < _modConfigs.length)
 		if (_modConfigs[i] != none)
-			conflictControl = _modConfigs[i].GetMappedControl(keyCode)
+			conflictControl = _modConfigs[i].GetCustomControl(keyCode)
 			if (conflictControl != "")
 				conflictName = _modNames[i]
 			endIf

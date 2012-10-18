@@ -181,7 +181,7 @@ int function GetVersion()
 endFunction
 
 ; @interface
-string function GetMappedControl(int a_keyCode)
+string function GetCustomControl(int a_keyCode)
 	{Returns the name of a custom control mapped to given keyCode, or "" if the key is not in use by this config}
 	return ""
 endFunction
