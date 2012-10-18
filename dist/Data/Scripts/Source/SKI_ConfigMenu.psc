@@ -522,7 +522,7 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 ; @overrides SKI_ConfigBase
-string function GetMappedControl(int a_keyCode)
+string function GetCustomControl(int a_keyCode)
 	return ""
 endFunction
 

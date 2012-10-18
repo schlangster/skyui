@@ -1,8 +1,18 @@
 scriptname SKI_ConfigBase extends SKI_QuestBase
 
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-; DO NOT MODIFY OR RECOMPILE THIS SCRIPT
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;##################################################################################################
+; File Version:		1.0
+; Documentation:	https://github.com/schlangster/skyui/wiki/MCM-API-Reference
+;##################################################################################################
+;
+; Base script for custom config menus.
+;
+; This file contains the public interface of SKI_ConfigBase so you're able to extend it.
+;
+; DO NOT MODIFY THIS SCRIPT!
+; DO NOT RECOMPILE THIS SCRIPT!
+;
+;##################################################################################################
 
 
 ; CONSTANTS ---------------------------------------------------------------------------------------
@@ -252,5 +262,5 @@ function SetColorDialogDefaultColor(int a_color)
 endFunction
 
 function Guard()
-	Debug.MessageBox("SKI_ConfigBase: Y U RECOMPILE ME?")
+	Debug.MessageBox("SKI_ConfigBase: Don't recompile this script!")
 endFunction

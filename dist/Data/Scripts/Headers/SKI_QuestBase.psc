@@ -1,8 +1,20 @@
 scriptname SKI_QuestBase extends Quest hidden
 
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-; DO NOT MODIFY OR RECOMPILE THIS SCRIPT
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;##################################################################################################
+; File Version:		1.0
+;##################################################################################################
+;
+; Base script for SkyUI quest scripts.
+;
+; This file contains the public interface of SKI_QuestBase so you're able to extend it.
+;
+; DO NOT MODIFY THIS SCRIPT!
+; DO NOT RECOMPILE THIS SCRIPT!
+;
+;##################################################################################################
+
+event OnInit()
+endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; Version Tracking
@@ -40,5 +52,5 @@ event OnGameReload()
 endEvent
 
 function Guard()
-	Debug.MessageBox("SKI_QuestBase: Y U RECOMPILE ME?")
+	Debug.MessageBox("SKI_QuestBase: Don't recompile this script!")
 endFunction
