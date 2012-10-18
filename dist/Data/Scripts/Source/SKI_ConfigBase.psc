@@ -265,7 +265,7 @@ function UnloadCustomContent()
 endFunction
 
 ; @interface
-function SetOptionFlags(int a_option, int a_flags, bool noUpdate = false)
+function SetOptionFlags(int a_option, int a_flags, bool a_noUpdate = false)
 	if (_state == STATE_RESET)
 		Error("Cannot set option flags while in OnPageReset(). Pass flags to AddOption instead")
 		return
@@ -275,39 +275,39 @@ function SetOptionFlags(int a_option, int a_flags, bool noUpdate = false)
 	params[0] = a_option
 	params[1] = a_flags
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setOptionFlags", params)
-	if (!noUpdate)
+	if (!a_noUpdate)
 		UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".invalidateOptionData")
 	endIf
 endFunction
 
 ; @interface
-function SetTextOptionValue(int a_option, string a_value, bool noUpdate = false)
-	SetOptionStrValue(a_option, a_value, noUpdate)
+function SetTextOptionValue(int a_option, string a_value, bool a_noUpdate = false)
+	SetOptionStrValue(a_option, a_value, a_noUpdate)
 endFunction
 
 ; @interface
-function SetToggleOptionValue(int a_option, bool a_checked, bool noUpdate = false)
-	SetOptionNumValue(a_option, a_checked as int, noUpdate)
+function SetToggleOptionValue(int a_option, bool a_checked, bool a_noUpdate = false)
+	SetOptionNumValue(a_option, a_checked as int, a_noUpdate)
 endfunction
 
 ; @interface
-function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool noUpdate = false)
-	SetOptionValues(a_option, a_formatString, a_value, noUpdate)
+function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool a_noUpdate = false)
+	SetOptionValues(a_option, a_formatString, a_value, a_noUpdate)
 endFunction
 
 ; @interface
-function SetMenuOptionValue(int a_option, string a_value, bool noUpdate = false)
-	SetOptionStrValue(a_option, a_value, noUpdate)
+function SetMenuOptionValue(int a_option, string a_value, bool a_noUpdate = false)
+	SetOptionStrValue(a_option, a_value, a_noUpdate)
 endFunction
 
 ; @interface
-function SetColorOptionValue(int a_option, int a_color, bool noUpdate = false)
-	SetOptionNumValue(a_option, a_color, noUpdate)
+function SetColorOptionValue(int a_option, int a_color, bool a_noUpdate = false)
+	SetOptionNumValue(a_option, a_color, a_noUpdate)
 endFunction
 
 ; @interface
-function SetKeyMapOptionValue(int a_option, int a_keyCode, bool noUpdate = false)
-	SetOptionNumValue(a_option, a_keyCode, noUpdate)
+function SetKeyMapOptionValue(int a_option, int a_keyCode, bool a_noUpdate = false)
+	SetOptionNumValue(a_option, a_keyCode, a_noUpdate)
 endFunction
 
 ; @interface
@@ -481,7 +481,7 @@ function FlushOptionBuffers()
 	_cursorFillMode	= LEFT_TO_RIGHT
 endFunction
 
-function SetOptionStrValue(int a_option, string a_strValue, bool noUpdate)
+function SetOptionStrValue(int a_option, string a_strValue, bool a_noUpdate)
 	if (_state == STATE_RESET)
 		Error("Cannot modify option data while in OnPageReset()")
 		return
@@ -492,12 +492,12 @@ function SetOptionStrValue(int a_option, string a_strValue, bool noUpdate)
 
 	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
-	if (!noUpdate)
+	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
 endFunction
 
-function SetOptionNumValue(int a_option, float a_numValue, bool noUpdate)
+function SetOptionNumValue(int a_option, float a_numValue, bool a_noUpdate)
 	if (_state == STATE_RESET)
 		Error("Cannot modify option data while in OnPageReset()")
 		return
@@ -508,12 +508,12 @@ function SetOptionNumValue(int a_option, float a_numValue, bool noUpdate)
 
 	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
 	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
-	if (!noUpdate)
+	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
 endFunction
 
-function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool noUpdate)
+function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool a_noUpdate)
 	if (_state == STATE_RESET)
 		Error("Cannot modify option data while in OnPageReset()")
 		return
@@ -525,7 +525,7 @@ function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool
 	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
 	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
-	if (!noUpdate)
+	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
 endFunction
