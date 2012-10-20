@@ -12,14 +12,15 @@ Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gib
 Version:		3.0
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
+				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
 
-Development:	https://github.com/schlangster/skyui
+Source code:	https://github.com/schlangster/skyui
 
 ########################################################################################################################################
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.1 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.2 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################
@@ -33,11 +34,13 @@ The following mods/utilities are required for SkyUI:
 
 	4. Troubleshooting
 
-	5. Credits & Acknowledgements
+	5. Modders Guide
+
+	6. Credits & Acknowledgements
 	
-	6. Contact
+	7. Contact
 	
-	7. Permissions
+	8. Permissions
 
 
 ########################################################################################################################################
@@ -154,63 +157,62 @@ For a more detailed description, please see our mod description on SkyrimNexus.
  3. Installation
 ========================================================================================================================================
 
-We recommend using the Nexus Mod Manager to install SkyUI. It easily lets you install and remove the mods, and you may even pick the
-icon theme in the installer.
-
-Basically, there are three ways to install SkyUI:
-- Let NMM download and install the archive for you (recommended).
+There are four ways to install SkyUI:
+- Let the Nexus Mod Manager (NMM) download and install the archive for you.
 - Download the archive manually and install it with NMM.
 - Download and install the archive manually.
+- Subscribe to SkyUI on Steam Workshop.
 
-Choose one method:
+Pick whichever method you prefer.
 
 ------------------------------------------------------------
- a) Automatic Download with NMM
+ a) Subscribe on Steam Workshop
+------------------------------------------------------------
+
+1. Go to http://steamcommunity.com/sharedfiles/filedetails/?id=8122 and click subscribe.
+
+2. The next you start the Skyrim Launcher, SkyUI will be downloaded and installed automatically.
+
+3. Done!
+
+OR
+
+------------------------------------------------------------
+ b) Automatic Download with NMM
 ------------------------------------------------------------
 
 1.	Click the 'Download with manager' button on top of the file.
 
 2.	SkyUI will appear in in NMM's Mods list once it's downloaded. Double-click the SkyUI entry to activate it.
 
-3.	In the installer window, select a custom icon theme if you want to, then click Install.
-	If you are prompted to overwrite anything, click Yes to All.
-
-4.	Done!
+3.	Done!
 
 OR
 
 ------------------------------------------------------------
- b) Manual Download with NMM
+ c) Manual Download with NMM
 ------------------------------------------------------------
 
 1.	Start NMM and click on 'Mods'.
 
 2.	In the left icon bar, click on 'Add Mod From File' and select the downloaded archive file.
 
-3.	SkyUI will now appear in the list. Double-click to activate it.
+3.	SkyUI will now appear in the list. Double-click the entry to activate it.
 
-4.	In the installer window, select a custom icon theme if you want to, then click Install.
-	If you are prompted to overwrite anything, click 'Yes to All'.
-
-5.	Done!
+4.	Done!
 
 OR
 
 ------------------------------------------------------------
- c) Manual Installation without NMM
+ d) Manual Installation
 ------------------------------------------------------------
 
 1.	Locate the 'Data/' folder in your Skyrim installation directory.
 	Typically it's found at 'Program Files/Steam/steamapps/common/skyrim/Data/'.
 
-2.	Extract the contents of the downloaded archive file to your Data/ folder.
-	If you are prompted to overwrite anything, click 'Yes to All'.
+2.	Extract the contents of the downloaded archive file to the 'Data/' folder.
 
-In case you want to use a custom icon theme:
-3.	Locate the 'Data/SkyUI Extras/' folder. In there, pick a theme subfolder and copy
-	'skyui_icons_cat.swf' and 'skyui_icons_inv.swf' to 'Data/Interface'.
-
-4.	Done!
+3.	Done!
 
 
 ========================================================================================================================================
@@ -243,7 +245,22 @@ Solution: If you made a mistake in the config, SkyUI may stop working. In this c
 
 
 ========================================================================================================================================
- 5. Credits & Acknowledgements
+ 5. Modder's Guide
+========================================================================================================================================
+
+Since version 3.0 SkyUI provides several frameworks that can be utilized by other mods.
+
+Currently those frameworks are
+* the Mod Configuration Menu; and
+* the HUD Widget Framework.
+
+If you're interested in using them for you mod, have a look at the documentation:
+
+	https://github.com/schlangster/skyui/wiki
+
+
+========================================================================================================================================
+ 6. Credits & Acknowledgements
 ========================================================================================================================================
 
 Besides the SkyUI team itself, there are other people as well who helped significantly to make this mod a reality.
@@ -300,7 +317,7 @@ Last but not least, thanks to the whole SKSE team, because without their Script 
 
 
 ========================================================================================================================================
- 6. Contact
+ 7. Contact
 ========================================================================================================================================
 
 For direct contact, send a PM to schlangster at
@@ -313,7 +330,7 @@ If you need help, please leave a comment on our Nexus page instead of contacting
 
 	
 ========================================================================================================================================
- 7. Permissions
+ 8. Permissions
 ========================================================================================================================================	
 
 Some assets in SkyUI belong to other authors.
