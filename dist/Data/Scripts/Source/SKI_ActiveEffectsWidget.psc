@@ -80,7 +80,7 @@ string property ClampCorner
 				HAlign = "left"
 				VAlign = "top"
 			else
-				_clampCorner == "TR"
+				_clampCorner = "TR"
 				HAlign = "right"
 				VAlign = "top"
 			endIf
