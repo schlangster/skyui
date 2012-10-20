@@ -28,7 +28,12 @@ int property		TOP_TO_BOTTOM	= 2 autoReadonly
 
 string property		ModName auto
 string[] property	Pages auto
-string property		CurrentPage auto hidden
+string property CurrentPage
+	string function get()
+		Guard()
+		return  ""
+	endFunction
+endProperty
 
 
 ; EVENTS ------------------------------------------------------------------------------------------

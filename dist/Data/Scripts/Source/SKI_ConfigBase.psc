@@ -32,6 +32,7 @@ int property		TOP_TO_BOTTOM	= 2 autoReadonly
 SKI_ConfigManager	_configManager
 bool				_initialized	= false
 int					_configID		= -1
+string				_currentPage	= ""
 
 ; Keep track of what we're doing at the moment for stupidity checks
 int					_state			= 0
@@ -58,7 +59,11 @@ string				_infoText
 
 string property		ModName auto
 string[] property	Pages auto
-string property		CurrentPage auto hidden
+string property CurrentPage
+	string function get()
+		return  _currentPage
+	endFunction
+endProperty
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -406,7 +411,7 @@ function Error(string a_msg)
 endFunction
 
 function SetPage(string a_page)
-	CurrentPage = a_page
+	_currentPage = a_page
 	
 	; Set default title, can be overridden in OnPageReset
 	if (a_page != "")
