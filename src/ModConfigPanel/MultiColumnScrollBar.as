@@ -19,27 +19,30 @@ class MultiColumnScrollBar extends ScrollBar
 	public function get scrollDelta(): Number { return _scrollDelta; }
 	public function set scrollDelta(a_val: Number): Void {
 		_scrollDelta = a_val;
-		_trackScrollPageSize = Math.ceil(trackScrollPageSize / _scrollDelta) * _scrollDelta;
+		_trackScrollPageSize = Math.ceil(_trackScrollPageSize / a_val) * a_val;
 	}
 
 	public function get position(): Number	{ return _position; }
 	public function set position(a_val: Number): Void
 	{
 		a_val = Math.floor((a_val / _scrollDelta) + 0.5) * _scrollDelta;
-		if (a_val == position) { return; }
+		if (a_val == _position) { return; }
 		super.position = a_val;
 		updateScrollTarget();
 	}
 
-	private function scrollWheel(delta:Number):Void {
-		position -= (delta * _trackScrollPageSize);
+	private function scrollWheel(a_delta: Number): Void
+	{
+		position -= (a_delta * _trackScrollPageSize);
 	}
 
-	private function scrollUp():Void {
+	private function scrollUp(): Void
+	{
 		position -= _scrollDelta;
 	}
 	
-	private function scrollDown():Void {
+	private function scrollDown(): Void
+	{
 		position += _scrollDelta;
 	}
 
