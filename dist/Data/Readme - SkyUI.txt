@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.0
+Version:		3.0-alpha2
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -72,7 +72,7 @@ Further general objectives and design concepts are:
 Since improving the whole UI is a big undertaking, we release only single menus at a time as we make progress.
 The first menu we addressed was the Inventory. In version 2.0, we included new Barter, Container and Magic menus.
 
-For a more detailed description, please see our mod description on SkyrimNexus.
+For a more detailed description, please see our mod description on Skyrim Nexus.
 
 
 ========================================================================================================================================

@@ -174,7 +174,7 @@ class ConfigPanel extends MovieClip
 		
 		for (var i=0; i<arguments.length; i++)
 			if (arguments[i].toLowerCase() != "none")
-				_subList.entryList.push({text: arguments[i], align: "right", enabled: true});
+				_subList.entryList.push({pageIndex: i, text: arguments[i], align: "right", enabled: true});
 		_subList.InvalidateData();
 
 	}
@@ -593,8 +593,9 @@ class ConfigPanel extends MovieClip
 		_subList.listState.activeEntry = a_entry;
 		_subList.UpdateList();
 		
+		// Send name as well so mod doesn't have to look it up by index later
 		_state = WAIT_FOR_OPTION_DATA;
-		skse.SendModEvent("SKICP_pageSelected", a_entry.text);
+		skse.SendModEvent("SKICP_pageSelected", a_entry.text, a_entry.pageIndex);
 	}
 	
 	private function selectOption(a_index: Number): Void
