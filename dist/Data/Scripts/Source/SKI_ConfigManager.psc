@@ -76,23 +76,35 @@ event OnMenuOpen(string a_menuName)
 endEvent
 
 event OnMenuClose(string a_menuName)
+
+	if (_activeConfig)
+		_activeConfig.ClearOptionBuffers()
+	endIf
+
 	_activeConfig = none
 endEvent
 
 event OnModSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int configIndex = a_numArg as int
 	if (configIndex > -1)
+
+		; We can clean the buffers of the previous menu now
+		if (_activeConfig)
+			_activeConfig.ClearOptionBuffers()
+		endIf
+
 		_activeConfig = _modConfigs[configIndex]
 		_activeConfig.CheckVersion()
 		UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", _activeConfig.Pages)
-		_activeConfig.SetPage("")
+		_activeConfig.SetPage("", -1)
 	endIf
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
 event OnPageSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	string page = a_strArg
-	_activeConfig.SetPage(page)
+	int index = a_numArg as int
+	_activeConfig.SetPage(page, index)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
@@ -103,13 +115,13 @@ endEvent
 
 event OnOptionSelect(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
-	_activeConfig.OnOptionSelect(optionIndex)
+	_activeConfig.SelectOption(optionIndex)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
 event OnOptionDefault(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
-	_activeConfig.OnOptionDefault(optionIndex)
+	_activeConfig.ResetOption(optionIndex)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 
@@ -134,7 +146,7 @@ event OnKeymapChange(string a_eventName, string a_strArg, float a_numArg, Form a
 		i += 1
 	endWhile
 
-	_activeConfig.OnOptionKeyMapChange(optionIndex, keyCode, conflictControl, conflictName)
+	_activeConfig.RemapKey(optionIndex, keyCode, conflictControl, conflictName)
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent
 

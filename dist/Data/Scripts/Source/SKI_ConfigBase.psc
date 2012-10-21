@@ -33,15 +33,16 @@ SKI_ConfigManager	_configManager
 bool				_initialized	= false
 int					_configID		= -1
 string				_currentPage	= ""
+int					_currentPageNum	= 0		; 0 for "", real pages start at 1
 
 ; Keep track of what we're doing at the moment for stupidity checks
 int					_state			= 0
 
 int					_cursorPosition	= 0
-int					_cursorFillMode	= 1 ;LEFT_TO_RIGHT
+int					_cursorFillMode	= 1		;LEFT_TO_RIGHT
 
 ; Local buffers
-float[]				_optionFlagsBuf	; byte 1 type, byte 2 flags
+float[]				_optionFlagsBuf			; byte 1 type, byte 2 flags
 string[]			_textBuf
 string[]			_strValueBuf
 float[]				_numValueBuf
@@ -58,8 +59,10 @@ string				_infoText
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 string property		ModName auto
+
 string[] property	Pages auto
-string property CurrentPage
+
+string property		CurrentPage
 	string function get()
 		return  _currentPage
 	endFunction
@@ -172,7 +175,7 @@ event OnOptionColorAccept(int a_option, int a_color)
 endEvent
 
 ; @interface
-event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
+event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
 	{Called when a key has been remapped}
 endEvent
 
@@ -287,32 +290,74 @@ endFunction
 
 ; @interface
 function SetTextOptionValue(int a_option, string a_value, bool a_noUpdate = false)
-	SetOptionStrValue(a_option, a_value, a_noUpdate)
+	int index = a_option % 0x100
+
+	if (_optionFlagsBuf[index] != OPTION_TYPE_TEXT)
+		Error("Option type mismatch. Expected text option for OID " + a_option)
+		return
+	endIf
+
+	SetOptionStrValue(index, a_value, a_noUpdate)
 endFunction
 
 ; @interface
 function SetToggleOptionValue(int a_option, bool a_checked, bool a_noUpdate = false)
-	SetOptionNumValue(a_option, a_checked as int, a_noUpdate)
+	int index = a_option % 0x100
+
+	if (_optionFlagsBuf[index] != OPTION_TYPE_TOGGLE)
+		Error("Option type mismatch. Expected toggle option for OID " + a_option)
+		return
+	endIf
+
+	SetOptionNumValue(index, a_checked as int, a_noUpdate)
 endfunction
 
 ; @interface
 function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool a_noUpdate = false)
-	SetOptionValues(a_option, a_formatString, a_value, a_noUpdate)
+	int index = a_option % 0x100
+
+	if (_optionFlagsBuf[index] != OPTION_TYPE_SLIDER)
+		Error("Option type mismatch. Expected slider option for OID " + a_option)
+		return
+	endIf
+
+	SetOptionValues(index, a_formatString, a_value, a_noUpdate)
 endFunction
 
 ; @interface
 function SetMenuOptionValue(int a_option, string a_value, bool a_noUpdate = false)
-	SetOptionStrValue(a_option, a_value, a_noUpdate)
+	int index = a_option % 0x100
+
+	if (_optionFlagsBuf[index] != OPTION_TYPE_MENU)
+		Error("Option type mismatch. Expected menu option for OID " + a_option)
+		return
+	endIf
+
+	SetOptionStrValue(index, a_value, a_noUpdate)
 endFunction
 
 ; @interface
 function SetColorOptionValue(int a_option, int a_color, bool a_noUpdate = false)
-	SetOptionNumValue(a_option, a_color, a_noUpdate)
+	int index = a_option % 0x100
+
+	if (_optionFlagsBuf[index] != OPTION_TYPE_COLOR)
+		Error("Option type mismatch. Expected color option for OID " + a_option)
+		return
+	endIf
+
+	SetOptionNumValue(index, a_color, a_noUpdate)
 endFunction
 
 ; @interface
 function SetKeyMapOptionValue(int a_option, int a_keyCode, bool a_noUpdate = false)
-	SetOptionNumValue(a_option, a_keyCode, a_noUpdate)
+	int index = a_option % 0x100
+	
+	if (_optionFlagsBuf[index] != OPTION_TYPE_KEYMAP)
+		Error("Option type mismatch. Expected keymap option for OID " + a_option)
+		return
+	endIf
+
+	SetOptionNumValue(index, a_keyCode, a_noUpdate)
 endFunction
 
 ; @interface
@@ -410,8 +455,9 @@ function Error(string a_msg)
 	Debug.Trace(self + " ERROR: " +  a_msg)
 endFunction
 
-function SetPage(string a_page)
+function SetPage(string a_page, int a_index)
 	_currentPage = a_page
+	_currentPageNum = 1+a_index
 	
 	; Set default title, can be overridden in OnPageReset
 	if (a_page != "")
@@ -420,10 +466,11 @@ function SetPage(string a_page)
 		SetTitleText(ModName)
 	endIf
 	
+	ClearOptionBuffers()
 	_state = STATE_RESET
 	OnPageReset(a_page)
 	_state = STATE_DEFAULT
-	FlushOptionBuffers()
+	WriteOptionBuffers()
 endFunction
 
 int function AddOption(int a_optionType, string a_text, string a_strValue, float a_numValue, int a_flags)
@@ -432,15 +479,15 @@ int function AddOption(int a_optionType, string a_text, string a_strValue, float
 		return -1
 	endIf
 
-	int id = _cursorPosition
-	if (id == -1)
-		return -1
+	int pos = _cursorPosition
+	if (pos == -1)
+		return -1 ; invalid
 	endIf
 	
-	_optionFlagsBuf[id] = a_optionType + a_flags
-	_textBuf[id] = a_text
-	_strValueBuf[id] = a_strValue
-	_numValueBuf[id] = a_numValue
+	_optionFlagsBuf[pos] = a_optionType + a_flags
+	_textBuf[pos] = a_text
+	_strValueBuf[pos] = a_strValue
+	_numValueBuf[pos] = a_numValue
 	
 	; Just use numerical value of fill mode
 	_cursorPosition += _cursorFillMode
@@ -448,10 +495,12 @@ int function AddOption(int a_optionType, string a_text, string a_strValue, float
 		_cursorPosition = -1
 	endIf
 	
-	return id
+	; byte 1 - position
+	; byte 2 - page
+	return pos + _currentPageNum	* 0x100
 endFunction
 
-function FlushOptionBuffers()
+function WriteOptionBuffers()
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 	int t = OPTION_TYPE_EMPTY
@@ -472,8 +521,11 @@ function FlushOptionBuffers()
 	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
 	UI.InvokeNumberA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
 	UI.InvokeNumber(menu, root + ".flushOptionBuffers", optionCount)
+endFunction
 
-	i = 0
+function ClearOptionBuffers()
+	int t = OPTION_TYPE_EMPTY
+	int i = 0
 	while (i < 128)
 		_optionFlagsBuf[i] = t
 		_textBuf[i] = none
@@ -486,7 +538,7 @@ function FlushOptionBuffers()
 	_cursorFillMode	= LEFT_TO_RIGHT
 endFunction
 
-function SetOptionStrValue(int a_option, string a_strValue, bool a_noUpdate)
+function SetOptionStrValue(int a_index, string a_strValue, bool a_noUpdate)
 	if (_state == STATE_RESET)
 		Error("Cannot modify option data while in OnPageReset()")
 		return
@@ -495,14 +547,14 @@ function SetOptionStrValue(int a_option, string a_strValue, bool a_noUpdate)
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_index)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
 	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
 endFunction
 
-function SetOptionNumValue(int a_option, float a_numValue, bool a_noUpdate)
+function SetOptionNumValue(int a_index, float a_numValue, bool a_noUpdate)
 	if (_state == STATE_RESET)
 		Error("Cannot modify option data while in OnPageReset()")
 		return
@@ -511,14 +563,14 @@ function SetOptionNumValue(int a_option, float a_numValue, bool a_noUpdate)
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_index)
 	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
 	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
 endFunction
 
-function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool a_noUpdate)
+function SetOptionValues(int a_index, string a_strValue, float a_numValue, bool a_noUpdate)
 	if (_state == STATE_RESET)
 		Error("Cannot modify option data while in OnPageReset()")
 		return
@@ -527,7 +579,7 @@ function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_option)
+	UI.SetNumber(menu, root + ".optionCursorIndex", a_index)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
 	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
 	if (!a_noUpdate)
@@ -536,7 +588,7 @@ function SetOptionValues(int a_option, string a_strValue, float a_numValue, bool
 endFunction
 
 function RequestSliderDialogData(int a_index)
-	_activeOption = a_index
+	_activeOption = a_index + _currentPageNum * 0x100
 
 	; Defaults
 	_sliderParams[0] = 0
@@ -546,35 +598,35 @@ function RequestSliderDialogData(int a_index)
 	_sliderParams[4] = 1
 
 	_state = STATE_SLIDER
-	OnOptionSliderOpen(a_index)
+	OnOptionSliderOpen(_activeOption)
 	_state = STATE_DEFAULT
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
 endFunction
 
 function RequestMenuDialogData(int a_index)
-	_activeOption = a_index
+	_activeOption = a_index + _currentPageNum * 0x100
 
 	; Defaults
 	_menuParams[0] = -1
 	_menuParams[1] = -1
 
 	_state = STATE_MENU
-	OnOptionMenuOpen(a_index)
+	OnOptionMenuOpen(_activeOption)
 	_state = STATE_DEFAULT
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
 endFunction
 
 function RequestColorDialogData(int a_index)
-	_activeOption = a_index
+	_activeOption = a_index + _currentPageNum * 0x100
 
 	; Defaults
 	_colorParams[0] = -1
 	_colorParams[1] = -1
 
 	_state = STATE_COLOR
-	OnOptionColorOpen(a_index)
+	OnOptionColorOpen(_activeOption)
 	_state = STATE_DEFAULT
 
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
@@ -595,8 +647,24 @@ function SetColorValue(int a_color)
 	_activeOption = -1
 endFunction
 
+function SelectOption(int a_index)
+	int option = a_index + _currentPageNum * 0x100
+	OnOptionSelect(option)
+endFunction
+
+function ResetOption(int a_index)
+	int option = a_index + _currentPageNum * 0x100
+	OnOptionDefault(option)
+endFunction
+
 function HighlightOption(int a_index)
 	_infoText = ""
-	OnOptionHighlight(a_index)
+	int option = a_index + _currentPageNum * 0x100
+	OnOptionHighlight(option)
 	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", _infoText)
+endFunction
+
+function RemapKey(int a_index, int a_keyCode, string a_conflictControl, string a_conflictName)
+	int option = a_index + _currentPageNum * 0x100
+	OnOptionKeyMapChange(option, a_keyCode, a_conflictControl, a_conflictName)
 endFunction

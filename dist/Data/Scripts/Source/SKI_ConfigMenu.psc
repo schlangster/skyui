@@ -13,6 +13,8 @@ string[]	_cornerValues
 string[]	_orientations
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
+int			_itemlistFontSizeOID_T
+
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
 int			_itemcardYOffsetOID_S
@@ -28,15 +30,10 @@ int			_AEGroupEffectCountOID_S
 int			_AEOffsetXOID_S
 int			_AEOffsetYOID_S
 int			_AEOrientationOID_T
-int			_MXTestColorOID_C
-
-int			_itemlistFontSizeOID_T
-
-int			_hotkey1OID_K
-int			_hotkey2OID_K
-int			_hotkey3OID_K
 
 ; State
+int			_itemlistFontSizeIdx	= 1
+
 int			_itemcardAlignIdx		= 2
 float		_itemcardXOffset		= 0.0
 float		_itemcardYOffset		= 0.0
@@ -55,10 +52,6 @@ float		_AEOffsetX				= 0.0
 float[]		_AEBaseYValues
 float		_AEOffsetY				= 0.0
 int			_AEOrientationIdx		= 1
-
-int			_MXTestColor			= 0x162274
-
-int			_itemlistFontSizeIdx	= 1
 
 ; Internal
 float		_itemXBase
@@ -146,375 +139,341 @@ event OnPageReset(string a_page)
 	if (a_page == "General")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
-		AddHeaderOption("Item Card")
-		_itemcardAlignOID_T		= AddTextOption("Align", _alignments[_itemcardAlignIdx])
-		_itemcardXOffsetOID_S	= AddSliderOption("Horizontal Offset", _itemcardXOffset)
-		_itemcardYOffsetOID_S	= AddSliderOption("Vertical Offset", _itemcardYOffset)
-
-		AddEmptyOption()
-
-		AddHeaderOption("3D Item")
-		_3DItemXOffsetOID_S		= AddSliderOption("Horizontal Offset", _3DItemXOffset)
-		_3DItemYOffsetOID_S		= AddSliderOption("Vertical Offset", _3DItemYOffset)
-		_3DItemScaleOID_S		= AddSliderOption("Scale", _3DItemScale, "{1}")
+		AddHeaderOption("Item List")
+		_itemlistFontSizeOID_T		= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
 
 		SetCursorPosition(1)
 
-		AddHeaderOption("Item List")
-		_itemlistFontSizeOID_T	= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
-
-		_hotkey1OID_K = AddKeyMapOption("Hotkey 1", Input.GetMappedKey("Jump"))
-		_hotkey2OID_K = AddKeyMapOption("Hotkey 2", Input.GetMappedKey("Jump"))
-		_hotkey3OID_K = AddKeyMapOption("Hotkey 3", Input.GetMappedKey("Jump"))
-
-	; -------------------------------------------------------
-	elseIf (a_page == "Widgets")
-		SetCursorFillMode(TOP_TO_BOTTOM)
-
-		AddHeaderOption("Active Effects")
-		_AEEnabledOID_B				= AddToggleOption("Enabled", _AEEnabled)
+		; Disabled for now until icons are done
+		AddHeaderOption("Active Effects HUD")
+		_AEEnabledOID_B				= AddToggleOption("Enabled", _AEEnabled, OPTION_FLAG_DISABLED)
 		_AEEffectSizeOID_T			= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
-		_AEClampCornerOID_M			= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
-		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
-		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX, "{1}")
-		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY, "{1}")
-		_AEOrientationOID_T			= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
-		_MXTestColorOID_C			= AddColorOption("A Color", _MXTestColor)
 
 	; -------------------------------------------------------
 	elseIf (a_page == "Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
+		AddHeaderOption("Item Card")
+		_itemcardAlignOID_T			= AddTextOption("Align", _alignments[_itemcardAlignIdx])
+		_itemcardXOffsetOID_S		= AddSliderOption("Horizontal Offset", _itemcardXOffset)
+		_itemcardYOffsetOID_S		= AddSliderOption("Vertical Offset", _itemcardYOffset)
+
+		AddEmptyOption()
+
+		AddHeaderOption("3D Item")
+		_3DItemXOffsetOID_S			= AddSliderOption("Horizontal Offset", _3DItemXOffset)
+		_3DItemYOffsetOID_S			= AddSliderOption("Vertical Offset", _3DItemYOffset)
+		_3DItemScaleOID_S			= AddSliderOption("Scale", _3DItemScale, "{1}")
+
+		SetCursorPosition(1)
+
+		AddHeaderOption("Active Effects HUD")
+		
+		_AEOrientationOID_T			= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
+		_AEClampCornerOID_M			= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
+		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
+		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX, "{1}")
+		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY, "{1}")
+		
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionDefault(int a_option)
-	string page = CurrentPage
-	
+
 	; -------------------------------------------------------
-	if (page == "Widgets")
-		if (a_option == _AEEnabledOID_B)
-			_AEEnabled = true
-			SetToggleOptionValue(a_option, _AEEnabled)
-		endIf
+	if (a_option == _itemlistFontSizeOID_T)
+		_itemlistFontSizeIdx = 1
+		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
+		SetSliderOptionValue(a_option, 100.0)
+		ApplyItemListFontSize()
+
+	; -------------------------------------------------------
+	elseIf (a_option == _itemcardAlignOID_T)
+		_itemcardAlignIdx = 2
+		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
+
+	elseIf (a_option == _itemcardXOffsetOID_S)
+		_itemcardXOffset = 0.0
+		SetSliderOptionValue(a_option, _itemcardXOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
+
+	elseIf (a_option == _itemcardYOffsetOID_S)
+		_itemcardYOffset = 0.0
+		SetSliderOptionValue(a_option, _itemcardYOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
+
+	; -------------------------------------------------------
+	elseIf (a_option == _3DItemXOffsetOID_S)
+		_3DItemXOffset = 0.0
+		SetSliderOptionValue(a_option, _3DItemXOffset, "{1}")
+		Apply3DItemXOffset()
+
+	elseIf (a_option == _3DItemYOffsetOID_S)
+		_3DItemYOffset = 0.0
+		SetSliderOptionValue(a_option, _3DItemYOffset, "{1}")
+		Apply3DItemYOffset()
+
+	elseIf (a_option == _3DItemScaleOID_S)
+		_3DItemScale = 1.5
+		SetSliderOptionValue(a_option, _3DItemScale, "{1}")
+		Apply3DItemScale()
+
+	; -------------------------------------------------------
+	elseIf (a_option == _AEEnabledOID_B)
+		_AEEnabled = false
+		SetToggleOptionValue(a_option, _AEEnabled)
+		SKI_ActiveEffectsWidgetInstance.Enabled = _AEEnabled
+
+	elseIf (a_option == _AEEffectSizeOID_T)
+		_AEEffectSizeIdx = 1
+		SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
+		SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
+
+	elseIf (a_option == _AEClampCornerOID_M)
+		_AEClampCornerIdx = 1
+		SetMenuOptionValue(a_option, _corners[_AEClampCornerIdx])
+		SKI_ActiveEffectsWidgetInstance.ClampCorner = _cornerValues[_AEClampCornerIdx]
+		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
+		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
+
+	elseIf (a_option == _AEGroupEffectCountOID_S)
+		_AEGroupEffectCount = 8
+		SetSliderOptionValue(a_option, _AEGroupEffectCount)
+		SKI_ActiveEffectsWidgetInstance.GroupEffectCount = _AEGroupEffectCount
+
+	elseIf (a_option == _AEOffsetXOID_S)
+		_AEOffsetX = 0.0
+		SetSliderOptionValue(a_option, _AEOffsetX)
+		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
+
+	elseIf (a_option == _AEOffsetYOID_S)
+		_AEOffsetY = 0.0
+		SetSliderOptionValue(a_option, _AEOffsetY)
+		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
+
+	elseIf (a_option == _AEOrientationOID_T)
+		_AEOrientationIdx = 1
+		SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
+		SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
+
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionSelect(int a_option)
-	string page = CurrentPage
+
+	if (a_option == _itemlistFontSizeOID_T)
+
+		if (_itemlistFontSizeIdx < _sizes.length - 1)
+			_itemlistFontSizeIdx += 1
+		else
+			_itemlistFontSizeIdx = 0
+		endif
+		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
+		ApplyItemListFontSize()
+
+	elseIf (a_option == _AEEnabledOID_B)
+		_AEEnabled = !_AEEnabled
+		SetToggleOptionValue(a_option, _AEEnabled)
+		SKI_ActiveEffectsWidgetInstance.Enabled = _AEEnabled
+
+	elseIf (a_option == _itemcardAlignOID_T)
+		if (_itemcardAlignIdx < _alignments.length - 1)
+			_itemcardAlignIdx += 1
+		else
+			_itemcardAlignIdx = 0
+		endif
+		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
 	
-	; -------------------------------------------------------
-	if (page == "General")
-		if (a_option == _itemcardAlignOID_T)
-			if (_itemcardAlignIdx < _alignments.length - 1)
-				_itemcardAlignIdx += 1
-			else
-				_itemcardAlignIdx = 0
-			endif
-			SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
-			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
-
-		elseIf (a_option == _itemlistFontSizeOID_T)
-			if (_itemlistFontSizeIdx < _sizes.length - 1)
-				_itemlistFontSizeIdx += 1
-			else
-				_itemlistFontSizeIdx = 0
-			endif
-
-			SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
-
-			; Small
-			if (_itemlistFontSizeIdx == 0)
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$label$textFormat$size", "12")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$entry$textFormat$size", "13")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$n_iconSize$value", "16")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$a_textBorder$value", "<0, 0, 0.3, 0>")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$indent", "-25")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$border", "<0, 10, 2, 2>")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$iconColumn$border", "<0, 3, 2, 2>")
-			; Medium
-			elseIf (_itemlistFontSizeIdx == 1)
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$label$textFormat$size", "12")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$entry$textFormat$size", "14")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$n_iconSize$value", "18")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$a_textBorder$value", "<0, 0, 1.1, 0>")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$indent", "-28")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$border", "<0, 10, 3, 3>")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$iconColumn$border", "<0, 3, 3, 3>")
-			; Large
-			else
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$label$textFormat$size", "14")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$entry$textFormat$size", "18")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$n_iconSize$value", "20")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$a_textBorder$value", "<0, 0, 0.4, 0>")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$indent", "-30")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$border", "<0, 10, 3.2, 3.2>")
-				SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$iconColumn$border", "<0, 4, 3.2, 3.2>")
-			endIf
+	elseif (a_option == _AEEffectSizeOID_T)
+		if (_AEEffectSizeIdx < _sizes.length - 1)
+			_AEEffectSizeIdx += 1
+		else
+			_AEEffectSizeIdx = 0
 		endIf
+		SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
+		SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
 
-	; -------------------------------------------------------
-	elseIf (page == "Widgets")
-		if (a_option == _AEEnabledOID_B)
-			_AEEnabled = !_AEEnabled
-			SetToggleOptionValue(a_option, _AEEnabled)
-			SKI_ActiveEffectsWidgetInstance.Enabled = _AEEnabled
-		elseif (a_option == _AEEffectSizeOID_T)
-			if (_AEEffectSizeIdx < _sizes.length - 1)
-				_AEEffectSizeIdx += 1
-			else
-				_AEEffectSizeIdx = 0
-			endIf
-			SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
-			SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
-		elseIf (a_option == _AEOrientationOID_T)
-			if (_AEOrientationIdx < _orientations.length - 1)
-				_AEOrientationIdx += 1
-			else
-				_AEOrientationIdx = 0
-			endIf
-			SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
-			SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
+	elseIf (a_option == _AEOrientationOID_T)
+		if (_AEOrientationIdx < _orientations.length - 1)
+			_AEOrientationIdx += 1
+		else
+			_AEOrientationIdx = 0
 		endIf
+		SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
+		SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
+
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionSliderOpen(int a_option)
-	string page = CurrentPage
 
-	; -------------------------------------------------------
-	if (page == "General")
-		if (a_option == _itemcardXOffsetOID_S)
-			SetSliderDialogStartValue(_itemcardXOffset)
-			SetSliderDialogDefaultValue(0)
-			SetSliderDialogRange(-1000, 1000)
-			SetSliderDialogInterval(1)
-		elseIf (a_option == _itemcardYOffsetOID_S)
-			SetSliderDialogStartValue(_itemcardYOffset)
-			SetSliderDialogDefaultValue(0)
-			SetSliderDialogRange(-1000, 1000)
-			SetSliderDialogInterval(1)
+	if (a_option == _itemcardXOffsetOID_S)
+		SetSliderDialogStartValue(_itemcardXOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-1000, 1000)
+		SetSliderDialogInterval(1)
 
-		elseIf (a_option == _3DItemXOffsetOID_S)
-			SetSliderDialogStartValue(_3DItemXOffset)
-			SetSliderDialogDefaultValue(0)
-			SetSliderDialogRange(-128, 128)
-			SetSliderDialogInterval(1)
-		elseIf (a_option == _3DItemYOffsetOID_S)
-			SetSliderDialogStartValue(_3DItemYOffset)
-			SetSliderDialogDefaultValue(0)
-			SetSliderDialogRange(-128, 128)
-			SetSliderDialogInterval(1)
-		elseIf (a_option == _3DItemScaleOID_S)
-			SetSliderDialogStartValue(_3DItemScale)
-			SetSliderDialogDefaultValue(1.5)
-			SetSliderDialogRange(0.5, 5)
-			SetSliderDialogInterval(0.1)
-		endIf
+	elseIf (a_option == _itemcardYOffsetOID_S)
+		SetSliderDialogStartValue(_itemcardYOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-1000, 1000)
+		SetSliderDialogInterval(1)
 
-	; -------------------------------------------------------
-	elseif (page == "Widgets")
-		if (a_option == _AEGroupEffectCountOID_S)
-			SetSliderDialogStartValue(_AEGroupEffectCount)
-			SetSliderDialogDefaultValue(8)
-			SetSliderDialogRange(1, 16)
-			SetSliderDialogInterval(1)
-		elseIf (a_option == _AEOffsetXOID_S)
-			SetSliderDialogStartValue(_AEOffsetX)
-			SetSliderDialogDefaultValue(0)
-			SetSliderDialogRange(-1280, 1280)
-			SetSliderDialogInterval(0.5)
-		elseIf (a_option == _AEOffsetYOID_S)
-			SetSliderDialogStartValue(_AEOffsetY)
-			SetSliderDialogDefaultValue(0)
-			SetSliderDialogRange(-720, 720)
-			SetSliderDialogInterval(0.5)
-		endIf
+	elseIf (a_option == _3DItemXOffsetOID_S)
+		SetSliderDialogStartValue(_3DItemXOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-128, 128)
+		SetSliderDialogInterval(1)
+
+	elseIf (a_option == _3DItemYOffsetOID_S)
+		SetSliderDialogStartValue(_3DItemYOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-128, 128)
+		SetSliderDialogInterval(1)
+		
+	elseIf (a_option == _3DItemScaleOID_S)
+		SetSliderDialogStartValue(_3DItemScale)
+		SetSliderDialogDefaultValue(1.5)
+		SetSliderDialogRange(0.5, 5)
+		SetSliderDialogInterval(0.1)
+
+	elseIf (a_option == _AEGroupEffectCountOID_S)
+		SetSliderDialogStartValue(_AEGroupEffectCount)
+		SetSliderDialogDefaultValue(8)
+		SetSliderDialogRange(1, 16)
+		SetSliderDialogInterval(1)
+
+	elseIf (a_option == _AEOffsetXOID_S)
+		SetSliderDialogStartValue(_AEOffsetX)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-1280, 1280)
+		SetSliderDialogInterval(0.5)
+
+	elseIf (a_option == _AEOffsetYOID_S)
+		SetSliderDialogStartValue(_AEOffsetY)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-720, 720)
+		SetSliderDialogInterval(0.5)
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionSliderAccept(int a_option, float a_value)
-	string page = CurrentPage
 
-	; -------------------------------------------------------
-	if (page == "General")
-		if (a_option == _itemcardXOffsetOID_S)
-			_itemcardXOffset = a_value
-			SetSliderOptionValue(a_option, _itemcardXOffset)
-			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
-		elseIf (a_option == _itemcardYOffsetOID_S)
-			_itemcardYOffset = a_value
-			SetSliderOptionValue(a_option, _itemcardYOffset)
-			SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
+	if (a_option == _itemcardXOffsetOID_S)
+		_itemcardXOffset = a_value
+		SetSliderOptionValue(a_option, _itemcardXOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
 
-		elseIf (a_option == _3DItemXOffsetOID_S)
-			_3DItemXOffset = a_value
-			SetSliderOptionValue(a_option, _3DItemXOffset)
-			Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-			Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
-			Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-			Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
-		elseIf (a_option == _3DItemYOffsetOID_S)
-			_3DItemYOffset = a_value
-			SetSliderOptionValue(a_option, _3DItemYOffset)
-			Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-			Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
-			Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-			Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
-		elseIf (a_option == _3DItemScaleOID_S)
-			_3DItemScale = a_value
-			SetSliderOptionValue(a_option, _3DItemScale, "{1}")
-			Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
-			Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
-			Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
-			Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
-		endIf
+	elseIf (a_option == _itemcardYOffsetOID_S)
+		_itemcardYOffset = a_value
+		SetSliderOptionValue(a_option, _itemcardYOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
 
-	; -------------------------------------------------------
-	elseif (page == "Widgets")
-		if (a_option == _AEGroupEffectCountOID_S)
-			_AEGroupEffectCount = a_value as int
-			SetSliderOptionValue(a_option, _AEGroupEffectCount)
-			SKI_ActiveEffectsWidgetInstance.GroupEffectCount = _AEGroupEffectCount
-		elseIf (a_option == _AEOffsetXOID_S)
-			_AEOffsetX = a_value
-			SetSliderOptionValue(a_option, _AEOffsetX)
-			SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
-		elseIf (a_option == _AEOffsetYOID_S)
-			_AEOffsetY = a_value
-			SetSliderOptionValue(a_option, _AEOffsetY)
-			SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
-		endIf
+	elseIf (a_option == _3DItemXOffsetOID_S)
+		_3DItemXOffset = a_value
+		SetSliderOptionValue(a_option, _3DItemXOffset, "{1}")
+		Apply3DItemXOffset()
+
+	elseIf (a_option == _3DItemYOffsetOID_S)
+		_3DItemYOffset = a_value
+		SetSliderOptionValue(a_option, _3DItemYOffset, "{1}")
+		Apply3DItemYOffset()
+
+	elseIf (a_option == _3DItemScaleOID_S)
+		_3DItemScale = a_value
+		SetSliderOptionValue(a_option, _3DItemScale, "{1}")
+		Apply3DItemScale()
+
+	elseIf (a_option == _AEGroupEffectCountOID_S)
+		_AEGroupEffectCount = a_value as int
+		SetSliderOptionValue(a_option, _AEGroupEffectCount)
+		SKI_ActiveEffectsWidgetInstance.GroupEffectCount = _AEGroupEffectCount
+
+	elseIf (a_option == _AEOffsetXOID_S)
+		_AEOffsetX = a_value
+		SetSliderOptionValue(a_option, _AEOffsetX)
+		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
+
+	elseIf (a_option == _AEOffsetYOID_S)
+		_AEOffsetY = a_value
+		SetSliderOptionValue(a_option, _AEOffsetY)
+		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
+
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionMenuOpen(int a_option)
-	string page = CurrentPage
 
-	; -------------------------------------------------------
-	if (page == "General")
+	if (a_option == _AEClampCornerOID_M)
+		SetMenuDialogStartIndex(_AEClampCornerIdx)
+		SetMenuDialogDefaultIndex(1)
+		SetMenuDialogOptions(_corners)
 
-	; -------------------------------------------------------
-	elseIf (page == "Widgets")
-		if (a_option == _AEClampCornerOID_M)
-			SetMenuDialogStartIndex(_AEClampCornerIdx)
-			SetMenuDialogDefaultIndex(1)
-			SetMenuDialogOptions(_corners)
-		endIf
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionMenuAccept(int a_option, int a_index)
-	string page = CurrentPage
+	
+	if (a_option == _AEClampCornerOID_M)
+		_AEClampCornerIdx = a_index
+		SetMenuOptionValue(a_option, _corners[_AEClampCornerIdx])
+		SKI_ActiveEffectsWidgetInstance.ClampCorner = _cornerValues[_AEClampCornerIdx]
+		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
+		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
 
-	; -------------------------------------------------------
-	if (page == "General")
-
-	; -------------------------------------------------------
-	elseif (page == "Widgets")
-		if (a_option == _AEClampCornerOID_M)
-			_AEClampCornerIdx = a_index
-			SetMenuOptionValue(a_option, _corners[_AEClampCornerIdx])
-			SKI_ActiveEffectsWidgetInstance.ClampCorner = _cornerValues[_AEClampCornerIdx]
-			SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
-			SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
-		endIf
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionColorOpen(int a_option)
-	string page = CurrentPage
-
-	if (page == "Widgets")
-		if (a_option == _MXTestColorOID_C)
-			SetColorDialogStartColor(_MXTestColor)
-			SetColorDialogDefaultColor(0x162274)
-		endIf
-	endIf
-endEvent
-
-; @implements SKI_ConfigBase
-event OnOptionColorAccept(int a_option, int a_color)
-	string page = CurrentPage
-
-	if (page == "Widgets")
-		if (a_option == _MXTestColorOID_C)
-			_MXTestColor = a_color;
-			SetColorOptionValue(a_option, a_color)
-		endIf
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
-	string page = CurrentPage
-
-	if (a_conflictControl != "")
-		Debug.Trace("Keymap conflict detected. Control: " + a_conflictControl + ", Name: " + a_conflictName)
-	endIf
-
-	; -------------------------------------------------------
-	if (page == "General")
-		if (a_option == _hotkey1OID_K)
-			SetKeyMapOptionValue(a_option, a_keyCode)
-		elseIf (a_option == _hotkey2OID_K)
-			SetKeyMapOptionValue(a_option, a_keyCode)
-		elseIf (a_option == _hotkey3OID_K)
-			SetKeyMapOptionValue(a_option, a_keyCode)
-		endIf
 	endIf
 endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionHighlight(int a_option)
-	string page = CurrentPage
-	
-	; -------------------------------------------------------
-	if (page == "General")
-		if (a_option == _itemcardAlignOID_T)
-			SetInfoText("Default: Center")
-		elseIf (a_option == _itemcardXOffsetOID_S)
-			SetInfoText("Default: 0")
-		elseIf (a_option == _itemcardYOffsetOID_S)
-			SetInfoText("Default: 0")
 
-		elseIf (a_option == _3DItemXOffsetOID_S)
-			SetInfoText("Default: 0")
-		elseIf (a_option == _3DItemYOffsetOID_S)
-			SetInfoText("Default: 0")
-		elseIf (a_option == _3DItemScaleOID_S)
-			SetInfoText("Default: 1.5")
-		endIf
 
-	; -------------------------------------------------------
-	elseIf (page == "Widgets")
-		if (a_option == _AEEffectSizeOID_T)
-			SetInfoText("Default: Medium")
-		elseif (a_option == _AEClampCornerOID_M)
-			SetInfoText("Default: Top Right")
-		elseIf (a_option == _AEGroupEffectCountOID_S)
-			SetInfoText("Default: 8")
-		elseif (a_option == _AEOffsetXOID_S)
-			SetInfoText("Default: 0")
-		elseif (a_option == _AEOffsetYOID_S)
-			SetInfoText("Default: 0")
-		endIf
+	if (a_option == _itemlistFontSizeOID_T)
+		SetInfoText("Default: Medium")
+
+	elseIf (a_option == _itemcardAlignOID_T)
+		SetInfoText("Default: Center")
+	elseIf (a_option == _itemcardXOffsetOID_S)
+		SetInfoText("Default: 0")
+	elseIf (a_option == _itemcardYOffsetOID_S)
+		SetInfoText("Default: 0")
+
+	elseIf (a_option == _3DItemXOffsetOID_S)
+		SetInfoText("Default: 0")
+	elseIf (a_option == _3DItemYOffsetOID_S)
+		SetInfoText("Default: 0")
+	elseIf (a_option == _3DItemScaleOID_S)
+		SetInfoText("Default: 1.5")
+
+	elseIf (a_option == _AEEnabledOID_B)
+		SetInfoText("Default: No")
+	elseIf (a_option == _AEEffectSizeOID_T)
+		SetInfoText("Default: Medium")
+	elseif (a_option == _AEClampCornerOID_M)
+		SetInfoText("Default: Top Right")
+	elseIf (a_option == _AEGroupEffectCountOID_S)
+		SetInfoText("Default: 8")
+	elseif (a_option == _AEOffsetXOID_S)
+		SetInfoText("Default: 0")
+	elseif (a_option == _AEOffsetYOID_S)
+		SetInfoText("Default: 0")
+	elseif (a_option == _AEOrientationOID_T)
+		SetInfoText("Default: Vertical")
 	endIf
 endEvent
 
@@ -535,19 +494,59 @@ function ApplySettings()
 		_itemXBase = -29.122497558594
 	endIf
 
-	; Item
-	Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
-	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
-	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
-	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
+	Apply3DItemXOffset()
+	Apply3DItemYOffset()
+	Apply3DItemScale()
+endFunction
 
-	; Magic
-	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
+function ApplyItemListFontSize()
+	; Small
+	if (_itemlistFontSizeIdx == 0)
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$label$textFormat$size", "12")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$entry$textFormat$size", "13")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$n_iconSize$value", "16")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$a_textBorder$value", "<0, 0, 0.3, 0>")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$indent", "-25")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$border", "<0, 10, 2, 2>")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$iconColumn$border", "<0, 3, 2, 2>")
+	; Medium
+	elseIf (_itemlistFontSizeIdx == 1)
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$label$textFormat$size", "12")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$entry$textFormat$size", "14")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$n_iconSize$value", "18")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$a_textBorder$value", "<0, 0, 1.1, 0>")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$indent", "-28")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$border", "<0, 10, 3, 3>")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$iconColumn$border", "<0, 3, 3, 3>")
+	; Large
+	else
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$label$textFormat$size", "14")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$defaults$entry$textFormat$size", "18")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$n_iconSize$value", "20")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$vars$a_textBorder$value", "<0, 0, 0.4, 0>")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$indent", "-30")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$equipColumn$border", "<0, 10, 3.2, 3.2>")
+		SKI_SettingsManagerInstance.SetOverride("ListLayout$columns$iconColumn$border", "<0, 4, 3.2, 3.2>")
+	endIf
+endFunction
+
+function Apply3DItemXOffset()
+	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
 	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
 	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+endFunction
+
+function Apply3DItemYOffset()
+	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
+	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
 	Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
+endFunction
+
+function Apply3DItemScale()
+	Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
+	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
+	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
+	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
 endFunction

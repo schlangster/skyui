@@ -98,7 +98,7 @@ event OnOptionColorAccept(int a_option, int a_color)
 	Guard()
 endEvent
 
-event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
+event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
 	{Called when a key has been remapped}
 	Guard()
 endEvent
