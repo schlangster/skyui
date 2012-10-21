@@ -13,7 +13,7 @@ class MultiColumnScrollBar extends ScrollBar
 	public function get trackScrollPageSize(): Number { return _trackScrollPageSize; }
 	public function set trackScrollPageSize(a_val: Number): Void
 	{
-		_trackScrollPageSize = Math.ceil(trackScrollPageSize / _scrollDelta) * _scrollDelta;
+		_trackScrollPageSize = Math.ceil(a_val / _scrollDelta) * _scrollDelta;
 	}
 
 	public function get scrollDelta(): Number { return _scrollDelta; }
