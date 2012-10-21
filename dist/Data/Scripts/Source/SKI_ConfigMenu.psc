@@ -186,7 +186,6 @@ event OnOptionDefault(int a_option)
 	if (a_option == _itemlistFontSizeOID_T)
 		_itemlistFontSizeIdx = 1
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
-		SetSliderOptionValue(a_option, 100.0)
 		ApplyItemListFontSize()
 
 	; -------------------------------------------------------
