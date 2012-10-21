@@ -44,6 +44,15 @@ class MultiColumnScrollingList extends ScrollingList
 		if (_separators == null)
 			_separators = [];
 	}
+
+	public function onLoad(): Void
+	{
+		super.onLoad();
+
+		if(scrollbar != undefined) {
+			scrollbar.scrollDelta = scrollDelta;
+		}
+	}
 	
 	
   /* PUBLIC FUNCTIONS */
