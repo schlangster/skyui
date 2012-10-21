@@ -104,6 +104,11 @@ class ModListPanel extends MovieClip
 	{
 		return (_state == SUBLIST_ACTIVE);
 	}
+
+	public function isListActive(): Boolean
+	{
+		return (_state == LIST_ACTIVE);
+	}
   
 	public function showList(): Void
 	{

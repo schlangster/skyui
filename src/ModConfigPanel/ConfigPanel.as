@@ -463,7 +463,7 @@ class ConfigPanel extends MovieClip
 				if (_modListPanel.isSublistActive()) {
 					changeFocus(FOCUS_MODLIST);
 					_modListPanel.showList();
-				} else {
+				} else if (_modListPanel.isListActive()) {
 					_parentMenu.ConfigPanelClose();
 				}
 				return true;
