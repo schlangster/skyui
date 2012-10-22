@@ -212,20 +212,21 @@ class QuestsPage extends MovieClip
 		var bCompleted = false;
 		var bUncompleted = false;
 		
-		for (var i: Number; i < TitleList.entryList.length; i++) {
+		for (var i: Number = 0; i < TitleList.entryList.length; i++) {
 			if (TitleList.entryList[i].formID == 0) {
-					TitleList.entryList[i].timeIndex = Number.MAX_VALUE;
-				} else {
-					TitleList.entryList[i].timeIndex = i;
+				// Is a misc quest
+				TitleList.entryList[i].timeIndex = Number.MAX_VALUE;
+			} else {
+				TitleList.entryList[i].timeIndex = i;
+			}
+			if (TitleList.entryList[i].completed) {
+				if (itimeCompleted == undefined) {
+					itimeCompleted = TitleList.entryList[i].timeIndex - 0.5;
 				}
-				if (TitleList.entryList[i].completed) {
-					if (itimeCompleted == undefined) {
-						itimeCompleted = TitleList.entryList[i].timeIndex - 0.5;
-					}
-					bCompleted = true;
-				} else {
-					bUncompleted = true;
-				}
+				bCompleted = true;
+			} else {
+				bUncompleted = true;
+			}
 		}
 		
 		if (itimeCompleted != undefined && bCompleted && bUncompleted) {
@@ -234,9 +235,9 @@ class QuestsPage extends MovieClip
 		}
 		TitleList.entryList.sort(completedQuestSort);
 		
-		var isavedIndex = 0;
+		var isavedIndex: Number = 0;
 
-		for (var i: Number; i < TitleList.entryList.length; i++) {
+		for (var i: Number = 0; i < TitleList.entryList.length; i++) {
 			if (TitleList.entryList[i].text != undefined) {
 				TitleList.entryList[i].text = TitleList.entryList[i].text.toUpperCase();
 			}
