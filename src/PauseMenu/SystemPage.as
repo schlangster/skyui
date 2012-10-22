@@ -22,6 +22,14 @@ class SystemPage extends MovieClip
 	static var HELP_TEXT_STATE: Number = 12;
 	static var TRANSITIONING: Number = 13;
 	static var MOD_CONFIG_STATE: Number = 14;
+
+	static var SAVE_INDEX: Number = 0;
+	static var LOAD_INDEX: Number = 1;
+	static var SETTINGS_INDEX: Number = 2;
+	static var MOD_CONFIG_INDEX: Number = 3;
+	static var CONTROLS_INDEX: Number = 4;
+	static var HELP_INDEX: Number = 5;
+	static var QUIT_INDEX: Number = 6;
 	
 	var HelpButtonHolder: ButtonTextArtHolder;
 	
@@ -90,14 +98,15 @@ class SystemPage extends MovieClip
 
 	function onLoad(): Void
 	{
-		CategoryList.entryList.push({text: "$SAVE"});
-		CategoryList.entryList.push({text: "$LOAD"});
-		CategoryList.entryList.push({text: "$SETTINGS"});
-		CategoryList.entryList.push({text: "$MOD CONFIG"});
-		CategoryList.entryList.push({text: "$CONTROLS"});
-		CategoryList.entryList.push({text: "$HELP"});
-		CategoryList.entryList.push({text: "$QUIT"});
+		CategoryList.entryList.push({text: "$SAVE", index: SystemPage.SAVE_INDEX});
+		CategoryList.entryList.push({text: "$LOAD", index: SystemPage.LOAD_INDEX});
+		CategoryList.entryList.push({text: "$SETTINGS", index: SystemPage.SETTINGS_INDEX});
+		CategoryList.entryList.push({text: "$MOD CONFIG", index: SystemPage.MOD_CONFIG_INDEX});
+		CategoryList.entryList.push({text: "$CONTROLS", index: SystemPage.CONTROLS_INDEX});
+		CategoryList.entryList.push({text: "$HELP", index: SystemPage.HELP_INDEX});
+		CategoryList.entryList.push({text: "$QUIT", index: SystemPage.QUIT_INDEX});
 		CategoryList.InvalidateData();
+
 		CategoryList.addEventListener("itemPress", this, "onCategoryButtonPress");
 		CategoryList.addEventListener("listPress", this, "onCategoryListPress");
 		CategoryList.addEventListener("listMovedUp", this, "onCategoryListMoveUp");
@@ -125,7 +134,7 @@ class SystemPage extends MovieClip
 		GameDelegate.addCallBack("SettingsSaved", this, "onSettingsSaved");
 		GameDelegate.addCallBack("RefreshSystemButtons", this, "RefreshSystemButtons");
 		PCQuitList.entryList = [{text: "$Main Menu"}, {text: "$Desktop"}];
-		PCQuitList.UpdateList();
+		PCQuitList.InvalidateData();
 		PCQuitList.addEventListener("itemPress", this, "onPCQuitButtonPress");
 		HelpList.addEventListener("itemPress", this, "onHelpItemPress");
 		HelpList.disableInput = true;
@@ -139,11 +148,19 @@ class SystemPage extends MovieClip
 		CategoryList.disableInput = false; // Bugfix for vanilla
 		if (!bUpdated) {
 			currentState = SystemPage.MAIN_STATE;
+
 			GameDelegate.call("SetVersionText", [VersionText]);
 			GameDelegate.call("ShouldShowKinectTunerOption", [], this, "SetShouldShowKinectTunerOption");
-			GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5]]);
+			GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[SystemPage.SAVE_INDEX], CategoryList.entryList[SystemPage.LOAD_INDEX], CategoryList.entryList[SystemPage.SETTINGS_INDEX], CategoryList.entryList[SystemPage.CONTROLS_INDEX], CategoryList.entryList[SystemPage.QUIT_INDEX]]);
+			if (_global.skse == undefined) {
+				// Removes Mod Config option from the category list
+				// Removed rather than added to avoid having logic in the SetSaveDisabled GameDelegate call
+				CategoryList.entryList.splice(SystemPage.MOD_CONFIG_INDEX, 1);
+			}
+
 			BottomBar_mc.SetButtonVisibility(1, false, 50);
-			CategoryList.UpdateList();
+
+			CategoryList.InvalidateData();
 			bUpdated = true;
 			return;
 		}
@@ -359,27 +376,27 @@ class SystemPage extends MovieClip
 		}
 		if (iCurrentState == SystemPage.MAIN_STATE) 
 		{
-			switch (event.index) {
-				case 0:
+			switch (event.entry.index) {
+				case SystemPage.SAVE_INDEX:
 					SaveLoadListHolder.isSaving = true;
 					GameDelegate.call("SAVE", [SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]);
 					break;
 					
-				case 1:
+				case SystemPage.LOAD_INDEX:
 					SaveLoadListHolder.isSaving = false;
 					GameDelegate.call("LOAD", [SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]);
 					break;
 					
-				case 2:
+				case SystemPage.SETTINGS_INDEX:
 					StartState(SystemPage.SETTINGS_CATEGORY_STATE);
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					break;
 					
-				case 3:
+				case SystemPage.MOD_CONFIG_INDEX:
 					_root.QuestJournalFader.Menu_mc.ConfigPanelOpen();
 					break;
 					
-				case 4:
+				case SystemPage.CONTROLS_INDEX:
 					if (MappingList.entryList.length == 0) {
 						GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
 						MappingList.entryList.sort(inputMappingSort);
@@ -389,7 +406,7 @@ class SystemPage extends MovieClip
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					break;
 					
-				case 5:
+				case SystemPage.HELP_INDEX:
 					if (HelpList.entryList.length == 0) {
 						GameDelegate.call("PopulateHelpTopics", [HelpList.entryList]);
 						HelpList.entryList.sort(doABCSort);
@@ -403,7 +420,7 @@ class SystemPage extends MovieClip
 					}
 					break;
 					
-				case 6:
+				case SystemPage.QUIT_INDEX:
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					GameDelegate.call("RequestIsOnPC", [], this, "populateQuitList");
 					break;
