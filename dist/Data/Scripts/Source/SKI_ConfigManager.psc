@@ -41,7 +41,7 @@ event OnInit()
 	RegisterForMenu(JOURNAL_MENU)
 	
 	; Wait a few seconds until any initial menus have registered for events
-	Utility.Wait(2)
+	Utility.Wait(0.01)
 	
 	OnGameReload()
 endEvent
@@ -78,7 +78,7 @@ endEvent
 event OnMenuClose(string a_menuName)
 
 	if (_activeConfig)
-		_activeConfig.ClearOptionBuffers()
+		_activeConfig.CloseConfig()
 	endIf
 
 	_activeConfig = none
@@ -90,13 +90,11 @@ event OnModSelect(string a_eventName, string a_strArg, float a_numArg, Form a_se
 
 		; We can clean the buffers of the previous menu now
 		if (_activeConfig)
-			_activeConfig.ClearOptionBuffers()
+			_activeConfig.CloseConfig()
 		endIf
 
 		_activeConfig = _modConfigs[configIndex]
-		_activeConfig.CheckVersion()
-		UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", _activeConfig.Pages)
-		_activeConfig.SetPage("", -1)
+		_activeConfig.OpenConfig()
 	endIf
 	UI.InvokeBool(JOURNAL_MENU, MENU_ROOT + ".unlock", true)
 endEvent

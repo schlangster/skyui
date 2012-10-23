@@ -82,6 +82,8 @@ class ConfigPanel extends MovieClip
 	
 	private var _bDefaultEnabled: Boolean = false;
 	
+	private var _bRequestPageReset: Boolean = false;
+	
 	
   /* STAGE ELEMENTS */
 
@@ -154,6 +156,14 @@ class ConfigPanel extends MovieClip
   	public function unlock(): Void
 	{
 		_state = READY;
+		
+		// Execute depending forced reset when ready
+		if (_bRequestPageReset) {
+			_bRequestPageReset = false;
+			var entry = _subList.listState.activeEntry;
+			selectPage(entry);
+			return;
+		}
 	}
 	
 	public function setModNames(/* names */): Void
@@ -371,8 +381,13 @@ class ConfigPanel extends MovieClip
 	public function setOptionFlags(/* values */): Void
 	{
 		var index = arguments[0];
-		var flags = arguments[1] >>> 8;
+		var flags = arguments[1];
 		_optionsList.entryList[index].flags = flags;
+	}
+	
+	public function forcePageReset(): Void
+	{
+		_bRequestPageReset = true;
 	}
 	
 	
@@ -558,9 +573,6 @@ class ConfigPanel extends MovieClip
 	
 	private function onOptionChangeDialogClosed(event: Object): Void
 	{
-//		categoryList.disableSelection = categoryList.disableInput = false;
-//		itemList.disableSelection = itemList.disableInput = false;
-//		searchWidget.isDisabled = false;
 	}
 	
 	private function selectMod(a_entry: Object): Void
@@ -587,15 +599,19 @@ class ConfigPanel extends MovieClip
 		if (_state != READY)
 			return;
 			
-		if (a_entry == undefined)
-			return;
-		
-		_subList.listState.activeEntry = a_entry;
-		_subList.UpdateList();
-		
-		// Send name as well so mod doesn't have to look it up by index later
-		_state = WAIT_FOR_OPTION_DATA;
-		skse.SendModEvent("SKICP_pageSelected", a_entry.text, a_entry.pageIndex);
+		if (a_entry != null) {
+			_subList.listState.activeEntry = a_entry;
+			_subList.UpdateList();
+			
+			// Send name as well so mod doesn't have to look it up by index later
+			_state = WAIT_FOR_OPTION_DATA;
+			skse.SendModEvent("SKICP_pageSelected", a_entry.text, a_entry.pageIndex);
+			
+		// Special case for ForcePageReset without any pages
+		} else {
+			_state = WAIT_FOR_OPTION_DATA;
+			skse.SendModEvent("SKICP_pageSelected", "", -1);
+		}
 	}
 	
 	private function selectOption(a_index: Number): Void

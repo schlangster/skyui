@@ -39,7 +39,17 @@ endProperty
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnConfigRegister()
-	{Called when the config menu registered at the control panel}
+	{Called when this config menu registered at the control panel}
+	Guard()
+endEvent
+
+event OnConfigOpen()
+	{Called when this config menu is opened}
+	Guard()
+endEvent
+
+event OnConfigClose()
+	{Called when this config menu is closed}
 	Guard()
 endEvent
 
@@ -113,6 +123,11 @@ endFunction
 
 string function GetCustomControl(int a_keyCode)
 	{Returns the name of a custom control mapped to given keyCode, or "" if the key is not in use by this config. Override if necessary}
+	Guard()
+endFunction
+
+function ForcePageReset()
+	{Forces a full reset of the current page}
 	Guard()
 endFunction
 

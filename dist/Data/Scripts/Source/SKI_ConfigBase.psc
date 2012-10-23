@@ -20,8 +20,8 @@ int property		OPTION_TYPE_MENU	= 0x05 autoReadonly
 int property		OPTION_TYPE_COLOR	= 0x06 autoReadonly
 int property		OPTION_TYPE_KEYMAP	= 0x07 autoReadonly
 
-int property		OPTION_FLAG_NONE		= 0x0000 autoReadonly
-int property		OPTION_FLAG_DISABLED	= 0x0100 autoReadonly
+int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
+int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly
@@ -117,6 +117,15 @@ endEvent
 
 ; @interface
 event OnConfigRegister()
+	{Called when this config menu registered at the control panel}
+endEvent
+
+event OnConfigOpen()
+	{Called when this config menu is opened}
+endEvent
+
+event OnConfigClose()
+	{Called when this config menu is closed}
 endEvent
 
 ; @interface(SKI_QuestBase)
@@ -192,6 +201,12 @@ endFunction
 string function GetCustomControl(int a_keyCode)
 	{Returns the name of a custom control mapped to given keyCode, or "" if the key is not in use by this config}
 	return ""
+endFunction
+
+; @interface
+function ForcePageReset()
+	{Forces a reset of the current page}
+	UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".forcePageReset")
 endFunction
 
 ; @interface
@@ -279,10 +294,19 @@ function SetOptionFlags(int a_option, int a_flags, bool a_noUpdate = false)
 		return
 	endIf
 
+	int index = a_option % 0x100
+
+	; Update flags buffer
+	int oldFlags = _optionFlagsBuf[index] as int
+	oldFlags %= 0x100 			; Clear upper bytes, keep type
+	oldFlags += a_flags * 0x100	; Set new flags
+
+	; Update display
 	float[] params = new float[2]
-	params[0] = a_option
+	params[0] = index
 	params[1] = a_flags
 	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setOptionFlags", params)
+
 	if (!a_noUpdate)
 		UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".invalidateOptionData")
 	endIf
@@ -461,6 +485,20 @@ function Error(string a_msg)
 	Debug.Trace(self + " ERROR: " +  a_msg)
 endFunction
 
+function OpenConfig()
+	SetPage("", -1)
+
+	CheckVersion()
+	OnConfigOpen()
+
+	UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", Pages)
+endFunction
+
+function CloseConfig()
+	OnConfigClose()	
+	ClearOptionBuffers()
+endFunction
+
 function SetPage(string a_page, int a_index)
 	_currentPage = a_page
 	_currentPageNum = 1+a_index
@@ -490,7 +528,7 @@ int function AddOption(int a_optionType, string a_text, string a_strValue, float
 		return -1 ; invalid
 	endIf
 	
-	_optionFlagsBuf[pos] = a_optionType + a_flags
+	_optionFlagsBuf[pos] = a_optionType + a_flags * 0x100
 	_textBuf[pos] = a_text
 	_strValueBuf[pos] = a_strValue
 	_numValueBuf[pos] = a_numValue
@@ -503,7 +541,7 @@ int function AddOption(int a_optionType, string a_text, string a_strValue, float
 	
 	; byte 1 - position
 	; byte 2 - page
-	return pos + _currentPageNum	* 0x100
+	return pos + _currentPageNum * 0x100
 endFunction
 
 function WriteOptionBuffers()
