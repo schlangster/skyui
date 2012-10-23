@@ -104,6 +104,11 @@ class ModListPanel extends MovieClip
 	{
 		return (_state == SUBLIST_ACTIVE);
 	}
+
+	public function isListActive(): Boolean
+	{
+		return (_state == LIST_ACTIVE);
+	}
   
 	public function showList(): Void
 	{
@@ -154,6 +159,9 @@ class ModListPanel extends MovieClip
 				modListFader.gotoAndStop("show");
 				_modList.disableInput = false;
 				_modList.disableSelection = false;
+				var restored = _modList.listState.savedIndex;
+				_modList.selectedIndex = (restored > -1) ? restored : 0;
+
 				if (modListFader.getDepth() < subListFader.getDepth())
 					modListFader.swapDepths(subListFader);
 					
@@ -164,6 +172,8 @@ class ModListPanel extends MovieClip
 				subListFader.gotoAndStop("show");
 				_subList.disableInput = false;
 				_subList.disableSelection = false;
+				_subList.selectedIndex = -1;
+
 				if (subListFader.getDepth() < modListFader.getDepth())
 					subListFader.swapDepths(modListFader);
 				decorTitle.onPress = onDecorPressFunc;
@@ -178,8 +188,8 @@ class ModListPanel extends MovieClip
 				decorTitle.gotoAndPlay("fadeIn");
 				decorTitle.textHolder.textField.text = _titleText;
 				modListFader.gotoAndPlay("fadeOut");
-			
-				_modList.selectedIndex = -1;
+
+				_modList.listState.savedIndex = _modList.selectedIndex;
 				_modList.disableInput = true;
 				_modList.disableSelection = true;
 				
@@ -193,8 +203,7 @@ class ModListPanel extends MovieClip
 				subListFader.gotoAndPlay("fadeOut");
 				
 				delete decorTitle.onPress;
-			
-				_subList.selectedIndex = -1;
+				
 				_subList.disableInput = true;
 				_subList.disableSelection = true;
 				

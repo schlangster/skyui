@@ -451,7 +451,7 @@ class ConfigPanel extends MovieClip
 					_optionsList.selectedIndex = -1;
 					
 					var restored = _subList.listState.savedIndex;
-					_subList.selectedIndex = restored ? restored : _subList.listState.activeEntry.itemIndex;
+					_subList.selectedIndex = (restored > -1) ? restored : ((_subList.listState.activeEntry.itemIndex > -1) ? _subList.listState.activeEntry.itemIndex : 0);
 					return true;
 				}
 			} else if (_focus == FOCUS_MODLIST) {
@@ -462,7 +462,7 @@ class ConfigPanel extends MovieClip
 					_subList.selectedIndex = -1;
 					
 					var restored = _optionsList.listState.savedIndex;
-					_optionsList.selectedIndex = restored ? restored : 0;
+					_optionsList.selectedIndex = (restored > -1) ? restored : 0;
 					return true;
 				}
 			}
@@ -478,7 +478,7 @@ class ConfigPanel extends MovieClip
 				if (_modListPanel.isSublistActive()) {
 					changeFocus(FOCUS_MODLIST);
 					_modListPanel.showList();
-				} else {
+				} else if (_modListPanel.isListActive()) {
 					_parentMenu.ConfigPanelClose();
 				}
 				return true;
