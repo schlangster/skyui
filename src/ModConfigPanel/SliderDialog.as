@@ -53,8 +53,6 @@ class SliderDialog extends OptionDialog
 		}
 		
 		leftButtonPanel.clearButtons();
-		var acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: _acceptControls});
-		acceptButton.addEventListener("press", this, "onAcceptPress");
 		var defaultButton = leftButtonPanel.addButton({text: "$Default", controls: _defaultControls});
 		defaultButton.addEventListener("press", this, "onDefaultPress");
 		leftButtonPanel.updateButtons();
