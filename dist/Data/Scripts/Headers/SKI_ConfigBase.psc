@@ -281,6 +281,11 @@ function SetColorDialogDefaultColor(int a_color)
 	Guard()
 endFunction
 
+bool function ShowMessage(string a_message, bool a_withCancel = true, string a_acceptLabel = "$Accept", string a_cancelLabel = "$Cancel")
+	{Shows a message dialog and waits until the user has closed it}
+	Guard()
+endFunction
+
 function Guard()
 	Debug.MessageBox("SKI_ConfigBase: Don't recompile this script!")
 endFunction
