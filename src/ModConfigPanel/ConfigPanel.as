@@ -724,8 +724,6 @@ class ConfigPanel extends MovieClip
 		clearInterval(_remapDelayID);
 		delete _remapDelayID;
 		
-		_optionsList.disableSelection = false;
-		_optionsList.disableInput = false;
 		_bRemapMode = false;
 		_currentRemapOption = -1;
 	}
@@ -787,8 +785,8 @@ class ConfigPanel extends MovieClip
 	private function dimOut(): Void
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
-		_optionsList.disableSelection = _subList.disableSelection = true;
-		_optionsList.disableInput = _subList.disableInput = true;
+		_optionsList.disableSelection = _optionsList.disableInput = true;
+		_subList.disableSelection = _subList.disableInput = true;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
 	}
@@ -796,8 +794,8 @@ class ConfigPanel extends MovieClip
 	private function dimIn(): Void
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-		_optionsList.disableSelection = _subList.disableSelection = false;
-		_optionsList.disableInput = _subList.disableInput = false;
+		_optionsList.disableSelection = _optionsList.disableInput = false;
+		_subList.disableSelection = _subList.disableInput = false;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
 	}

@@ -14,6 +14,8 @@ class MessageDialog extends OptionDialog
   	private var _acceptControls: Object;
   	private var _cancelControls: Object;
 	
+	private var _bWithCancel: Boolean = true;
+	
 
   /* STAGE ELEMENTS */
 
@@ -46,6 +48,8 @@ class MessageDialog extends OptionDialog
 	{
 		buttonPanel.setPlatform(platform, false);
 		
+		_bWithCancel = (cancelLabel != "");
+		
 		initButtons();
 
 		textField.wordWrap = true;
@@ -70,7 +74,7 @@ class MessageDialog extends OptionDialog
 		
 		buttonPanel.clearButtons();
 		
-		if (cancelLabel != "") {
+		if (_bWithCancel) {
 			var cancelButton = buttonPanel.addButton({text: cancelLabel, controls: _cancelControls});
 			cancelButton.addEventListener("press", this, "onCancelPress");
 		}
@@ -89,8 +93,12 @@ class MessageDialog extends OptionDialog
 		
 		if (GlobalFunc.IsKeyPressed(details, false)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
-				onCancelPress();
+				if (_bWithCancel)
+					onCancelPress();
+				else
+					onAcceptPress();					
 				return true;
+				
 			} else if (details.navEquivalent == NavigationCode.ENTER) {
 				onAcceptPress();
 				return true;
