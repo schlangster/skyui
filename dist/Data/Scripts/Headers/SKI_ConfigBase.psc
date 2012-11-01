@@ -171,7 +171,7 @@ int function AddToggleOption(string a_text, bool a_checked, int a_flags = 0)
 	Guard()
 endfunction
 
-int function AddSliderOption(string a_text, float a_value, string a_formatString = "", int a_flags = 0)
+int function AddSliderOption(string a_text, float a_value, string a_formatString = "{0}", int a_flags = 0)
 	{Adds an option that opens a slider dialog when selected}
 	Guard()
 endFunction

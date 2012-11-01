@@ -172,8 +172,8 @@ event OnPageReset(string a_page)
 		_AEOrientationOID_T			= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
 		_AEClampCornerOID_M			= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
 		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
-		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX, "{1}")
-		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY, "{1}")
+		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX)
+		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY)
 		
 	endIf
 endEvent
@@ -207,12 +207,12 @@ event OnOptionDefault(int a_option)
 	; -------------------------------------------------------
 	elseIf (a_option == _3DItemXOffsetOID_S)
 		_3DItemXOffset = 0.0
-		SetSliderOptionValue(a_option, _3DItemXOffset, "{1}")
+		SetSliderOptionValue(a_option, _3DItemXOffset)
 		Apply3DItemXOffset()
 
 	elseIf (a_option == _3DItemYOffsetOID_S)
 		_3DItemYOffset = 0.0
-		SetSliderOptionValue(a_option, _3DItemYOffset, "{1}")
+		SetSliderOptionValue(a_option, _3DItemYOffset)
 		Apply3DItemYOffset()
 
 	elseIf (a_option == _3DItemScaleOID_S)
@@ -354,13 +354,13 @@ event OnOptionSliderOpen(int a_option)
 		SetSliderDialogStartValue(_AEOffsetX)
 		SetSliderDialogDefaultValue(0)
 		SetSliderDialogRange(-1280, 1280)
-		SetSliderDialogInterval(0.5)
+		SetSliderDialogInterval(1)
 
 	elseIf (a_option == _AEOffsetYOID_S)
 		SetSliderDialogStartValue(_AEOffsetY)
 		SetSliderDialogDefaultValue(0)
 		SetSliderDialogRange(-720, 720)
-		SetSliderDialogInterval(0.5)
+		SetSliderDialogInterval(1)
 	endIf
 endEvent
 
@@ -380,12 +380,12 @@ event OnOptionSliderAccept(int a_option, float a_value)
 
 	elseIf (a_option == _3DItemXOffsetOID_S)
 		_3DItemXOffset = a_value
-		SetSliderOptionValue(a_option, _3DItemXOffset, "{1}")
+		SetSliderOptionValue(a_option, _3DItemXOffset)
 		Apply3DItemXOffset()
 
 	elseIf (a_option == _3DItemYOffsetOID_S)
 		_3DItemYOffset = a_value
-		SetSliderOptionValue(a_option, _3DItemYOffset, "{1}")
+		SetSliderOptionValue(a_option, _3DItemYOffset)
 		Apply3DItemYOffset()
 
 	elseIf (a_option == _3DItemScaleOID_S)
