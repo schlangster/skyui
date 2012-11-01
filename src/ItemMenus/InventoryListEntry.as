@@ -1,4 +1,5 @@
 ﻿import flash.geom.ColorTransform;
+import flash.geom.Transform;
 
 import skyui.components.list.TabularList;
 import skyui.components.list.TabularListEntry;
@@ -11,12 +12,13 @@ class InventoryListEntry extends TabularListEntry
   /* CONSTANTS */
   
 	private static var STATES = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
-	
-	
-  /* PROPERTIES */
-	
-	public var iconLabel: String;
-	public var iconColor: Number;
+
+  /* PRIVATE VARIABLES */
+
+	private var _iconLoader: MovieClipLoader;
+	private var _itemIconLoaded: Boolean = false;
+	private var _iconLabel: String;
+	private var _iconColor: Number;
 	
 	
   /* STAGE ELMENTS */
@@ -38,8 +40,9 @@ class InventoryListEntry extends TabularListEntry
 	public function initialize(a_index: Number, a_state: ListState): Void
 	{
 		super.initialize();
-		
-		itemIcon.loadMovie(a_state.iconSource);
+		_iconLoader = new MovieClipLoader();
+		_iconLoader.addListener(this);
+		_iconLoader.loadClip(a_state.iconSource, itemIcon);
 		
 		itemIcon._visible = false;
 		equipIcon._visible = false;
@@ -83,24 +86,21 @@ class InventoryListEntry extends TabularListEntry
   	// @override TabularListEntry
 	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState)
 	{
-		var curIconLabel = a_entryObject["iconLabel"] != undefined ? a_entryObject["iconLabel"] : "default_misc";
-		
-		// The icon clip is loaded at runtime from a seperate .swf. So two scenarios are possible:
-		// 1. The clip has been loaded, gotoAndStop will set it to the new label
-		// 2. Loading is not done yet, so gotoAndStop will fail. In this case, the loaded clip will fetch the current label from
-		//    the its parent (entryclip.iconLabel) as soon as it's done.  Same for the iconColor.
-		iconLabel = curIconLabel;
-		a_entryField.gotoAndStop(curIconLabel);
-		
-		if (a_entryObject["iconColor"] != undefined) {
-			var curIconColor: Number = Number(a_entryObject["iconColor"]);
-			changeIconColor(MovieClip(a_entryField), curIconColor);
-			iconColor = curIconColor;
-			
-		} else {
-			resetIconColor(MovieClip(a_entryField));
-			iconColor = undefined;
+		var newIconLabel: String = a_entryObject["iconLabel"] != undefined ? a_entryObject["iconLabel"] : "default_misc";
+		var newIconColor: Number = a_entryObject["iconColor"];
+
+		if (_iconLabel != newIconLabel) {
+			_iconLabel = newIconLabel;
+			if (_itemIconLoaded)
+				a_entryField.gotoAndStop(_iconLabel);
 		}
+
+		if (_iconColor != newIconColor) {
+			_iconColor = newIconColor;
+			if (_itemIconLoaded)
+				changeIconColor(MovieClip(a_entryField), _iconColor);
+		}
+
 	}
 
   	// @override TabularListEntry
@@ -191,6 +191,24 @@ class InventoryListEntry extends TabularListEntry
 	
 	
   /* PRIVATE FUNCTIONS */
+
+	// @implements MovieClipLoader
+	private function onLoadInit(a_mc: MovieClip): Void
+	{
+		switch(a_mc) { //Switch statement in case we wanted to load for different locations, such as favIcon, bestIcon etc..
+			case itemIcon:
+				_itemIconLoaded = true;
+				a_mc.gotoAndStop(_iconLabel);
+				changeIconColor(a_mc, _iconColor);
+				break;
+		}
+	}
+
+	// @implements MovieClipLoader
+	private function onLoadError(a_mc: MovieClip, a_errorCode: String): Void
+	{
+		//skyui.util.Debug.log("onLoadError", a_mc, a_errorCode);
+	}
 	
 	private function formatColor(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
 	{
@@ -207,27 +225,20 @@ class InventoryListEntry extends TabularListEntry
 			a_entryField.textColor = a_entryObject.enabled == false ? a_state.defaultDisabledColor : a_state.defaultEnabledColor;
 	}
 	
-	private function changeIconColor(a_icon: MovieClip, a_rgb: Number)
+	private function changeIconColor(a_icon: MovieClip, a_rgb: Number): Void
 	{
-		for (var e in a_icon) {
-			if (a_icon[e] instanceof MovieClip) {
+		var element: Object;
+		for (var e: String in a_icon) {
+			element = a_icon[e];
+			if (element instanceof MovieClip) {
 				//Note: Could check if all values of RGBA mult and .rgb are all the same then skip
-				var colorTrans = new ColorTransform();
-				colorTrans.rgb = a_rgb;
-				a_icon[e].transform.colorTransform = colorTrans;
+				var ct: ColorTransform = new ColorTransform();
+				var tf: Transform = new Transform(MovieClip(element));
+				if (a_rgb != undefined)
+					ct.rgb = a_rgb;
+				tf.colorTransform = ct;
 				// Shouldn't be necessary to recurse since we don't expect multiple clip depths for an icon
-				//changeIconColor(a_icon[e], a_rgb);
-			}
-		}
-	}
-
-	private function resetIconColor(a_icon: MovieClip)
-	{
-		for (var e in a_icon) {
-			if (a_icon[e] instanceof MovieClip) {
-				a_icon[e].transform.colorTransform = new ColorTransform();
-				// Shouldn't be necessary to recurse since we don't expect multiple clip depths for an icon
-				//resetIconColor(a_icon[e]);
+				//changeIconColor(element, a_rgb);
 			}
 		}
 	}
