@@ -479,11 +479,6 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
-; @overrides SKI_ConfigBase
-string function GetCustomControl(int a_keyCode)
-	return ""
-endFunction
-
 function ApplySettings()
 	float h = Utility.GetINIInt("iSize H:Display")
 	float w = Utility.GetINIInt("iSize W:Display")
