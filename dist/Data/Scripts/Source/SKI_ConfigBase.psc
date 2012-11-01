@@ -30,19 +30,19 @@ int property		TOP_TO_BOTTOM	= 2 autoReadonly
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
 SKI_ConfigManager	_configManager
-bool				_initialized	= false
-int					_configID		= -1
-string				_currentPage	= ""
-int					_currentPageNum	= 0		; 0 for "", real pages start at 1
+bool				_initialized		= false
+int					_configID			= -1
+string				_currentPage		= ""
+int					_currentPageNum		= 0			; 0 for "", real pages start at 1
 
 ; Keep track of what we're doing at the moment for stupidity checks
-int					_state			= 0
+int					_state				= 0
 
-int					_cursorPosition	= 0
-int					_cursorFillMode	= 1		;LEFT_TO_RIGHT
+int					_cursorPosition		= 0
+int					_cursorFillMode		= 1			;LEFT_TO_RIGHT
 
 ; Local buffers
-float[]				_optionFlagsBuf			; byte 1 type, byte 2 flags
+float[]				_optionFlagsBuf					; byte 1 type, byte 2 flags
 string[]			_textBuf
 string[]			_strValueBuf
 float[]				_numValueBuf
@@ -51,9 +51,12 @@ float[]				_sliderParams
 float[]				_menuParams
 float[]				_colorParams
 
-int					_activeOption	= -1
+int					_activeOption		= -1
 
 string				_infoText
+
+bool				_messageResult		= false
+bool				_waitForMessage		= false
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -188,6 +191,11 @@ event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl
 	{Called when a key has been remapped}
 endEvent
 
+event OnMessageDialogClose(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	_messageResult = a_numArg as bool
+	_waitForMessage = false
+endEvent
+
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
@@ -205,7 +213,7 @@ endFunction
 
 ; @interface
 function ForcePageReset()
-	{Forces a reset of the current page}
+	{Forces a full reset of the current page}
 	UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".forcePageReset")
 endFunction
 
@@ -479,6 +487,38 @@ function SetColorDialogDefaultColor(int a_color)
 	endIf
 
 	_colorParams[1] = a_color
+endFunction
+
+; @interface
+bool function ShowMessage(string a_message, bool a_withCancel = true, string a_acceptLabel = "$Accept", string a_cancelLabel = "$Cancel")
+	if (_waitForMessage)
+		Error("Called ShowMessage() while another message was already open")
+		return false
+	endIf
+
+	_waitForMessage = true
+	_messageResult = false
+
+	string[] params = new string[3]
+	params[0] = a_message
+	params[1] = a_acceptLabel
+	if (a_withCancel)
+		params[2] = a_cancelLabel
+	else
+		params[2] = ""
+	endIf
+
+	RegisterForModEvent("SKICP_messageDialogClosed", "OnMessageDialogClose")
+	UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".showMessageDialog", params)
+
+	; Wait for result
+	while (_waitForMessage)
+		Utility.WaitMenuMode(0.1)
+	endWhile
+
+	UnregisterForModEvent("SKICP_messageDialogClosed")
+	
+	return _messageResult
 endFunction
 
 function Error(string a_msg)

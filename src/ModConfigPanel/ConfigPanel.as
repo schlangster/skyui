@@ -51,8 +51,6 @@ class ConfigPanel extends MovieClip
 	private var _customContentX: Number = 0;
 	private var _customContentY: Number = 0;
 	
-	private var _optionChangeDialog: MovieClip;
-	
 	private var _state: Number;
 	private var _focus: Number;
 	
@@ -278,16 +276,22 @@ class ConfigPanel extends MovieClip
 			sliderFormatString: _sliderDialogFormatString
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionSliderDialog", initObj);
-		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
-		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		var dialog = DialogManager.open(this, "OptionSliderDialog", initObj);
+		dialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		dialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		dimOut();
 	}
 	
 	public function setMenuDialogOptions(/* values */): Void
 	{
-		for (var i = 0; i < arguments.length; i++)
+		for (var i = 0; i < arguments.length; i++) {
+			var s = arguments[i];
+			
+			// Cut off rest of the buffer once the first emtpy string was found
+			if (s.toLowerCase() == "none" || s == "")
+				break;			
 			_menuDialogOptions[i] = arguments[i];
+		}
 	}
 	
 	public function setMenuDialogParams(a_startIndex: Number, a_defaultIndex: Number): Void
@@ -303,9 +307,9 @@ class ConfigPanel extends MovieClip
 			menuDefaultIndex: a_defaultIndex
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionMenuDialog", initObj);
-		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
-		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		var dialog = DialogManager.open(this, "OptionMenuDialog", initObj);
+		dialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		dialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		dimOut();
 	}
 
@@ -321,9 +325,9 @@ class ConfigPanel extends MovieClip
 			defaultColor: a_defaultColor
 		};
 		
-		_optionChangeDialog = DialogManager.open(this, "OptionColorDialog", initObj);
-		_optionChangeDialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
-		_optionChangeDialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
+		var dialog = DialogManager.open(this, "OptionColorDialog", initObj);
+		dialog.addEventListener("dialogClosed", this, "onOptionChangeDialogClosed");
+		dialog.addEventListener("dialogClosing", this, "onOptionChangeDialogClosing");
 		dimOut();
 	}
 	
@@ -388,6 +392,30 @@ class ConfigPanel extends MovieClip
 	public function forcePageReset(): Void
 	{
 		_bRequestPageReset = true;
+	}
+	
+	public function showMessageDialog(a_text: String, a_acceptLabel: String, a_cancelLabel: String): Void
+	{
+		// Don't open it while READY cause we should always be waiting for something.
+		if (_state == READY) {
+			skse.SendModEvent("SKICP_messageDialogClosed", null, 0);
+			return;
+		}
+		
+		// This is a special dialog. It doesn't result in Papyrus event when closed but instead the
+		// thread opening is supposed to sleep and wait until it's closed again (behaving like Message.Show()).
+		// It keeps _state set to whatever it was.
+		var initObj = {
+			_x: 719, _y: 265,
+			platform: _platform,
+			messageText: a_text,
+			acceptLabel: a_acceptLabel,
+			cancelLabel: a_cancelLabel
+		};
+		
+		var dialog = DialogManager.open(this, "MessageDialog", initObj);
+		dialog.addEventListener("dialogClosing", this, "onMessageDialogClosing");
+		dimOut();
 	}
 	
 	
@@ -566,6 +594,11 @@ class ConfigPanel extends MovieClip
 	}
 	
 	private function onOptionChangeDialogClosing(event: Object): Void
+	{
+		dimIn();
+	}
+	
+	private function onMessageDialogClosing(event: Object): Void
 	{
 		dimIn();
 	}
@@ -774,7 +807,6 @@ class ConfigPanel extends MovieClip
 
 		setTitleText("MOD CONFIGURATION");
 		setInfoText("");
-
 	}
 	
 	private function updateModListButtons(a_bSubList: Boolean): Void
