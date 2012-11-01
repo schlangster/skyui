@@ -537,6 +537,7 @@ endFunction
 function CloseConfig()
 	OnConfigClose()	
 	ClearOptionBuffers()
+	_waitForMessage = false
 endFunction
 
 function SetPage(string a_page, int a_index)
