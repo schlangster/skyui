@@ -478,13 +478,13 @@ columns.levelColumn.state1.label.text = '$LEVEL'
 columns.levelColumn.state1.label.arrowDown = false
 columns.levelColumn.state1.entry.text = @infoSkillLevel
 columns.levelColumn.state1.sortAttributes = <skillLevel, text>
-columns.levelColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.levelColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.levelColumn.state2.label.text = '$LEVEL'
 columns.levelColumn.state2.label.arrowDown = true
 columns.levelColumn.state2.entry.text = @infoSkillLevel
 columns.levelColumn.state2.sortAttributes = <skillLevel, text>
-columns.levelColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.levelColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
 ; TIME REMAINING COLUMN -------------------------------------------

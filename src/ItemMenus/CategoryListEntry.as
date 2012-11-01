@@ -4,10 +4,11 @@ import skyui.components.list.BasicListEntry;
 
 class CategoryListEntry extends BasicListEntry
 {
-  /* PROPERTIES */
-	
-	public var iconLabel: String;
-	
+  /* PRIVATE VARIABLES */
+
+	private var _iconLoader: MovieClipLoader;
+	private var _iconLoaded: Boolean = false;
+	private var _iconLabel: String;
 	
   /* STAGE ELMENTS */
   
@@ -18,12 +19,13 @@ class CategoryListEntry extends BasicListEntry
 	
 	public function initialize(a_index: Number, a_state: ListState): Void
 	{
-		var iconArt: String = CategoryList(a_state.list).iconArt[a_index];
-		
-		if (iconArt != undefined) {
-			iconLabel = iconArt;
-			icon.loadMovie(a_state.iconSource);
-		}
+		super.initialize();
+		_iconLoader = new MovieClipLoader();
+		_iconLoader.addListener(this);
+
+		_iconLabel = CategoryList(a_state.list).iconArt[a_index];
+
+		_iconLoader.loadClip(a_state.iconSource, icon);
 	}
 	
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
@@ -38,5 +40,20 @@ class CategoryListEntry extends BasicListEntry
 			_alpha = 50;
 			enabled = true;
 		}
+	}
+
+  /* PRIVATE FUNCTIONS */
+
+	// @implements MovieClipLoader
+	private function onLoadInit(a_mc: MovieClip): Void
+	{
+		_iconLoaded = true;
+		a_mc.gotoAndStop(_iconLabel);
+	}
+
+	// @implements MovieClipLoader
+	private function onLoadError(a_mc: MovieClip, a_errorCode: String): Void
+	{
+		//skyui.util.Debug.log("onLoadError", a_mc, a_errorCode);
 	}
 }

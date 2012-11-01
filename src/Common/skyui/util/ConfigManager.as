@@ -341,6 +341,10 @@ class skyui.util.ConfigManager
 		// Bool false?
 		} else if (a_str.toLowerCase() == "false") {
 			return false;
+
+		// Undefined?
+		} else if (a_str.toLowerCase() == "undefined") {
+			return undefined;
 			
 		// Explicit String?
 		} else if (a_str.charAt(0) == "'") {
