@@ -11,7 +11,7 @@ class skyui.filter.ItemSorter implements skyui.filter.IFilter
 	private var _sortOptions: Array;
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function ItemSorter()
 	{
@@ -47,8 +47,13 @@ class skyui.filter.ItemSorter implements skyui.filter.IFilter
 	{
 		var primaryAttribute = _sortAttributes[0];
 		
-		for (var i=0; i<a_filteredList.length; i++)
-			a_filteredList[i]._sortFlag = a_filteredList[i][primaryAttribute] === ("-" | undefined) ? 1 : 0;
+		for (var i=0; i<a_filteredList.length; i++) {
+			var t = a_filteredList[i][primaryAttribute];
+			if (t === "-" || t == undefined)
+				a_filteredList[i]._sortFlag = 1;
+			else
+				a_filteredList[i]._sortFlag = 0;
+		}
 		
 		_sortAttributes.unshift("_sortFlag");
 		_sortOptions.unshift(Array.NUMERIC);

@@ -14,9 +14,7 @@ class InventoryListEntry extends TabularListEntry
 	private static var STATES = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
   /* PRIVATE VARIABLES */
-
-	private var _iconLoader: MovieClipLoader;
-	private var _itemIconLoaded: Boolean = false;
+  
 	private var _iconLabel: String;
 	private var _iconColor: Number;
 	
@@ -40,9 +38,10 @@ class InventoryListEntry extends TabularListEntry
 	public function initialize(a_index: Number, a_state: ListState): Void
 	{
 		super.initialize();
-		_iconLoader = new MovieClipLoader();
-		_iconLoader.addListener(this);
-		_iconLoader.loadClip(a_state.iconSource, itemIcon);
+		
+		var iconLoader = new MovieClipLoader();
+		iconLoader.addListener(this);
+		iconLoader.loadClip(a_state.iconSource, itemIcon);
 		
 		itemIcon._visible = false;
 		equipIcon._visible = false;
@@ -91,14 +90,12 @@ class InventoryListEntry extends TabularListEntry
 
 		if (_iconLabel != newIconLabel) {
 			_iconLabel = newIconLabel;
-			if (_itemIconLoaded)
-				a_entryField.gotoAndStop(_iconLabel);
+			a_entryField.gotoAndStop(_iconLabel);
 		}
 
 		if (_iconColor != newIconColor) {
 			_iconColor = newIconColor;
-			if (_itemIconLoaded)
-				changeIconColor(MovieClip(a_entryField), _iconColor);
+			changeIconColor(MovieClip(a_entryField), _iconColor);
 		}
 
 	}
@@ -193,21 +190,10 @@ class InventoryListEntry extends TabularListEntry
   /* PRIVATE FUNCTIONS */
 
 	// @implements MovieClipLoader
-	private function onLoadInit(a_mc: MovieClip): Void
+	private function onLoadInit(a_icon: MovieClip): Void
 	{
-		switch(a_mc) { //Switch statement in case we wanted to load for different locations, such as favIcon, bestIcon etc..
-			case itemIcon:
-				_itemIconLoaded = true;
-				a_mc.gotoAndStop(_iconLabel);
-				changeIconColor(a_mc, _iconColor);
-				break;
-		}
-	}
-
-	// @implements MovieClipLoader
-	private function onLoadError(a_mc: MovieClip, a_errorCode: String): Void
-	{
-		//skyui.util.Debug.log("onLoadError", a_mc, a_errorCode);
+		a_icon.gotoAndStop(_iconLabel);
+		changeIconColor(a_icon, _iconColor);
 	}
 	
 	private function formatColor(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
