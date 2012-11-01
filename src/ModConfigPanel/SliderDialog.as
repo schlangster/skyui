@@ -60,7 +60,7 @@ class SliderDialog extends OptionDialog
 		rightButtonPanel.clearButtons();
 		var cancelButton = rightButtonPanel.addButton({text: "$Cancel", controls: _cancelControls});
 		cancelButton.addEventListener("press", this, "onCancelPress");
-		var acceptButton = leftButtonPanel.addButton({text: "$Accept", controls: _acceptControls});
+		var acceptButton = rightButtonPanel.addButton({text: "$Accept", controls: _acceptControls});
 		acceptButton.addEventListener("press", this, "onAcceptPress");
 		rightButtonPanel.updateButtons();
 	}

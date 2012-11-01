@@ -71,11 +71,11 @@ class MessageDialog extends OptionDialog
 		buttonPanel.clearButtons();
 		
 		if (cancelLabel != "") {
-			var cancelButton = buttonPanel.addButton({text: "$Cancel", controls: _cancelControls});
+			var cancelButton = buttonPanel.addButton({text: cancelLabel, controls: _cancelControls});
 			cancelButton.addEventListener("press", this, "onCancelPress");
 		}
 		
-		var acceptButton = buttonPanel.addButton({text: "$Accept", controls: _acceptControls});
+		var acceptButton = buttonPanel.addButton({text: acceptLabel, controls: _acceptControls});
 		acceptButton.addEventListener("press", this, "onAcceptPress");
 		buttonPanel.updateButtons();
 	}
