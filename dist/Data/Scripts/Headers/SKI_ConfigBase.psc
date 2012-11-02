@@ -216,7 +216,7 @@ function SetToggleOptionValue(int a_option, bool a_checked, bool a_noUpdate = fa
 	Guard()
 endfunction
 
-function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool a_noUpdate = false)
+function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "{0}", bool a_noUpdate = false)
 	{Sets the value(s) of an existing option}
 	Guard()
 endFunction

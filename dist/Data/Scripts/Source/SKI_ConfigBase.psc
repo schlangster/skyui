@@ -347,7 +347,7 @@ function SetToggleOptionValue(int a_option, bool a_checked, bool a_noUpdate = fa
 endfunction
 
 ; @interface
-function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool a_noUpdate = false)
+function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "{0}", bool a_noUpdate = false)
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_SLIDER)
