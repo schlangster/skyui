@@ -286,6 +286,8 @@ class ConfigPanel extends MovieClip
 	
 	public function setMenuDialogOptions(/* values */): Void
 	{
+		_menuDialogOptions.splice(0);
+		
 		for (var i = 0; i < arguments.length; i++) {
 			var s = arguments[i];
 			
