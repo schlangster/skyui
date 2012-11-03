@@ -2,19 +2,20 @@
 
 class BarterDataExtender extends InventoryDataExtender
 {
-  /* PROPERTIES */
-  
-	public var barterSellMult: Number;
-	public var barterBuyMult: Number;
+  /* PRIVATE VARIABLES */
+	
+	private var _barterBuyMult: Number;
+	private var _barterSellMult: Number;
 	
 	
   /* INITIALIZATION */
 	
-	function BarterDataExtender()
+	function BarterDataExtender(a_barterBuyMult: Number, a_barterSellMult: Number)
 	{
 		super();
-		barterSellMult = 1.0;
-		barterBuyMult = 1.0;
+
+		_barterBuyMult = (a_barterBuyMult == undefined)? 1.0 : a_barterBuyMult;
+		_barterSellMult = (a_barterSellMult == undefined)? 1.0 : a_barterSellMult;
 	}
 	
 	
@@ -26,9 +27,9 @@ class BarterDataExtender extends InventoryDataExtender
 		super.processEntry(a_entryObject, a_itemInfo);
 		
 		if (a_entryObject.filterFlag < 1024) {
-			a_entryObject.infoValue = Math.round(a_itemInfo.value * barterSellMult);
+			a_entryObject.infoValue = Math.round(a_itemInfo.value * _barterSellMult);
 		} else {
-			a_entryObject.infoValue = Math.round(a_itemInfo.value * barterBuyMult);
+			a_entryObject.infoValue = Math.round(a_itemInfo.value * _barterBuyMult);
 		}
 	}
 	

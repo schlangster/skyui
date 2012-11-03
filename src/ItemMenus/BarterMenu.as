@@ -20,8 +20,6 @@ class BarterMenu extends ItemMenu
 	private var _categoryListIconArt: Array;
 	private var _tabBarIconArt: Array;
 	
-	private var _dataExtender: BarterDataExtender;
-	
 	
   /* PROPERTIES */
 	
@@ -61,12 +59,9 @@ class BarterMenu extends ItemMenu
 	public function setConfig(a_config: Object): Void
 	{
 		super.setConfig(a_config);
-		
-		// Save this to modify multipliers later.
-		_dataExtender = new BarterDataExtender();
 
 		var itemList: TabularList = inventoryLists.itemList;		
-		itemList.addDataProcessor(_dataExtender);
+		itemList.addDataProcessor(new BarterDataExtender(_buyMult, _sellMult));
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
@@ -87,8 +82,6 @@ class BarterMenu extends ItemMenu
 	{
 		_buyMult = a_buyMult;
 		_sellMult = a_sellMult;
-		_dataExtender.barterSellMult = a_sellMult;
-		_dataExtender.barterBuyMult = a_buyMult;
 		updateBottomBarButtons(false);
 	}
 
