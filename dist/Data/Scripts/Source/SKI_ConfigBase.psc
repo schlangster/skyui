@@ -42,14 +42,14 @@ int					_cursorPosition		= 0
 int					_cursorFillMode		= 1			;LEFT_TO_RIGHT
 
 ; Local buffers
-float[]				_optionFlagsBuf					; byte 1 type, byte 2 flags
+int[]				_optionFlagsBuf					; byte 1 type, byte 2 flags
 string[]			_textBuf
 string[]			_strValueBuf
 float[]				_numValueBuf
 
 float[]				_sliderParams
-float[]				_menuParams
-float[]				_colorParams
+int[]				_menuParams
+int[]				_colorParams
 
 int					_activeOption		= -1
 
@@ -75,7 +75,7 @@ endProperty
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	_optionFlagsBuf	= new float[128]
+	_optionFlagsBuf	= new int[128]
 	_textBuf		= new string[128]
 	_strValueBuf	= new string[128]
 	_numValueBuf	= new float[128]
@@ -89,11 +89,11 @@ event OnInit()
 
 	; 0 startIndex
 	; 1 defaultIndex
-	_menuParams		= new float[2]
+	_menuParams		= new int[2]
 
 	; 0 currentColor
 	; 1 defaultColor
-	_colorParams	= new float[2]
+	_colorParams	= new int[2]
 	
 	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
 endEvent
@@ -286,7 +286,7 @@ function LoadCustomContent(string a_source, float a_x = 0.0, float a_y = 0.0)
 	float[] params = new float[2]
 	params[0] = a_x
 	params[1] = a_y
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setCustomContentParams", params)
+	UI.InvokeFloatA(JOURNAL_MENU, MENU_ROOT + ".setCustomContentParams", params)
 	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".loadCustomContent", a_source)
 endFunction
 
@@ -310,10 +310,10 @@ function SetOptionFlags(int a_option, int a_flags, bool a_noUpdate = false)
 	oldFlags += a_flags * 0x100	; Set new flags
 
 	; Update display
-	float[] params = new float[2]
+	int[] params = new int[2]
 	params[0] = index
 	params[1] = a_flags
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setOptionFlags", params)
+	UI.InvokeIntA(JOURNAL_MENU, MENU_ROOT + ".setOptionFlags", params)
 
 	if (!a_noUpdate)
 		UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".invalidateOptionData")
@@ -601,11 +601,11 @@ function WriteOptionBuffers()
 		i += 1
 	endWhile
 	
-	UI.InvokeNumberA(menu, root + ".setOptionFlagsBuffer", _optionFlagsBuf)
+	UI.InvokeIntA(menu, root + ".setOptionFlagsBuffer", _optionFlagsBuf)
 	UI.InvokeStringA(menu, root + ".setOptionTextBuffer", _textBuf)
 	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
-	UI.InvokeNumberA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
-	UI.InvokeNumber(menu, root + ".flushOptionBuffers", optionCount)
+	UI.InvokeFloatA(menu, root + ".setOptionNumValueBuffer", _numValueBuf)
+	UI.InvokeInt(menu, root + ".flushOptionBuffers", optionCount)
 endFunction
 
 function ClearOptionBuffers()
@@ -632,7 +632,7 @@ function SetOptionStrValue(int a_index, string a_strValue, bool a_noUpdate)
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_index)
+	UI.SetInt(menu, root + ".optionCursorIndex", a_index)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
 	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
@@ -648,8 +648,8 @@ function SetOptionNumValue(int a_index, float a_numValue, bool a_noUpdate)
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_index)
-	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
+	UI.SetInt(menu, root + ".optionCursorIndex", a_index)
+	UI.SetFloat(menu, root + ".optionCursor.numValue", a_numValue)
 	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
@@ -664,9 +664,9 @@ function SetOptionValues(int a_index, string a_strValue, float a_numValue, bool 
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
 
-	UI.SetNumber(menu, root + ".optionCursorIndex", a_index)
+	UI.SetInt(menu, root + ".optionCursorIndex", a_index)
 	UI.SetString(menu, root + ".optionCursor.strValue", a_strValue)
-	UI.SetNumber(menu, root + ".optionCursor.numValue", a_numValue)
+	UI.SetFloat(menu, root + ".optionCursor.numValue", a_numValue)
 	if (!a_noUpdate)
 		UI.Invoke(menu, root + ".invalidateOptionData")
 	endIf
@@ -686,7 +686,7 @@ function RequestSliderDialogData(int a_index)
 	OnOptionSliderOpen(_activeOption)
 	_state = STATE_DEFAULT
 
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
+	UI.InvokeFloatA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
 endFunction
 
 function RequestMenuDialogData(int a_index)
@@ -700,7 +700,7 @@ function RequestMenuDialogData(int a_index)
 	OnOptionMenuOpen(_activeOption)
 	_state = STATE_DEFAULT
 
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
+	UI.InvokeIntA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
 endFunction
 
 function RequestColorDialogData(int a_index)
@@ -714,7 +714,7 @@ function RequestColorDialogData(int a_index)
 	OnOptionColorOpen(_activeOption)
 	_state = STATE_DEFAULT
 
-	UI.InvokeNumberA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
+	UI.InvokeIntA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
 endFunction
 
 function SetSliderValue(float a_value)

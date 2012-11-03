@@ -208,15 +208,15 @@ function UpdateWidgetClientInfo()
 endFunction
 
 function UpdateWidgetPositionX()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + ".setPositionX", X)
+	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionX", X)
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + ".setPositionY", Y)
+	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionY", Y)
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.InvokeNumber(HUD_MENU, _widgetRoot + ".setAlpha", Alpha)
+	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setAlpha", Alpha)
 endFunction
 
 function UpdateWidgetHAlign()

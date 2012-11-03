@@ -125,7 +125,7 @@ endEvent
 
 event OnKeymapChange(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int optionIndex = a_numArg as int
-	int keyCode = UI.GetNumber(JOURNAL_MENU, MENU_ROOT + ".selectedKeyCode") as int
+	int keyCode = UI.GetInt(JOURNAL_MENU, MENU_ROOT + ".selectedKeyCode")
 
 	; First test vanilla controls
 	string conflictControl = Input.GetMappedControl(keyCode)

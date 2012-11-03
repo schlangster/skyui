@@ -27,7 +27,7 @@ bool Property Enabled
 	function set(bool a_val)
 		_enabled = a_val
 		if (Initialized)
-			UI.InvokeNumber(HUD_MENU, WidgetRoot + ".setEnabled", _enabled as float) 
+			UI.InvokeBool(HUD_MENU, WidgetRoot + ".setEnabled", _enabled) 
 		endIf
 	endFunction
 endProperty
@@ -41,7 +41,7 @@ float property EffectSize
 	function set(float a_val)
 		_effectSize = a_val
 		if (Initialized)
-			UI.InvokeNumber(HUD_MENU, WidgetRoot + ".setEffectSize", _effectSize) 
+			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setEffectSize", _effectSize) 
 		endIf
 	endFunction
 endProperty
@@ -55,7 +55,7 @@ int property GroupEffectCount
 	function set(int a_val)
 		_groupEffectCount = a_val
 		if (Initialized)
-			UI.InvokeNumber(HUD_MENU, WidgetRoot + ".setGroupEffectCount", _groupEffectCount) 
+			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setGroupEffectCount", _groupEffectCount) 
 		endIf
 	endFunction
 endProperty
@@ -112,8 +112,8 @@ event OnWidgetReset()
 	float[] numberArgs = new float[3]
 	numberArgs[0] = _enabled as float
 	numberArgs[1] = _effectSize
-	numberArgs[2] = _groupEffectCount
-	UI.InvokeNumberA(HUD_MENU, WidgetRoot + ".initNumbers", numberArgs)
+	numberArgs[2] = _groupEffectCount as float
+	UI.InvokeFloatA(HUD_MENU, WidgetRoot + ".initNumbers", numberArgs)
 
 	; Init strings
 	string[] stringArgs = new string[2]
