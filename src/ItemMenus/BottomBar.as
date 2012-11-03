@@ -223,6 +223,8 @@ class BottomBar extends MovieClip
 					infoCard.ArmorRatingValue.textAutoSize = "shrink";
 					infoCard.ArmorRatingValue.html = true;
 					infoCard.ArmorRatingValue.SetText(strArmor, true);
+					infoCard.ArmorRatingValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.ArmorRatingValue._width - 20;
+					infoCard.ArmorRatingLabel._x = infoCard.ArmorRatingValue._x  + infoCard.ArmorRatingValue.getLineMetrics(0).x- infoCard.ArmorRatingLabel._width - 5;
 					break;
 					
 				case InventoryDefines.ICT_WEAPON:
@@ -238,6 +240,8 @@ class BottomBar extends MovieClip
 					infoCard.DamageValue.textAutoSize = "shrink";
 					infoCard.DamageValue.html = true;
 					infoCard.DamageValue.SetText(strDamage, true);
+					infoCard.DamageValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.DamageValue._width - 20;
+					infoCard.DamageLabel._x = infoCard.DamageValue._x  + infoCard.DamageValue.getLineMetrics(0).x- infoCard.DamageLabel._width - 5;
 					break;
 					
 				default:
