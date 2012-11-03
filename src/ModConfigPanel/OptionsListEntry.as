@@ -126,10 +126,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				if (a_entryObject.strValue)
-					valueTextField.SetText(GlobalFunctions.formatString(a_entryObject.strValue, a_entryObject.numValue).toUpperCase());
-				else
-					valueTextField.SetText(Math.round(a_entryObject.numValue * 100) / 100);
+				valueTextField.SetText(GlobalFunctions.formatString(a_entryObject.strValue, a_entryObject.numValue).toUpperCase());
 			
 				sliderIcon._x = valueTextField.getLineMetrics(0).x - sliderIcon._width;
 				

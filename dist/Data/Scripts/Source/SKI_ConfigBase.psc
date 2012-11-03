@@ -262,7 +262,7 @@ int function AddToggleOption(string a_text, bool a_checked, int a_flags = 0)
 endfunction
 
 ; @interface
-int function AddSliderOption(string a_text, float a_value, string a_formatString = "", int a_flags = 0)
+int function AddSliderOption(string a_text, float a_value, string a_formatString = "{0}", int a_flags = 0)
 	return AddOption(OPTION_TYPE_SLIDER, a_text, a_formatString, a_value, a_flags)
 endFunction
 
@@ -347,7 +347,7 @@ function SetToggleOptionValue(int a_option, bool a_checked, bool a_noUpdate = fa
 endfunction
 
 ; @interface
-function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "", bool a_noUpdate = false)
+function SetSliderOptionValue(int a_option, float a_value, string a_formatString = "{0}", bool a_noUpdate = false)
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_SLIDER)
