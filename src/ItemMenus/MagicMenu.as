@@ -122,12 +122,13 @@ class MagicMenu extends ItemMenu
 	// @override ItemMenu
 	private function onItemSelect(event: Object): Void
 	{
-		if (event.entry.enabled) {
-			if (event.keyboardOrMouse != 0)
-				GameDelegate.call("ItemSelect",[]);
-			return;
-		}
-		GameDelegate.call("ShowShoutFail",[]);
+		//Vanilla bugfix
+ 		if (event.keyboardOrMouse != 0) {
+ 			if (event.entry.enabled)
+ 				GameDelegate.call("ItemSelect",[]);
+ 			else
+ 				GameDelegate.call("ShowShoutFail",[]);
+ 		}
 	}
   
 	// @override ItemMenu
