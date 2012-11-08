@@ -24,6 +24,8 @@ import skyui.util.Debug;
 
 class InventoryLists extends MovieClip
 {
+	#include "../version.as"
+	
   /* CONSTANTS */
 	
 	static var HIDE_PANEL = 0;

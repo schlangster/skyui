@@ -11,6 +11,8 @@ import skyui.props.PropertyDataExtender;
 
 class MagicMenu extends ItemMenu
 {
+	#include "../version.as"
+	
   /* PRIVATE VARIABLES */
   
 	private var _hideButtonFlag: Number = 0;

@@ -8,6 +8,8 @@ import Shared.GlobalFunc;
 
 class ItemCard extends MovieClip
 {
+	#include "../version.as"
+	
 	var ActiveEffectTimeValue: TextField;
 	var ApparelArmorValue: TextField;
 	var ApparelEnchantedLabel: TextField;

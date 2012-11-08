@@ -11,6 +11,8 @@ import skyui.props.PropertyDataExtender;
 
 class ContainerMenu extends ItemMenu
 {
+	#include "../version.as"
+	
   /* CONSTANTS */
   
 	private static var NULL_HAND: Number = -1;

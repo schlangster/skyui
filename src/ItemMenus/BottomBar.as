@@ -6,6 +6,8 @@ import skyui.components.ButtonPanel;
 
 class BottomBar extends MovieClip
 {
+	#include "../version.as"
+	
   /* PRIVATE VARIABLES */	
   
 	private var _lastItemType: Number;

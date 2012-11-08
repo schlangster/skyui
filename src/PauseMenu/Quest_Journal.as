@@ -8,6 +8,8 @@ import gfx.managers.FocusHandler;
 
 class Quest_Journal extends MovieClip
 {
+	#include "../version.as"
+	
 	var bTabsDisabled: Boolean;
 	
 	var iCurrentTab: Number;

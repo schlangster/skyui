@@ -6,6 +6,8 @@ import Components.Meter;
 
 class HUDMenu extends Shared.PlatformChangeUser
 {
+	#include "../version.as"
+	
 	var SavedRolloverText: String = "";
 	var ItemInfoArray: Array = new Array();
 	var CompassMarkerList: Array = new Array();

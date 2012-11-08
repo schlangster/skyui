@@ -11,6 +11,8 @@ import skyui.props.PropertyDataExtender;
 
 class InventoryMenu extends ItemMenu
 {
+	#include "../version.as"
+	
   /* PRIVATE VARIABLES */
   
 	private var _bMenuClosing: Boolean = false;

@@ -8,6 +8,8 @@ import skyui.props.PropertyDataExtender;
 
 class BarterMenu extends ItemMenu
 {
+	#include "../version.as"
+	
   /* PRIVATE VARIABLES */
   
 	private var _playerInfoObj: Object;

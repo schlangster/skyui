@@ -16,6 +16,8 @@ import com.greensock.easing.Linear;
 
 class ConfigPanel extends MovieClip
 {
+	#include "../version.as"
+	
   /* CONSTANTS */
   
   	private static var READY = 0;
