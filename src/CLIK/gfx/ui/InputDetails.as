@@ -8,11 +8,12 @@
 	public var type: String;			// "key"
 	public var value: String;			// "keyDown"/"keyUp"
 	public var control: String;			//  "Jump"
+	public var skseKeycode: Number;
 	
 
   /* INITIALIZATION */
 
-	public function InputDetails(a_type: String, a_code: Number, a_value, a_navEquivalent: String, a_controllerIdx: Number, a_control: String)
+	public function InputDetails(a_type: String, a_code: Number, a_value, a_navEquivalent: String, a_controllerIdx: Number, a_control: String, a_skseKeycode: Number)
 	{
 		type = a_type;
 		code = a_code;
@@ -20,6 +21,9 @@
 		navEquivalent = a_navEquivalent;
 		controllerIdx = a_controllerIdx;
 		control = a_control;
+		skseKeycode = a_skseKeycode;
+		
+		skse.Log("a " + a_skseKeycode);
 	}
 
 

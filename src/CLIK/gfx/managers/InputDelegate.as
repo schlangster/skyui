@@ -54,13 +54,13 @@ class gfx.managers.InputDelegate extends EventDispatcher
 		var repeatState = getKeyRepeatState(a_controllerIdx);
 		
 		if (!repeatState[code]) {
-			handleKeyPress("keyDown", code, a_controllerIdx, skse.GetLastControl(true));
+			handleKeyPress("keyDown", code, a_controllerIdx, skse.GetLastControl(true), skse.GetLastKeycode(true));
 			repeatState[code] = true;
 			
 		} else {
 			var suppressState = getKeyRepeatSuppress(a_controllerIdx);
 			if (!suppressState[code])
-				handleKeyPress("keyHold", code, a_controllerIdx, skse.GetLastControl(true));
+				handleKeyPress("keyHold", code, a_controllerIdx, skse.GetLastControl(true), skse.GetLastKeycode(true));
 		}
 	}
 
@@ -70,15 +70,15 @@ class gfx.managers.InputDelegate extends EventDispatcher
 		var repeatState = getKeyRepeatState(a_controllerIdx);
 		repeatState[code] = false;
 		
-		handleKeyPress("keyUp", code, a_controllerIdx, skse.GetLastControl(false));
+		handleKeyPress("keyUp", code, a_controllerIdx, skse.GetLastControl(false), skse.GetLastKeycode(false));
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
 
-	private function handleKeyPress(a_type: String, a_code: Number, a_controllerIdx: Number, a_control: String)
+	private function handleKeyPress(a_type: String, a_code: Number, a_controllerIdx: Number, a_control: String, a_skseKeycode)
 	{
-		var details = new InputDetails("key", a_code, a_type, inputToNav(a_code), a_controllerIdx, a_control);
+		var details = new InputDetails("key", a_code, a_type, inputToNav(a_code), a_controllerIdx, a_control, a_skseKeycode);
 		dispatchEvent({type: "input", details: details});
 	}
 
