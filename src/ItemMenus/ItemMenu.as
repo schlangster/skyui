@@ -245,7 +245,6 @@ class ItemMenu extends MovieClip
 	
 	
   /* PRIVATE FUNCTIONS */
-  
 
 	public function onItemCardSubMenuAction(event: Object): Void
 	{
