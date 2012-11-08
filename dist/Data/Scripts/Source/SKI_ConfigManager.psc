@@ -24,6 +24,14 @@ event OnInit()
 	_curConfigID	= 0
 	_configCount	= 0
 	
+	; Wait a few seconds until any initial menus have registered for events
+	Utility.Wait(0.01)
+	
+	OnGameReload()
+endEvent
+
+; @implements SKI_QuestBase
+event OnGameReload()
 	RegisterForModEvent("SKICP_modSelected", "OnModSelect")
 	RegisterForModEvent("SKICP_pageSelected", "OnPageSelect")
 	RegisterForModEvent("SKICP_optionHighlighted", "OnOptionHighlight")
@@ -39,15 +47,7 @@ event OnInit()
 	RegisterForModEvent("SKICP_dialogCanceled", "OnDialogCancel")
 	
 	RegisterForMenu(JOURNAL_MENU)
-	
-	; Wait a few seconds until any initial menus have registered for events
-	Utility.Wait(0.01)
-	
-	OnGameReload()
-endEvent
 
-; @implements SKI_QuestBase
-event OnGameReload()
 	CleanUp()
 	SendModEvent("SKICP_configManagerReady")
 endEvent

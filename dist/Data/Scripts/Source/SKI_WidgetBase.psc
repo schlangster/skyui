@@ -139,6 +139,11 @@ event OnInit()
 		_modes[1] = "StealthMode"
 	endIf
 	
+	OnGameReload()
+endEvent
+
+; @implements SKI_QuestBase
+event OnGameReload()
 	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
 endEvent
 

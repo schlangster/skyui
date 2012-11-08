@@ -21,16 +21,16 @@ event OnInit()
 	_curWidgetID	= 0
 	_widgetCount	= 0
 	
-	RegisterForModEvent("SKIWF_widgetLoaded", "OnWidgetLoad")
-	RegisterForModEvent("SKIWF_widgetError", "OnWidgetError")
-	
 	; Wait a few seconds until all widgets have registered their callbacks
-	Utility.Wait(2)
+	Utility.Wait(0.1)
 	
 	OnGameReload()
 endEvent
 
 event OnGameReload()
+	RegisterForModEvent("SKIWF_widgetLoaded", "OnWidgetLoad")
+	RegisterForModEvent("SKIWF_widgetError", "OnWidgetError")
+
 	CleanUp()
 	
 	; Load already registered widgets

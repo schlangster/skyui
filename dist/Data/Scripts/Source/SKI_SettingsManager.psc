@@ -32,6 +32,11 @@ event OnInit()
 		i += 1
 	endWhile
 
+	OnGameReload()
+endEvent
+
+; @implements SKI_QuestBase
+event OnGameReload()
 	RegisterForMenu(INVENTORY_MENU)
 	RegisterForMenu(MAGIC_MENU)
 	RegisterForMenu(CONTAINER_MENU)

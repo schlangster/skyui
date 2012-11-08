@@ -95,6 +95,11 @@ event OnInit()
 	; 1 defaultColor
 	_colorParams	= new int[2]
 	
+	OnGameReload()
+endEvent
+
+; @implements SKI_QuestBase
+event OnGameReload()
 	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
 endEvent
 
@@ -111,7 +116,6 @@ event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	_configID = _configManager.RegisterMod(self, ModName)
 	if (_configID != -1)
 		OnConfigRegister()
-		_initialized = true
 	endIf
 endEvent
 
