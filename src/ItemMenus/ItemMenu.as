@@ -9,12 +9,6 @@ import skyui.components.ButtonPanel;
 
 class ItemMenu extends MovieClip
 {
-  /* CONSTANTS */
-  
-	private static var SKSE_REQ_RELEASE_IDX = 9;
-	private static var SKSE_REQ_VERSION = "1.4.8";
-
-
   /* PRIVATE VARIABLES */
   
 	private var _platform: Number;
@@ -40,7 +34,6 @@ class ItemMenu extends MovieClip
 	
 	public var mouseRotationRect: MovieClip;
 	public var exitMenuRect: MovieClip;
-	public var skseWarning: MovieClip;
 	
 	
   /* PROPERTIES */
@@ -113,36 +106,6 @@ class ItemMenu extends MovieClip
 			if (_parent.bFadedIn == true && Mouse.getTopMostEntity() == this)
 				_parent.onExitMenuRectClick();
 		};
-		
-		if (skseWarning != undefined) {
-			
-			// Default message
-			if (_global.skse == undefined) {
-				skseWarning._visible = true;
-				skseWarning.message.text =
-					"SkyUI could not detect the Skyrim Script Extender (SKSE).\n" +
-					"SkyUI will not work correctly!\n" +
-					"\n" +
-					"This message may also appear if a new Skyrim Patch has been released.\n" +
-					"In this case, wait until SKSE has been updated, then install the new version.\n" +
-					"\n" +
-					"For more information, see the mod description.";
-					
-			} else if (_global.skse.version.releaseIdx < SKSE_REQ_RELEASE_IDX) {
-				skseWarning._visible = true;
-				skseWarning.message.text =
-					"Your Skyrim Script Extender (SKSE) is outdated.\n"	+
-					"SkyUI will not work correctly!\n" +
-					"\n" +
-					"Installed version: " + _global.skse.version.major + "." + _global.skse.version.minor + "." + _global.skse.version.beta + "\n" +
-					"Required version: " + SKSE_REQ_VERSION + "\n" +
-					"\n" +
-					"For more information, see the mod description.";
-					
-			} else {
-				skseWarning._visible = false;
-			}
-		}
 	}
 	
 	public function setConfig(a_config: Object): Void
@@ -427,9 +390,6 @@ class ItemMenu extends MovieClip
 		MovieClip(exitMenuRect).Lock("TL");
 		exitMenuRect._x = exitMenuRect._x - Stage.safeRect.x;
 		exitMenuRect._y = exitMenuRect._y - Stage.safeRect.y;
-		
-		if (skseWarning != undefined)
-			skseWarning.Lock("TR");
 	}
 	
 	private function positionFloatingElements(): Void
