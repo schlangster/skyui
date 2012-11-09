@@ -51,6 +51,9 @@ class InventoryLists extends MovieClip
 	private var _currCategoryIndex: Number;
 	private var _savedSelectionIndex: Number = -1;
 	
+	private var _searchKey: Number;
+	private var _switchTabKey: Number;
+	
 	private var _bTabbed = false;
 	private var _leftTabText: String;
 	private var _rightTabText: String;
@@ -128,6 +131,7 @@ class InventoryLists extends MovieClip
 		searchWidget = panelContainer.searchWidget;
 		columnSelectButton = panelContainer.columnSelectButton;
 
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
@@ -233,16 +237,15 @@ class InventoryLists extends MovieClip
 			return false;
 			
 		if (GlobalFunc.IsKeyPressed(details)) {
-			
 			// Search hotkey (default space)
-			if (details.control == "Jump") {
+			if (details.skseKeycode == _searchKey) {
 				searchWidget.startInput();
 				return true;
 			}
-				
+			
 			// Toggle tab (default ALT)
-			var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-			if (tabBar != undefined && (details.control == "Sprint" || bGamepadBackPressed)) {
+			var bGamepadBackPressed = (_platform != 0 && details.navEquivalent == NavigationCode.GAMEPAD_BACK);
+			if (tabBar != undefined && (details.skseKeycode == _switchTabKey || bGamepadBackPressed)) {
 				tabBar.tabToggle();
 				return true;
 			}
@@ -397,6 +400,13 @@ class InventoryLists extends MovieClip
 		searchWidget.isDisabled = false;
 		
 		itemList.selectedIndex = _savedSelectionIndex;
+	}
+	
+	private function onConfigLoad(event: Object): Void
+	{  	
+		var config = event.config;
+		_searchKey = config["Input"].controls.search;
+		_switchTabKey = config["Input"].controls.switchTab;
 	}
 	
 	private function onConfigUpdate(event: Object): Void

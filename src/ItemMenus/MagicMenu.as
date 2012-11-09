@@ -90,18 +90,11 @@ class MagicMenu extends ItemMenu
 			} else if (!inventoryLists.itemList.disableInput) {
 				// Gamepad back || ALT (default) || 'I'
 				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-				if (bGamepadBackPressed || details.control == "Sprint" || details.control == "Quick Inventory")
+				if (bGamepadBackPressed || details.skseKeycode == _switchKey || details.control == "Quick Inventory")
 					openInventoryMenu(true);
 			}
 		}
 		return true;
-	}
-	
-	// @override ItemMenu
-	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
-	{		
-		super.SetPlatform(a_platform, a_bPS3Switch);		
-		updateBottomBar(false);
 	}
 
 	// @API
@@ -193,6 +186,7 @@ class MagicMenu extends ItemMenu
 		}
 	}
 	
+	// @override ItemMenu
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
 		navPanel.clearButtons();
@@ -210,7 +204,7 @@ class MagicMenu extends ItemMenu
 				
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
+			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
 				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});

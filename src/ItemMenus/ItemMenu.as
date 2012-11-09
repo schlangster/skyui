@@ -21,7 +21,11 @@ class ItemMenu extends MovieClip
 	
 	private var _acceptControls: Object;
 	private var _cancelControls: Object;
+	private var _searchControls: Object;
 	private var _switchControls: Object;
+	
+	private var _searchKey: Number;
+	private var _switchKey: Number;
 	
 	
   /* STAGE ELEMENTS */
@@ -128,12 +132,22 @@ class ItemMenu extends MovieClip
 		itemListState.defaultDisabledColor = section.colors.disabled.text;
 		itemListState.negativeDisabledColor = section.colors.disabled.negative;
 		itemListState.stolenDisabledColor = section.colors.disabled.stolen;
+
+		_searchKey = a_config["Input"].controls.search;
+		_switchKey = a_config["Input"].controls.switchTab;
+
+		_searchControls = {keyCode: _searchKey};
+		_switchControls = (_platform != 0) ? InputDefines.GamepadBack : {keyCode: _switchKey};
+		
+		updateBottomBar(false);
 	}
 
 	// @API
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
+		
+		_searchControls = InputDefines.Jump;
 		
 		if (a_platform == 0) {
 			_acceptControls = InputDefines.Enter;
@@ -517,4 +531,6 @@ class ItemMenu extends MovieClip
 		
 		return btnData;
 	}
+	
+	private function updateBottomBar(a_bSelected: Boolean): Void {}
 }

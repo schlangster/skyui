@@ -84,7 +84,6 @@ class BarterMenu extends ItemMenu
 	{
 		_buyMult = a_buyMult;
 		_sellMult = a_sellMult;
-		updateBottomBarButtons(false);
 	}
 
 	// @API
@@ -131,7 +130,7 @@ class BarterMenu extends ItemMenu
 	private function onItemHighlightChange(event: Object): Void
 	{
 		if (event.index != -1)
-			updateBottomBarButtons(true);
+			updateBottomBar(true);
 
 		super.onItemHighlightChange(event);
 	}
@@ -140,7 +139,7 @@ class BarterMenu extends ItemMenu
 	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		updateBottomBarButtons(false);
+		updateBottomBar(false);
 	}
 	
 	private function onQuantitySliderChange(event: Object): Void
@@ -193,7 +192,8 @@ class BarterMenu extends ItemMenu
 		return inventoryLists.categoryList.activeSegment == 0;
 	}
 	
-	private function updateBottomBarButtons(a_bSelected: Boolean): Void
+	// @override ItemMenu
+	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
 		navPanel.clearButtons();
 		
@@ -201,7 +201,7 @@ class BarterMenu extends ItemMenu
 			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: InputDefines.Activate});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			navPanel.addButton({text: "$Search", controls: InputDefines.Jump});
+			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
 				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});

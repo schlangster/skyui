@@ -78,6 +78,7 @@ class skyui.components.MappedButton extends Button
 	public function setButtonData(a_buttonData: Object)
 	{
 		label = a_buttonData.text;
+		
 		setMappedControls(a_buttonData.controls);
 	}
 
@@ -96,25 +97,31 @@ class skyui.components.MappedButton extends Button
 		
 		for (var i=0; i<controls.length; i++) {
 			var controlInfo = controls[i];
-			
-			// Setting keycode manually overrides auto-detection
-			if (controlInfo.keyCode != null) {
-				_keyCodes.push(controlInfo.keyCode);
+			if (controlInfo == null)
 				continue;
-			}
-			
-			var name = controlInfo.name;
-			var context = controlInfo.context;
 			
 			var keyCode = -1;
-			if (_platform == 0) {
-				keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_KEYBOARD, context);
-				if (keyCode == -1)
-					keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_MOUSE, context);
 
+			// Setting keycode manually overrides auto-detection
+			if (controlInfo.keyCode != null) {
+				keyCode = controlInfo.keyCode
 			} else {
-				keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_GAMEPAD, context);
+				var name = controlInfo.name;
+				var context = controlInfo.context;
+
+				if (_platform == 0) {
+					keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_KEYBOARD, context);
+					if (keyCode == -1)
+						keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_MOUSE, context);
+	
+				} else {
+					keyCode = skse.GetMappedKey(name, InputDefines.DEVICE_GAMEPAD, context);
+				}
 			}
+			
+			if (keyCode == -1)
+				keyCode = 282; // ???
+				
 			_keyCodes.push(keyCode);
 		}
 		
