@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.0-alpha2
+Version:		3.0-alpha4
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -20,7 +20,7 @@ Source code:	https://github.com/schlangster/skyui
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.2 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.5 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################

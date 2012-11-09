@@ -14,13 +14,13 @@ string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 
 int property		MinSKSERelease
 	int function get()
-		return 32
+		return 33
 	endFunction
 endProperty
 
 string property		MinSKSEVersion
 	string function get()
-		return "1.6.4"
+		return "1.6.5"
 	endFunction
 endProperty
 
