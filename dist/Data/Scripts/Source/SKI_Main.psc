@@ -60,7 +60,7 @@ event OnGameReload()
 	endIf
 
 	; Check hudmenu.swf version
-	CheckMenuVersion("hudmenu.swf", HUD_MENU, "_root.HUDMovieBaseInstance")
+	CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
 
 	; Check other menus, when they're opened
 	RegisterForMenu(INVENTORY_MENU)
@@ -76,28 +76,28 @@ endEvent
 event OnMenuOpen(string a_menuName)
 	if (a_menuName == INVENTORY_MENU)
 		UnregisterForMenu(INVENTORY_MENU)
-		CheckMenuVersion("inventorymenu.swf", INVENTORY_MENU, "_root.Menu_mc")
+		CheckMenuVersion("inventorymenu.swf", INVENTORY_MENU, "_global.InventoryMenu")
 		CheckItemMenuComponents(INVENTORY_MENU)
 
 	elseIf (a_menuName == MAGIC_MENU)
 		UnregisterForMenu(MAGIC_MENU)
-		CheckMenuVersion("magicmenu.swf", MAGIC_MENU, "_root.Menu_mc")
+		CheckMenuVersion("magicmenu.swf", MAGIC_MENU, "_global.MagicMenu")
 		CheckItemMenuComponents(MAGIC_MENU)
 
 	elseIf (a_menuName == CONTAINER_MENU)
 		UnregisterForMenu(CONTAINER_MENU)
-		CheckMenuVersion("containermenu.swf", CONTAINER_MENU, "_root.Menu_mc")
+		CheckMenuVersion("containermenu.swf", CONTAINER_MENU, "_global.ContainerMenu")
 		CheckItemMenuComponents(CONTAINER_MENU)
 
 	elseIf (a_menuName == BARTER_MENU)
 		UnregisterForMenu(BARTER_MENU)
-		CheckMenuVersion("bartermenu.swf", BARTER_MENU, "_root.Menu_mc")
+		CheckMenuVersion("bartermenu.swf", BARTER_MENU, "_global.BarterMenu")
 		CheckItemMenuComponents(BARTER_MENU)
 
 	elseIf (a_menuName == JOURNAL_MENU)
 		UnregisterForMenu(JOURNAL_MENU)
-		CheckMenuVersion("quest_journal.swf", JOURNAL_MENU, "_root.QuestJournalFader.Menu_mc")
-		CheckMenuVersion("skyui/configpanel.swf", JOURNAL_MENU, "_root.ConfigPanelFader.configPanel")
+		CheckMenuVersion("quest_journal.swf", JOURNAL_MENU, "_global.Quest_Journal")
+		CheckMenuVersion("skyui/configpanel.swf", JOURNAL_MENU, "_global.ConfigPanel")
 	endIf
 endEvent
 
@@ -109,9 +109,9 @@ function Error(string a_msg)
 	ErrorDetected = true
 endFunction
 
-function CheckMenuVersion(string a_swfName, string a_menu, string a_root)
-	int releaseIdx = UI.GetInt(a_menu, a_root + ".RELEASE_IDX")
-	string version = UI.GetString(a_menu, a_root + ".VERSION_STRING")
+function CheckMenuVersion(string a_swfName, string a_menu, string a_class)
+	int releaseIdx = UI.GetInt(a_menu, a_class + ".RELEASE_IDX")
+	string version = UI.GetString(a_menu, a_class + ".VERSION_STRING")
 
 	if (releaseIdx == 0)
 		Error("Missing or incompatible menu file (" + a_swfName + ").\nPlease make sure you installed everything correctly and no other mod has overwritten this file.")
@@ -124,7 +124,7 @@ function CheckMenuVersion(string a_swfName, string a_menu, string a_root)
 endFunction
 
 function CheckItemMenuComponents(string a_menu)
-	CheckMenuVersion("skyui/itemcard.swf", a_menu, "_root.Menu_mc.itemCardFadeHolder.ItemCard_mc")
-	CheckMenuVersion("skyui/bottombar.swf", a_menu, "_root.Menu_mc.bottomBar")
-	CheckMenuVersion("skyui/inventorylists.swf", a_menu, "_root.Menu_mc.inventoryLists")
+	CheckMenuVersion("skyui/itemcard.swf", a_menu, "_global.ItemCard")
+	CheckMenuVersion("skyui/bottombar.swf", a_menu, "_global.BottomBar")
+	CheckMenuVersion("skyui/inventorylists.swf", a_menu, "_global.InventoryLists")
 endFunction
