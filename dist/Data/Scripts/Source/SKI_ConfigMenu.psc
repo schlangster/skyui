@@ -467,16 +467,21 @@ endEvent
 event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
 	
 	if (a_option == _searchKeyOID_K)
+		SwapKeys(a_keyCode, _searchKey)
+
 		_searchKey = a_keyCode
 		SetKeyMapOptionValue(a_option, _searchKey)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+
+
 	elseIf (a_option == _switchTabKeyOID_K)
+		SwapKeys(a_keyCode, _switchTabKey)
+
 		_switchTabKey = a_keyCode
 		SetKeyMapOptionValue(a_option, _switchTabKey)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
 	endIf
 endEvent
-
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
@@ -588,4 +593,18 @@ function Apply3DItemScale()
 	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
 	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
 	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+endFunction
+
+function SwapKeys(int a_newKey, int a_curKey)
+	if (a_newKey == _searchKey)
+		_searchKey = a_curKey
+		SetKeyMapOptionValue(_searchKeyOID_K, _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+
+	elseIf (a_newKey == _switchTabKey)
+		_switchTabKey = a_curKey
+		SetKeyMapOptionValue(_switchTabKeyOID_K, _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+
+	endIf
 endFunction
