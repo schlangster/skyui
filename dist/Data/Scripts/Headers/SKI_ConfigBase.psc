@@ -17,8 +17,8 @@ scriptname SKI_ConfigBase extends SKI_QuestBase
 
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
-int property		OPTION_FLAG_NONE		= 0x0000 autoReadonly
-int property		OPTION_FLAG_DISABLED	= 0x0100 autoReadonly
+int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
+int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly
