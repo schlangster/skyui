@@ -110,8 +110,8 @@ function Error(string a_msg)
 endFunction
 
 function CheckMenuVersion(string a_swfName, string a_menu, string a_class)
-	int releaseIdx = UI.GetInt(a_menu, a_class + ".RELEASE_IDX")
-	string version = UI.GetString(a_menu, a_class + ".VERSION_STRING")
+	int releaseIdx = UI.GetInt(a_menu, a_class + ".SKYUI_RELEASE_IDX")
+	string version = UI.GetString(a_menu, a_class + ".SKYUI_VERSION_STRING")
 
 	if (releaseIdx == 0)
 		Error("Missing or incompatible menu file (" + a_swfName + ").\nPlease make sure you installed everything correctly and no other mod has overwritten this file.")
