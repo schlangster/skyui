@@ -290,6 +290,7 @@ class skyui.components.list.ListLayout
 			columnLayoutData.labelArrowDown = stateData.label.arrowDown ? true : false;
 			columnLayoutData.labelValue = stateData.label.text;
 			columnLayoutData.entryValue = stateData.entry.text;
+			columnLayoutData.colorAttribute = stateData.colorAttribute;
 			
 			c++;
 		}

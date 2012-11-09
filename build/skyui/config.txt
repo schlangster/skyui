@@ -405,12 +405,14 @@ columns.word1Column.state1.label.arrowDown = true
 columns.word1Column.state1.entry.text = @infoWord1
 columns.word1Column.state1.sortAttributes = <infoRecharge1, text>
 columns.word1Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word1Column.state1.colorAttribute = shoutColor1
 
 columns.word1Column.state2.label.text = '$FIRST WORD'
 columns.word1Column.state2.label.arrowDown = false
 columns.word1Column.state2.entry.text = @infoWord1
 columns.word1Column.state2.sortAttributes = <infoRecharge1, text>
 columns.word1Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word1Column.state2.colorAttribute = shoutColor1
 
 
 ; WORD 2 COLUMN -------------------------------------------
@@ -425,12 +427,14 @@ columns.word2Column.state1.label.arrowDown = true
 columns.word2Column.state1.entry.text = @infoWord2
 columns.word2Column.state1.sortAttributes = <infoRecharge2, text>
 columns.word2Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word2Column.state1.colorAttribute = shoutColor2
 
 columns.word2Column.state2.label.text = '$SECOND WORD'
 columns.word2Column.state2.label.arrowDown = false
 columns.word2Column.state2.entry.text = @infoWord2
 columns.word2Column.state2.sortAttributes = <infoRecharge2, text>
 columns.word2Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word2Column.state2.colorAttribute = shoutColor2
 
 
 ; WORD 3 COLUMN -------------------------------------------
@@ -445,12 +449,14 @@ columns.word3Column.state1.label.arrowDown = true
 columns.word3Column.state1.entry.text = @infoWord3
 columns.word3Column.state1.sortAttributes = <infoRecharge3, text>
 columns.word3Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word3Column.state1.colorAttribute = shoutColor3
 
 columns.word3Column.state2.label.text = '$THIRD WORD'
 columns.word3Column.state2.label.arrowDown = false
 columns.word3Column.state2.entry.text = @infoWord3
 columns.word3Column.state2.sortAttributes = <infoRecharge3, text>
 columns.word3Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word3Column.state2.colorAttribute = shoutColor3
 
 
 ; SCHOOL COLUMN -------------------------------------------

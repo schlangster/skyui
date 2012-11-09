@@ -18,6 +18,8 @@
 	public var entryValue: String;
 	public var textFormat: TextFormat;
 	
+	public var colorAttribute: String; // support for dynamic entry coloring that overrides static textFormat
+	
 	// Label ---------------------------------
 	
 	public var labelX: Number = 0;
@@ -30,29 +32,12 @@
 
 	public var labelTextFormat: TextFormat;
 	
-
-	
 	public function clear(): Void
 	{
 		type = -1;
 		x = y = width = height = labelX = labelWidth = 0;
-		stageName = entryValue = labelValue = null;
+		stageName = entryValue = labelValue = colorAttribute = null;
 		textFormat = labelTextFormat = null;
 		labelArrowDown = false;
-	}
-	
-	public function dump()
-	{
-		skse.Log("x: " + x);
-		skse.Log("y: " + y);
-		skse.Log("width: " + width);
-		skse.Log("height: " + height);
-		skse.Log("stageName: " + stageName);
-		skse.Log("entryValue: " + entryValue);
-		
-		skse.Log("labelX: " + labelX);
-		skse.Log("labelWidth: " + labelWidth);
-		skse.Log("labelValue: " + labelValue);
-		skse.Log("labelArrowDown: " + labelArrowDown);
 	}
 }

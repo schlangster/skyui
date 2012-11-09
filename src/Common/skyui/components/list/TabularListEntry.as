@@ -45,9 +45,13 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 			var e = this[columnLayoutData.stageName];
 
 			// Substitute @variables by entryObject properties
-			if (columnLayoutData.entryValue != undefined)
-				if (columnLayoutData.entryValue.charAt(0) == "@")
-					e.SetText(a_entryObject[columnLayoutData.entryValue.slice(1)]);
+			var entryValue: String = columnLayoutData.entryValue;
+			if (entryValue != undefined) {
+				if (entryValue.charAt(0) == "@")
+					e.SetText(a_entryObject[entryValue.slice(1)]);
+				else
+					e.SetText(entryValue);
+			}
 			
 			// Process based on column type 
 			switch (columnLayoutData.type) {
@@ -66,6 +70,13 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 				case ListLayout.COL_TYPE_TEXT :
 				default :
 					formatText(e, a_entryObject, a_state);
+			}
+			
+			// Process color overrides after regular formatting
+			if (columnLayoutData.colorAttribute != undefined) {
+				var color = a_entryObject[columnLayoutData.colorAttribute];
+				if (color)
+					e.textColor = color;
 			}
 		}
 	}

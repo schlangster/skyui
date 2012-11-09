@@ -62,25 +62,31 @@ class MagicDataExtender extends ItemcardDataExtender
 				if (a_itemInfo["word0"]) {
 					a_entryObject.infoWord1 = a_itemInfo["word0"] + " (" + recharge[0] + ")";
 					a_entryObject.infoRecharge1 = recharge[0];
+					a_entryObject.shoutColor1 = a_itemInfo["unlocked0"] ? 0xFFFFFF : 0x666666;
 				} else {
 					a_entryObject.infoWord1 = "-";
 					a_entryObject.infoRecharge1 = "-";
+					a_entryObject.shoutColor1 = 0xFFFFFF;
 				}
 				
 				if (a_itemInfo["word1"]) {
 					a_entryObject.infoWord2 = a_itemInfo["word1"] + " (" + recharge[1] + ")";;
 					a_entryObject.infoRecharge2 = recharge[1];
+					a_entryObject.shoutColor2 = a_itemInfo["unlocked1"] ? 0xFFFFFF : 0x666666;
 				} else {
 					a_entryObject.infoWord2 = "-";
 					a_entryObject.infoRecharge2 = "-";
+					a_entryObject.shoutColor2 = 0xFFFFFF;
 				}
 				
 				if (a_itemInfo["word2"]) {
 					a_entryObject.infoWord3 = a_itemInfo["word2"] + " (" + recharge[2] + ")";;
 					a_entryObject.infoRecharge3 = recharge[2];
+					a_entryObject.shoutColor3 = a_itemInfo["unlocked2"] ? 0xFFFFFF : 0x666666;
 				} else {
 					a_entryObject.infoWord3 = "-";
 					a_entryObject.infoRecharge3 = "-";
+					a_entryObject.shoutColor3 = 0xFFFFFF;
 				}
 				
 				break;
