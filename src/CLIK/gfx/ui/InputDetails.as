@@ -22,8 +22,6 @@
 		controllerIdx = a_controllerIdx;
 		control = a_control;
 		skseKeycode = a_skseKeycode;
-		
-		skse.Log("a " + a_skseKeycode);
 	}
 
 
