@@ -36,7 +36,13 @@ string property		ReqSWFVersion
 	endFunction
 endProperty
 
-bool property		ErrorDetected	= false auto
+bool property		HUDMenuCheckEnabled			= true auto
+bool property		InventoryMenuCheckEnabled	= true auto
+bool property		MagicMenuCheckEnabled		= true auto
+bool property		BarterMenuCheckEnabled		= true auto 
+bool property		ContainerMenuCheckEnabled	= true auto
+
+bool property		ErrorDetected				= false auto
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -60,13 +66,27 @@ event OnGameReload()
 	endIf
 
 	; Check hudmenu.swf version
-	CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
+	if (HUDMenuCheckEnabled)
+		CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
+	endIf
 
 	; Check other menus, when they're opened
-	RegisterForMenu(INVENTORY_MENU)
-	RegisterForMenu(MAGIC_MENU)
-	RegisterForMenu(CONTAINER_MENU)
-	RegisterForMenu(BARTER_MENU)
+	if (InventoryMenuCheckEnabled)
+		RegisterForMenu(INVENTORY_MENU)
+	endIf
+
+	if (MagicMenuCheckEnabled)
+		RegisterForMenu(MAGIC_MENU)
+	endIf
+
+	if (ContainerMenuCheckEnabled)
+		RegisterForMenu(CONTAINER_MENU)
+	endIf
+
+	if (BarterMenuCheckEnabled)
+		RegisterForMenu(BARTER_MENU)
+	endIf
+
 	RegisterForMenu(JOURNAL_MENU)
 endEvent
 

@@ -34,6 +34,12 @@ int			_AEOrientationOID_T
 int			_searchKeyOID_K
 int			_switchTabKeyOID_K
 
+int			_checkHUDMenuOID_B
+int			_checkInventoryMenuOID_B
+int			_checkMagicMenuOID_B
+int			_checkBarterMenuOID_B
+int			_checkContainerMenuOID_B
+
 ; State
 int			_itemlistFontSizeIdx	= 1
 
@@ -67,6 +73,7 @@ float		_itemXBase
 
 SKI_SettingsManager property		SKI_SettingsManagerInstance auto
 SKI_ActiveEffectsWidget property	SKI_ActiveEffectsWidgetInstance auto
+SKI_Main property					SKI_MainInstance auto
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -174,20 +181,28 @@ event OnPageReset(string a_page)
 
 		AddEmptyOption()
 
-		AddHeaderOption("3D Item")
-		_3DItemXOffsetOID_S			= AddSliderOption("Horizontal Offset", _3DItemXOffset)
-		_3DItemYOffsetOID_S			= AddSliderOption("Vertical Offset", _3DItemYOffset)
-		_3DItemScaleOID_S			= AddSliderOption("Scale", _3DItemScale, "{1}")
-
-		SetCursorPosition(1)
-
 		AddHeaderOption("Active Effects HUD")
-		
 		_AEOrientationOID_T			= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
 		_AEClampCornerOID_M			= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
 		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
 		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX)
 		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY)
+
+		SetCursorPosition(1)
+
+		AddHeaderOption("3D Item")
+		_3DItemXOffsetOID_S			= AddSliderOption("Horizontal Offset", _3DItemXOffset)
+		_3DItemYOffsetOID_S			= AddSliderOption("Vertical Offset", _3DItemYOffset)
+		_3DItemScaleOID_S			= AddSliderOption("Scale", _3DItemScale, "{1}")
+
+		AddEmptyOption()
+
+		AddHeaderOption("SWF Version Checking")
+		_checkHUDMenuOID_B			= AddToggleOption("HUD Menu", SKI_MainInstance.HUDMenuCheckEnabled)
+		_checkInventoryMenuOID_B	= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
+		_checkMagicMenuOID_B		= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
+		_checkBarterMenuOID_B		= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
+		_checkContainerMenuOID_B	= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
 		
 	endIf
 endEvent
@@ -283,6 +298,26 @@ event OnOptionDefault(int a_option)
 		SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
 		SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
 
+	; -------------------------------------------------------
+	elseIf (a_option == _checkHUDMenuOID_B)
+		SKI_MainInstance.HUDMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
+
+	elseIf (a_option == _checkInventoryMenuOID_B)
+		SKI_MainInstance.InventoryMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
+
+	elseIf (a_option == _checkMagicMenuOID_B)
+		SKI_MainInstance.MagicMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
+
+	elseIf (a_option == _checkBarterMenuOID_B)
+		SKI_MainInstance.BarterMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
+
+	elseIf (a_option == _checkContainerMenuOID_B)
+		SKI_MainInstance.ContainerMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
 	endIf
 endEvent
 
@@ -331,6 +366,31 @@ event OnOptionSelect(int a_option)
 		endIf
 		SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
 		SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
+	
+	elseIf (a_option == _checkHUDMenuOID_B)
+		bool newVal = !SKI_MainInstance.HUDMenuCheckEnabled
+		SKI_MainInstance.HUDMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
+
+	elseIf (a_option == _checkInventoryMenuOID_B)
+		bool newVal = !SKI_MainInstance.InventoryMenuCheckEnabled
+		SKI_MainInstance.InventoryMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
+
+	elseIf (a_option == _checkMagicMenuOID_B)
+		bool newVal = !SKI_MainInstance.MagicMenuCheckEnabled
+		SKI_MainInstance.MagicMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
+
+	elseIf (a_option == _checkBarterMenuOID_B)
+		bool newVal = !SKI_MainInstance.BarterMenuCheckEnabled
+		SKI_MainInstance.BarterMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
+
+	elseIf (a_option == _checkContainerMenuOID_B)
+		bool newVal = !SKI_MainInstance.ContainerMenuCheckEnabled
+		SKI_MainInstance.ContainerMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
 
 	endIf
 endEvent
@@ -523,6 +583,17 @@ event OnOptionHighlight(int a_option)
 		SetInfoText("Default: 0")
 	elseif (a_option == _AEOrientationOID_T)
 		SetInfoText("Default: Vertical")
+
+	elseIf (a_option == _checkHUDMenuOID_B)
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+	elseIf (a_option == _checkInventoryMenuOID_B)
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+	elseIf (a_option == _checkMagicMenuOID_B)
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+	elseIf (a_option == _checkBarterMenuOID_B)
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+	elseIf (a_option == _checkContainerMenuOID_B)
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warningmessage !\nDefault: On")
 	endIf
 endEvent
 
