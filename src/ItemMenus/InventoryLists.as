@@ -153,15 +153,11 @@ class InventoryLists extends MovieClip
 		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
 
 		categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
-		categoryList.addEventListener("listMovedUp", this, "onCategoriesListMoveUp");
-		categoryList.addEventListener("listMovedDown", this, "onCategoriesListMoveDown");
-		categoryList.addEventListener("selectionChange", this, "onCategoriesListMouseSelectionChange");
+		categoryList.addEventListener("selectionChange", this, "onCategoriesListSelectionChange");
 
 		itemList.disableInput = false;
 
-		itemList.addEventListener("listMovedUp", this, "onItemsListMoveUp");
-		itemList.addEventListener("listMovedDown", this, "onItemsListMoveDown");
-		itemList.addEventListener("selectionChange", this, "onItemsListMouseSelectionChange");
+		itemList.addEventListener("selectionChange", this, "onItemsListSelectionChange");
 		itemList.addEventListener("sortChange", this, "onSortChange");
 
 		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
@@ -436,39 +432,7 @@ class InventoryLists extends MovieClip
 		showItemsList();
 	}
 
-	private function onCategoriesListMoveUp(event: Object): Void
-	{
-		doCategorySelectionChange(event);
-	}
-
-	private function onCategoriesListMoveDown(event: Object): Void
-	{
-		doCategorySelectionChange(event);
-	}
-
-	private function onCategoriesListMouseSelectionChange(event: Object): Void
-	{
-		if (event.keyboardOrMouse == 0)
-			doCategorySelectionChange(event);
-	}
-
-	private function onItemsListMoveUp(event: Object): Void
-	{
-		doItemsSelectionChange(event);
-	}
-
-	private function onItemsListMoveDown(event: Object): Void
-	{
-		doItemsSelectionChange(event);
-	}
-
-	private function onItemsListMouseSelectionChange(event: Object): Void
-	{
-		if (event.keyboardOrMouse == 0)
-			doItemsSelectionChange(event);
-	}
-
-	private function doCategorySelectionChange(event: Object): Void
+	private function onCategoriesListSelectionChange(event: Object): Void
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
@@ -476,7 +440,7 @@ class InventoryLists extends MovieClip
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
 
-	private function doItemsSelectionChange(event: Object): Void
+	private function onItemsListSelectionChange(event: Object): Void
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
 

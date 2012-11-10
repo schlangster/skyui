@@ -301,9 +301,7 @@ class ItemMenu extends MovieClip
 	}
 	
 	private function onItemHighlightChange(event: Object): Void
-	{
-		super.onItemHighlightChange(event);
-		
+	{		
 		if (event.index != -1) {
 			if (!_bItemCardFadedIn) {
 				_bItemCardFadedIn = true;

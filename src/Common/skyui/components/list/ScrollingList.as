@@ -230,7 +230,6 @@ class skyui.components.list.ScrollingList extends BasicList
 			} else if (getSelectedListEnumIndex() >= scrollDelta) {
 				doSetSelectedIndex(getListEnumRelativeIndex(-scrollDelta), SELECT_KEYBOARD);
 				isMouseDrivenNav = false;
-				dispatchEvent({type: "listMovedUp", index: _selectedIndex, scrollChanged: true});
 			}
 		} else if (a_bScrollPage) {
 			var t = scrollPosition - _listIndex;
@@ -249,7 +248,6 @@ class skyui.components.list.ScrollingList extends BasicList
 			} else if (getSelectedListEnumIndex() < getListEnumSize() - scrollDelta) {
 				doSetSelectedIndex(getListEnumRelativeIndex(scrollDelta), SELECT_KEYBOARD);
 				isMouseDrivenNav = false;
-				dispatchEvent({type: "listMovedDown", index: _selectedIndex, scrollChanged: true});
 			}
 		} else if (a_bScrollPage) {
 			var t = scrollPosition + _listIndex;
@@ -260,12 +258,12 @@ class skyui.components.list.ScrollingList extends BasicList
 		}
 	}
 
-	public function selectDefaultIndex(a_bBottom: Boolean): Void
+	public function selectDefaultIndex(a_bTop: Boolean): Void
 	{
 		if (_listIndex <= 0)
 			return;
 			
-		if (a_bBottom) {
+		if (a_bTop) {
 			var firstClip = getClipByIndex(0);
 			if (firstClip.itemIndex != undefined)
 				doSetSelectedIndex(firstClip.itemIndex, SELECT_KEYBOARD);
