@@ -29,8 +29,6 @@ class FavoritesMenu extends MovieClip
 		ItemList.addEventListener("itemPress", this, "onItemSelect");
 		FocusHandler.instance.setFocus(ItemList, 0);
 		_parent.gotoAndPlay("startFadeIn");
-		
-		skse.ASInvoke("HUD Menu", "_root.HUDMovieBaseInstance.ShowElements", "TweenModes", true)
 	}
 
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
