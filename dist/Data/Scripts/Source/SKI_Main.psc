@@ -7,6 +7,7 @@ string property		INVENTORY_MENU	= "InventoryMenu" autoReadonly
 string property		MAGIC_MENU		= "MagicMenu" autoReadonly
 string property		CONTAINER_MENU	= "ContainerMenu" autoReadonly
 string property		BARTER_MENU		= "BarterMenu" autoReadonly
+string property		GIFT_MENU		= "GiftMenu" autoReadonly
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 
 
@@ -41,6 +42,7 @@ bool property		InventoryMenuCheckEnabled	= true auto
 bool property		MagicMenuCheckEnabled		= true auto
 bool property		BarterMenuCheckEnabled		= true auto 
 bool property		ContainerMenuCheckEnabled	= true auto
+bool property		GiftMenuCheckEnabled		= true auto
 
 bool property		ErrorDetected				= false auto
 
@@ -87,6 +89,10 @@ event OnGameReload()
 		RegisterForMenu(BARTER_MENU)
 	endIf
 
+	if (GiftMenuCheckEnabled)
+		RegisterForMenu(GIFT_MENU)
+	endIf
+
 	RegisterForMenu(JOURNAL_MENU)
 endEvent
 
@@ -113,6 +119,11 @@ event OnMenuOpen(string a_menuName)
 		UnregisterForMenu(BARTER_MENU)
 		CheckMenuVersion("bartermenu.swf", BARTER_MENU, "_global.BarterMenu")
 		CheckItemMenuComponents(BARTER_MENU)
+
+	elseIf (a_menuName == GIFT_MENU)
+		UnregisterForMenu(GIFT_MENU)
+		CheckMenuVersion("giftmenu.swf", GIFT_MENU, "_global.GiftMenu")
+		CheckItemMenuComponents(GIFT_MENU)
 
 	elseIf (a_menuName == JOURNAL_MENU)
 		UnregisterForMenu(JOURNAL_MENU)
