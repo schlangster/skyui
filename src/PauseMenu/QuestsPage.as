@@ -276,7 +276,7 @@ class QuestsPage extends MovieClip
 	function onQuestHighlight(): Void
 	{
 		if (TitleList.entryList.length > 0) {
-			var aCategories: Array = ["Misc", "Main", "MagesGuild", "ThievesGuild", "DarkBrotherhood", "Companion", "Favor", "Daedric", "Misc", "CivilWar", "DLC01"];
+			var aCategories: Array = ["Misc", "Main", "MagesGuild", "ThievesGuild", "DarkBrotherhood", "Companion", "Favor", "Daedric", "Misc", "CivilWar", "DLC01", "DLC02"];
 			QuestTitleText.SetText(TitleList.selectedEntry.text);
 			if (TitleList.selectedEntry.objectives == undefined) {
 				GameDelegate.call("RequestObjectivesData", []);

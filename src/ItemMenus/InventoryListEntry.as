@@ -14,10 +14,9 @@ class InventoryListEntry extends TabularListEntry
 	private static var STATES = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
   /* PRIVATE VARIABLES */
-  
+	
 	private var _iconLabel: String;
 	private var _iconColor: Number;
-	
 	
   /* STAGE ELMENTS */
   
@@ -85,19 +84,12 @@ class InventoryListEntry extends TabularListEntry
   	// @override TabularListEntry
 	public function formatItemIcon(a_entryField: Object, a_entryObject: Object, a_state: ListState)
 	{
-		var newIconLabel: String = a_entryObject["iconLabel"] != undefined ? a_entryObject["iconLabel"] : "default_misc";
-		var newIconColor: Number = a_entryObject["iconColor"];
+		_iconLabel = a_entryObject["iconLabel"] != undefined ? a_entryObject["iconLabel"] : "default_misc";
+		_iconColor = a_entryObject["iconColor"];
 
-		if (_iconLabel != newIconLabel) {
-			_iconLabel = newIconLabel;
-			a_entryField.gotoAndStop(_iconLabel);
-		}
-
-		if (_iconColor != newIconColor) {
-			_iconColor = newIconColor;
-			changeIconColor(MovieClip(a_entryField), _iconColor);
-		}
-
+		// Could return here if _iconLoaded is false
+		a_entryField.gotoAndStop(_iconLabel);
+		changeIconColor(MovieClip(a_entryField), _iconColor);
 	}
 
   	// @override TabularListEntry
@@ -220,8 +212,8 @@ class InventoryListEntry extends TabularListEntry
 				//Note: Could check if all values of RGBA mult and .rgb are all the same then skip
 				var ct: ColorTransform = new ColorTransform();
 				var tf: Transform = new Transform(MovieClip(element));
-				if (a_rgb != undefined)
-					ct.rgb = a_rgb;
+				// Could return here if (a_rgb == tf.colorTransform.rgb && a_rgb != undefined)
+				ct.rgb = (a_rgb == undefined)? 0xFFFFFF: a_rgb;
 				tf.colorTransform = ct;
 				// Shouldn't be necessary to recurse since we don't expect multiple clip depths for an icon
 				//changeIconColor(element, a_rgb);

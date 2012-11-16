@@ -39,6 +39,7 @@ int			_checkInventoryMenuOID_B
 int			_checkMagicMenuOID_B
 int			_checkBarterMenuOID_B
 int			_checkContainerMenuOID_B
+int			_checkGiftMenuOID_B
 
 ; State
 int			_itemlistFontSizeIdx	= 1
@@ -203,6 +204,7 @@ event OnPageReset(string a_page)
 		_checkMagicMenuOID_B		= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
 		_checkBarterMenuOID_B		= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
 		_checkContainerMenuOID_B	= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
+		_checkGiftMenuOID_B			= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
 		
 	endIf
 endEvent
@@ -318,6 +320,11 @@ event OnOptionDefault(int a_option)
 	elseIf (a_option == _checkContainerMenuOID_B)
 		SKI_MainInstance.ContainerMenuCheckEnabled = true
 		SetToggleOptionValue(a_option, true)
+
+	elseIf (a_option == _checkGiftMenuOID_B)
+		SKI_MainInstance.GiftMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
+
 	endIf
 endEvent
 
@@ -390,6 +397,11 @@ event OnOptionSelect(int a_option)
 	elseIf (a_option == _checkContainerMenuOID_B)
 		bool newVal = !SKI_MainInstance.ContainerMenuCheckEnabled
 		SKI_MainInstance.ContainerMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
+
+	elseIf (a_option == _checkGiftMenuOID_B)
+		bool newVal = !SKI_MainInstance.GiftMenuCheckEnabled
+		SKI_MainInstance.GiftMenuCheckEnabled = newVal
 		SetToggleOptionValue(a_option, newVal)
 
 	endIf
@@ -593,7 +605,9 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _checkBarterMenuOID_B)
 		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
 	elseIf (a_option == _checkContainerMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warningmessage !\nDefault: On")
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+	elseIf (a_option == _checkGiftMenuOID_B)
+		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
 	endIf
 endEvent
 
