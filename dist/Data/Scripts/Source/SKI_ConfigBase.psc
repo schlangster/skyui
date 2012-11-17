@@ -329,8 +329,12 @@ function SetTextOptionValue(int a_option, string a_value, bool a_noUpdate = fals
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_TEXT)
-		string page = Pages[(a_option / 0x100) as int]
-		Error("Option type mismatch. Expected text option, page \"" + page + "\", index " + index)
+		int pageIdx = ((a_option / 0x100) as int) - 1
+		if (pageIdx != -1)
+			Error("Option type mismatch. Expected text option, page \"" + Pages[pageIdx] + "\", index " + index)
+		else
+			Error("Option type mismatch. Expected text option, page \"\", index " + index)
+		endIf
 		return
 	endIf
 
@@ -342,8 +346,12 @@ function SetToggleOptionValue(int a_option, bool a_checked, bool a_noUpdate = fa
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_TOGGLE)
-		string page = Pages[(a_option / 0x100) as int]
-		Error("Option type mismatch. Expected toggle option, page \"" + page + "\", index " + index)
+		int pageIdx = ((a_option / 0x100) as int) - 1
+		if (pageIdx != -1)
+			Error("Option type mismatch. Expected toggle option, page \"" + Pages[pageIdx] + "\", index " + index)
+		else
+			Error("Option type mismatch. Expected toggle option, page \"\", index " + index)
+		endIf
 		return
 	endIf
 
@@ -355,8 +363,12 @@ function SetSliderOptionValue(int a_option, float a_value, string a_formatString
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_SLIDER)
-		string page = Pages[(a_option / 0x100) as int]
-		Error("Option type mismatch. Expected slider option, page \"" + page + "\", index " + index)
+		int pageIdx = ((a_option / 0x100) as int) - 1
+		if (pageIdx != -1)
+			Error("Option type mismatch. Expected slider option, page \"" + Pages[pageIdx] + "\", index " + index)
+		else
+			Error("Option type mismatch. Expected slider option, page \"\", index " + index)
+		endIf
 		return
 	endIf
 
@@ -368,8 +380,12 @@ function SetMenuOptionValue(int a_option, string a_value, bool a_noUpdate = fals
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_MENU)
-		string page = Pages[(a_option / 0x100) as int]
-		Error("Option type mismatch. Expected menu option, page \"" + page + "\", index " + index)
+		int pageIdx = ((a_option / 0x100) as int) - 1
+		if (pageIdx != -1)
+			Error("Option type mismatch. Expected menu option, page \"" + Pages[pageIdx] + "\", index " + index)
+		else
+			Error("Option type mismatch. Expected menu option, page \"\", index " + index)
+		endIf
 		return
 	endIf
 
@@ -381,8 +397,12 @@ function SetColorOptionValue(int a_option, int a_color, bool a_noUpdate = false)
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_COLOR)
-		string page = Pages[(a_option / 0x100) as int]
-		Error("Option type mismatch. Expected color option, page \"" + page + "\", index " + index)
+		int pageIdx = ((a_option / 0x100) as int) - 1
+		if (pageIdx != -1)
+			Error("Option type mismatch. Expected color option, page \"" + Pages[pageIdx] + "\", index " + index)
+		else
+			Error("Option type mismatch. Expected color option, page \"\", index " + index)
+		endIf
 		return
 	endIf
 
@@ -394,8 +414,12 @@ function SetKeyMapOptionValue(int a_option, int a_keyCode, bool a_noUpdate = fal
 	int index = a_option % 0x100
 
 	if (_optionFlagsBuf[index] != OPTION_TYPE_KEYMAP)
-		string page = Pages[(a_option / 0x100) as int]
-		Error("Option type mismatch. Expected keymap option, page \"" + page + "\", index " + index)
+		int pageIdx = ((a_option / 0x100) as int) - 1
+		if (pageIdx != -1)
+			Error("Option type mismatch. Expected keymap option, page \"" + Pages[pageIdx] + "\", index " + index)
+		else
+			Error("Option type mismatch. Expected keymap option, page \"\", index " + index)
+		endIf
 		return
 	endIf
 
