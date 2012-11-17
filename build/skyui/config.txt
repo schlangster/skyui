@@ -145,7 +145,7 @@ columns.arColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEI
 columns.subTypeColumn.type = TEXT
 columns.subTypeColumn.name = '$TYPE'
 columns.subTypeColumn.states = 1
-columns.subTypeColumn.width = 0.10
+columns.subTypeColumn.width = 0.15
 columns.subTypeColumn.border = a_textBorder
 
 columns.subTypeColumn.state1.label.text = '$TYPE'
@@ -743,7 +743,6 @@ props.specificMiscSubType.dataMember13.filter = <'formId':FORMID_LEATHER01>
 props.specificMiscSubType.dataMember13.set = <'subTypeDisplay':'$Leather', 'subType':MISC_TYPE_LEATHER>
 props.specificMiscSubType.dataMember14.filter = <'formId':FORMID_LEATHERSTRIPS>
 props.specificMiscSubType.dataMember14.set = <'subTypeDisplay':'$Strips', 'subType':MISC_TYPE_LEATHERSTRIPS>
-props.specificMiscSubType.keywords.VendorItemClutter = <'subTypeDisplay':'$Clutter', 'subType':MISC_TYPE_CLUTTER>
 
 props.miscSubType.propertiesToSet = <'subType', 'subTypeDisplay'>
 props.miscSubType.filter = <'formType':FORMTYPE_MISC>
@@ -754,6 +753,7 @@ props.miscSubType.keywords.VendorItemAnimalHide = <'subTypeDisplay':'$Hide', 'su
 props.miscSubType.keywords.VendorItemTool = <'subTypeDisplay':'$Tool', 'subType':MISC_TYPE_TOOL>
 props.miscSubType.keywords.VendorItemAnimalPart = <'subTypeDisplay':'$Remains', 'subType':MISC_TYPE_REMAINS>
 props.miscSubType.keywords.VendorItemOreIngot = <'subTypeDisplay':'$Ore/Ingot', 'subType':MISC_TYPE_INGOT>
+props.miscSubType.keywords.VendorItemClutter = <'subTypeDisplay':'$Clutter', 'subType':MISC_TYPE_CLUTTER>
 
 ; SET DISPLAY PROPERTIES -------------------------------------------------------
 ; Set display property values based on keywords/dataMembers
@@ -870,7 +870,7 @@ props.soulgemSubTypeDisplay.defaultValues = <'subTypeDisplay': '$Soul Gem'>
 ;FORMTYPE_BOOK: handled by keywords
 ;FORMTYPE_MISC: handled by keywords
 
-itemProperties = <armorMaterial, weaponMaterial, ammoMaterial, bookSubType, goldSubType, specificMiscSubType, miscSubType, armorClassDisplay, armorSubTypeDisplay, weaponSubTypeDisplay, alchSubTypeDisplay, scrollSubTypeDisplay, ingredientSubTypeDisplay, torchSubTypeDisplay, ammoSubTypeDisplay, keySubTypeDisplay, soulgemSubTypeDisplay>
+itemProperties = <armorMaterial, weaponMaterial, ammoMaterial, bookSubType, specificMiscSubType, miscSubType, armorClassDisplay, armorSubTypeDisplay, weaponSubTypeDisplay, alchSubTypeDisplay, scrollSubTypeDisplay, ingredientSubTypeDisplay, torchSubTypeDisplay, ammoSubTypeDisplay, keySubTypeDisplay, soulgemSubTypeDisplay>
 
 ; Set Compound Properties -------------------------------------------------------
 ; Set properties that are a combination of other properties, used for icon column sorting
@@ -1091,7 +1091,7 @@ props.miscIcon.defaultValues = <'iconLabel': 'default_misc'>
 props.miscIcon.dataMember1.filter = <'formType': FORMTYPE_TORCH>
 props.miscIcon.dataMember1.set = <'iconLabel': 'misc_torch'>
 props.miscIcon.dataMember2.filter = <'subType': MISC_TYPE_GOLD>
-props.miscIcon.dataMember2.set = <'iconLabel': 'misc_gold2', 'iconColor': 0xCCCC33>
+props.miscIcon.dataMember2.set = <'iconLabel': 'misc_gold', 'iconColor': 0xCCCC33>
 props.miscIcon.dataMember3.filter = <'subType': MISC_TYPE_DRAGONCLAW>
 props.miscIcon.dataMember3.set = <'iconLabel': 'misc_dragonclaw'>
 props.miscIcon.dataMember4.filter  = <'subType': MISC_TYPE_ARTIFACT>
