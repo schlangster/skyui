@@ -45,9 +45,6 @@ class CategoryList extends BasicList
 	// Size of the icon.
 	public var iconSize: Number;
 	
-	// Name of movie that contains icons, i.e. skyui_icons_curved.swf.
-	public var iconSource: String;
-	
 	// Array that contains the icon label for category at position i.
 	// The category list uses fixed lengths/icons, so this is assigned statically.
 	public var iconArt: Array;
@@ -105,7 +102,7 @@ class CategoryList extends BasicList
   
   	// Clears the list. For the category list, that's ok since the entryList isn't manipulated directly.
 	// @override BasicList
-	function clearList(): Void
+	public function clearList(): Void
 	{
 		dividerIndex = -1;
 		_entryList.splice(0);
@@ -120,6 +117,7 @@ class CategoryList extends BasicList
 		}
 		
 		listEnumeration.invalidate();
+
 		calculateSegmentParams();
 		
 		if (_selectedIndex >= listEnumeration.size())
@@ -144,6 +142,7 @@ class CategoryList extends BasicList
 			var entryClip = getClipByIndex(i);
 
 			entryClip.setEntry(listEnumeration.at(i + _segmentOffset), listState);
+			entryClip._height = entryClip._width = iconSize;
 
 			listEnumeration.at(i + _segmentOffset).clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;
@@ -351,10 +350,10 @@ class CategoryList extends BasicList
 
 		var selectedClip = _entryClipManager.getClip(_selectedIndex - _segmentOffset);
 
-		_targetSelectorPos = selectedClip._x + (selectedClip.background._width - selectorCenter._width) / 2;
+		_targetSelectorPos = selectedClip._x + (selectedClip._width - selectorCenter._width) / 2;
 		
 		selectorCenter._visible = true;
-		selectorCenter._y = selectedClip._y + selectedClip.background._height;
+		selectorCenter._y = selectedClip._y + selectedClip._height;
 		
 		if (selectorLeft != undefined) {
 			selectorLeft._visible = true;
