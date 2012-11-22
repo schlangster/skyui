@@ -10,7 +10,7 @@ class skyui.util.ColorFunctions
 	// Hex
 	public static function hexToRgb(a_RRGGBB: Number): Array
 	{
-		var RRGGBB: Number = clampValue(a_RRGGBB, 0x000000, 0xFFFFFF);
+		var RRGGBB: Number = validHex(a_RRGGBB);
 
 		return [RRGGBB >> 0x10 & 0xFF, RRGGBB >> 0x08 & 0xFF, RRGGBB & 0xFF];
 	}
@@ -38,6 +38,11 @@ class skyui.util.ColorFunctions
 
 		return str;
 
+	}
+
+	public static function validHex(a_RRGGBB: Number): Number
+	{
+		return clampValue(a_RRGGBB, 0x000000, 0xFFFFFF);
 	}
 
 	// RGB
