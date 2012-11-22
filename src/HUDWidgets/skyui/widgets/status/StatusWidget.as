@@ -156,7 +156,7 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 	public function onLoadError(a_icon:MovieClip, a_errorCode: String): Void
 	{
 		// TODO
-		skse.SendModEvent("widgetLoadError", "IconLoadFailure", Number(_widgetID)); //"WidgetID: " + _widgetID + " IconLoadError: " + a_errorCode + " (" + _iconSource + ")");
+		skse.SendModEvent("SKIWF_widgetError", "IconLoadFailure", Number(_widgetID)); //"WidgetID: " + _widgetID + " IconLoadError: " + a_errorCode + " (" + _iconSource + ")");
 		
 		unloadIcon();
 	}
