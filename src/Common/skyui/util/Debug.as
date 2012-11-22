@@ -39,6 +39,53 @@ class skyui.util.Debug
 		}
 	}
 
+	public static function logNT(/* a_text: String , a_text2: String ... */): Void
+	{
+		// Flush buffer
+		if (_global.skse && _buffer.length > 0) {
+			for(var i = 0; i < _buffer.length; i++)
+				skse.Log(_buffer[i]);			
+			_buffer.splice(0);
+		}
+
+		for(var i = 0; i < arguments.length; i++) {
+			var str = arguments[i];
+
+			if (_global.skse)
+				skse.Log(str);
+			else if (_global.gfxPlayer)
+				trace(str);
+			else
+				_buffer.push(str);
+		}
+	}
+
+	public static function dump(a_name: String, a_obj, a_noTimestamp: Boolean, a_padLevel: Number): Void
+	{
+		var pad: String = "";
+		var padLevel: Number = (a_padLevel == undefined)? 0: a_padLevel;
+		var logFn: Function = (a_noTimestamp)? logNT: log;
+
+		for(var i = 0; i < padLevel; i++)
+			pad += "    ";
+
+		if (typeof a_obj == "object") {
+			logFn(pad + a_name);
+			for (var s in a_obj)
+				dump(s, a_obj[s], a_noTimestamp, padLevel + 1);
+		} else if (typeof a_obj == "array") {
+			logFn(pad + a_name);
+			for(var j = 0; j < a_obj.length; j++)
+				dump(j, a_obj[j], a_noTimestamp, padLevel + 1);
+		} else if (typeof a_obj == "function"){
+			logFn(pad + a_name + "();");
+		} else {
+			logFn(pad + a_name + ": " + a_obj);
+		}
+	}
+
+
+
 	public static function getFunctionName(a_func: Function): String
 	{
 		var name: String = getFunctionNameRecursive(a_func, _global);
