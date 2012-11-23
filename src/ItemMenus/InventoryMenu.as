@@ -96,7 +96,7 @@ class InventoryMenu extends ItemMenu
 			} else if (!inventoryLists.itemList.disableInput) {
 				// Gamepad back || ALT (default) || 'P'
 				var bGamepadBackPressed = (_platform != 0 && details.navEquivalent == NavigationCode.GAMEPAD_BACK);
-				if (bGamepadBackPressed || details.skseKeycode == _switchKey || details.control == "Quick Magic")
+				if (bGamepadBackPressed || details.skseKeycode == _switchTabKey || details.control == "Quick Magic")
 					openMagicMenu(true);
 			}
 		}
