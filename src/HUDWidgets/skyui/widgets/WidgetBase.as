@@ -57,7 +57,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 			}
 		}
 		if (numValidModes == 0) // TODO
-			skse.SendModEvent("widgetWarning", "NoValidModes", Number(_widgetID));
+			skse.SendModEvent("SKIWF_widgetError", "NoValidModes", Number(_widgetID));
 		
 		var hudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
 		_widgetHolder._visible = _widgetHolder.hasOwnProperty(hudMode);

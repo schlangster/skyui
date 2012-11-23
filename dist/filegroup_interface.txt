@@ -20,6 +20,7 @@ Interface\skyui\mcm_splash.swf
 Interface\skyui\res\mcm_logo.dds
 Interface\widgets\activeeffects.swf
 Interface\widgets\status.swf
+Interface\widgets\meter.swf
 Interface\translations\SkyUI_czech.txt
 Interface\translations\SkyUI_english.txt
 Interface\translations\SkyUI_french.txt
