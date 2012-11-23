@@ -1,37 +1,79 @@
 ﻿import Shared.GlobalFunc;
 import gfx.io.GameDelegate;
 import gfx.managers.FocusHandler;
+
 import gfx.ui.InputDetails;
 import gfx.ui.NavigationCode;
 
+import skyui.components.list.ScrollingList;
+import skyui.components.list.BasicEnumeration;
+
 class FavoritesMenu extends MovieClip
 {
-	var bPCControlsReady: Boolean = true;
-	var ItemList: MovieClip;
-	var LeftPanel: MovieClip;
-	var List_mc: MovieClip;
+	public var bPCControlsReady: Boolean = true;
+	
+	public var itemList: ScrollingList;
+	
+	public var background: MovieClip;
+	
+	var dbgIntvl;
+	
+	private var _typeFilter: ItemTypeFilter;
+	private var _nameFilter: ItemNameFilter;
+	private var _sortFilter: ItemSorter;
 
-	function FavoritesMenu()
+	public function FavoritesMenu()
 	{
 		super();
-		ItemList = List_mc;
+
+		dbgIntvl = setInterval(this, "TestMenu", 1000);
+		
+		_typeFilter = new ItemTypeFilter();
+		_nameFilter = new ItemNameFilter();
+		_sortFilter = new ItemSorter();
 	}
 
-	function InitExtensions(): Void
+	public function InitExtensions(): Void
 	{
+		var listEnumeration = new FilteredEnumeration(itemList.entryList);
+		listEnumeration.addFilter(_typeFilter);
+		listEnumeration.addFilter(_nameFilter);
+		listEnumeration.addFilter(_sortFilter);
+		itemList.listEnumeration = listEnumeration;
+
 		GlobalFunc.SetLockFunction();
 		_parent.Lock("BL");
+		
 		GameDelegate.addCallBack("PopulateItems", this, "populateItemList");
 		GameDelegate.addCallBack("SetSelectedItem", this, "setSelectedItem");
 		GameDelegate.addCallBack("StartFadeOut", this, "startFadeOut");
-		ItemList.addEventListener("listMovedUp", this, "onListMoveUp");
-		ItemList.addEventListener("listMovedDown", this, "onListMoveDown");
-		ItemList.addEventListener("itemPress", this, "onItemSelect");
-		FocusHandler.instance.setFocus(ItemList, 0);
+		
+		itemList.addEventListener("itemPress", this, "onItemSelect");
+		FocusHandler.instance.setFocus(itemList, 0);
+		
 		_parent.gotoAndPlay("startFadeIn");
 	}
+	
+	// @API
+	public function get ItemList(): MovieClip
+	{
+		return itemList;
+	}
+	
+	function TestMenu(): Void
+	{
+		clearInterval(dbgIntvl);
+		
+		InitExtensions();
 
-	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+		itemList.clearList();
+		for (var i=0; i<100; i++) {
+			itemList.entryList.push({text: "test", equipState: 0});
+		}
+		itemList.InvalidateData();
+	}
+
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
 			if (Shared.GlobalFunc.IsKeyPressed(details) && details.navEquivalent == NavigationCode.TAB) {
@@ -41,23 +83,18 @@ class FavoritesMenu extends MovieClip
 		return true;
 	}
 
-	function get selectedIndex(): Number
+	public function get selectedIndex(): Number
 	{
-		return ItemList.selectedEntry.index;
+		return itemList.selectedEntry.index;
 	}
 
-	function get itemList(): MovieClip
+	public function setSelectedItem(aiIndex: Number): Void
 	{
-		return ItemList;
-	}
-
-	function setSelectedItem(aiIndex: Number): Void
-	{
-		for (var i: Number = 0; i < ItemList.entryList.length; i++) {
-			if (ItemList.entryList[i].index == aiIndex) {
-				ItemList.selectedIndex = i;
-				ItemList.RestoreScrollPosition(i);
-				ItemList.UpdateList();
+		for (var i: Number = 0; i < itemList.entryList.length; i++) {
+			if (itemList.entryList[i].index == aiIndex) {
+				itemList.selectedIndex = i;
+//				itemList.RestoreScrollPosition(i);
+				itemList.UpdateList();
 				return;
 			}
 		}
@@ -98,9 +135,16 @@ class FavoritesMenu extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		ItemList.SetPlatform(aiPlatform, abPS3Switch);
-		LeftPanel._x = aiPlatform == 0 ? -90 : -78.2;
-		LeftPanel.gotoAndStop(aiPlatform == 0 ? "Mouse" : "Gamepad");
+	}
+	
+	function AppendHotkeyText(atfText: TextField, aiHotkey: Number, astrItemName: String): Void
+	{
+		if (aiHotkey >= 0 && aiHotkey <= 7) {
+			atfText.SetText(aiHotkey + 1 + ". " + astrItemName);
+			return;
+		}
+		atfText.SetText("$HK" + aiHotkey);
+		atfText.SetText(atfText.text + ". " + astrItemName);
 	}
 
 }
