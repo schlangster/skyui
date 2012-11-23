@@ -78,6 +78,8 @@ class skyui.components.MappedButton extends Button
 	public function setButtonData(a_buttonData: Object)
 	{
 		label = a_buttonData.text;
+		// Update textfield size - autoSize doesn't work reliably for large resolutions 
+		textField._width = textField.getLineMetrics(0).width;
 		
 		setMappedControls(a_buttonData.controls);
 	}
@@ -147,7 +149,7 @@ class skyui.components.MappedButton extends Button
 		}
 		
 		textField._x = xOffset + 1;
-		xOffset += textField.getLineMetrics(0).width + 6;
+		xOffset += textField._width + 6;
 		
 		background._width = xOffset;
 	}
