@@ -131,7 +131,6 @@ class InventoryLists extends MovieClip
 		searchWidget = panelContainer.searchWidget;
 		columnSelectButton = panelContainer.columnSelectButton;
 
-		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
@@ -224,6 +223,9 @@ class InventoryLists extends MovieClip
 
 		categoryList.platform = a_platform;
 		itemList.platform = a_platform;
+		
+		_searchKey = skse.GetMappedKey("Jump", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		_switchTabKey = skse.GetMappedKey("Sprint", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
 	}
 
 	// @GFx
@@ -396,13 +398,6 @@ class InventoryLists extends MovieClip
 		searchWidget.isDisabled = false;
 		
 		itemList.selectedIndex = _savedSelectionIndex;
-	}
-	
-	private function onConfigLoad(event: Object): Void
-	{  	
-		var config = event.config;
-		_searchKey = config["Input"].controls.search;
-		_switchTabKey = config["Input"].controls.switchTab;
 	}
 	
 	private function onConfigUpdate(event: Object): Void

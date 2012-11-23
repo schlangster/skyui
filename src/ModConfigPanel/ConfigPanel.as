@@ -788,7 +788,7 @@ class ConfigPanel extends MovieClip
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		_optionsList.disableSelection = _optionsList.disableInput = true;
-		_subList.disableSelection = _subList.disableInput = true;
+		_modListPanel.isDisabled = true;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
 	}
@@ -797,7 +797,7 @@ class ConfigPanel extends MovieClip
 	{
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 		_optionsList.disableSelection = _optionsList.disableInput = false;
-		_subList.disableSelection = _subList.disableInput = false;
+		_modListPanel.isDisabled = false;
 		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
 		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
 	}

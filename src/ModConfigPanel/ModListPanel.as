@@ -37,6 +37,8 @@ class ModListPanel extends MovieClip
 	
 	private var _modList: ScrollingList;
 	private var _subList: ScrollingList;
+	
+	private var _bDisabled: Boolean = false;
 
 
   /* STAGE ELEMENTS */
@@ -88,6 +90,18 @@ class ModListPanel extends MovieClip
 			return null;
 	}
 	
+	public function get isDisabled(): Boolean
+	{
+		return _bDisabled;
+	}
+	
+	public function set isDisabled(a_bDisabled: Boolean)
+	{
+		_bDisabled = a_bDisabled;
+		_subList.disableSelection = _subList.disableInput = a_bDisabled;
+		_modList.disableSelection = _modList.disableInput = a_bDisabled;
+	}
+	
 
   /* PUBLIC FUNCTIONS */
   
@@ -129,6 +143,9 @@ class ModListPanel extends MovieClip
 		var nextClip = pathToFocus.shift();
 		if (nextClip && nextClip.handleInput(details, pathToFocus))
 			return true;
+			
+		if (_bDisabled)
+			return false;
 		
 		if (_state == LIST_ACTIVE) {
 			if (_modList.handleInput(details, pathToFocus))
@@ -176,7 +193,12 @@ class ModListPanel extends MovieClip
 
 				if (subListFader.getDepth() < modListFader.getDepth())
 					subListFader.swapDepths(modListFader);
-				decorTitle.onPress = onDecorPressFunc;
+
+				decorTitle.onPress = function(): Void
+				{
+					if (!_parent.isDisabled)
+						_parent.showList();
+				};
 				
 				dispatchEvent({type: "subListEnter"});
 				break;
@@ -264,11 +286,6 @@ class ModListPanel extends MovieClip
 		
 		decorBottom._y = decorTitle._y + decorTitle._height;
 		decorBottom._height = decorBottom._y - _modList._height;
-	}
-	
-	private function onDecorPressFunc(): Void
-	{
-		_parent.showList();
 	}
 	
 	private function hideDecorTitle(a_hide: Boolean): Void
