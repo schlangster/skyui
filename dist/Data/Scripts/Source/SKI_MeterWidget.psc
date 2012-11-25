@@ -87,7 +87,7 @@ int property FlashColor
 endProperty
 
 string property FillMode
-	{Fill origin of the meter, left, right or center. Default: center}
+	{Fill origin of the meter, ["left", "center", "right"] . Default: center}
 	string function get()
 		return _fillMode
 	endFunction
@@ -101,7 +101,7 @@ string property FillMode
 endProperty
 
 float property Percent
-	{Percent of the meter [0.0-100.0]. Default: 0.0}
+	{Percent of the meter [0.0, 100.0]. Default: 0.0}
 	float function get()
 		return _percent
 	endFunction
