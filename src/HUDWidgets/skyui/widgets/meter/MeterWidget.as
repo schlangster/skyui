@@ -23,21 +23,6 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		meter._visible = false;
 	}
 
-	/*public function onLoad(){
-		initNumbers(200, 25.2, 0x00FF00, -1, -1, 100);
-		initStrings("center");
-		initCommit();
-
-		//_global.setTimeout(this, "test", 1000)
-	}
-
-	function test()
-	{
-		setFillMode("Left");
-		setPercent(25, true)
-	}*/
-
-
 	// @papyrus
 	public function initNumbers(a_width: Number, a_height: Number, a_lightColor: Number, a_darkColor: Number, a_flashColor: Number,
 								a_percent: Number, a_fillSpeed: Number, a_emptySpeed: Number): Void
@@ -46,16 +31,15 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		setColors(a_lightColor, a_darkColor);
 		setFlashColor(a_flashColor);
 		setPercent(a_percent, true);
-		
 		//a_fillSpeed;
 		//a_emptySpeed;
 	}
 
 
 	// @papyrus
-	public function initStrings(a_fillMode: String): Void
+	public function initStrings(a_fillOrigin: String): Void
 	{
-		setFillMode(a_fillMode)
+		setFillOrigin(a_fillOrigin)
 	}
 
 	// @papyrus
@@ -65,17 +49,26 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		_initialized = true;
 	}
 
+	//@ Overrides WidgetBase
+	public function setAlpha(a_alpha: Number): Void
+	{
+		// This doesn't seem to work when inherited from WidgetBase
+		_alpha = a_alpha;
+	}
+
 	// @papyrus
 	public function setWidth(a_width: Number): Void
 	{
-		meter.width(a_width);
+		meter.width = a_width;
+		__width = meter.width;
 		invalidateSize();
 	}
 
 	// @papyrus
 	public function setHeight(a_height: Number): Void
 	{
-		meter.height(a_height);
+		meter.height = a_height;
+		__height = meter.height;
 		invalidateSize();
 	}
 
@@ -83,6 +76,8 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	public function setSize(a_width: Number, a_height: Number): Void
 	{
 		meter.setSize(a_width, a_height);
+		__width = meter.width;
+		__height = meter.height;
 		invalidateSize();
 	}
 
@@ -93,7 +88,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 
 	// @papyrus
-	public function setColors(a_lightColor: Number, a_darkColor: Number): Void
+	public function setColors(a_lightColor: Number, a_darkColor: Number, a_flashColor: Number): Void
 	{
 		meter.setColors(a_lightColor, a_darkColor);
 	}
@@ -105,9 +100,9 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 
 	// @papyrus
-	public function setFillMode(a_fillMode: String): Void
+	public function setFillOrigin(a_fillOrigin: String): Void
 	{
-		meter.fillMode = a_fillMode;
+		meter.fillOrigin = a_fillOrigin;
 	}
 
 	// @papyrus
@@ -134,13 +129,5 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	private function getHeight(): Number
 	{
 		return __height;
-	}
-	
-	// @Overrides WidgetBase
-	private function invalidateSize(): Void
-	{
-		__width = meter.width;
-		__height = meter.height;
-		updateAlign();
 	}
 }

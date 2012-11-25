@@ -58,7 +58,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 		
 		widget.clientInfo = clientInfo;
 	}
-	
+
 	// @Papyrus
 	public function setModes(/* a_visibleMode0: String, a_visibleMode1: String, ... */): Void
 	{
@@ -149,7 +149,6 @@ class skyui.widgets.WidgetBase extends MovieClip
 		return _height;
 	}
 
-	// Override if either, or both, the above functions are overridden to update the internal size metrics
 	private function invalidateSize(): Void
 	{
 		updateAlign();

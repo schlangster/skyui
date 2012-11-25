@@ -8,9 +8,9 @@ class skyui.components.Meter extends MovieClip
 {
   /* CONSTANTS */
 
-	public static var FILL_LEFT: String = "left";
-	public static var FILL_RIGHT: String = "right";
-	public static var FILL_CENTER: String = "center";
+	public static var FILL_ORIGIN_LEFT: String = "left";
+	public static var FILL_ORIGIN_RIGHT: String = "right";
+	public static var FILL_ORIGIN_CENTER: String = "center";
 
   /* PRIVATE VARIABLES */
 	
@@ -31,11 +31,11 @@ class skyui.components.Meter extends MovieClip
 	private var _emptyIdx: Number;
 	private var _fullIdx: Number;
 	
-	private var _fillMode: String;
+	private var _fillOrigin: String;
 	private var _fillSpeed: Number;
 	private var _emptySpeed: Number;
-	private var _darkColor: Number;
-	private var _lightColor: Number;
+	private var _secondaryColor: Number;
+	private var _primaryColor: Number;
 	private var _flashColor: Number;
 	private var _flashColorAuto: Boolean = false;
 
@@ -83,7 +83,6 @@ class skyui.components.Meter extends MovieClip
 	public function onLoad(): Void
 	{
 		invalidateSize();
-		invalidateFillMode();
 		invalidateFlashColor();
 
 		onEnterFrame = enterFrameHandler;
@@ -135,36 +134,38 @@ class skyui.components.Meter extends MovieClip
 
 	public function get color(): Number 
 	{
-		return _lightColor;
+		return _primaryColor;
 	}
-	public function set color(a_lightColor: Number): Void
+	public function set color(a_primaryColor: Number): Void
 	{
-		var lightColor: Number = (a_lightColor == undefined)? 0xFFFFFF: ColorFunctions.validHex(a_lightColor);
-		if (lightColor == _lightColor)
+		var lightColor: Number = (a_primaryColor == undefined)? 0xFFFFFF: ColorFunctions.validHex(a_primaryColor);
+		if (lightColor == _primaryColor)
 			return;
-		_lightColor = lightColor;
+		_primaryColor = lightColor;
 
 		var darkColorHSV: Array = ColorFunctions.hexToHsv(lightColor);
 		darkColorHSV[2] -= 40;
 
-		_darkColor = ColorFunctions.hsvToHex(darkColorHSV);
+		_secondaryColor = ColorFunctions.hsvToHex(darkColorHSV);
 
 		if (_initialized)
 			invalidateColor();
 	}
 
-	public function setColors(a_lightColor: Number, a_darkColor: Number): Void
+	public function setColors(a_primaryColor: Number, a_secondaryColor: Number, a_flashColor: Number): Void
 	{
 		// Wasteful checking..
-		//if (a_lightColor != undefined && _lightColor == a_lightColor && _darkColor == a_darkColor)
+		//if (a_primaryColor != undefined && _primaryColor == a_primaryColor && _secondaryColor == a_secondaryColor)
 		//	return;
-		if (a_darkColor == undefined || a_darkColor < 0x000000) {
-			color = a_lightColor;
+		flashColor = a_flashColor;
+
+		if (a_secondaryColor == undefined || a_secondaryColor < 0x000000) {
+			color = a_primaryColor;
 			return;
 		}
 
-		_lightColor = (a_lightColor == undefined)? 0xFFFFFF: ColorFunctions.validHex(a_lightColor);
-		_darkColor = ColorFunctions.validHex(a_darkColor);
+		_primaryColor = (a_primaryColor == undefined)? 0xFFFFFF: ColorFunctions.validHex(a_primaryColor);
+		_secondaryColor = ColorFunctions.validHex(a_secondaryColor);
 
 		if (_initialized)
 			invalidateColor();
@@ -180,8 +181,8 @@ class skyui.components.Meter extends MovieClip
 		_flashColorAuto = false;
 
 
-		if ((a_flashColor < 0x000000 || a_flashColor == undefined) && _lightColor != undefined) {
-			RRGGBB = _lightColor;
+		if ((a_flashColor < 0x000000 || a_flashColor == undefined) && _primaryColor != undefined) {
+			RRGGBB = _primaryColor;
 			_flashColorAuto = true;
 		} else if (a_flashColor == undefined) {
 			RRGGBB = 0xFFFFFF;
@@ -197,19 +198,19 @@ class skyui.components.Meter extends MovieClip
 			invalidateFlashColor();
 	}
 
-	public function get fillMode(): String 
+	public function get fillOrigin(): String 
 	{
-		return _fillMode;
+		return _fillOrigin;
 	}
-	public function set fillMode(a_fillMode: String): Void
+	public function set fillOrigin(a_fillOrigin: String): Void
 	{
-		var fillMode: String = a_fillMode.toLowerCase();
-		if (_fillMode == fillMode)
+		var fillOrigin: String = a_fillOrigin.toLowerCase();
+		if (_fillOrigin == fillOrigin)
 			return;
-		_fillMode = fillMode;
+		_fillOrigin = fillOrigin;
 
 		if (_initialized)
-			invalidateFillMode();
+			invalidateFillOrigin();
 	}
 
 	public function get percent(): Number 
@@ -223,11 +224,11 @@ class skyui.components.Meter extends MovieClip
 
 	public function setPercent(a_percent: Number, a_force: Boolean): Void
 	{
-		_targetPercent = Math.min(100, Math.max(a_percent, 0));
+		_targetPercent = Math.min(1, Math.max(a_percent, 0));
 		
 		if (a_force) {
 			_currentPercent = _targetPercent;
-			var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 100, _currentPercent));
+			var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 1, _currentPercent));
 			_meterBarAnim.gotoAndStop(meterFrame);
 		}
 	}
@@ -271,36 +272,40 @@ class skyui.components.Meter extends MovieClip
 		// Scale inner content
 		// Inner content gets scaled to the inverse of the meterScale because it gets scaled up again by meterContent's x/yscale
 		_meterFrameContent._width = __width * 100/meterScale;
-		//if (!_initialized)
-		_meterFillContent._width = _meterFrameContent._width - 2*_originalCapWidth; // Decrease width of fillContent by 2*cap width
+		invalidateFillOrigin(true);
 	}
 
-	private function invalidateFillMode(): Void
+	private function invalidateFillOrigin(a_restorePercent: Boolean): Void
 	{
-		switch(_fillMode) {
-			case FILL_LEFT:
-			case FILL_CENTER:
-			case FILL_RIGHT:
+		switch(_fillOrigin) {
+			case FILL_ORIGIN_LEFT:
+			case FILL_ORIGIN_CENTER:
+			case FILL_ORIGIN_RIGHT:
 				break;
 			default:
-				_fillMode = FILL_RIGHT;
+				_fillOrigin = FILL_ORIGIN_LEFT;
 		}
 
-		_meterFillContent.gotoAndStop(_fillMode);
-		// Resize meterFillContent
-		_meterFillContent._width = _meterFrameContent._width - 2*_originalCapWidth;
+		_meterFillContent.gotoAndStop(_fillOrigin);
+		
+		
 		
 		drawMeterGradients();
 		
 		_meterBarAnim.gotoAndStop("Full");
 		_fullIdx = _meterBarAnim._currentframe;
+
+		// Resize meterFillContent here because we use masks and as these move, the width of 
+		//    _meterFillContent increases, we we want to scale it when 
+		_meterFillContent._width = _meterFrameContent._width - 2*_originalCapWidth;
+
 		_meterBarAnim.gotoAndStop("Empty");
 		_emptyIdx = _meterBarAnim._currentframe;
-		 //setPercent(_currentPercent); // Reset to 0, assume that if fillMode is changed, meter mode
-		if (!_initialized)
+		
+		if (a_restorePercent)
 			setPercent(_currentPercent, true);
 		else
-			setPercent(0, true);
+			setPercent(0, true); // Reset to 0, assume that if fillOrigin is changed, meter data provider changed
 		_fillSpeed = 2;
 		_emptySpeed = 3;
 	}
@@ -354,20 +359,20 @@ class skyui.components.Meter extends MovieClip
 			
 		meterGradient = _meterBar.createEmptyMovieClip("meterGradient", 0);
 		
-		switch(_fillMode) {
-			case FILL_LEFT:
-				colors = [_lightColor, _darkColor];
+		switch(_fillOrigin) {
+			case FILL_ORIGIN_LEFT:
+				colors = [_secondaryColor, _primaryColor];
 				alphas = [100, 100];
 				ratios = [0, 255];
 				break;
-			case FILL_CENTER:
-				colors = [_darkColor, _lightColor, _darkColor];
+			case FILL_ORIGIN_CENTER:
+				colors = [_secondaryColor, _primaryColor, _secondaryColor];
 				alphas = [100, 100, 100];
 				ratios = [0, 127, 255];
 				break;
-			case FILL_RIGHT:
+			case FILL_ORIGIN_RIGHT:
 			default:
-				colors = [_darkColor, _lightColor];
+				colors = [_primaryColor, _secondaryColor];
 				alphas = [100, 100];
 				ratios = [0, 255];
 		}
@@ -382,7 +387,7 @@ class skyui.components.Meter extends MovieClip
 		meterGradient.endFill();
 
 		if (_flashColorAuto) {
-			_flashColor = _lightColor;
+			_flashColor = _primaryColor;
 			invalidateFlashColor();
 		}
 	}
@@ -399,9 +404,9 @@ class skyui.components.Meter extends MovieClip
 	private function enterFrameHandler(): Void
 	{
 
-		if (!_initialized) {
+		/*if (!_initialized) {
 			_currentPercent = _targetPercent;
-		} else if (_targetPercent == _currentPercent) {
+		} else*/ if (_targetPercent == _currentPercent) {
 			return;
 		}
 			
@@ -415,8 +420,8 @@ class skyui.components.Meter extends MovieClip
 				_currentPercent = _targetPercent;
 		}
 		
-		_currentPercent = Math.min(100, Math.max(_currentPercent, 0));
-		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 100, _currentPercent));
+		_currentPercent = Math.min(1, Math.max(_currentPercent, 0));
+		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 1, _currentPercent));
 		_meterBarAnim.gotoAndStop(meterFrame);
 	}
 }
