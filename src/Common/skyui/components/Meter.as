@@ -26,9 +26,8 @@ class skyui.components.Meter extends MovieClip
 	private var _meterBarAnim: MovieClip;
 	private var _meterBar: MovieClip;
 
-	private var _currentPercent: Number = 100;
-	private var _targetPercent: Number = 100;
-	private var _restorePercent: Boolean = false;
+	private var _currentPercent: Number;
+	private var _targetPercent: Number;
 	private var _emptyIdx: Number;
 	private var _fullIdx: Number;
 	
@@ -56,7 +55,7 @@ class skyui.components.Meter extends MovieClip
 	{
 		super();
 
-		background._visible =  meterContent.capBackground._visible = false
+		background._visible = meterContent.capBackground._visible = false;
 
 		// Set internal dimensions to stage dimensions
 		__width = _width;
@@ -159,7 +158,6 @@ class skyui.components.Meter extends MovieClip
 		// Wasteful checking..
 		//if (a_lightColor != undefined && _lightColor == a_lightColor && _darkColor == a_darkColor)
 		//	return;
-
 		if (a_darkColor == undefined || a_darkColor < 0x000000) {
 			color = a_lightColor;
 			return;
@@ -220,25 +218,21 @@ class skyui.components.Meter extends MovieClip
 	}
 	public function set percent(a_percent: Number): Void
 	{
-		setMeterPercent(a_percent);
+		setPercent(a_percent);
 	}
 
-	public function setMeterPercent(a_percent: Number, a_force: Boolean): Void
+	public function setPercent(a_percent: Number, a_force: Boolean): Void
 	{
 		_targetPercent = Math.min(100, Math.max(a_percent, 0));
 		
 		if (a_force) {
-			if (_initialized) {
-				_currentPercent = _targetPercent;
-				var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 100, _currentPercent));
-				_meterBarAnim.gotoAndStop(meterFrame);
-			} else {
-				_restorePercent = true;
-			}
+			_currentPercent = _targetPercent;
+			var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 100, _currentPercent));
+			_meterBarAnim.gotoAndStop(meterFrame);
 		}
 	}
 
-	public function startMeterFlash(a_force: Boolean): Void
+	public function startFlash(a_force: Boolean): Void
 	{
 		// meterFlashing is set on the timeline and is false once the animation has finished
 		if (_meterFlashAnim.meterFlashing && !a_force) {
@@ -250,7 +244,8 @@ class skyui.components.Meter extends MovieClip
 
   /* PRIVATE FUNCTIONS */
 
-	private function invalidateSize(): Void {
+	private function invalidateSize(): Void
+	{
 		var safeWidth: Number = _originalCapWidth * 3; // Safe width is 3* size of cap
 		var safeHeight: Number;
 
@@ -275,8 +270,9 @@ class skyui.components.Meter extends MovieClip
 
 		// Scale inner content
 		// Inner content gets scaled to the inverse of the meterScale because it gets scaled up again by meterContent's x/yscale
-		_meterFrameContent._width = _meterFillContent._width = __width * 100/meterScale;
-		_meterFillContent._width -=  2*_originalCapWidth; // Decrease width of fillContent by 2*cap width
+		_meterFrameContent._width = __width * 100/meterScale;
+		//if (!_initialized)
+		_meterFillContent._width = _meterFrameContent._width - 2*_originalCapWidth; // Decrease width of fillContent by 2*cap width
 	}
 
 	private function invalidateFillMode(): Void
@@ -291,14 +287,20 @@ class skyui.components.Meter extends MovieClip
 		}
 
 		_meterFillContent.gotoAndStop(_fillMode);
+		// Resize meterFillContent
+		_meterFillContent._width = _meterFrameContent._width - 2*_originalCapWidth;
 		
 		drawMeterGradients();
 		
-		_currentPercent = 100;
-		_meterBarAnim.gotoAndStop("Empty");
-		_emptyIdx = _meterBarAnim._currentframe;
 		_meterBarAnim.gotoAndStop("Full");
 		_fullIdx = _meterBarAnim._currentframe;
+		_meterBarAnim.gotoAndStop("Empty");
+		_emptyIdx = _meterBarAnim._currentframe;
+		 //setPercent(_currentPercent); // Reset to 0, assume that if fillMode is changed, meter mode
+		if (!_initialized)
+			setPercent(_currentPercent, true);
+		else
+			setPercent(0, true);
 		_fillSpeed = 2;
 		_emptySpeed = 3;
 	}
@@ -397,9 +399,8 @@ class skyui.components.Meter extends MovieClip
 	private function enterFrameHandler(): Void
 	{
 
-		if (_restorePercent) {
+		if (!_initialized) {
 			_currentPercent = _targetPercent;
-			_restorePercent = false;
 		} else if (_targetPercent == _currentPercent) {
 			return;
 		}

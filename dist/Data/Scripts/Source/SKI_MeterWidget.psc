@@ -2,19 +2,19 @@ scriptname SKI_MeterWidget extends SKI_WidgetBase
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
-float	_width		= 292.8
-float	_height		= 25.2
-int		_lightColor	= 0xFF0000
-int		_darkColor	= -1
-int		_flashColor	= -1
-string 	_fillMode	= "center"
-float	_percent	= 100.0
+float	_width			= 292.8
+float	_height			= 25.2
+int		_primaryColor	= 0xFF0000
+int		_secondaryColor	= -1
+int		_flashColor		= -1
+string 	_fillMode		= "center"
+float	_percent		= 0.0
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 float property Width
-	{Width of the meter in pixels at a resolution of 1280x720}
+	{Width of the meter in pixels at a resolution of 1280x720. Default: 292.8}
 	float function get()
 		return _width
 	endFunction
@@ -28,7 +28,7 @@ float property Width
 endProperty
 
 float property Height
-	{Height of the meter in pixels at a resolution of 1280x720}
+	{Height of the meter in pixels at a resolution of 1280x720. Default: 25.2}
 	float function get()
 		return _height
 	endFunction
@@ -41,39 +41,39 @@ float property Height
 	endFunction
 endProperty
 
-int property LightColor
-	{Light color of the meter gradient}
+int property PrimaryColor
+	{Primary color of the meter gradient RRGGBB [0x000000, 0xFFFFFF]. Default: 0xFF0000. Convert to decimal when editing this in the CK}
 	int function get()
-		return _lightColor
+		return _primaryColor
 	endFunction
 	
 	function set(int a_val)
-		_lightColor = a_val
+		_primaryColor = a_val
 		if (Initialized)
-			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setColor", _lightColor)
+			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setColor", _primaryColor)
 		endIf
 	endFunction
 endProperty
 
-int property DarkColor
-	{Dark color of the meter gradient, set as undefined, or negative and a dark colour will be chosen automatically.}
+int property SecondaryColor
+	{Secondary color of the meter gradient, -1 = automatic. RRGGBB [0x000000, 0xFFFFFF]. Default: -1. Convert to decimal when editing this in the CK}
 	int function get()
-		return _darkColor
+		return _secondaryColor
 	endFunction
 	
 	function set(int a_val)
-		_lightColor = a_val
+		_secondaryColor = a_val
 		if (Initialized)
 			int[] args = new int[2]
-			args[0] = _lightColor
-			args[1] = _darkColor
+			args[0] = _primaryColor
+			args[1] = _secondaryColor
 			UI.InvokeIntA(HUD_MENU, WidgetRoot + ".setColors", args)
 		endIf
 	endFunction
 endProperty
 
 int property FlashColor
-	{Color of the meter flash gradient, set as undefined, or negative and colours will be equal to LightColor}
+	{Color of the meter warning flash, -1 = automatic. RRGGBB [0x000000, 0xFFFFFF]. Default: -1. Convert to decimal when editing this in the CK}
 	int function get()
 		return _flashColor
 	endFunction
@@ -87,7 +87,7 @@ int property FlashColor
 endProperty
 
 string property FillMode
-	{Fill direction of the meter, left, right or center}
+	{Fill origin of the meter, left, right or center. Default: center}
 	string function get()
 		return _fillMode
 	endFunction
@@ -101,13 +101,13 @@ string property FillMode
 endProperty
 
 float property Percent
-	{Fill direction of the meter, left, right or center}
+	{Percent of the meter [0.0-100.0]. Default: 0.0}
 	float function get()
 		return _percent
 	endFunction
 	
 	function set(float a_val)
-		_fillMode = a_val
+		_percent = a_val
 		if (Initialized)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setPercent", _percent)
 		endIf
@@ -125,14 +125,14 @@ event OnWidgetReset()
 	float[] numberArgs = new float[6]
 	numberArgs[0] = _width
 	numberArgs[1] = _height
-	numberArgs[2] = _lightColor as float
-	numberArgs[3] = _darkColor as float
+	numberArgs[2] = _primaryColor as float
+	numberArgs[3] = _secondaryColor as float
 	numberArgs[4] = _flashColor as float
 	numberArgs[5] = _percent
 	UI.InvokeFloatA(HUD_MENU, WidgetRoot + ".initNumbers", numberArgs)
 	
 	; Init strings
-	string[] stringArgs = new string[1]
+	string[] stringArgs = new string[1] ;This is an array because I want to add more to it later...
 	stringArgs[0] = _fillMode
 	UI.InvokeStringA(HUD_MENU, WidgetRoot + ".initStrings", stringArgs)
 	
@@ -148,28 +148,27 @@ string function GetWidgetType()
 	return "meter"
 endFunction
 
-function SetMeterPercent(float a_percent, bool a_force = false)
-	{a_force boolean sets the meter percent without animation}
+function SetPercent(float a_percent, bool a_force = false)
+	{Sets the meter percent, a_force sets the meter percent without animation}
 	float[] args = new float[2]
-	args[0] = a_percent as float
+	args[0] = a_percent
 	args[1] = a_force as float
-	
-	UI.InvokeFloatA(HUD_MENU, WidgetRoot + ".setMeterPercent", args)
+	UI.InvokeFloatA(HUD_MENU, WidgetRoot + ".setPercent", args)
 endFunction
 
-function ForcetMeterPercent(float a_percent)
-	{Sets the meter percent without animation, convenience function}
-	SetMeterPercent(a_percent, true)
-endFunction
-
-
-function StartMeterFlash(bool a_force = false)
-	{a_force boolean starts the meter flashint even if it's already flashing}
-	UI.InvokeBool(HUD_MENU, WidgetRoot + ".startMeterFlash", a_force)
+function ForcePercent(float a_percent)
+	{Convenience function for SetPercent(a_percent, true)}
+	SetPercent(a_percent, true)
 endFunction
 
 
-function ForceMeterFlash(bool a_force)
-	{Starts the meter flashint even if it's already flashing, convenience function}
-	StartMeterFlash(true)
+function StartFlash(bool a_force = false)
+	{Starts meter flashing. a_force starts the meter flashing if it's already animating}
+	UI.InvokeBool(HUD_MENU, WidgetRoot + ".startFlash", a_force)
+endFunction
+
+
+function ForceFlash(bool a_force)
+	{Convenience function for StartFlash(true)}
+	StartFlash(true)
 endFunction

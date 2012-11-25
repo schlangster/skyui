@@ -6,6 +6,8 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
   /* PRIVATE VARIABLES */
 	
 	private var _initialized: Boolean = false;
+	private var __width;
+	private var __height;
 
 
   /* STAGE ELEMENTS */
@@ -19,8 +21,22 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	{
 		super();
 		meter._visible = false;
-
 	}
+
+	/*public function onLoad(){
+		initNumbers(200, 25.2, 0x00FF00, -1, -1, 100);
+		initStrings("center");
+		initCommit();
+
+		//_global.setTimeout(this, "test", 1000)
+	}
+
+	function test()
+	{
+		setFillMode("Left");
+		setPercent(25, true)
+	}*/
+
 
 	// @papyrus
 	public function initNumbers(a_width: Number, a_height: Number, a_lightColor: Number, a_darkColor: Number, a_flashColor: Number,
@@ -30,9 +46,11 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		setColors(a_lightColor, a_darkColor);
 		setFlashColor(a_flashColor);
 		setPercent(a_percent, true);
+		
 		//a_fillSpeed;
 		//a_emptySpeed;
 	}
+
 
 	// @papyrus
 	public function initStrings(a_fillMode: String): Void
@@ -51,18 +69,21 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	public function setWidth(a_width: Number): Void
 	{
 		meter.width(a_width);
+		invalidateSize();
 	}
 
 	// @papyrus
 	public function setHeight(a_height: Number): Void
 	{
 		meter.height(a_height);
+		invalidateSize();
 	}
 
 	// @papyrus
 	public function setSize(a_width: Number, a_height: Number): Void
 	{
 		meter.setSize(a_width, a_height);
+		invalidateSize();
 	}
 
 	// @papyrus
@@ -92,12 +113,34 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	// @papyrus
 	public function setPercent(a_percent: Number, a_force: Boolean): Void
 	{
-		meter.setMeterPercent(a_percent, a_force);
+		meter.setPercent(a_percent, a_force);
 	}
 
 	// @papyrus
-	public function startMeterFlash(a_force: Boolean): Void
+	public function startFlash(a_force: Boolean): Void
 	{
-		meter.startMeterFlash(a_force);
+		meter.startFlash(a_force);
+	}
+
+
+  /* PRIVATE FUNCTIONS */
+
+	// @Overrides WidgetBase
+	private function getWidth(): Number
+	{
+		return __width;
+	}
+	// @Overrides WidgetBase
+	private function getHeight(): Number
+	{
+		return __height;
+	}
+	
+	// @Overrides WidgetBase
+	private function invalidateSize(): Void
+	{
+		__width = meter.width;
+		__height = meter.height;
+		updateAlign();
 	}
 }
