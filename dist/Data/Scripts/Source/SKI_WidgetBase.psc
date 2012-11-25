@@ -14,17 +14,18 @@ int					_widgetID		= -1
 string				_type			= ""
 string				_widgetRoot		= ""
 string[]			_modes
+string				_hAlign			= "left"
+string				_vAlign			= "top"
 float				_x				= 0.0
 float				_y				= 0.0
 float				_alpha			= 100.0
-string				_hAlign			= "left"
-string				_vAlign			= "top"
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 ; Read-only
 int property WidgetID
+	{Unique ID of the widget. ReadOnly}
 	int function get()
 		return _widgetID
 	endFunction
@@ -32,6 +33,7 @@ endProperty
 
 ; Read-only
 bool property Initialized
+	{True when the widget has finished initializing. ReadOnly}
 	bool function get()
 		return  _initialized
 	endFunction
@@ -39,6 +41,7 @@ endProperty
 
 ; Read-only
 string property WidgetRoot
+	{Path to the root of the widget from _root of HudMenu. ReadOnly}
 	string function get()
 		return  _widgetRoot
 	endFunction
@@ -58,50 +61,8 @@ string[] property Modes
 	endFunction
 endProperty
 
-float property X
-	{Horizontal position of the widget in pixels at a resolution of 1280x720}
-	float function get()
-		return _x
-	endFunction
-	
-	function set(float a_val)
-		_x = a_val
-		if (_initialized)
-			UpdateWidgetPositionX()
-		endIf
-	endFunction
-endProperty
-
-float property Y
-	{Vertical position of the widget in pixels at a resolution of 1280x720}
-	float function get()
-		return _y
-	endFunction
-	
-	function set(float a_val)
-		_y = a_val
-		if (_initialized)
-			UpdateWidgetPositionY()
-		endIf
-	endFunction
-endProperty
-
-float property Alpha
-	{Opacity of the widget as a percentage}
-	float function get()
-		return _alpha
-	endFunction
-	
-	function set(float a_val)
-		_alpha = a_val
-		if (Initialized)
-			UpdateWidgetAlpha()
-		endIf
-	endFunction
-endProperty
-
 string property HAlign
-	{Horizontal align of the widget left, center, right}
+	{Horizontal registration point of the widget ["left", "center", "right"]. Default: "left"}
 	string function get()
 		return _hAlign
 	endFunction
@@ -115,7 +76,7 @@ string property HAlign
 endProperty
 
 string property VAlign
-	{Vertical align of the widget top, center, bottom}
+	{Vertical registration point of the widget ["top", "center", "bottom"]. Default: "top"}
 	string function get()
 		return _vAlign
 	endFunction
@@ -124,6 +85,48 @@ string property VAlign
 		_vAlign = a_val
 		if (Initialized)
 			UpdateWidgetVAlign()
+		endIf
+	endFunction
+endProperty
+
+float property X
+	{Horizontal position of the widget in pixels at a resolution of 1280x720 [0.0, 1280.0]. Default: 0.0}
+	float function get()
+		return _x
+	endFunction
+	
+	function set(float a_val)
+		_x = a_val
+		if (_initialized)
+			UpdateWidgetPositionX()
+		endIf
+	endFunction
+endProperty
+
+float property Y
+	{Vertical position of the widget in pixels at a resolution of 1280x720 [0.0, 720.0]. Default: 0.0}
+	float function get()
+		return _y
+	endFunction
+	
+	function set(float a_val)
+		_y = a_val
+		if (_initialized)
+			UpdateWidgetPositionY()
+		endIf
+	endFunction
+endProperty
+
+float property Alpha
+	{Opacity of the widget [0.0, 100.0]. Default: 0.0}
+	float function get()
+		return _alpha
+	endFunction
+	
+	function set(float a_val)
+		_alpha = a_val
+		if (Initialized)
+			UpdateWidgetAlpha()
 		endIf
 	endFunction
 endProperty
