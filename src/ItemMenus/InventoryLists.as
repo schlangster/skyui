@@ -225,7 +225,12 @@ class InventoryLists extends MovieClip
 		itemList.platform = a_platform;
 		
 		_searchKey = skse.GetMappedKey("Jump", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		if (!_searchKey)
+			_searchKey = -1;
+			
 		_switchTabKey = skse.GetMappedKey("Sprint", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		if (!_switchTabKey)
+			_switchTabKey = -1;
 	}
 
 	// @GFx
