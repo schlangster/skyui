@@ -18,6 +18,7 @@ class skyui.components.Meter extends MovieClip
 	private var _originalHeight: Number;
 	private var _originalCapWidth: Number;
 	private var _originalCapHeight: Number;
+	private var _originalMeterFillHolderWidth: Number;
 
 	private var _meterFrameContent: MovieClip;
 	private var _meterFillHolder: MovieClip;
@@ -72,6 +73,7 @@ class skyui.components.Meter extends MovieClip
 		_originalHeight = background._height;
 		_originalCapWidth = meterContent.capBackground._width;
 		_originalCapHeight = meterContent.capBackground._height;
+		_originalMeterFillHolderWidth = _meterFillHolder._width;
 
 		_meterFillHolder._x = _originalCapWidth;
 
@@ -83,7 +85,7 @@ class skyui.components.Meter extends MovieClip
 	public function onLoad(): Void
 	{
 		invalidateSize();
-		invalidateFlashColor();
+		invalidateFillOrigin();
 
 		onEnterFrame = enterFrameHandler;
 
@@ -204,13 +206,18 @@ class skyui.components.Meter extends MovieClip
 	}
 	public function set fillOrigin(a_fillOrigin: String): Void
 	{
+		setFillOrigin(a_fillOrigin)
+	}
+
+	public function setFillOrigin(a_fillOrigin, a_restorePercent: Boolean): Void
+	{
 		var fillOrigin: String = a_fillOrigin.toLowerCase();
-		if (_fillOrigin == fillOrigin)
+		if (_fillOrigin == fillOrigin && !a_restorePercent)
 			return;
 		_fillOrigin = fillOrigin;
 
 		if (_initialized)
-			invalidateFillOrigin();
+			invalidateFillOrigin(a_restorePercent);
 	}
 
 	public function get percent(): Number 
@@ -263,16 +270,16 @@ class skyui.components.Meter extends MovieClip
 		background._width = __width;
 		background._height = __height;
 
-		// Calculate scale based on height
-		var meterScale: Number = (__height/_originalHeight)*100;
+		// Calculate scaling percent of the meter based on heights
+		var scalePercent: Number = __height/_originalHeight;
 
-		// Scale the meterContent holder based on height so the caps AR is maintained
-		meterContent._xscale = meterContent._yscale = meterScale;
+		// Scale the meterContent based on height so the caps AR is maintained
+		meterContent._xscale = meterContent._yscale = scalePercent * 100;
 
 		// Scale inner content
-		// Inner content gets scaled to the inverse of the meterScale because it gets scaled up again by meterContent's x/yscale
-		_meterFrameContent._width = __width * 100/meterScale;
-		invalidateFillOrigin(true);
+		// Scale meterFrameContent instead of meterFrameHolder due to scale9Grid
+		_meterFrameContent._width = __width / scalePercent; // newWidth = oldWidth * newPercent/oldPercent /. newPercent -> 100
+		_meterFillHolder._xscale = ((_meterFrameContent._width - 2*_originalCapWidth)/_originalMeterFillHolderWidth) * 100;
 	}
 
 	private function invalidateFillOrigin(a_restorePercent: Boolean): Void
@@ -288,21 +295,14 @@ class skyui.components.Meter extends MovieClip
 
 		_meterFillContent.gotoAndStop(_fillOrigin);
 		
-		
-		
 		drawMeterGradients();
 		
 		_meterBarAnim.gotoAndStop("Full");
 		_fullIdx = _meterBarAnim._currentframe;
-
-		// Resize meterFillContent here because we use masks and as these move, the width of 
-		//    _meterFillContent increases, we we want to scale it when 
-		_meterFillContent._width = _meterFrameContent._width - 2*_originalCapWidth;
-
 		_meterBarAnim.gotoAndStop("Empty");
 		_emptyIdx = _meterBarAnim._currentframe;
 		
-		if (a_restorePercent)
+		if (a_restorePercent || !_initialized)
 			setPercent(_currentPercent, true);
 		else
 			setPercent(0, true); // Reset to 0, assume that if fillOrigin is changed, meter data provider changed
@@ -386,15 +386,15 @@ class skyui.components.Meter extends MovieClip
 		meterGradient.lineTo(0, 0);
 		meterGradient.endFill();
 
-		if (_flashColorAuto) {
-			_flashColor = _primaryColor;
+		if (_flashColorAuto || !_initialized) {
+			if (_flashColorAuto)
+				_flashColor = _primaryColor;
 			invalidateFlashColor();
 		}
 	}
 
 	private function invalidateFlashColor(): Void
 	{
-		//_meterFlashAnim.gotoAndStop("InitFlash");
 		var tf: Transform = new Transform(_meterFlashAnim);
 		var colorTf: ColorTransform = new ColorTransform();
 		colorTf.rgb = _flashColor;

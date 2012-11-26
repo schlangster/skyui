@@ -182,7 +182,7 @@ function SetColors(int a_primaryColor, int a_secondaryColor = -1, int a_flashCol
 		int[] args = new int[3]
 		args[0] = a_primaryColor
 		args[1] = a_secondaryColor
-		args[3] = a_flashColor
+		args[2] = a_flashColor
 		UI.InvokeIntA(HUD_MENU, WidgetRoot + ".setColors", args)
 	endIf
 endFunction

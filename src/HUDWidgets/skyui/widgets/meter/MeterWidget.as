@@ -39,7 +39,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	// @papyrus
 	public function initStrings(a_fillOrigin: String): Void
 	{
-		setFillOrigin(a_fillOrigin)
+		meter.setFillOrigin(a_fillOrigin, true); //Reset fill origin and force percentage back
 	}
 
 	// @papyrus
@@ -47,13 +47,6 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	{
 		meter._visible = true;
 		_initialized = true;
-	}
-
-	//@ Overrides WidgetBase
-	public function setAlpha(a_alpha: Number): Void
-	{
-		// This doesn't seem to work when inherited from WidgetBase
-		_alpha = a_alpha;
 	}
 
 	// @papyrus
