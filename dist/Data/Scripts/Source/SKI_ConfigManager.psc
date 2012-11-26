@@ -56,7 +56,7 @@ function CleanUp()
 	_configCount = 0
 	int i = 0
 	while (i < _modConfigs.length)
-		if (_modConfigs[i] == none || !(_modConfigs[i].GetFormID() > 0))
+		if (_modConfigs[i] == none || _modConfigs[i].GetFormID() == 0)
 			_modConfigs[i] = none
 			_modNames[i] = none
 		else
