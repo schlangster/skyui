@@ -22,7 +22,7 @@ event OnInit()
 	_widgetCount	= 0
 	
 	; Wait a few seconds until all widgets have registered their callbacks
-	Utility.Wait(0.1)
+	Utility.Wait(1.5)
 	
 	OnGameReload()
 endEvent

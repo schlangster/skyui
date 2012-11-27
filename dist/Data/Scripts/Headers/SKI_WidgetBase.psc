@@ -1,25 +1,22 @@
 scriptname SKI_WidgetBase extends SKI_QuestBase
 
+;##################################################################################################
+; File Version:		0.0
+; Documentation:	https://github.com/schlangster/skyui/wiki/
+;##################################################################################################
+;
+; Base script for custom widgets menus.
+;
+; This file contains the public interface of SKI_WidgetBase so you're able to extend it.
+;
+; DO NOT MODIFY THIS SCRIPT!
+; DO NOT RECOMPILE THIS SCRIPT!
+;
+;##################################################################################################
+
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
 string property		HUD_MENU = "HUD Menu" autoReadOnly
-
-
-; PRIVATE VARIABLES -------------------------------------------------------------------------------
-
-SKI_WidgetManager	_widgetManager
-
-bool				_initialized	= false
-int					_widgetID		= -1
-string				_type			= ""
-string				_widgetRoot		= ""
-string[]			_modes
-string				_hAlign			= "left"
-string				_vAlign			= "top"
-float				_x				= 0.0
-float				_y				= 0.0
-float				_alpha			= 100.0
-
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -27,7 +24,8 @@ float				_alpha			= 100.0
 int property WidgetID
 	{Unique ID of the widget. ReadOnly}
 	int function get()
-		return _widgetID
+		Guard()
+		return 0
 	endFunction
 endProperty
 
@@ -35,7 +33,8 @@ endProperty
 bool property Initialized
 	{True when the widget has finished initializing. ReadOnly}
 	bool function get()
-		return  _initialized
+		Guard()
+		return false
 	endFunction
 endProperty
 
@@ -43,137 +42,91 @@ endProperty
 string property WidgetRoot
 	{Path to the root of the widget from _root of HudMenu. ReadOnly}
 	string function get()
-		return  _widgetRoot
+		Guard()
+		return ""
 	endFunction
 endProperty
 
 string[] property Modes
 	{HUDModes in which the widget is visible, see readme for available modes}
 	string[] function get()
-		return  _modes
+		Guard()
+		string[] retVal = new string[1]
+		return retVal
 	endFunction
 	
 	function set(string[] a_val)
-		_modes = a_val
-		if (_initialized)
-			UpdateWidgetModes()
-		endIf
+		Guard()
 	endFunction
 endProperty
 
 string property HAlign
 	{Horizontal registration point of the widget ["left", "center", "right"]. Default: "left"}
 	string function get()
-		return _hAlign
+		Guard()
+		return ""
 	endFunction
 	
 	function set(string a_val)
-		_hAlign = a_val
-		if (Initialized)
-			UpdateWidgetHAlign()
-		endIf
+		Guard()
 	endFunction
 endProperty
 
 string property VAlign
 	{Vertical registration point of the widget ["top", "center", "bottom"]. Default: "top"}
 	string function get()
-		return _vAlign
+		Guard()
+		return ""
 	endFunction
 	
 	function set(string a_val)
-		_vAlign = a_val
-		if (Initialized)
-			UpdateWidgetVAlign()
-		endIf
+		Guard()
 	endFunction
 endProperty
 
 float property X
 	{Horizontal position of the widget in pixels at a resolution of 1280x720 [0.0, 1280.0]. Default: 0.0}
 	float function get()
-		return _x
+		Guard()
+		return 0.0
 	endFunction
 	
 	function set(float a_val)
-		_x = a_val
-		if (_initialized)
-			UpdateWidgetPositionX()
-		endIf
+		Guard()
 	endFunction
 endProperty
 
 float property Y
 	{Vertical position of the widget in pixels at a resolution of 1280x720 [0.0, 720.0]. Default: 0.0}
 	float function get()
-		return _y
+		Guard()
+		return 0.0
 	endFunction
 	
 	function set(float a_val)
-		_y = a_val
-		if (_initialized)
-			UpdateWidgetPositionY()
-		endIf
+		Guard()
 	endFunction
 endProperty
 
 float property Alpha
 	{Opacity of the widget [0.0, 100.0]. Default: 0.0}
 	float function get()
-		return _alpha
+		Guard()
+		return 0.0
 	endFunction
 	
 	function set(float a_val)
-		_alpha = a_val
-		if (Initialized)
-			UpdateWidgetAlpha()
-		endIf
+		Guard()
 	endFunction
 endProperty
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
-event OnInit()
-	; Default Modes if not set via property
-	if (!_modes)
-		_modes = new string[2]
-		_modes[0] = "All"
-		_modes[1] = "StealthMode"
-	endIf
-	
-	OnGameReload()
-endEvent
-
-; @implements SKI_QuestBase
-event OnGameReload()
-	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
-endEvent
-
-event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	SKI_WidgetManager newManager = a_sender as SKI_WidgetManager
-	
-	; Already registered?
-	if (_widgetManager == newManager)
-		return
-	endIf
-	
-	_widgetManager =  newManager
-	
-	_widgetID = _widgetManager.RequestWidgetID(self)
-	if (_widgetID != -1)
-		_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget"
-		OnWidgetInit()
-		_widgetManager.CreateWidget(_widgetID, GetWidgetType())
-		_initialized = true
-	else
-		Debug.Trace("WidgetWarning: " + self as string + ": could not be loaded, too many widgets. Max is 128")
-	endIf
-endEvent
-
 ; @interface
 event OnWidgetInit()
 	{Handles any custom widget initialization}
+	Guard()
 endEvent
 
 
@@ -181,26 +134,18 @@ endEvent
 
 ; Executed after each game reload by widget manager.
 event OnWidgetLoad()
-	OnWidgetReset()
-	
-	; Before that the widget was still hidden.
-	; Now that everything is done, set modes to show it eventually.
-	UpdateWidgetModes()
+	Guard()
 endEvent
 
 event OnWidgetReset()
 	; Reset base properties except modes to prevent widget from being drawn too early.
-	UpdateWidgetClientInfo()
-	UpdateWidgetHAlign()
-	UpdateWidgetVAlign()
-	UpdateWidgetPositionX()
-	UpdateWidgetPositionY()
-	UpdateWidgetAlpha()
+	Guard()
 endEvent
 
 ; Executed whenever a hudModeChange is observed
 ; TODO
 event OnHudModeChange(string a_eventName, string a_hudMode, float a_numArg, Form sender)
+	Guard()
 endEvent
 
 
@@ -208,33 +153,38 @@ endEvent
 
 ; @interface
 string function GetWidgetType()
+	Guard()
 	return ""
 endFunction
 
 function UpdateWidgetClientInfo()
-	UI.InvokeString(HUD_MENU, _widgetRoot + ".setClientInfo", self as string)
+	Guard()
 endFunction
 
 function UpdateWidgetPositionX()
-	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionX", X)
+	Guard()
 endFunction
 
 function UpdateWidgetPositionY()
-	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionY", Y)
+	Guard()
 endFunction
 
 function UpdateWidgetAlpha()
-	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setAlpha", Alpha)
+	Guard()
 endFunction
 
 function UpdateWidgetHAlign()
-	UI.InvokeString(HUD_MENU, _widgetRoot + ".setHAlign", HAlign)
+	Guard()
 endFunction
 
 function UpdateWidgetVAlign()
-	UI.InvokeString(HUD_MENU, _widgetRoot + ".setVAlign", VAlign)
+	Guard()
 endFunction
 
 function UpdateWidgetModes()
-	UI.InvokeStringA(HUD_MENU, _widgetRoot + ".setModes", Modes)
+	Guard()
+endFunction
+
+function Guard()
+	Debug.MessageBox("SKI_WidgetBase: Don't recompile this script!")
 endFunction

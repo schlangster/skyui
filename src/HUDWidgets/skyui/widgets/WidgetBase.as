@@ -40,7 +40,25 @@ class skyui.widgets.WidgetBase extends MovieClip
 	
 		
   /* PUBLIC FUNCTIONS */
-  
+
+	// @Papyrus
+	public function setClientInfo(a_clientString: String): Void
+	{
+		var widget = this;
+		var clientInfo: Object = new Object();
+		//[ScriptName <formName (formID)>]
+		var lBrackIdx: Number = 0;
+		var lInequIdx: Number = a_clientString.indexOf("<");
+		var lParenIdx: Number = a_clientString.indexOf("(");
+		var rParenIdx: Number = a_clientString.indexOf(")");
+		
+		clientInfo["scriptName"] = a_clientString.slice(lBrackIdx + 1, lInequIdx - 1);
+		clientInfo["formName"] = a_clientString.slice(lInequIdx + 1, lParenIdx - 1);
+		clientInfo["formID"] = a_clientString.slice(lParenIdx + 1, rParenIdx);
+		
+		widget.clientInfo = clientInfo;
+	}
+
 	// @Papyrus
 	public function setModes(/* a_visibleMode0: String, a_visibleMode1: String, ... */): Void
 	{
@@ -66,21 +84,16 @@ class skyui.widgets.WidgetBase extends MovieClip
 	}
 
 	// @Papyrus
-	public function setClientInfo(a_clientString: String): Void
+	public function setHAlign(a_hAlign: String): Void
 	{
-		var widget = this;
-		var clientInfo: Object = new Object();
-		//[ScriptName <formName (formID)>]
-		var lBrackIdx: Number = 0;
-		var lInequIdx: Number = a_clientString.indexOf("<");
-		var lParenIdx: Number = a_clientString.indexOf("(");
-		var rParenIdx: Number = a_clientString.indexOf(")");
-		
-		clientInfo["scriptName"] = a_clientString.slice(lBrackIdx + 1, lInequIdx - 1);
-		clientInfo["formName"] = a_clientString.slice(lInequIdx + 1, lParenIdx - 1);
-		clientInfo["formID"] = a_clientString.slice(lParenIdx + 1, rParenIdx);
-		
-		widget.clientInfo = clientInfo;
+		var hAlign: String = a_hAlign.toLowerCase();
+
+		if (_hAlign == hAlign)
+			return;
+
+		_hAlign = hAlign;
+
+		invalidateSize();
 	}
 
 	// @Papyrus
@@ -92,19 +105,6 @@ class skyui.widgets.WidgetBase extends MovieClip
 			return;
 
 		_vAlign = vAlign;
-
-		invalidateSize();
-	}
-
-	// @Papyrus
-	public function setHAlign(a_hAlign: String): Void
-	{
-		var hAlign: String = a_hAlign.toLowerCase();
-
-		if (_hAlign == hAlign)
-			return;
-
-		_hAlign = hAlign;
 
 		invalidateSize();
 	}
@@ -129,13 +129,23 @@ class skyui.widgets.WidgetBase extends MovieClip
 		_y = newY;
 	}
 
-  /* PRIVATE FUNCTIONS */
-	// Override if widget dimensions depend properties other than _width and _height
-	private function getWidth(): Number {
-		return _width
+	// @Papyrus
+	public function setAlpha(a_alpha: Number): Void
+	{
+		_alpha = a_alpha;
 	}
 
-	private function getHeight(): Number {
+  /* PRIVATE FUNCTIONS */
+	// Override if widget width depends on property other than _width
+	// See skyui.widgets.meter.MeterWidget as an example
+	private function getWidth(): Number
+	{
+		return _width;
+	}
+
+	// Override if widget height depends on property other than _height
+	private function getHeight(): Number
+	{
 		return _height;
 	}
 

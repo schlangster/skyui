@@ -6,6 +6,8 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
   /* PRIVATE VARIABLES */
 	
 	private var _initialized: Boolean = false;
+	private var __width;
+	private var __height;
 
 
   /* STAGE ELEMENTS */
@@ -19,7 +21,6 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	{
 		super();
 		meter._visible = false;
-
 	}
 
 	// @papyrus
@@ -34,10 +35,11 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 		//a_emptySpeed;
 	}
 
+
 	// @papyrus
-	public function initStrings(a_fillMode: String): Void
+	public function initStrings(a_fillOrigin: String): Void
 	{
-		setFillMode(a_fillMode)
+		meter.setFillOrigin(a_fillOrigin, true); //Reset fill origin and force percentage back
 	}
 
 	// @papyrus
@@ -50,19 +52,26 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	// @papyrus
 	public function setWidth(a_width: Number): Void
 	{
-		meter.width(a_width);
+		meter.width = a_width;
+		__width = meter.width;
+		invalidateSize();
 	}
 
 	// @papyrus
 	public function setHeight(a_height: Number): Void
 	{
-		meter.height(a_height);
+		meter.height = a_height;
+		__height = meter.height;
+		invalidateSize();
 	}
 
 	// @papyrus
 	public function setSize(a_width: Number, a_height: Number): Void
 	{
 		meter.setSize(a_width, a_height);
+		__width = meter.width;
+		__height = meter.height;
+		invalidateSize();
 	}
 
 	// @papyrus
@@ -72,7 +81,7 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 
 	// @papyrus
-	public function setColors(a_lightColor: Number, a_darkColor: Number): Void
+	public function setColors(a_lightColor: Number, a_darkColor: Number, a_flashColor: Number): Void
 	{
 		meter.setColors(a_lightColor, a_darkColor);
 	}
@@ -84,20 +93,34 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 
 	// @papyrus
-	public function setFillMode(a_fillMode: String): Void
+	public function setFillOrigin(a_fillOrigin: String): Void
 	{
-		meter.fillMode = a_fillMode;
+		meter.fillOrigin = a_fillOrigin;
 	}
 
 	// @papyrus
 	public function setPercent(a_percent: Number, a_force: Boolean): Void
 	{
-		meter.setMeterPercent(a_percent, a_force);
+		meter.setPercent(a_percent, a_force);
 	}
 
 	// @papyrus
-	public function startMeterFlash(a_force: Boolean): Void
+	public function startFlash(a_force: Boolean): Void
 	{
-		meter.startMeterFlash(a_force);
+		meter.startFlash(a_force);
+	}
+
+
+  /* PRIVATE FUNCTIONS */
+
+	// @Overrides WidgetBase
+	private function getWidth(): Number
+	{
+		return __width;
+	}
+	// @Overrides WidgetBase
+	private function getHeight(): Number
+	{
+		return __height;
 	}
 }
