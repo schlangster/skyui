@@ -20,6 +20,7 @@ Interface\skyui\mcm_splash.swf
 Interface\skyui\res\mcm_logo.dds
 Interface\widgets\activeeffects.swf
 Interface\widgets\status.swf
+Interface\widgets\meter.swf
 Interface\translations\SkyUI_czech.txt
 Interface\translations\SkyUI_english.txt
 Interface\translations\SkyUI_french.txt
@@ -33,6 +34,7 @@ Scripts\SKI_ConfigBase.pex
 Scripts\SKI_ConfigManager.pex
 Scripts\SKI_ConfigMenu.pex
 Scripts\SKI_Main.pex
+Scripts\SKI_MeterWidget.pex
 Scripts\SKI_PlayerLoadGameAlias.pex
 Scripts\SKI_QuestBase.pex
 Scripts\SKI_SettingsManager.pex
@@ -44,6 +46,7 @@ Scripts\Source\SKI_ConfigBase.psc
 Scripts\Source\SKI_ConfigManager.psc
 Scripts\Source\SKI_ConfigMenu.psc
 Scripts\Source\SKI_Main.psc
+Scripts\Source\SKI_MeterWidget.psc
 Scripts\Source\SKI_PlayerLoadGameAlias.psc
 Scripts\Source\SKI_QuestBase.psc
 Scripts\Source\SKI_SettingsManager.psc
