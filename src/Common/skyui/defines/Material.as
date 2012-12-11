@@ -1,0 +1,50 @@
+class skyui.defines.Material
+{
+	public static var OTHER: Number	= undefined;
+
+	public static var AETHERIUM: Number			= 0;
+	public static var ARTIFACT: Number			= 1;
+	public static var BONEMOLD: Number			= 2;
+	public static var BROTHERHOOD: Number		= 3;
+	public static var CHITIN: Number			= 4;
+	public static var CLOTHING: Number			= 5;
+	public static var DAEDRIC: Number			= 6;
+	public static var DAWNGUARD: Number			= 7;
+	public static var DRAGONBONE: Number		= 8;
+	public static var DRAGONPLATE: Number		= 9;
+	public static var DRAGONSCALE: Number		= 10;
+	public static var DRAGUR: Number			= 11;
+	public static var DRAGURHONED: Number		= 12;
+	public static var DEATHBRAND: Number		= 13;
+	public static var DRAUGR: Number			= 14;
+	public static var DWARVEN: Number			= 15;
+	public static var EBONY: Number				= 16;
+	public static var ELVEN: Number				= 17;
+	public static var ELVENGILDED: Number		= 18;
+	public static var FALMER: Number			= 19;
+	public static var FALMERHARDENED: Number	= 20;
+	public static var FALMERHONED: Number		= 21;
+	public static var FUR: Number				= 22;
+	public static var GLASS: Number				= 23;
+	public static var HIDE: Number				= 24;
+	public static var HUNTER: Number			= 25;
+	public static var IMPERIAL: Number			= 26;
+	public static var IMPERIALSTUDDED: Number	= 27;
+	public static var IRON: Number				= 28;
+	public static var IRONBANDED: Number		= 29;
+	public static var LEATHER: Number			= 30;
+	public static var MAGIC: Number				= 31;
+	public static var MORAGTONG: Number			= 32;
+	public static var NIGHTINGALE: Number		= 33;
+	public static var NORDIC: Number			= 34;
+	public static var ORCISH: Number			= 35;
+	public static var SCALED: Number			= 36;
+	public static var SILVER: Number			= 37;
+	public static var STAHLRIM: Number			= 38;
+	public static var STEEL: Number				= 39;
+	public static var STEELPLATE: Number		= 40;
+	public static var STORMCLOAK: Number		= 41;
+	public static var STUDDED: Number			= 42;
+	public static var VAMPIRE: Number			= 43;
+	public static var WOOD: Number				= 44;
+}
