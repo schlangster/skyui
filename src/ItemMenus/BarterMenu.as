@@ -63,7 +63,8 @@ class BarterMenu extends ItemMenu
 		super.setConfig(a_config);
 
 		var itemList: TabularList = inventoryLists.itemList;		
-		itemList.addDataProcessor(new BarterDataExtender(_buyMult, _sellMult));
+		itemList.addDataProcessor(new BarterDataSetter(a_config["ItemList"], a_config["Appearance"], _buyMult, _sellMult));
+		itemList.addDataProcessor(new InventoryIconSetter());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
@@ -185,6 +186,9 @@ class BarterMenu extends ItemMenu
 	private function doTransaction(a_amount: Number): Void
 	{
 		GameDelegate.call("ItemSelect",[a_amount, itemCard.itemInfo.value, isViewingVendorItems()]);
+		// Update barter multipliers
+		// Update itemList => dataProcessor => BarterDataSetter updateBarterMultipliers
+		// Update itemCardInfo GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
 	}
 	
 	private function isViewingVendorItems(): Boolean

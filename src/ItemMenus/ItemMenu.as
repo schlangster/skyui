@@ -14,6 +14,7 @@ class ItemMenu extends MovieClip
 	private var _platform: Number;
 	private var _bItemCardFadedIn: Boolean = false;
 	private var _bItemCardPositioned: Boolean = false;
+	private var _quantityMenuTrigger: Number;
 	
 	private var _config: Object;
 	
@@ -120,18 +121,20 @@ class ItemMenu extends MovieClip
 		
 		var itemListState = inventoryLists.itemList.listState;
 		var categoryListState = inventoryLists.categoryList.listState;
-		var section = a_config["Appearance"];
+		var appearance = a_config["Appearance"];
 		
-		categoryListState.iconSource = section.icons.source;
+		categoryListState.iconSource = appearance.icons.source;
 		
-		itemListState.iconSource = section.icons.source;
-		itemListState.showStolenIcon = section.icons.showStolen;
-		itemListState.defaultEnabledColor = section.colors.enabled.text;
-		itemListState.negativeEnabledColor = section.colors.enabled.negative;
-		itemListState.stolenEnabledColor = section.colors.enabled.stolen;
-		itemListState.defaultDisabledColor = section.colors.disabled.text;
-		itemListState.negativeDisabledColor = section.colors.disabled.negative;
-		itemListState.stolenDisabledColor = section.colors.disabled.stolen;
+		itemListState.iconSource = appearance.icons.source;
+		itemListState.showStolenIcon = appearance.icons.showStolen;
+		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
+		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
+		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
+		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
+		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
+		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
+
+		_quantityMenuTrigger = a_config["ItemList"].quantityMenu.trigger;
 		
 		updateBottomBar(false);
 	}
@@ -275,6 +278,7 @@ class ItemMenu extends MovieClip
 	private function onConfigLoad(event: Object): Void
 	{
 		setConfig(event.config);
+
 		inventoryLists.showPanel(_bPlayBladeSound);
 	}
 
@@ -337,13 +341,15 @@ class ItemMenu extends MovieClip
 	private function onItemSelect(event: Object): Void
 	{
 		if (event.entry.enabled) {
-			if (event.entry.count > InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
-				itemCard.ShowQuantityMenu(event.entry.count);
-			else
+			if (_quantityMenuTrigger < 1 || (event.entry.count < _quantityMenuTrigger))
 				onQuantityMenuSelect({amount:1});
+			else
+				itemCard.ShowQuantityMenu(event.entry.count);
 		} else {
 			GameDelegate.call("DisabledItemSelect",[]);
 		}
+
+
 	}
 
 	private function onQuantityMenuSelect(event: Object): Void
