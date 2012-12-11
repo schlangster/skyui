@@ -1,5 +1,7 @@
 ﻿import gfx.io.GameDelegate;
 
+import skyui.defines.Form;
+
 import skyui.components.list.BasicList;
 import skyui.components.list.IListProcessor;
 
@@ -43,13 +45,65 @@ class ItemcardDataExtender implements IListProcessor
 			if (entryList[i].skyui_itemcardDataExtended)
 				continue;
 			entryList[i].skyui_itemcardDataExtended = true;
-				
+			
+			// Fix wrong property names
+			fixSKSEExtendedObject(entryList[i]);
+
 			// Hack to retrieve itemcard info
 			_requestItemInfo.apply(a_list, [this, i]);
 			processEntry(entryList[i], _itemInfo);
 		}
 	}
+
+  /* PRIVATE FUNCTIONS */
 	
 	// @abstract
-	public function processEntry(a_entryObject: Object, a_itemInfo: Object): Void {}
+	private function processEntry(a_entryObject: Object, a_itemInfo: Object): Void {}
+
+	private function fixSKSEExtendedObject(a_extendedObject: Object): Void
+	{
+		if (a_extendedObject.formType == undefined)
+			return;
+
+		switch(a_extendedObject.formType) {
+			case Form.SPELL:
+			case Form.SCROLLITEM:
+			case Form.INGREDIENT:
+			case Form.POTION:
+			case Form.EFFECTSETTING:
+
+				// school is sent as subType
+				if (a_extendedObject.school == undefined && a_extendedObject.subType != undefined) {
+					a_extendedObject.school = a_extendedObject.subType;
+					delete(a_extendedObject.subType);
+				}
+
+				// resistance is sent as magicType
+				if (a_extendedObject.resistance == undefined && a_extendedObject.magicType != undefined) {
+					a_extendedObject.resistance = a_extendedObject.magicType;
+					delete(a_extendedObject.magicType);
+				}
+
+				// primaryValue is sent as actorValue
+				/* // Ignore
+				if (a_extendedObject.primaryValue == undefined && a_extendedObject.actorValue != undefined) {
+					a_extendedObject.primaryValue = a_extendedObject.actorValue;
+					delete(a_extendedObject.actorValue);
+				}
+				*/
+				break;
+
+			case Form.WEAPON:
+				// weaponType is sent as subType
+				if (a_extendedObject.weaponType == undefined && a_extendedObject.subType != undefined) {
+					a_extendedObject.weaponType = a_extendedObject.subType;
+					delete(a_extendedObject.subType);
+				}
+				break;
+
+			default:
+				break;
+		}
+
+	}
 }

@@ -75,7 +75,7 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 			// Process color overrides after regular formatting
 			if (columnLayoutData.colorAttribute != undefined) {
 				var color = a_entryObject[columnLayoutData.colorAttribute];
-				if (color)
+				if (color != undefined)
 					e.textColor = color;
 			}
 		}

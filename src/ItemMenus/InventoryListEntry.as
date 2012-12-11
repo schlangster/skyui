@@ -145,7 +145,7 @@ class InventoryListEntry extends TabularListEntry
 		}
 
 		// Poisoned Icon
-		if (a_entryObject.infoIsPoisoned == true) {
+		if (a_entryObject.isPoisoned == true) {
 			poisonIcon._x = iconPos;
 			iconPos = iconPos + iconSpace;
 			poisonIcon.gotoAndStop("show");
@@ -154,7 +154,7 @@ class InventoryListEntry extends TabularListEntry
 		}
 
 		// Stolen Icon
-		if ((a_entryObject.infoIsStolen == true || a_entryObject.isStealing) && a_state.showStolenIcon != false) {
+		if ((a_entryObject.isStolen == true || a_entryObject.isStealing == true) && a_state.showStolenIcon == true) {
 			stolenIcon._x = iconPos;
 			iconPos = iconPos + iconSpace;
 			stolenIcon.gotoAndStop("show");
@@ -163,7 +163,7 @@ class InventoryListEntry extends TabularListEntry
 		}
 
 		// Enchanted Icon
-		if (a_entryObject.infoIsEnchanted == true) {
+		if (a_entryObject.isEnchanted == true) {
 			enchIcon._x = iconPos;
 			iconPos = iconPos + iconSpace;
 			enchIcon.gotoAndStop("show");

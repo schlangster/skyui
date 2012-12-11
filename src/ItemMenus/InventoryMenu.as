@@ -8,7 +8,6 @@ import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
-
 class InventoryMenu extends ItemMenu
 {
 	#include "../version.as"
@@ -68,7 +67,8 @@ class InventoryMenu extends ItemMenu
 		super.setConfig(a_config);
 		
 		var itemList: TabularList = inventoryLists.itemList;
-		itemList.addDataProcessor(new InventoryDataExtender());
+		itemList.addDataProcessor(new InventoryDataSetter(a_config["ItemList"], a_config["Appearance"]));
+		itemList.addDataProcessor(new InventoryIconSetter());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
@@ -116,7 +116,7 @@ class InventoryMenu extends ItemMenu
 	public function DropItem(): Void
 	{
 		if (shouldProcessItemsListInput(false) && inventoryLists.itemList.selectedEntry != undefined) {
-			if (inventoryLists.itemList.selectedEntry.count <= InventoryDefines.QUANTITY_MENU_COUNT_LIMIT)
+			if (_quantityMenuTrigger < 1 || (inventoryLists.itemList.selectedEntry.count < _quantityMenuTrigger))
 				onQuantityMenuSelect({amount:1});
 			else
 				itemCard.ShowQuantityMenu(inventoryLists.itemList.selectedEntry.count);
