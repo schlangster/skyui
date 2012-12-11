@@ -4,7 +4,8 @@ class skyui.widgets.WidgetBase extends MovieClip
 {
   /* CONSTANTS */
 	
-	private static var MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
+	private static var MODES: Array = ["All", "Favor", "MovementDisabled", "Swimming", "WarhorseMode", "HorseMode", "InventoryMode", "BookMode", "DialogueMode", "StealthMode", "SleepWaitMode", "BarterMode", "TweenMode", "WorldMapMode", "JournalMode", "CartMode", "VATSPlayback"];
+	//private static var CROSSHAIR_MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
 
 	private static var ALIGN_LEFT: String = "left";
 	private static var ALIGN_RIGHT: String = "right";
@@ -70,7 +71,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 		for (var i=0; i<arguments.length; i++) {
 			var m = arguments[i];
 			if (MODES.indexOf(m) != undefined) {
-				_widgetHolder[arguments[i]] = true;
+				_widgetHolder[m] = true;
 				numValidModes++;
 			}
 		}
