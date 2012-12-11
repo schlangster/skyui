@@ -373,59 +373,6 @@ class ItemCard extends MovieClip
 				break;
 				
 			case InventoryDefines.ICT_CRAFT_ENCHANTING:
-				if (aUpdateObj.type == InventoryDefines.ICT_HOUSE_PART) {
-						gotoAndStop("Magic_short");
-					if (aUpdateObj.effects == undefined)
-						MagicEffectsLabel.SetText("", true);
-					else
-						MagicEffectsLabel.SetText(aUpdateObj.effects, true);
-				} else if (aUpdateObj.sliderShown == true) {
-					gotoAndStop("Craft_Enchanting");
-					ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Default.MeterInstance);
-					if (aUpdateObj.totalCharges != undefined && aUpdateObj.totalCharges != 0)
-						TotalChargesValue.text = aUpdateObj.totalCharges;
-				} else if (aUpdateObj.damage == undefined) {
-					if (aUpdateObj.armor == undefined) {
-						if (aUpdateObj.soulLVL == undefined) {
-							if (QuantitySlider_mc._alpha == 0) {
-								gotoAndStop("Craft_Enchanting_Enchantment");
-								ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Enchantment.MeterInstance);
-							}
-						} else {
-							gotoAndStop("Craft_Enchanting_SoulGem");
-							ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_SoulGem.MeterInstance);
-							SoulLevel.text = aUpdateObj.soulLVL;
-						}
-					} else {
-						gotoAndStop("Craft_Enchanting_Armor");
-						ApparelArmorValue.SetText(aUpdateObj.armor);
-						SkillTextInstance.text = aUpdateObj.skillText;
-					}
-				} else {
-					gotoAndStop("Craft_Enchanting_Weapon");
-					ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Weapon.MeterInstance);
-					WeaponDamageValue.SetText(aUpdateObj.damage);
-				}
-				if (aUpdateObj.usedCharge == 0 && aUpdateObj.totalCharges == 0)
-					ItemCardMeters[InventoryDefines.ICT_WEAPON].DeltaMeterMovieClip._parent._parent._alpha = 0;
-				else if (aUpdateObj.usedCharge != undefined)
-					ItemCardMeters[InventoryDefines.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
-				if (aUpdateObj.effects != undefined && aUpdateObj.effects.length > 0) {
-					if (EnchantmentLabel != undefined)
-						EnchantmentLabel.SetText(aUpdateObj.effects, true);
-					EnchantmentLabel.textAutoSize = "shrink";
-					WeaponChargeMeter._alpha = 100;
-					Enchanting_Background._alpha = 60;
-					Enchanting_Slim_Background._alpha = 0;
-				} else {
-					if (EnchantmentLabel != undefined)
-						EnchantmentLabel.SetText("", true);
-					WeaponChargeMeter._alpha = 0;
-					Enchanting_Slim_Background._alpha = 60;
-					Enchanting_Background._alpha = 0;
-				}
-				break;
-
 			case InventoryDefines.ICT_HOUSE_PART:
 				if (aUpdateObj.type == InventoryDefines.ICT_HOUSE_PART) {
 					gotoAndStop("Magic_short");
