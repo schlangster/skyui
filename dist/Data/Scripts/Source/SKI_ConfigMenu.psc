@@ -14,6 +14,9 @@ string[]	_orientations
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
+int			_itemlistQuantityTriggerOID_S
+int			_itemlistCombinedValueOID_B
+int			_itemlistCombinedWeightOID_B
 
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -39,26 +42,29 @@ int			_checkContainerMenuOID_B
 int			_checkGiftMenuOID_B
 
 ; State
-int			_itemlistFontSizeIdx	= 1
+int			_itemlistFontSizeIdx		= 1
+int			_itemlistQuantityTrigger	= 5
+bool		_itemlistCombinedValue		= false
+bool		_itemlistCombinedWeight		= false
 
-int			_itemcardAlignIdx		= 2
-float		_itemcardXOffset		= 0.0
-float		_itemcardYOffset		= 0.0
+int			_itemcardAlignIdx			= 2
+float		_itemcardXOffset			= 0.0
+float		_itemcardYOffset			= 0.0
 
-float		_3DItemXOffset			= 0.0
-float		_3DItemYOffset			= 0.0
-float		_3DItemScale			= 1.5
+float		_3DItemXOffset				= 0.0
+float		_3DItemYOffset				= 0.0
+float		_3DItemScale				= 1.5
 
-bool		_AEEnabled				= false
+bool		_AEEnabled					= false
 float[]		_AEEffectSizeValues
-int			_AEEffectSizeIdx		= 1
-int			_AEClampCornerIdx		= 1
-int			_AEGroupEffectCount		= 8
+int			_AEEffectSizeIdx			= 1
+int			_AEClampCornerIdx			= 1
+int			_AEGroupEffectCount			= 8
 float[]		_AEBaseXValues
-float		_AEOffsetX				= 0.0
+float		_AEOffsetX					= 0.0
 float[]		_AEBaseYValues
-float		_AEOffsetY				= 0.0
-int			_AEOrientationIdx		= 1
+float		_AEOffsetY					= 0.0
+int			_AEOrientationIdx			= 1
 
 ; Internal
 float		_itemXBase
@@ -150,49 +156,52 @@ event OnPageReset(string a_page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("Item List")
-		_itemlistFontSizeOID_T		= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
+		_itemlistFontSizeOID_T			= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
+		_itemlistQuantityTriggerOID_S		= AddSliderOption("Quantity Menu Limit", _itemlistQuantityTrigger)
+		_itemlistCombinedValueOID_B		= AddToggleOption("Display Combined Value", _itemlistCombinedValue)
+		_itemlistCombinedWeightOID_B	= AddToggleOption("Display Combined Weight", _itemlistCombinedWeight)
 
 		SetCursorPosition(1)
 
 		; Disabled for now until icons are done
 		AddHeaderOption("Active Effects HUD")
-		_AEEnabledOID_B				= AddToggleOption("Enabled", _AEEnabled, OPTION_FLAG_DISABLED)
-		_AEEffectSizeOID_T			= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
+		_AEEnabledOID_B					= AddToggleOption("Enabled", _AEEnabled, OPTION_FLAG_DISABLED)
+		_AEEffectSizeOID_T				= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
 
 	; -------------------------------------------------------
 	elseIf (a_page == "Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("Item Card")
-		_itemcardAlignOID_T			= AddTextOption("Align", _alignments[_itemcardAlignIdx])
-		_itemcardXOffsetOID_S		= AddSliderOption("Horizontal Offset", _itemcardXOffset)
-		_itemcardYOffsetOID_S		= AddSliderOption("Vertical Offset", _itemcardYOffset)
+		_itemcardAlignOID_T				= AddTextOption("Align", _alignments[_itemcardAlignIdx])
+		_itemcardXOffsetOID_S			= AddSliderOption("Horizontal Offset", _itemcardXOffset)
+		_itemcardYOffsetOID_S			= AddSliderOption("Vertical Offset", _itemcardYOffset)
 
 		AddEmptyOption()
 
 		AddHeaderOption("Active Effects HUD")
-		_AEOrientationOID_T			= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
-		_AEClampCornerOID_M			= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
-		_AEGroupEffectCountOID_S	= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
-		_AEOffsetXOID_S				= AddSliderOption("X Offset", _AEOffsetX)
-		_AEOffsetYOID_S				= AddSliderOption("Y Offset", _AEOffsetY)
+		_AEOrientationOID_T				= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
+		_AEClampCornerOID_M				= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
+		_AEGroupEffectCountOID_S		= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
+		_AEOffsetXOID_S					= AddSliderOption("X Offset", _AEOffsetX)
+		_AEOffsetYOID_S					= AddSliderOption("Y Offset", _AEOffsetY)
 
 		SetCursorPosition(1)
 
 		AddHeaderOption("3D Item")
-		_3DItemXOffsetOID_S			= AddSliderOption("Horizontal Offset", _3DItemXOffset)
-		_3DItemYOffsetOID_S			= AddSliderOption("Vertical Offset", _3DItemYOffset)
-		_3DItemScaleOID_S			= AddSliderOption("Scale", _3DItemScale, "{1}")
+		_3DItemXOffsetOID_S				= AddSliderOption("Horizontal Offset", _3DItemXOffset)
+		_3DItemYOffsetOID_S				= AddSliderOption("Vertical Offset", _3DItemYOffset)
+		_3DItemScaleOID_S				= AddSliderOption("Scale", _3DItemScale, "{1}")
 
 		AddEmptyOption()
 
 		AddHeaderOption("SWF Version Checking")
-		_checkHUDMenuOID_B			= AddToggleOption("HUD Menu", SKI_MainInstance.HUDMenuCheckEnabled)
-		_checkInventoryMenuOID_B	= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
-		_checkMagicMenuOID_B		= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
-		_checkBarterMenuOID_B		= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
-		_checkContainerMenuOID_B	= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
-		_checkGiftMenuOID_B			= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
+		_checkHUDMenuOID_B				= AddToggleOption("HUD Menu", SKI_MainInstance.HUDMenuCheckEnabled)
+		_checkInventoryMenuOID_B		= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
+		_checkMagicMenuOID_B			= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
+		_checkBarterMenuOID_B			= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
+		_checkContainerMenuOID_B		= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
+		_checkGiftMenuOID_B				= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
 		
 	endIf
 endEvent
@@ -206,6 +215,21 @@ event OnOptionDefault(int a_option)
 		_itemlistFontSizeIdx = 1
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
+
+	elseif (a_option == _itemlistQuantityTriggerOID_S)
+		_itemlistQuantityTrigger = 5
+		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+
+	elseIf (a_option == _itemlistCombinedValueOID_B)
+		_itemlistCombinedValue = false
+		SetToggleOptionValue(a_option, _itemlistCombinedValue)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedValue", _itemlistCombinedValue)
+
+	elseIf (a_option == _itemlistCombinedValueOID_B)
+		_itemlistCombinedWeight = false
+		SetToggleOptionValue(a_option, _itemlistCombinedWeight)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -309,8 +333,8 @@ endEvent
 ; @implements SKI_ConfigBase
 event OnOptionSelect(int a_option)
 
+	; -------------------------------------------------------
 	if (a_option == _itemlistFontSizeOID_T)
-
 		if (_itemlistFontSizeIdx < _sizes.length - 1)
 			_itemlistFontSizeIdx += 1
 		else
@@ -319,6 +343,17 @@ event OnOptionSelect(int a_option)
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
 
+	elseIf (a_option == _itemlistCombinedValueOID_B)
+		_itemlistCombinedValue = !_itemlistCombinedValue
+		SetToggleOptionValue(a_option, _itemlistCombinedValue)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedValue", _itemlistCombinedValue)
+
+	elseIf (a_option == _itemlistCombinedWeightOID_B)
+		_itemlistCombinedWeight = !_itemlistCombinedWeight
+		SetToggleOptionValue(a_option, _itemlistCombinedWeight)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
+
+	; -------------------------------------------------------
 	elseIf (a_option == _AEEnabledOID_B)
 		_AEEnabled = !_AEEnabled
 		SetToggleOptionValue(a_option, _AEEnabled)
@@ -388,7 +423,15 @@ endEvent
 ; @implements SKI_ConfigBase
 event OnOptionSliderOpen(int a_option)
 
-	if (a_option == _itemcardXOffsetOID_S)
+	; -------------------------------------------------------
+	if (a_option == _itemlistQuantityTriggerOID_S)
+		SetSliderDialogStartValue(_itemlistQuantityTrigger)
+		SetSliderDialogDefaultValue(5)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+
+	; -------------------------------------------------------
+	elseIf (a_option == _itemcardXOffsetOID_S)
 		SetSliderDialogStartValue(_itemcardXOffset)
 		SetSliderDialogDefaultValue(0)
 		SetSliderDialogRange(-1000, 1000)
@@ -442,7 +485,14 @@ endEvent
 ; @implements SKI_ConfigBase
 event OnOptionSliderAccept(int a_option, float a_value)
 
-	if (a_option == _itemcardXOffsetOID_S)
+	; -------------------------------------------------------
+	if (a_option == _itemlistQuantityTriggerOID_S)
+		_itemlistQuantityTrigger = a_value as int
+		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+
+	; -------------------------------------------------------
+	elseIf (a_option == _itemcardXOffsetOID_S)
 		_itemcardXOffset = a_value
 		SetSliderOptionValue(a_option, _itemcardXOffset)
 		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
@@ -517,6 +567,12 @@ event OnOptionHighlight(int a_option)
 
 	if (a_option == _itemlistFontSizeOID_T)
 		SetInfoText("Default: Medium")
+	elseIf(a_option == _itemlistQuantityTriggerOID_S)
+		SetInfoText("Number of items required to trigger quantity menu\nDisabled: 0, Default: 5")
+	elseIf(a_option == _itemlistCombinedValueOID_B)
+		SetInfoText("Displays combined value, e.g. 50 (100)\nDefault: False")
+	elseIf(a_option == _itemlistCombinedWeightOID_B)
+		SetInfoText("Displays combined weight, e.g. 10 (20)\nDefault: False")
 
 	elseIf (a_option == _itemcardAlignOID_T)
 		SetInfoText("Default: Center")
@@ -528,6 +584,7 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _3DItemXOffsetOID_S)
 		SetInfoText("Default: 0")
 	elseIf (a_option == _3DItemYOffsetOID_S)
+
 		SetInfoText("Default: 0")
 	elseIf (a_option == _3DItemScaleOID_S)
 		SetInfoText("Default: 1.5")
@@ -577,6 +634,10 @@ function ApplySettings()
 	Apply3DItemXOffset()
 	Apply3DItemYOffset()
 	Apply3DItemScale()
+
+	SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+	SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedValue", _itemlistCombinedValue)
+	SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
 endFunction
 
 function ApplyItemListFontSize()
