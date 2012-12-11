@@ -69,7 +69,7 @@ class skyui.util.Debug
 		for(var i = 0; i < padLevel; i++)
 			pad += "    ";
 
-		if (typeof a_obj == "object") {
+		if (typeof a_obj == "object" || typeof a_obj == "function" ) {
 			logFn(pad + a_name);
 			for (var s in a_obj)
 				dump(s, a_obj[s], a_noTimestamp, padLevel + 1);
@@ -77,14 +77,24 @@ class skyui.util.Debug
 			logFn(pad + a_name);
 			for(var j = 0; j < a_obj.length; j++)
 				dump(j, a_obj[j], a_noTimestamp, padLevel + 1);
-		} else if (typeof a_obj == "function"){
-			logFn(pad + a_name + "();");
 		} else {
 			logFn(pad + a_name + ": " + a_obj);
 		}
 	}
 
+	public static function prettyFormId(a_formId: Number, a_prefix: Boolean): String
+	{
+		var str:String = a_formId.toString(16).toUpperCase();
 
+		var padding: String = "";
+		for (var i: Number = str.length; i < 8; i++) {
+			padding += "0";
+		}
+
+		str = ((a_prefix)? "0x": "") + padding + str;
+
+		return str;
+	}
 
 	public static function getFunctionName(a_func: Function): String
 	{
@@ -166,7 +176,6 @@ class skyui.util.Debug
 
 		return null;
 	}
-
 }
 
 
