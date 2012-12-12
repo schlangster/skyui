@@ -70,7 +70,7 @@ event OnGameReload()
 	endIf
 
 	; Check hudmenu.swf version
-	if (HUDMenuCheckEnabled)
+	if (HUDMenuCheckEnabled && UI.IsMenuOpen(HUD_MENU))
 		CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
 	endIf
 
