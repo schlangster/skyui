@@ -28,9 +28,9 @@ class skyui.util.ConfigManager
 	};
 	
 	// Contains names of classes
-	private static var _extConstantTableNames = [];
+	private static var _extConstantTableNames: Array = [];
 	// Contains the actual classes.
-	private static var _extConstantTables = [];
+	private static var _extConstantTables: Object = {};
 	
 	private static var _eventDummy: Object;
 	
@@ -131,14 +131,20 @@ class skyui.util.ConfigManager
 	
 	public static function getConstant(a_name: String)
 	{
-		
 		if (_constantTable[a_name] != undefined)
 			return _constantTable[a_name];
-			
-		for (var i=0; i<_extConstantTables.length; i++)
-			if (_extConstantTables[i][a_name] != undefined)
-				return _extConstantTables[i][a_name];
-				
+		
+		var a: Array = a_name.split(".");
+
+		if (a.length < 2)
+			return undefined;
+
+		var className: String = a[a.length - 2];
+		var constName: String = a[a.length - 1];
+
+		if (_extConstantTables[className][constName] != undefined)
+			return _extConstantTables[className][constName];
+
 		return undefined;
 	}
 	
@@ -250,11 +256,11 @@ class skyui.util.ConfigManager
 		// Resolve constant tables
 		for (var i=0; i<_extConstantTableNames.length; i++) {
 			var a = _extConstantTableNames[i].split(".");
+			var className: String = a[a.length - 1];
 			var tbl = _global[a[0]];
 			for (var j=1; j<a.length; j++)
 				tbl = tbl[a[j]];
-				
-			_extConstantTables.push(tbl);
+			_extConstantTables[className] = tbl;
 		}
 		
 		var lines = a_data.split("\r\n");

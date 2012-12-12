@@ -341,27 +341,6 @@ columns.valueWeightColumn.state2.sortAttributes = <valueWeight, text>
 columns.valueWeightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
-; TOTALSORT COLUMN -------------------------------------------------------
-; Can be displayed for testing and debugging purposes
-; The total sort value is what determines how the icon column sorts
-columns.totalSortColumn.type = TEXT
-columns.totalSortColumn.name = 'SORT'
-columns.totalSortColumn.states = 2
-columns.totalSortColumn.width = 0.25
-columns.totalSortColumn.border = <0, 0, 0.3, 0> ; left right top bottom
-
-columns.totalSortColumn.state1.label.text = 'SORT'
-columns.totalSortColumn.state1.label.arrowDown = true
-columns.totalSortColumn.state1.entry.text = @totalSort
-columns.totalSortColumn.state1.sortAttributes = <totalSort, text>
-columns.totalSortColumn.state1.sortOptions = <{DESCENDING |  CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
-
-columns.totalSortColumn.state2.label.text = 'SORT'
-columns.totalSortColumn.state2.entry.text = @totalSort
-columns.totalSortColumn.state2.sortAttributes = <totalSort, text>
-columns.totalSortColumn.state2.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
-
-
 ; MAGIC NAME COLUMN -------------------------------------------------------
 columns.magicNameColumn.type = NAME
 columns.magicNameColumn.name = '$NAME'
@@ -550,19 +529,19 @@ columns.effectItemColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {
 
 ; ITEM VIEWS -------------------------------------------------------
 views.defaultItemView.primaryColumn = itemNameColumn
-views.defaultItemView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, weightColumn, valueColumn, valueWeightColumn, totalSortColumn>
+views.defaultItemView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, weightColumn, valueColumn, valueWeightColumn>
 
 views.weaponView.primaryColumn = itemNameColumn
 views.weaponView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, materialColumn, damageColumn, weightColumn, valueColumn, valueWeightColumn>
-views.weaponView.category = <FLAG_INV_WEAPONS, FLAG_CONTAINER_WEAPONS>
+views.weaponView.category = <Inventory.FILTERFLAG_INV_WEAPONS, Inventory.FILTERFLAG_CONTAINER_WEAPONS>
 
 views.armorView.primaryColumn = itemNameColumn
 views.armorView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, classColumn, materialColumn, arColumn, weightColumn, valueColumn, valueWeightColumn>
-views.armorView.category = <FLAG_INV_ARMOR, FLAG_CONTAINER_ARMOR>
+views.armorView.category = <Inventory.FILTERFLAG_INV_ARMOR, Inventory.FILTERFLAG_CONTAINER_ARMOR>
 
 views.magicItemView.primaryColumn = itemNameColumn
 views.magicItemView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, magnitudeColumn, durationColumn, weightColumn, valueColumn, valueWeightColumn>
-views.magicItemView.category = <FLAG_INV_POTIONS, FLAG_INV_SCROLLS, FLAG_CONTAINER_POTIONS, FLAG_CONTAINER_SCROLLS>
+views.magicItemView.category = <Inventory.FILTERFLAG_INV_POTIONS, Inventory.FILTERFLAG_INV_SCROLLS, Inventory.FILTERFLAG_CONTAINER_POTIONS, Inventory.FILTERFLAG_CONTAINER_SCROLLS>
 
 
 ; MAGIC VIEWS -------------------------------------------------------
@@ -571,19 +550,19 @@ views.defaultMagicView.columns = <equipColumn, iconColumn, magicNameColumn, leve
 
 views.allMagicView.primaryColumn = magicNameColumn
 views.allMagicView.columns = <equipColumn, iconColumn, magicNameColumn, schoolColumn, levelColumn, spellCostColumn>
-views.allMagicView.category = <FLAG_MAGIC_ALL, FLAG_MAGIC_FAVORITES>
+views.allMagicView.category = <Inventory.FILTERFLAG_MAGIC_ALL, Inventory.FILTERFLAG_MAGIC_FAVORITES>
 
 views.shoutsView.primaryColumn = magicNameColumn
 views.shoutsView.columns = <equipColumn, iconColumn, magicNameColumn, word1Column, word2Column, word3Column>
-views.shoutsView.category = FLAG_MAGIC_SHOUTS
+views.shoutsView.category = Inventory.FILTERFLAG_MAGIC_SHOUTS
 
 views.powersView.primaryColumn = magicNameColumn
 views.powersView.columns = <equipColumn, iconColumn, magicNameColumn, spellCostColumn>
-views.powersView.category = FLAG_MAGIC_POWERS
+views.powersView.category = Inventory.FILTERFLAG_MAGIC_POWERS
 
 views.activeEffectView.primaryColumn = magicNameColumn
 views.activeEffectView.columns = <equipColumn, iconColumn, magicNameColumn, timeRemainingColumn, effectItemColumn>
-views.activeEffectView.category = FLAG_MAGIC_ACTIVE_EFFECT
+views.activeEffectView.category = Inventory.FILTERFLAG_MAGIC_ACTIVEEFFECTS
 
 
 ; LAYOUTS -------------------------------------------------------

@@ -16,8 +16,15 @@ class skyui.components.list.ListLayoutManager
 		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
 		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
 		
-//		ConfigManager.addConstantTable("skyui.util.Defines", skyui.util.Defines);
+		ConfigManager.addConstantTable("skyui.defines.Actor", skyui.defines.Actor);
+		ConfigManager.addConstantTable("skyui.defines.Armor", skyui.defines.Armor);
+		ConfigManager.addConstantTable("skyui.defines.Form", skyui.defines.Form);
+		ConfigManager.addConstantTable("skyui.defines.Input", skyui.defines.Input);
 		ConfigManager.addConstantTable("skyui.defines.Inventory", skyui.defines.Inventory);
+		ConfigManager.addConstantTable("skyui.defines.Item", skyui.defines.Item);
+		ConfigManager.addConstantTable("skyui.defines.Magic", skyui.defines.Magic);
+		ConfigManager.addConstantTable("skyui.defines.Material", skyui.defines.Material);
+		ConfigManager.addConstantTable("skyui.defines.Weapon", skyui.defines.Weapon);
 		
 		return true;
 	}
