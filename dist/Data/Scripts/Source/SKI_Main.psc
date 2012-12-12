@@ -70,7 +70,7 @@ event OnGameReload()
 	endIf
 
 	; Check hudmenu.swf version
-	if (HUDMenuCheckEnabled && UI.IsMenuOpen(HUD_MENU))
+	if (HUDMenuCheckEnabled)
 		if (UI.IsMenuOpen(HUD_MENU))
 			CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
 		else
@@ -139,7 +139,7 @@ event OnMenuOpen(string a_menuName)
  	elseIf (a_menuName == HUD_MENU)
 		UnregisterForMenu(HUD_MENU)
 		CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
-		
+
 	endIf
 endEvent
 
