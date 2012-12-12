@@ -49,6 +49,8 @@ class Shared.GlobalFunc
 			this.setTextFormat(textFormat);
 			return;
 		};
+
+		_global.ASSetPropFlags(TextField.prototype, "SetText" , 0x01, 0x00);
 	}
 
 	static function SetLockFunction(): Void
@@ -75,6 +77,8 @@ class Shared.GlobalFunc
 			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR") 
 				this._x = maxXY.x;
 		};
+
+		_global.ASSetPropFlags(MovieClip.prototype, "Lock" , 0x01, 0x00);
 	}
 
 	static function AddMovieExploreFunctions(): Void
@@ -95,6 +99,8 @@ class Shared.GlobalFunc
 					this[i].showMovieClips();
 				}
 		};
+
+		_global.ASSetPropFlags(MovieClip.prototype, ["getMovieClips", "showMovieClips"], 0x01, 0x00);
 	}
 
 	static function AddReverseFunctions(): Void
@@ -125,6 +131,8 @@ class Shared.GlobalFunc
 			delete (this.onEnterFrame);
 			this.gotoAndPlay(aFrame);
 		};
+
+		_global.ASSetPropFlags(MovieClip.prototype, ["PlayReverse", "PlayForward"], 0x01, 0x00);
 	}
 
 	static function GetTextField(aParentClip: MovieClip, aName: String): TextField
@@ -148,6 +156,8 @@ class Shared.GlobalFunc
 			if (Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] == undefined) 
 				Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] = this;
 		};
+
+		_global.ASSetPropFlags(TextField.prototype, "RegisterTextField", 0x01, 0x00);
 	}
 
 	static function RegisterTextFields(aStartingClip: MovieClip) : Void
@@ -172,6 +182,8 @@ class Shared.GlobalFunc
 			if (Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] == undefined) 
 				Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] = this;
 		};
+
+		_global.ASSetPropFlags(MovieClip.prototype, "RegisterMovieClip", 0x01, 0x00);
 	}
 
 	static function RegisterMovieClips(aStartingClip: MovieClip): Void

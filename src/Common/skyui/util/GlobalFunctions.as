@@ -65,6 +65,8 @@
 					
 	    	return false;
     	};
+
+    	_global.ASSetPropFlags(Array.prototype, ["indexOf", "equals", "contains"], 0x01, 0x00);
 	}
 
 	// Maps Unicode inputted character code to it's CP819/CP1251 character code
