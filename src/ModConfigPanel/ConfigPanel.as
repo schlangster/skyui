@@ -8,6 +8,7 @@ import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ScrollingList;
 import skyui.components.ButtonPanel;
 import skyui.util.DialogManager;
+import skyui.defines.Input;
 
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
@@ -438,13 +439,13 @@ class ConfigPanel extends MovieClip
 		_platform = a_platform;
 		
 		if (a_platform == 0) {
-			_acceptControls = InputDefines.Enter;
-			_defaultControls = InputDefines.ReadyWeapon;
-			_cancelControls = InputDefines.Tab;
+			_acceptControls = Input.Enter;
+			_defaultControls = Input.ReadyWeapon;
+			_cancelControls = Input.Tab;
 		} else {
-			_acceptControls = InputDefines.Accept;
-			_defaultControls = InputDefines.YButton;
-			_cancelControls = InputDefines.Cancel;
+			_acceptControls = Input.Accept;
+			_defaultControls = Input.YButton;
+			_cancelControls = Input.Cancel;
 		}
 		
 		_buttonPanelL.setPlatform(a_platform, a_bPS3Switch);

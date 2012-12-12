@@ -4,6 +4,8 @@ import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
+import skyui.defines.Input;
+
 
 class ColorDialog extends OptionDialog
 {	
@@ -44,13 +46,13 @@ class ColorDialog extends OptionDialog
 		var cancelControls: Object;
 
 		if (platform == 0) {
-			acceptControls = InputDefines.Enter;
-			_defaultControls = InputDefines.ReadyWeapon;
-			cancelControls = InputDefines.Tab;
+			acceptControls = Input.Enter;
+			_defaultControls = Input.ReadyWeapon;
+			cancelControls = Input.Tab;
 		} else {
-			acceptControls = InputDefines.Accept;
-			_defaultControls = InputDefines.YButton;
-			cancelControls = InputDefines.Cancel;
+			acceptControls = Input.Accept;
+			_defaultControls = Input.YButton;
+			cancelControls = Input.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();

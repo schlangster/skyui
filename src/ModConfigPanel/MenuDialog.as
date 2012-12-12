@@ -5,6 +5,8 @@ import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
 
+import skyui.defines.Input;
+
 
 class MenuDialog extends OptionDialog
 {	
@@ -40,11 +42,11 @@ class MenuDialog extends OptionDialog
 	public function initButtons(): Void
 	{
 		if (platform == 0) {
-			_defaultControls = InputDefines.ReadyWeapon;
-			_closeControls = InputDefines.Tab;
+			_defaultControls = Input.ReadyWeapon;
+			_closeControls = Input.Tab;
 		} else {
-			_defaultControls = InputDefines.YButton;
-			_closeControls = InputDefines.Cancel;
+			_defaultControls = Input.YButton;
+			_closeControls = Input.Cancel;
 		}
 		
 		leftButtonPanel.clearButtons();
