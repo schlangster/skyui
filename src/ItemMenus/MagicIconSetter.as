@@ -3,6 +3,7 @@ import skyui.components.list.IListProcessor;
 
 import skyui.defines.Actor;
 import skyui.defines.Magic;
+import skyui.defines.Inventory;
 
 class MagicIconSetter implements IListProcessor
 {
@@ -33,20 +34,20 @@ class MagicIconSetter implements IListProcessor
 	{
 		//skyui.util.Debug.dump(a_entryObject["text"], a_entryObject);
 		switch (a_entryObject.type) {
-			case InventoryDefines.ICT_SPELL:
+			case Inventory.ICT_SPELL:
 				processSpellIcon(a_entryObject);
 				processResist(a_entryObject);
 				break;
 
-			case InventoryDefines.ICT_SHOUT:
+			case Inventory.ICT_SHOUT:
 				a_entryObject.iconLabel = "default_shout";
 				break;
 
-			case InventoryDefines.ICT_ACTIVE_EFFECT:
+			case Inventory.ICT_ACTIVE_EFFECT:
 				a_entryObject.iconLabel = "default_effect";
 				break;
 
-			case InventoryDefines.ICT_SPELL_DEFAULT:
+			case Inventory.ICT_SPELL_DEFAULT:
 				a_entryObject.iconLabel = "default_power";
 				break;
 				

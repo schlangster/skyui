@@ -4,6 +4,7 @@ import skyui.defines.Form;
 import skyui.defines.Item;
 import skyui.defines.Material;
 import skyui.defines.Weapon;
+import skyui.defines.Inventory;
 
 class InventoryDataSetter extends ItemcardDataExtender
 {
@@ -575,7 +576,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.subType = Item.FOOD;
 			a_entryObject.subTypeDisplay = "$Food";
 
-			if (a_entryObject.type == InventoryDefines.ICT_POTION) {
+			if (a_entryObject.type == Inventory.ICT_POTION) {
 				a_entryObject.subType = Item.DRINK;
 				a_entryObject.subTypeDisplay = "$Drink";
 			}

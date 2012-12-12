@@ -2,6 +2,7 @@
 import Components.Meter;
 
 import skyui.components.ButtonPanel;
+import skyui.defines.Inventory;
 
 
 class BottomBar extends MovieClip
@@ -35,7 +36,7 @@ class BottomBar extends MovieClip
 	public function BottomBar()
 	{
 		super();
-		_lastItemType = InventoryDefines.ICT_NONE;
+		_lastItemType = Inventory.ICT_NONE;
 		_healthMeter = new Meter(playerInfoCard.HealthRect.MeterInstance.Meter_mc);
 		_magickaMeter = new Meter(playerInfoCard.MagickaRect.MeterInstance.Meter_mc);
 		_staminaMeter = new Meter(playerInfoCard.StaminaRect.MeterInstance.Meter_mc);
@@ -77,7 +78,7 @@ class BottomBar extends MovieClip
 		}
 		if (_playerInfoObj != undefined && a_itemUpdateObj != undefined) {
 			switch(itemType) {
-				case InventoryDefines.ICT_ARMOR:
+				case Inventory.ICT_ARMOR:
 					infoCard.gotoAndStop("Armor");
 					var strArmor: String = Math.floor(_playerInfoObj.armor).toString();
 					if (a_itemUpdateObj.armorChange != undefined) {
@@ -92,7 +93,7 @@ class BottomBar extends MovieClip
 					infoCard.ArmorRatingValue.SetText(strArmor, true);
 					break;
 					
-				case InventoryDefines.ICT_WEAPON:
+				case Inventory.ICT_WEAPON:
 					infoCard.gotoAndStop("Weapon");
 					var strDamage: String = Math.floor(_playerInfoObj.damage).toString();
 					if (a_itemUpdateObj.damageChange != undefined) {
@@ -107,8 +108,8 @@ class BottomBar extends MovieClip
 					infoCard.DamageValue.SetText(strDamage, true);
 					break;
 					
-				case InventoryDefines.ICT_POTION:
-				case InventoryDefines.ICT_FOOD:
+				case Inventory.ICT_POTION:
+				case Inventory.ICT_FOOD:
 					var EF_HEALTH: Number = 0;
 					var EF_MAGICKA: Number = 1;
 					var EF_STAMINA: Number = 2;
@@ -120,29 +121,29 @@ class BottomBar extends MovieClip
 						infoCard.gotoAndStop("HealthPotion");
 					break;
 					
-				case InventoryDefines.ICT_SPELL_DEFAULT:
-				case InventoryDefines.ICT_ACTIVE_EFFECT:
+				case Inventory.ICT_SPELL_DEFAULT:
+				case Inventory.ICT_ACTIVE_EFFECT:
 					infoCard.gotoAndStop("Magic");
 					bHasWeightandValue = false;
 					break;
 					
-				case InventoryDefines.ICT_SPELL:
+				case Inventory.ICT_SPELL:
 					infoCard.gotoAndStop("MagicSkill");
 					if (a_itemUpdateObj.magicSchoolName != undefined) 
 						updateSkillBar(a_itemUpdateObj.magicSchoolName, a_itemUpdateObj.magicSchoolLevel, a_itemUpdateObj.magicSchoolPct);
 					bHasWeightandValue = false;
 					break;
 					
-				case InventoryDefines.ICT_SHOUT:
+				case Inventory.ICT_SHOUT:
 					infoCard.gotoAndStop("Shout");
 					infoCard.DragonSoulTextInstance.SetText(_playerInfoObj.dragonSoulText);
 					bHasWeightandValue = false;
 					break;
 					
-				case InventoryDefines.ICT_BOOK:
-				case InventoryDefines.ICT_INGREDIENT:
-				case InventoryDefines.ICT_MISC:
-				case InventoryDefines.ICT_KEY:
+				case Inventory.ICT_BOOK:
+				case Inventory.ICT_INGREDIENT:
+				case Inventory.ICT_MISC:
+				case Inventory.ICT_KEY:
 				default:
 					infoCard.gotoAndStop("Default");
 			}
@@ -154,10 +155,10 @@ class BottomBar extends MovieClip
 				infoCard.PlayerGoldLabel._x = infoCard.PlayerGoldValue._x + infoCard.PlayerGoldValue.getLineMetrics(0).x - infoCard.PlayerGoldLabel._width;
 				infoCard.CarryWeightValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.CarryWeightValue._width - 5;
 				infoCard.CarryWeightLabel._x = infoCard.CarryWeightValue._x + infoCard.CarryWeightValue.getLineMetrics(0).x - infoCard.CarryWeightLabel._width;
-				if (itemType === InventoryDefines.ICT_ARMOR) {
+				if (itemType === Inventory.ICT_ARMOR) {
 					infoCard.ArmorRatingValue._x = infoCard.CarryWeightLabel._x + infoCard.CarryWeightLabel.getLineMetrics(0).x - infoCard.ArmorRatingValue._width - 5;
 					infoCard.ArmorRatingLabel._x = infoCard.ArmorRatingValue._x + infoCard.ArmorRatingValue.getLineMetrics(0).x - infoCard.ArmorRatingLabel._width;
-				} else if (itemType === InventoryDefines.ICT_WEAPON) {
+				} else if (itemType === Inventory.ICT_WEAPON) {
 					infoCard.DamageValue._x = infoCard.CarryWeightLabel._x + infoCard.CarryWeightLabel.getLineMetrics(0).x - infoCard.DamageValue._width - 5;
 					infoCard.DamageLabel._x = infoCard.DamageValue._x + infoCard.DamageValue.getLineMetrics(0).x - infoCard.DamageLabel._width;
 				}
@@ -212,7 +213,7 @@ class BottomBar extends MovieClip
 			var itemType: Number = a_itemUpdateObj.type;
 			
 			switch(itemType) {
-				case InventoryDefines.ICT_ARMOR:
+				case Inventory.ICT_ARMOR:
 					infoCard.gotoAndStop("Barter_Armor");
 					var strArmor: String = Math.floor(a_playerInfoObj.armor).toString();
 					if (a_itemUpdateObj.armorChange != undefined) {
@@ -229,7 +230,7 @@ class BottomBar extends MovieClip
 					infoCard.ArmorRatingLabel._x = infoCard.ArmorRatingValue._x  + infoCard.ArmorRatingValue.getLineMetrics(0).x- infoCard.ArmorRatingLabel._width - 5;
 					break;
 					
-				case InventoryDefines.ICT_WEAPON:
+				case Inventory.ICT_WEAPON:
 					infoCard.gotoAndStop("Barter_Weapon");
 					var strDamage: String = Math.floor(a_playerInfoObj.damage).toString();
 					if (a_itemUpdateObj.damageChange != undefined) {

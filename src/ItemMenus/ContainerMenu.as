@@ -8,6 +8,8 @@ import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
+import skyui.defines.Input;
+
 
 class ContainerMenu extends ItemMenu
 {
@@ -234,28 +236,28 @@ class ContainerMenu extends ItemMenu
 		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
 			if (isViewingContainer()) {
 				if (_platform != 0) {
-					navPanel.addButton({text: "$Take", controls: InputDefines.Activate});
+					navPanel.addButton({text: "$Take", controls: Input.Activate});
 					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
 						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						navPanel.addButton({text: "$Take", controls: InputDefines.Activate});
+						navPanel.addButton({text: "$Take", controls: Input.Activate});
 				}
 				if (!bNPCMode)
-					navPanel.addButton({text: "$Take All", controls: InputDefines.XButton});
+					navPanel.addButton({text: "$Take All", controls: Input.XButton});
 			} else {
 				if (_platform != 0) {
-					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: InputDefines.Activate});
+					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: Input.Activate});
 					navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type, true));
 				} else {
 					if (_bEquipMode)
 						navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
 					else
-						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: InputDefines.Activate});
+						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: Input.Activate});
 				}
 
-				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: InputDefines.YButton});
+				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: Input.YButton});
 			}
 			if (!_bEquipMode)
 				navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
@@ -263,13 +265,13 @@ class ContainerMenu extends ItemMenu
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
-				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
+				navPanel.addButton({text: "$Column", controls: Input.SortColumn});
+				navPanel.addButton({text: "$Order", controls: Input.SortOrder});
 			}
 			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 			
 			if (isViewingContainer() && !bNPCMode)
-				navPanel.addButton({text: "$Take All", controls: InputDefines.XButton});			
+				navPanel.addButton({text: "$Take All", controls: Input.XButton});			
 
 		}
 		

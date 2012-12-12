@@ -3,8 +3,11 @@ import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
+import skyui.defines.Input;
 import skyui.util.ConfigManager;
 import skyui.components.ButtonPanel;
+
+import skyui.defines.Inventory;
 
 
 class ItemMenu extends MovieClip
@@ -144,24 +147,24 @@ class ItemMenu extends MovieClip
 	{
 		_platform = a_platform;
 		
-		_searchKey = skse.GetMappedKey("Jump", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
 		if (!_searchKey)
 			_searchKey = -1;
 			
-		_switchTabKey = skse.GetMappedKey("Sprint", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
 		if (!_switchTabKey)
 			_switchTabKey = -1;
 		
 		_searchControls = {keyCode: _searchKey};
 		
 		if (a_platform == 0) {
-			_acceptControls = InputDefines.Enter;
-			_cancelControls = InputDefines.Tab;
+			_acceptControls = Input.Enter;
+			_cancelControls = Input.Tab;
 			_switchControls = {keyCode: _switchTabKey};
 		} else {
-			_acceptControls = InputDefines.Accept;
-			_cancelControls = InputDefines.Cancel;
-			_switchControls = InputDefines.GamepadBack;
+			_acceptControls = Input.Accept;
+			_cancelControls = Input.Cancel;
+			_switchControls = Input.GamepadBack;
 		}
 		
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
@@ -509,24 +512,24 @@ class ItemMenu extends MovieClip
 	{
 		var btnData = {};
 		
-		var useControls = InputDefines.Activate;
-		var equipControls = InputDefines.Equip;
+		var useControls = Input.Activate;
+		var equipControls = Input.Equip;
 		
 		switch (a_itemType) {
-			case InventoryDefines.ICT_ARMOR :
+			case Inventory.ICT_ARMOR :
 				btnData.text = "$Equip";
 				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
-			case InventoryDefines.ICT_BOOK :
+			case Inventory.ICT_BOOK :
 				btnData.text = "$Read";
 				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
-			case InventoryDefines.ICT_POTION :
+			case Inventory.ICT_POTION :
 				btnData.text = "$Use";
 				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
-			case InventoryDefines.ICT_FOOD :
-			case InventoryDefines.ICT_INGREDIENT :
+			case Inventory.ICT_FOOD :
+			case Inventory.ICT_INGREDIENT :
 				btnData.text = "$Eat";
 				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;

@@ -1,4 +1,4 @@
-﻿class InventoryDefines
+﻿class skyui.defines.Inventory
 {
 	static var ICT_NONE: Number = 0;
 	static var ICT_ARMOR: Number = 1;

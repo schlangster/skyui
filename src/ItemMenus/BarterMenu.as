@@ -5,6 +5,8 @@ import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
+import skyui.defines.Input;
+
 
 class BarterMenu extends ItemMenu
 {
@@ -202,13 +204,13 @@ class BarterMenu extends ItemMenu
 		navPanel.clearButtons();
 		
 		if (a_bSelected) {
-			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: InputDefines.Activate});
+			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: Input.Activate});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
-				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
+				navPanel.addButton({text: "$Column", controls: Input.SortColumn});
+				navPanel.addButton({text: "$Order", controls: Input.SortOrder});
 			}
 			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 		}

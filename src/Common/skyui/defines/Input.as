@@ -1,4 +1,4 @@
-﻿class InputDefines
+﻿class skyui.defines.Input
 {
 	static var DEVICE_KEYBOARD: Number = 0;
 	static var DEVICE_MOUSE: Number = 1;

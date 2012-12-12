@@ -8,6 +8,10 @@ import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
+import skyui.defines.Inventory;
+import skyui.defines.Input;
+
+
 class InventoryMenu extends ItemMenu
 {
 	#include "../version.as"
@@ -193,7 +197,7 @@ class InventoryMenu extends ItemMenu
 	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
-		bottomBar.updatePerItemInfo({type:InventoryDefines.ICT_NONE});
+		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
 		updateBottomBar(false);
 	}
 
@@ -272,22 +276,22 @@ class InventoryMenu extends ItemMenu
 		
 		if (a_bSelected) {
 			navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
-			navPanel.addButton({text: "$Drop", controls: InputDefines.XButton});
+			navPanel.addButton({text: "$Drop", controls: Input.XButton});
 			
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-				navPanel.addButton({text: "$Unfavorite", controls: InputDefines.YButton});
+				navPanel.addButton({text: "$Unfavorite", controls: Input.YButton});
 			else
-				navPanel.addButton({text: "$Favorite", controls: InputDefines.YButton});
+				navPanel.addButton({text: "$Favorite", controls: Input.YButton});
 	
 			if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
-				navPanel.addButton({text: "$Charge", controls: InputDefines.ChargeItem});
+				navPanel.addButton({text: "$Charge", controls: Input.ChargeItem});
 				
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: InputDefines.SortColumn});
-				navPanel.addButton({text: "$Order", controls: InputDefines.SortOrder});
+				navPanel.addButton({text: "$Column", controls: Input.SortColumn});
+				navPanel.addButton({text: "$Order", controls: Input.SortOrder});
 			}
 			navPanel.addButton({text: "$Magic", controls: _switchControls});
 		}

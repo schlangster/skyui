@@ -1,4 +1,6 @@
-﻿class MagicDataSetter extends ItemcardDataExtender
+﻿import skyui.defines.Inventory;
+
+class MagicDataSetter extends ItemcardDataExtender
 {
   /* PRIVATE VARIABLES */
 
@@ -32,21 +34,21 @@
 
 		switch (a_entryObject.type) {
 			// Shout
-			case InventoryDefines.ICT_SHOUT:
+			case Inventory.ICT_SHOUT:
 				processShout(a_entryObject, a_itemInfo);
 				break;
 			
 			// Active Effect
-			case InventoryDefines.ICT_ACTIVE_EFFECT:
+			case Inventory.ICT_ACTIVE_EFFECT:
 				processActiveEffect(a_entryObject, a_itemInfo);
 				break;
 
-			case InventoryDefines.ICT_SPELL:
+			case Inventory.ICT_SPELL:
 				processSpell(a_entryObject, a_itemInfo);
 				break;
 
 			//Power
-			case InventoryDefines.ICT_SPELL_DEFAULT:
+			case Inventory.ICT_SPELL_DEFAULT:
 			default:
 				processPower(a_entryObject, a_itemInfo);
 				break;

@@ -16,8 +16,8 @@ class skyui.components.list.ListLayoutManager
 		ConfigManager.setConstant("NAME", ListLayout.COL_TYPE_NAME);
 		ConfigManager.setConstant("TEXT", ListLayout.COL_TYPE_TEXT);
 		
-		ConfigManager.addConstantTable("skyui.util.Defines", skyui.util.Defines);
-		ConfigManager.addConstantTable("InventoryDefines", InventoryDefines);
+//		ConfigManager.addConstantTable("skyui.util.Defines", skyui.util.Defines);
+		ConfigManager.addConstantTable("skyui.defines.Inventory", skyui.defines.Inventory);
 		
 		return true;
 	}

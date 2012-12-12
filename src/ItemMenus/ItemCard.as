@@ -6,6 +6,9 @@ import gfx.io.GameDelegate;
 import Components.DeltaMeter;
 import Shared.GlobalFunc;
 
+import skyui.defines.Inventory;
+
+
 class ItemCard extends MovieClip
 {
 	#include "../version.as"
@@ -163,7 +166,7 @@ class ItemCard extends MovieClip
 
 	function get weaponChargeMeter(): DeltaMeter
 	{
-		return ItemCardMeters[InventoryDefines.ICT_WEAPON];
+		return ItemCardMeters[Inventory.ICT_WEAPON];
 	}
 
 	function get itemInfo(): Object
@@ -179,7 +182,7 @@ class ItemCard extends MovieClip
 		
 		
 		switch (_iItemType) {
-			case InventoryDefines.ICT_ARMOR:
+			case Inventory.ICT_ARMOR:
 				if (aUpdateObj.effects.length == 0)
 					gotoAndStop("Apparel_reg");
 				else
@@ -191,16 +194,16 @@ class ItemCard extends MovieClip
 				SkillTextInstance.text = aUpdateObj.skillText;
 				break;
 				
-			case InventoryDefines.ICT_WEAPON:
+			case Inventory.ICT_WEAPON:
 				if (aUpdateObj.effects.length == 0) {
 					gotoAndStop("Weapons_reg");
 				} else {
 					gotoAndStop("Weapons_Enchanted");
-					if (ItemCardMeters[InventoryDefines.ICT_WEAPON] == undefined)
-						ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(WeaponChargeMeter.MeterInstance);
+					if (ItemCardMeters[Inventory.ICT_WEAPON] == undefined)
+						ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(WeaponChargeMeter.MeterInstance);
 					if (aUpdateObj.usedCharge != undefined && aUpdateObj.charge != undefined) {
-						ItemCardMeters[InventoryDefines.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
-						ItemCardMeters[InventoryDefines.ICT_WEAPON].SetDeltaPercent(aUpdateObj.charge);
+						ItemCardMeters[Inventory.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
+						ItemCardMeters[Inventory.ICT_WEAPON].SetDeltaPercent(aUpdateObj.charge);
 						WeaponChargeMeter._visible = true;
 					} else {
 						WeaponChargeMeter._visible = false;
@@ -213,7 +216,7 @@ class ItemCard extends MovieClip
 				WeaponEnchantedLabel.htmlText = aUpdateObj.effects;
 				break;
 				
-			case InventoryDefines.ICT_BOOK: 
+			case Inventory.ICT_BOOK: 
 				if (aUpdateObj.description != undefined && aUpdateObj.description != "") {
 					gotoAndStop("Books_Description");
 					BookDescriptionLabel.SetText(aUpdateObj.description);
@@ -222,21 +225,21 @@ class ItemCard extends MovieClip
 				}
 				break;
 				
-			case InventoryDefines.ICT_POTION: 
+			case Inventory.ICT_POTION: 
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
 				PotionsLabel.htmlText = aUpdateObj.effects;
 				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
 				break;
 				
-			case InventoryDefines.ICT_FOOD:
+			case Inventory.ICT_FOOD:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
 				PotionsLabel.htmlText = aUpdateObj.effects;
 				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
 				break;
 				
-			case InventoryDefines.ICT_SPELL_DEFAULT:
+			case Inventory.ICT_SPELL_DEFAULT:
 				gotoAndStop("Power_reg");
 				MagicEffectsLabel.SetText(aUpdateObj.effects, true);
 				MagicEffectsLabel.textAutoSize = "shrink";
@@ -253,7 +256,7 @@ class ItemCard extends MovieClip
 				}
 				break;
 				
-			case InventoryDefines.ICT_SPELL:
+			case Inventory.ICT_SPELL:
 				var bCastTime: Boolean = aUpdateObj.castTime == 0;
 				if (bCastTime)
 					gotoAndStop("Magic_time_label");
@@ -270,7 +273,7 @@ class ItemCard extends MovieClip
 					MagicCostValue.text = aUpdateObj.spellCost.toString();
 				break;
 				
-			case InventoryDefines.ICT_INGREDIENT:
+			case Inventory.ICT_INGREDIENT:
 				gotoAndStop("Ingredients_reg");
 				for (var i: Number = 0; i < 4; i++) {
 					this["EffectLabel" + i].textAutoSize = "shrink";
@@ -286,11 +289,11 @@ class ItemCard extends MovieClip
 				}
 				break;
 				
-			case InventoryDefines.ICT_MISC:
+			case Inventory.ICT_MISC:
 				gotoAndStop("Misc_reg");
 				break;
 				
-			case InventoryDefines.ICT_SHOUT:
+			case Inventory.ICT_SHOUT:
 				gotoAndStop("Shouts_reg");
 				var iLastWord: Number = 0;
 				for (var i: Number = 0; i < 3; i++) {
@@ -319,7 +322,7 @@ class ItemCard extends MovieClip
 				ShoutCostValue.text = aUpdateObj.spellCost.toString();
 				break;
 				
-			case InventoryDefines.ICT_ACTIVE_EFFECT:
+			case Inventory.ICT_ACTIVE_EFFECT:
 				gotoAndStop("ActiveEffects");
 				MagicEffectsLabel.html = true;
 				MagicEffectsLabel.SetText(aUpdateObj.effects, true);
@@ -355,26 +358,26 @@ class ItemCard extends MovieClip
 				}
 				break;
 				
-			case InventoryDefines.ICT_SOUL_GEMS:
+			case Inventory.ICT_SOUL_GEMS:
 				gotoAndStop("SoulGem");
 				SoulLevel.text = aUpdateObj.soulLVL;
 				break;
 				
-			case InventoryDefines.ICT_LIST:
+			case Inventory.ICT_LIST:
 				gotoAndStop("Item_list");
 				if (aUpdateObj.listItems != undefined) {
 					ItemList.entryList = aUpdateObj.listItems;
 					ItemList.InvalidateData();
-					ItemCardMeters[InventoryDefines.ICT_LIST] = new DeltaMeter(ListChargeMeter.MeterInstance);
-					ItemCardMeters[InventoryDefines.ICT_LIST].SetPercent(aUpdateObj.currentCharge);
-					ItemCardMeters[InventoryDefines.ICT_LIST].SetDeltaPercent(aUpdateObj.currentCharge + ItemList.selectedEntry.chargeAdded);
+					ItemCardMeters[Inventory.ICT_LIST] = new DeltaMeter(ListChargeMeter.MeterInstance);
+					ItemCardMeters[Inventory.ICT_LIST].SetPercent(aUpdateObj.currentCharge);
+					ItemCardMeters[Inventory.ICT_LIST].SetDeltaPercent(aUpdateObj.currentCharge + ItemList.selectedEntry.chargeAdded);
 					OpenListMenu();
 				}
 				break;
 				
-			case InventoryDefines.ICT_CRAFT_ENCHANTING:
-			case InventoryDefines.ICT_HOUSE_PART:
-				if (aUpdateObj.type == InventoryDefines.ICT_HOUSE_PART) {
+			case Inventory.ICT_CRAFT_ENCHANTING:
+			case Inventory.ICT_HOUSE_PART:
+				if (aUpdateObj.type == Inventory.ICT_HOUSE_PART) {
 					gotoAndStop("Magic_short");
 					if (aUpdateObj.effects == undefined)
 						MagicEffectsLabel.SetText("", true);
@@ -382,7 +385,7 @@ class ItemCard extends MovieClip
 						MagicEffectsLabel.SetText(aUpdateObj.effects, true);
 				} else if (aUpdateObj.sliderShown == true) {
 					gotoAndStop("Craft_Enchanting");
-					ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Default.MeterInstance);
+					ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Default.MeterInstance);
 					if (aUpdateObj.totalCharges != undefined && aUpdateObj.totalCharges != 0)
 						TotalChargesValue.text = aUpdateObj.totalCharges;
 				} else if (aUpdateObj.damage == undefined) {
@@ -390,11 +393,11 @@ class ItemCard extends MovieClip
 						if (aUpdateObj.soulLVL == undefined) {
 							if (QuantitySlider_mc._alpha == 0) {
 								gotoAndStop("Craft_Enchanting_Enchantment");
-								ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Enchantment.MeterInstance);
+								ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Enchantment.MeterInstance);
 							}
 						} else {
 							gotoAndStop("Craft_Enchanting_SoulGem");
-							ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_SoulGem.MeterInstance);
+							ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_SoulGem.MeterInstance);
 							SoulLevel.text = aUpdateObj.soulLVL;
 						}
 					} else {
@@ -404,14 +407,14 @@ class ItemCard extends MovieClip
 					}
 				} else {
 					gotoAndStop("Craft_Enchanting_Weapon");
-					ItemCardMeters[InventoryDefines.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Weapon.MeterInstance);
+					ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Weapon.MeterInstance);
 					WeaponDamageValue.SetText(aUpdateObj.damage);
 				}
 				
 				if (aUpdateObj.usedCharge == 0 && aUpdateObj.totalCharges == 0)
-					ItemCardMeters[InventoryDefines.ICT_WEAPON].DeltaMeterMovieClip._parent._parent._alpha = 0;
+					ItemCardMeters[Inventory.ICT_WEAPON].DeltaMeterMovieClip._parent._parent._alpha = 0;
 				else if (aUpdateObj.usedCharge != undefined)
-					ItemCardMeters[InventoryDefines.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
+					ItemCardMeters[Inventory.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
 				
 				if (aUpdateObj.effects != undefined && aUpdateObj.effects.length > 0) {
 					if (EnchantmentLabel != undefined)
@@ -429,8 +432,8 @@ class ItemCard extends MovieClip
 				}
 				break;
 			
-			case InventoryDefines.ICT_KEY:
-			case InventoryDefines.ICT_NONE:
+			case Inventory.ICT_KEY:
+			case Inventory.ICT_NONE:
 			default:
 				gotoAndStop("Empty");
 		}
@@ -570,7 +573,7 @@ class ItemCard extends MovieClip
 		FocusHandler.instance.setFocus(PrevFocus, 0);
 		ListChargeMeter._alpha = 0;
 		CardList_mc._alpha = 0;
-		ItemCardMeters[InventoryDefines.ICT_LIST] = undefined;
+		ItemCardMeters[Inventory.ICT_LIST] = undefined;
 		InputHandler = undefined;
 		ItemList._visible = true;
 		dispatchEvent({type: "subMenuAction", opening: false, menu: "list"});
@@ -725,7 +728,7 @@ class ItemCard extends MovieClip
 
 	function onListSelectionChange(event: Object): Void
 	{
-		ItemCardMeters[InventoryDefines.ICT_LIST].SetDeltaPercent(ItemList.selectedEntry.chargeAdded + LastUpdateObj.currentCharge);
+		ItemCardMeters[Inventory.ICT_LIST].SetDeltaPercent(ItemList.selectedEntry.chargeAdded + LastUpdateObj.currentCharge);
 	}
 
 }

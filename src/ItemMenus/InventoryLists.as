@@ -21,6 +21,8 @@ import skyui.util.Translator;
 import skyui.util.DialogManager;
 import skyui.util.Debug;
 
+import skyui.defines.Input;
+
 
 class InventoryLists extends MovieClip
 {
@@ -224,11 +226,11 @@ class InventoryLists extends MovieClip
 		categoryList.platform = a_platform;
 		itemList.platform = a_platform;
 		
-		_searchKey = skse.GetMappedKey("Jump", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
 		if (!_searchKey)
 			_searchKey = -1;
 			
-		_switchTabKey = skse.GetMappedKey("Sprint", InputDefines.DEVICE_KEYBOARD, InputDefines.CONTEXT_GAMEPLAY);
+		_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
 		if (!_switchTabKey)
 			_switchTabKey = -1;
 	}
