@@ -3,6 +3,7 @@ import skyui.components.list.ListState;
 import skyui.components.list.BasicListEntry;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
+import skyui.util.Translator;
 
 class OptionsListEntry extends BasicListEntry
 {
@@ -100,7 +101,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.strValue.toUpperCase());
+				valueTextField.SetText(Translator.translate(a_entryObject.strValue).toUpperCase());
 				
 				break;
 				
@@ -126,7 +127,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(GlobalFunctions.formatString(a_entryObject.strValue, a_entryObject.numValue).toUpperCase());
+				valueTextField.SetText(GlobalFunctions.formatString(Translator.translate(a_entryObject.strValue), a_entryObject.numValue).toUpperCase());
 			
 				sliderIcon._x = valueTextField.getLineMetrics(0).x - sliderIcon._width;
 				
@@ -141,7 +142,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(a_entryObject.strValue.toUpperCase());
+				valueTextField.SetText(Translator.translate(a_entryObject.strValue).toUpperCase());
 				
 				menuIcon._x = valueTextField.getLineMetrics(0).x - menuIcon._width;
 				

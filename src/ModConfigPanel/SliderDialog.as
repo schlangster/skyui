@@ -1,5 +1,6 @@
 ﻿import skyui.util.DialogManager;
 import skyui.util.GlobalFunctions;
+import skyui.util.Translator;
 import gfx.managers.FocusHandler;
 import gfx.ui.NavigationCode;
 import Shared.GlobalFunc;
@@ -74,7 +75,10 @@ class SliderDialog extends OptionDialog
 		sliderPanel.slider.snapInterval = sliderInterval;
 		sliderPanel.slider.snapping = true;
 		sliderPanel.slider.value = sliderValue;
-		updateValueText();	
+
+		sliderFormatString = Translator.translate(sliderFormatString);
+		updateValueText();
+
 		sliderPanel.slider.addEventListener("change", this, "onValueChange");
 
 		FocusHandler.instance.setFocus(sliderPanel.slider, 0);
@@ -134,7 +138,7 @@ class SliderDialog extends OptionDialog
 	private function updateValueText(): Void
 	{
 		var t = sliderFormatString	? GlobalFunctions.formatString(sliderFormatString, sliderValue)
-									: t = Math.round(sliderValue * 100) / 100;
+									: Math.round(sliderValue * 100) / 100;
 		sliderPanel.valueTextField.SetText(t);
 	}
 }
