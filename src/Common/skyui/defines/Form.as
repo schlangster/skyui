@@ -1,28 +1,28 @@
 class skyui.defines.Form
 {
-	public static var NONE: Number			= 0;
+	public static var FORMTYPE_NONE: Number				= 0;
 
-	public static var EFFECTSETTING: Number	= 18;
+	public static var FORMTYPE_EFFECTSETTING: Number	= 18;
 
-	public static var SPELL: Number			= 22;
-	public static var SCROLLITEM: Number	= 23;
+	public static var FORMTYPE_SPELL: Number			= 22;
+	public static var FORMTYPE_SCROLLITEM: Number		= 23;
 
-	public static var ARMOR: Number			= 26;
-	public static var BOOK: Number			= 27;
+	public static var FORMTYPE_ARMOR: Number			= 26;
+	public static var FORMTYPE_BOOK: Number				= 27;
 
-	public static var INGREDIENT: Number	= 30;
-	public static var LIGHT: Number			= 31; //Torch
-	public static var MISC: Number			= 32;
+	public static var FORMTYPE_INGREDIENT: Number		= 30;
+	public static var FORMTYPE_LIGHT: Number			= 31; //Torch
+	public static var FORMTYPE_MISC: Number				= 32;
 
-	public static var WEAPON: Number		= 41;
-	public static var AMMO: Number			= 42;
+	public static var FORMTYPE_WEAPON: Number			= 41;
+	public static var FORMTYPE_AMMO: Number				= 42;
 
-	public static var KEY: Number			= 45;
-	public static var POTION: Number		= 46;
+	public static var FORMTYPE_KEY: Number				= 45;
+	public static var FORMTYPE_POTION: Number			= 46;
 
-	public static var SOULGEM: Number		= 52;
+	public static var FORMTYPE_SOULGEM: Number			= 52;
 
-	public static var SHOUT: Number 		= 119;
+	public static var FORMTYPE_SHOUT: Number 			= 119;
 
 	/*
 	NONE = 0,			// NONE

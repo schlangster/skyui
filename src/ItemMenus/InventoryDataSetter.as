@@ -54,11 +54,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.weightClassDisplay = "-";
 
 		switch (a_entryObject.formType) {
-			case Form.SCROLLITEM:
+			case Form.FORMTYPE_SCROLLITEM:
 				a_entryObject.subTypeDisplay = "$Scroll";
 				break;
 
-			case Form.ARMOR:
+			case Form.FORMTYPE_ARMOR:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
@@ -68,45 +68,45 @@ class InventoryDataSetter extends ItemcardDataExtender
 				processArmorOther(a_entryObject);
 				break;
 
-			case Form.BOOK:
+			case Form.FORMTYPE_BOOK:
 				processBookType(a_entryObject);
 				break;
 
-			case Form.INGREDIENT:
+			case Form.FORMTYPE_INGREDIENT:
 				a_entryObject.subTypeDisplay = "$Ingredient";
 				break;
 
-			case Form.LIGHT:
+			case Form.FORMTYPE_LIGHT:
 				a_entryObject.subTypeDisplay = "$Torch";
 				break;
 
-			case Form.MISC:
+			case Form.FORMTYPE_MISC:
 				processMiscType(a_entryObject);
 				break;
 
-			case Form.WEAPON:
+			case Form.FORMTYPE_WEAPON:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				break;
 
-			case Form.AMMO:
+			case Form.FORMTYPE_AMMO:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				///processAmmoFormIDs(a_entryObject); //Vanilla arrows don't have material keywords
 				break;
 
-			case Form.KEY:
+			case Form.FORMTYPE_KEY:
 				processKeyType(a_entryObject);
 				break;
 
-			case Form.POTION:
+			case Form.FORMTYPE_POTION:
 				processPotionType(a_entryObject);
 				break;
 
-			case Form.SOULGEM:
+			case Form.FORMTYPE_SOULGEM:
 				processSoulGemType(a_entryObject);
 				processSoulGemStatus(a_entryObject);
 				break;
@@ -117,18 +117,16 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 	private function processArmorClass(a_entryObject: Object): Void
 	{
-		if (a_entryObject.weightClass == Armor.NONE)
+		if (a_entryObject.weightClass == Armor.WEIGHTCLASS_NONE)
 			a_entryObject.weightClass = Armor.OTHER
 		a_entryObject.weightClassDisplay = "$Other";
 
 		switch (a_entryObject.weightClass) {
-			case Armor.LIGHT:
-				a_entryObject.weightClass = Armor.LIGHT;
+			case Armor.WEIGHTCLASS_LIGHT:
 				a_entryObject.weightClassDisplay = "$Light";
 				break;
 
-			case Armor.HEAVY:
-				a_entryObject.weightClass = Armor.HEAVY;
+			case Armor.WEIGHTCLASS_HEAVY:
 				a_entryObject.weightClassDisplay = "$Heavy";
 				break;
 
@@ -137,10 +135,10 @@ class InventoryDataSetter extends ItemcardDataExtender
 					break;
 
 				if (a_entryObject.keywords["VendorItemClothing"] != undefined) {
-					a_entryObject.weightClass = Armor.CLOTHING;
+					a_entryObject.weightClass = Armor.WEIGHTCLASS_CLOTHING;
 					a_entryObject.weightClassDisplay = "$Clothing";
 				} else if (a_entryObject.keywords["VendorItemJewelry"] != undefined) {
-					a_entryObject.weightClass = Armor.JEWELRY;
+					a_entryObject.weightClass = Armor.WEIGHTCLASS_JEWELRY;
 					a_entryObject.weightClassDisplay = "$Jewelry";
 				}	 
 		}
@@ -330,68 +328,68 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.subTypeDisplay = "$Weapon";
 
 		switch (a_entryObject.weaponType) {
-			case Weapon.TYPE_HANDTOHANDMELEE:
-			case Weapon.TYPE_H2H:
-				a_entryObject.subType = Weapon.MELEE;
+			case Weapon.EQUIPTYPE_HANDTOHANDMELEE:
+			case Weapon.EQUIPTYPE_H2H:
+				a_entryObject.subType = Weapon.TYPE_MELEE;
 				a_entryObject.subTypeDisplay = "$Melee";
 				break;
 
-			case Weapon.TYPE_ONEHANDSWORD:
-			case Weapon.TYPE_1HS:
-				a_entryObject.subType = Weapon.SWORD;
+			case Weapon.EQUIPTYPE_ONEHANDSWORD:
+			case Weapon.EQUIPTYPE_1HS:
+				a_entryObject.subType = Weapon.TYPE_SWORD;
 				a_entryObject.subTypeDisplay = "$Sword";
 				break;
 
-			case Weapon.TYPE_ONEHANDDAGGER:
-			case Weapon.TYPE_1HD:
-				a_entryObject.subType = Weapon.DAGGER;
+			case Weapon.EQUIPTYPE_ONEHANDDAGGER:
+			case Weapon.EQUIPTYPE_1HD:
+				a_entryObject.subType = Weapon.TYPE_DAGGER;
 				a_entryObject.subTypeDisplay = "$Dagger";
 				break;
 
-			case Weapon.TYPE_ONEHANDAXE:
-			case Weapon.TYPE_1HA:
-				a_entryObject.subType = Weapon.WARAXE;
+			case Weapon.EQUIPTYPE_ONEHANDAXE:
+			case Weapon.EQUIPTYPE_1HA:
+				a_entryObject.subType = Weapon.TYPE_WARAXE;
 				a_entryObject.subTypeDisplay = "$War Axe";
 				break;
 
-			case Weapon.TYPE_ONEHANDMACE:
-			case Weapon.TYPE_1HM:
-				a_entryObject.subType = Weapon.MACE;
+			case Weapon.EQUIPTYPE_ONEHANDMACE:
+			case Weapon.EQUIPTYPE_1HM:
+				a_entryObject.subType = Weapon.TYPE_MACE;
 				a_entryObject.subTypeDisplay = "$Mace";
 				break;
 
-			case Weapon.TYPE_TWOHANDSWORD:
-			case Weapon.TYPE_2HS:
-				a_entryObject.subType = Weapon.GREATSWORD;
+			case Weapon.EQUIPTYPE_TWOHANDSWORD:
+			case Weapon.EQUIPTYPE_2HS:
+				a_entryObject.subType = Weapon.TYPE_GREATSWORD;
 				a_entryObject.subTypeDisplay = "$Greatsword";
 				break;
 
-			case Weapon.TYPE_TWOHANDAXE:
-			case Weapon.TYPE_2HA:
-				a_entryObject.subType = Weapon.BATTLEAXE;
+			case Weapon.EQUIPTYPE_TWOHANDAXE:
+			case Weapon.EQUIPTYPE_2HA:
+				a_entryObject.subType = Weapon.TYPE_BATTLEAXE;
 				a_entryObject.subTypeDisplay = "$Battleaxe";
 
 				if (a_entryObject.keywords != undefined && a_entryObject.keywords["WeapTypeWarhammer"] != undefined) {
-					a_entryObject.subType = Weapon.WARHAMMER;
+					a_entryObject.subType = Weapon.TYPE_WARHAMMER;
 					a_entryObject.subTypeDisplay = "$Warhammer";
 				}
 				break;
 
-			case Weapon.TYPE_BOW:
-			case Weapon.TYPE_BOW2:
-				a_entryObject.subType = Weapon.BOW;
+			case Weapon.EQUIPTYPE_BOW:
+			case Weapon.EQUIPTYPE_BOW2:
+				a_entryObject.subType = Weapon.TYPE_BOW;
 				a_entryObject.subTypeDisplay = "$Bow";
 				break;
 
-			case Weapon.TYPE_STAFF:
-			case Weapon.TYPE_STAFF2:
-				a_entryObject.subType = Weapon.STAFF;
+			case Weapon.EQUIPTYPE_STAFF:
+			case Weapon.EQUIPTYPE_STAFF2:
+				a_entryObject.subType = Weapon.TYPE_STAFF;
 				a_entryObject.subTypeDisplay = "$Staff";
 				break;
 
-			case Weapon.TYPE_CROSSBOW:
-			case Weapon.TYPE_CBOW:
-				a_entryObject.subType = Weapon.CROSSBOW;
+			case Weapon.EQUIPTYPE_CROSSBOW:
+			case Weapon.EQUIPTYPE_CBOW:
+				a_entryObject.subType = Weapon.TYPE_CROSSBOW;
 				a_entryObject.subTypeDisplay = "$Crossbow";
 				break;
 		}
@@ -404,9 +402,9 @@ class InventoryDataSetter extends ItemcardDataExtender
 			return;
 
 		// Sets subType as the most important bitmask index.
-		for (var i = 0; i < Armor.FLAG_PRECEDENCE.length; i++) {
-			if (a_entryObject.partMask & Armor.FLAG_PRECEDENCE[i]) {
-				a_entryObject.mainPartMask = Armor.FLAG_PRECEDENCE[i];
+		for (var i = 0; i < Armor.PARTMASK_PRECEDENCE.length; i++) {
+			if (a_entryObject.partMask & Armor.PARTMASK_PRECEDENCE[i]) {
+				a_entryObject.mainPartMask = Armor.PARTMASK_PRECEDENCE[i];
 				break;
 			}
 		}
@@ -415,71 +413,71 @@ class InventoryDataSetter extends ItemcardDataExtender
 			return;
 
 		switch (a_entryObject.mainPartMask) {
-			case Armor.FLAG_HEAD:
-				a_entryObject.subType = Armor.HEAD;
+			case Armor.PARTMASK_HEAD:
+				a_entryObject.subType = Armor.EQUIPLOCATION_HEAD;
 				a_entryObject.subTypeDisplay = "$Head";
 				break;
-			case Armor.FLAG_HAIR:
-				a_entryObject.subType = Armor.HAIR;
+			case Armor.PARTMASK_HAIR:
+				a_entryObject.subType = Armor.EQUIPLOCATION_HAIR;
 				a_entryObject.subTypeDisplay = "$Head";
 				break;
-			case Armor.FLAG_LONGHAIR:
-				a_entryObject.subType = Armor.LONGHAIR;
+			case Armor.PARTMASK_LONGHAIR:
+				a_entryObject.subType = Armor.EQUIPLOCATION_LONGHAIR;
 				a_entryObject.subTypeDisplay = "$Head";
 				break;
 
-			case Armor.FLAG_BODY:
-				a_entryObject.subType = Armor.BODY;
+			case Armor.PARTMASK_BODY:
+				a_entryObject.subType = Armor.EQUIPLOCATION_BODY;
 				a_entryObject.subTypeDisplay = "$Body";
 				break;
 
-			case Armor.FLAG_HANDS:
-				a_entryObject.subType = Armor.HANDS;
+			case Armor.PARTMASK_HANDS:
+				a_entryObject.subType = Armor.EQUIPLOCATION_HANDS;
 				a_entryObject.subTypeDisplay = "$Hands";
 				break;
 
-			case Armor.FLAG_FOREARMS:
-				a_entryObject.subType = Armor.FOREARMS;
+			case Armor.PARTMASK_FOREARMS:
+				a_entryObject.subType = Armor.EQUIPLOCATION_FOREARMS;
 				a_entryObject.subTypeDisplay = "$Forearms";
 				break;
 
-			case Armor.FLAG_AMULET:
-				a_entryObject.subType = Armor.AMULET;
+			case Armor.PARTMASK_AMULET:
+				a_entryObject.subType = Armor.EQUIPLOCATION_AMULET;
 				a_entryObject.subTypeDisplay = "$Amulet";
 				break;
 
-			case Armor.FLAG_RING:
-				a_entryObject.subType = Armor.RING;
+			case Armor.PARTMASK_RING:
+				a_entryObject.subType = Armor.EQUIPLOCATION_RING;
 				a_entryObject.subTypeDisplay = "$Ring";
 				break;
 
-			case Armor.FLAG_FEET:
-				a_entryObject.subType = Armor.FEET;
+			case Armor.PARTMASK_FEET:
+				a_entryObject.subType = Armor.EQUIPLOCATION_FEET;
 				a_entryObject.subTypeDisplay = "$Feet";
 				break;
 
-			case Armor.FLAG_CALVES:
-				a_entryObject.subType = Armor.CALVES;
+			case Armor.PARTMASK_CALVES:
+				a_entryObject.subType = Armor.EQUIPLOCATION_CALVES;
 				a_entryObject.subTypeDisplay = "$Calves";
 				break;
 
-			case Armor.FLAG_SHIELD:
-				a_entryObject.subType = Armor.SHIELD;
+			case Armor.PARTMASK_SHIELD:
+				a_entryObject.subType = Armor.EQUIPLOCATION_SHIELD;
 				a_entryObject.subTypeDisplay = "$Shield";
 				break;
 
-			case Armor.FLAG_CIRCLET:
-				a_entryObject.subType = Armor.CIRCLET;
+			case Armor.PARTMASK_CIRCLET:
+				a_entryObject.subType = Armor.EQUIPLOCATION_CIRCLET;
 				a_entryObject.subTypeDisplay = "$Circlet";
 				break;
 
-			case Armor.FLAG_EARS:
-				a_entryObject.subType = Armor.EARS;
+			case Armor.PARTMASK_EARS:
+				a_entryObject.subType = Armor.EQUIPLOCATION_EARS;
 				a_entryObject.subTypeDisplay = "$Ears";
 				break;
 
-			case Armor.FLAG_TAIL:
-				a_entryObject.subType = Armor.TAIL;
+			case Armor.PARTMASK_TAIL:
+				a_entryObject.subType = Armor.EQUIPLOCATION_TAIL;
 				a_entryObject.subTypeDisplay = "$Tail";
 				break;
 
@@ -495,25 +493,25 @@ class InventoryDataSetter extends ItemcardDataExtender
 			return;
 
 		switch(a_entryObject.mainPartMask) {
-			case Armor.FLAG_HEAD:
-			case Armor.FLAG_HAIR:
-			case Armor.FLAG_LONGHAIR:
-			case Armor.FLAG_BODY:
-			case Armor.FLAG_HANDS:
-			case Armor.FLAG_FOREARMS:
-			case Armor.FLAG_FEET:
-			case Armor.FLAG_CALVES:
-			case Armor.FLAG_SHIELD:
-			case Armor.FLAG_TAIL:
-				a_entryObject.weightClass = Armor.CLOTHING;
+			case Armor.PARTMASK_HEAD:
+			case Armor.PARTMASK_HAIR:
+			case Armor.PARTMASK_LONGHAIR:
+			case Armor.PARTMASK_BODY:
+			case Armor.PARTMASK_HANDS:
+			case Armor.PARTMASK_FOREARMS:
+			case Armor.PARTMASK_FEET:
+			case Armor.PARTMASK_CALVES:
+			case Armor.PARTMASK_SHIELD:
+			case Armor.PARTMASK_TAIL:
+				a_entryObject.weightClass = Armor.WEIGHTCLASS_CLOTHING;
 				a_entryObject.weightClassDisplay = "$Clothing";
 				break;
 
-			case Armor.FLAG_AMULET:
-			case Armor.FLAG_RING:
-			case Armor.FLAG_CIRCLET:
-			case Armor.FLAG_EARS:
-				a_entryObject.weightClass = Armor.JEWELRY;
+			case Armor.PARTMASK_AMULET:
+			case Armor.PARTMASK_RING:
+			case Armor.PARTMASK_CIRCLET:
+			case Armor.PARTMASK_EARS:
+				a_entryObject.weightClass = Armor.WEIGHTCLASS_JEWELRY;
 				a_entryObject.weightClassDisplay = "$Jewelry";
 				break;
 		}
@@ -524,8 +522,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.subType = Item.OTHER;
 		a_entryObject.subTypeDisplay = "$Book";
 		
-		if (a_entryObject.bookType & Item.BOOK_NOTE) {
-			a_entryObject.subType = Item.NOTE;
+		if (a_entryObject.bookType & Item.BOOKFLAG_NOTE) {
+			a_entryObject.subType = Item.BOOK_NOTE;
 			a_entryObject.subTypeDisplay = "$Note";
 		}
 
@@ -533,21 +531,21 @@ class InventoryDataSetter extends ItemcardDataExtender
 			return;
 
 		if (a_entryObject.keywords["VendorItemRecipe"] != undefined) {
-			a_entryObject.subType = Item.RECIPE;
+			a_entryObject.subType = Item.BOOK_RECIPE;
 			a_entryObject.subTypeDisplay = "$Recipe";
 		} else if (a_entryObject.keywords["VendorItemSpellTome"] != undefined) {
-			a_entryObject.subType = Item.SPELLTOME;
+			a_entryObject.subType = Item.BOOK_SPELLTOME;
 			a_entryObject.subTypeDisplay = "$Spell Tome";
 		}
 	}
 
 	private function processAmmoType(a_entryObject: Object): Void
 	{
-		if ((a_entryObject.flags & Weapon.FLAG_NONBOLT) != 0) {
-			a_entryObject.subType = Weapon.ARROW;
+		if ((a_entryObject.flags & Weapon.AMMOFLAG_NONBOLT) != 0) {
+			a_entryObject.subType = Weapon.AMMO_ARROW;
 			a_entryObject.subTypeDisplay = "$Arrow";
 		} else {
-			a_entryObject.subType = Weapon.BOLT;
+			a_entryObject.subType = Weapon.AMMO_BOLT;
 			a_entryObject.subTypeDisplay = "$Bolt";
 		}
 	}
@@ -569,71 +567,71 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 	private function processPotionType(a_entryObject: Object): Void
 	{
-		a_entryObject.subType = Item.POTION;
+		a_entryObject.subType = Item.POTION_POTION;
 		a_entryObject.subTypeDisplay = "$Potion";
 
-		if ((a_entryObject.flags & Item.ALCH_FOOD) != 0) {
-			a_entryObject.subType = Item.FOOD;
+		if ((a_entryObject.flags & Item.ALCHFLAG_FOOD) != 0) {
+			a_entryObject.subType = Item.POTION_FOOD;
 			a_entryObject.subTypeDisplay = "$Food";
 
 			if (a_entryObject.type == Inventory.ICT_POTION) {
-				a_entryObject.subType = Item.DRINK;
+				a_entryObject.subType = Item.POTION_DRINK;
 				a_entryObject.subTypeDisplay = "$Drink";
 			}
-		} else if ((a_entryObject.flags & Item.ALCH_POISON) != 0) {
-			a_entryObject.subType = Item.POISON;
+		} else if ((a_entryObject.flags & Item.ALCHFLAG_POISON) != 0) {
+			a_entryObject.subType = Item.POTION_POISON;
 			a_entryObject.subTypeDisplay = "$Poison";
 		} else {
 			switch (a_entryObject.actorValue) {
-				case Actor.HEALTH:
-					a_entryObject.subType = Item.HEALTH;
+				case Actor.ACTORVALUE_HEALTH:
+					a_entryObject.subType = Item.POTION_HEALTH;
 					a_entryObject.subTypeDisplay = "$Health";
 					break;
-				case Actor.MAGICKA:
-					a_entryObject.subType = Item.MAGICKA;
+				case Actor.ACTORVALUE_MAGICKA:
+					a_entryObject.subType = Item.POTION_MAGICKA;
 					a_entryObject.subTypeDisplay = "$Magicka";
 					break;
-				case Actor.STAMINA:
-					a_entryObject.subType = Item.STAMINA;
+				case Actor.ACTORVALUE_STAMINA:
+					a_entryObject.subType = Item.POTION_STAMINA;
 					a_entryObject.subTypeDisplay = "$Stamina";
 					break;
 
-				case Actor.HEALRATE:
-					a_entryObject.subType = Item.HEALRATE;
+				case Actor.ACTORVALUE_HEALRATE:
+					a_entryObject.subType = Item.POTION_HEALRATE;
 					a_entryObject.subTypeDisplay = "$Health";
 					break;
-				case Actor.MAGICKARATE:
-					a_entryObject.subType = Item.MAGICKARATE;
+				case Actor.ACTORVALUE_MAGICKARATE:
+					a_entryObject.subType = Item.POTION_MAGICKARATE;
 					a_entryObject.subTypeDisplay = "$Magicka";
 					break;
-				case Actor.STAMINARATE:
-					a_entryObject.subType = Item.STAMINARATE;
+				case Actor.ACTORVALUE_STAMINARATE:
+					a_entryObject.subType = Item.POTION_STAMINARATE;
 					a_entryObject.subTypeDisplay = "$Stamina";
 					break;
 
-				case Actor.HEALRATEMULT:
-					a_entryObject.subType = Item.HEALRATEMULT;
+				case Actor.ACTORVALUE_HEALRATEMULT:
+					a_entryObject.subType = Item.POTION_HEALRATEMULT;
 					a_entryObject.subTypeDisplay = "$Health";
 					break;
-				case Actor.MAGICKARATEMULT:
-					a_entryObject.subType = Item.MAGICKARATEMULT;
+				case Actor.ACTORVALUE_MAGICKARATEMULT:
+					a_entryObject.subType = Item.POTION_MAGICKARATEMULT;
 					a_entryObject.subTypeDisplay = "$Magicka";
 					break;
-				case Actor.STAMINARATEMULT:
-					a_entryObject.subType = Item.STAMINARATEMULT;
+				case Actor.ACTORVALUE_STAMINARATEMULT:
+					a_entryObject.subType = Item.POTION_STAMINARATEMULT;
 					a_entryObject.subTypeDisplay = "$Stamina";
 					break;
 
-				case Actor.FIRERESIST:
-					a_entryObject.subType = Item.FIRERESIST;
+				case Actor.ACTORVALUE_FIRERESIST:
+					a_entryObject.subType = Item.POTION_FIRERESIST;
 					break;
 
-				case Actor.ELECTRICRESIST:
-					a_entryObject.subType = Item.SHOCKRESIST;
+				case Actor.ACTORVALUE_ELECTRICRESIST:
+					a_entryObject.subType = Item.POTION_SHOCKRESIST;
 					break;
 
-				case Actor.FROSTRESIST:
-					a_entryObject.subType = Item.FROSTRESIST;
+				case Actor.ACTORVALUE_FROSTRESIST:
+					a_entryObject.subType = Item.POTION_FROSTRESIST;
 					break;
 			}
 		}
@@ -652,11 +650,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 	private function processSoulGemStatus(a_entryObject: Object): Void
 	{
 		if (a_entryObject.gemSize == undefined || a_entryObject.soulSize == undefined || a_entryObject.soulSize == Item.SOULGEM_NONE)
-			a_entryObject.status = Item.SOULGEM_EMPTY;
+			a_entryObject.status = Item.SOULGEMSTATUS_EMPTY;
 		else if (a_entryObject.soulSize >= a_entryObject.gemSize)
-			a_entryObject.status = Item.SOULGEM_FULL;
+			a_entryObject.status = Item.SOULGEMSTATUS_FULL;
 		else
-			a_entryObject.status = Item.SOULGEM_PARTIAL;
+			a_entryObject.status = Item.SOULGEMSTATUS_PARTIAL;
 	}
 
 	private function processMiscType(a_entryObject: Object): Void
@@ -668,71 +666,71 @@ class InventoryDataSetter extends ItemcardDataExtender
 			return;
 
 		if (a_entryObject.keywords["BYOHAdoptionClothesKeyword"] != undefined) {
-			a_entryObject.subType = Item.CHILDRENSCLOTHES;
+			a_entryObject.subType = Item.MISC_CHILDRENSCLOTHES;
 			a_entryObject.subTypeDisplay = "$Childrens Clothes";
 
 		} else if (a_entryObject.keywords["BYOHAdoptionToyKeyword"] != undefined) {
-			a_entryObject.subType = Item.TOY;
+			a_entryObject.subType = Item.MISC_TOY;
 			a_entryObject.subTypeDisplay = "$Toy";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryWeaponRacks"] != undefined) {
-			a_entryObject.subType = Item.WEAPONRACK;
+			a_entryObject.subType = Item.MISC_WEAPONRACK;
 			a_entryObject.subTypeDisplay = "$Weapon Rack";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryShelf"] != undefined) {
-			a_entryObject.subType = Item.SHELF;
+			a_entryObject.subType = Item.MISC_SHELF;
 			a_entryObject.subTypeDisplay = "$Shelf";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryFurniture"] != undefined) {
-			a_entryObject.subType = Item.FURNITURE;
+			a_entryObject.subType = Item.MISC_FURNITURE;
 			a_entryObject.subTypeDisplay = "$Furniture";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryExterior"] != undefined) {
-			a_entryObject.subType = Item.EXTERIOR;
+			a_entryObject.subType = Item.MISC_EXTERIOR;
 			a_entryObject.subTypeDisplay = "$Exterior Furniture";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryContainers"] != undefined) {
-			a_entryObject.subType = Item.CONTAINER;
+			a_entryObject.subType = Item.MISC_CONTAINER;
 			a_entryObject.subTypeDisplay = "$Container";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryBuilding"] != undefined) {
-			a_entryObject.subType = Item.HOUSEPART;
+			a_entryObject.subType = Item.MISC_HOUSEPART;
 			a_entryObject.subTypeDisplay = "$House Part";
 
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategorySmithing"] != undefined) {
-			a_entryObject.subType = Item.FASTENER;
+			a_entryObject.subType = Item.MISC_FASTENER;
 			a_entryObject.subTypeDisplay = "$Fastener";
 
 		} else if (a_entryObject.keywords["VendorItemDaedricArtifact"] != undefined) {
-			a_entryObject.subType = Item.ARTIFACT;
+			a_entryObject.subType = Item.MISC_ARTIFACT;
 			a_entryObject.subTypeDisplay = "$Artifact";
 
 		} else if (a_entryObject.keywords["VendorItemGem"] != undefined) {
-			a_entryObject.subType = Item.GEM;
+			a_entryObject.subType = Item.MISC_GEM;
 			a_entryObject.subTypeDisplay = "$Gem";
 
 		} else if (a_entryObject.keywords["VendorItemAnimalHide"] != undefined) {
-			a_entryObject.subType = Item.HIDE;
+			a_entryObject.subType = Item.MISC_HIDE;
 			a_entryObject.subTypeDisplay = "$Hide";
 
 		} else if (a_entryObject.keywords["VendorItemTool"] != undefined) {
-			a_entryObject.subType = Item.TOOL;
+			a_entryObject.subType = Item.MISC_TOOL;
 			a_entryObject.subTypeDisplay = "$Tool";
 
 		} else if (a_entryObject.keywords["VendorItemAnimalPart"] != undefined) {
-			a_entryObject.subType = Item.REMAINS;
+			a_entryObject.subType = Item.MISC_REMAINS;
 			a_entryObject.subTypeDisplay = "$Remains";
 
 		} else if (a_entryObject.keywords["VendorItemOreIngot"] != undefined) {
-			a_entryObject.subType = Item.INGOT;
+			a_entryObject.subType = Item.MISC_INGOT;
 			a_entryObject.subTypeDisplay = "$Ingot";
 
 		} else if (a_entryObject.keywords["VendorItemClutter"] != undefined) {
-			a_entryObject.subType = Item.CLUTTER;
+			a_entryObject.subType = Item.MISC_CLUTTER;
 			a_entryObject.subTypeDisplay = "$Clutter";
 
 		} else if (a_entryObject.keywords["VendorItemFirewood"] != undefined) {
-			a_entryObject.subType = Item.FIREWOOD;
+			a_entryObject.subType = Item.MISC_FIREWOOD;
 			a_entryObject.subTypeDisplay = "$Firewood";
 		}
 	}

@@ -66,11 +66,11 @@ class ItemcardDataExtender implements IListProcessor
 			return;
 
 		switch(a_extendedObject.formType) {
-			case Form.SPELL:
-			case Form.SCROLLITEM:
-			case Form.INGREDIENT:
-			case Form.POTION:
-			case Form.EFFECTSETTING:
+			case Form.FORMTYPE_SPELL:
+			case Form.FORMTYPE_SCROLLITEM:
+			case Form.FORMTYPE_INGREDIENT:
+			case Form.FORMTYPE_POTION:
+			case Form.FORMTYPE_EFFECTSETTING:
 
 				// school is sent as subType
 				if (a_extendedObject.school == undefined && a_extendedObject.subType != undefined) {
@@ -93,7 +93,7 @@ class ItemcardDataExtender implements IListProcessor
 				*/
 				break;
 
-			case Form.WEAPON:
+			case Form.FORMTYPE_WEAPON:
 				// weaponType is sent as subType
 				if (a_extendedObject.weaponType == undefined && a_extendedObject.subType != undefined) {
 					a_extendedObject.weaponType = a_extendedObject.subType;

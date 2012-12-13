@@ -195,7 +195,7 @@ class MagicMenu extends ItemMenu
 	{
 		navPanel.clearButtons();
 		
-		if (a_bSelected && (inventoryLists.itemList.selectedEntry.filterFlag & skyui.util.Defines.FLAG_MAGIC_ACTIVE_EFFECT) == 0) {
+		if (a_bSelected && (inventoryLists.itemList.selectedEntry.filterFlag & Inventory.FILTERFLAG_MAGIC_ACTIVEEFFECTS) == 0) {
 			navPanel.addButton({text: "$Equip", controls: Input.Equip});
 			
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)

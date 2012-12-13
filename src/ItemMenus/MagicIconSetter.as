@@ -62,23 +62,23 @@ class MagicIconSetter implements IListProcessor
 		// fire rune, actorValue = Health, school = Destruction, resistance = Fire, effectFlags = hostile+detrimental
 		switch(a_entryObject.school)
 		{
-			case Magic.ALTERATION:
+			case Magic.SCHOOL_ALTERATION:
 				a_entryObject.iconLabel = "default_alteration";
 				break;
 
-			case Magic.CONJURATION:
+			case Magic.SCHOOL_CONJURATION:
 				a_entryObject.iconLabel = "default_conjuration";
 				break;
 
-			case Magic.DESTRUCTION:
+			case Magic.SCHOOL_DESTRUCTION:
 				a_entryObject.iconLabel = "default_destruction";
 				break;
 
-			case Magic.ILLUSION:
+			case Magic.SCHOOL_ILLUSION:
 				a_entryObject.iconLabel = "default_illusion";
 				break;
 
-			case Magic.RESTORATION:
+			case Magic.SCHOOL_RESTORATION:
 				a_entryObject.iconLabel = "default_restoration";
 				break;
 
@@ -87,41 +87,28 @@ class MagicIconSetter implements IListProcessor
 
 	private function processResist(a_entryObject: Object): Void
 	{
-		if (a_entryObject.resistance == undefined || a_entryObject.resistance == Actor.NONE)
+		if (a_entryObject.resistance == undefined || a_entryObject.resistance == Magic.RESIST_NONE)
 			return;
 
 		switch(a_entryObject.resistance) {
-			case Magic.FIRERESIST:
+			case Magic.RESIST_FIRE:
 				a_entryObject.iconColor = 0xC73636;
 				break;
 
-			case Magic.ELECTRICRESIST:
+			case Magic.RESIST_ELECTRIC:
 				a_entryObject.iconColor = 0xFFFF00;
 				break;
 
-			case Magic.FROSTRESIST:
+			case Magic.RESIST_FROST:
 				a_entryObject.iconColor = 0x1FFBFF;
 				break;
 
-			case Magic.DAMAGERESIST:
-			case Magic.POISONRESIST:
-			case Magic.MAGICRESIST:
-			case Magic.DISEASERESIST:
+			case Magic.RESIST_DAMAGE:
+			case Magic.RESIST_POISON:
+			case Magic.RESIST_MAGIC:
+			case Magic.RESIST_DISEASE:
 				break;
 		}
 	}
 }
-
-
 // skyui.util.Debug.dump(a_entryObject["text"], a_entryObject);
-
-/*
-;props.destructionSpellIcon.propertiesToSet = <'iconLabel', 'iconColor'>
-;props.destructionSpellIcon.filter = <'infoType': ICT_SPELL, 'subType': SPELL_TYPE_DESTRUCTION>
-;props.destructionSpellIcon.defaultValues = <'iconLabel': 'default_destruction'>
-;props.destructionSpellIcon.dataMember1.filter = <'magicType': MAGICTYPE_FIRE> 
-;props.destructionSpellIcon.dataMember1.set = <'iconLabel': 'magic_fire', 'iconColor': 0xC73636>
-;props.destructionSpellIcon.dataMember2.filter = <'magicType': MAGICTYPE_SHOCK> 
-;props.destructionSpellIcon.dataMember2.set = <'iconLabel': 'magic_shock', 'iconColor': 0xFFFF00>
-;props.destructionSpellIcon.dataMember3.filter = <'magicType': MAGICTYPE_FROST> 
-;props.destructionSpellIcon.dataMember3.set = <'iconLabel': 'magic_frost', 'iconColor': 0x1FFBFF>*/
