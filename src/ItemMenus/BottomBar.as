@@ -151,6 +151,7 @@ class BottomBar extends MovieClip
 			if (bHasWeightandValue) {
 				infoCard.CarryWeightValue.textAutoSize = "shrink";
 				infoCard.CarryWeightValue.SetText(Math.ceil(_playerInfoObj.encumbrance) + "/" + Math.floor(_playerInfoObj.maxEncumbrance));
+				infoCard.PlayerGoldValue.textAutoSize = "shrink";
 				infoCard.PlayerGoldValue.SetText(_playerInfoObj.gold.toString());
 				infoCard.PlayerGoldLabel._x = infoCard.PlayerGoldValue._x + infoCard.PlayerGoldValue.getLineMetrics(0).x - infoCard.PlayerGoldLabel._width;
 				infoCard.CarryWeightValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.CarryWeightValue._width - 5;
@@ -200,9 +201,9 @@ class BottomBar extends MovieClip
 			infoCard.VendorGoldLabel.SetText("$Gold");
 			infoCard.VendorGoldLabel.SetText(a_vendorName + " " + infoCard.VendorGoldLabel.text);
 		}
-		infoCard.VendorGoldLabel._x = infoCard.VendorGoldValue._x + infoCard.VendorGoldValue.getLineMetrics(0).x - infoCard.VendorGoldLabel._width - 5;
+		infoCard.VendorGoldLabel._x = infoCard.VendorGoldValue._x + infoCard.VendorGoldValue.getLineMetrics(0).x - infoCard.VendorGoldLabel._width;
 		infoCard.PlayerGoldValue._x = infoCard.VendorGoldLabel._x + infoCard.VendorGoldLabel.getLineMetrics(0).x - infoCard.PlayerGoldValue._width - 20;
-		infoCard.PlayerGoldLabel._x = infoCard.PlayerGoldValue._x + infoCard.PlayerGoldValue.getLineMetrics(0).x - infoCard.PlayerGoldLabel._width - 5;
+		infoCard.PlayerGoldLabel._x = infoCard.PlayerGoldValue._x + infoCard.PlayerGoldValue.getLineMetrics(0).x - infoCard.PlayerGoldLabel._width;
 	}
 
 	public function setBarterPerItemInfo(a_itemUpdateObj: Object, a_playerInfoObj: Object): Void
@@ -226,8 +227,8 @@ class BottomBar extends MovieClip
 					infoCard.ArmorRatingValue.textAutoSize = "shrink";
 					infoCard.ArmorRatingValue.html = true;
 					infoCard.ArmorRatingValue.SetText(strArmor, true);
-					infoCard.ArmorRatingValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.ArmorRatingValue._width - 20;
-					infoCard.ArmorRatingLabel._x = infoCard.ArmorRatingValue._x  + infoCard.ArmorRatingValue.getLineMetrics(0).x- infoCard.ArmorRatingLabel._width - 5;
+					infoCard.ArmorRatingValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.ArmorRatingValue._width - 5;
+					infoCard.ArmorRatingLabel._x = infoCard.ArmorRatingValue._x + infoCard.ArmorRatingValue.getLineMetrics(0).x - infoCard.ArmorRatingLabel._width;
 					break;
 					
 				case Inventory.ICT_WEAPON:
@@ -243,8 +244,8 @@ class BottomBar extends MovieClip
 					infoCard.DamageValue.textAutoSize = "shrink";
 					infoCard.DamageValue.html = true;
 					infoCard.DamageValue.SetText(strDamage, true);
-					infoCard.DamageValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.DamageValue._width - 20;
-					infoCard.DamageLabel._x = infoCard.DamageValue._x  + infoCard.DamageValue.getLineMetrics(0).x- infoCard.DamageLabel._width - 5;
+					infoCard.DamageValue._x = infoCard.PlayerGoldLabel._x + infoCard.PlayerGoldLabel.getLineMetrics(0).x - infoCard.DamageValue._width - 5;
+					infoCard.DamageLabel._x = infoCard.DamageValue._x + infoCard.DamageValue.getLineMetrics(0).x - infoCard.DamageLabel._width;
 					break;
 					
 				default:
