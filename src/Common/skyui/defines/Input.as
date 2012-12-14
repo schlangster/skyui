@@ -36,8 +36,8 @@
 	
 	// Custom
 	static var Equip: Array = [
-		{name: "RightEquip", context: CONTEXT_ITEMMENU},
-		{name: "LeftEquip", context: CONTEXT_ITEMMENU}
+		{name: "LeftEquip", context: CONTEXT_ITEMMENU},
+		{name: "RightEquip", context: CONTEXT_ITEMMENU}
 	];
 	static var SortColumn = [
 		{keyCode: 274},
