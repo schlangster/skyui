@@ -29,7 +29,6 @@ Interface\translations\SkyUI_italian.txt
 Interface\translations\SkyUI_polish.txt
 Interface\translations\SkyUI_russian.txt
 Interface\translations\SkyUI_spanish.txt
-Scripts\MY_ConfigMenu.pex
 Scripts\SKI_ActiveEffectsWidget.pex
 Scripts\SKI_ConfigBase.pex
 Scripts\SKI_ConfigManager.pex
@@ -42,7 +41,6 @@ Scripts\SKI_SettingsManager.pex
 Scripts\SKI_StatusWidget.pex
 Scripts\SKI_WidgetBase.pex
 Scripts\SKI_WidgetManager.pex
-Scripts\Source\MY_ConfigMenu.psc
 Scripts\Source\SKI_ActiveEffectsWidget.psc
 Scripts\Source\SKI_ConfigBase.psc
 Scripts\Source\SKI_ConfigManager.psc
