@@ -93,8 +93,7 @@ class MagicMenu extends ItemMenu
 				GameDelegate.call("CloseTweenMenu",[]);
 			} else if (!inventoryLists.itemList.disableInput) {
 				// Gamepad back || ALT (default) || 'I'
-				var bGamepadBackPressed = (details.navEquivalent == NavigationCode.GAMEPAD_BACK && details.code != 8);
-				if (bGamepadBackPressed || details.skseKeycode == _switchTabKey || details.control == "Quick Inventory")
+				if (details.skseKeycode == _switchTabKey || details.control == "Quick Inventory")
 					openInventoryMenu(true);
 			}
 		}
@@ -210,8 +209,8 @@ class MagicMenu extends ItemMenu
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: Input.SortColumn});
-				navPanel.addButton({text: "$Order", controls: Input.SortOrder});
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControl});
 			}
 			navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}

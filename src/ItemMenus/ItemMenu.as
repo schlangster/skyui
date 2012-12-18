@@ -30,6 +30,8 @@ class ItemMenu extends MovieClip
 	private var _cancelControls: Object;
 	private var _searchControls: Object;
 	private var _switchControls: Object;
+	private var _sortColumnControls: Array;
+	private var _sortOrderControl: Object;
 	
 	
   /* STAGE ELEMENTS */
@@ -148,11 +150,16 @@ class ItemMenu extends MovieClip
 		_platform = a_platform;
 		
 		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (!_searchKey)
+		if (_searchKey == undefined)
 			_searchKey = -1;
-			
-		_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (!_switchTabKey)
+		
+		if (a_platform == 0) {
+			_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
+		} else {
+			_switchTabKey = skse.GetMappedKey("Wait", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+		}
+
+		if (_switchTabKey == undefined)
 			_switchTabKey = -1;
 		
 		_searchControls = {keyCode: _searchKey};
@@ -164,7 +171,22 @@ class ItemMenu extends MovieClip
 		} else {
 			_acceptControls = Input.Accept;
 			_cancelControls = Input.Cancel;
-			_switchControls = Input.GamepadBack;
+			_switchControls = {keyCode: _switchTabKey};
+			var previousColumnKey: Number	= skse.GetMappedKey("Sprint", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+			if (previousColumnKey == undefined)
+				previousColumnKey = -1;
+			var nextColumnKey: Number		= skse.GetMappedKey("Shout", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+			if (nextColumnKey == undefined)
+				nextColumnKey = -1;
+
+			var sortOrderKey: Number		= skse.GetMappedKey("Sneak", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+			if (sortOrderKey == undefined)
+				sortOrderKey = -1;
+
+			_sortColumnControls = [{keyCode: previousColumnKey},
+								   {keyCode: nextColumnKey}];
+
+			_sortOrderControl = {keyCode: sortOrderKey};
 		}
 		
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);

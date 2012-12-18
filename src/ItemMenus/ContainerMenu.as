@@ -269,8 +269,8 @@ class ContainerMenu extends ItemMenu
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: Input.SortColumn});
-				navPanel.addButton({text: "$Order", controls: Input.SortOrder});
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControl});
 			}
 			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 			

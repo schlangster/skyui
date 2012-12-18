@@ -219,20 +219,24 @@ class InventoryLists extends MovieClip
 		itemList.listHeight = 480;
 	}
 
-	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean)
+	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
-
-		categoryList.platform = a_platform;
-		itemList.platform = a_platform;
 		
 		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
 		if (!_searchKey)
 			_searchKey = -1;
 			
-		_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (!_switchTabKey)
+		if (a_platform == 0) {
+			_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
+		} else {
+			_switchTabKey = skse.GetMappedKey("Wait", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+		}
+		if (_switchTabKey == undefined)
 			_switchTabKey = -1;
+
+		categoryList.setPlatform(a_platform,a_bPS3Switch);
+		itemList.setPlatform(a_platform,a_bPS3Switch);
 	}
 
 	// @GFx
@@ -249,8 +253,7 @@ class InventoryLists extends MovieClip
 			}
 			
 			// Toggle tab (default ALT)
-			var bGamepadBackPressed = (_platform != 0 && details.navEquivalent == NavigationCode.GAMEPAD_BACK);
-			if (tabBar != undefined && (details.skseKeycode == _switchTabKey || bGamepadBackPressed)) {
+			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {
 				tabBar.tabToggle();
 				return true;
 			}
