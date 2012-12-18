@@ -1,28 +1,28 @@
-class skyui.defines.Form
+﻿class skyui.defines.Form
 {
-	public static var FORMTYPE_NONE: Number				= 0;
+	public static var TYPE_NONE: Number				= 0;
 
-	public static var FORMTYPE_EFFECTSETTING: Number	= 18;
+	public static var TYPE_EFFECTSETTING: Number	= 18;
 
-	public static var FORMTYPE_SPELL: Number			= 22;
-	public static var FORMTYPE_SCROLLITEM: Number		= 23;
+	public static var TYPE_SPELL: Number			= 22;
+	public static var TYPE_SCROLLITEM: Number		= 23;
 
-	public static var FORMTYPE_ARMOR: Number			= 26;
-	public static var FORMTYPE_BOOK: Number				= 27;
+	public static var TYPE_ARMOR: Number			= 26;
+	public static var TYPE_BOOK: Number				= 27;
 
-	public static var FORMTYPE_INGREDIENT: Number		= 30;
-	public static var FORMTYPE_LIGHT: Number			= 31; //Torch
-	public static var FORMTYPE_MISC: Number				= 32;
+	public static var TYPE_INGREDIENT: Number		= 30;
+	public static var TYPE_LIGHT: Number			= 31; //Torch
+	public static var TYPE_MISC: Number				= 32;
 
-	public static var FORMTYPE_WEAPON: Number			= 41;
-	public static var FORMTYPE_AMMO: Number				= 42;
+	public static var TYPE_WEAPON: Number			= 41;
+	public static var TYPE_AMMO: Number				= 42;
 
-	public static var FORMTYPE_KEY: Number				= 45;
-	public static var FORMTYPE_POTION: Number			= 46;
+	public static var TYPE_KEY: Number				= 45;
+	public static var TYPE_POTION: Number			= 46;
 
-	public static var FORMTYPE_SOULGEM: Number			= 52;
+	public static var TYPE_SOULGEM: Number			= 52;
 
-	public static var FORMTYPE_SHOUT: Number 			= 119;
+	public static var TYPE_SHOUT: Number 			= 119;
 
 	/*
 	NONE = 0,			// NONE

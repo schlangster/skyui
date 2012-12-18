@@ -54,11 +54,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.weightClassDisplay = "-";
 
 		switch (a_entryObject.formType) {
-			case Form.FORMTYPE_SCROLLITEM:
+			case Form.TYPE_SCROLLITEM:
 				a_entryObject.subTypeDisplay = "$Scroll";
 				break;
 
-			case Form.FORMTYPE_ARMOR:
+			case Form.TYPE_ARMOR:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
@@ -68,45 +68,45 @@ class InventoryDataSetter extends ItemcardDataExtender
 				processArmorOther(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_BOOK:
+			case Form.TYPE_BOOK:
 				processBookType(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_INGREDIENT:
+			case Form.TYPE_INGREDIENT:
 				a_entryObject.subTypeDisplay = "$Ingredient";
 				break;
 
-			case Form.FORMTYPE_LIGHT:
+			case Form.TYPE_LIGHT:
 				a_entryObject.subTypeDisplay = "$Torch";
 				break;
 
-			case Form.FORMTYPE_MISC:
+			case Form.TYPE_MISC:
 				processMiscType(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_WEAPON:
+			case Form.TYPE_WEAPON:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_AMMO:
+			case Form.TYPE_AMMO:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				///processAmmoFormIDs(a_entryObject); //Vanilla arrows don't have material keywords
 				break;
 
-			case Form.FORMTYPE_KEY:
+			case Form.TYPE_KEY:
 				processKeyType(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_POTION:
+			case Form.TYPE_POTION:
 				processPotionType(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_SOULGEM:
+			case Form.TYPE_SOULGEM:
 				processSoulGemType(a_entryObject);
 				processSoulGemStatus(a_entryObject);
 				break;
@@ -117,16 +117,17 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 	private function processArmorClass(a_entryObject: Object): Void
 	{
-		if (a_entryObject.weightClass == Armor.WEIGHTCLASS_NONE)
-			a_entryObject.weightClass = Armor.OTHER
+		if (a_entryObject.weightClass == Armor.WEIGHT_NONE)
+			a_entryObject.weightClass = null;
+			
 		a_entryObject.weightClassDisplay = "$Other";
 
 		switch (a_entryObject.weightClass) {
-			case Armor.WEIGHTCLASS_LIGHT:
+			case Armor.WEIGHT_LIGHT:
 				a_entryObject.weightClassDisplay = "$Light";
 				break;
 
-			case Armor.WEIGHTCLASS_HEAVY:
+			case Armor.WEIGHT_HEAVY:
 				a_entryObject.weightClassDisplay = "$Heavy";
 				break;
 
@@ -135,10 +136,10 @@ class InventoryDataSetter extends ItemcardDataExtender
 					break;
 
 				if (a_entryObject.keywords["VendorItemClothing"] != undefined) {
-					a_entryObject.weightClass = Armor.WEIGHTCLASS_CLOTHING;
+					a_entryObject.weightClass = Armor.WEIGHT_CLOTHING;
 					a_entryObject.weightClassDisplay = "$Clothing";
 				} else if (a_entryObject.keywords["VendorItemJewelry"] != undefined) {
-					a_entryObject.weightClass = Armor.WEIGHTCLASS_JEWELRY;
+					a_entryObject.weightClass = Armor.WEIGHT_JEWELRY;
 					a_entryObject.weightClassDisplay = "$Jewelry";
 				}	 
 		}
@@ -146,7 +147,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 	private function processMaterialKeywords(a_entryObject: Object): Void
 	{
-		a_entryObject.material = Material.OTHER;
+		a_entryObject.material = null;
 		a_entryObject.materialDisplay = "$Other";
 
 		if (a_entryObject.keywords == undefined)
@@ -324,48 +325,48 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 	private function processWeaponType(a_entryObject: Object): Void
 	{
-		a_entryObject.subType = Weapon.OTHER;
+		a_entryObject.subType = null;
 		a_entryObject.subTypeDisplay = "$Weapon";
 
 		switch (a_entryObject.weaponType) {
-			case Weapon.EQUIPTYPE_HANDTOHANDMELEE:
-			case Weapon.EQUIPTYPE_H2H:
+			case Weapon.ANIM_HANDTOHANDMELEE:
+			case Weapon.ANIM_H2H:
 				a_entryObject.subType = Weapon.TYPE_MELEE;
 				a_entryObject.subTypeDisplay = "$Melee";
 				break;
 
-			case Weapon.EQUIPTYPE_ONEHANDSWORD:
-			case Weapon.EQUIPTYPE_1HS:
+			case Weapon.ANIM_ONEHANDSWORD:
+			case Weapon.ANIM_1HS:
 				a_entryObject.subType = Weapon.TYPE_SWORD;
 				a_entryObject.subTypeDisplay = "$Sword";
 				break;
 
-			case Weapon.EQUIPTYPE_ONEHANDDAGGER:
-			case Weapon.EQUIPTYPE_1HD:
+			case Weapon.ANIM_ONEHANDDAGGER:
+			case Weapon.ANIM_1HD:
 				a_entryObject.subType = Weapon.TYPE_DAGGER;
 				a_entryObject.subTypeDisplay = "$Dagger";
 				break;
 
-			case Weapon.EQUIPTYPE_ONEHANDAXE:
-			case Weapon.EQUIPTYPE_1HA:
+			case Weapon.ANIM_ONEHANDAXE:
+			case Weapon.ANIM_1HA:
 				a_entryObject.subType = Weapon.TYPE_WARAXE;
 				a_entryObject.subTypeDisplay = "$War Axe";
 				break;
 
-			case Weapon.EQUIPTYPE_ONEHANDMACE:
-			case Weapon.EQUIPTYPE_1HM:
+			case Weapon.ANIM_ONEHANDMACE:
+			case Weapon.ANIM_1HM:
 				a_entryObject.subType = Weapon.TYPE_MACE;
 				a_entryObject.subTypeDisplay = "$Mace";
 				break;
 
-			case Weapon.EQUIPTYPE_TWOHANDSWORD:
-			case Weapon.EQUIPTYPE_2HS:
+			case Weapon.ANIM_TWOHANDSWORD:
+			case Weapon.ANIM_2HS:
 				a_entryObject.subType = Weapon.TYPE_GREATSWORD;
 				a_entryObject.subTypeDisplay = "$Greatsword";
 				break;
 
-			case Weapon.EQUIPTYPE_TWOHANDAXE:
-			case Weapon.EQUIPTYPE_2HA:
+			case Weapon.ANIM_TWOHANDAXE:
+			case Weapon.ANIM_2HA:
 				a_entryObject.subType = Weapon.TYPE_BATTLEAXE;
 				a_entryObject.subTypeDisplay = "$Battleaxe";
 
@@ -375,20 +376,20 @@ class InventoryDataSetter extends ItemcardDataExtender
 				}
 				break;
 
-			case Weapon.EQUIPTYPE_BOW:
-			case Weapon.EQUIPTYPE_BOW2:
+			case Weapon.ANIM_BOW:
+			case Weapon.ANIM_BOW2:
 				a_entryObject.subType = Weapon.TYPE_BOW;
 				a_entryObject.subTypeDisplay = "$Bow";
 				break;
 
-			case Weapon.EQUIPTYPE_STAFF:
-			case Weapon.EQUIPTYPE_STAFF2:
+			case Weapon.ANIM_STAFF:
+			case Weapon.ANIM_STAFF2:
 				a_entryObject.subType = Weapon.TYPE_STAFF;
 				a_entryObject.subTypeDisplay = "$Staff";
 				break;
 
-			case Weapon.EQUIPTYPE_CROSSBOW:
-			case Weapon.EQUIPTYPE_CBOW:
+			case Weapon.ANIM_CROSSBOW:
+			case Weapon.ANIM_CBOW:
 				a_entryObject.subType = Weapon.TYPE_CROSSBOW;
 				a_entryObject.subTypeDisplay = "$Crossbow";
 				break;
@@ -414,70 +415,70 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 		switch (a_entryObject.mainPartMask) {
 			case Armor.PARTMASK_HEAD:
-				a_entryObject.subType = Armor.EQUIPLOCATION_HEAD;
+				a_entryObject.subType = Armor.EQUIP_HEAD;
 				a_entryObject.subTypeDisplay = "$Head";
 				break;
 			case Armor.PARTMASK_HAIR:
-				a_entryObject.subType = Armor.EQUIPLOCATION_HAIR;
+				a_entryObject.subType = Armor.EQUIP_HAIR;
 				a_entryObject.subTypeDisplay = "$Head";
 				break;
 			case Armor.PARTMASK_LONGHAIR:
-				a_entryObject.subType = Armor.EQUIPLOCATION_LONGHAIR;
+				a_entryObject.subType = Armor.EQUIP_LONGHAIR;
 				a_entryObject.subTypeDisplay = "$Head";
 				break;
 
 			case Armor.PARTMASK_BODY:
-				a_entryObject.subType = Armor.EQUIPLOCATION_BODY;
+				a_entryObject.subType = Armor.EQUIP_BODY;
 				a_entryObject.subTypeDisplay = "$Body";
 				break;
 
 			case Armor.PARTMASK_HANDS:
-				a_entryObject.subType = Armor.EQUIPLOCATION_HANDS;
+				a_entryObject.subType = Armor.EQUIP_HANDS;
 				a_entryObject.subTypeDisplay = "$Hands";
 				break;
 
 			case Armor.PARTMASK_FOREARMS:
-				a_entryObject.subType = Armor.EQUIPLOCATION_FOREARMS;
+				a_entryObject.subType = Armor.EQUIP_FOREARMS;
 				a_entryObject.subTypeDisplay = "$Forearms";
 				break;
 
 			case Armor.PARTMASK_AMULET:
-				a_entryObject.subType = Armor.EQUIPLOCATION_AMULET;
+				a_entryObject.subType = Armor.EQUIP_AMULET;
 				a_entryObject.subTypeDisplay = "$Amulet";
 				break;
 
 			case Armor.PARTMASK_RING:
-				a_entryObject.subType = Armor.EQUIPLOCATION_RING;
+				a_entryObject.subType = Armor.EQUIP_RING;
 				a_entryObject.subTypeDisplay = "$Ring";
 				break;
 
 			case Armor.PARTMASK_FEET:
-				a_entryObject.subType = Armor.EQUIPLOCATION_FEET;
+				a_entryObject.subType = Armor.EQUIP_FEET;
 				a_entryObject.subTypeDisplay = "$Feet";
 				break;
 
 			case Armor.PARTMASK_CALVES:
-				a_entryObject.subType = Armor.EQUIPLOCATION_CALVES;
+				a_entryObject.subType = Armor.EQUIP_CALVES;
 				a_entryObject.subTypeDisplay = "$Calves";
 				break;
 
 			case Armor.PARTMASK_SHIELD:
-				a_entryObject.subType = Armor.EQUIPLOCATION_SHIELD;
+				a_entryObject.subType = Armor.EQUIP_SHIELD;
 				a_entryObject.subTypeDisplay = "$Shield";
 				break;
 
 			case Armor.PARTMASK_CIRCLET:
-				a_entryObject.subType = Armor.EQUIPLOCATION_CIRCLET;
+				a_entryObject.subType = Armor.EQUIP_CIRCLET;
 				a_entryObject.subTypeDisplay = "$Circlet";
 				break;
 
 			case Armor.PARTMASK_EARS:
-				a_entryObject.subType = Armor.EQUIPLOCATION_EARS;
+				a_entryObject.subType = Armor.EQUIP_EARS;
 				a_entryObject.subTypeDisplay = "$Ears";
 				break;
 
 			case Armor.PARTMASK_TAIL:
-				a_entryObject.subType = Armor.EQUIPLOCATION_TAIL;
+				a_entryObject.subType = Armor.EQUIP_TAIL;
 				a_entryObject.subTypeDisplay = "$Tail";
 				break;
 
@@ -489,7 +490,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 	private function processArmorOther(a_entryObject): Void
 	{
-		if (a_entryObject.weightClass != Armor.OTHER)
+		if (a_entryObject.weightClass != null)
 			return;
 
 		switch(a_entryObject.mainPartMask) {
@@ -503,7 +504,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Armor.PARTMASK_CALVES:
 			case Armor.PARTMASK_SHIELD:
 			case Armor.PARTMASK_TAIL:
-				a_entryObject.weightClass = Armor.WEIGHTCLASS_CLOTHING;
+				a_entryObject.weightClass = Armor.WEIGHT_CLOTHING;
 				a_entryObject.weightClassDisplay = "$Clothing";
 				break;
 
@@ -511,7 +512,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Armor.PARTMASK_RING:
 			case Armor.PARTMASK_CIRCLET:
 			case Armor.PARTMASK_EARS:
-				a_entryObject.weightClass = Armor.WEIGHTCLASS_JEWELRY;
+				a_entryObject.weightClass = Armor.WEIGHT_JEWELRY;
 				a_entryObject.weightClassDisplay = "$Jewelry";
 				break;
 		}
@@ -583,54 +584,54 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.subTypeDisplay = "$Poison";
 		} else {
 			switch (a_entryObject.actorValue) {
-				case Actor.ACTORVALUE_HEALTH:
+				case Actor.AV_HEALTH:
 					a_entryObject.subType = Item.POTION_HEALTH;
 					a_entryObject.subTypeDisplay = "$Health";
 					break;
-				case Actor.ACTORVALUE_MAGICKA:
+				case Actor.AV_MAGICKA:
 					a_entryObject.subType = Item.POTION_MAGICKA;
 					a_entryObject.subTypeDisplay = "$Magicka";
 					break;
-				case Actor.ACTORVALUE_STAMINA:
+				case Actor.AV_STAMINA:
 					a_entryObject.subType = Item.POTION_STAMINA;
 					a_entryObject.subTypeDisplay = "$Stamina";
 					break;
 
-				case Actor.ACTORVALUE_HEALRATE:
+				case Actor.AV_HEALRATE:
 					a_entryObject.subType = Item.POTION_HEALRATE;
 					a_entryObject.subTypeDisplay = "$Health";
 					break;
-				case Actor.ACTORVALUE_MAGICKARATE:
+				case Actor.AV_MAGICKARATE:
 					a_entryObject.subType = Item.POTION_MAGICKARATE;
 					a_entryObject.subTypeDisplay = "$Magicka";
 					break;
-				case Actor.ACTORVALUE_STAMINARATE:
+				case Actor.AV_STAMINARATE:
 					a_entryObject.subType = Item.POTION_STAMINARATE;
 					a_entryObject.subTypeDisplay = "$Stamina";
 					break;
 
-				case Actor.ACTORVALUE_HEALRATEMULT:
+				case Actor.AV_HEALRATEMULT:
 					a_entryObject.subType = Item.POTION_HEALRATEMULT;
 					a_entryObject.subTypeDisplay = "$Health";
 					break;
-				case Actor.ACTORVALUE_MAGICKARATEMULT:
+				case Actor.AV_MAGICKARATEMULT:
 					a_entryObject.subType = Item.POTION_MAGICKARATEMULT;
 					a_entryObject.subTypeDisplay = "$Magicka";
 					break;
-				case Actor.ACTORVALUE_STAMINARATEMULT:
+				case Actor.AV_STAMINARATEMULT:
 					a_entryObject.subType = Item.POTION_STAMINARATEMULT;
 					a_entryObject.subTypeDisplay = "$Stamina";
 					break;
 
-				case Actor.ACTORVALUE_FIRERESIST:
+				case Actor.AV_FIRERESIST:
 					a_entryObject.subType = Item.POTION_FIRERESIST;
 					break;
 
-				case Actor.ACTORVALUE_ELECTRICRESIST:
+				case Actor.AV_ELECTRICRESIST:
 					a_entryObject.subType = Item.POTION_SHOCKRESIST;
 					break;
 
-				case Actor.ACTORVALUE_FROSTRESIST:
+				case Actor.AV_FROSTRESIST:
 					a_entryObject.subType = Item.POTION_FROSTRESIST;
 					break;
 			}

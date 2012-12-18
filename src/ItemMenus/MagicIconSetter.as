@@ -62,23 +62,23 @@ class MagicIconSetter implements IListProcessor
 		// fire rune, actorValue = Health, school = Destruction, resistance = Fire, effectFlags = hostile+detrimental
 		switch(a_entryObject.school)
 		{
-			case Magic.SCHOOL_ALTERATION:
+			case Actor.AV_ALTERATION:
 				a_entryObject.iconLabel = "default_alteration";
 				break;
 
-			case Magic.SCHOOL_CONJURATION:
+			case Actor.AV_CONJURATION:
 				a_entryObject.iconLabel = "default_conjuration";
 				break;
 
-			case Magic.SCHOOL_DESTRUCTION:
+			case Actor.AV_DESTRUCTION:
 				a_entryObject.iconLabel = "default_destruction";
 				break;
 
-			case Magic.SCHOOL_ILLUSION:
+			case Actor.AV_ILLUSION:
 				a_entryObject.iconLabel = "default_illusion";
 				break;
 
-			case Magic.SCHOOL_RESTORATION:
+			case Actor.AV_RESTORATION:
 				a_entryObject.iconLabel = "default_restoration";
 				break;
 
@@ -87,28 +87,21 @@ class MagicIconSetter implements IListProcessor
 
 	private function processResist(a_entryObject: Object): Void
 	{
-		if (a_entryObject.resistance == undefined || a_entryObject.resistance == Magic.RESIST_NONE)
+		if (a_entryObject.resistance == undefined || a_entryObject.resistance == Actor.AV_NONE)
 			return;
 
 		switch(a_entryObject.resistance) {
-			case Magic.RESIST_FIRE:
+			case Actor.AV_FIRERESIST:
 				a_entryObject.iconColor = 0xC73636;
 				break;
 
-			case Magic.RESIST_ELECTRIC:
+			case Actor.AV_ELECTRICRESIST:
 				a_entryObject.iconColor = 0xFFFF00;
 				break;
 
-			case Magic.RESIST_FROST:
+			case Actor.AV_FROSTRESIST:
 				a_entryObject.iconColor = 0x1FFBFF;
-				break;
-
-			case Magic.RESIST_DAMAGE:
-			case Magic.RESIST_POISON:
-			case Magic.RESIST_MAGIC:
-			case Magic.RESIST_DISEASE:
 				break;
 		}
 	}
 }
-// skyui.util.Debug.dump(a_entryObject["text"], a_entryObject);

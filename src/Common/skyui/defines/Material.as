@@ -1,7 +1,5 @@
-class skyui.defines.Material
+﻿class skyui.defines.Material
 {
-	public static var OTHER: Number	= undefined;
-
 	public static var AETHERIUM: Number			= 0;
 	public static var ARTIFACT: Number			= 1;
 	public static var BONEMOLD: Number			= 2;

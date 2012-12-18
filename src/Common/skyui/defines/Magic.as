@@ -1,46 +1,7 @@
-import skyui.defines.Actor;
+﻿import skyui.defines.Actor;
 
 class skyui.defines.Magic
 {
-	// Reisist
-	public static var RESIST_NONE: Number				= Actor.ACTORVALUE_NONE;
-	public static var RESIST_DAMAGE: Number				= Actor.ACTORVALUE_DAMAGERESIST;
-	public static var RESIST_POISON: Number				= Actor.ACTORVALUE_POISONRESIST;
-	public static var RESIST_FIRE: Number				= Actor.ACTORVALUE_FIRERESIST;
-	public static var RESIST_ELECTRIC: Number			= Actor.ACTORVALUE_ELECTRICRESIST;
-	public static var RESIST_FROST: Number				= Actor.ACTORVALUE_FROSTRESIST;
-	public static var RESIST_MAGIC: Number				= Actor.ACTORVALUE_MAGICRESIST;
-	public static var RESIST_DISEASE: Number			= Actor.ACTORVALUE_DISEASERESIST;
-
-	// Magic Skill (school)
-	public static var SCHOOL_NONE: Number				= Actor.ACTORVALUE_NONE;
-	public static var SCHOOL_ALTERATION: Number			= Actor.ACTORVALUE_ALTERATION;
-	public static var SCHOOL_CONJURATION: Number		= Actor.ACTORVALUE_CONJURATION;
-	public static var SCHOOL_DESTRUCTION: Number		= Actor.ACTORVALUE_DESTRUCTION;
-	public static var SCHOOL_ILLUSION: Number			= Actor.ACTORVALUE_ILLUSION;
-	public static var SCHOOL_RESTORATION: Number		= Actor.ACTORVALUE_RESTORATION;
-
-	// CastingType
-	public static var CONSTANTEFFECT: Number			= 0x00;
-	public static var FIREANDFORGET: Number				= 0x01;
-	public static var CONCENTRATION: Number				= 0x02;
-
-	// Delivery
-	public static var DELIVERY_SELF: Number				= 0x00;
-	public static var DELIVERY_CONTACT: Number			= 0x01;
-	public static var DELIVERY_AIMED: Number			= 0x02;
-	public static var DELIVERY_TARGETACTOR: Number		= 0x03;
-	public static var DELIVERY_TARGETLOCATION: Number	= 0x04;
-
-	// CastingType
-	public static var CASTTYPE_SPELL: Number			= 0x00;
-	public static var CASTTYPE_DISEASE: Number			= 0x01;
-	public static var CASTTYPE_POWER: Number			= 0x02;
-	public static var CASTTYPE_LESSERPOWER: Number		= 0x03;
-	public static var CASTTYPE_ABILITY: Number			= 0x04;
-	public static var CASTTYPE_ADDICTION: Number		= 0x0A;
-	public static var CASTTYPE_VOICE: Number			= 0x0B;
-
 	// Archetype
 	public static var ARCHETYPE_VALUEMOD: Number			= 0x00;
 	public static var ARCHETYPE_SCRIPT: Number				= 0x01;
