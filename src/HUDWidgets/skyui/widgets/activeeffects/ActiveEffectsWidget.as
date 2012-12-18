@@ -1,4 +1,4 @@
-import skyui.util.Defines;
+﻿import skyui.util.Defines;
 
 import skyui.widgets.WidgetBase;
 import skyui.widgets.activeeffects.ActiveEffectsGroup;
@@ -6,16 +6,18 @@ import skyui.widgets.activeeffects.ActiveEffectsGroup;
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
 
+
 class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 {
   /* CONSTANTS */
+  
 	private static var EFFECT_FADE_IN_DURATION: Number = 0.25;
 	private static var EFFECT_FADE_OUT_DURATION: Number = 0.75;
 	private static var EFFECT_MOVE_DURATION: Number = 1.00;
 	private static var GROUP_MOVE_DURATION: Number = 1.00;
 
-	// NO './', bsa doesn't like it!
-	private static var ICON_LOCATION: String = "skyui/skyui_icons_psychosteve.swf"; // TEST: Change to ../skyui/... when testing
+	private static var ICON_LOCATION: String = "skyui/skyui_icons_psychosteve.swf";
+	
 
 	// config
 	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
@@ -23,13 +25,12 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private var _clampCorner: String;
 	private var _orientation: String;
 
-
-
 	private var _effectSpacing: Number; // _effectBaseSize/10
 	private var _groupSpacing: Number; // _effectBaseSize/10
 
 
   /* PRIVATE VARIABLES */
+  
 	private var _marker: Number = 1;
 	private var _sortFlag: Boolean = true;
 
@@ -47,6 +48,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	
 
   /* PUBLIC VARIABLES */
+  
 	// Passed from SKSE
 	public var effectDataArray: Array;
 
@@ -61,6 +63,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
   /* PUBLIC FUNCTIONS */
+  
 	// @overrides WidgetBase
 	public function getWidth(): Number {
 		return _effectBaseSize;
@@ -86,8 +89,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			effectsGroup.updatePosition(i); //Sets new index
 		}	
 	}
-
-	// Papyrus interface
+  
 	// @Papyrus
 	public function initNumbers(a_enabled: Boolean, a_effectSize: Number, a_groupEffectCount: Number): Void
 	{
@@ -151,7 +153,16 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		}
 	}
 
-	// Helper function for setClampCorner and initStrings
+	// @Papyrus
+	public function setOrientation(a_orientation: String): Void
+	{
+		_orientation = a_orientation.toLowerCase();
+
+		invalidateEffects();
+	}
+
+  /* PRIVATE FUNCTIONS */
+  
 	private function updateClampCorner(a_clampCorner: String): Void
 	{
 		_clampCorner = a_clampCorner.toUpperCase();
@@ -174,16 +185,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 				_vGrowDirection = "down";
 		}
 	}
-
-	// @Papyrus
-	public function setOrientation(a_orientation: String): Void
-	{
-		_orientation = a_orientation.toLowerCase();
-
-		invalidateEffects();
-	}
-
-  /* PRIVATE FUNCTIONS */
+	
 	private function onIntervalUpdate(): Void
 	{
 		effectDataArray.splice(0);
