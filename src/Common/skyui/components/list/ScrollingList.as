@@ -101,6 +101,12 @@ class skyui.components.list.ScrollingList extends BasicList
 		}
 	}
 
+	// @override BasicList
+	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{
+		super.setPlatform(a_platform,a_bPS3Switch);
+	}
+
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{

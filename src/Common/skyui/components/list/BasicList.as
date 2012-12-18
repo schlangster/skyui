@@ -75,11 +75,14 @@ class skyui.components.list.BasicList extends BSList
 		return _platform;
 	}
 	
+	/*
+	// Removed 2012/12/18, use setPlatform()
 	public function set platform(a_platform: Number)
 	{
 		_platform = a_platform;
 		isMouseDrivenNav = _platform == PLATFORM_PC;
 	}
+	*/
 	
 	public var isMouseDrivenNav: Boolean = false;
 	
@@ -179,6 +182,12 @@ class skyui.components.list.BasicList extends BSList
 	public var removeEventListener: Function;
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
+
+	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
+	{
+		_platform = a_platform;
+		isMouseDrivenNav = _platform == PLATFORM_PC;
+	}
 	
 	// Custom handlers
 	public var onUnsuspend: Function;

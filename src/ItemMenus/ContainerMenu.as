@@ -26,8 +26,9 @@ class ContainerMenu extends ItemMenu
 
 	private var _bEquipMode: Boolean = false;
 	private var _equipHand: Number;
-	
-	private var _equipModeControls: Array;
+
+	private var _equipModeKey: Number;
+	private var _equipModeControls: Object;
 	
 	private var _categoryListIconArt: Array;
 	private var _tabBarIconArt: Array;
@@ -47,8 +48,6 @@ class ContainerMenu extends ItemMenu
 	public function ContainerMenu()
 	{
 		super();
-		
-		_equipModeControls = [{keyCode: 42}];
 		
 		_categoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 		
@@ -104,7 +103,7 @@ class ContainerMenu extends ItemMenu
 		super.handleInput(details,pathToFocus);
 
 		if (shouldProcessItemsListInput(false)) {
-			if (_platform == 0 && details.code == 16 && inventoryLists.itemList.selectedIndex != -1) {
+			if (_platform == 0 && details.skseKeycode == _equipModeKey && inventoryLists.itemList.selectedIndex != -1) {
 				_bEquipMode = details.value != "keyUp";
 				updateBottomBar(true);
 			}
@@ -162,8 +161,13 @@ class ContainerMenu extends ItemMenu
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		super.SetPlatform(a_platform,a_bPS3Switch);
-		
-		_bEquipMode = a_platform != 0;
+
+		_equipModeKey = skse.GetMappedKey("Run", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
+		if (!_equipModeKey)
+			_equipModeKey = -1;
+		_equipModeControls = {keyCode: _equipModeKey};
+
+		_bEquipMode = (a_platform != 0);
 	}
 	
 	
@@ -265,8 +269,8 @@ class ContainerMenu extends ItemMenu
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: Input.SortColumn});
-				navPanel.addButton({text: "$Order", controls: Input.SortOrder});
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControl});
 			}
 			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
 			
