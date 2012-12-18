@@ -165,7 +165,7 @@ event OnPageReset(string a_page)
 
 		; Disabled for now until icons are done
 		AddHeaderOption("Active Effects HUD")
-		_AEEnabledOID_B					= AddToggleOption("Enabled", _AEEnabled, OPTION_FLAG_DISABLED)
+		_AEEnabledOID_B					= AddToggleOption("Enabled", _AEEnabled)
 		_AEEffectSizeOID_T				= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
 
 	; -------------------------------------------------------
