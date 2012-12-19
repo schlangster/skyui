@@ -3,7 +3,6 @@ Interface\containermenu.swf
 Interface\inventorymenu.swf
 Interface\magicmenu.swf
 Interface\quest_journal.swf
-Interface\hudmenu.swf
 Interface\giftmenu.swf
 Interface\skyui\config.txt
 Interface\skyui\inventorylists.swf
@@ -11,16 +10,10 @@ Interface\skyui\bottombar.swf
 Interface\skyui\itemcard.swf
 Interface\skyui\buttonart.swf
 Interface\skyui\configpanel.swf
-Interface\skyui\skyui_icons_celtic.swf
-Interface\skyui\skyui_icons_curved.swf
 Interface\skyui\skyui_icons_psychosteve.swf
-Interface\skyui\skyui_icons_straight.swf
 Interface\skyui\skyui_splash.swf
 Interface\skyui\mcm_splash.swf
 Interface\skyui\res\mcm_logo.dds
-Interface\widgets\activeeffects.swf
-Interface\widgets\status.swf
-Interface\widgets\meter.swf
 Interface\translations\SkyUI_czech.txt
 Interface\translations\SkyUI_english.txt
 Interface\translations\SkyUI_french.txt
