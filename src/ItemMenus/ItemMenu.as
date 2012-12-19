@@ -17,7 +17,8 @@ class ItemMenu extends MovieClip
 	private var _platform: Number;
 	private var _bItemCardFadedIn: Boolean = false;
 	private var _bItemCardPositioned: Boolean = false;
-	private var _quantityMenuTrigger: Number;
+	
+	private var _quantityMinCount: Number = 5;
 	
 	private var _config: Object;
 	
@@ -139,7 +140,7 @@ class ItemMenu extends MovieClip
 		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
 		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
 
-		_quantityMenuTrigger = a_config["ItemList"].quantityMenu.trigger;
+		_quantityMinCount = a_config["ItemList"].quantityMenu.minCount;
 		
 		updateBottomBar(false);
 	}
@@ -371,7 +372,7 @@ class ItemMenu extends MovieClip
 	private function onItemSelect(event: Object): Void
 	{
 		if (event.entry.enabled) {
-			if (_quantityMenuTrigger < 1 || (event.entry.count < _quantityMenuTrigger))
+			if (_quantityMinCount < 1 || (event.entry.count < _quantityMinCount))
 				onQuantityMenuSelect({amount:1});
 			else
 				itemCard.ShowQuantityMenu(event.entry.count);

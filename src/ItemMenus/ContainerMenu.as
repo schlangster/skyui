@@ -291,7 +291,7 @@ class ContainerMenu extends ItemMenu
 				return;
 			}
 
-			if (_quantityMenuTrigger < 1 || (inventoryLists.itemList.selectedEntry.count < _quantityMenuTrigger)) {
+			if (_quantityMinCount < 1 || (inventoryLists.itemList.selectedEntry.count < _quantityMinCount)) {
 				onQuantityMenuSelect({amount:1});
 			} else {
 				itemCard.ShowQuantityMenu(inventoryLists.itemList.selectedEntry.count);

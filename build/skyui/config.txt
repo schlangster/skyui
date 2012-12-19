@@ -16,7 +16,7 @@ itemcard.yOffset = 0
 ; =====================================================================================================================
 [ItemList] 
 ; =====================================================================================================================
-quantityMenu.trigger = 5 ; Number of items required to trigger quantity dialog. 0 is disabled
+quantityMenu.minCount = 5 ; Number of items required to trigger quantity dialog. 0 is disabled
 
 
 ; =====================================================================================================================
