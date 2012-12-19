@@ -65,7 +65,7 @@ class BarterMenu extends ItemMenu
 		super.setConfig(a_config);
 
 		var itemList: TabularList = inventoryLists.itemList;		
-		itemList.addDataProcessor(new BarterDataSetter(a_config["ItemList"], a_config["Appearance"], _buyMult, _sellMult));
+		itemList.addDataProcessor(new BarterDataSetter(_buyMult, _sellMult));
 		itemList.addDataProcessor(new InventoryIconSetter());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		

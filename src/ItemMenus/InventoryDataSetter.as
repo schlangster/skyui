@@ -8,31 +8,23 @@ import skyui.defines.Inventory;
 
 class InventoryDataSetter extends ItemcardDataExtender
 {
-  /* PRIVATE VARIABLES */
-
-	private var _combinedValue: Boolean;
-	private var _combinedWeight: Boolean;
-
-  /* PUBLIC FUNCTIONS */
-
-	public function InventoryDataSetter(a_configItemList: Object, a_configAppearance: Object)
+  /* INITIALIZATION */
+  
+	public function InventoryDataSetter()
 	{
 		super();
-		
-		_combinedValue	= a_configItemList.inventory.combinedValue;
-		_combinedWeight	= a_configItemList.inventory.combinedWeight;
 	}
+	
+	
+  /* PUBLIC FUNCTIONS */
 
 	// @override ItemcardDataExtender
 	public function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
 	{
-		//skyui.util.Debug.dump("a_entryObject", a_entryObject);
-		//skyui.util.Debug.dump("a_itemInfo", a_itemInfo);
-
 		a_entryObject.baseId = a_entryObject.formId & 0x00FFFFFF;
 		a_entryObject.type = a_itemInfo.type;
-		a_entryObject.value = a_itemInfo.value;// * (_sortByCombinedValue ? a_entryObject.count : 1);
-		a_entryObject.weight = a_itemInfo.weight;// * (_sortByCombinedWeight ? a_entryObject.count : 1);
+		a_entryObject.value = a_itemInfo.value;
+		a_entryObject.weight = a_itemInfo.weight;
 		a_entryObject.armor = a_itemInfo.armor;
 		a_entryObject.damage = a_itemInfo.damage;
 
@@ -43,9 +35,9 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.isEnchanted = false;
 		a_entryObject.isPoisoned = false;
 
-		a_entryObject.valueDisplay = String(Math.round(a_itemInfo.value * 10) / 10) + ((_combinedValue == true && a_entryObject.count > 1 && a_itemInfo.value > 0) ? (" (" + String(Math.round(a_itemInfo.value * a_entryObject.count * 10) / 10) + ")") : "");
-		a_entryObject.weightDisplay = String(Math.round(a_itemInfo.weight * 10) / 10) + ((_combinedWeight == true && a_entryObject.count > 1 && a_itemInfo.weight > 0) ? (" (" + String(Math.round(a_itemInfo.weight * a_entryObject.count * 10) / 10) + ")") : "");
-		a_entryObject.valueWeightDisplay = (a_entryObject.valueWeight != undefined) ? (Math.round(a_entryObject.valueWeight * 10) / 10) : "-"; // Any item without a weight but has value has a valueWeight == undefined, so should be displayed as "-"
+		a_entryObject.valueDisplay = String(Math.round(a_itemInfo.value * 10) / 10);
+		a_entryObject.weightDisplay = String(Math.round(a_itemInfo.weight * 10) / 10);
+		a_entryObject.valueWeightDisplay = (a_entryObject.valueWeight != undefined) ? (Math.round(a_entryObject.valueWeight * 10) / 10) : "-";
 		a_entryObject.armorDisplay = (a_entryObject.armor > 0) ? (Math.round(a_entryObject.armor * 10) / 10) : "-";
 		a_entryObject.damageDisplay = (a_entryObject.damage > 0) ? (Math.round(a_entryObject.damage * 10) / 10) : "-";
 
@@ -112,6 +104,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 		}
 	}
+
 
   /* PRIVATE FUNCTIONS */
 
@@ -395,7 +388,6 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 		}
 	}
-
 
 	private function processArmorPartMask(a_entryObject: Object): Void
 	{
@@ -736,6 +728,3 @@ class InventoryDataSetter extends ItemcardDataExtender
 		}
 	}
 }
-
-
-// skyui.util.Debug.dump(a_entryObject["text"], a_entryObject);
