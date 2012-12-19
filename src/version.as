@@ -4,16 +4,17 @@
 //	3.0-alpha4		1
 //	3.0-alpha5		2
 //	3.0-alpha6		3
+//	3.0-beta1		4
 
-public static var SKYUI_RELEASE_IDX: Number = 3;
+public static var SKYUI_RELEASE_IDX: Number = 4;
 
 public static var SKYUI_VERSION_MAJOR: Number = 3;
 public static var SKYUI_VERSION_MINOR: Number = 0;
 
-public static var SKYUI_VERSION_ALPHA: Number = 6;
-public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR + "-alpha" + SKYUI_VERSION_ALPHA);
+//public static var SKYUI_VERSION_ALPHA: Number = 7;
+//public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR + "-alpha" + SKYUI_VERSION_ALPHA);
 
-//public static var SKYUI_VERSION_BETA: Number = 0;
-//public static var SKYUI_VERSION_STRING: String = (VERSION_MAJOR + "." + VERSION_MINOR + "-beta" + VERSION_BETA);
+public static var SKYUI_VERSION_BETA: Number = 1;
+public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR + "-beta" + SKYUI_VERSION_BETA);
 
-//public static var SKYUI_VERSION_STRING: String = (VERSION_MAJOR + "." + VERSION_MINOR);
+//public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR);
