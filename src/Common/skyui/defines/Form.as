@@ -161,4 +161,65 @@
 	COLORFORM,		//	CLFM	BGSCOLORFORM
 	REVERBPARAM,		//	REVB	BGSREVERBPARAMETERS
 	*/
+
+	// baseId = (formId & 0x00FFFFFF)
+	// Ammo
+	public static var BASEID_BOUNDARROW: Number							= 0x10B0A7;
+	public static var BASEID_CWARROW: Number							= 0x020DDF;
+	public static var BASEID_CWARROWSHORT: Number						= 0x020F02;
+	public static var BASEID_DAEDRICARROW: Number						= 0x0139C0;
+	public static var BASEID_DRAUGRARROW: Number						= 0x034182;
+	public static var BASEID_DUNARCHERPRATICEARROW: Number				= 0x0CAB52;
+	public static var BASEID_DUNGEIRMUNDSIGDISARROWSILLUSION: Number	= 0x0E738A;
+	public static var BASEID_DWARVENARROW: Number 						= 0x0139BC;
+	public static var BASEID_DWARVENSPHEREARROW: Number 				= 0x07B932;
+	public static var BASEID_DWARVENSPHEREBOLT01: Number 				= 0x07B935;
+	public static var BASEID_DWARVENSPHEREBOLT02: Number 				= 0x10EC8C;
+	public static var BASEID_EBONYARROW: Number 						= 0x0139BF;
+	public static var BASEID_ELVENARROW: Number 						= 0x0139BD;
+	public static var BASEID_FALMERARROW: Number 						= 0x038341;
+	public static var BASEID_FOLLOWERIRONARROW: Number 					= 0x10E2DE;
+	public static var BASEID_FORSWORNARROW: Number 						= 0x0CEE9E;
+	public static var BASEID_GLASSARROW: Number 						= 0x0139BE;
+	public static var BASEID_IRONARROW: Number 							= 0x01397D;
+	public static var BASEID_MQ101STEELARROW: Number 					= 0x105EE7;
+	public static var BASEID_NORDHEROARROW: Number 						= 0x0EAFDF;
+	public static var BASEID_ORCISHARROW: Number 						= 0x0139BB;
+	public static var BASEID_STEELARROW: Number 						= 0x01397F;
+	public static var BASEID_TRAPDART: Number 							= 0x0236DD;
+	public static var BASEID_DLC2DWARVENBALLISTABOLT: Number			= 0x0339A1;
+	public static var BASEID_DLC2RIEKLINGSPEARTHROWN: Number			= 0x026239;
+	
+	// Misc
+	public static var BASEID_GOLD001: Number							= 0x00000F;
+
+	public static var BASEID_LEATHER01: Number							= 0x0DB5D2;
+	public static var BASEID_LEATHERSTRIPS: Number						= 0x0800E4;
+
+	public static var BASEID_RUBYDRAGONCLAW: Number 					= 0x04B56C;
+	public static var BASEID_IVORYDRAGONCLAW: Number 					= 0x0AB7BB;
+	public static var BASEID_GLASSCLAW: Number 							= 0x07C260;
+	public static var BASEID_EBONYCLAW: Number 							= 0x05AF48;
+	public static var BASEID_EMERALDDRAGONCLAW: Number 					= 0x0ED417;
+	public static var BASEID_DIAMONDCLAW: Number 						= 0x0AB375;
+	public static var BASEID_IRONCLAW: Number 							= 0x08CDFA;
+	public static var BASEID_CORALDRAGONCLAW: Number 					= 0x0B634C;
+	public static var BASEID_E3GOLDENCLAW: Number 						= 0x0999E7;
+	public static var BASEID_SAPPHIREDRAGONCLAW: Number 				= 0x0663D7;
+	public static var BASEID_MS13GOLDENCLAW: Number 					= 0x039647;
+
+	public static var BASEID_DA01AZURASSTARBROKEN: Number 				= 0x028AD7;
+
+	// SoulGem
+	public static var BASEID_DA01SOULGEMBLACKSTAR: Number 				= 0x063B29;
+	public static var BASEID_DA01SOULGEMAZURASSTAR: Number 				= 0x063B27;
+	
+	// Weapons
+	public static var BASEID_WEAPPICKAXE: Number 						= 0x0E3C16;
+	public static var BASEID_SSDROCKSPLINTERPICKAXE: Number 			= 0x06A707;
+	public static var BASEID_DUNVOLUNRUUDPICKAXE: Number 				= 0x1019D4;
+
+	public static var BASEID_AXE01: Number 								= 0x02F2F4;
+	public static var BASEID_DUNHALTEDSTREAMPOACHERSAXE: Number 		= 0x0AE086;
+
 }

@@ -32,6 +32,8 @@
 	public static var TYPE_BOW: Number			= 8;
 	public static var TYPE_CROSSBOW: Number		= 9;
 	public static var TYPE_STAFF: Number		= 10;
+	public static var TYPE_PICKAXE: Number		= 11;
+	public static var TYPE_WOODAXE: Number		= 12;
 
 	// AMMO
 	public static var AMMO_ARROW: Number		= 0;

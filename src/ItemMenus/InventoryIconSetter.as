@@ -24,12 +24,8 @@ class InventoryIconSetter implements IListProcessor
 	{
 		var entryList: Array = a_list.entryList;
 		
-		for (var i: Number = 0; i < entryList.length; i++) {
-			if (entryList[i].skyui_inventoryIconSet)
-				continue;
-			entryList[i].skyui_inventoryIconSet = true;
+		for (var i: Number = 0; i < entryList.length; i++)
 			processEntry(entryList[i]);
-		}
 	}
 
   /* PRIVATE FUNCTIONS */
@@ -326,6 +322,17 @@ class InventoryIconSetter implements IListProcessor
 			case Weapon.TYPE_CROSSBOW:
 				a_entryObject.iconLabel = "weapon_crossbow";
 				break;
+
+			case Weapon.TYPE_PICKAXE:
+				a_entryObject.iconLabel = "weapon_pickaxe";
+				break;
+
+			case Weapon.TYPE_WOODAXE:
+				a_entryObject.iconLabel = "weapon_woodaxe";
+				break;
+
+				
+				
 		}
 	}
 
@@ -430,6 +437,11 @@ class InventoryIconSetter implements IListProcessor
 				a_entryObject.iconColor = 0x7569FF;
 				processGrandSoulGemIcon(a_entryObject);
 				break;
+
+			case Item.SOULGEM_AZURA:
+				a_entryObject.iconColor = 0x7569FF;
+				a_entryObject.iconLabel = "soulgem_azura";
+				break;
 		}
 	}
 
@@ -512,6 +524,7 @@ class InventoryIconSetter implements IListProcessor
 				break;
 
 			case Item.MISC_TOOL:
+				a_entryObject.iconLabel = "misc_lockpick";
 				break;
 
 			case Item.MISC_REMAINS:
@@ -528,6 +541,22 @@ class InventoryIconSetter implements IListProcessor
 				break;
 
 			case Item.MISC_FIREWOOD:
+				a_entryObject.iconLabel = "misc_wood";
+				a_entryObject.iconColor = 0xA89E8C;
+				break;
+
+			case Item.MISC_DRAGONCLAW:
+				a_entryObject.iconLabel = "misc_dragonclaw";
+				break;
+
+			case Item.MISC_LEATHER:
+				a_entryObject.iconLabel = "misc_leather";
+				a_entryObject.iconColor = 0xBA8D23;
+				break;
+
+			case Item.MISC_LEATHERSTRIPS:
+				a_entryObject.iconLabel = "misc_strips";
+				a_entryObject.iconColor = 0xBA8D23;
 				break;
 		}
 	}
