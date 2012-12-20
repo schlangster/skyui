@@ -24,9 +24,9 @@
 	{
 		// Apply multipliers to itemInfo value, then process the entry
 		if (a_entryObject.filterFlag < 1024) {
-			a_itemInfo.value = Math.max((a_itemInfo.value * _barterSellMult), 1);
+			a_itemInfo.value = a_itemInfo.value * _barterSellMult;
 		} else {
-			a_itemInfo.value = a_itemInfo.value * _barterBuyMult;
+			a_itemInfo.value = Math.max((a_itemInfo.value * _barterBuyMult), 1);
 		}
 		a_itemInfo.value = Math.floor(a_itemInfo.value + 0.5);
 

@@ -80,7 +80,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	{
 		var navEquivalent: String = inputToNav(a_code);
 
-		if (a_skseKeycode > 265 && navEquivalent != null) {
+		if (navEquivalent != null) {
 			switch (navEquivalent) {
 				case NavigationCode.UP:
 				case NavigationCode.DOWN:

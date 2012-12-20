@@ -15,7 +15,6 @@ class BarterMenu extends ItemMenu
 	
   /* PRIVATE VARIABLES */
   
-	private var _playerInfoObj: Object;
 	private var _buyMult: Number = 1;
 	private var _sellMult: Number = 1;
 	private var _confirmAmount: Number = 0;
@@ -107,16 +106,15 @@ class BarterMenu extends ItemMenu
 		}
 		a_updateObj.value = Math.floor(a_updateObj.value + 0.5);
 		itemCard.itemInfo = a_updateObj;
-		bottomBar.setBarterPerItemInfo(a_updateObj,_playerInfoObj);
+		bottomBar.updateBarterPerItemInfo(a_updateObj);
 	}
 
 	// @override ItemMenu
-	public function UpdatePlayerInfo(a_playerGold: Number, a_vendorGold: Number, a_vendorName: String, a_updateObj: Object): Void
+	public function UpdatePlayerInfo(a_playerGold: Number, a_vendorGold: Number, a_vendorName: String, a_playerUpdateObj: Object): Void
 	{
 		_vendorGold = a_vendorGold;
 		_playerGold = a_playerGold;
-		bottomBar.setBarterInfo(a_playerGold,a_vendorGold,undefined,a_vendorName);
-		_playerInfoObj = a_updateObj;
+		bottomBar.updateBarterInfo(a_playerUpdateObj, itemCard.itemInfo, a_playerGold, a_vendorGold, a_vendorName);
 	}
 	
 	
@@ -144,7 +142,7 @@ class BarterMenu extends ItemMenu
 	{
 		super.onHideItemsList(event);
 
-		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
+		bottomBar.updateBarterPerItemInfo({type:Inventory.ICT_NONE});
 		
 		updateBottomBar(false);
 	}
@@ -155,7 +153,7 @@ class BarterMenu extends ItemMenu
 		if (isViewingVendorItems()) {
 			price = price * -1;
 		}
-		bottomBar.setBarterInfo(_playerGold,_vendorGold,price);
+		bottomBar.updateBarterPriceInfo(_playerGold, _vendorGold, itemCard.itemInfo, price);
 	}
 	
 	// @override ItemMenu
@@ -164,7 +162,10 @@ class BarterMenu extends ItemMenu
 		var price = event.amount * itemCard.itemInfo.value;
 		if (price > _vendorGold && !isViewingVendorItems()) {
 			_confirmAmount = event.amount;
+
 			GameDelegate.call("GetRawDealWarningString", [price], this, "ShowRawDealWarning");
+
+			bottomBar.updateBarterPriceInfo(_playerGold, _vendorGold, itemCard.itemInfo, price);
 			return;
 		}
 		doTransaction(event.amount);
@@ -179,7 +180,7 @@ class BarterMenu extends ItemMenu
 				onQuantitySliderChange({value:itemCard.itemInfo.count});
 				return;
 			}
-			bottomBar.setBarterInfo(_playerGold,_vendorGold);
+			bottomBar.updateBarterPriceInfo(_playerGold, _vendorGold);
 		}
 	}
 	
