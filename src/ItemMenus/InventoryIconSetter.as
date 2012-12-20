@@ -36,47 +36,47 @@ class InventoryIconSetter implements IListProcessor
 	private function processEntry(a_entryObject: Object): Void
 	{
 		switch (a_entryObject.formType) {
-			case Form.FORMTYPE_SCROLLITEM:
+			case Form.TYPE_SCROLLITEM:
 				a_entryObject.iconLabel = "default_scroll";
 				break;
 
-			case Form.FORMTYPE_ARMOR:
+			case Form.TYPE_ARMOR:
 				processArmorIcon(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_BOOK:
+			case Form.TYPE_BOOK:
 				processBookIcon(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_INGREDIENT:
+			case Form.TYPE_INGREDIENT:
 				a_entryObject.iconLabel = "default_ingredient";
 				break;
 
-			case Form.FORMTYPE_LIGHT:
+			case Form.TYPE_LIGHT:
 				a_entryObject.iconLabel = "misc_torch";
 				break;
 
-			case Form.FORMTYPE_MISC:
+			case Form.TYPE_MISC:
 				processMiscIcon(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_WEAPON:
+			case Form.TYPE_WEAPON:
 				processWeaponIcon(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_AMMO:
+			case Form.TYPE_AMMO:
 				processAmmoIcon(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_KEY:
+			case Form.TYPE_KEY:
 				a_entryObject.iconLabel = "default_key";
 				break;
 
-			case Form.FORMTYPE_POTION:
+			case Form.TYPE_POTION:
 				processPotionIcon(a_entryObject);
 				break;
 
-			case Form.FORMTYPE_SOULGEM:
+			case Form.TYPE_SOULGEM:
 				processSoulGemIcon(a_entryObject);
 				break;
 		}
@@ -88,19 +88,19 @@ class InventoryIconSetter implements IListProcessor
 		a_entryObject.iconColor = 0xEDDA87;
 
 		switch (a_entryObject.weightClass) {
-			case Armor.WEIGHTCLASS_LIGHT:
+			case Armor.WEIGHT_LIGHT:
 				processLightArmorIcon(a_entryObject);
 				break;
 
-			case Armor.WEIGHTCLASS_HEAVY:
+			case Armor.WEIGHT_HEAVY:
 				processHeavyArmorIcon(a_entryObject);
 				break;
 
-			case Armor.WEIGHTCLASS_JEWELRY:
+			case Armor.WEIGHT_JEWELRY:
 				processJewelryArmorIcon(a_entryObject);
 				break;
 
-			case Armor.WEIGHTCLASS_CLOTHING:
+			case Armor.WEIGHT_CLOTHING:
 			default:
 				processClothingArmorIcon(a_entryObject);
 				break;
@@ -112,41 +112,41 @@ class InventoryIconSetter implements IListProcessor
 		a_entryObject.iconColor = 0x756000;
 
 		switch(a_entryObject.subType) {
-			case Armor.EQUIPLOCATION_HEAD:
-			case Armor.EQUIPLOCATION_HAIR:
-			case Armor.EQUIPLOCATION_LONGHAIR:
+			case Armor.EQUIP_HEAD:
+			case Armor.EQUIP_HAIR:
+			case Armor.EQUIP_LONGHAIR:
 				a_entryObject.iconLabel = "lightarmor_head";
 				break;
 
-			case Armor.EQUIPLOCATION_BODY:
-			case Armor.EQUIPLOCATION_TAIL:
+			case Armor.EQUIP_BODY:
+			case Armor.EQUIP_TAIL:
 				a_entryObject.iconLabel = "lightarmor_body";
 				break;
 
-			case Armor.EQUIPLOCATION_HANDS:
+			case Armor.EQUIP_HANDS:
 				a_entryObject.iconLabel = "lightarmor_hands";
 				break;
 
-			case Armor.EQUIPLOCATION_FOREARMS:
+			case Armor.EQUIP_FOREARMS:
 				a_entryObject.iconLabel = "lightarmor_forearms";
 				break;
 
-			case Armor.EQUIPLOCATION_FEET:
+			case Armor.EQUIP_FEET:
 				a_entryObject.iconLabel = "lightarmor_feet";
 				break;
 
-			case Armor.EQUIPLOCATION_CALVES:
+			case Armor.EQUIP_CALVES:
 				a_entryObject.iconLabel = "lightarmor_calves";
 				break;
 
-			case Armor.EQUIPLOCATION_SHIELD:
+			case Armor.EQUIP_SHIELD:
 				a_entryObject.iconLabel = "lightarmor_shield";
 				break;
 
-			case Armor.EQUIPLOCATION_AMULET:
-			case Armor.EQUIPLOCATION_RING:
-			case Armor.EQUIPLOCATION_CIRCLET:
-			case Armor.EQUIPLOCATION_EARS:
+			case Armor.EQUIP_AMULET:
+			case Armor.EQUIP_RING:
+			case Armor.EQUIP_CIRCLET:
+			case Armor.EQUIP_EARS:
 				processJewelryArmorIcon(a_entryObject);
 				break;
 
@@ -159,41 +159,41 @@ class InventoryIconSetter implements IListProcessor
 		a_entryObject.iconColor = 0x6B7585;
 
 		switch(a_entryObject.subType) {
-			case Armor.EQUIPLOCATION_HEAD:
-			case Armor.EQUIPLOCATION_HAIR:
-			case Armor.EQUIPLOCATION_LONGHAIR:
+			case Armor.EQUIP_HEAD:
+			case Armor.EQUIP_HAIR:
+			case Armor.EQUIP_LONGHAIR:
 				a_entryObject.iconLabel = "armor_head";
 				break;
 
-			case Armor.EQUIPLOCATION_BODY:
-			case Armor.EQUIPLOCATION_TAIL:
+			case Armor.EQUIP_BODY:
+			case Armor.EQUIP_TAIL:
 				a_entryObject.iconLabel = "armor_body";
 				break;
 
-			case Armor.EQUIPLOCATION_HANDS:
+			case Armor.EQUIP_HANDS:
 				a_entryObject.iconLabel = "armor_hands";
 				break;
 
-			case Armor.EQUIPLOCATION_FOREARMS:
+			case Armor.EQUIP_FOREARMS:
 				a_entryObject.iconLabel = "armor_forearms";
 				break;
 
-			case Armor.EQUIPLOCATION_FEET:
+			case Armor.EQUIP_FEET:
 				a_entryObject.iconLabel = "armor_feet";
 				break;
 
-			case Armor.EQUIPLOCATION_CALVES:
+			case Armor.EQUIP_CALVES:
 				a_entryObject.iconLabel = "armor_calves";
 				break;
 
-			case Armor.EQUIPLOCATION_SHIELD:
+			case Armor.EQUIP_SHIELD:
 				a_entryObject.iconLabel = "armor_shield";
 				break;
 
-			case Armor.EQUIPLOCATION_AMULET:
-			case Armor.EQUIPLOCATION_RING:
-			case Armor.EQUIPLOCATION_CIRCLET:
-			case Armor.EQUIPLOCATION_EARS:
+			case Armor.EQUIP_AMULET:
+			case Armor.EQUIP_RING:
+			case Armor.EQUIP_CIRCLET:
+			case Armor.EQUIP_EARS:
 				processJewelryArmorIcon(a_entryObject);
 				break;
 
@@ -203,19 +203,19 @@ class InventoryIconSetter implements IListProcessor
 	private function processJewelryArmorIcon(a_entryObject: Object): Void
 	{
 		switch(a_entryObject.subType) {
-			case Armor.EQUIPLOCATION_AMULET:
+			case Armor.EQUIP_AMULET:
 				a_entryObject.iconLabel = "armor_amulet";
 				break;
 
-			case Armor.EQUIPLOCATION_RING:
+			case Armor.EQUIP_RING:
 				a_entryObject.iconLabel = "armor_ring";
 				break;
 
-			case Armor.EQUIPLOCATION_CIRCLET:
+			case Armor.EQUIP_CIRCLET:
 				a_entryObject.iconLabel = "armor_circlet";
 				break;
 
-			case Armor.EQUIPLOCATION_EARS:
+			case Armor.EQUIP_EARS:
 				break;
 		}
 	}
@@ -223,38 +223,38 @@ class InventoryIconSetter implements IListProcessor
 	private function processClothingArmorIcon(a_entryObject: Object): Void
 	{
 		switch(a_entryObject.subType) {
-			case Armor.EQUIPLOCATION_HEAD:
-			case Armor.EQUIPLOCATION_HAIR:
-			case Armor.EQUIPLOCATION_LONGHAIR:
+			case Armor.EQUIP_HEAD:
+			case Armor.EQUIP_HAIR:
+			case Armor.EQUIP_LONGHAIR:
 				a_entryObject.iconLabel = "clothing_head";
 				break;
 
-			case Armor.EQUIPLOCATION_BODY:
-			case Armor.EQUIPLOCATION_TAIL:
+			case Armor.EQUIP_BODY:
+			case Armor.EQUIP_TAIL:
 				a_entryObject.iconLabel = "clothing_body";
 				break;
 
-			case Armor.EQUIPLOCATION_HANDS:
+			case Armor.EQUIP_HANDS:
 				a_entryObject.iconLabel = "clothing_hands";
 				break;
 
-			case Armor.EQUIPLOCATION_FOREARMS:
+			case Armor.EQUIP_FOREARMS:
 				a_entryObject.iconLabel = "clothing_forearms";
 				break;
 
-			case Armor.EQUIPLOCATION_FEET:
+			case Armor.EQUIP_FEET:
 				a_entryObject.iconLabel = "clothing_feet";
 				break;
 
-			case Armor.EQUIPLOCATION_CALVES:
+			case Armor.EQUIP_CALVES:
 				a_entryObject.iconLabel = "clothing_calves";
 				break;
 
-			case Armor.EQUIPLOCATION_SHIELD:
+			case Armor.EQUIP_SHIELD:
 				a_entryObject.iconLabel = "clothing_shield";
 				break;
 
-			case Armor.EQUIPLOCATION_EARS:
+			case Armor.EQUIP_EARS:
 				break;
 
 		}
@@ -325,9 +325,6 @@ class InventoryIconSetter implements IListProcessor
 
 			case Weapon.TYPE_CROSSBOW:
 				a_entryObject.iconLabel = "weapon_crossbow";
-				break;
-
-			case Weapon.OTHER:
 				break;
 		}
 	}

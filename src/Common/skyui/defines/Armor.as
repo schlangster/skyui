@@ -1,13 +1,11 @@
 ﻿class skyui.defines.Armor
 {
-	public static var OTHER: Number	= undefined;
-
-	public static var WEIGHTCLASS_LIGHT: Number		= 0;
-	public static var WEIGHTCLASS_HEAVY: Number		= 1;
-	public static var WEIGHTCLASS_NONE: Number		= 2;
+	public static var WEIGHT_LIGHT: Number		= 0;
+	public static var WEIGHT_HEAVY: Number		= 1;
+	public static var WEIGHT_NONE: Number		= 2;
 	// SkyUI
-	public static var WEIGHTCLASS_CLOTHING: Number	= 3;
-	public static var WEIGHTCLASS_JEWELRY: Number	= 4;
+	public static var WEIGHT_CLOTHING: Number	= 3;
+	public static var WEIGHT_JEWELRY: Number	= 4;
 
 	public static var PARTMASK_HEAD: Number				= 0x00000001;
 	public static var PARTMASK_HAIR: Number				= 0x00000002;
@@ -76,18 +74,18 @@
 													PARTMASK_FX01];
 
 	// SkyUI
-	public static var EQUIPLOCATION_HEAD: Number		= 0;
-	public static var EQUIPLOCATION_HAIR: Number		= 1;
-	public static var EQUIPLOCATION_LONGHAIR: Number	= 2;
-	public static var EQUIPLOCATION_BODY: Number		= 3;
-	public static var EQUIPLOCATION_FOREARMS: Number	= 4;
-	public static var EQUIPLOCATION_HANDS: Number		= 5;
-	public static var EQUIPLOCATION_SHIELD: Number		= 6;
-	public static var EQUIPLOCATION_CALVES: Number		= 7;
-	public static var EQUIPLOCATION_FEET: Number		= 8;
-	public static var EQUIPLOCATION_CIRCLET: Number		= 9;
-	public static var EQUIPLOCATION_AMULET: Number		= 10;
-	public static var EQUIPLOCATION_EARS: Number		= 11;
-	public static var EQUIPLOCATION_RING: Number		= 12;
-	public static var EQUIPLOCATION_TAIL: Number		= 13;
+	public static var EQUIP_HEAD: Number		= 0;
+	public static var EQUIP_HAIR: Number		= 1;
+	public static var EQUIP_LONGHAIR: Number	= 2;
+	public static var EQUIP_BODY: Number		= 3;
+	public static var EQUIP_FOREARMS: Number	= 4;
+	public static var EQUIP_HANDS: Number		= 5;
+	public static var EQUIP_SHIELD: Number		= 6;
+	public static var EQUIP_CALVES: Number		= 7;
+	public static var EQUIP_FEET: Number		= 8;
+	public static var EQUIP_CIRCLET: Number		= 9;
+	public static var EQUIP_AMULET: Number		= 10;
+	public static var EQUIP_EARS: Number		= 11;
+	public static var EQUIP_RING: Number		= 12;
+	public static var EQUIP_TAIL: Number		= 13;
 }

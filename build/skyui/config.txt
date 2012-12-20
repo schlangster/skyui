@@ -16,9 +16,7 @@ itemcard.yOffset = 0
 ; =====================================================================================================================
 [ItemList] 
 ; =====================================================================================================================
-quantityMenu.trigger = 5 ; Number of items required to trigger quantity dialog. 0 is disabled
-inventory.combinedValue = false
-inventory.combinedWeight = false
+quantityMenu.minCount = 5 ; Number of items required to trigger quantity dialog. 0 is disabled
 
 
 ; =====================================================================================================================
@@ -209,18 +207,18 @@ columns.magnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING 
 
 ; DURATION COLUMN -------------------------------------------------------
 columns.durationColumn.type = TEXT
-columns.durationColumn.name = '$DURATION'
+columns.durationColumn.name = '$TIME'
 columns.durationColumn.states = 2
 columns.durationColumn.width = 0.09
 columns.durationColumn.border = a_textBorder
 
-columns.durationColumn.state1.label.text = '$DUR'
+columns.durationColumn.state1.label.text = '$TIME'
 columns.durationColumn.state1.label.arrowDown = true
 columns.durationColumn.state1.entry.text = @duration
 columns.durationColumn.state1.sortAttributes = <duration, text>
 columns.durationColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-columns.durationColumn.state2.label.text = '$DUR'
+columns.durationColumn.state2.label.text = '$TIME'
 columns.durationColumn.state2.entry.text = @duration
 columns.durationColumn.state2.sortAttributes = <duration, text>
 columns.durationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
@@ -228,7 +226,7 @@ columns.durationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING |
 
 ; MAGIC MAGNITUDE COLUMN -------------------------------------------------------
 columns.magicMagnitudeColumn.type = TEXT
-columns.magicMagnitudeColumn.name = '$MAGNITUDE'
+columns.magicMagnitudeColumn.name = '$TIME'
 columns.magicMagnitudeColumn.states = 2
 columns.magicMagnitudeColumn.width = 0.15
 columns.magicMagnitudeColumn.border = a_textBorder
@@ -247,18 +245,18 @@ columns.magicMagnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCEN
 
 ; MAGIC DURATION COLUMN -------------------------------------------------------
 columns.magicDurationColumn.type = TEXT
-columns.magicDurationColumn.name = '$DURATION'
+columns.magicDurationColumn.name = '$TIME'
 columns.magicDurationColumn.states = 2
 columns.magicDurationColumn.width = 0.15
 columns.magicDurationColumn.border = a_textBorder
 
-columns.magicDurationColumn.state1.label.text = '$DUR'
+columns.magicDurationColumn.state1.label.text = '$TIME'
 columns.magicDurationColumn.state1.label.arrowDown = true
 columns.magicDurationColumn.state1.entry.text = @duration
 columns.magicDurationColumn.state1.sortAttributes = <duration, text>
 columns.magicDurationColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-columns.magicDurationColumn.state2.label.text = '$DUR'
+columns.magicDurationColumn.state2.label.text = '$TIME'
 columns.magicDurationColumn.state2.entry.text = @duration
 columns.magicDurationColumn.state2.sortAttributes = <duration, text>
 columns.magicDurationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
@@ -571,93 +569,3 @@ layouts.itemListLayout.views = <weaponView, armorView, magicItemView, defaultIte
 
 layouts.magicListLayout.name = 'MagicListLayout'
 layouts.magicListLayout.views = <shoutsView, powersView, activeEffectView, allMagicView, defaultMagicView>
-
-
-; =====================================================================================================================
-[Properties] 
-; =====================================================================================================================
-
-; SET PROPERTIES -------------------------------------------------------
-; Set values based on keywords/dataMembers
-; Often set a property like material with a numerical value for proper sorting 
-; and then materialDisplay with text to show in the column.
-; ALL_CAPS like MATERIAL_IRON are constant numerical values set by skyUI.
-; For setting properties based on keywords:
-; .keywords.keywordname.set = <'propertyToSet': valueToSet>
-; For setting properties based on dataMembers:
-; .dataMember#.filter = <'dataMemberToMatch': valueToMatch>
-; .dataMember#.set = <'propertyToSet': valueToSet>
-
-; Set Compound Properties -------------------------------------------------------
-; Set properties that are a combination of other properties, used for icon column sorting
-; By changing concatenateList you can change your icon column sorting.
-; For example compoundProps.armorTotalSort.concatenateList = <'formType', 'weightClass', 'subType', 'material'>
-; will put all heavy armor together and then sort by body/head/etc vs the default of putting all body/head/etc
-; together and then sorting by weight class.
-
-; Properties -------------------------------------------------------
-; itemProperties
-; magicProperties
-
-; props.itemGroup.propertiesToSet = <'subType', 'subTypeDisplay'>
-; props.itemGroup.filter = <'formType': ...>
-; props.itemGroup.overwrite = true
-; props.itemGroup.dataMember1.filter = <'formId': ...>
-; props.itemGroup.dataMember1.set = <'subType': ..., 'subTypeDisplay': ...>
-; 
-; props.itemGroupOther.propertiesToSet = <'subType', 'subTypeDisplay'>
-; props.itemGroupOther.filter = <'formType': ...>
-; props.itemGroupOther.defaultValues = <'subType': ..., 'subTypeDisplay': ...>
-; props.itemGroupOther.keywords.SomeKeyword = <'subType': ..., 'subTypeDisplay': ...>
-; 
-; itemProperties = <'itemGroup', 'itemGroupOther', ...>
-
-
-; props.magicGroup.propertiesToSet = <'subType', 'subTypeDisplay'>
-; props.magicGroup.filter = <'formType': ...>
-; props.magicGroup.dataMember1.filter = <'formId': ...>
-; props.magicGroup.dataMember1.set = <'subType': ..., 'subTypeDisplay': ...>
-; 
-; props.magicGroupOther.propertiesToSet = <'subType', 'subTypeDisplay'>
-; props.magicGroupOther.filter = <'formType': ...>
-; props.magicGroupOther.defaultValues = <'subType': ..., 'subTypeDisplay': ...>
-; props.magicGroupOther.keywords.SomeKeyword = <'subType': ..., 'subTypeDisplay': ...>
-;
-; magicProperties = <'magicGroup', 'magicGroupOther', ...>
-
-
-; Icon Labels ------------------------------------------------------
-; itemicons
-; magicIcons
-
-; props.itemIconGroup.propertiesToSet = <'iconLabel', 'iconColor'>
-; props.itemIconGroup.filter = <'formType': ...>
-; props.itemIconGroup.defaultValues = <'iconColor': ...>
-; props.itemIconGroup.dataMember1.filter = ...
-; props.itemIconGroup.dataMember1.set = ...
-;
-; itemicons = <'itemIconGroup', ...>
-
-
-; props.magicIconGroup...
-;
-; magicIcons = <'magicIconGroup', ...>
-
-; Compound Properties ----------------------------------------------
-; itemCompoundProperties
-; magicCompoundProperties
-
-; compoundProps.itemCompoundGroup.propertyToSet = 'mySortProperty'
-; compoundProps.itemCompoundGroup.filter = ...
-; compoundProps.itemCompoundGroup.concatenateList = <'type', 'formType', ...>
-; compoundProps.itemCompoundGroup.defaultValues = <'type': undefined, 'formType': undefined, ...>
-;
-; itemCompoundProperties = <'itemCompoundGroup', ...>
-
-
-; compoundProps.magicCompoundGroup.propertyToSet = 'mySortProperty'
-; compoundProps.magicCompoundGroup.filter = ...
-; compoundProps.magicCompoundGroup.concatenateList = <'type', 'formType', ...>
-; compoundProps.magicCompoundGroup.defaultValues = <'type': undefined, 'formType': undefined, ...>
-;
-; magicCompoundProperties = <'magicCompoundGroup', ...>

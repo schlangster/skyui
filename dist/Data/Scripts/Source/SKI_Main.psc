@@ -27,13 +27,13 @@ endProperty
 
 int property		ReqSWFRelease
 	int function get()
-		return 3
+		return 4
 	endFunction
 endProperty
 
 string property		ReqSWFVersion
 	string function get()
-		return "3.0-alpha6"
+		return "3.0-beta1"
 	endFunction
 endProperty
 
@@ -70,13 +70,13 @@ event OnGameReload()
 	endIf
 
 	; Check hudmenu.swf version
-	if (HUDMenuCheckEnabled)
-		if (UI.IsMenuOpen(HUD_MENU))
-			CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
-		else
-			RegisterForMenu(HUD_MENU)
-		endIf
-	endIf
+	;if (HUDMenuCheckEnabled)
+	;	if (UI.IsMenuOpen(HUD_MENU))
+	;		CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
+	;	else
+	;		RegisterForMenu(HUD_MENU)
+	;	endIf
+	;endIf
 
 	; Check other menus, when they're opened
 	if (InventoryMenuCheckEnabled)
@@ -136,10 +136,10 @@ event OnMenuOpen(string a_menuName)
 		CheckMenuVersion("quest_journal.swf", JOURNAL_MENU, "_global.Quest_Journal")
 		CheckMenuVersion("skyui/configpanel.swf", JOURNAL_MENU, "_global.ConfigPanel")
 
- 	elseIf (a_menuName == HUD_MENU)
-		UnregisterForMenu(HUD_MENU)
-		CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
-
+ 	;elseIf (a_menuName == HUD_MENU)
+	;	UnregisterForMenu(HUD_MENU)
+	;	CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
+	;
 	endIf
 endEvent
 

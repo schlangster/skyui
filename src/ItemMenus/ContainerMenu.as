@@ -79,7 +79,7 @@ class ContainerMenu extends ItemMenu
 		super.setConfig(a_config);
 		
 		var itemList: TabularList = inventoryLists.itemList;		
-		itemList.addDataProcessor(new InventoryDataSetter(a_config["ItemList"], a_config["Appearance"]));
+		itemList.addDataProcessor(new InventoryDataSetter());
 		itemList.addDataProcessor(new InventoryIconSetter());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
@@ -297,7 +297,7 @@ class ContainerMenu extends ItemMenu
 				return;
 			}
 
-			if (_quantityMenuTrigger < 1 || (inventoryLists.itemList.selectedEntry.count < _quantityMenuTrigger)) {
+			if (_quantityMinCount < 1 || (inventoryLists.itemList.selectedEntry.count < _quantityMinCount)) {
 				onQuantityMenuSelect({amount:1});
 			} else {
 				itemCard.ShowQuantityMenu(inventoryLists.itemList.selectedEntry.count);

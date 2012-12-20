@@ -1,12 +1,15 @@
-import com.greensock.TweenLite;
+﻿import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
 
 class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 {
   /* PRIVATE VARIABLES */
+  
 	private var _effectsArray: Array
 
+
   /* PUBLIC VARIABLES */
+  
   	// initObject
 	public var index: Number;
 	public var groupMoveDuration: Number;
@@ -22,6 +25,9 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	public var vGrowDirection: String;
 	public var orientation: String;
 
+
+  /* INITIALIZATION */
+  
 	public function ActiveEffectsGroup()
 	{
 		super();
@@ -32,7 +38,9 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		_y = determinePosition(index)[1];
 	}
 
+
   /* PROPERTIES */
+  
 	public function get length(): Number
 	{
 		return _effectsArray.length;
@@ -46,7 +54,9 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	}
 	*/
 
+
   /* PUBLIC FUNCTIONS */
+  
 	public function addEffect(a_effectData: Object): MovieClip
 	{
 		var effectIdx: Number = _effectsArray.length;
@@ -98,7 +108,9 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		}
 	}
 
+
   /* PRIVATE FUNCTIONS */
+  
 	private function determinePosition(a_index: Number): Array
 	{
 		// defaults to vertical
@@ -137,7 +149,6 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onGroupRemoved, onCompleteParams: [this], overwrite: 2, easing: Linear.easeNone});
   	}
   	*/
-
 }
 
 

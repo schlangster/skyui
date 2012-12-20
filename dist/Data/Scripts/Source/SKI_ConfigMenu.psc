@@ -26,15 +26,6 @@ int			_3DItemXOffsetOID_S
 int			_3DItemYOffsetOID_S
 int			_3DItemScaleOID_S
 
-int			_AEEnabledOID_B
-int			_AEEffectSizeOID_T
-int			_AEClampCornerOID_M
-int			_AEGroupEffectCountOID_S
-int			_AEOffsetXOID_S
-int			_AEOffsetYOID_S
-int			_AEOrientationOID_T
-
-int			_checkHUDMenuOID_B
 int			_checkInventoryMenuOID_B
 int			_checkMagicMenuOID_B
 int			_checkBarterMenuOID_B
@@ -55,17 +46,6 @@ float		_3DItemXOffset				= 0.0
 float		_3DItemYOffset				= 0.0
 float		_3DItemScale				= 1.5
 
-bool		_AEEnabled					= false
-float[]		_AEEffectSizeValues
-int			_AEEffectSizeIdx			= 1
-int			_AEClampCornerIdx			= 1
-int			_AEGroupEffectCount			= 8
-float[]		_AEBaseXValues
-float		_AEOffsetX					= 0.0
-float[]		_AEBaseYValues
-float		_AEOffsetY					= 0.0
-int			_AEOrientationIdx			= 1
-
 ; Internal
 float		_itemXBase
 
@@ -73,7 +53,6 @@ float		_itemXBase
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 SKI_SettingsManager property		SKI_SettingsManagerInstance auto
-SKI_ActiveEffectsWidget property	SKI_ActiveEffectsWidgetInstance auto
 SKI_Main property					SKI_MainInstance auto
 
 
@@ -109,23 +88,6 @@ event OnInit()
 	_orientations[0] = "Horizontal"
 	_orientations[1] = "Vertical"
 
-	_AEEffectSizeValues = new float[3]
-	_AEEffectSizeValues[0] = 32.0
-	_AEEffectSizeValues[1] = 48.0
-	_AEEffectSizeValues[2] = 64.0
-
-	_AEBaseXValues = new float[4]
-	_AEBaseXValues[0] = 0.0
-	_AEBaseXValues[1] = 1280.0
-	_AEBaseXValues[2] = 1280.0
-	_AEBaseXValues[3] = 0.0
-
-	_AEBaseYValues = new float[4]
-	_AEBaseYValues[0] = 0.0
-	_AEBaseYValues[1] = 30.05
-	_AEBaseYValues[2] = 720.0
-	_AEBaseYValues[3] = 720.0
-
 	ApplySettings()
 endEvent
 
@@ -158,15 +120,6 @@ event OnPageReset(string a_page)
 		AddHeaderOption("Item List")
 		_itemlistFontSizeOID_T			= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
 		_itemlistQuantityTriggerOID_S		= AddSliderOption("Quantity Menu Limit", _itemlistQuantityTrigger)
-		_itemlistCombinedValueOID_B		= AddToggleOption("Display Combined Value", _itemlistCombinedValue)
-		_itemlistCombinedWeightOID_B	= AddToggleOption("Display Combined Weight", _itemlistCombinedWeight)
-
-		SetCursorPosition(1)
-
-		; Disabled for now until icons are done
-		AddHeaderOption("Active Effects HUD")
-		_AEEnabledOID_B					= AddToggleOption("Enabled", _AEEnabled, OPTION_FLAG_DISABLED)
-		_AEEffectSizeOID_T				= AddTextOption("Effect Size", _sizes[_AEEffectSizeIdx])
 
 	; -------------------------------------------------------
 	elseIf (a_page == "Advanced")
@@ -179,24 +132,14 @@ event OnPageReset(string a_page)
 
 		AddEmptyOption()
 
-		AddHeaderOption("Active Effects HUD")
-		_AEOrientationOID_T				= AddTextOption("Orientation", _orientations[_AEOrientationIdx])
-		_AEClampCornerOID_M				= AddMenuOption("Clamp to Corner", _corners[_AEClampCornerIdx])
-		_AEGroupEffectCountOID_S		= AddSliderOption("Max Effect Width", _AEGroupEffectCount, "{0}")
-		_AEOffsetXOID_S					= AddSliderOption("X Offset", _AEOffsetX)
-		_AEOffsetYOID_S					= AddSliderOption("Y Offset", _AEOffsetY)
-
-		SetCursorPosition(1)
-
 		AddHeaderOption("3D Item")
 		_3DItemXOffsetOID_S				= AddSliderOption("Horizontal Offset", _3DItemXOffset)
 		_3DItemYOffsetOID_S				= AddSliderOption("Vertical Offset", _3DItemYOffset)
 		_3DItemScaleOID_S				= AddSliderOption("Scale", _3DItemScale, "{1}")
 
-		AddEmptyOption()
+		SetCursorPosition(1)
 
 		AddHeaderOption("SWF Version Checking")
-		_checkHUDMenuOID_B				= AddToggleOption("HUD Menu", SKI_MainInstance.HUDMenuCheckEnabled)
 		_checkInventoryMenuOID_B		= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
 		_checkMagicMenuOID_B			= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
 		_checkBarterMenuOID_B			= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
@@ -264,48 +207,6 @@ event OnOptionDefault(int a_option)
 		Apply3DItemScale()
 
 	; -------------------------------------------------------
-	elseIf (a_option == _AEEnabledOID_B)
-		_AEEnabled = false
-		SetToggleOptionValue(a_option, _AEEnabled)
-		SKI_ActiveEffectsWidgetInstance.Enabled = _AEEnabled
-
-	elseIf (a_option == _AEEffectSizeOID_T)
-		_AEEffectSizeIdx = 1
-		SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
-		SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
-
-	elseIf (a_option == _AEClampCornerOID_M)
-		_AEClampCornerIdx = 1
-		SetMenuOptionValue(a_option, _corners[_AEClampCornerIdx])
-		SKI_ActiveEffectsWidgetInstance.ClampCorner = _cornerValues[_AEClampCornerIdx]
-		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
-		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
-
-	elseIf (a_option == _AEGroupEffectCountOID_S)
-		_AEGroupEffectCount = 8
-		SetSliderOptionValue(a_option, _AEGroupEffectCount)
-		SKI_ActiveEffectsWidgetInstance.GroupEffectCount = _AEGroupEffectCount
-
-	elseIf (a_option == _AEOffsetXOID_S)
-		_AEOffsetX = 0.0
-		SetSliderOptionValue(a_option, _AEOffsetX)
-		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
-
-	elseIf (a_option == _AEOffsetYOID_S)
-		_AEOffsetY = 0.0
-		SetSliderOptionValue(a_option, _AEOffsetY)
-		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
-
-	elseIf (a_option == _AEOrientationOID_T)
-		_AEOrientationIdx = 1
-		SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
-		SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
-
-	; -------------------------------------------------------
-	elseIf (a_option == _checkHUDMenuOID_B)
-		SKI_MainInstance.HUDMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		SKI_MainInstance.InventoryMenuCheckEnabled = true
 		SetToggleOptionValue(a_option, true)
@@ -354,11 +255,6 @@ event OnOptionSelect(int a_option)
 		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
 
 	; -------------------------------------------------------
-	elseIf (a_option == _AEEnabledOID_B)
-		_AEEnabled = !_AEEnabled
-		SetToggleOptionValue(a_option, _AEEnabled)
-		SKI_ActiveEffectsWidgetInstance.Enabled = _AEEnabled
-
 	elseIf (a_option == _itemcardAlignOID_T)
 		if (_itemcardAlignIdx < _alignments.length - 1)
 			_itemcardAlignIdx += 1
@@ -367,29 +263,6 @@ event OnOptionSelect(int a_option)
 		endif
 		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
 		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
-	
-	elseif (a_option == _AEEffectSizeOID_T)
-		if (_AEEffectSizeIdx < _sizes.length - 1)
-			_AEEffectSizeIdx += 1
-		else
-			_AEEffectSizeIdx = 0
-		endIf
-		SetTextOptionValue(a_option, _sizes[_AEEffectSizeIdx])
-		SKI_ActiveEffectsWidgetInstance.EffectSize = _AEEffectSizeValues[_AEEffectSizeIdx]
-
-	elseIf (a_option == _AEOrientationOID_T)
-		if (_AEOrientationIdx < _orientations.length - 1)
-			_AEOrientationIdx += 1
-		else
-			_AEOrientationIdx = 0
-		endIf
-		SetTextOptionValue(a_option, _orientations[_AEOrientationIdx])
-		SKI_ActiveEffectsWidgetInstance.Orientation = _orientations[_AEOrientationIdx]
-	
-	elseIf (a_option == _checkHUDMenuOID_B)
-		bool newVal = !SKI_MainInstance.HUDMenuCheckEnabled
-		SKI_MainInstance.HUDMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
 
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		bool newVal = !SKI_MainInstance.InventoryMenuCheckEnabled
@@ -461,23 +334,6 @@ event OnOptionSliderOpen(int a_option)
 		SetSliderDialogRange(0.5, 5)
 		SetSliderDialogInterval(0.1)
 
-	elseIf (a_option == _AEGroupEffectCountOID_S)
-		SetSliderDialogStartValue(_AEGroupEffectCount)
-		SetSliderDialogDefaultValue(8)
-		SetSliderDialogRange(1, 16)
-		SetSliderDialogInterval(1)
-
-	elseIf (a_option == _AEOffsetXOID_S)
-		SetSliderDialogStartValue(_AEOffsetX)
-		SetSliderDialogDefaultValue(0)
-		SetSliderDialogRange(-1280, 1280)
-		SetSliderDialogInterval(1)
-
-	elseIf (a_option == _AEOffsetYOID_S)
-		SetSliderDialogStartValue(_AEOffsetY)
-		SetSliderDialogDefaultValue(0)
-		SetSliderDialogRange(-720, 720)
-		SetSliderDialogInterval(1)
 	endIf
 endEvent
 
@@ -517,47 +373,6 @@ event OnOptionSliderAccept(int a_option, float a_value)
 		SetSliderOptionValue(a_option, _3DItemScale, "{1}")
 		Apply3DItemScale()
 
-	elseIf (a_option == _AEGroupEffectCountOID_S)
-		_AEGroupEffectCount = a_value as int
-		SetSliderOptionValue(a_option, _AEGroupEffectCount)
-		SKI_ActiveEffectsWidgetInstance.GroupEffectCount = _AEGroupEffectCount
-
-	elseIf (a_option == _AEOffsetXOID_S)
-		_AEOffsetX = a_value
-		SetSliderOptionValue(a_option, _AEOffsetX)
-		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
-
-	elseIf (a_option == _AEOffsetYOID_S)
-		_AEOffsetY = a_value
-		SetSliderOptionValue(a_option, _AEOffsetY)
-		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
-
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionMenuOpen(int a_option)
-
-	if (a_option == _AEClampCornerOID_M)
-		SetMenuDialogStartIndex(_AEClampCornerIdx)
-		SetMenuDialogDefaultIndex(1)
-		SetMenuDialogOptions(_corners)
-
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionMenuAccept(int a_option, int a_index)
-	
-	if (a_option == _AEClampCornerOID_M)
-		_AEClampCornerIdx = a_index
-		SetMenuOptionValue(a_option, _corners[_AEClampCornerIdx])
-		SKI_ActiveEffectsWidgetInstance.ClampCorner = _cornerValues[_AEClampCornerIdx]
-		SKI_ActiveEffectsWidgetInstance.X = _AEBaseXValues[_AEClampCornerIdx] + _AEOffsetX
-		SKI_ActiveEffectsWidgetInstance.Y = _AEBaseYValues[_AEClampCornerIdx] + _AEOffsetY
-
 	endIf
 endEvent
 
@@ -589,23 +404,6 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _3DItemScaleOID_S)
 		SetInfoText("Default: 1.5")
 
-	elseIf (a_option == _AEEnabledOID_B)
-		SetInfoText("Default: No")
-	elseIf (a_option == _AEEffectSizeOID_T)
-		SetInfoText("Default: Medium")
-	elseif (a_option == _AEClampCornerOID_M)
-		SetInfoText("Default: Top Right")
-	elseIf (a_option == _AEGroupEffectCountOID_S)
-		SetInfoText("Default: 8")
-	elseif (a_option == _AEOffsetXOID_S)
-		SetInfoText("Default: 0")
-	elseif (a_option == _AEOffsetYOID_S)
-		SetInfoText("Default: 0")
-	elseif (a_option == _AEOrientationOID_T)
-		SetInfoText("Default: Vertical")
-
-	elseIf (a_option == _checkHUDMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
 	elseIf (a_option == _checkMagicMenuOID_B)

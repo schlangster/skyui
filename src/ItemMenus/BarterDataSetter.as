@@ -8,9 +8,9 @@
 	
   /* INITIALIZATION */
 	
-	public function BarterDataSetter(a_configItemList: Object, a_configAppearance: Object, a_barterBuyMult: Number, a_barterSellMult: Number)
+	public function BarterDataSetter(a_barterBuyMult: Number, a_barterSellMult: Number)
 	{
-		super(a_configItemList, a_configAppearance);
+		super();
 
 		_barterBuyMult = (a_barterBuyMult == undefined) ? 1.0 : a_barterBuyMult;
 		_barterSellMult = (a_barterSellMult == undefined) ? 1.0 : a_barterSellMult;

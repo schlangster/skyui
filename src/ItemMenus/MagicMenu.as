@@ -64,7 +64,7 @@ class MagicMenu extends ItemMenu
 		super.setConfig(a_config);
 		
 		var itemList: TabularList = inventoryLists.itemList;
-		itemList.addDataProcessor(new MagicDataSetter(a_config["ItemList"], a_config["Appearance"]));
+		itemList.addDataProcessor(new MagicDataSetter());
 		itemList.addDataProcessor(new MagicIconSetter());
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "magicProperties", "magicIcons", "magicCompoundProperties"));
 		
