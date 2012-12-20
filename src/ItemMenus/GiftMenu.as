@@ -6,6 +6,7 @@ import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Input;
+import skyui.defines.Inventory;
 
 
 class GiftMenu extends ItemMenu
@@ -101,6 +102,9 @@ class GiftMenu extends ItemMenu
 	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
+
+		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
+		
 		updateBottomBar(false);
 	}
 

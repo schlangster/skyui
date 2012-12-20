@@ -196,7 +196,9 @@ class InventoryMenu extends ItemMenu
 	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
+
 		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
+		
 		updateBottomBar(false);
 	}
 

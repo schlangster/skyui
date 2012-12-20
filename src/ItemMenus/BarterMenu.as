@@ -6,6 +6,7 @@ import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Input;
+import skyui.defines.Inventory;
 
 
 class BarterMenu extends ItemMenu
@@ -142,6 +143,9 @@ class BarterMenu extends ItemMenu
 	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
+
+		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
+		
 		updateBottomBar(false);
 	}
 	

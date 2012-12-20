@@ -9,6 +9,7 @@ import skyui.components.list.ListLayout;
 import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Input;
+import skyui.defines.Inventory;
 
 
 class ContainerMenu extends ItemMenu
@@ -194,8 +195,10 @@ class ContainerMenu extends ItemMenu
 	// @override ItemMenu
 	private function onItemHighlightChange(event: Object): Void
 	{
+		if (event.index != -1)
+			updateBottomBar(true);
+
 		super.onItemHighlightChange(event);
-		updateBottomBar(true);
 	}
 
 	// @override ItemMenu
@@ -208,6 +211,9 @@ class ContainerMenu extends ItemMenu
 	private function onHideItemsList(event: Object): Void
 	{
 		super.onHideItemsList(event);
+
+		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
+
 		updateBottomBar(false);
 	}
 
