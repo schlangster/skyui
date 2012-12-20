@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.0-alpha6
+Version:		3.0-beta1
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -71,6 +71,7 @@ Further general objectives and design concepts are:
 
 Since improving the whole UI is a big undertaking, we release only single menus at a time as we make progress.
 The first menu we addressed was the Inventory. In version 2.0, we included new Barter, Container and Magic menus.
+Version 3.0 introduced a shared in-game control panel for mods.
 
 For a more detailed description, please see our mod description on Skyrim Nexus.
 
@@ -81,7 +82,31 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 
 ------------------------------------------------------------
 3.0:
-- TODO
+
+[NOTES]
+- When upgrading from previous versions, make sure to uninstall them first!
+
+[General]
+- Added more columns to item lists and a drop-down menu to show/hide them.
+- Added a new icon theme by Psychosteve (support for the old themes had to be dropped because they are no longer maintained).
+- Added type column to group items of the same category into sub-types.
+- Added dynamic icon coloring.
+- Added option to configure the minimum stack size that triggers the quanity select dialog.
+- Added dynamic icon art to bottom bar so it matches the current control mapping.
+- Replaced NMM installer with an in-game configuration menu.
+- Replaced old error messages with regular message boxes and added more safety checks for outdated SkyUI components.
+- Improved performance.
+- Fixed various smaller issues.
+
+[ContainerMenu]
+- Added support for GiftMenu.
+- Improved input scheme for mouse and keyboard (no more R to Take All and Store, mouse click for Give/Take etc.).
+
+[MagicMenu]
+- Fixed locked words being shown as unlocked if one word is known.
+
+[ModConfigurationMenu]
+- Initial release. Mod authors see https://github.com/schlangster/skyui/wiki for documentation.
 
 ------------------------------------------------------------
 2.1:
