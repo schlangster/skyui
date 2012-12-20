@@ -76,17 +76,30 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	
   /* PRIVATE FUNCTIONS */
 
-	private function handleKeyPress(a_type: String, a_code: Number, a_controllerIdx: Number, a_control: String, a_skseKeycode)
+	private function handleKeyPress(a_type: String, a_code: Number, a_controllerIdx: Number, a_control: String, a_skseKeycode: Number): Void
 	{
-		var details = new InputDetails("key", a_code, a_type, inputToNav(a_code), a_controllerIdx, a_control, a_skseKeycode);
+		var navEquivalent: String = inputToNav(a_code);
+
+		if (a_skseKeycode > 265 && navEquivalent != null) {
+			switch (navEquivalent) {
+				case NavigationCode.UP:
+				case NavigationCode.DOWN:
+				case NavigationCode.LEFT:
+				case NavigationCode.RIGHT:
+					a_control = null;
+					a_skseKeycode = null;
+					break;
+			}
+		}
+
+		var details = new InputDetails("key", a_code, a_type, navEquivalent, a_controllerIdx, a_control, a_skseKeycode);
 		dispatchEvent({type: "input", details: details});
 	}
 
 	private function getKeyRepeatState(a_controllerIdx: Number): Object
 	{
 		var obj = this._keyRepeatStateLookup[a_controllerIdx];
-		if (!obj) 
-		{
+		if (!obj) {
 			obj = new Object();
 			_keyRepeatStateLookup[a_controllerIdx] = obj;
 		}
@@ -96,8 +109,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	private function getKeyRepeatSuppress(a_controllerIdx: Number): Object
 	{
 		var obj = _keyRepeatSuppressLookup[a_controllerIdx];
-		if (!obj) 
-		{
+		if (!obj) {
 			obj = new Object();
 			_keyRepeatSuppressLookup[a_controllerIdx] = obj;
 		}
