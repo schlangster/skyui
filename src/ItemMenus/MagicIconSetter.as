@@ -21,12 +21,8 @@ class MagicIconSetter implements IListProcessor
 	{
 		var entryList: Array = a_list.entryList;
 		
-		for (var i: Number = 0; i < entryList.length; i++) {
-			if (entryList[i].skyui_inventoryIconSet)
-				continue;
-			entryList[i].skyui_inventoryIconSet = true;
+		for (var i: Number = 0; i < entryList.length; i++)
 			processEntry(entryList[i]);
-		}
 	}
 
   /* PRIVATE FUNCTIONS */

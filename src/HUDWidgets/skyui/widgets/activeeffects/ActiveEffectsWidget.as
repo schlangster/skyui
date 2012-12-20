@@ -1,6 +1,4 @@
-﻿import skyui.util.Defines;
-
-import skyui.widgets.WidgetBase;
+﻿import skyui.widgets.WidgetBase;
 import skyui.widgets.activeeffects.ActiveEffectsGroup;
 
 import com.greensock.TweenLite;

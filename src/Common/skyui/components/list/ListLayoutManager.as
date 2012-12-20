@@ -1,7 +1,5 @@
 ﻿import skyui.util.ConfigManager;
 import skyui.components.list.ListLayout;
-import skyui.util.Defines;
-
 
 class skyui.components.list.ListLayoutManager
 {

@@ -74,6 +74,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 			case Form.TYPE_MISC:
 				processMiscType(a_entryObject);
+				processMiscBaseId(a_entryObject);
 				break;
 
 			case Form.TYPE_WEAPON:
@@ -81,13 +82,14 @@ class InventoryDataSetter extends ItemcardDataExtender
 				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
+				processWeaponBaseId(a_entryObject);
 				break;
 
 			case Form.TYPE_AMMO:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
-				///processAmmoFormIDs(a_entryObject); //Vanilla arrows don't have material keywords
+				processAmmoBaseId(a_entryObject);
 				break;
 
 			case Form.TYPE_KEY:
@@ -101,6 +103,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.TYPE_SOULGEM:
 				processSoulGemType(a_entryObject);
 				processSoulGemStatus(a_entryObject);
+				processSoulGemBaseId(a_entryObject);
 				break;
 		}
 	}
@@ -291,12 +294,12 @@ class InventoryDataSetter extends ItemcardDataExtender
 			}
 		
 		} else if (a_entryObject.keywords["WeapMaterialDraugr"] != undefined) {
-			a_entryObject.material = Material.DRAGUR;
-			a_entryObject.materialDisplay = "$Dragur";
+			a_entryObject.material = Material.DRAUGR;
+			a_entryObject.materialDisplay = "$Draugr";
 		
 		} else if (a_entryObject.keywords["WeapMaterialDraugrHoned"] != undefined) {
-			a_entryObject.material = Material.DRAGURHONED;
-			a_entryObject.materialDisplay = "$Dragur Honed";
+			a_entryObject.material = Material.DRAUGRHONED;
+			a_entryObject.materialDisplay = "$Honed";
 		
 		} else if (a_entryObject.keywords["WeapMaterialFalmer"] != undefined) {
 			a_entryObject.material = Material.FALMER;
@@ -385,6 +388,23 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Weapon.ANIM_CBOW:
 				a_entryObject.subType = Weapon.TYPE_CROSSBOW;
 				a_entryObject.subTypeDisplay = "$Crossbow";
+				break;
+		}
+	}
+
+	private function processWeaponBaseId(a_entryObject: Object): Void
+	{
+		switch (a_entryObject.baseId) {
+			case Form.BASEID_WEAPPICKAXE:
+			case Form.BASEID_SSDROCKSPLINTERPICKAXE:
+			case Form.BASEID_DUNVOLUNRUUDPICKAXE:
+				a_entryObject.subType = Weapon.TYPE_PICKAXE;
+				a_entryObject.subTypeDisplay = "$Pickaxe";
+				break;
+			case Form.BASEID_AXE01:
+			case Form.BASEID_DUNHALTEDSTREAMPOACHERSAXE:
+				a_entryObject.subType = Weapon.TYPE_WOODAXE;
+				a_entryObject.subTypeDisplay = "$Wood Axe";
 				break;
 		}
 	}
@@ -543,6 +563,71 @@ class InventoryDataSetter extends ItemcardDataExtender
 		}
 	}
 
+	private function processAmmoBaseId(a_entryObject: Object): Void
+	{
+		switch (a_entryObject.baseId) {
+			case Form.BASEID_DAEDRICARROW:
+				a_entryObject.material = Material.DAEDRIC;
+				a_entryObject.materialDisplay = "$Daedric";
+				break;
+			case Form.BASEID_EBONYARROW:
+				a_entryObject.material = Material.EBONY;
+				a_entryObject.materialDisplay = "$Ebony";
+				break;
+			case Form.BASEID_GLASSARROW:
+				a_entryObject.material = Material.GLASS;
+				a_entryObject.materialDisplay = "$Glass";
+				break;
+			case Form.BASEID_ELVENARROW:
+				a_entryObject.material = Material.ELVEN;
+				a_entryObject.materialDisplay = "$Elven";
+				break;
+			case Form.BASEID_DWARVENARROW:
+			case Form.BASEID_DWARVENSPHEREARROW:
+			case Form.BASEID_DWARVENSPHEREBOLT01:
+			case Form.BASEID_DWARVENSPHEREBOLT02:
+			case Form.BASEID_DLC2DWARVENBALLISTABOLT:
+				a_entryObject.material = Material.DWARVEN;
+				a_entryObject.materialDisplay = "$Dwarven";
+				break;
+			case Form.BASEID_ORCISHARROW:
+				a_entryObject.material = Material.ORCISH;
+				a_entryObject.materialDisplay = "$Orcish";
+				break;
+			case Form.BASEID_NORDHEROARROW:
+				a_entryObject.material = Material.NORDIC;
+				a_entryObject.materialDisplay = "$Nordic";
+				break;
+			case Form.BASEID_DRAUGRARROW:
+				a_entryObject.material = Material.DRAUGR;
+				a_entryObject.materialDisplay = "$Draugr";
+				break;
+			case Form.BASEID_FALMERARROW:
+				a_entryObject.material = Material.FALMER;
+				a_entryObject.materialDisplay = "$Falmer";
+				break;
+			case Form.BASEID_STEELARROW:
+			case Form.BASEID_MQ101STEELARROW:
+				a_entryObject.material = Material.STEEL;
+				a_entryObject.materialDisplay = "$Steel";
+				break;
+			case Form.BASEID_IRONARROW:
+			case Form.BASEID_CWARROW:
+			case Form.BASEID_CWARROWSHORT:
+			case Form.BASEID_TRAPDART:
+			case Form.BASEID_DUNARCHERPRATICEARROW:
+			case Form.BASEID_DUNGEIRMUNDSIGDISARROWSILLUSION:
+			case Form.BASEID_FOLLOWERIRONARROW:
+				a_entryObject.material = Material.IRON;
+				a_entryObject.materialDisplay = "$Iron";
+				break;
+			case Form.BASEID_FORSWORNARROW:
+				a_entryObject.material = Material.HIDE;
+				a_entryObject.materialDisplay = "$Forsworn";
+				break;
+		}
+	}
+
 	private function processKeyType(a_entryObject: Object): Void
 	{
 		a_entryObject.subTypeDisplay = "$Key";
@@ -650,6 +735,16 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.status = Item.SOULGEMSTATUS_PARTIAL;
 	}
 
+	private function processSoulGemBaseId(a_entryObject: Object): Void
+	{
+		switch (a_entryObject.baseId) {
+			case Form.BASEID_DA01SOULGEMBLACKSTAR:
+			case Form.BASEID_DA01SOULGEMAZURASSTAR:
+				a_entryObject.subType = Item.SOULGEM_AZURA;
+				break;
+		}
+	}
+
 	private function processMiscType(a_entryObject: Object): Void
 	{
 		a_entryObject.subType = Item.OTHER;
@@ -725,6 +820,40 @@ class InventoryDataSetter extends ItemcardDataExtender
 		} else if (a_entryObject.keywords["VendorItemFirewood"] != undefined) {
 			a_entryObject.subType = Item.MISC_FIREWOOD;
 			a_entryObject.subTypeDisplay = "$Firewood";
+		}
+	}
+
+	private function processMiscBaseId(a_entryObject: Object): Void
+	{
+		switch (a_entryObject.baseId) {
+			case Form.BASEID_RUBYDRAGONCLAW:
+			case Form.BASEID_IVORYDRAGONCLAW:
+			case Form.BASEID_GLASSCLAW:
+			case Form.BASEID_EBONYCLAW:
+			case Form.BASEID_EMERALDDRAGONCLAW:
+			case Form.BASEID_DIAMONDCLAW:
+			case Form.BASEID_IRONCLAW:
+			case Form.BASEID_CORALDRAGONCLAW:
+			case Form.BASEID_E3GOLDENCLAW:
+			case Form.BASEID_SAPPHIREDRAGONCLAW:
+			case Form.BASEID_MS13GOLDENCLAW:
+				a_entryObject.subTypeDisplay = "$Claw";
+				a_entryObject.subType = Item.MISC_DRAGONCLAW;
+				break;
+
+			case Form.BASEID_GOLD001:
+				a_entryObject.subType = Item.MISC_GOLD;
+				a_entryObject.subTypeDisplay = "$Gold";
+				break;
+
+			case Form.BASEID_LEATHER01:
+				a_entryObject.subTypeDisplay = "$Leather";
+				a_entryObject.subType = Item.MISC_LEATHER;
+				break;
+			case Form.BASEID_LEATHERSTRIPS:
+				a_entryObject.subTypeDisplay = "$Strips";
+				a_entryObject.subType = Item.MISC_LEATHERSTRIPS;
+				break;
 		}
 	}
 }
