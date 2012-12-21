@@ -22,3 +22,4 @@ Interface\translations\SkyUI_italian.txt
 Interface\translations\SkyUI_polish.txt
 Interface\translations\SkyUI_russian.txt
 Interface\translations\SkyUI_spanish.txt
+Interface\translations\SkyUI_japanese.txt
