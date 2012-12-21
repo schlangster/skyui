@@ -226,7 +226,7 @@ columns.durationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING |
 
 ; MAGIC MAGNITUDE COLUMN -------------------------------------------------------
 columns.magicMagnitudeColumn.type = TEXT
-columns.magicMagnitudeColumn.name = '$TIME'
+columns.magicMagnitudeColumn.name = '$MAGNITUDE'
 columns.magicMagnitudeColumn.states = 2
 columns.magicMagnitudeColumn.width = 0.15
 columns.magicMagnitudeColumn.border = a_textBorder
