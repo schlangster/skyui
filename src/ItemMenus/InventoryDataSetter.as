@@ -639,6 +639,12 @@ class InventoryDataSetter extends ItemcardDataExtender
 				a_entryObject.material = Material.HIDE;
 				a_entryObject.materialDisplay = "$Forsworn";
 				break;
+			case Form.BASEID_DLC2RIEKLINGSPEARTHROWN:
+				a_entryObject.material = Material.WOOD;
+				a_entryObject.materialDisplay = "$Wood";
+				a_entryObject.subTypeDisplay = "$Spear";
+				break;
+
 		}
 	}
 
