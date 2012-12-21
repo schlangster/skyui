@@ -55,9 +55,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
 				processMaterialKeywords(a_entryObject);
-
-				//Move this to the specific DataProcessor
 				processArmorOther(a_entryObject);
+				processArmorBaseId(a_entryObject);
 				break;
 
 			case Form.TYPE_BOOK:
@@ -198,7 +197,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 		
 		} else if (a_entryObject.keywords["ArmorMaterialImperialStudded"] != undefined) {
 			a_entryObject.material = Material.IMPERIALSTUDDED;
-			a_entryObject.materialDisplay = "$Imperial Studded";
+			a_entryObject.materialDisplay = "$Studded";
 		
 		} else if (a_entryObject.keywords["ArmorMaterialIron"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialIron"] != undefined) {
@@ -209,6 +208,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.material = Material.IRONBANDED;
 			a_entryObject.materialDisplay = "$Iron Banded";
 		
+		// Must be above leather, vampire armor has 2 material keywords
+		} else if (a_entryObject.keywords["DLC1ArmorMaterialVampire"] != undefined) {
+			a_entryObject.material = Material.VAMPIRE;
+			a_entryObject.materialDisplay = "$Vampire";
+
 		} else if (a_entryObject.keywords["ArmorMaterialLeather"] != undefined) {
 			a_entryObject.material = Material.LEATHER;
 			a_entryObject.materialDisplay = "$Leather";
@@ -243,17 +247,14 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.material = Material.DAWNGUARD;
 			a_entryObject.materialDisplay = "$Dawnguard";
 		
-		} else if (a_entryObject.keywords["DLC1ArmorMaterialFalmerHardened"] != undefined) {
+		} else if (a_entryObject.keywords["DLC1ArmorMaterialFalmerHardened"] != undefined ||
+					a_entryObject.keywords["DLC1ArmorMaterialFalmerHeavy"] != undefined) {
 			a_entryObject.material = Material.FALMERHARDENED;
 			a_entryObject.materialDisplay = "$Falmer Hardened";
 		
 		} else if (a_entryObject.keywords["DLC1ArmorMaterialHunter"] != undefined) {
 			a_entryObject.material = Material.HUNTER;
 			a_entryObject.materialDisplay = "$Hunter";
-		
-		} else if (a_entryObject.keywords["DLC1ArmorMaterialVampire"] != undefined) {
-			a_entryObject.material = Material.VAMPIRE;
-			a_entryObject.materialDisplay = "$Vampire";
 		
 		} else if (a_entryObject.keywords["DLC1LD_CraftingMaterialAetherium"] != undefined) {
 			a_entryObject.material = Material.AETHERIUM;
@@ -505,7 +506,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 		if (a_entryObject.weightClass != null)
 			return;
 
-		switch(a_entryObject.mainPartMask) {
+		switch (a_entryObject.mainPartMask) {
 			case Armor.PARTMASK_HEAD:
 			case Armor.PARTMASK_HAIR:
 			case Armor.PARTMASK_LONGHAIR:
@@ -526,6 +527,16 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Armor.PARTMASK_EARS:
 				a_entryObject.weightClass = Armor.WEIGHT_JEWELRY;
 				a_entryObject.weightClassDisplay = "$Jewelry";
+				break;
+		}
+	}
+
+	private function processArmorBaseId(a_entryObject: Object): Void
+	{
+		switch (a_entryObject.baseId) {
+			case Form.BASEID_DLC1CLOTHESVAMPIRELORDARMOR:
+				a_entryObject.subType = Armor.EQUIP_BODY;
+				a_entryObject.subTypeDisplay = "$Body";
 				break;
 		}
 	}
@@ -579,6 +590,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 				a_entryObject.materialDisplay = "$Glass";
 				break;
 			case Form.BASEID_ELVENARROW:
+			case Form.BASEID_DLC1ELVENARROWBLESSED:
+			case Form.BASEID_DLC1ELVENARROWBLOOD:
 				a_entryObject.material = Material.ELVEN;
 				a_entryObject.materialDisplay = "$Elven";
 				break;
@@ -618,6 +631,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.BASEID_DUNARCHERPRATICEARROW:
 			case Form.BASEID_DUNGEIRMUNDSIGDISARROWSILLUSION:
 			case Form.BASEID_FOLLOWERIRONARROW:
+			case Form.BASEID_TESTDLC1BOLT:
 				a_entryObject.material = Material.IRON;
 				a_entryObject.materialDisplay = "$Iron";
 				break;
@@ -755,39 +769,23 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 		if (a_entryObject.keywords["BYOHAdoptionClothesKeyword"] != undefined) {
 			a_entryObject.subType = Item.MISC_CHILDRENSCLOTHES;
-			a_entryObject.subTypeDisplay = "$Childrens Clothes";
+			a_entryObject.subTypeDisplay = "$Clothes";
 
 		} else if (a_entryObject.keywords["BYOHAdoptionToyKeyword"] != undefined) {
 			a_entryObject.subType = Item.MISC_TOY;
 			a_entryObject.subTypeDisplay = "$Toy";
 
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryWeaponRacks"] != undefined) {
-			a_entryObject.subType = Item.MISC_WEAPONRACK;
-			a_entryObject.subTypeDisplay = "$Weapon Rack";
-
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryShelf"] != undefined) {
-			a_entryObject.subType = Item.MISC_SHELF;
-			a_entryObject.subTypeDisplay = "$Shelf";
-
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryFurniture"] != undefined) {
-			a_entryObject.subType = Item.MISC_FURNITURE;
-			a_entryObject.subTypeDisplay = "$Furniture";
-
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryExterior"] != undefined) {
-			a_entryObject.subType = Item.MISC_EXTERIOR;
-			a_entryObject.subTypeDisplay = "$Exterior Furniture";
-
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryContainers"] != undefined) {
-			a_entryObject.subType = Item.MISC_CONTAINER;
-			a_entryObject.subTypeDisplay = "$Container";
-
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryBuilding"] != undefined) {
+		
+		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryWeaponRacks"] != undefined ||
+					a_entryObject.keywords["BYOHHouseCraftingCategoryShelf"] != undefined || 
+					a_entryObject.keywords["BYOHHouseCraftingCategoryFurniture"] != undefined ||
+					a_entryObject.keywords["BYOHHouseCraftingCategoryExterior"] != undefined || 
+					a_entryObject.keywords["BYOHHouseCraftingCategoryContainers"] != undefined ||
+					a_entryObject.keywords["BYOHHouseCraftingCategoryBuilding"] != undefined || 
+					a_entryObject.keywords["BYOHHouseCraftingCategorySmithing"] != undefined) {
 			a_entryObject.subType = Item.MISC_HOUSEPART;
 			a_entryObject.subTypeDisplay = "$House Part";
-
-		} else if (a_entryObject.keywords["BYOHHouseCraftingCategorySmithing"] != undefined) {
-			a_entryObject.subType = Item.MISC_FASTENER;
-			a_entryObject.subTypeDisplay = "$Fastener";
+		
 
 		} else if (a_entryObject.keywords["VendorItemDaedricArtifact"] != undefined) {
 			a_entryObject.subType = Item.MISC_ARTIFACT;

@@ -31,12 +31,14 @@ class skyui.defines.Item
 	public static var MISC_CHILDRENSCLOTHES: Number	= 9;
 	public static var MISC_TOY: Number				= 10;
 	public static var MISC_FIREWOOD: Number			= 11;
+	//
 	public static var MISC_FASTENER: Number			= 12;
 	public static var MISC_WEAPONRACK: Number		= 13;
 	public static var MISC_SHELF: Number			= 14;
 	public static var MISC_FURNITURE: Number		= 15;
 	public static var MISC_EXTERIOR: Number			= 16;
 	public static var MISC_CONTAINER: Number		= 17;
+	//
 	public static var MISC_HOUSEPART: Number		= 18;
 	public static var MISC_CLUTTER: Number			= 19;
 	public static var MISC_GOLD: Number				= 20;

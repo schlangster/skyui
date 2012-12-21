@@ -163,6 +163,9 @@
 	*/
 
 	// baseId = (formId & 0x00FFFFFF)
+	// Armor
+	public static var BASEID_DLC1CLOTHESVAMPIRELORDARMOR: Number		= 0x011A84;
+
 	// Ammo
 	public static var BASEID_BOUNDARROW: Number							= 0x10B0A7;
 	public static var BASEID_CWARROW: Number							= 0x020DDF;
@@ -187,6 +190,9 @@
 	public static var BASEID_ORCISHARROW: Number 						= 0x0139BB;
 	public static var BASEID_STEELARROW: Number 						= 0x01397F;
 	public static var BASEID_TRAPDART: Number 							= 0x0236DD;
+	public static var BASEID_DLC1ELVENARROWBLESSED: Number				= 0x0098A1;
+	public static var BASEID_DLC1ELVENARROWBLOOD: Number				= 0x0098A0;
+	public static var BASEID_TESTDLC1BOLT: Number						= 0x00590C;
 	public static var BASEID_DLC2DWARVENBALLISTABOLT: Number			= 0x0339A1;
 	public static var BASEID_DLC2RIEKLINGSPEARTHROWN: Number			= 0x026239;
 	
