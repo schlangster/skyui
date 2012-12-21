@@ -15,8 +15,6 @@ string[]	_orientations
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
 int			_itemlistQuantityTriggerOID_S
-int			_itemlistCombinedValueOID_B
-int			_itemlistCombinedWeightOID_B
 
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -35,8 +33,6 @@ int			_checkGiftMenuOID_B
 ; State
 int			_itemlistFontSizeIdx		= 1
 int			_itemlistQuantityTrigger	= 5
-bool		_itemlistCombinedValue		= false
-bool		_itemlistCombinedWeight		= false
 
 int			_itemcardAlignIdx			= 2
 float		_itemcardXOffset			= 0.0
@@ -63,30 +59,30 @@ event OnInit()
 	parent.OnInit()
 
 	_alignments = new string[3]
-	_alignments[0] = "Left"
-	_alignments[1] = "Right"
-	_alignments[2] = "Center"
+	_alignments[0] = "$Left"
+	_alignments[1] = "$Right"
+	_alignments[2] = "$Center"
 
 	_sizes = new string[3]
-	_sizes[0] = "Small"
-	_sizes[1] = "Medium"
-	_sizes[2] = "Large"
+	_sizes[0] = "$Small"
+	_sizes[1] = "$Medium"
+	_sizes[2] = "$Large"
 
 	_corners = new string[4]
-	_corners[0] = "Top Left"
-	_corners[1] = "Top Right"
-	_corners[2] = "Bottom Right"
-	_corners[3] = "Bottom Left"
+	_corners[0] = "$Top Left"
+	_corners[1] = "$Top Right"
+	_corners[2] = "$Bottom Right"
+	_corners[3] = "$Bottom Left"
 
 	_cornerValues = new string[4]
-	_cornerValues[0] = "TL"
-	_cornerValues[1] = "TR"
-	_cornerValues[2] = "BR"
-	_cornerValues[3] = "BL"
+	_cornerValues[0] = "$TL"
+	_cornerValues[1] = "$TR"
+	_cornerValues[2] = "$BR"
+	_cornerValues[3] = "$BL"
 
 	_orientations = new String[2]
-	_orientations[0] = "Horizontal"
-	_orientations[1] = "Vertical"
+	_orientations[0] = "$Horizontal"
+	_orientations[1] = "$Vertical"
 
 	ApplySettings()
 endEvent
@@ -114,32 +110,32 @@ event OnPageReset(string a_page)
 	endIf
 
 	; -------------------------------------------------------
-	if (a_page == "General")
+	if (a_page == "$General")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
-		AddHeaderOption("Item List")
-		_itemlistFontSizeOID_T			= AddTextOption("Font Size", _sizes[_itemlistFontSizeIdx])
-		_itemlistQuantityTriggerOID_S		= AddSliderOption("Quantity Menu Limit", _itemlistQuantityTrigger)
+		AddHeaderOption("$Item List")
+		_itemlistFontSizeOID_T			= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
+		_itemlistQuantityTriggerOID_S		= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityTrigger)
 
 	; -------------------------------------------------------
-	elseIf (a_page == "Advanced")
+	elseIf (a_page == "$Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
-		AddHeaderOption("Item Card")
-		_itemcardAlignOID_T				= AddTextOption("Align", _alignments[_itemcardAlignIdx])
-		_itemcardXOffsetOID_S			= AddSliderOption("Horizontal Offset", _itemcardXOffset)
-		_itemcardYOffsetOID_S			= AddSliderOption("Vertical Offset", _itemcardYOffset)
+		AddHeaderOption("$Item Card")
+		_itemcardAlignOID_T				= AddTextOption("$Align", _alignments[_itemcardAlignIdx])
+		_itemcardXOffsetOID_S			= AddSliderOption("$Horizontal Offset", _itemcardXOffset)
+		_itemcardYOffsetOID_S			= AddSliderOption("$Vertical Offset", _itemcardYOffset)
 
 		AddEmptyOption()
 
-		AddHeaderOption("3D Item")
-		_3DItemXOffsetOID_S				= AddSliderOption("Horizontal Offset", _3DItemXOffset)
-		_3DItemYOffsetOID_S				= AddSliderOption("Vertical Offset", _3DItemYOffset)
-		_3DItemScaleOID_S				= AddSliderOption("Scale", _3DItemScale, "{1}")
+		AddHeaderOption("$3D Item")
+		_3DItemXOffsetOID_S				= AddSliderOption("$Horizontal Offset", _3DItemXOffset)
+		_3DItemYOffsetOID_S				= AddSliderOption("$Vertical Offset", _3DItemYOffset)
+		_3DItemScaleOID_S				= AddSliderOption("$Scale", _3DItemScale, "{1}")
 
 		SetCursorPosition(1)
 
-		AddHeaderOption("SWF Version Checking")
+		AddHeaderOption("$SWF Version Checking")
 		_checkInventoryMenuOID_B		= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
 		_checkMagicMenuOID_B			= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
 		_checkBarterMenuOID_B			= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
@@ -163,16 +159,6 @@ event OnOptionDefault(int a_option)
 		_itemlistQuantityTrigger = 5
 		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
 		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
-
-	elseIf (a_option == _itemlistCombinedValueOID_B)
-		_itemlistCombinedValue = false
-		SetToggleOptionValue(a_option, _itemlistCombinedValue)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedValue", _itemlistCombinedValue)
-
-	elseIf (a_option == _itemlistCombinedValueOID_B)
-		_itemlistCombinedWeight = false
-		SetToggleOptionValue(a_option, _itemlistCombinedWeight)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -243,16 +229,6 @@ event OnOptionSelect(int a_option)
 		endif
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
-
-	elseIf (a_option == _itemlistCombinedValueOID_B)
-		_itemlistCombinedValue = !_itemlistCombinedValue
-		SetToggleOptionValue(a_option, _itemlistCombinedValue)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedValue", _itemlistCombinedValue)
-
-	elseIf (a_option == _itemlistCombinedWeightOID_B)
-		_itemlistCombinedWeight = !_itemlistCombinedWeight
-		SetToggleOptionValue(a_option, _itemlistCombinedWeight)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -381,39 +357,35 @@ endEvent
 event OnOptionHighlight(int a_option)
 
 	if (a_option == _itemlistFontSizeOID_T)
-		SetInfoText("Default: Medium")
+		SetInfoText("$SKI_INFO1")
 	elseIf(a_option == _itemlistQuantityTriggerOID_S)
-		SetInfoText("Number of items required to trigger quantity menu\nDisabled: 0, Default: 5")
-	elseIf(a_option == _itemlistCombinedValueOID_B)
-		SetInfoText("Displays combined value, e.g. 50 (100)\nDefault: False")
-	elseIf(a_option == _itemlistCombinedWeightOID_B)
-		SetInfoText("Displays combined weight, e.g. 10 (20)\nDefault: False")
+		SetInfoText("$SKI_INFO2")
 
 	elseIf (a_option == _itemcardAlignOID_T)
-		SetInfoText("Default: Center")
+		SetInfoText("$SKI_INFO3")
 	elseIf (a_option == _itemcardXOffsetOID_S)
-		SetInfoText("Default: 0")
+		SetInfoText("$SKI_INFO4")
 	elseIf (a_option == _itemcardYOffsetOID_S)
-		SetInfoText("Default: 0")
+		SetInfoText("$SKI_INFO4")
 
 	elseIf (a_option == _3DItemXOffsetOID_S)
-		SetInfoText("Default: 0")
+		SetInfoText("$SKI_INFO4")
 	elseIf (a_option == _3DItemYOffsetOID_S)
 
-		SetInfoText("Default: 0")
+		SetInfoText("$SKI_INFO4")
 	elseIf (a_option == _3DItemScaleOID_S)
-		SetInfoText("Default: 1.5")
+		SetInfoText("$SKI_INFO5")
 
 	elseIf (a_option == _checkInventoryMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+		SetInfoText("$SKI_INFO6")
 	elseIf (a_option == _checkMagicMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+		SetInfoText("$SKI_INFO6")
 	elseIf (a_option == _checkBarterMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+		SetInfoText("$SKI_INFO6")
 	elseIf (a_option == _checkContainerMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+		SetInfoText("$SKI_INFO6")
 	elseIf (a_option == _checkGiftMenuOID_B)
-		SetInfoText("Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On")
+		SetInfoText("$SKI_INFO6")
 	endIf
 endEvent
 
@@ -433,9 +405,7 @@ function ApplySettings()
 	Apply3DItemYOffset()
 	Apply3DItemScale()
 
-	SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
-	SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedValue", _itemlistCombinedValue)
-	SKI_SettingsManagerInstance.SetOverride("ItemList$inventory$combinedWeight", _itemlistCombinedWeight)
+	SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityTrigger)
 endFunction
 
 function ApplyItemListFontSize()
