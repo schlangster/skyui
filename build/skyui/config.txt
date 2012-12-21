@@ -169,7 +169,7 @@ columns.materialColumn.hidden = true
 
 columns.materialColumn.state1.label.text = '$MAT'
 columns.materialColumn.state1.entry.text = @materialDisplay
-columns.materialColumn.state1.sortAttributes = <material, formType, subType, weightClass, text>
+columns.materialColumn.state1.sortAttributes = <material, formType, weightClass, subType, text>
 columns.materialColumn.state1.sortOptions = <{ASCENDING | NUMERIC},  {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
