@@ -8,9 +8,9 @@ import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ScrollingList;
 import skyui.components.ButtonPanel;
 import skyui.util.DialogManager;
-import skyui.defines.Input;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
+import skyui.defines.Input;
 
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
