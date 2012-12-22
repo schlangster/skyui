@@ -8,7 +8,7 @@
 	}
 
 	// Remove comments and leading/trailing white space
-	static function clean(a_str: String): String
+	public static function clean(a_str: String): String
 	{
 		if (a_str.indexOf(";") > 0)
 			a_str = a_str.slice(0,a_str.indexOf(";"));
@@ -22,6 +22,14 @@
 			j--;
 
 		return a_str.slice(i,j + 1);
+	}
+
+	public static function unescape(a_str: String): String 
+	{
+		a_str = a_str.split("\\r").join("");
+		a_str = a_str.split("\\n").join("\n");
+		a_str = a_str.split("\\t").join("\t");
+		return a_str;
 	}
 
 	private static var _arrayExtended = false;
