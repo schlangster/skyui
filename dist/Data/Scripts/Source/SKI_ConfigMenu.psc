@@ -4,13 +4,9 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 
 ; Lists
 string[]	_alignments
-
 string[]	_sizes
 
-string[]	_corners
-string[]	_cornerValues
-
-string[]	_orientations
+string[]	_alignmentValues
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
@@ -58,6 +54,7 @@ SKI_Main property					SKI_MainInstance auto
 event OnInit()
 	parent.OnInit()
 
+	; Translatae strings to display in UI
 	_alignments = new string[3]
 	_alignments[0] = "$Left"
 	_alignments[1] = "$Right"
@@ -67,6 +64,12 @@ event OnInit()
 	_sizes[0] = "$Small"
 	_sizes[1] = "$Medium"
 	_sizes[2] = "$Large"
+
+	; Strings used as variable values
+	_alignmentValues = new string[3]
+	_alignmentValues[0] = "left"
+	_alignmentValues[1] = "right"
+	_alignmentValues[2] = "center"
 
 	ApplySettings()
 endEvent
@@ -148,7 +151,7 @@ event OnOptionDefault(int a_option)
 	elseIf (a_option == _itemcardAlignOID_T)
 		_itemcardAlignIdx = 2
 		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
 
 	elseIf (a_option == _itemcardXOffsetOID_S)
 		_itemcardXOffset = 0.0
@@ -222,7 +225,7 @@ event OnOptionSelect(int a_option)
 			_itemcardAlignIdx = 0
 		endif
 		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignments[_itemcardAlignIdx])
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
 
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		bool newVal = !SKI_MainInstance.InventoryMenuCheckEnabled
