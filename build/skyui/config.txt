@@ -84,13 +84,13 @@ columns.iconColumn.icon.size = n_iconSize
 columns.iconColumn.border = <0, 3, 3, 3> ; left right top bottom
 
 columns.iconColumn.state1.label.text = ' '
-columns.iconColumn.state1.sortAttributes = <type, formType, subType, weightClass, material, damage, armor, magnitude, duration, text>
-columns.iconColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.iconColumn.state1.sortAttributes = <type, formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
+columns.iconColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.iconColumn.state2.label.text = ' '
 columns.iconColumn.state2.label.arrowDown = true
-columns.iconColumn.state2.sortAttributes = <type, formType, subType, weightClass, material, damage, armor, magnitude, duration, text>
-columns.iconColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.iconColumn.state2.sortAttributes = <type, formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
+columns.iconColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 ; ITEM NAME COLUMN -------------------------------------------------------
 columns.itemNameColumn.type = NAME
@@ -149,14 +149,14 @@ columns.subTypeColumn.border = a_textBorder
 
 columns.subTypeColumn.state1.label.text = '$TYPE'
 columns.subTypeColumn.state1.entry.text = @subTypeDisplay
-columns.subTypeColumn.state1.sortAttributes = <formType, subType, weightClass, material, damage, armor, magnitude, duration, text>
-columns.subTypeColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.subTypeColumn.state1.sortAttributes = <formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
+columns.subTypeColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.subTypeColumn.state2.label.text = '$TYPE'
 columns.subTypeColumn.state2.entry.text = @subTypeDisplay
 columns.subTypeColumn.state2.label.arrowDown = true
-columns.subTypeColumn.state2.sortAttributes = <formType, subType, weightClass, material, damage, armor, magnitude, duration, text>
-columns.subTypeColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.subTypeColumn.state2.sortAttributes = <formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
+columns.subTypeColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; MATERIAL COLUMN -------------------------------------------------------
