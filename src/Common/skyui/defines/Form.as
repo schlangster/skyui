@@ -164,6 +164,7 @@
 
 	// baseId = (formId & 0x00FFFFFF)
 	// Armor
+	public static var BASEID_CLOTHESWEDDINGWREATH: Number				= 0x08895A;
 	public static var BASEID_DLC1CLOTHESVAMPIRELORDARMOR: Number		= 0x011A84;
 
 	// Ammo
@@ -202,6 +203,8 @@
 	public static var BASEID_LEATHER01: Number							= 0x0DB5D2;
 	public static var BASEID_LEATHERSTRIPS: Number						= 0x0800E4;
 
+	public static var BASEID_GEMAMETHYSTFLAWLESS: Number				= 0x06851E;
+
 	public static var BASEID_RUBYDRAGONCLAW: Number 					= 0x04B56C;
 	public static var BASEID_IVORYDRAGONCLAW: Number 					= 0x0AB7BB;
 	public static var BASEID_GLASSCLAW: Number 							= 0x07C260;
@@ -215,7 +218,7 @@
 	public static var BASEID_MS13GOLDENCLAW: Number 					= 0x039647;
 
 	public static var BASEID_DA01AZURASSTARBROKEN: Number 				= 0x028AD7;
-
+	
 	// SoulGem
 	public static var BASEID_DA01SOULGEMBLACKSTAR: Number 				= 0x063B29;
 	public static var BASEID_DA01SOULGEMAZURASSTAR: Number 				= 0x063B27;

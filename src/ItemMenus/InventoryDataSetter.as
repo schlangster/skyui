@@ -155,11 +155,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 		
 		} else if (a_entryObject.keywords["ArmorMaterialDragonplate"] != undefined) {
 			a_entryObject.material = Material.DRAGONPLATE;
-			a_entryObject.materialDisplay = "$Dragon Plate";
+			a_entryObject.materialDisplay = "$Dragonplate";
 		
 		} else if (a_entryObject.keywords["ArmorMaterialDragonscale"] != undefined) {
 			a_entryObject.material = Material.DRAGONSCALE;
-			a_entryObject.materialDisplay = "$Dragon Scale";
+			a_entryObject.materialDisplay = "$Dragonscale";
 		
 		} else if (a_entryObject.keywords["ArmorMaterialDwarven"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialDwarven"] != undefined) {
@@ -534,6 +534,10 @@ class InventoryDataSetter extends ItemcardDataExtender
 	private function processArmorBaseId(a_entryObject: Object): Void
 	{
 		switch (a_entryObject.baseId) {
+			case Form.BASEID_CLOTHESWEDDINGWREATH:
+				a_entryObject.weightClass = Armor.WEIGHT_JEWELRY;
+				a_entryObject.weightClassDisplay = "$Jewelry";
+				break
 			case Form.BASEID_DLC1CLOTHESVAMPIRELORDARMOR:
 				a_entryObject.subType = Armor.EQUIP_BODY;
 				a_entryObject.subTypeDisplay = "$Body";
@@ -672,10 +676,10 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.subType = Item.POTION_FOOD;
 			a_entryObject.subTypeDisplay = "$Food";
 
-			if (a_entryObject.type == Inventory.ICT_POTION) {
+			/*
 				a_entryObject.subType = Item.POTION_DRINK;
 				a_entryObject.subTypeDisplay = "$Drink";
-			}
+			*/
 		} else if ((a_entryObject.flags & Item.ALCHFLAG_POISON) != 0) {
 			a_entryObject.subType = Item.POTION_POISON;
 			a_entryObject.subTypeDisplay = "$Poison";
@@ -830,6 +834,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 	private function processMiscBaseId(a_entryObject: Object): Void
 	{
 		switch (a_entryObject.baseId) {
+			case Form.BASEID_GEMAMETHYSTFLAWLESS:
+				a_entryObject.subType = Item.MISC_GEM;
+				a_entryObject.subTypeDisplay = "$Gem";
+				break;
+
 			case Form.BASEID_RUBYDRAGONCLAW:
 			case Form.BASEID_IVORYDRAGONCLAW:
 			case Form.BASEID_GLASSCLAW:
