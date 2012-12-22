@@ -9,6 +9,8 @@ import skyui.components.list.ScrollingList;
 import skyui.components.ButtonPanel;
 import skyui.util.DialogManager;
 import skyui.defines.Input;
+import skyui.util.GlobalFunctions;
+import skyui.util.Translator;
 
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
@@ -223,7 +225,7 @@ class ConfigPanel extends MovieClip
 	
 	public function setTitleText(a_text: String): Void
 	{
-		_titleText = a_text.toUpperCase();
+		_titleText = Translator.translate(a_text).toUpperCase();
 		
 		// Don't apply yet if waiting for option data
 		if (_state != WAIT_FOR_OPTION_DATA)
@@ -232,7 +234,7 @@ class ConfigPanel extends MovieClip
 	
 	public function setInfoText(a_text: String): Void
 	{
-		_infoText = a_text;
+		_infoText = Translator.translate(a_text);
 		
 		// Don't apply yet if waiting for option data
 		if (_state != WAIT_FOR_OPTION_DATA)
@@ -769,7 +771,7 @@ class ConfigPanel extends MovieClip
 	{
 		var t = contentHolder.infoPanel;
 		
-		t.textField.text = _infoText;
+		t.textField.text = GlobalFunctions.unescape(_infoText);
 		
 		if (_infoText != "") {
 			var h = t.textField.textHeight + 22;
@@ -808,7 +810,7 @@ class ConfigPanel extends MovieClip
 		setCustomContentParams(150, 50);
 		loadCustomContent("skyui/mcm_splash.swf");
 
-		setTitleText("MOD CONFIGURATION");
+		setTitleText("$MOD CONFIGURATION");
 		setInfoText("");
 	}
 	
