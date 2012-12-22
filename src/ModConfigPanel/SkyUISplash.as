@@ -1,5 +1,3 @@
-import Shared.GlobalFunc;
-
 class SkyUISplash extends MovieClip {
 	#include "../version.as"
 
@@ -9,7 +7,6 @@ class SkyUISplash extends MovieClip {
 
 	public function SkyUISplash()
 	{
-		GlobalFunc.MaintainTextFormat();
 	}
 
 	// @override MovieClip
@@ -17,6 +14,6 @@ class SkyUISplash extends MovieClip {
 	{
 		super.onLoad();
 
-		versionText.SetText("v" + SKYUI_VERSION_STRING);
+		versionText.text = ("v" + SKYUI_VERSION_STRING);
 	}
 }
