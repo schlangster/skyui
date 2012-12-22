@@ -300,7 +300,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 		
 		} else if (a_entryObject.keywords["WeapMaterialDraugrHoned"] != undefined) {
 			a_entryObject.material = Material.DRAUGRHONED;
-			a_entryObject.materialDisplay = "$Honed";
+			a_entryObject.materialDisplay = "$Draugr Honed";
 		
 		} else if (a_entryObject.keywords["WeapMaterialFalmer"] != undefined) {
 			a_entryObject.material = Material.FALMER;
