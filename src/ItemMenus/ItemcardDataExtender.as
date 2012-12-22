@@ -42,16 +42,18 @@ class ItemcardDataExtender implements IListProcessor
 		var entryList = a_list.entryList;
 		
 		for (var i = 0; i < entryList.length; i++) {
-			if (entryList[i].skyui_itemcardDataExtended)
+			var e = entryList[i];
+			if (e.skyui_itemcardDataExtended || e.filterFlag == 0)
 				continue;
-			entryList[i].skyui_itemcardDataExtended = true;
+				
+			e.skyui_itemcardDataExtended = true;
 			
 			// Fix wrong property names
-			fixSKSEExtendedObject(entryList[i]);
+			fixSKSEExtendedObject(e);
 
 			// Hack to retrieve itemcard info
 			_requestItemInfo.apply(a_list, [this, i]);
-			processEntry(entryList[i], _itemInfo);
+			processEntry(e, _itemInfo);
 		}
 	}
 
