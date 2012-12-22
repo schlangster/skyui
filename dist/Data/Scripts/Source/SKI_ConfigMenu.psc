@@ -68,6 +68,9 @@ event OnInit()
 	_sizes[1] = "$Medium"
 	_sizes[2] = "$Large"
 
+	Pages[0] = "$General"
+	Pages[1] = "$Advanced"
+
 	ApplySettings()
 endEvent
 
@@ -77,7 +80,7 @@ endEvent
 ; @implements SKI_QuestBase
 event OnGameReload()
 	parent.OnGameReload()
-	
+
 	ApplySettings()
 endEvent
 
