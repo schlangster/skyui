@@ -8,6 +8,7 @@ import skyui.components.list.BasicEnumeration;
 import skyui.components.list.ScrollingList;
 import skyui.components.ButtonPanel;
 import skyui.util.DialogManager;
+import skyui.util.Translator;
 import skyui.defines.Input;
 
 import com.greensock.TweenLite;
@@ -232,7 +233,8 @@ class ConfigPanel extends MovieClip
 	
 	public function setInfoText(a_text: String): Void
 	{
-		_infoText = a_text;
+		a_text = Translator.translate(a_text);
+		_infoText = a_text.split("\\n").join("\n");
 		
 		// Don't apply yet if waiting for option data
 		if (_state != WAIT_FOR_OPTION_DATA)
