@@ -1,8 +1,11 @@
-﻿import gfx.io.GameDelegate;
-import gfx.ui.NavigationCode;
-import Shared.GlobalFunc;
-import skyui.components.dialog.BasicDialog;
+﻿import skyui.components.dialog.BasicDialog;
 import skyui.components.ButtonPanel;
+import skyui.util.Translator;
+
+import gfx.io.GameDelegate;
+import gfx.ui.NavigationCode;
+
+import Shared.GlobalFunc;
 
 
 // @abstract
@@ -45,6 +48,8 @@ class OptionDialog extends BasicDialog
 		initButtons();
 
 		titleTextField.textAutoSize = "shrink";
+
+		titleText = Translator.translate(titleText);
 		titleTextField.SetText(titleText.toUpperCase());
 		
 		initContent();
