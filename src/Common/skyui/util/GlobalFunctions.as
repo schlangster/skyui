@@ -26,7 +26,6 @@
 
 	public static function unescape(a_str: String): String 
 	{
-		a_str = a_str.split("\\r").join("");
 		a_str = a_str.split("\\n").join("\n");
 		a_str = a_str.split("\\t").join("\t");
 		return a_str;
