@@ -40,6 +40,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.valueWeightDisplay = (a_entryObject.valueWeight != undefined) ? (Math.round(a_entryObject.valueWeight * 10) / 10) : "-";
 		a_entryObject.armorDisplay = (a_entryObject.armor > 0) ? (Math.round(a_entryObject.armor * 10) / 10) : "-";
 		a_entryObject.damageDisplay = (a_entryObject.damage > 0) ? (Math.round(a_entryObject.damage * 10) / 10) : "-";
+		a_entryObject.durationDisplay = (a_entryObject.duration > 0) ? String(Math.round(a_entryObject.duration * 10) / 10) : "-";
+		a_entryObject.magnitudeDisplay = (a_entryObject.magnitude > 0) ? String(Math.round(a_entryObject.magnitude * 10) / 10) : "-";
 
 		a_entryObject.subTypeDisplay = "-";
 		a_entryObject.materialDisplay = "-";

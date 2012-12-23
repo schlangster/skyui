@@ -1,4 +1,5 @@
-﻿import skyui.defines.Inventory;
+﻿import skyui.defines.Actor;
+import skyui.defines.Inventory;
 
 class MagicDataSetter extends ItemcardDataExtender
 {
@@ -8,11 +9,11 @@ class MagicDataSetter extends ItemcardDataExtender
 
   /* INITIALIZATION */
 
-	public function MagicDataSetter(a_configItemList: Object, a_configAppearance: Object)
+	public function MagicDataSetter(a_configAppearance: Object)
 	{
 		super();
 
-		_defaultDisabledColor = a_configAppearance.colors.text.disabled;
+		_defaultDisabledColor = (a_configAppearance.colors.text.disabled != undefined) ? a_configAppearance.colors.text.disabled : 0x000000;
 	}
 	
   	// @override ItemcardDataExtender
@@ -22,84 +23,73 @@ class MagicDataSetter extends ItemcardDataExtender
 		a_entryObject.type = a_itemInfo.type;
 		a_entryObject.spellCost = a_itemInfo.spellCost;
 		a_entryObject.castTime = a_itemInfo.castTime;
+		a_entryObject.timeRemaining = a_itemInfo.timeRemaining;
 
-		a_entryObject.schoolDisplay = "-";
+		a_entryObject.actorValue = (a_entryObject.actorValue != Actor.AV_NONE) ? a_entryObject.actorValue : undefined;
+		a_entryObject.resistance = (a_entryObject.resistance != Actor.AV_NONE) ? a_entryObject.resistance : undefined;
+		a_entryObject.school = (a_entryObject.school != Actor.AV_NONE) ? a_entryObject.school : undefined;
+		a_entryObject.source = (a_entryObject.cardName != undefined) ? a_entryObject.cardName : "-";
+
+		a_entryObject.word0 = a_itemInfo.word0;
+		a_entryObject.word1 = a_itemInfo.word1;
+		a_entryObject.word2 = a_itemInfo.word2;
+		a_entryObject.word0Unlocked = a_itemInfo.unlocked0;
+		a_entryObject.word1Unlocked = a_itemInfo.unlocked1;
+		a_entryObject.word2Unlocked = a_itemInfo.unlocked2;
+		a_entryObject.word0Display = a_entryObject.word1Display = a_entryObject.word2Display = "-";
+		a_entryObject.word0Recharge = a_entryObject.word1Recharge = a_entryObject.word2Recharge = "-";
+		a_entryObject.word0Color = a_entryObject.word1Color = a_entryObject.word2Color = undefined;
+
+		a_entryObject.durationDisplay = (a_entryObject.duration > 0) ? String(Math.round(a_entryObject.duration * 10) / 10) : "-";
+		a_entryObject.magnitudeDisplay = (a_entryObject.magnitude > 0) ? String(Math.round(a_entryObject.magnitude * 10) / 10) : "-";
+		a_entryObject.schoolDisplay = (a_itemInfo.magicSchoolName != undefined) ? a_itemInfo.magicSchoolName : "-";
 		a_entryObject.spellCostDisplay = "-";
-		a_entryObject.skillLevelDisplay  = "-";
-		a_entryObject.word1 = a_entryObject.word2 = a_entryObject.word3 = "-";
-		a_entryObject.recharge1 = a_entryObject.recharge2 = a_entryObject.recharge3 = undefined;
-		a_entryObject.wordColor1 = a_entryObject.wordColor2 = a_entryObject.wordColor3 = undefined;
-		a_entryObject.timeRemaining = undefined;
+		a_entryObject.skillLevelDisplay = (a_itemInfo.castLevel != undefined) ? a_itemInfo.castLevel : "-";
 		a_entryObject.timeRemainingDisplay = "-";
 
 		switch (a_entryObject.type) {
-			// Shout
 			case Inventory.ICT_SHOUT:
-				processShout(a_entryObject, a_itemInfo);
+				processShout(a_entryObject);
 				break;
 			
-			// Active Effect
 			case Inventory.ICT_ACTIVE_EFFECT:
-				processActiveEffect(a_entryObject, a_itemInfo);
+				processActiveEffect(a_entryObject);
 				break;
 
 			case Inventory.ICT_SPELL:
-				processSpell(a_entryObject, a_itemInfo);
+				processSpell(a_entryObject);
 				break;
 
-			//Power
-			case Inventory.ICT_SPELL_DEFAULT:
+			case Inventory.ICT_SPELL_DEFAULT: //Power
 			default:
-				processPower(a_entryObject, a_itemInfo);
+				processPower(a_entryObject);
 				break;
 		}
 	}
 
   /* PRIVATE FUNCTIONS */
 
-	private function processShout(a_entryObject: Object, a_itemInfo: Object): Void
+	private function processShout(a_entryObject: Object): Void
 	{
-		// Shouts should have no spellCost or skillLevel
-		a_entryObject.spellCost = undefined;
-		a_entryObject.skillLevel = undefined;
-		
-		var recharge: Array = a_itemInfo.spellCost.split(" , ");
-		
-		if (a_itemInfo.word0 != undefined) {
-			a_entryObject.word1 = a_itemInfo.word0;
-			if (recharge[0] != undefined) {
-				a_entryObject.word1 += " (" + recharge[0] + ")";
-				a_entryObject.recharge1 = Number(recharge[0]);
+		var recharge: Array = a_entryObject.spellCost.split(" , ");
+
+		for (var i = 0; i < 3; i++)  {
+			if (a_entryObject["word" + i] != undefined) {
+				a_entryObject["word" + i + "Display"] = a_entryObject["word" + i];
+				if (recharge[i] != undefined) {
+					a_entryObject["word" + i + "Display"] += " (" + recharge[i] + ")";
+					a_entryObject["word" + i + "Recharge"] = Number(recharge[i]);
+				}
 			}
-			if (a_itemInfo.unlocked0 == undefined || a_itemInfo.unlocked0 == false)
-				a_entryObject.wordColor1 = _defaultDisabledColor;
-		}
-		
-		if (a_itemInfo.word1 != undefined) {
-			a_entryObject.word2 = a_itemInfo.word1;
-			if (recharge[1] != undefined) {
-				a_entryObject.word2 += " (" + recharge[1] + ")";
-				a_entryObject.recharge2 = Number(recharge[1]);
-			}
-			if (a_itemInfo.unlocked1 == undefined || a_itemInfo.unlocked1 == false)
-				a_entryObject.wordColor2 = _defaultDisabledColor;
-		}
-		
-		if (a_itemInfo.word2 != undefined) {
-			a_entryObject.word3 = a_itemInfo.word2;
-			if (recharge[2] != undefined) {
-				a_entryObject.word3 += " (" + recharge[2] + ")";
-				a_entryObject.recharge3 = Number(recharge[2]);
-			}
-			if (a_itemInfo.unlocked2 == undefined || a_itemInfo.unlocked2 == false)
-				a_entryObject.wordColor3 = _defaultDisabledColor;
+
+			if (a_entryObject["word" + i + "Unlocked"] == undefined || a_entryObject["word" + i + "Unlocked"] == false)
+				a_entryObject["word" + i + "Color"] = _defaultDisabledColor;
 		}
 	}
-	private function processActiveEffect(a_entryObject: Object, a_itemInfo: Object): Void
+
+	private function processActiveEffect(a_entryObject: Object): Void
 	{
-		//cardName = a_entryObject.source = a_itemInfo.name;
-		if (a_itemInfo.timeRemaining != undefined && a_itemInfo.timeRemaining > 0) {
-			a_entryObject.timeRemaining = a_itemInfo.timeRemaining;
+		if (a_entryObject.timeRemaining != undefined && a_entryObject.timeRemaining > 0) {
 
 			var s: Number = Math.round(a_entryObject.timeRemaining);
 			var m: Number = 0;
@@ -125,29 +115,28 @@ class MagicDataSetter extends ItemcardDataExtender
 												 (s + "s");
 		}
 	}
-	private function processSpell(a_entryObject: Object, a_itemInfo: Object): Void
-	{
-		a_entryObject.schoolDisplay = a_itemInfo.magicSchoolName;
-		a_entryObject.skillLevelDisplay = a_itemInfo.castLevel;
 
-		processSpellCost(a_entryObject, a_itemInfo);
+	private function processSpell(a_entryObject: Object): Void
+	{
+		processSpellCost(a_entryObject);
 	}
 
-	private function processPower(a_entryObject: Object, a_itemInfo: Object): Void
+	private function processPower(a_entryObject: Object): Void
 	{
 		// Powers should have no skillLevel
 		a_entryObject.skillLevel = undefined;
+		a_entryObject.skillLevelDisplay = "-";
 
-		processSpellCost(a_entryObject, a_itemInfo);
+		processSpellCost(a_entryObject);
 	}
 
 
-	private function processSpellCost(a_entryObject: Object, a_itemInfo: Object): Void
+	private function processSpellCost(a_entryObject: Object): Void
 	{
 		if (a_entryObject.spellCost != 0 && a_entryObject.castTime == 0) {
-			a_entryObject.spellCostDisplay = a_entryObject.spellCost + "/s";
+			a_entryObject.spellCostDisplay = String(Math.round(a_entryObject.spellCost * 10) / 10) + "/s";
 		} else if (a_entryObject.spellCost != 0) {
-			a_entryObject.spellCostDisplay = a_entryObject.spellCost;
+			a_entryObject.spellCostDisplay = String(Math.round(a_entryObject.spellCost * 10) / 10);
 		}
 	}
 }

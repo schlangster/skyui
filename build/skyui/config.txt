@@ -195,12 +195,12 @@ columns.magnitudeColumn.border = a_textBorder
 
 columns.magnitudeColumn.state1.label.text = '$MAG'
 columns.magnitudeColumn.state1.label.arrowDown = true
-columns.magnitudeColumn.state1.entry.text = @magnitude
+columns.magnitudeColumn.state1.entry.text = @magnitudeDisplay
 columns.magnitudeColumn.state1.sortAttributes = <magnitude, text>
 columns.magnitudeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.magnitudeColumn.state2.label.text = '$MAG'
-columns.magnitudeColumn.state2.entry.text = @magnitude
+columns.magnitudeColumn.state2.entry.text = @magnitudeDisplay
 columns.magnitudeColumn.state2.sortAttributes = <magnitude, text>
 columns.magnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -214,12 +214,12 @@ columns.durationColumn.border = a_textBorder
 
 columns.durationColumn.state1.label.text = '$TIME'
 columns.durationColumn.state1.label.arrowDown = true
-columns.durationColumn.state1.entry.text = @duration
+columns.durationColumn.state1.entry.text = @durationDisplay
 columns.durationColumn.state1.sortAttributes = <duration, text>
 columns.durationColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.durationColumn.state2.label.text = '$TIME'
-columns.durationColumn.state2.entry.text = @duration
+columns.durationColumn.state2.entry.text = @durationDisplay
 columns.durationColumn.state2.sortAttributes = <duration, text>
 columns.durationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -233,12 +233,12 @@ columns.magicMagnitudeColumn.border = a_textBorder
 
 columns.magicMagnitudeColumn.state1.label.text = '$MAG'
 columns.magicMagnitudeColumn.state1.label.arrowDown = true
-columns.magicMagnitudeColumn.state1.entry.text = @magnitude
+columns.magicMagnitudeColumn.state1.entry.text = @magnitudeDisplay
 columns.magicMagnitudeColumn.state1.sortAttributes = <magnitude, text>
 columns.magicMagnitudeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.magicMagnitudeColumn.state2.label.text = '$MAG'
-columns.magicMagnitudeColumn.state2.entry.text = @magnitude
+columns.magicMagnitudeColumn.state2.entry.text = @magnitudeDisplay
 columns.magicMagnitudeColumn.state2.sortAttributes = <magnitude, text>
 columns.magicMagnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -252,12 +252,12 @@ columns.magicDurationColumn.border = a_textBorder
 
 columns.magicDurationColumn.state1.label.text = '$TIME'
 columns.magicDurationColumn.state1.label.arrowDown = true
-columns.magicDurationColumn.state1.entry.text = @duration
+columns.magicDurationColumn.state1.entry.text = @durationDisplay
 columns.magicDurationColumn.state1.sortAttributes = <duration, text>
 columns.magicDurationColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.magicDurationColumn.state2.label.text = '$TIME'
-columns.magicDurationColumn.state2.entry.text = @duration
+columns.magicDurationColumn.state2.entry.text = @durationDisplay
 columns.magicDurationColumn.state2.sortAttributes = <duration, text>
 columns.magicDurationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -378,69 +378,69 @@ columns.spellCostColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING 
 
 
 ; WORD 1 COLUMN -------------------------------------------
+columns.word0Column.type = TEXT
+columns.word0Column.name = '$FIRST WORD'
+columns.word0Column.states = 2
+columns.word0Column.width = 0.2
+columns.word0Column.border = a_textBorder
+
+columns.word0Column.state1.label.text = '$FIRST WORD'
+columns.word0Column.state1.label.arrowDown = true
+columns.word0Column.state1.entry.text = @word0Display
+columns.word0Column.state1.sortAttributes = <word0Recharge, text>
+columns.word0Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word0Column.state1.colorAttribute = word0Color
+
+columns.word0Column.state2.label.text = '$FIRST WORD'
+columns.word0Column.state2.label.arrowDown = false
+columns.word0Column.state2.entry.text = @word0Display
+columns.word0Column.state2.sortAttributes = <word0Recharge, text>
+columns.word0Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word0Column.state2.colorAttribute = word0Color
+
+
+; WORD 2 COLUMN -------------------------------------------
 columns.word1Column.type = TEXT
-columns.word1Column.name = '$FIRST WORD'
+columns.word1Column.name = '$SECOND WORD'
 columns.word1Column.states = 2
 columns.word1Column.width = 0.2
 columns.word1Column.border = a_textBorder
 
-columns.word1Column.state1.label.text = '$FIRST WORD'
+columns.word1Column.state1.label.text = '$SECOND WORD'
 columns.word1Column.state1.label.arrowDown = true
-columns.word1Column.state1.entry.text = @word1
-columns.word1Column.state1.sortAttributes = <recharge1, text>
+columns.word1Column.state1.entry.text = @word1Display
+columns.word1Column.state1.sortAttributes = <word1Recharge, text>
 columns.word1Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.word1Column.state1.colorAttribute = wordColor1
+columns.word1Column.state1.colorAttribute = word1Color
 
-columns.word1Column.state2.label.text = '$FIRST WORD'
+columns.word1Column.state2.label.text = '$SECOND WORD'
 columns.word1Column.state2.label.arrowDown = false
-columns.word1Column.state2.entry.text = @word1
-columns.word1Column.state2.sortAttributes = <recharge1, text>
+columns.word1Column.state2.entry.text = @word1Display
+columns.word1Column.state2.sortAttributes = <word1Recharge, text>
 columns.word1Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.word1Column.state2.colorAttribute = wordColor1
+columns.word1Column.state2.colorAttribute = word1Color
 
 
-; WORD 2 COLUMN -------------------------------------------
+; WORD 3 COLUMN -------------------------------------------
 columns.word2Column.type = TEXT
-columns.word2Column.name = '$SECOND WORD'
+columns.word2Column.name = '$THIRD WORD'
 columns.word2Column.states = 2
 columns.word2Column.width = 0.2
 columns.word2Column.border = a_textBorder
 
-columns.word2Column.state1.label.text = '$SECOND WORD'
+columns.word2Column.state1.label.text = '$THIRD WORD'
 columns.word2Column.state1.label.arrowDown = true
-columns.word2Column.state1.entry.text = @word2
-columns.word2Column.state1.sortAttributes = <recharge2, text>
+columns.word2Column.state1.entry.text = @word2Display
+columns.word2Column.state1.sortAttributes = <word2Recharge, text>
 columns.word2Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.word2Column.state1.colorAttribute = wordColor2
+columns.word2Column.state1.colorAttribute = word2Color
 
-columns.word2Column.state2.label.text = '$SECOND WORD'
+columns.word2Column.state2.label.text = '$THIRD WORD'
 columns.word2Column.state2.label.arrowDown = false
-columns.word2Column.state2.entry.text = @word2
-columns.word2Column.state2.sortAttributes = <recharge2, text>
+columns.word2Column.state2.entry.text = @word2Display
+columns.word2Column.state2.sortAttributes = <word2Recharge, text>
 columns.word2Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.word2Column.state2.colorAttribute = wordColor2
-
-
-; WORD 3 COLUMN -------------------------------------------
-columns.word3Column.type = TEXT
-columns.word3Column.name = '$THIRD WORD'
-columns.word3Column.states = 2
-columns.word3Column.width = 0.2
-columns.word3Column.border = a_textBorder
-
-columns.word3Column.state1.label.text = '$THIRD WORD'
-columns.word3Column.state1.label.arrowDown = true
-columns.word3Column.state1.entry.text = @word3
-columns.word3Column.state1.sortAttributes = <recharge3, text>
-columns.word3Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.word3Column.state1.colorAttribute = wordColor3
-
-columns.word3Column.state2.label.text = '$THIRD WORD'
-columns.word3Column.state2.label.arrowDown = false
-columns.word3Column.state2.entry.text = @word3
-columns.word3Column.state2.sortAttributes = <recharge3, text>
-columns.word3Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
-columns.word3Column.state2.colorAttribute = wordColor3
+columns.word2Column.state2.colorAttribute = word2Color
 
 
 ; SCHOOL COLUMN -------------------------------------------
@@ -453,14 +453,14 @@ columns.schoolColumn.border = a_textBorder
 columns.schoolColumn.state1.label.text = '$SCHOOL'
 columns.schoolColumn.state1.label.arrowDown = false
 columns.schoolColumn.state1.entry.text = @schoolDisplay
-columns.schoolColumn.state1.sortAttributes = <schoolDisplay, text>
-columns.schoolColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.schoolColumn.state1.sortAttributes = <school, text>
+columns.schoolColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.schoolColumn.state2.label.text = '$SCHOOL'
 columns.schoolColumn.state2.label.arrowDown = true
 columns.schoolColumn.state2.entry.text = @schoolDisplay
-columns.schoolColumn.state2.sortAttributes = <schoolDisplay, text>
-columns.schoolColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.schoolColumn.state2.sortAttributes = <school, text>
+columns.schoolColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
 ; LEVEL COLUMN -------------------------------------------
@@ -514,14 +514,14 @@ columns.effectItemColumn.entry.textFormat.align = right
 
 columns.effectItemColumn.state1.label.text = '$SOURCE'
 columns.effectItemColumn.state1.label.arrowDown = false
-columns.effectItemColumn.state1.entry.text = @cardName
-columns.effectItemColumn.state1.sortAttributes = <cardName, text>
+columns.effectItemColumn.state1.entry.text = @source
+columns.effectItemColumn.state1.sortAttributes = <source, text>
 columns.effectItemColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.effectItemColumn.state2.label.text = '$SOURCE'
 columns.effectItemColumn.state2.label.arrowDown = true
-columns.effectItemColumn.state2.entry.text = @cardName
-columns.effectItemColumn.state2.sortAttributes = <cardName, text>
+columns.effectItemColumn.state2.entry.text = @source
+columns.effectItemColumn.state2.sortAttributes = <source, text>
 columns.effectItemColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
 
@@ -551,11 +551,11 @@ views.allMagicView.columns = <equipColumn, iconColumn, magicNameColumn, schoolCo
 views.allMagicView.category = <Inventory.FILTERFLAG_MAGIC_ALL, Inventory.FILTERFLAG_MAGIC_FAVORITES>
 
 views.shoutsView.primaryColumn = magicNameColumn
-views.shoutsView.columns = <equipColumn, iconColumn, magicNameColumn, word1Column, word2Column, word3Column>
+views.shoutsView.columns = <equipColumn, iconColumn, magicNameColumn, word0Column, word1Column, word2Column>
 views.shoutsView.category = Inventory.FILTERFLAG_MAGIC_SHOUTS
 
 views.powersView.primaryColumn = magicNameColumn
-views.powersView.columns = <equipColumn, iconColumn, magicNameColumn, spellCostColumn>
+views.powersView.columns = <equipColumn, iconColumn, magicNameColumn, durationColumn>
 views.powersView.category = Inventory.FILTERFLAG_MAGIC_POWERS
 
 views.activeEffectView.primaryColumn = magicNameColumn
