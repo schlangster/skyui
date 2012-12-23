@@ -32,15 +32,17 @@ The following mods/utilities are required for SkyUI:
 
 	3. Installation
 
-	4. Troubleshooting
+	4. Uninstallation/Upgrading
 
-	5. Modders Guide
+	5. Troubleshooting
 
-	6. Credits & Acknowledgements
+	6. Mod Author Guide
+
+	7. Credits & Acknowledgements
 	
-	7. Contact
+	8. Contact
 	
-	8. Permissions
+	9. Permissions
 
 
 ########################################################################################################################################
@@ -83,8 +85,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ------------------------------------------------------------
 3.0:
 
-[NOTES]
-- When upgrading from previous versions, make sure to uninstall them first!
+NOTE: When upgrading from previous versions, make sure to uninstall them first!
 
 [General]
 - Added more columns to item lists and a drop-down menu to show/hide them.
@@ -95,18 +96,22 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Added dynamic icon art to bottom bar so it matches the current control mapping.
 - Replaced NMM installer with an in-game configuration menu.
 - Replaced old error messages with regular message boxes and added more safety checks for outdated SkyUI components.
-- Improved performance.
-- Fixed various smaller issues.
+- Fixed various minor issues and improved performance.
+- Consolidated package format to BSA+ESP.
 
 [ContainerMenu]
 - Added support for GiftMenu.
 - Improved input scheme for mouse and keyboard (no more R to Take All and Store, mouse click for Give/Take etc.).
 
+[BarterMenu]
+- Added carry weight display to bottom bar.
+
 [MagicMenu]
 - Fixed locked words being shown as unlocked if one word is known.
+- Fixed an issue that could cause crashes for spells with missing effect data.
 
 [ModConfigurationMenu]
-- Initial release. Mod authors see https://github.com/schlangster/skyui/wiki for documentation.
+- Initial release. Mod authors, see https://github.com/schlangster/skyui/wiki for documentation.
 
 ------------------------------------------------------------
 2.1:
@@ -182,13 +187,20 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
  3. Installation
 ========================================================================================================================================
 
-There are four ways to install SkyUI:
+------------------------------------------------------------
+IMPORTANT:
+If you were using older versions of SkyUI (this includes 3.0 alpha builds),
+you MUST remove them before installing the new one.
+See section 4 for instructions.
+------------------------------------------------------------
+
+There are several ways to install SkyUI:
 - Let the Nexus Mod Manager (NMM) download and install the archive for you.
 - Download the archive manually and install it with NMM.
 - Download and install the archive manually.
 - Subscribe to SkyUI on Steam Workshop.
 
-Pick whichever method you prefer.
+Pick the method you prefer.
 
 ------------------------------------------------------------
  a) Subscribe on Steam Workshop
@@ -196,14 +208,14 @@ Pick whichever method you prefer.
 
 1. Go to http://steamcommunity.com/sharedfiles/filedetails/?id=8122 and click subscribe.
 
-2. The next you start the Skyrim Launcher, SkyUI will be downloaded and installed automatically.
+2. The next time you start the Skyrim Launcher, SkyUI will be downloaded and installed automatically.
 
 3. Done!
 
 OR
 
 ------------------------------------------------------------
- b) Automatic Download with NMM
+ b) Automated Download with NMM
 ------------------------------------------------------------
 
 1.	Click the 'Download with manager' button on top of the file.
@@ -241,7 +253,74 @@ OR
 
 
 ========================================================================================================================================
- 4. Troubleshooting
+ 4. Uninstallation/Upgrading
+========================================================================================================================================
+
+The uninstallation method depends on which SkyUI version you were using before and how you installed it.
+
+------------------------------------------------------------
+ NMM installation
+ Any SkyUI version
+------------------------------------------------------------
+
+In NMM's mod list, search for the SkyUI entry and deactivate the mod.
+
+------------------------------------------------------------
+ Steam workshop
+ Any SkyUI version
+------------------------------------------------------------
+
+Unsubscribe from the mod.
+Optionally, you may also delete SkyUI.esp and SkyUI.bsa from Skyrim's 'Data/' folder.
+
+------------------------------------------------------------
+ Manual installation
+ SkyUI pre-3.0 versions (1.0, 1.1, 2.0, 2.1, 2.2)
+------------------------------------------------------------
+
+If you installed the SkyUI files manually, then you also have to remove them manually.
+So view the contents of the SkyUI archive you are using, locate each file at its install location and remove it.
+
+To revert your interface folder to it's original state, you can delete the 'Interface/' directory from Skyrim's 'Data/' folder
+and then use Steam to restore any original files you removed in the process by following these steps:
+	(Backup your interface folder before deleting it in case anything goes wrong)
+	1. Locate Skyrim in Steam's game library.
+	2. Open the properties dialog and select the 'Local files' tab.
+	3. Verify integrity of game cache.
+Be aware, that this will break any other mods that installed files to the interface folder. You have to re-install them.
+
+------------------------------------------------------------
+ Manual installation
+ SkyUI 3.0 alpha versions
+------------------------------------------------------------
+
+The 3.0 alpha packages contained loose script files requires by mod authors to create MCM config menus.
+You have to remove these files because they will override any newer scripts in SkyUI.BSA.
+
+1.	Locate the 'Scripts/' folder in your Skyrim data directory.
+	Typically it's found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
+
+2.	Delete any script files (.pex) that start with SKI_, for example
+		SKI_ConfigBase.pex, SKI_Main.pex, etc.
+
+3.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder.
+
+------------------------------------------------------------
+ Manual installation
+ SkyUI 3.0 and newer
+------------------------------------------------------------
+
+The 3.0 alpha packages contained loose script files requires by mod authors to create MCM config menus.
+You have to remove these files because they will override any newer scripts in SkyUI.BSA.
+
+1.	Locate the 'Data/' folder in your Skyrim installation directory.
+	Typically it's found at 'Program Files/Steam/steamapps/common/skyrim/Data/'.
+
+2.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder.
+
+
+========================================================================================================================================
+ 5. Troubleshooting
 ========================================================================================================================================
 
 ------------------------------------------------------------
@@ -258,19 +337,18 @@ Solution: There are two things that can cause this:
 ------------------------------------------------------------
 Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
 
-Solution: This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'. The downloaded SkyUI archive contains the
-	original versions of these files in 'SkyUI Extras/Original Translates/'.
-	So just copy the file matching your language from there back to 'Data/Interface/'.
+Solution: This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'.
+	To restore it, use Steam to verify the integrity of Skyrim's game-cache
+	(Steam -> Library -> Properties of Skyrim -> Local files tab -> Verify integrity of game cache).
 		
 ------------------------------------------------------------
-Problem: I changed something in skyui.cfg, now it's not working anymore.
+Problem: I changed something in config.txt, now it's not working anymore.
 
-Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just revert back to the original config from the
-	downloaded SkyUI archive.
+Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just re-install SkyUI.
 
 
 ========================================================================================================================================
- 5. Modder's Guide
+ 6. Mod Author Guide
 ========================================================================================================================================
 
 Since version 3.0 SkyUI provides several frameworks that can be utilized by other mods.
@@ -285,7 +363,7 @@ If you're interested in using them for you mod, have a look at the documentation
 
 
 ========================================================================================================================================
- 6. Credits & Acknowledgements
+ 7. Credits & Acknowledgements
 ========================================================================================================================================
 
 Besides the SkyUI team itself, there are other people as well who helped significantly to make this mod a reality.
@@ -326,7 +404,7 @@ Wakeupbrandon:
 	His mock-up inspired the overall layout of the new inventory.
 
 MisterPete:
-	Implemented many additional column types for improved sorting.
+	Implemented new column types for improved sorting.
 
 Psychosteve:
 	Created our new primary icon theme for version 3.0.
@@ -342,7 +420,7 @@ Last but not least, thanks to the whole SKSE team, because without their Script 
 
 
 ========================================================================================================================================
- 7. Contact
+ 8. Contact
 ========================================================================================================================================
 
 For direct contact, send a PM to schlangster at
@@ -355,7 +433,7 @@ If you need help, please leave a comment on our Nexus page instead of contacting
 
 	
 ========================================================================================================================================
- 8. Permissions
+ 9. Permissions
 ========================================================================================================================================	
 
 Some assets in SkyUI belong to other authors.
