@@ -257,6 +257,10 @@ OR
 ========================================================================================================================================
 
 The uninstallation method depends on which SkyUI version you were using before and how you installed it.
+Any SkyUI version older than 3.0 (this includes alpha builds) has to be removed before upgrading.
+
+For details, see the following instructions that match your current SkyUI version/installation method.
+
 
 ------------------------------------------------------------
  NMM installation
