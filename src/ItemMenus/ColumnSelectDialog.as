@@ -71,11 +71,8 @@ class ColumnSelectDialog extends BasicDialog
 	
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{
-		if (! GlobalFunc.IsKeyPressed(details))
-			return false;
-				
-		if (details.navEquivalent == NavigationCode.LEFT || details.navEquivalent == NavigationCode.RIGHT) {
+	{	
+		if (GlobalFunc.IsKeyPressed(details) && (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.ESCAPE)) {
 			DialogManager.close();
 			return true;
 		}

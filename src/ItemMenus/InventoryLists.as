@@ -55,12 +55,15 @@ class InventoryLists extends MovieClip
 	
 	private var _searchKey: Number;
 	private var _switchTabKey: Number;
+	private var _sortOrderKey: Number;
+	private var _sortOrderKeyHeld: Boolean = false;
 	
 	private var _bTabbed = false;
 	private var _leftTabText: String;
 	private var _rightTabText: String;
 
 	private var _columnSelectDialog: MovieClip;
+	private var _columnSelectInterval: Number;
 	
 
   /* PROPERTIES */
@@ -231,9 +234,12 @@ class InventoryLists extends MovieClip
 			_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
 		} else {
 			_switchTabKey = skse.GetMappedKey("Wait", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+			_sortOrderKey = skse.GetMappedKey("Sneak", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
 		}
 		if (_switchTabKey == undefined)
 			_switchTabKey = -1;
+		if (_sortOrderKey == undefined)
+			_sortOrderKey = -1;
 
 		categoryList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);
@@ -244,7 +250,44 @@ class InventoryLists extends MovieClip
 	{
 		if (_currentState != SHOW_PANEL)
 			return false;
-			
+
+		if (_platform > 0) {
+			if (details.skseKeycode == _sortOrderKey) {
+				_sortOrderKeyHeld = true;
+				if (details.value == "keyDown") {
+					if (_columnSelectDialog)
+						DialogManager.close();
+					else
+						_columnSelectInterval = setInterval(this, "onColumnSelectButtonPress", 1000, {type: "timeout"});
+					return true;
+				} else if (details.value == "keyUp") {
+					_sortOrderKeyHeld = false;
+					if (_columnSelectInterval) {
+						// keyPress not handled
+						//   Clear intervals and change value to keyDown to be processed later
+						clearInterval(_columnSelectInterval);
+						delete(_columnSelectInterval);
+						details.value = "keyDown";
+						// Continue
+					} else {
+						// keyPress handled:
+						//    Key was released after the interval expired
+						return true;
+					}
+				} else if (_sortOrderKeyHeld && details.value == "keyHold") {
+					// Fix for opening journal menu while key is depressed
+					// For some reason this is the only time we receive a keyHold event
+					_sortOrderKeyHeld = false;
+					if (_columnSelectDialog)
+						DialogManager.close();
+					return true;
+				}
+			}
+
+			if (_sortOrderKeyHeld) // Disable extra input while interval is active
+				return true;
+		}
+
 		if (GlobalFunc.IsKeyPressed(details)) {
 			// Search hotkey (default space)
 			if (details.skseKeycode == _searchKey) {
@@ -385,6 +428,11 @@ class InventoryLists extends MovieClip
 	
 	private function onColumnSelectButtonPress(event: Object): Void
 	{
+		if (event.type == "timeout") {
+			clearInterval(_columnSelectInterval);
+			delete(_columnSelectInterval);
+		}
+
 		if (_columnSelectDialog) {
 			DialogManager.close();
 			return;
