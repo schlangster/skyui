@@ -49,7 +49,7 @@ class skyui.filter.ItemSorter implements skyui.filter.IFilter
 		
 		for (var i=0; i<a_filteredList.length; i++) {
 			var t = a_filteredList[i][primaryAttribute];
-			if (t === "-" || t == undefined)
+			if (t == null)
 				a_filteredList[i]._sortFlag = 1;
 			else
 				a_filteredList[i]._sortFlag = 0;

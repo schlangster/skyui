@@ -47,10 +47,12 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 			// Substitute @variables by entryObject properties
 			var entryValue: String = columnLayoutData.entryValue;
 			if (entryValue != undefined) {
-				if (entryValue.charAt(0) == "@")
-					e.SetText(a_entryObject[entryValue.slice(1)]);
-				else
+				if (entryValue.charAt(0) == "@") {
+					var subVal = a_entryObject[entryValue.slice(1)];
+					e.SetText(subVal != undefined ? subVal : "-");					
+				} else {
 					e.SetText(entryValue);
+				}
 			}
 			
 			// Process based on column type 

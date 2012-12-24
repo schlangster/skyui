@@ -52,7 +52,7 @@
 	public static var FILTERFLAG_CONTAINER_KEYS: Number			= 0x00040000;
 	public static var FILTERFLAG_CONTAINER_MISC: Number			= 0x00080000;
 	
-	public static var FILTERFLAG_MAGIC_ALL: Number				= 0x000001FF; //Sum of below, or -257;
+	public static var FILTERFLAG_MAGIC_ALL: Number				= -257; // 0xFFFFFEFF
 	public static var FILTERFLAG_MAGIC_FAVORITES: Number		= 0x00000001;
 	public static var FILTERFLAG_MAGIC_ALTERATION: Number		= 0x00000002;
 	public static var FILTERFLAG_MAGIC_ILLUSION: Number			= 0x00000004;
