@@ -122,7 +122,7 @@ class skyui.components.MappedButton extends Button
 				}
 			}
 			
-			if (!keyCode == -1)
+			if (keyCode == -1 || keyCode == null)
 				keyCode = 282; // ???
 				
 			_keyCodes.push(keyCode);
