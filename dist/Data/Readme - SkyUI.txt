@@ -355,13 +355,8 @@ Solution: If you made a mistake in the config, SkyUI may stop working. In this c
  6. Mod Author Guide
 ========================================================================================================================================
 
-Since version 3.0 SkyUI provides several frameworks that can be utilized by other mods.
-
-Currently those frameworks are
-* the Mod Configuration Menu; and
-* the HUD Widget Framework.
-
-If you're interested in using them for you mod, have a look at the documentation:
+Since version 3.0, SkyUI provides a Mod Configuration Menu framework that can be utilized by other mods.
+If you're a mod author interested in using it for you mod, have a look at the documentation:
 
 	https://github.com/schlangster/skyui/wiki
 
@@ -412,6 +407,9 @@ MisterPete:
 
 Psychosteve:
 	Created our new primary icon theme for version 3.0.
+
+Pelinor:
+	The creator of MCM for Fallout: New Vegas. Allowed us to use his original logo.
 
 
 SkyUI is utilizing TweenLite, a high-performance tweening library (http://www.greensock.com/tweenlite/).
