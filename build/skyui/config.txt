@@ -84,12 +84,12 @@ columns.iconColumn.icon.size = n_iconSize
 columns.iconColumn.border = <0, 3, 3, 3> ; left right top bottom
 
 columns.iconColumn.state1.label.text = ' '
-columns.iconColumn.state1.sortAttributes = <type, formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
+columns.iconColumn.state1.sortAttributes = <type, formType, subType, weightClass, material, infoDamage, infoArmor, actorValue, magnitude, duration, text>
 columns.iconColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.iconColumn.state2.label.text = ' '
 columns.iconColumn.state2.label.arrowDown = true
-columns.iconColumn.state2.sortAttributes = <type, formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
+columns.iconColumn.state2.sortAttributes = <type, formType, subType, weightClass, material, infoDamage, infoArmor, actorValue, magnitude, duration, text>
 columns.iconColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 ; ITEM NAME COLUMN -------------------------------------------------------
@@ -130,13 +130,13 @@ columns.arColumn.border = a_textBorder
 
 columns.arColumn.state1.label.text = '$ARM'
 columns.arColumn.state1.label.arrowDown = true
-columns.arColumn.state1.entry.text = @armorDisplay
-columns.arColumn.state1.sortAttributes = <armor, text>
+columns.arColumn.state1.entry.text = @infoArmor
+columns.arColumn.state1.sortAttributes = <infoArmor, text>
 columns.arColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.arColumn.state2.label.text = '$ARM'
-columns.arColumn.state2.entry.text = @armorDisplay
-columns.arColumn.state2.sortAttributes = <armor, text>
+columns.arColumn.state2.entry.text = @infoArmor
+columns.arColumn.state2.sortAttributes = <infoArmor, text>
 columns.arColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
@@ -149,14 +149,14 @@ columns.subTypeColumn.border = a_textBorder
 
 columns.subTypeColumn.state1.label.text = '$TYPE'
 columns.subTypeColumn.state1.entry.text = @subTypeDisplay
-columns.subTypeColumn.state1.sortAttributes = <formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
-columns.subTypeColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.subTypeColumn.state1.sortAttributes = <subTypeDisplay, text>
+columns.subTypeColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.subTypeColumn.state2.label.text = '$TYPE'
 columns.subTypeColumn.state2.entry.text = @subTypeDisplay
 columns.subTypeColumn.state2.label.arrowDown = true
-columns.subTypeColumn.state2.sortAttributes = <formType, subType, weightClass, material, damage, armor, actorValue, magnitude, duration, text>
-columns.subTypeColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
+columns.subTypeColumn.state2.sortAttributes = <subTypeDisplay, text>
+columns.subTypeColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; MATERIAL COLUMN -------------------------------------------------------
@@ -271,13 +271,13 @@ columns.damageColumn.border = a_textBorder
 
 columns.damageColumn.state1.label.text = '$DAM'
 columns.damageColumn.state1.label.arrowDown = true
-columns.damageColumn.state1.entry.text = @damageDisplay
-columns.damageColumn.state1.sortAttributes = <damage, text>
+columns.damageColumn.state1.entry.text = @infoDamage
+columns.damageColumn.state1.sortAttributes = <infoDamage, text>
 columns.damageColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.damageColumn.state2.label.text = '$DAM'
-columns.damageColumn.state2.entry.text = @damageDisplay
-columns.damageColumn.state2.sortAttributes = <damage, text>
+columns.damageColumn.state2.entry.text = @infoDamage
+columns.damageColumn.state2.sortAttributes = <infoDamage, text>
 columns.damageColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
@@ -290,13 +290,13 @@ columns.weightColumn.border = a_textBorder
 
 columns.weightColumn.state1.label.text = '$WGT'
 columns.weightColumn.state1.label.arrowDown = true
-columns.weightColumn.state1.entry.text = @weightDisplay
-columns.weightColumn.state1.sortAttributes = <weight, text>
+columns.weightColumn.state1.entry.text = @infoWeight
+columns.weightColumn.state1.sortAttributes = <infoWeight, text>
 columns.weightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.weightColumn.state2.label.text = '$WGT'
-columns.weightColumn.state2.entry.text = @weightDisplay
-columns.weightColumn.state2.sortAttributes = <weight, text>
+columns.weightColumn.state2.entry.text = @infoWeight
+columns.weightColumn.state2.sortAttributes = <infoWeight, text>
 columns.weightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
@@ -309,13 +309,13 @@ columns.valueColumn.border = a_textBorder
 
 columns.valueColumn.state1.label.text = '$VAL'
 columns.valueColumn.state1.label.arrowDown = true
-columns.valueColumn.state1.entry.text = @valueDisplay
-columns.valueColumn.state1.sortAttributes = <value, text>
+columns.valueColumn.state1.entry.text = @infoValue
+columns.valueColumn.state1.sortAttributes = <infoValue, text>
 columns.valueColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.valueColumn.state2.label.text = '$VAL'
-columns.valueColumn.state2.entry.text = @valueDisplay
-columns.valueColumn.state2.sortAttributes = <value, text>
+columns.valueColumn.state2.entry.text = @infoValue
+columns.valueColumn.state2.sortAttributes = <infoValue, text>
 columns.valueColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
@@ -329,13 +329,13 @@ columns.valueWeightColumn.hidden = true
 
 columns.valueWeightColumn.state1.label.text = '$V/W'
 columns.valueWeightColumn.state1.label.arrowDown = true
-columns.valueWeightColumn.state1.entry.text = @valueWeightDisplay
-columns.valueWeightColumn.state1.sortAttributes = <valueWeight, text>
+columns.valueWeightColumn.state1.entry.text = @infoValueWeight
+columns.valueWeightColumn.state1.sortAttributes = <infoValueWeight, text>
 columns.valueWeightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.valueWeightColumn.state2.label.text = '$V/W'
-columns.valueWeightColumn.state2.entry.text = @valueWeightDisplay
-columns.valueWeightColumn.state2.sortAttributes = <valueWeight, text>
+columns.valueWeightColumn.state2.entry.text = @infoValueWeight
+columns.valueWeightColumn.state2.sortAttributes = <infoValueWeight, text>
 columns.valueWeightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
@@ -541,6 +541,10 @@ views.magicItemView.primaryColumn = itemNameColumn
 views.magicItemView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, magnitudeColumn, durationColumn, weightColumn, valueColumn, valueWeightColumn>
 views.magicItemView.category = <Inventory.FILTERFLAG_INV_POTIONS, Inventory.FILTERFLAG_INV_SCROLLS, Inventory.FILTERFLAG_CONTAINER_POTIONS, Inventory.FILTERFLAG_CONTAINER_SCROLLS>
 
+views.keysView.primaryColumn = itemNameColumn
+views.keysView.columns = <equipColumn, iconColumn, itemNameColumn>
+views.keysView.category = <Inventory.FILTERFLAG_INV_KEYS, Inventory.FILTERFLAG_CONTAINER_KEYS>
+
 
 ; MAGIC VIEWS -------------------------------------------------------
 views.defaultMagicView.primaryColumn = magicNameColumn
@@ -565,7 +569,7 @@ views.activeEffectView.category = Inventory.FILTERFLAG_MAGIC_ACTIVEEFFECTS
 
 ; LAYOUTS -------------------------------------------------------
 layouts.itemListLayout.name = 'ItemListLayout'
-layouts.itemListLayout.views = <weaponView, armorView, magicItemView, defaultItemView>
+layouts.itemListLayout.views = <weaponView, armorView, magicItemView, keysView, defaultItemView>
 
 layouts.magicListLayout.name = 'MagicListLayout'
 layouts.magicListLayout.views = <shoutsView, powersView, activeEffectView, allMagicView, defaultMagicView>

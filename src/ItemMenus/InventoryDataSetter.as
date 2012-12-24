@@ -23,37 +23,29 @@ class InventoryDataSetter extends ItemcardDataExtender
 	{
 		a_entryObject.baseId = a_entryObject.formId & 0x00FFFFFF;
 		a_entryObject.type = a_itemInfo.type;
-		a_entryObject.value = a_itemInfo.value;
-		a_entryObject.weight = a_itemInfo.weight;
-		a_entryObject.armor = a_itemInfo.armor;
-		a_entryObject.damage = a_itemInfo.damage;
-
-		a_entryObject.valueWeight = (a_itemInfo.weight > 0) ? (a_itemInfo.value / a_itemInfo.weight) : ((a_itemInfo.value != 0) ? undefined : 0); // 0/0 = 0
 
 		a_entryObject.isEquipped = (a_entryObject.equipState > 0);
 		a_entryObject.isStolen = (a_itemInfo.stolen == true);
-		a_entryObject.isEnchanted = false;
-		a_entryObject.isPoisoned = false;
 
-		a_entryObject.valueDisplay = String(Math.round(a_itemInfo.value * 10) / 10);
-		a_entryObject.weightDisplay = String(Math.round(a_itemInfo.weight * 10) / 10);
-		a_entryObject.valueWeightDisplay = (a_entryObject.valueWeight != undefined) ? (Math.round(a_entryObject.valueWeight * 10) / 10) : "-";
-		a_entryObject.armorDisplay = (a_entryObject.armor > 0) ? (Math.round(a_entryObject.armor * 10) / 10) : "-";
-		a_entryObject.damageDisplay = (a_entryObject.damage > 0) ? (Math.round(a_entryObject.damage * 10) / 10) : "-";
-		a_entryObject.durationDisplay = (a_entryObject.duration > 0) ? String(Math.round(a_entryObject.duration * 10) / 10) : "-";
-		a_entryObject.magnitudeDisplay = (a_entryObject.magnitude > 0) ? String(Math.round(a_entryObject.magnitude * 10) / 10) : "-";
-
-		a_entryObject.subTypeDisplay = "-";
-		a_entryObject.materialDisplay = "-";
-		a_entryObject.weightClassDisplay = "-";
+		a_entryObject.infoValue = Math.round(a_itemInfo.value * 10) / 10;
+		a_entryObject.infoWeight = Math.round(a_itemInfo.weight * 10) / 10;
+		
+		var valueWeight = (a_itemInfo.weight > 0) ? (a_itemInfo.value / a_itemInfo.weight) : ((a_itemInfo.value != 0) ? null : 0); // 0/0 = 0
+		a_entryObject.infoValueWeight = (valueWeight != null) ? (Math.round(valueWeight * 10) / 10) : null;
 
 		switch (a_entryObject.formType) {
 			case Form.TYPE_SCROLLITEM:
 				a_entryObject.subTypeDisplay = "$Scroll";
+				
+				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 10) / 10) : null;
+				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 10) / 10) : null;
+				
 				break;
 
 			case Form.TYPE_ARMOR:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
+				a_entryObject.infoArmor = (a_itemInfo.armor > 0) ? (Math.round(a_itemInfo.armor * 10) / 10) : null;
+				
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
 				processMaterialKeywords(a_entryObject);
@@ -81,6 +73,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.TYPE_WEAPON:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
+				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 10) / 10) : null;
+				
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				processWeaponBaseId(a_entryObject);
@@ -88,6 +82,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 			case Form.TYPE_AMMO:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
+				
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				processAmmoBaseId(a_entryObject);
@@ -98,6 +93,9 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 
 			case Form.TYPE_POTION:
+				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 10) / 10) : null;
+				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 10) / 10) : null;
+			
 				processPotionType(a_entryObject);
 				break;
 
@@ -658,15 +656,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 	{
 		a_entryObject.subTypeDisplay = "$Key";
 
-		if (a_entryObject.value <= 0) {
-			a_entryObject.value = undefined;
-			a_entryObject.valueDisplay = "-";
-		}
+		if (a_entryObject.infoValue <= 0)
+			a_entryObject.infoValue = null;
 
-		if (a_entryObject.weight <= 0) {
-			a_entryObject.weight = undefined;
-			a_entryObject.weightDisplay = "-";
-		}
+		if (a_entryObject.infoValue <= 0)
+			a_entryObject.infoValue = null;
 	}
 
 	private function processPotionType(a_entryObject: Object): Void
