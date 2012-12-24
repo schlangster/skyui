@@ -164,7 +164,7 @@ class ContainerMenu extends ItemMenu
 		super.SetPlatform(a_platform,a_bPS3Switch);
 
 		_equipModeKey = skse.GetMappedKey("Run", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (!_equipModeKey)
+		if (_equipModeKey == undefined)
 			_equipModeKey = -1;
 		_equipModeControls = {keyCode: _equipModeKey};
 

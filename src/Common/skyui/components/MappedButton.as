@@ -107,7 +107,7 @@ class skyui.components.MappedButton extends Button
 
 			// Setting keycode manually overrides auto-detection
 			if (controlInfo.keyCode != null) {
-				keyCode = controlInfo.keyCode
+				keyCode = controlInfo.keyCode;
 			} else {
 				var name = controlInfo.name;
 				var context = controlInfo.context;
@@ -122,7 +122,7 @@ class skyui.components.MappedButton extends Button
 				}
 			}
 			
-			if (keyCode == -1)
+			if (!keyCode == -1 || keyCode == undefined)
 				keyCode = 282; // ???
 				
 			_keyCodes.push(keyCode);

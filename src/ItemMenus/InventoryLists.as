@@ -227,7 +227,7 @@ class InventoryLists extends MovieClip
 		_platform = a_platform;
 		
 		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (!_searchKey)
+		if (_searchKey == undefined)
 			_searchKey = -1;
 			
 		if (a_platform == 0) {
