@@ -284,11 +284,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.material = Material.NORDIC;
 			a_entryObject.materialDisplay = "$Nordic";
 		
-		} else if (a_entryObject.keywords["DLC2ArmorMaterialStahlrimHeavy"] != undefined ||
-		 		   a_entryObject.keywords["DLC2ArmorMaterialStahlrimLight"] != undefined ||
-		 		   a_entryObject.keywords["DLC2WeapMaterialStahlrim"] != undefined) {
-			a_entryObject.material = Material.STAHLRIM;
-			a_entryObject.materialDisplay = "$Stahlrim";
+		} else if (a_entryObject.keywords["DLC2ArmorMaterialStalhrimHeavy"] != undefined ||
+		 		   a_entryObject.keywords["DLC2ArmorMaterialStalhrimLight"] != undefined ||
+		 		   a_entryObject.keywords["DLC2WeapMaterialStalhrim"] != undefined) {
+			a_entryObject.material = Material.STALHRIM;
+			a_entryObject.materialDisplay = "$Stalhrim";
 			if (a_entryObject.keywords["DLC2dunHaknirArmor"] != undefined) {
 				a_entryObject.material = Material.DEATHBRAND;
 				a_entryObject.materialDisplay = "$Deathbrand";
