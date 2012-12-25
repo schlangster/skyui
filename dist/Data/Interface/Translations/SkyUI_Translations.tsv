@@ -1,0 +1,207 @@
+Language	English	French	German	Italian	Spanish	Czech	Polish	Russian	Japanese
+$ALL	ALL	TOUS	ALLE	TUTTO	TODO	VŠECHNO	WSZYSTKIE	ВСЕ	全て
+$FILTER	FILTER	FILTRE	FILTER	FILTRO	FILTRO	FILTR	FILTR	ФИЛЬТР	フィルタ
+									
+$STOLEN	STOLEN	VOLÉ	GESTOHLEN	RUBATO	ROBADO	KRADENÉ	SKRADZIONE	УКРАДЕНО	盗品
+$EQUIPPED	EQUIPPED	ÉQUIPÉ	AUSGERÜSTET	EQUIPAGGIATO	EQUIPADO	POUŽÍVANÉ	WYPOSAŻONY	НАДЕТО	装備品
+$ENCHANTED	ENCHANTED	ENCHANTÉ	VERZAUBERT	INCANTATO	ENCANTADO	OČAROVANÉ	ZACZAROWANY	ЗАЧАРОВАНО	エンチャント
+$V/W	V/W	V/P	W/G	V/P	V/P	C/H	C/W	Ц/В	V/W
+$VALUE/WEIGHT	VALUE/WEIGHT	VALEUR/POIDS	WERT/GEWICHT	VALORE/PESO	VALOR/PESO	CENA/HMOTNOST	CENA/WAGA	ЦЕНА/ВЕС	金額/重量
+$SPELL COST	SPELL COST	COÛT MAGIQUE	KOSTEN	COSTO	COSTO	HOTNOTA	WYDATEK MAGICKI	СТОИМОСТЬ	コスト
+$FIRST WORD	FIRST WORD	PREMIER MOT	ERSTES WORT	PRIMA PAROLA	PRIMERA PALABRA	PRVNÍ SLOVO	PIERWSZY WYRAZ	ПЕРВОЕ СЛОВО	第一の言葉
+$SECOND WORD	SECOND WORD	DEUXIÈME MOT	ZWEITES WORT	SECONDA PAROLA	SEGUNDA PALABRA	DRUHÉ SLOVO	DRUGI WYRAZ	ВТОРОЕ СЛОВО	第二の言葉
+$THIRD WORD	THIRD WORD	TROISIÈME MOT	DRITTES WORT	TERZA PAROLA	TERCERA PALABRA	TŘETÍ SLOVO	TRZECI WYRAZ	ТРЕТЬЕ СЛОВО	第三の言葉
+$SCHOOL	SCHOOL	ÉCOLE	MAGIESCHULE	SCUOLA	ESCUELA	ŠKOLA	SZKOŁA	ШКОЛА	系統
+$SKILL LEVEL	SKILL LEVEL	NIVEAU DE COMP	FERTIGKEITSSTUFE	LIVELLO	NIVEL DE HAB	ÚROVEŇ	POZIOM	УРОВЕНЬ НАВЫКА	スキルレベル
+$TIME LEFT	TIME LEFT	TEMPS RESTANT	VERBLEIBENDE ZEIT	TEMPO RIMANENTE	TIEMPO RESTANTE	VYPRŠÍ ZA	POZOSTAŁY CZAS 	ОСТАВШЕЕСЯ ВРЕМЯ	残り時間
+$SOURCE	SOURCE	ORIGINE	QUELLE	ORIGINE	ORIGEN	ZDROJ	ŹRÓDŁO	ИСТОЧНИК	効果元
+$FAVORITE	FAVORITE	FAVORIS	FAVORIT	PREFERITO	FAVORITO	OBLÍBENÉ	ULUBIONE	ИЗБРАННОЕ	お気に入り
+$TYPE	TYPE	TYPE	TYP	TIPO	TIPO	TYP	TYP	ТИП	種別
+$MATERIAL	MATERIAL	MATIERE	MATERIAL	MATERIALE	MATERIAL	MATERIÁL	MATERIAŁ	МАТЕРИАЛ	材料
+$MAT	MAT	MAT	MAT	MAT	MAT	MAT	MAT	МАТ	材料
+$CLASS	CLASS	CLASSE	KLASSE	CLASSE	CLASE	TŘÍDA	KLASA	КЛАСС	分類
+$MAGNITUDE	MAGNITUDE	MAGNITUDE	STÄRKE	MAGNITUDO	MAGNITUD	ROZSAH	WIELKOŚĆ	ВЕЛИЧИНА	効力
+$MAG	MAG	MAG	STÄ	MAG	MAG	MAG	WLK	ВЕЛ	効力
+$DURATION	DURATION	DURÉE	DAUER	DURATA	DURACIÓN		CZAS TRWANIA	ПРОДОЛЖИТЕЛЬНОСТЬ	
+$DUR	DUR	DUR	DAU	DUR	DUR			ПРОД	
+$TIME	TIME	TEMPS	ZEIT	TEMPO	TIEMPO	ČAS	CZAS	ВРЕМЯ	時間
+$DAM	DAM	DOMM	SCHA	DANNI	DAÑO	POŠKOZENÍ	OBR	УРОН	ダメージ
+$WGT	WGT	PDS	GEW	PESO	PESO	VÁHA	WAG	ВЕС	重量
+$VAL	VAL	VAL	WERT	VAL	VAL	HOD	CEN	ЦЕНА	金額
+$ARM	ARM	ARM	RÜST	ARM	ARM	ZBR	ZBR	БРОНЬ	防御
+									
+$Armor	Armor	Armure	Rüstung	Armatura	Armadura	Zbroj	Zbroja	Броня	防具
+$None	None	Aucun	Kein	Nessuno	Ninguno	Nic	Nic	Нет	なし
+$Light	Light	Légère	Leicht	Leggera	Ligera	Lehké	Lekka	Легкие	軽装
+$Heavy	Heavy	Lourde	Schwer	Pesante	Pesada	Těžké	Ciężka	Тяжелые	重装
+$Clothing	Clothing	Vêtements	Kleidung	Indumento	Ropa	Oblečení	Ubranie	Ткань	衣服
+$Jewelry	Jewelry	Joaillerie	Schmuck	Gioielleria	Joyería		Biżuteria	Драгоценности	
+									
+$Body	Body	Torse	Körper	Petto	Torso	Hrud'	Ciało	Тело	胴
+$Head	Head	Tête	Kopf	Testa	Cabeza	Hlava	Głowa	Голова	頭
+$Hands	Hands	Mains	Hände	Braccia	Manos	Ruce	Dłonie	Руки	手
+$Forearms	Forearms	Avant-bras	Unterarme	Avambracci	Antebrazos	Předloktí	Przedramiona	Предплечья	腕
+$Feet	Feet	Pieds	Füße	Piedi	Pies	Nohy	Stopy	Ноги	足
+$Calves	Calves	Jambes	Unterschenkel	Gambe	Piernas	Lýtka	Łydki	Голень	脚
+$Shield	Shield	Bouclier	Schild	Scudo	Escudo	Štít	Tarcza	Щит	盾
+$Amulet	Amulet	Amulette	Amulett	Amuleto	Amuleto	Amulet	Amulet	Ожерелье	アミュレット
+$Ring	Ring	Anneau	Ring	Anello	Anillo	Prsten	Pierścień	Кольцо	指輪
+$Mask	Mask	Masque	Maske	Maschera	Máscara	Maska	Maska	Маска	仮面
+$Circlet	Circlet	Couronne	Diadem	Tiara	Aro	Čelenka	Diadem	Обруч	サークレット
+$Ears	Ears	Oreilles	Ohren	Orecchie	Orejas		Uszy	Серьги	
+$Tail	Tail	Queue	Schwanz	Coda	Cola		Ogon		
+									
+$Weapon	Weapon	Arme	Waffe	Arma	Arma	Zbraň	Broń	Оружие	武器
+$Melee	Melee	Corps à corps	Nahkampf	Corpo a Corpo	Cuerpo a cuerpo		Pięści / Gołe pięści	Схватка	
+$Sword	Sword	Épée	Schwert	Spada	Espada	Meč	Miecz	Меч	剣
+$Dagger	Dagger	Dague	Dolch	Pugnale	Daga	Dýka	Sztylet	Кинжал	ダガー
+$War Axe	War Axe	Hache	Kriegsaxt	Ascia	Hacha	Válečná Sekera	Topór bojowy	Боевой топор	片手斧
+$Mace	Mace	Masse	Streitkolben	Mazza	Maza	Palcát	Buława	Булава	メイス
+$Greatsword	Greatsword	Espadon	Zweihänder	Spadone	Mandoble	Obouruční Meč	Wielki miecz	Двуручный меч	グレートソード
+$Warhammer	Warhammer	Marteau	Kriegshammer	Martello	Martillo	Kladivo	Młot bojowy	Боевой молот	戦鎚
+$Battleaxe	Battleaxe	Hache de guerre	Streitaxt	Ascia	Hacha	Bojová Sekera	Topór bitewny	Секира	両手斧
+$Bow	Bow	Arc	Bogen	Arco	Arco	Luk	Łuk	Лук	弓
+$Staff	Staff	Bâton	Stab	Bastone	Bastón	Hůl	Laska	Посох	杖
+$Crossbow	Crossbow	Arbalète	Armbrust	Balestra	Ballesta		Kusza	Арбалет	
+$Spear	Spear	Lance	Speer	Lancia	Lanza		Włócznia	Копьё	
+$Pickaxe	Pickaxe	Pioche	Spitzhacke	Piccone	Pico		Kilof	Кирка	
+$Wood Axe	Wood Axe	Hache	Holzaxt	Accetta del taglialegna	Hacha de leñador		Topór / Topór drwala	Колун	
+									
+$Arrow	Arrow	Flèche	Pfeil	Freccia	Flecha		Strzała	Стрела	
+$Bolt	Bolt	Carreau	Bolzen	Dardo	Virote		Bełt	Болт	
+									
+$Potion	Potion	Potion	Trank	Pozione	Poción	Lektvar	Mikstura	Зелье	水薬
+$Poison	Poison	Poison	Gift	Veleno	Veneno	Jed	Trucizna	Яд	毒薬
+$Food	Food	Nourriture	Essen	Cibo	Comida	Jídlo	Jedzenie	Еда	食料
+$Drink	Drink	Boisson	Getränk	Bevanda	Bebida		Napój	Напиток	
+									
+$Scroll	Scroll	Parchemin	Schriftrolle	Pergamena	Pergamino	Svitek	Zwój	Свиток	巻物
+$Book	Book	Livre	Buch	Libro	Libro	Kniha	Książka	Книга	書物
+$Spell Tome	Spell Tome	Livre de sort	Grimoir	Libro di Incantesimi	Grimorio	Magický Svitek	Księga czaru	Том Заклинаний	呪文の書
+$Recipe	Recipe	Recette	Rezept	Ricetta	Receta	Recept	Przepis	Рецепт	レシピ
+$Note	Note	Note	Notiz	Nota	Nota	Notatka	Notatka	Записка	ノート
+$Map	Map	Carte	Karte	Mappa	Mapa	Mapa	Mapa	Карта	地図
+									
+$Ingredient	Ingredient	Ingrédient	Zutat	Ingrediente	Ingrediente	Přísada	Składnik	Ингредиент	材料
+									
+$Misc	Misc	Divers	Diverses	Varie	Misc	Různé	Pozostałe	Разное	その他
+$Gem	Gem	Gemme	Edelstein	Gemma	Gema	Drahokam	Kamień szlachetny	Драгоценный камень	宝石
+$Tool	Tool	Outil	Werkzeug	Utensile	Util	Nástroj	Narzędzie	Инструмент	道具
+$Remains	Remains	Restes	Überreste	Resti	Restos	Pozůstatky	Szczątki	Останки	遺骨
+$Leather	Leather	Cuir	Leder	Pelle	Cuero	Kůže	Skórzany	Кожа	革
+$Strips	Strips	Bandes	Streifen	strisce	Tiras	Pásky	Paski	Полоски кожи	ひも
+$Hide	Hide	Cacher	Haut	Pelle	Piel	Useň	Skóra	Шкура	皮
+$Ore	Ore	Minerai	Erz	Minerale	Mineral	Ruda	Ruda	Руда	鉱石
+$Ingot	Ingot	Lingot	Barren	Lingotto	Lingote	Ingot	Sztaba	Слиток	インゴット
+$Claw	Claw	Griffe	Klaue	Artiglio	Garra	Spár	Szpon	Коготь	爪
+$Clutter	Clutter	Autres	Zeug	Altro	Otros	Krámy	Klamoty	Хлам	雑貨
+$Torch	Torch	Torche	Fackel	Torcia	Antorcha	Pochodeň	Pochodnia	Факел	松明
+$Key	Key	Clé	Schlüssel	Chiave	Llave	Klíč	Klucz	Ключ	鍵
+$Soul Gem	Soul Gem	Gemme spirituelle	Seelenstein	Gemma dell'anima	Gema de alma	Kámen duší	Kamień dusz	Камень душ	魂石
+$Firewood	Firewood	Feu de bois	Feuerholz	Legna da ardere	Leña		Drewno / Drewno opałowe	Полено	
+$Gold	Gold	Or	Gold	Oro	Oro		Złoto	Золото	
+$Artifact	Artifact	Artefact	Artefakt	Artefatto	Artefacto	Artefakt	Arefakt	Артефакт	アーティファクト
+$Toy	Toy	Jouet	Spielzeug	Giocattolo	Juguete		Zabawka	Игрушка	
+$House Part	House Part	Partie de maison	Hausbau	Parte della casa	Parte de la casa		Część domu		
+									
+$Spell	Spell	Sort	Zauber	Incantesimo	Hechizo	Kouzlo	Zaklęcie	Заклинание	スペル
+$Alteration	Alteration	Altération	Veränderung	Alterazione	Alteración	Proměna	Przemiana	Изменение	変性
+$Destruction	Destruction	Destruction	Zerstörung	Distruzione	Destrucción	Ničení	Zniszczenie	Разрушение	破壊
+$Illusion	Illusion	Illusion	Illusion	Illusione	Ilusión	Iluze	Iluzja	Иллюзия	幻惑
+$Restoration	Restoration	Restauration	Wiederherstellung	Recupero	Restauración	Obnovení	Przywrócenie	Восстановление	回復
+									
+$Other	Other	Autre	Andere	Altro	Otros	Jiné	Inne	Другое	その他
+$Magical	Magical	Magique	Magisch	Magico	Mágico	Magický	Magiczny	Магическое	魔法
+$Daedric	Daedric	Daedrique	Daedrisch	Daedrico	Daedrico	Daedrický	Deadryczny	Даэдрическое	デイドラ
+$Dragonplate	Dragonplate	Plates draconique	Drachenknochen	Piastre di Drago	Placas de dragón	Dračí plátové	Smoczy - Płytowy	Драконье	ドラゴンプレート
+$Nightingale	Nightingale	Rossignol	Nachtigall	Nightingale	Ruiseñor	Slavičí	Słowiczy	Соловьиное	ナイチンゲール
+$Ebony	Ebony	Ébonite	Ebenerz	Ebano	Ébano	Ebenitové	Ebonowy	Эбонитовое	黒檀
+$Dragonscale	Dragonscale	Écaille de dragon	Drachenschuppen	Scaglie di Drago	Escamas de dragón	Dračí šupinové	Smoczy - Łuskowy	Дракона	ドラゴンスケール
+$Orcish	Orcish	Orque	Orkisch	Orchesco	Orco	Orkské	Orkowy	Орочье	オーク
+$Steel Plate	Steel Plate	Plates	Stahlharnisch	Piastre d'acciaio	Placas de acero	Ocelové plátové	Stalowy - Płytowy	Пластинчатое	スチールプレート
+$Glass	Glass	Verre	Glas	Vetro	Cristal	Skleněné	Szklany	Стеклянное	碧水晶
+$Elven Gilded	Elven Gilded	Dorée elfique	Elfenvergoldet	Elfico dorato	Dorada élfica	Elfské pozlacené	Elficki - Pozłacany	Эльфийское позолоченное	エルフの黄金
+$Dwarven	Dwarven	Dwemer	Zwergisch	Nanico	Enana	Trpasličí	Krasnoludzki	Двемерское	ドワーフ
+$Scaled	Scaled	Écaille	Schuppen	Scaglie	Escamas	Šupinové	Łuskowy	Ламеллярное	スケイル
+$Steel	Steel	Acier	Stahl	Acciaio	Acero	Ocelový	Stalowy	Стальное	鋼鉄
+$Brotherhood	Brotherhood	Confrérie	Bruderschaft	Confraternita	Hermandad	Bratrstva	Bractwa	Братства	闇の一党
+$Elven	Elven	Elfique	Elfen	Elfico	Élfico	Elfský	Elficki	Эльфийское	エルフ
+$Iron Banded	Iron Banded	Fer rubané	Eisenbebändert	Ferro Laminato	Hierro bandeado	Železná s pásky	Żelazny - Łączony	Прочное железное	帯鉄
+$Leather	Leather	Cuir	Leder	Pelle	Cuero	Kožené	Skórzany	Кожаное	革
+$Imperial	Imperial	Impérial	Kaiserliche	Imperiale	Imperial	Císařská	Imperialny	Имперское	帝国軍
+$Studded	Studded	Clouté	Vernietet	Borchiato	Tachonada	Okovaná	Ćwiekowany	Клепаное	鋲付き
+$Fur	Fur	Peau	Fell	Pelliccia	Piel	Usňová	Futrzany	Меховое	毛皮
+$Iron	Iron	Fer	Eisen	Ferro	Hierro	Železný	Żelazny	Железное	鉄
+$Stormcloak	Stormcloak	Sombrage	Sturmmantel	Manto della Tempesta	Capa de la Tormenta	Bouřných hávů	Gromowładnych	Братьев Бури	ストームクローク
+$Silver	Silver	Argenté	Silber	Argento	Plata	Stříbrný	Srebrny	Серебреное	銀
+$Wood	Wood	Bois	Holz	Legno	Madera		Drewniany	Деревянное	
+$Nordic	Nordic	Nordique	Nordisch	Nordico	Nórdico		Nordycki	Нордическое	
+$Bonemold	Bonemold	Ossement	Knochen	Ossa Fuse	Molde de hueso			Костяное	
+$Chitin	Chitin	Chitine	Chitin	Chitina	Quitinosa		Chitynowy	Хитиновое	
+$Morag Tong	Morag Tong	Morag Tong	Morag Tong	Morag Tong	Morag Tong				
+$Stalhrim	Stalhrim	Stalhrim	Stalhrim	Stalhrim	Stalhrim				
+$Deathbrand	Deathbrand	Balafré	Todesmal	Marchio Mortale	Estigma Mortal				
+$Draugr	Draugr	Draugr	Draugr	Draugr	Draugr	Draugirský	Draugrowy	Драургское	ドラウグル
+$Draugr Honed	Draugr Honed	Draugr Affûtée	Draugr geschliffen	Draugr affilata	Draugr afilada				
+$Falmer	Falmer	Falmer	Falmer	Falmer	Falmer	Falmerský	Falmerski	Фалмерское	ファルメル
+$Falmer Honed	Falmer Honed	Falmer Affûtée	Falmer geschliffen	Falmer affilata	Falmer afilada				
+$Forsworn	Forsworn	Parjure	Abgeschworene	Rinnegato	Renegado	Zapřisáhlých	Krzywoprzysięzca	Изгоев	フォースウォーン
+$Dawnguard	Dawnguard	Garde de l'Aube	Dämmerwacht	Dawnguard	Guardia del Alba				
+$Falmer Hardened	Falmer Hardened	Falmer renforcée	Gehärtete Falmerrüstung	Falmer Pesante	Falmer endurecida				
+$Hunter	Hunter	Chasseur	Jäger	Cacciatore	Cazador		Łowcy	Охотничье	
+$Vampire	Vampire	Vampire	Vampir	Vampiro	Vampiro		Wampirzy	Вампирское	
+$Aetherium	Aetherium	Aetherium	Aetherium	Eterio	Aetério				
+$Dragonbone	Dragonbone	Os de dragon	Drachenknochen	Ossa di Drago	Hueso de dragón			Драконорождённый	
+									
+$MOD CONFIGURATION	MOD CONFIGURATION	CONFIGURATION DU MOD	MOD-KONFIGURATION	CONFIGURAZIONE MOD	CONFIGURACIÓN DE MOD			НАСТРОЙКА МОДА	
+$MOD CONFIG	MOD CONFIG	CONFIG MOD	MOD-KONFIGURATION	CONFIG MOD	CONFIG MOD	NASTAVENÍ MODŮ	KONFIGURACJA MODÓW	НАСТРОЙКА МОДА	MOD設定
+$Default	Default	Par Défaut	Voreinstellung	Predefinito	Por defecto	Základní	Domyślny	Умолчание	デフォルト
+$Defaults	Defaults	Par Défaut	Voreinstellungen	Predefiniti	Por defecto	Základní	Domyślne	По умолчанию	デフォルト
+$Search	Search	Chercher	Suchen	Cerca	Buscar	Hledat	Szukaj	Поиск	検索
+$Magic	Magic	Magie	Magie	Magia	Magia	Magie	Magia	Магия	魔法
+$Inventory	Inventory	Inventaire	Inventar	Inventario	Inventario	Inventář	Ekwipunek	Инвентарь	所持品
+$Switch Tab	Switch Tab	Changer Onglet	Wechsle Reiter	Cambia Scheda	Cambiar pestaña	Změnit Záložku	Przełącz Kartę	Переключение Вкладок	タブの切り替え
+$Equip Mode	Equip Mode	Gestion d'équipement	Ausrüstungsmodus	Gestisci equipaggiamento	Modo de Equipar	Vybrat Režim	Wybierz tryb	Режим Оснащения	装備モード
+$Column	Column	Colonne	Spalte	Colonna	Columna	Sloupek	Kolumna	Колонка	列
+$Order	Order	Trier	Sortierung	Ordina	Ordenar	Řazení	Kolejność	Заказ	ソート
+$Open Slider	Open Slider	Ouvrir Slider	Schieber öffnen	Apri Scorrimento	Activar Cursor	Otevřít Posuvník	Otwórz suwak	Открыть Ползунок	スライダーを開く
+$Open Menu	Open Menu	Ouvrir Menu	Menü öffnen	Apri Menu	Abrir Menu	Otevřít Menu	Otwórz Menu	Открыть Меню	メニューを開く
+$Toggle	Toggle	Configurer	Umschalten	Seleziona	Seleccionar	Přepnout	Przełącz	Переключить	トグル
+$Pick Color	Pick Color	Sélectionner Couleur	Farbauswahl	Seleziona Colore	Seleccionar color	Vybrat Barvu	Wybierz Kolor	Выбор Цвета	色を選択
+$Remap	Remap	Réaffecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Перераспределение	再割り当て
+									
+$General	General	Général	Allgemein	Generale	General		Ogólnie	Общие	
+$Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado		Zaawasowane	Дополнительные	
+									
+$Item List	Item List	Liste des objets	Gegenstandsliste	Lista degli Oggetti	Lista de objetos		Lista przedmiotów	Список элементов	
+$Font Size	Font Size	Taille de police	Schriftgröße	Dimensione del Font	Tamaño de fuente		Wielkość czcionki	Размер шрифта	
+$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte min. pour le menu de quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número mín. para Menú de Cantidad				
+$Item Card	Item Card	Carte de l'objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del objeto		Karta przedmiotu	Элемент Карты	
+$3D Item	3D Item	Item 3D	3D Ansicht	Oggetto 3D	Objeto 3D			3D элемент	
+$Align	Align	Alignement	Ausrichten	Allinea	Alinear			Выравнивание	
+$Horizontal Offset	Horizontal Offset	Axe horizontal	Horizontaler Abstand	Spostamento Orizzontale	Desplazamiento Horizontal			Горизонтальное смещение	
+$Vertical Offset	Vertical Offset	Axe vertical	Vertikaler Abstand	Spostamento Verticale	Desplazamiento Vertical			Вертикальное смещение	
+$Scale	Scale	Échelle	Größe	Scala	Escala		Skala	Масштаб	
+$SWF Version Checking	SWF Version Checking	SWF Vérification de version	SWF Versions-Check	Controllo Versione SWF	Comprobar versión SWF		Sprawdzanie wersji SWF	Проверка версии SWF	
+									
+$Left	Left	Gauche	Links	Sinistra	Izquierda			Лево	
+$Right	Right	Droite	Rechts	Destra	Derecha			Право	
+$Center	Center	Centre	Mitte	Centro	Centro			Центр	
+									
+$SKI_INFO1	Default: Medium	Défaut: Moyen	Voreinstellung: Mittel	Predefinito: Medio	Predefinido: Medio			Умолчание: Среднее	
+$SKI_INFO2	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: 5	Nombre d'objets requit pour activer le menu de quantité, ou 0 pour le désactiver.\NDéfaut: 5	Mindestgröße eines Stapels zur Anzeigen des Mengendialogs.\nVoreinstellung: 5	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo. \nPredefinito: 5	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar). \nPredefinido: 5				
+$SKI_INFO3	Default: Center	Défaut: Centre	Voreinstellung: Mittel	Predefinito: Centro	Predefinido: Centro			Умолчание: Центр	
+$SKI_INFO4	Default: 0	Défaut: 0	Voreinstellung: 0	Predefinito: 0	Predefinido: 0			Умолчание: 0	
+$SKI_INFO5	Default: 1.5	Défaut: 1.5	Voreinstellung: 1.5	Predefinito: 1.5	Predefinido: 1.5			Умолчание: 1.5	
+$SKI_INFO6	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: Activé	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: An	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: Attivo	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: Activo				
+									
+									
+									
+									
+									
+									
+$NAME	NAME	NOM	NAME	NOME	NOMBRE	JMÉNO	NAZWA	ИМЯ	名前
+$ TO PLACE	 TO PLACE	 PLACER	 ZUM PLATZIEREN	 PER PIAZZARE	 PARA UBICAR	 POLOŽIT	 ABY WŁOŻYĆ	 ПОМЕСТИТЬ	 で置く
+$ TO STEAL	 TO STEAL	 VOLER	 ZUM STEHLEN	 PER RUBARE	 PARA ROBAR	 UKRÁST	 ABY UKRAŚĆ	 УКРАСТЬ	 で盗む
+									
+% Completion	100.00%	100.00%	100.00%	100.00%	100.00%	71.04%	85.79%	92.90%	70.49%
