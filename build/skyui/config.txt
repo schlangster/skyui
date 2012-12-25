@@ -542,7 +542,7 @@ views.magicItemView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeC
 views.magicItemView.category = <Inventory.FILTERFLAG_INV_POTIONS, Inventory.FILTERFLAG_INV_SCROLLS, Inventory.FILTERFLAG_CONTAINER_POTIONS, Inventory.FILTERFLAG_CONTAINER_SCROLLS>
 
 views.keysView.primaryColumn = itemNameColumn
-views.keysView.columns = <equipColumn, iconColumn, itemNameColumn>
+views.keysView.columns = <equipColumn, iconColumn, itemNameColumn, weightColumn, valueColumn, valueWeightColumn>
 views.keysView.category = <Inventory.FILTERFLAG_INV_KEYS, Inventory.FILTERFLAG_CONTAINER_KEYS>
 
 
