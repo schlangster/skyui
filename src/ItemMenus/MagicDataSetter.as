@@ -86,8 +86,8 @@ class MagicDataSetter extends ItemcardDataExtender
 				a_entryObject.infoSchoolName = a_itemInfo.magicSchoolName;
 				
 				// 0 -> "-"
-				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? a_entryObject.magnitude : null;
-				a_entryObject.duration = (a_entryObject.duration > 0) ? a_entryObject.duration : null;
+				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 100) / 100) : null;
+				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 100) / 100) : null;
 				
 				var spellCost = a_itemInfo.spellCost;
 				a_entryObject.infoSpellCost = spellCost;

@@ -27,24 +27,23 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.isEquipped = (a_entryObject.equipState > 0);
 		a_entryObject.isStolen = (a_itemInfo.stolen == true);
 
-		a_entryObject.infoValue = Math.round(a_itemInfo.value * 10) / 10;
-		a_entryObject.infoWeight = Math.round(a_itemInfo.weight * 10) / 10;
+		a_entryObject.infoValue = (a_itemInfo.value > 0) ? (Math.round(a_itemInfo.value * 100) / 100) : null;
+		a_entryObject.infoWeight =(a_itemInfo.weight > 0) ? (Math.round(a_itemInfo.weight * 100) / 100) : null;
 		
-		var valueWeight = (a_itemInfo.weight > 0) ? (a_itemInfo.value / a_itemInfo.weight) : ((a_itemInfo.value != 0) ? null : 0); // 0/0 = 0
-		a_entryObject.infoValueWeight = (valueWeight != null) ? (Math.round(valueWeight * 10) / 10) : null;
+		a_entryObject.infoValueWeight = (a_itemInfo.weight > 0 && a_itemInfo.value > 0) ? (Math.round((a_itemInfo.value / a_itemInfo.weight) * 100) / 100) : null;
 
 		switch (a_entryObject.formType) {
 			case Form.TYPE_SCROLLITEM:
 				a_entryObject.subTypeDisplay = "$Scroll";
 				
-				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 10) / 10) : null;
-				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 10) / 10) : null;
+				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 100) / 100) : null;
+				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 100) / 100) : null;
 				
 				break;
 
 			case Form.TYPE_ARMOR:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
-				a_entryObject.infoArmor = (a_itemInfo.armor > 0) ? (Math.round(a_itemInfo.armor * 10) / 10) : null;
+				a_entryObject.infoArmor = (a_itemInfo.armor > 0) ? (Math.round(a_itemInfo.armor * 100) / 100) : null;
 				
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
@@ -73,7 +72,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.TYPE_WEAPON:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
-				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 10) / 10) : null;
+				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 100) / 100) : null;
 				
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
@@ -93,8 +92,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 
 			case Form.TYPE_POTION:
-				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 10) / 10) : null;
-				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 10) / 10) : null;
+				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 100) / 100) : null;
+				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 100) / 100) : null;
 			
 				processPotionType(a_entryObject);
 				break;

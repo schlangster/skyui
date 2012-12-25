@@ -449,7 +449,7 @@ class ItemCard extends MovieClip
 		if (aUpdateObj.value != undefined && ItemValueText != undefined)
 			ItemValueText.SetText(aUpdateObj.value.toString());
 		if (aUpdateObj.weight != undefined && ItemWeightText != undefined)
-			ItemWeightText.SetText(RoundDecimal(aUpdateObj.weight, 1).toString());
+			ItemWeightText.SetText(RoundDecimal(aUpdateObj.weight, 2).toString());
 		StolenTextInstance._visible = aUpdateObj.stolen == true;
 		LastUpdateObj = aUpdateObj;
 	}
