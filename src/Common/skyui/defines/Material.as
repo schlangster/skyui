@@ -37,7 +37,7 @@
 	public static var ORCISH: Number			= 34;
 	public static var SCALED: Number			= 35;
 	public static var SILVER: Number			= 36;
-	public static var STAHLRIM: Number			= 37;
+	public static var STALHRIM: Number			= 37;
 	public static var STEEL: Number				= 38;
 	public static var STEELPLATE: Number		= 39;
 	public static var STORMCLOAK: Number		= 40;
