@@ -200,7 +200,7 @@ $SKI_INFO6	Incompatible or outdated SWFs may break SkyUI functionality. This onl
 									
 									
 									
-$NAME	NAME	NOM	NAME	NOME	NOMBRE	JMÉNO	NAZWA	ИМЯ	名前
+$NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	 TO PLACE	 PLACER	 ZUM PLATZIEREN	 PER PIAZZARE	 PARA UBICAR	 POLOŽIT	 ABY WŁOŻYĆ	 ПОМЕСТИТЬ	 で置く
 $ TO STEAL	 TO STEAL	 VOLER	 ZUM STEHLEN	 PER RUBARE	 PARA ROBAR	 UKRÁST	 ABY UKRAŚĆ	 УКРАСТЬ	 で盗む
 									

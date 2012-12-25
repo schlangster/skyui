@@ -11,28 +11,26 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_illusion_calm",	//6
+		"calm",	//6
 		null,
-		"effect_illusion_frenzy",	//8
+		"frenzy",	//8
 		null,
-		"effect_conjuration_conjure",	//10
-		"effect_illusion_invisibility",	//11
-		"effect_alteration_light",	//12
-		null,
-		null,
+		"conjure",	//10
+		"invisibility",	//11
+		"light",	//12
 		null,
 		null,
-		"effect_conjuration_bound",	//17
-		"effect_conjuration_conjure",	//18
-		"effect_alteration_detectlife",	//19
-		"effect_alteration_telekinesis",	//20
-		"effect_alteration_paralyze",	//21
-		"effect_conjuration_reanimate",	//22
-		"effect_conjuration_soultrap",	//23
-		"effect_restoration_turnundead",	//24
-		"effect_illusion_clairvoyance",	//25
 		null,
 		null,
+		"bound_item",	//17
+		"conjure",	//18
+		"detectlife",	//19
+		"telekinesis",	//20
+		"paralyze",	//21
+		"reanimate",	//22
+		"soultrap",	//23
+		"turnundead",	//24
+		"clairvoyance",	//25
 		null,
 		null,
 		null,
@@ -40,18 +38,20 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_illusion_invisibility",	//35
-		"effect_skills_misc_werewolf",	//36
-		null,
-		"effect_illusion_rally",	//38
 		null,
 		null,
+		"invisibility",	//35
+		"werewolf",	//36
 		null,
-		"effect_conjuration_banish",	//42
+		"rally",	//38
 		null,
 		null,
 		null,
-		"effect_skills_misc_vampire"	//46
+		"banish",	//42
+		null,
+		null,
+		null,
+		"vampire"	//46
 	];
 	
 	private static var _posValueModTable: Array = [
@@ -61,30 +61,30 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_skills_fortify_weapon_1h",	//6
-		"effect_skills_fortify_weapon_2h",	//7
-		"effect_skills_fortify_archery",	//8
-		"effect_skills_fortify_block",	//9
-		"effect_skills_fortify_smithing",	//10
-		"effect_skills_fortify_armor_heavy",	//11
-		"effect_skills_fortify_armor_light",	//12
-		"effect_skills_fortify_pickpocket",	//13
-		"effect_skills_fortify_lockpicking",	//14
-		"effect_skills_fortify_sneak",	//15
-		"effect_skills_fortify_alchemy",	//16
-		"effect_skills_fortify_persuasion",	//17
-		"effect_skills_fortify_alteration",	//18
-		"effect_skills_fortify_conjuration",	//19
-		"effect_skills_fortify_destruction",	//20
-		"effect_skills_fortify_illusion",	//21
-		"effect_skills_fortify_restoration",	//22
-		"effect_skills_fortify_enchanting",	//23
+		"av_skill_weapon_1h",	//6
+		"av_skill_weapon_2h",	//7
+		"av_skill_archery",	//8
+		"av_skill_block",	//9
+		"av_skill_smithing",	//10
+		"av_skill_armor_heavy",	//11
+		"av_skill_armor_light",	//12
+		"av_skill_pickpocket",	//13
+		"av_skill_lockpicking",	//14
+		"av_skill_sneak",	//15
+		"av_skill_alchemy",	//16
+		"av_skill_persuasion",	//17
+		"av_skill_alteration",	//18
+		"av_skill_conjuration",	//19
+		"av_skill_destruction",	//20
+		"av_skill_illusion",	//21
+		"av_skill_restoration",	//22
+		"av_skill_enchanting",	//23
 		null,
 		null,
 		null,
-		"effect_restoration_fortify_health_regen",	//27
-		"effect_restoration_fortify_magicka_regen",	//28
-		"effect_restoration_fortify_stamina_regen",	//29
+		"av_health_regen",	//27
+		"av_magicka_regen",	//28
+		"av_stamina_regen",	//29
 		null,
 		null,
 		"effect_restoration_fortify_carry",	//32
@@ -95,12 +95,12 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_restoration_resist_poison",	//40
-		"effect_restoration_resist_fire",	//41
-		"effect_restoration_resist_shock",	//42
-		"effect_restoration_resist_frost",	//43
-		"effect_restoration_resist_magic",	//44
-		"effect_restoration_resist_disease",	//45
+		"av_resist_poison",	//40
+		"av_resist_fire",	//41
+		"av_resist_shock",	//42
+		"av_resist_frost",	//43
+		"av_resist_magic",	//44
+		"av_resist_disease",	//45
 		null,
 		null,
 		null,
@@ -109,16 +109,16 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_illusion_invisibility",	//54
-		"effect_illusion_nighteye",	//55
+		"invisibility",	//54
+		"nighteye",	//55
 		null,
-		"effect_alteration_waterbreathing",	//57
+		"waterbreathing",	//57
 		null,
 		null,
 		null,
 		null,
 		null,
-		"effect_restoration_ward",	//63
+		"ward",	//63
 		null,
 		null,
 		null,
@@ -141,34 +141,34 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_restoration_fortify_shout",	//86
+		"av_skill_shout",	//86
 		null,
-		"effect_alteration_telekinesis",	//88
+		"telekinesis",	//88
 		null,
 		null,
 		null,
-		"effect_illusion_muffle",	//92
+		"muffle",	//92
 		null,
 		null,
 		null,
-		"effect_skills_fortify_weapon_1h",	//96
-		"effect_skills_fortify_weapon_2h",	//97
-		"effect_skills_fortify_archery",	//98
-		"effect_skills_fortify_block",	//99
-		"effect_skills_fortify_smithing",	//100
-		"effect_skills_fortify_armor_heavy",	//101
-		"effect_skills_fortify_armor_light",	//102
-		"effect_skills_fortify_pickpocket",	//103
-		"effect_skills_fortify_lockpicking",	//104
-		"effect_skills_fortify_sneak",	//105
-		"effect_skills_fortify_alchemy",	//106
-		"effect_skills_fortify_persuasion",	//107
-		"effect_skills_fortify_alteration",	//108
-		"effect_skills_fortify_conjuration",	//109
-		"effect_skills_fortify_destruction",	//110
-		"effect_skills_fortify_illusion",	//111
-		"effect_skills_fortify_restoration",	//112
-		"effect_skills_fortify_enchanting",	//113
+		"av_skill_weapon_1h",	//96
+		"av_skill_weapon_2h",	//97
+		"av_skill_archery",	//98
+		"av_skill_block",	//99
+		"av_skill_smithing",	//100
+		"av_skill_armor_heavy",	//101
+		"av_skill_armor_light",	//102
+		"av_skill_pickpocket",	//103
+		"av_skill_lockpicking",	//104
+		"av_skill_sneak",	//105
+		"av_skill_alchemy",	//106
+		"av_skill_persuasion",	//107
+		"av_skill_alteration",	//108
+		"av_skill_conjuration",	//109
+		"av_skill_destruction",	//110
+		"av_skill_illusion",	//111
+		"av_skill_restoration",	//112
+		"av_skill_enchanting",	//113
 		null,
 		null,
 		null,
@@ -190,29 +190,29 @@ class skyui.util.EffectIconMap
 		null,
 		null,
 		null,
-		"effect_skills_fortify_weapon_1h",	//135
-		"effect_skills_fortify_weapon_2h",	//136
-		"effect_skills_fortify_archery",	//137
-		"effect_skills_fortify_block",	//138
-		"effect_skills_fortify_smithing",	//139
-		"effect_skills_fortify_armor_heavy",	//140
-		"effect_skills_fortify_armor_light",	//141
-		"effect_skills_fortify_pickpocket",	//142
-		"effect_skills_fortify_lockpicking",	//143
-		"effect_skills_fortify_sneak",	//144
-		"effect_skills_fortify_alchemy",	//145
-		"effect_skills_fortify_barter",	//146
-		"effect_skills_fortify_alteration",	//147
-		"effect_skills_fortify_conjuration",	//148
-		"effect_skills_fortify_destruction",	//149
-		"effect_skills_fortify_illusion",	//150
-		"effect_skills_fortify_restoration",	//151
-		"effect_skills_fortify_enchanting",	//152
-		null,
-		null,
-		"effect_restoration_fortify_health_regen",	//155
-		"effect_restoration_fortify_magicka_regen",	//156
-		"effect_restoration_fortify_stamina_regen"	//157
+		"av_skill_weapon_1h",	//135
+		"av_skill_weapon_2h",	//136
+		"av_skill_archery",	//137
+		"av_skill_block",	//138
+		"av_skill_smithing",	//139
+		"av_skill_armor_heavy",	//140
+		"av_skill_armor_light",	//141
+		"av_skill_pickpocket",	//142
+		"av_skill_lockpicking",	//143
+		"av_skill_sneak",	//144
+		"av_skill_alchemy",	//145
+		"av_skill_barter",	//146
+		"av_skill_alteration",	//147
+		"av_skill_conjuration",	//148
+		"av_skill_destruction",	//149
+		"av_skill_illusion",	//150
+		"av_skill_restoration",	//151
+		"av_skill_enchanting",	//152
+		null,
+		null,
+		"av_health_regen",	//155
+		"av_magicka_regen",	//156
+		"av_stamina_regen"	//157
 	];
 	
 	private static var _negValueModTable: Array = [

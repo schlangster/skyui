@@ -8,6 +8,11 @@ import gfx.ui.NavigationCode;
 import skyui.components.list.ScrollingList;
 import skyui.components.list.BasicEnumeration;
 
+import skyui.filter.ItemTypeFilter;
+import skyui.filter.ItemNameFilter;
+import skyui.filter.ItemSorter;
+
+
 class FavoritesMenu extends MovieClip
 {
 	public var bPCControlsReady: Boolean = true;
@@ -35,10 +40,12 @@ class FavoritesMenu extends MovieClip
 
 	public function InitExtensions(): Void
 	{
-		var listEnumeration = new FilteredEnumeration(itemList.entryList);
-		listEnumeration.addFilter(_typeFilter);
-		listEnumeration.addFilter(_nameFilter);
-		listEnumeration.addFilter(_sortFilter);
+		var listEnumeration = new BasicEnumeration(itemList.entryList);
+
+		//var listEnumeration = new FilteredEnumeration(itemList.entryList);
+//		listEnumeration.addFilter(_typeFilter);
+		//listEnumeration.addFilter(_nameFilter);
+//		listEnumeration.addFilter(_sortFilter);
 		itemList.listEnumeration = listEnumeration;
 
 		GlobalFunc.SetLockFunction();

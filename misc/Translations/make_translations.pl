@@ -7,16 +7,10 @@ sub error
 	getc(STDIN);
 	exit(1);
 }
-#!/usr/bin/perl
 
-my $translationsPath = ".\\Data\\Interface\\translations";
-my $sourcePath = $translationsPath . "\\SkyUI_Translations.tsv";
+my $sourcePath = "SkyUI_Translations.txt";
 
-print "=== Updating translation files...\n\n";
 open SOURCE, "<:utf8", $sourcePath or error("Cannot open $sourcePath: $!");
-
-# No wait?
-$noWait = defined($ARGV[0]);
 
 my @langs = split("\t", <SOURCE>);
 shift @langs;
@@ -27,7 +21,7 @@ foreach $lang (@langs) {
 	chomp($lang);
 	$lang = lc($lang);
 	local *FILE;
-	local $fileName = $translationsPath . "\\SkyUI_$lang.txt";
+	local $fileName = "SkyUI_$lang.txt";
 	open(FILE, ">:raw:encoding(UCS2-LE):crlf:utf8", "$fileName");
 	print FILE ("\x{FEFF}"); # print BOM
 	push(@files,*FILE);
@@ -43,7 +37,8 @@ while (my $line = <SOURCE>) {
 	local $i=0;
 
 	foreach $file (@files) {
-		print $file ($key . "\t" . $buf[$i] . "\n") if $buf[$i];
+		local $str = $buf[$i] ? $buf[$i] : $buf[0]; # fall back to english if no translate present
+		print $file ($key . "\t" . $str . "\n") unless $str eq "\$";
 		$i++;
 	}
 }
@@ -55,5 +50,5 @@ foreach $file (@files) {
 
 print "Done.\n\n";
 
-getc(STDIN) unless $noWait;
+getc(STDIN);
 exit(0);
