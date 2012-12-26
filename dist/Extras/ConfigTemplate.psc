@@ -19,6 +19,9 @@ int			_myKeyOID_S
 
 ; @overrides SKI_ConfigBase
 event OnConfigInit()
+	{Called when this config menu is initialized}
+
+	; ...
 endEvent
 
 
