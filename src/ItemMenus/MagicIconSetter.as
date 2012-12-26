@@ -88,14 +88,17 @@ class MagicIconSetter implements IListProcessor
 
 		switch(a_entryObject.resistance) {
 			case Actor.AV_FIRERESIST:
+				a_entryObject.iconLabel = "magic_fire";
 				a_entryObject.iconColor = 0xC73636;
 				break;
 
 			case Actor.AV_ELECTRICRESIST:
+				a_entryObject.iconLabel = "magic_shock";
 				a_entryObject.iconColor = 0xEAAB00;
 				break;
 
 			case Actor.AV_FROSTRESIST:
+				a_entryObject.iconLabel = "magic_frost";
 				a_entryObject.iconColor = 0x1FFBFF;
 				break;
 		}
