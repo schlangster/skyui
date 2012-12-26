@@ -52,7 +52,7 @@ SKI_Main property					SKI_MainInstance auto
 
 ; @overrides SKI_ConfigBase
 event OnConfigInit()
-	; Translatae strings to display in UI
+	; Translate strings to display in UI
 	_alignments = new string[3]
 	_alignments[0] = "$Left"
 	_alignments[1] = "$Right"
