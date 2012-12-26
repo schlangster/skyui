@@ -32,7 +32,6 @@ class MagicIconSetter implements IListProcessor
 		switch (a_entryObject.type) {
 			case Inventory.ICT_SPELL:
 				processSpellIcon(a_entryObject);
-				processResist(a_entryObject);
 				break;
 
 			case Inventory.ICT_SHOUT:
@@ -68,6 +67,7 @@ class MagicIconSetter implements IListProcessor
 
 			case Actor.AV_DESTRUCTION:
 				a_entryObject.iconLabel = "default_destruction";
+				processResist(a_entryObject);
 				break;
 
 			case Actor.AV_ILLUSION:
@@ -92,7 +92,7 @@ class MagicIconSetter implements IListProcessor
 				break;
 
 			case Actor.AV_ELECTRICRESIST:
-				a_entryObject.iconColor = 0xFFFF00;
+				a_entryObject.iconColor = 0xEAAB00;
 				break;
 
 			case Actor.AV_FROSTRESIST:

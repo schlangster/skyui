@@ -34,6 +34,7 @@ class InventoryIconSetter implements IListProcessor
 		switch (a_entryObject.formType) {
 			case Form.TYPE_SCROLLITEM:
 				a_entryObject.iconLabel = "default_scroll";
+				processResist(a_entryObject);
 				break;
 
 			case Form.TYPE_ARMOR:
@@ -74,6 +75,26 @@ class InventoryIconSetter implements IListProcessor
 
 			case Form.TYPE_SOULGEM:
 				processSoulGemIcon(a_entryObject);
+				break;
+		}
+	}
+
+	private function processResist(a_entryObject: Object): Void
+	{
+		if (a_entryObject.resistance == undefined || a_entryObject.resistance == Actor.AV_NONE)
+			return;
+
+		switch(a_entryObject.resistance) {
+			case Actor.AV_FIRERESIST:
+				a_entryObject.iconColor = 0xC73636;
+				break;
+
+			case Actor.AV_ELECTRICRESIST:
+				a_entryObject.iconColor = 0xFFFF00;
+				break;
+
+			case Actor.AV_FROSTRESIST:
+				a_entryObject.iconColor = 0x1FFBFF;
 				break;
 		}
 	}
@@ -393,16 +414,18 @@ class InventoryIconSetter implements IListProcessor
 
 			case Item.POTION_FIRERESIST:
 				a_entryObject.iconLabel = "potion_fire";
+				a_entryObject.iconColor = 0xC73636;
 				break;
 
-			case Item.POTION_SHOCKRESIST:
+			case Item.POTION_ELECTRICRESIST:
 				a_entryObject.iconLabel = "potion_shock";
+				a_entryObject.iconColor = 0xEAAB00;
 				break;
 
 			case Item.POTION_FROSTRESIST:
 				a_entryObject.iconLabel = "potion_frost";
+				a_entryObject.iconColor = 0x1FFBFF;
 				break;
-
 		}
 
 	}
