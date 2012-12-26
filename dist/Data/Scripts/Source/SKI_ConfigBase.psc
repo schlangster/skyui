@@ -75,32 +75,40 @@ endProperty
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	_optionFlagsBuf	= new int[128]
-	_textBuf		= new string[128]
-	_strValueBuf	= new string[128]
-	_numValueBuf	= new float[128]
-
-	; 0 startValue
-	; 1 defaultValue
-	; 2 minValue
-	; 3 maxValue
-	; 4 interval
-	_sliderParams	= new float[5]
-
-	; 0 startIndex
-	; 1 defaultIndex
-	_menuParams		= new int[2]
-
-	; 0 currentColor
-	; 1 defaultColor
-	_colorParams	= new int[2]
-	
 	OnGameReload()
 endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
 	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
+
+	if (!_initialized)
+		_initialized = true
+
+		_optionFlagsBuf	= new int[128]
+		_textBuf		= new string[128]
+		_strValueBuf	= new string[128]
+		_numValueBuf	= new float[128]
+
+		; 0 startValue
+		; 1 defaultValue
+		; 2 minValue
+		; 3 maxValue
+		; 4 interval
+		_sliderParams	= new float[5]
+
+		; 0 startIndex
+		; 1 defaultIndex
+		_menuParams		= new int[2]
+
+		; 0 currentColor
+		; 1 defaultColor
+		_colorParams	= new int[2]
+
+		OnConfigInit()
+
+		Debug.Trace(self + " INITIALIZED")
+	endIf
 endEvent
 
 event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -111,7 +119,7 @@ event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 		return
 	endIf
 	
-	_configManager =  newManager
+	_configManager = newManager
 	
 	_configID = _configManager.RegisterMod(self, ModName)
 	if (_configID != -1)
@@ -123,14 +131,21 @@ endEvent
 ; EVENTS ------------------------------------------------------------------------------------------
 
 ; @interface
+event OnConfigInit()
+	{Called when this config menu is initialized}
+endEvent
+
+; @interface
 event OnConfigRegister()
 	{Called when this config menu registered at the control panel}
 endEvent
 
+; @interface
 event OnConfigOpen()
 	{Called when this config menu is opened}
 endEvent
 
+; @interface
 event OnConfigClose()
 	{Called when this config menu is closed}
 endEvent

@@ -51,9 +51,7 @@ SKI_Main property					SKI_MainInstance auto
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 ; @overrides SKI_ConfigBase
-event OnInit()
-	parent.OnInit()
-
+event OnConfigInit()
 	; Translatae strings to display in UI
 	_alignments = new string[3]
 	_alignments[0] = "$Left"

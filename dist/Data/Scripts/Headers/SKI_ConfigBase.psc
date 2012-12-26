@@ -38,6 +38,11 @@ endProperty
 
 ; EVENTS ------------------------------------------------------------------------------------------
 
+event OnConfigInit()
+	{Called when this config menu is initialized}
+	Guard()
+endEvent
+
 event OnConfigRegister()
 	{Called when this config menu registered at the control panel}
 	Guard()
