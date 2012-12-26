@@ -724,7 +724,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 					break;
 
 				case Actor.AV_ELECTRICRESIST:
-					a_entryObject.subType = Item.POTION_SHOCKRESIST;
+					a_entryObject.subType = Item.POTION_ELECTRICRESIST;
 					break;
 
 				case Actor.AV_FROSTRESIST:

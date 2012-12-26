@@ -12,7 +12,7 @@ class skyui.defines.Item
 	public static var POTION_STAMINARATE: Number		= 7;
 	public static var POTION_STAMINARATEMULT: Number	= 8;
 	public static var POTION_FIRERESIST: Number			= 9;
-	public static var POTION_SHOCKRESIST: Number		= 10;
+	public static var POTION_ELECTRICRESIST: Number		= 10;
 	public static var POTION_FROSTRESIST: Number		= 11;
 	public static var POTION_POTION: Number				= 12;
 	public static var POTION_DRINK: Number				= 13;
