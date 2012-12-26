@@ -26,8 +26,10 @@ string[]	_difficultyList
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 ; @overrides SKI_ConfigBase
-event OnInit()
-	parent.OnInit()
+event OnConfigInit()
+	Pages = new string[2]
+	Pages[0] = "Example Page"
+	Pages[1] = "Another Page"
 
 	_difficultyList = new string[8]
 	_difficultyList[0] = "Casual"
@@ -132,8 +134,7 @@ event OnOptionSliderOpen(int a_option)
 		if (a_option == _sliderFormatOption)
 			SetSliderDialogStartValue(_sliderPercent)
 			SetSliderDialogDefaultValue(50)
-			SetSliderDialogMinValue(0)
-			SetSliderDialogMaxValue(100)
+			SetSliderDialogRange(0, 100)
 			SetSliderDialogInterval(2)
 		endIf
 	endIf

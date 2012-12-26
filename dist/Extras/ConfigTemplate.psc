@@ -18,10 +18,7 @@ int			_myKeyOID_S
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 ; @overrides SKI_ConfigBase
-event OnInit()
-	parent.OnInit()
-
-	; ...
+event OnConfigInit()
 endEvent
 
 
