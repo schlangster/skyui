@@ -775,7 +775,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 		if (a_entryObject.keywords["BYOHAdoptionClothesKeyword"] != undefined) {
 			a_entryObject.subType = Item.MISC_CHILDRENSCLOTHES;
-			a_entryObject.subTypeDisplay = "$Clothes";
+			a_entryObject.subTypeDisplay = "$Clothing";
 
 		} else if (a_entryObject.keywords["BYOHAdoptionToyKeyword"] != undefined) {
 			a_entryObject.subType = Item.MISC_TOY;
