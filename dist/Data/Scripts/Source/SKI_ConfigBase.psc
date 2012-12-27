@@ -109,6 +109,8 @@ event OnGameReload()
 
 		Debug.Trace(self + " INITIALIZED")
 	endIf
+
+	CheckVersion()
 endEvent
 
 event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -577,7 +579,6 @@ endFunction
 function OpenConfig()
 	SetPage("", -1)
 
-	CheckVersion()
 	OnConfigOpen()
 
 	UI.InvokeStringA(JOURNAL_MENU, MENU_ROOT + ".setPageNames", Pages)
