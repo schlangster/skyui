@@ -306,7 +306,7 @@ event OnOptionSliderAccept(int a_option, float a_value)
 	if (a_option == _itemlistQuantityTriggerOID_S)
 		_itemlistQuantityTrigger = a_value as int
 		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityTrigger)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardXOffsetOID_S)
@@ -378,6 +378,7 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 function ApplySettings()
+	; Apply settings that aren't handled by SKI_SettingsManagerInstance
 	float h = Utility.GetINIInt("iSize H:Display")
 	float w = Utility.GetINIInt("iSize W:Display")
 	if ((w / h) == 1.6)
@@ -389,8 +390,6 @@ function ApplySettings()
 	Apply3DItemXOffset()
 	Apply3DItemYOffset()
 	Apply3DItemScale()
-
-	SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityTrigger)
 endFunction
 
 function ApplyItemListFontSize()
