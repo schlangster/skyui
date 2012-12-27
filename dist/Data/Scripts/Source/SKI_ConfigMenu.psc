@@ -306,7 +306,7 @@ event OnOptionSliderAccept(int a_option, float a_value)
 	if (a_option == _itemlistQuantityTriggerOID_S)
 		_itemlistQuantityTrigger = a_value as int
 		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityTrigger)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardXOffsetOID_S)
@@ -378,10 +378,14 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 function ApplySettings()
+	; Apply settings that aren't handled by SKI_SettingsManagerInstance
 	float h = Utility.GetINIInt("iSize H:Display")
 	float w = Utility.GetINIInt("iSize W:Display")
-	if ((w / h) == 1.6)
+	float ar = w / h
+	if (ar == 1.6) ; 16:10, 1920×1200
 		_itemXBase = -32.458335876465
+	elseIf (ar == 1.25) ; 5:4, 1280x1024
+		_itemXBase = -41.622497558594
 	else
 		_itemXBase = -29.122497558594
 	endIf
@@ -389,8 +393,6 @@ function ApplySettings()
 	Apply3DItemXOffset()
 	Apply3DItemYOffset()
 	Apply3DItemScale()
-
-	SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityTrigger)
 endFunction
 
 function ApplyItemListFontSize()
@@ -425,13 +427,15 @@ function ApplyItemListFontSize()
 endFunction
 
 function Apply3DItemXOffset()
+	; Negative values shift the 3D item to the right
 	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
 	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (-38.453338623047 + _3DItemXOffset))
+	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
 endFunction
 
 function Apply3DItemYOffset()
+	; Negative values shift the 3D item to the bottom
 	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
 	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
 	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
