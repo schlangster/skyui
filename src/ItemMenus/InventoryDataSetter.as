@@ -81,6 +81,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 			case Form.TYPE_AMMO:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
+				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 100) / 100) : null;
 				
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
