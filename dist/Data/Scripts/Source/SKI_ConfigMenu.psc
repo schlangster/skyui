@@ -40,6 +40,7 @@ float		_3DItemScale				= 1.5
 
 ; Internal
 float		_itemXBase
+float		_itemXBaseW
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -382,14 +383,19 @@ function ApplySettings()
 	float h = Utility.GetINIInt("iSize H:Display")
 	float w = Utility.GetINIInt("iSize W:Display")
 	float ar = w / h
+
+	; Widescreen
 	if (ar == 1.6) ; 16:10, 1920×1200
-		_itemXBase = -32.458335876465
-	elseIf (ar == 1.25) ; 5:4, 1280x1024
-		_itemXBase = -41.622497558594
-	elseIf (ar == 4.0/3.0) ; 4/3, 1280x1024
-		_itemXBase = -39.122497558594
+		_itemXBaseW = -32.458335876465
 	else
-		_itemXBase = -29.122497558594
+		_itemXBaseW = -29.122497558594
+	endIf
+
+	; Non-widescreen
+	if (ar == 1.25) ; 5:4, 1280x1024
+		_itemXBase = -41.622497558594
+	else
+		_itemXBase = -39.122497558594
 	endIf
 
 	Apply3DItemXOffset()
@@ -430,9 +436,9 @@ endFunction
 
 function Apply3DItemXOffset()
 	; Negative values shift the 3D item to the right
-	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBaseW + _3DItemXOffset))
 	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBase + _3DItemXOffset))
+	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBaseW + _3DItemXOffset))
 	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
 endFunction
 
