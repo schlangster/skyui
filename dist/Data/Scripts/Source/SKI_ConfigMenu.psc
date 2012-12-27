@@ -386,6 +386,8 @@ function ApplySettings()
 		_itemXBase = -32.458335876465
 	elseIf (ar == 1.25) ; 5:4, 1280x1024
 		_itemXBase = -41.622497558594
+	elseIf (ar == 4.0/3.0) ; 4/3, 1280x1024
+		_itemXBase = -39.122497558594
 	else
 		_itemXBase = -29.122497558594
 	endIf
