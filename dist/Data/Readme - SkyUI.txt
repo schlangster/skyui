@@ -261,7 +261,7 @@ Before removing any files, it is recommended to make a 'clean' save game with Sk
 
 1.	Start the Skyrim Launcher and select 'Data Files'.
 
-2.	Search 'SkyUI.esp' and uncheck it
+2.	Search 'SkyUI.esp' and uncheck it.
 	(If you don't have this file, there's no need for a clean save anyway and you can skip it)
 
 3.	In-game, load your latest save, then save the game again.
@@ -326,11 +326,8 @@ You have to remove these files because they will override any newer scripts in S
 
 ------------------------------------------------------------
  Manual installation
- SkyUI 3.0 and newer
+ SkyUI 3.0 beta and newer
 ------------------------------------------------------------
-
-The 3.0 alpha packages contained loose script files requires by mod authors to create MCM config menus.
-You have to remove these files because they will override any newer scripts in SkyUI.BSA.
 
 1.	Locate the 'Data/' folder in your Skyrim installation directory.
 	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/'.
