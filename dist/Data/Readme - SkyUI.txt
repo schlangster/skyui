@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.0-beta1
+Version:		3.0-beta2
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -256,11 +256,26 @@ OR
  4. Uninstallation/Upgrading
 ========================================================================================================================================
 
+Before removing any files, it is recommended to make a 'clean' save game with SkyUI deactivated.
+(Note that when uninstalling versions 2.2 or older, this is NOT necessary)
+
+1.	Start the Skyrim Launcher and select 'Data Files'.
+
+2.	Search 'SkyUI.esp' and uncheck it
+	(If you don't have this file, there's no need for a clean save anyway and you can skip it)
+
+3.	In-game, load your latest save, then save the game again.
+
+4.	This new save game is now cleaned of SkyUI data.
+
+------------------------------------------------------------
+
+You can now proceed to uninstall the files.
+
 The uninstallation method depends on which SkyUI version you were using before and how you installed it.
 Any SkyUI version older than 3.0 (this includes alpha builds) has to be removed before upgrading.
 
 For details, see the following instructions that match your current SkyUI version/installation method.
-
 
 ------------------------------------------------------------
  NMM installation
@@ -274,8 +289,8 @@ In NMM's mod list, search for the SkyUI entry and deactivate the mod.
  Any SkyUI version
 ------------------------------------------------------------
 
-Unsubscribe from the mod.
-Optionally, you may also delete SkyUI.esp and SkyUI.bsa from Skyrim's 'Data/' folder.
+Unsubscribe from the mod and deactivate it in Skyrim Launcher (if you haven't already).
+There, you can also completely remove it by highlighting it and pressing 'Delete Selected'.
 
 ------------------------------------------------------------
  Manual installation
@@ -287,7 +302,7 @@ So view the contents of the SkyUI archive you are using, locate each file at its
 
 To revert your interface folder to it's original state, you can delete the 'Interface/' directory from Skyrim's 'Data/' folder
 and then use Steam to restore any original files you removed in the process by following these steps:
-	(Backup your interface folder before deleting it in case anything goes wrong)
+(Backup your interface folder before deleting it in case anything goes wrong)
 	1. Locate Skyrim in Steam's game library.
 	2. Open the properties dialog and select the 'Local files' tab.
 	3. Verify integrity of game cache.
@@ -302,7 +317,7 @@ The 3.0 alpha packages contained loose script files requires by mod authors to c
 You have to remove these files because they will override any newer scripts in SkyUI.BSA.
 
 1.	Locate the 'Scripts/' folder in your Skyrim data directory.
-	Typically it's found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
+	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
 
 2.	Delete any script files (.pex) that start with SKI_, for example
 		SKI_ConfigBase.pex, SKI_Main.pex, etc.
@@ -318,7 +333,7 @@ The 3.0 alpha packages contained loose script files requires by mod authors to c
 You have to remove these files because they will override any newer scripts in SkyUI.BSA.
 
 1.	Locate the 'Data/' folder in your Skyrim installation directory.
-	Typically it's found at 'Program Files/Steam/steamapps/common/skyrim/Data/'.
+	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/'.
 
 2.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder.
 
@@ -349,6 +364,17 @@ Solution: This happens if you accidently removed 'Data/Interface/Translate_<lang
 Problem: I changed something in config.txt, now it's not working anymore.
 
 Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just re-install SkyUI.
+
+------------------------------------------------------------
+Problem: I changed something in config.txt, now it's not working anymore.
+
+Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just re-install SkyUI.
+
+------------------------------------------------------------
+Problem: My game crashes after I uninstalled SkyUI.
+
+Solution: Try making a clean save with SkyUI.esp deactivated instead of removing it completely.
+	The necessary steps are described at the beginning of section 4.
 
 
 ========================================================================================================================================
