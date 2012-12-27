@@ -343,7 +343,7 @@ You have to remove these files because they will override any newer scripts in S
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: There's a message on my screen, telling me that I'm missing the Skyrim Script Extender (SKSE). What do I have to do?
+Problem: There's a message telling me that I'm missing the Skyrim Script Extender (SKSE). What do I have to do?
 
 Solution: There are two things that can cause this:
 	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
@@ -359,16 +359,6 @@ Problem: There are dollar signs ($) in front of all words in the main menu (and 
 Solution: This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'.
 	To restore it, use Steam to verify the integrity of Skyrim's game-cache
 	(Steam -> Library -> Properties of Skyrim -> Local files tab -> Verify integrity of game cache).
-		
-------------------------------------------------------------
-Problem: I changed something in config.txt, now it's not working anymore.
-
-Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just re-install SkyUI.
-
-------------------------------------------------------------
-Problem: I changed something in config.txt, now it's not working anymore.
-
-Solution: If you made a mistake in the config, SkyUI may stop working. In this case, just re-install SkyUI.
 
 ------------------------------------------------------------
 Problem: My game crashes after I uninstalled SkyUI.
