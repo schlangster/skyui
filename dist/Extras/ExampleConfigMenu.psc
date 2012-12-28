@@ -2,25 +2,26 @@ scriptname ExampleConfigMenu extends SKI_ConfigBase
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
-; Option IDs
-int	_toggleOption1
-int	_toggleOption2
-int	_toggleOption3
-int _textOption1
-int _counterOption
-int _sliderFormatOption
-int _difficultyMenuOption
+; Lists
+string[]	_difficultyList
+
+; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
+int			_toggle1OID_B
+int			_toggle2OID_B
+int			_toggle3OID_B
+
+int			_textOID_T
+int			_counterOID_T
+int			_sliderFormatOID_S
+int			_difficultyMenuOID_M
 
 ; State
-bool	_toggleState1 = false
-bool	_toggleState2 = false
-bool	_toggleState3 = false
-int		_counter = 0
-float	_sliderPercent = 50.0
-int		_curDifficulty = 5
-
-; Submenu options
-string[]	_difficultyList
+bool		_toggleState1 = false
+bool		_toggleState2 = false
+bool		_toggleState3 = false
+int			_counter = 0
+float		_sliderPercent = 50.0
+int			_curDifficulty = 0
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -31,15 +32,11 @@ event OnConfigInit()
 	Pages[0] = "Example Page"
 	Pages[1] = "Another Page"
 
-	_difficultyList = new string[8]
+	_difficultyList = new string[4]
 	_difficultyList[0] = "Casual"
-	_difficultyList[1] = "Very Easy"
-	_difficultyList[2] = "Easy"
-	_difficultyList[3] = "What used to be Easy"
-	_difficultyList[4] = "Normal"
-	_difficultyList[5] = "Hard"
-	_difficultyList[6] = "Very Hard"
-	_difficultyList[7] = "Why am I doing this?"
+	_difficultyList[1] = "Easy"
+	_difficultyList[2] = "Normal"
+	_difficultyList[3] = "Hard"
 endEvent
 
 
@@ -51,24 +48,24 @@ event OnPageReset(string a_page)
 
 	; Load custom .swf for animated logo
 	if (a_page == "")
-		LoadCustomContent("skyui_splash.swf")
+		LoadCustomContent("skyui/skyui_splash.swf")
 		return
 	else
 		UnloadCustomContent()
 	endIf
 
-	if (a_page == Pages[0])
+	if (a_page == "Example Page")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("Toggle Options")
-		_toggleOption1		= AddToggleOption("Toggle Option 1", _toggleState1)
-		_toggleOption2		= AddToggleOption("Toggle Option 2", _toggleState2)
-		_toggleOption3		= AddToggleOption("On or Off?", _toggleState3)
+		_toggle1OID_B		= AddToggleOption("Toggle Option 1", _toggleState1)
+		_toggle2OID_B		= AddToggleOption("Toggle Option 2", _toggleState2)
+		_toggle3OID_B		= AddToggleOption("On or Off?", _toggleState3)
 		AddEmptyOption()
 
 		AddHeaderOption("Text Options")
-		_textOption1		= AddTextOption("Text Option 1", "CLICK ME")
-		_counterOption		= AddTextOption("Number of Clicks", _counter)
+		_textOID_T			= AddTextOption("Text Option 1", "CLICK ME")
+		_counterOID_T		= AddTextOption("Number of Clicks", _counter)
 
 		SetCursorPosition(1)
 
@@ -76,10 +73,11 @@ event OnPageReset(string a_page)
 		AddTextOption("Text", "VALUE")
 		AddToggleOption("Toggle", false)
 		AddSliderOption("Slider", 1.75)
-		_sliderFormatOption = AddSliderOption("Slider (format string)", _sliderPercent, "At {0}%")
-		_difficultyMenuOption = AddMenuOption("Difficulty", _difficultyList[_curDifficulty])
+		_sliderFormatOID_S = AddSliderOption("Slider (format string)", _sliderPercent, "At {0}%")
+		_difficultyMenuOID_M = AddMenuOption("Difficulty", _difficultyList[_curDifficulty])
 	
-	elseIf (a_page == Pages[1])
+	elseIf (a_page == "Another Page")
+
 		SetTitleText("Custom title text")
 		SetCursorFillMode(LEFT_TO_RIGHT)
 
@@ -97,30 +95,26 @@ endEvent
 ; @implements SKI_ConfigBase
 event OnOptionSelect(int a_option)
 	{Called when the user selects a non-dialog option}
-
-	string page = CurrentPage
 	
-	if (page == Pages[0])
-		if (a_option == _toggleOption1)
-			_toggleState1 = !_toggleState1
-			SetToggleOptionValue(a_option, _toggleState1)
+	if (a_option == _toggle1OID_B)
+		_toggleState1 = !_toggleState1
+		SetToggleOptionValue(a_option, _toggleState1)
 
-		elseIf (a_option == _toggleOption2)
-			_toggleState2 = !_toggleState2
-			SetToggleOptionValue(a_option, _toggleState2)
+	elseIf (a_option == _toggle2OID_B)
+		_toggleState2 = !_toggleState2
+		SetToggleOptionValue(a_option, _toggleState2)
 
-		elseIf (a_option == _toggleOption3)
-			_toggleState3 = !_toggleState3
-			SetToggleOptionValue(a_option, _toggleState3)
+	elseIf (a_option == _toggle3OID_B)
+		_toggleState3 = !_toggleState3
+		SetToggleOptionValue(a_option, _toggleState3)
 
-		elseIf (a_option == _textOption1)
-			; Do something
-			SetTextOptionValue(a_option, "GOOD BOY")
+	elseIf (a_option == _textOID_T)
+		; Do something
+		SetTextOptionValue(a_option, "WELL DONE")
 
-		elseIf (a_option == _counterOption)
-			_counter += 1
-			SetTextOptionValue(a_option, _counter)
-		endIf
+	elseIf (a_option == _counterOID_T)
+		_counter += 1
+		SetTextOptionValue(a_option, _counter)
 	endIf
 endEvent
 
@@ -128,29 +122,21 @@ endEvent
 event OnOptionSliderOpen(int a_option)
 	{Called when the user selects a slider option}
 
-	string page = CurrentPage
-
-	if (page == Pages[0])
-		if (a_option == _sliderFormatOption)
-			SetSliderDialogStartValue(_sliderPercent)
-			SetSliderDialogDefaultValue(50)
-			SetSliderDialogRange(0, 100)
-			SetSliderDialogInterval(2)
-		endIf
+	if (a_option == _sliderFormatOID_S)
+		SetSliderDialogStartValue(_sliderPercent)
+		SetSliderDialogDefaultValue(50)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(2)
 	endIf
 endEvent
 
 ; @implements SKI_ConfigBase
 event OnOptionSliderAccept(int a_option, float a_value)
 	{Called when the user accepts a new slider value}
-
-	string page = CurrentPage
-
-	if (page == Pages[0])
-		if (a_option == _sliderFormatOption)
-			_sliderPercent = a_value
-			SetSliderOptionValue(a_option, a_value, "At {0}%")
-		endIf
+		
+	if (a_option == _sliderFormatOID_S)
+		_sliderPercent = a_value
+		SetSliderOptionValue(a_option, a_value, "At {0}%")
 	endIf
 endEvent
 
@@ -158,14 +144,10 @@ endEvent
 event OnOptionMenuOpen(int a_option)
 	{Called when the user selects a menu option}
 
-	string page = CurrentPage
-
-	if (page == Pages[0])
-		if (a_option == _difficultyMenuOption)
-			SetMenuDialogStartIndex(_curDifficulty)
-			SetMenuDialogDefaultIndex(5)
-			SetMenuDialogOptions(_difficultyList)
-		endIf
+	if (a_option == _difficultyMenuOID_M)
+		SetMenuDialogStartIndex(_curDifficulty)
+		SetMenuDialogDefaultIndex(5)
+		SetMenuDialogOptions(_difficultyList)
 	endIf
 endEvent
 
@@ -173,30 +155,21 @@ endEvent
 event OnOptionMenuAccept(int a_option, int a_index)
 	{Called when the user accepts a new menu entry}
 
-	string page = CurrentPage
-
-	if (page == Pages[0])
-		if (a_option == _difficultyMenuOption)
-			_curDifficulty = a_index
-			SetMenuOptionValue(a_option, _difficultyList[_curDifficulty])
-		endIf
+	if (a_option == _difficultyMenuOID_M)
+		_curDifficulty = a_index
+		SetMenuOptionValue(a_option, _difficultyList[_curDifficulty])
 	endIf
 endEvent
 
 ; @implements SKI_ConfigBase
 event OnOptionHighlight(int a_option)
 	{Called when the user highlights an option}
-
-	string page = CurrentPage
 	
-	; Options
-	if (page == Pages[0])
-		if (a_option == _toggleOption1)
-			SetInfoText("Info text for toggle option 1.")
-		elseIf (a_option == _toggleOption2)
-			SetInfoText("Info text for toggle option 2.")
-		elseIf (a_option == _toggleOption3)
-			SetInfoText("Sometimes choice can be a burden...")
-		endIf
+	if (a_option == _toggle1OID_B)
+		SetInfoText("Info text for toggle option 1.")
+	elseIf (a_option == _toggle2OID_B)
+		SetInfoText("Info text for toggle option 2.")
+	elseIf (a_option == _toggle3OID_B)
+		SetInfoText("Sometimes choice can be a burden...")
 	endIf
 endEvent
