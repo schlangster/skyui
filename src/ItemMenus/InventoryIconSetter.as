@@ -505,33 +505,6 @@ class InventoryIconSetter implements IListProcessor
 		a_entryObject.iconLabel = "default_misc";
 
 		switch(a_entryObject.subType) {
-			case Item.MISC_CHILDRENSCLOTHES:
-				break;
-
-			case Item.MISC_TOY:
-				break;
-
-			case Item.MISC_WEAPONRACK:
-				break;
-
-			case Item.MISC_SHELF:
-				break;
-
-			case Item.MISC_FURNITURE:
-				break;
-
-			case Item.MISC_EXTERIOR:
-				break;
-
-			case Item.MISC_CONTAINER:
-				break;
-
-			case Item.MISC_HOUSEPART:
-				break;
-
-			case Item.MISC_FASTENER:
-				break;
-
 			case Item.MISC_ARTIFACT:
 				a_entryObject.iconLabel = "misc_artifact";
 				break;
@@ -572,6 +545,11 @@ class InventoryIconSetter implements IListProcessor
 				a_entryObject.iconLabel = "misc_dragonclaw";
 				break;
 
+			case Form.BASEID_GOLD001:
+				a_entryObject.iconLabel = "misc_gold";
+				a_entryObject.iconColor = 0xCCCC33;
+				break;
+
 			case Item.MISC_LEATHER:
 				a_entryObject.iconLabel = "misc_leather";
 				a_entryObject.iconColor = 0xBA8D23;
@@ -581,6 +559,21 @@ class InventoryIconSetter implements IListProcessor
 				a_entryObject.iconLabel = "misc_strips";
 				a_entryObject.iconColor = 0xBA8D23;
 				break;
+
+			case Item.MISC_CHILDRENSCLOTHES:
+				a_entryObject.iconColor = 0xEDDA87;
+				a_entryObject.iconLabel = "clothing_body";
+				break;
+
+			// Maybe use later?
+			// ... or not.
+			/*
+			case Item.MISC_TOY:
+				break;
+
+			case Item.MISC_HOUSEPART:
+				break;
+			*/
 		}
 	}
 
