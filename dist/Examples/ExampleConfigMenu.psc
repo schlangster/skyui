@@ -78,13 +78,13 @@ event OnVersionUpdate(int a_version)
 	{Called when a version update of this script has been detected}
 
 	; Version 2 specific updating code
-	if (a_version >= 2)
+	if (a_version >= 2 && CurrentVersion < 2)
 		Debug.Trace(self + ": Updating script to version 2")
 		_color = Utility.RandomInt(0x000000, 0xFFFFFF) ; Set a random color
 	endIf
 
 	; Version 3 specific updating code
-	if (a_version >= 3)
+	if (a_version >= 3 && CurrentVersion < 3)
 		Debug.Trace(self + ": Updating script to version 3")
 		_myKey = Input.GetMappedKey("Jump")
 	endIf
