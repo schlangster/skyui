@@ -1,4 +1,4 @@
-import Shared.ButtonTextArtHolder;
+﻿import Shared.ButtonTextArtHolder;
 import gfx.io.GameDelegate;
 import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
@@ -101,7 +101,7 @@ class SystemPage extends MovieClip
 		CategoryList.entryList.push({text: "$SAVE", index: SystemPage.SAVE_INDEX});
 		CategoryList.entryList.push({text: "$LOAD", index: SystemPage.LOAD_INDEX});
 		CategoryList.entryList.push({text: "$SETTINGS", index: SystemPage.SETTINGS_INDEX});
-		CategoryList.entryList.push({text: "$MOD CONFIG", index: SystemPage.MOD_CONFIG_INDEX});
+		CategoryList.entryList.push({text: "$MOD CONFIGURATION", index: SystemPage.MOD_CONFIG_INDEX});
 		CategoryList.entryList.push({text: "$CONTROLS", index: SystemPage.CONTROLS_INDEX});
 		CategoryList.entryList.push({text: "$HELP", index: SystemPage.HELP_INDEX});
 		CategoryList.entryList.push({text: "$QUIT", index: SystemPage.QUIT_INDEX});
