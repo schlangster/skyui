@@ -226,20 +226,14 @@ class InventoryLists extends MovieClip
 	{
 		_platform = a_platform;
 		
-		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (_searchKey == undefined)
-			_searchKey = -1;
+		_searchKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, false);
 			
 		if (a_platform == 0) {
-			_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
+			_switchTabKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, false);
 		} else {
-			_switchTabKey = skse.GetMappedKey("Wait", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-			_sortOrderKey = skse.GetMappedKey("Sneak", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
+			_sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
 		}
-		if (_switchTabKey == undefined)
-			_switchTabKey = -1;
-		if (_sortOrderKey == undefined)
-			_sortOrderKey = -1;
 
 		categoryList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);

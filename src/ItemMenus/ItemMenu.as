@@ -4,6 +4,7 @@ import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
 import skyui.defines.Input;
+import skyui.util.GlobalFunctions;
 import skyui.util.ConfigManager;
 import skyui.components.ButtonPanel;
 
@@ -149,46 +150,30 @@ class ItemMenu extends MovieClip
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
-		
-		_searchKey = skse.GetMappedKey("Jump", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (_searchKey == undefined)
-			_searchKey = -1;
-		
-		if (a_platform == 0) {
-			_switchTabKey = skse.GetMappedKey("Sprint", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		} else {
-			_switchTabKey = skse.GetMappedKey("Wait", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-		}
 
-		if (_switchTabKey == undefined)
-			_switchTabKey = -1;
-		
-		_searchControls = {keyCode: _searchKey};
 		
 		if (a_platform == 0) {
+			_switchTabKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, false);
 			_acceptControls = Input.Enter;
 			_cancelControls = Input.Tab;
-			_switchControls = {keyCode: _switchTabKey};
 		} else {
+			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
 			_acceptControls = Input.Accept;
 			_cancelControls = Input.Cancel;
 			_switchControls = {keyCode: _switchTabKey};
-			var previousColumnKey: Number	= skse.GetMappedKey("Sprint", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-			if (previousColumnKey == undefined)
-				previousColumnKey = -1;
-			var nextColumnKey: Number		= skse.GetMappedKey("Shout", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-			if (nextColumnKey == undefined)
-				nextColumnKey = -1;
-
-			var sortOrderKey: Number		= skse.GetMappedKey("Sneak", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-			if (sortOrderKey == undefined)
-				sortOrderKey = -1;
+			var previousColumnKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, true);
+			var nextColumnKey = GlobalFunctions.getMappedKey("Shout", Input.CONTEXT_GAMEPLAY, true);
+			var sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
 
 			_sortColumnControls = [{keyCode: previousColumnKey},
 								   {keyCode: nextColumnKey}];
-
 			_sortOrderControl = {keyCode: sortOrderKey};
 		}
+
+		_searchKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, false);
+		_searchControls = {keyCode: _searchKey};
+		
+		_switchControls = {keyCode: _switchTabKey};
 		
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
 		itemCard.SetPlatform(a_platform,a_bPS3Switch);
