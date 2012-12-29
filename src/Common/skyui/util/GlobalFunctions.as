@@ -1,4 +1,6 @@
-﻿class skyui.util.GlobalFunctions
+﻿import skyui.defines.Input;
+
+class skyui.util.GlobalFunctions
 {
   /* PUBLIC FUNCTIONS */
 	
@@ -205,5 +207,20 @@
 			valStr += "E" + floatComponents[1]
 		
 		return valStr;
+	}
+	
+	public static function getMappedKey(a_control: String, a_context: Number, a_bGamepad: Boolean): Number
+	{
+		if (_global.skse == undefined)
+			return -1;
+		
+		if (a_bGamepad == true) {
+			return skse.GetMappedKey(a_control, Input.DEVICE_GAMEPAD, a_context);
+		} else {
+			var keyCode = skse.GetMappedKey(a_control, Input.DEVICE_KEYBOARD, a_context);
+			if (keyCode == -1)
+				keyCode = skse.GetMappedKey(a_control, Input.DEVICE_MOUSE, a_context);
+			return keyCode;
+		}
 	}
 }

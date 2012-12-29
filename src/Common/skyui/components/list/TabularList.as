@@ -4,6 +4,7 @@ import gfx.ui.InputDetails;
 
 import skyui.defines.Input;
 import skyui.util.ConfigLoader;
+import skyui.util.GlobalFunctions;
 import skyui.components.list.ListLayout;
 import skyui.components.list.SortedListHeader;
 import skyui.components.list.ScrollingList;
@@ -60,19 +61,10 @@ class skyui.components.list.TabularList extends ScrollingList
 		super.setPlatform(a_platform,a_bPS3Switch);
 
 		if (_platform != 0) {
-			_previousColumnKey	= skse.GetMappedKey("Sprint", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-			_nextColumnKey		= skse.GetMappedKey("Shout", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
-
-			_sortOrderKey		= skse.GetMappedKey("Sneak", Input.DEVICE_GAMEPAD, Input.CONTEXT_GAMEPLAY);
+			_previousColumnKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, true);
+			_nextColumnKey = GlobalFunctions.getMappedKey("Shout", Input.CONTEXT_GAMEPLAY, true);
+			_sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
 		}
-		// Always check for undefined
-		if (_previousColumnKey == undefined)
-			_previousColumnKey = -1;
-		if (_nextColumnKey == undefined)
-			_nextColumnKey = -1;
-
-		if (_sortOrderKey == undefined)
-			_sortOrderKey = -1
 	}
 	
 	// @GFx

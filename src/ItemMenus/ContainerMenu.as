@@ -3,6 +3,7 @@ import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
 import skyui.util.Translator;
+import skyui.util.GlobalFunctions;
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
@@ -163,9 +164,7 @@ class ContainerMenu extends ItemMenu
 	{
 		super.SetPlatform(a_platform,a_bPS3Switch);
 
-		_equipModeKey = skse.GetMappedKey("Run", Input.DEVICE_KEYBOARD, Input.CONTEXT_GAMEPLAY);
-		if (_equipModeKey == undefined)
-			_equipModeKey = -1;
+		_equipModeKey = GlobalFunctions.getMappedKey("Run", Input.CONTEXT_GAMEPLAY, false);
 		_equipModeControls = {keyCode: _equipModeKey};
 
 		_bEquipMode = (a_platform != 0);
