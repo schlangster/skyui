@@ -143,6 +143,15 @@ class ItemMenu extends MovieClip
 
 		_quantityMinCount = a_config["ItemList"].quantityMenu.minCount;
 		
+		_searchKey = a_config["Input"].controls.search;
+		_searchControls = {keyCode: _searchKey};
+		
+		if (_platform == 0) {
+			// For gamepad, we use "Wait", otherwise config value
+			_switchTabKey = a_config["Input"].controls.switchTab;			
+			_switchControls = {keyCode: _switchTabKey};
+		}
+		
 		updateBottomBar(false);
 	}
 
@@ -150,17 +159,17 @@ class ItemMenu extends MovieClip
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
-
 		
 		if (a_platform == 0) {
-			_switchTabKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, false);
 			_acceptControls = Input.Enter;
 			_cancelControls = Input.Tab;
+			_switchTabKey = Input.Sprint; // Use as default until config is loaded
 		} else {
-			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
+
 			_acceptControls = Input.Accept;
 			_cancelControls = Input.Cancel;
-			_switchControls = {keyCode: _switchTabKey};
+			
+			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
 			var previousColumnKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, true);
 			var nextColumnKey = GlobalFunctions.getMappedKey("Shout", Input.CONTEXT_GAMEPLAY, true);
 			var sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
@@ -169,11 +178,11 @@ class ItemMenu extends MovieClip
 								   {keyCode: nextColumnKey}];
 			_sortOrderControl = {keyCode: sortOrderKey};
 		}
-
-		_searchKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, false);
-		_searchControls = {keyCode: _searchKey};
 		
 		_switchControls = {keyCode: _switchTabKey};
+		
+		_searchKey = Input.Sprint; // Use as default until config is loaded
+		_searchControls = {keyCode: _searchKey};
 		
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
 		itemCard.SetPlatform(a_platform,a_bPS3Switch);

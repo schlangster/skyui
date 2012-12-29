@@ -26,6 +26,10 @@ int			_checkBarterMenuOID_B
 int			_checkContainerMenuOID_B
 int			_checkGiftMenuOID_B
 
+int			_searchKeyOID_K
+int			_switchTabKeyOID_K
+int			_equipModeKeyOID_K
+
 ; State
 int			_itemlistFontSizeIdx		= 1
 int			_itemlistQuantityTrigger	= 5
@@ -37,6 +41,10 @@ float		_itemcardYOffset			= 0.0
 float		_3DItemXOffset				= 0.0
 float		_3DItemYOffset				= 0.0
 float		_3DItemScale				= 1.5
+
+int			_searchKey					= 57
+int			_switchTabKey				= 56
+int			_equipModeKey				= 42
 
 ; Internal
 float		_itemXBase
@@ -103,6 +111,13 @@ event OnPageReset(string a_page)
 		_itemlistFontSizeOID_T			= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
 		_itemlistQuantityTriggerOID_S	= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityTrigger)
 
+		SetCursorPosition(1)
+
+		AddHeaderOption("$Controls")
+		_searchKeyOID_K					= AddKeyMapOption("Search", _searchKey)
+		_switchTabKeyOID_K				= AddKeyMapOption("Switch Tab", _switchTabKey)
+		_equipModeKeyOID_K				= AddKeyMapOption("Equip Mode", _equipModeKey)
+
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
@@ -145,6 +160,20 @@ event OnOptionDefault(int a_option)
 		_itemlistQuantityTrigger = 5
 		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
 		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+
+	; -------------------------------------------------------
+	elseIf (a_option == _searchKeyOID_K)
+		_searchKey = 57
+		SetKeyMapOptionValue(a_option, _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+	elseIf (a_option == _switchTabKeyOID_K)
+		_switchTabKey = 56
+		SetKeyMapOptionValue(a_option, _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+	elseIf (a_option == _equipModeKeyOID_K)
+		_equipModeKey = 42
+		SetKeyMapOptionValue(a_option, _equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$equipMode", _equipModeKey)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -340,12 +369,54 @@ endEvent
 
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
+event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
+
+	; Can't detect for mouse, don't need for gamepad
+	if (a_keyCode > 255)
+		ShowMessage("$SKI_MSG1", false, "$OK")
+		return
+	endIf
+
+	if (a_option == _searchKeyOID_K)
+		SwapKeys(a_keyCode, _searchKey)
+
+		_searchKey = a_keyCode
+		SetKeyMapOptionValue(a_option, _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+
+	elseIf (a_option == _switchTabKeyOID_K)
+		SwapKeys(a_keyCode, _switchTabKey)
+
+		_switchTabKey = a_keyCode
+		SetKeyMapOptionValue(a_option, _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+
+	elseIf (a_option == _equipModeKeyOID_K)
+		SwapKeys(a_keyCode, _equipModeKey)
+
+		_equipModeKey = a_keyCode
+		SetKeyMapOptionValue(a_option, _equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$equipMode", _equipModeKey)
+
+	endIf
+endEvent
+
+; -------------------------------------------------------------------------------------------------
+; @implements SKI_ConfigBase
 event OnOptionHighlight(int a_option)
 
 	if (a_option == _itemlistFontSizeOID_T)
 		SetInfoText("$SKI_INFO1")
 	elseIf(a_option == _itemlistQuantityTriggerOID_S)
 		SetInfoText("$SKI_INFO2")
+
+	
+	elseIf (a_option == _searchKeyOID_K)
+		SetInfoText("$SKI_INFO7") ; Default: Space
+	elseIf (a_option == _switchTabKeyOID_K)
+		SetInfoText("$SKI_INFO8") ; Default: Left Alt
+	elseIf (a_option == _equipModeKeyOID_K)
+		SetInfoText("$SKI_INFO9") ; Default: Left Shift
 
 	elseIf (a_option == _itemcardAlignOID_T)
 		SetInfoText("$SKI_INFO3")
@@ -455,4 +526,20 @@ function Apply3DItemScale()
 	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
 	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
 	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+endFunction
+
+function SwapKeys(int a_newKey, int a_curKey)
+	if (a_newKey == _searchKey)
+		_searchKey = a_curKey
+		SetKeyMapOptionValue(_searchKeyOID_K, _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+	elseIf (a_newKey == _switchTabKey)
+		_switchTabKey = a_curKey
+		SetKeyMapOptionValue(_switchTabKeyOID_K, _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+	elseIf (a_newKey == _equipModeKey)
+		_equipModeKey = a_curKey
+		SetKeyMapOptionValue(_equipModeKeyOID_K, _equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$equipMode", _equipModeKey)
+	endIf
 endFunction

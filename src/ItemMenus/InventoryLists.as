@@ -136,6 +136,7 @@ class InventoryLists extends MovieClip
 		searchWidget = panelContainer.searchWidget;
 		columnSelectButton = panelContainer.columnSelectButton;
 
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
 	
@@ -225,14 +226,12 @@ class InventoryLists extends MovieClip
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
-		
-		_searchKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, false);
 			
-		if (a_platform == 0) {
-			_switchTabKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, false);
-		} else {
-			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
+		if (a_platform != 0) {
 			_sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
+			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
+		} else {
+			_sortOrderKey = -1;
 		}
 
 		categoryList.setPlatform(a_platform,a_bPS3Switch);
@@ -404,6 +403,15 @@ class InventoryLists extends MovieClip
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+  	private function onConfigLoad(event: Object): Void
+	{
+		var config = event.config;
+		_searchKey = config["Input"].controls.search;
+		
+		if (_platform == 0)
+			_switchTabKey = config["Input"].controls.switchTab;
+	}
   
 	private function onFilterChange(): Void
 	{

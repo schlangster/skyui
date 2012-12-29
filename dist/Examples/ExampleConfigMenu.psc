@@ -203,7 +203,7 @@ event OnOptionMenuOpen(int a_option)
 
 	if (a_option == _difficultyMenuOID_M)
 		SetMenuDialogStartIndex(_curDifficulty)
-		SetMenuDialogDefaultIndex(5)
+		SetMenuDialogDefaultIndex(0)
 		SetMenuDialogOptions(_difficultyList)
 	endIf
 endEvent

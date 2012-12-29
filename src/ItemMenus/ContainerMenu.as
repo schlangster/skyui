@@ -90,6 +90,9 @@ class ContainerMenu extends ItemMenu
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)
 			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
+			
+		_equipModeKey = a_config["Input"].controls.equipMode;
+		_equipModeControls = {keyCode: _equipModeKey};
 	}
 
 	// @API
@@ -163,9 +166,6 @@ class ContainerMenu extends ItemMenu
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		super.SetPlatform(a_platform,a_bPS3Switch);
-
-		_equipModeKey = GlobalFunctions.getMappedKey("Run", Input.CONTEXT_GAMEPLAY, false);
-		_equipModeControls = {keyCode: _equipModeKey};
 
 		_bEquipMode = (a_platform != 0);
 	}

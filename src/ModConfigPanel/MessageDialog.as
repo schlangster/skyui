@@ -1,9 +1,9 @@
 ﻿import skyui.components.dialog.BasicDialog;
 import skyui.components.ButtonPanel;
-import skyui.defines.Input;
 import skyui.util.DialogManager;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
+import skyui.defines.Input;
 
 import gfx.ui.NavigationCode;
 
