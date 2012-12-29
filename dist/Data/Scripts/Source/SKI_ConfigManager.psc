@@ -194,6 +194,17 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 		return -1
 	endIf
 
+	; Already registered?
+	int i = 0
+	while (i < _modConfigs.length)
+		if (_modConfigs[i] == a_menu)
+			return i
+		endIf
+			
+		i += 1
+	endWhile
+
+	; New registration
 	int configID = NextID()
 	_modConfigs[configID] = a_menu
 	_modNames[configID] = a_modName
@@ -201,6 +212,23 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	_configCount += 1
 	
 	return configID
+endFunction
+
+; @interface
+bool function UnregisterMod(SKI_ConfigBase a_menu)
+	int i = 0
+	while (i < _modConfigs.length)
+		if (_modConfigs[i] == a_menu)
+			_modConfigs[i] = none
+			_modNames[i] = none
+			_configCount -= 1
+			return true
+		endIf
+			
+		i += 1
+	endWhile
+
+	return false
 endFunction
 
 int function NextID()
