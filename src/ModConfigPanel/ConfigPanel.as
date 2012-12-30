@@ -538,6 +538,9 @@ class ConfigPanel extends MovieClip
 		if (index == -1)
 			return;
 			
+		if (_optionsList.selectedEntry.flags & OptionsListEntry.FLAG_DISABLED)
+			return
+			
 		_state = WAIT_FOR_DEFAULT;
 		skse.SendModEvent("SKICP_optionDefaulted", null, index);
 	}
@@ -664,6 +667,9 @@ class ConfigPanel extends MovieClip
 		var e = _optionsList.selectedEntry;
 		if (e == undefined)
 			return;
+			
+		if (e.flags & OptionsListEntry.FLAG_DISABLED)
+			return
 		
 		switch (e.optionType) {
 			case OptionsListEntry.OPTION_EMPTY:
@@ -836,7 +842,7 @@ class ConfigPanel extends MovieClip
 		
 		_buttonPanelL.clearButtons();
 		
-		if (entry != null) {
+		if (entry != null && !(entry.flags & OptionsListEntry.FLAG_DISABLED)) {
 			var type = entry.optionType;
 			switch (type) {
 				case OptionsListEntry.OPTION_EMPTY:
