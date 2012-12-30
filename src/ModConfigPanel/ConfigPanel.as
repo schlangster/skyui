@@ -173,9 +173,11 @@ class ConfigPanel extends MovieClip
 		_modList.clearList();
 		_modList.listState.savedIndex = null;
 		
-		for (var i=0; i<arguments.length; i++)
-			if (arguments[i].toLowerCase() != "none")
-				_modList.entryList.push({modIndex: i, text: arguments[i], align: "right", enabled: true});
+		for (var i=0; i<arguments.length; i++) {
+			var s = arguments[i];
+			if (s != "")
+				_modList.entryList.push({modIndex: i, text: s, align: "right", enabled: true});
+		}
 
 		_modList.entryList.sortOn("text", Array.CASEINSENSITIVE);
 		_modList.InvalidateData();
@@ -536,6 +538,9 @@ class ConfigPanel extends MovieClip
 		if (index == -1)
 			return;
 			
+		if (_optionsList.selectedEntry.flags & OptionsListEntry.FLAG_DISABLED)
+			return
+			
 		_state = WAIT_FOR_DEFAULT;
 		skse.SendModEvent("SKICP_optionDefaulted", null, index);
 	}
@@ -662,6 +667,9 @@ class ConfigPanel extends MovieClip
 		var e = _optionsList.selectedEntry;
 		if (e == undefined)
 			return;
+			
+		if (e.flags & OptionsListEntry.FLAG_DISABLED)
+			return
 		
 		switch (e.optionType) {
 			case OptionsListEntry.OPTION_EMPTY:
@@ -834,7 +842,7 @@ class ConfigPanel extends MovieClip
 		
 		_buttonPanelL.clearButtons();
 		
-		if (entry != null) {
+		if (entry != null && !(entry.flags & OptionsListEntry.FLAG_DISABLED)) {
 			var type = entry.optionType;
 			switch (type) {
 				case OptionsListEntry.OPTION_EMPTY:

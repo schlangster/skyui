@@ -371,6 +371,11 @@ endEvent
 ; @implements SKI_ConfigBase
 event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
 
+	; Do nothing for ESC
+	if (a_keyCode == 1)
+		return
+	endIf
+
 	; Can't detect for mouse, don't need for gamepad
 	if (a_keyCode > 255)
 		ShowMessage("$SKI_MSG1", false, "$OK")
