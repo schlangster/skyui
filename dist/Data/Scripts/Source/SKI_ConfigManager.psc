@@ -59,7 +59,7 @@ function CleanUp()
 	while (i < _modConfigs.length)
 		if (_modConfigs[i] == none || _modConfigs[i].GetFormID() == 0)
 			_modConfigs[i] = none
-			_modNames[i] = none
+			_modNames[i] = ""
 		else
 			_configCount += 1
 		endIf
@@ -221,7 +221,7 @@ bool function UnregisterMod(SKI_ConfigBase a_menu)
 	while (i < _modConfigs.length)
 		if (_modConfigs[i] == a_menu)
 			_modConfigs[i] = none
-			_modNames[i] = none
+			_modNames[i] = ""
 			_configCount -= 1
 			return true
 		endIf

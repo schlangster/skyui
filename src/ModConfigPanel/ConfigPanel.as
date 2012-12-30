@@ -173,9 +173,11 @@ class ConfigPanel extends MovieClip
 		_modList.clearList();
 		_modList.listState.savedIndex = null;
 		
-		for (var i=0; i<arguments.length; i++)
-			if (arguments[i].toLowerCase() != "none")
-				_modList.entryList.push({modIndex: i, text: arguments[i], align: "right", enabled: true});
+		for (var i=0; i<arguments.length; i++) {
+			var s = arguments[i];
+			if (s != "")
+				_modList.entryList.push({modIndex: i, text: s, align: "right", enabled: true});
+		}
 
 		_modList.entryList.sortOn("text", Array.CASEINSENSITIVE);
 		_modList.InvalidateData();
