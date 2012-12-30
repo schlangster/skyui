@@ -150,7 +150,7 @@ $Dawnguard	Dawnguard	Garde de l'Aube	Dämmerwacht	Dawnguard	Guardia del Alba	Str
 $Falmer Hardened	Falmer Hardened	Falmer renforcée	Gehärtete Falmerrüstung	Falmer Pesante	Falmer endurecida	Tvrzený Falmerský		Фалмерское Укреплённое	
 $Hunter	Hunter	Chasseur	Jäger	Cacciatore	Cazador	Lovecký	Łowcy	Охотничье	
 $Vampire	Vampire	Vampire	Vampir	Vampiro	Vampiro	Upíři	Wampirzy	Вампирское	吸血鬼
-$Aetherium	Aetherium	Aetherium	Aetherium	Eterio	Aetério	Aetherit	Aetherium	Этеривое	エセリウム
+$Aetherium	Aetherium	Aetherium	Aetherium	Eterio	Aetério	Aetherit	Aetherium	Этериевое	エセリウム
 $Dragonbone	Dragonbone	Os de dragon	Drachenknochen	Ossa di Drago	Hueso de dragón	Dračí kost		Драконорождённого	
 									
 $MOD CONFIGURATION	MOD CONFIGURATION	CONFIGURATION DU MOD	MOD-KONFIGURATION	CONFIGURAZIONE MOD	CONFIGURACIÓN DE MOD	NASTAVENÍ MODŮ	KONFIGURACJA MODA	НАСТРОЙКА МОДА	MOD設定
@@ -196,11 +196,11 @@ $SKI_INFO6	Incompatible or outdated SWFs may break SkyUI functionality. This onl
 $SKI_INFO7	Default: Space	Défaut: Space	Voreinstellung: Space	Predefinito: Space	Predefinido: Space	Výchozí nastavení: Space	Domyślnie: Space	Умолчание: Space	
 $SKI_INFO8	Default: LAlt	Défaut: LAlt	Voreinstellung: LAlt	Predefinito: LAlt	Predefinido: LAlt	Výchozí nastavení: LAlt	Domyślnie: LAlt	Умолчание: LAlt	
 $SKI_INFO9	Default: Shift	Défaut: Shift	Voreinstellung: Shift	Predefinito: Shift	Predefinido: Shift	Výchozí nastavení: Shift	Domyślnie: Shift	Умолчание: Shift	
-$SKI_MSG1	This control requires a keyboard mapping.		Diese Funktion muss einer Tastatureingabe zugewiesen werden.						
+$SKI_MSG1	This control requires a keyboard mapping.		Dieser Funktion muss einer Tastatureingabe zugewiesen werden.					Эта функция должна быть назначена на ввод с клавиатуры.	
 									
 									
 $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	99.46%	100.00%	99.46%	99.46%	98.39%	94.62%	99.46%	85.48%
+% Completion	100.00%	99.46%	100.00%	99.46%	99.46%	98.39%	94.62%	100.00%	85.48%
