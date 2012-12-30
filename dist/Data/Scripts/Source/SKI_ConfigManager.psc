@@ -24,8 +24,8 @@ event OnInit()
 	_curConfigID	= 0
 	_configCount	= 0
 	
-	; Wait a few seconds until any initial menus have registered for events
-	Utility.Wait(0.01)
+	; Wait a few ticks until any initial menus have registered for events
+	Utility.Wait(0.1)
 	
 	OnGameReload()
 endEvent
@@ -49,6 +49,7 @@ event OnGameReload()
 	RegisterForMenu(JOURNAL_MENU)
 
 	CleanUp()
+
 	SendModEvent("SKICP_configManagerReady")
 endEvent
 
