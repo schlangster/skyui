@@ -545,7 +545,7 @@ class InventoryIconSetter implements IListProcessor
 				a_entryObject.iconLabel = "misc_dragonclaw";
 				break;
 
-			case Form.BASEID_GOLD001:
+			case Item.MISC_GOLD:
 				a_entryObject.iconLabel = "misc_gold";
 				a_entryObject.iconColor = 0xCCCC33;
 				break;
