@@ -214,7 +214,7 @@ class SystemPage extends MovieClip
 				bhandledInput = true;
 			} else if (details.navEquivalent == NavigationCode.GAMEPAD_R1 && iCurrentState == SystemPage.OPTIONS_LISTS_STATE && BottomBar_mc.IsButtonVisible(2)) 
 			{
-				gfx.io.GameDelegate.call("OpenKinectTuner", []);
+				GameDelegate.call("OpenKinectTuner", []);
 				bhandledInput = true;
 			} else if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
 				if (details.navEquivalent == NavigationCode.ENTER) {
@@ -823,7 +823,6 @@ class SystemPage extends MovieClip
 		switch (aiState) {
 			case SystemPage.MAIN_STATE:
 				return PanelRect;
-				break;
 				
 			case SystemPage.SETTINGS_CATEGORY_STATE:
 				return SettingsPanel;
@@ -897,6 +896,9 @@ class SystemPage extends MovieClip
 				
 			case SystemPage.HELP_LIST_STATE:
 				HelpList.disableInput = false;
+				FocusHandler.instance.setFocus(HelpList, 0);
+				break;
+
 			case SystemPage.HELP_TEXT_STATE:
 				FocusHandler.instance.setFocus(HelpText, 0);
 				break;
