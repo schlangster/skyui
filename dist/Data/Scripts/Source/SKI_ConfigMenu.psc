@@ -10,7 +10,7 @@ string[]	_alignmentValues
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
-int			_itemlistQuantityTriggerOID_S
+int			_itemlistQuantityMinCountOID_S
 
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -32,7 +32,7 @@ int			_equipModeKeyOID_K
 
 ; State
 int			_itemlistFontSizeIdx		= 1
-int			_itemlistQuantityTrigger	= 5
+int			_itemlistQuantityMinCount	= 6
 
 int			_itemcardAlignIdx			= 2
 float		_itemcardXOffset			= 0.0
@@ -109,7 +109,7 @@ event OnPageReset(string a_page)
 
 		AddHeaderOption("$Item List")
 		_itemlistFontSizeOID_T			= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
-		_itemlistQuantityTriggerOID_S	= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityTrigger)
+		_itemlistQuantityMinCountOID_S	= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityMinCount)
 
 		SetCursorPosition(1)
 
@@ -156,10 +156,10 @@ event OnOptionDefault(int a_option)
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
 
-	elseif (a_option == _itemlistQuantityTriggerOID_S)
-		_itemlistQuantityTrigger = 5
-		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$trigger", _itemlistQuantityTrigger)
+	elseif (a_option == _itemlistQuantityMinCountOID_S)
+		_itemlistQuantityMinCount = 6
+		SetSliderOptionValue(a_option, _itemlistQuantityMinCount)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _searchKeyOID_K)
@@ -288,8 +288,8 @@ endEvent
 event OnOptionSliderOpen(int a_option)
 
 	; -------------------------------------------------------
-	if (a_option == _itemlistQuantityTriggerOID_S)
-		SetSliderDialogStartValue(_itemlistQuantityTrigger)
+	if (a_option == _itemlistQuantityMinCountOID_S)
+		SetSliderDialogStartValue(_itemlistQuantityMinCount)
 		SetSliderDialogDefaultValue(5)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
@@ -333,10 +333,10 @@ endEvent
 event OnOptionSliderAccept(int a_option, float a_value)
 
 	; -------------------------------------------------------
-	if (a_option == _itemlistQuantityTriggerOID_S)
-		_itemlistQuantityTrigger = a_value as int
-		SetSliderOptionValue(a_option, _itemlistQuantityTrigger)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityTrigger)
+	if (a_option == _itemlistQuantityMinCountOID_S)
+		_itemlistQuantityMinCount = a_value as int
+		SetSliderOptionValue(a_option, _itemlistQuantityMinCount)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardXOffsetOID_S)
@@ -412,7 +412,7 @@ event OnOptionHighlight(int a_option)
 
 	if (a_option == _itemlistFontSizeOID_T)
 		SetInfoText("$SKI_INFO1")
-	elseIf(a_option == _itemlistQuantityTriggerOID_S)
+	elseIf(a_option == _itemlistQuantityMinCountOID_S)
 		SetInfoText("$SKI_INFO2")
 
 	
