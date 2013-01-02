@@ -8,6 +8,7 @@ string property		INVENTORY_MENU	= "InventoryMenu" autoReadonly
 string property		MAGIC_MENU		= "MagicMenu" autoReadonly
 string property		CONTAINER_MENU	= "ContainerMenu" autoReadonly
 string property		BARTER_MENU		= "BarterMenu" autoReadonly
+string property		GIFT_MENU		= "GiftMenu" autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -41,6 +42,7 @@ event OnGameReload()
 	RegisterForMenu(MAGIC_MENU)
 	RegisterForMenu(CONTAINER_MENU)
 	RegisterForMenu(BARTER_MENU)
+	RegisterForMenu(GIFT_MENU)
 	RegisterForModEvent("SKICO_setConfigOverride", "OnSetConfigOverride")
 endEvent
 
