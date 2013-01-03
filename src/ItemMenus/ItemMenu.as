@@ -541,18 +541,19 @@ class ItemMenu extends MovieClip
 				btnData.text = "$Read";
 				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
-			case Inventory.ICT_POTION :
-				btnData.text = "$Use";
-				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
-				break;
 			case Inventory.ICT_FOOD :
 			case Inventory.ICT_INGREDIENT :
 				btnData.text = "$Eat";
 				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 				break;
-			default :
+			case Inventory.ICT_WEAPON :
 				btnData.text = "$Equip";
 				btnData.controls = equipControls;
+				break;
+
+			default :
+				btnData.text = "$Use";
+				btnData.controls = a_bAlwaysEquip ? equipControls : useControls;
 		}
 		
 		return btnData;
