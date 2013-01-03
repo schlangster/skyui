@@ -672,10 +672,12 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.subType = Item.POTION_FOOD;
 			a_entryObject.subTypeDisplay = "$Food";
 
-			/*
+			// SKSE >= 1.6.6
+			if (a_entryObject.useSound.formId != undefined && a_entryObject.useSound.formId == Form.FORMID_ITMPotionUse) {
 				a_entryObject.subType = Item.POTION_DRINK;
 				a_entryObject.subTypeDisplay = "$Drink";
-			*/
+			}
+			
 		} else if ((a_entryObject.flags & Item.ALCHFLAG_POISON) != 0) {
 			a_entryObject.subType = Item.POTION_POISON;
 			a_entryObject.subTypeDisplay = "$Poison";

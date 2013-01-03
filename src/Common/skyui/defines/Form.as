@@ -232,4 +232,8 @@
 	public static var BASEID_AXE01: Number 								= 0x02F2F4;
 	public static var BASEID_DUNHALTEDSTREAMPOACHERSAXE: Number 		= 0x0AE086;
 
+	// Fodm Ids
+	// Sound Descriptors
+	public static var FORMID_ITMPotionUse: Number 						= 0x000B6435;
+
 }
