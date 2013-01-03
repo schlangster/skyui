@@ -103,6 +103,17 @@ class ItemcardDataExtender implements IListProcessor
 				}
 				break;
 
+			case Form.TYPE_BOOK:
+				// (SKSE < 1.6.6) flags and bookType (and some padding) are sent as one UInt32 bookType
+				if (a_extendedObject.flags == undefined && a_extendedObject.bookType != undefined) {
+					var oldBookType: Number = a_extendedObject.bookType;
+					a_extendedObject.bookType	= (oldBookType & 0xFF00) >>> 8;
+					a_extendedObject.flags		= (oldBookType & 0x00FF);
+					skyui.util.Debug.log("flags", a_extendedObject.flags.toString(16))
+					skyui.util.Debug.log("bookType", a_extendedObject.bookType.toString(16))
+				}
+				break;
+
 			default:
 				break;
 		}

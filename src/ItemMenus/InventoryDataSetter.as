@@ -550,7 +550,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.subType = Item.OTHER;
 		a_entryObject.subTypeDisplay = "$Book";
 		
-		if (a_entryObject.bookType & Item.BOOKFLAG_NOTE) {
+		if (a_entryObject.bookType == Item.BOOKTYPE_NOTE) {
 			a_entryObject.subType = Item.BOOK_NOTE;
 			a_entryObject.subTypeDisplay = "$Note";
 		}
@@ -848,6 +848,11 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.BASEID_MS13GOLDENCLAW:
 				a_entryObject.subTypeDisplay = "$Claw";
 				a_entryObject.subType = Item.MISC_DRAGONCLAW;
+				break;
+
+			case Form.BASEID_LOCKPICK:
+				a_entryObject.subType = Item.MISC_LOCKPICK;
+				a_entryObject.subTypeDisplay = "$Lockpick";
 				break;
 
 			case Form.BASEID_GOLD001:

@@ -519,10 +519,6 @@ class InventoryIconSetter implements IListProcessor
 				a_entryObject.iconColor = 0xDBB36E;
 				break;
 
-			case Item.MISC_TOOL:
-				a_entryObject.iconLabel = "misc_lockpick";
-				break;
-
 			case Item.MISC_REMAINS:
 				a_entryObject.iconLabel = "misc_remains";
 				break;
@@ -543,6 +539,10 @@ class InventoryIconSetter implements IListProcessor
 
 			case Item.MISC_DRAGONCLAW:
 				a_entryObject.iconLabel = "misc_dragonclaw";
+				break;
+
+			case Item.MISC_LOCKPICK:
+				a_entryObject.iconLabel = "misc_lockpick";
 				break;
 
 			case Item.MISC_GOLD:
@@ -568,6 +568,9 @@ class InventoryIconSetter implements IListProcessor
 			// Maybe use later?
 			// ... or not.
 			/*
+			case Item.MISC_TOOL:
+				break;
+				
 			case Item.MISC_TOY:
 				break;
 

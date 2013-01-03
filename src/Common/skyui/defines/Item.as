@@ -19,15 +19,16 @@ class skyui.defines.Item
 	public static var POTION_FOOD: Number				= 14;
 	public static var POTION_POISON: Number				= 15;
 
-	public static var MISC_ARTIFACT: Number			= 0;
-	public static var MISC_GEM: Number				= 1;
-	public static var MISC_DRAGONCLAW: Number		= 2;
+	
+	public static var MISC_GEM: Number				= 0;
+	public static var MISC_DRAGONCLAW: Number		= 1;
+	public static var MISC_ARTIFACT: Number			= 2;
 	public static var MISC_LEATHER: Number			= 3;
-	public static var MISC_LEATHERSTRIPS: Number	= 4;
+	public static var MISC_LEATHERSTRIPS: Number	= 6;
 	public static var MISC_HIDE: Number				= 5;
-	public static var MISC_TOOL: Number				= 6;
-	public static var MISC_REMAINS: Number			= 7;
-	public static var MISC_INGOT: Number			= 8;
+	public static var MISC_REMAINS: Number			= 6;
+	public static var MISC_INGOT: Number			= 7;
+	public static var MISC_TOOL: Number				= 8;
 	public static var MISC_CHILDRENSCLOTHES: Number	= 9;
 	public static var MISC_TOY: Number				= 10;
 	public static var MISC_FIREWOOD: Number			= 11;
@@ -41,7 +42,8 @@ class skyui.defines.Item
 	//
 	public static var MISC_HOUSEPART: Number		= 18;
 	public static var MISC_CLUTTER: Number			= 19;
-	public static var MISC_GOLD: Number				= 20;
+	public static var MISC_LOCKPICK: Number			= 20;
+	public static var MISC_GOLD: Number				= 21;
 
 	public static var BOOK_SPELLTOME: Number		= 0;
 	public static var BOOK_NOTE: Number				= 1;
@@ -50,9 +52,10 @@ class skyui.defines.Item
 	// SKSE
 	
 	// BOOK Flags
-	public static var BOOKFLAG_SPELL: Number		= 0x0001;
-	public static var BOOKFLAG_SKILL: Number		= 0x0004;
-	public static var BOOKFLAG_NOTE: Number			= 0xFF00;
+	public static var BOOKFLAG_SPELL: Number		= 0x01;
+	public static var BOOKFLAG_SKILL: Number		= 0x04;
+	// BOOK bookTypes
+	public static var BOOKTYPE_NOTE: Number			= 0xFF;
 
 	// ALCH Flags
 	public static var ALCHFLAG_MANUALCALC: Number	= 0x00001;
