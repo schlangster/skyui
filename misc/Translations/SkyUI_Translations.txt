@@ -123,7 +123,7 @@ $Steel Plate	Steel Plate	Plates	Stahlharnisch	Piastre d'Acciaio	Placas de Acero	
 $Glass	Glass	Verre	Glas	Vetro	Cristal	Sklo	Szklany	Стеклянное	碧水晶
 $Elven Gilded	Elven Gilded	Dorée Elfique	Elfenvergoldet	Elfico dorato	Dorada Élfica	Elfský Pozlacený	Elficki - Pozłacany	Эльфийское Позолоченное	エルフの黄金
 $Dwarven	Dwarven	Dwemer	Dwemer	Nanico	Enana	Trpasličí	Krasnoludzki	Двемерское	ドワーフ
-$Scaled	Scaled	Écaille	Schuppen	Scaglie	Escamas	Šupiny	Łuskowy	Ламеллярное	スケイル
+$Scaled	Scaled	Écaille	Schuppen	Scaglie	Escamas	Šupiny	Łuskowy	Ламеллярное	スケール
 $Steel	Steel	Acier	Stahl	Acciaio	Acero	Ocel	Stalowy	Стальное	鋼鉄
 $Brotherhood	Brotherhood	Confrérie	Bruderschaft	Confraternita	Hermandad	Bratrstvo	Bractwa	Братства	闇の一党
 $Elven	Elven	Elfique	Elfen	Elfico	Élfica	Elfský	Elficki	Эльфийское	エルフ
@@ -146,9 +146,9 @@ $Draugr	Draugr	Draugr	Draugr	Draugr	Draugr	Draugirský	Draugrowy	Драургс�
 $Draugr Honed	Draugr Honed	Draugr Affûtée	Draugr Geschliffen	Draugr Affilata	Draugr Afilada	Draugirský Naostřený	Naostrzony Draugrowy	Драургское Заточенное	
 $Falmer	Falmer	Falmer	Falmer	Falmer	Falmer	Falmerský	Falmerski	Фалмерское	ファルメル
 $Falmer Honed	Falmer Honed	Falmer Affûtée	Falmer Geschliffen	Falmer Affilata	Falmer Aafilada	Falmerský Naostřený	Naostrzony Falmerski	Фалмерское Заточенное	
-$Forsworn	Forsworn	Parjure	Abgeschworene	Rinnegato	Renegado	Zapřisáhlí	Krzywoprzysięzca	Изгоев	フォースウォーン
+$Forsworn	Forsworn	Parjure	Abgeschworene	Rinnegato	Renegado	Zapřisáhlí	Renegatów	Изгоев	フォースウォーン
 $Dawnguard	Dawnguard	Garde de l'Aube	Dämmerwacht	Dawnguard	Guardia del Alba	Strážci Úsvitu	Dawnguard	Стражей рассвета	ドーンガード
-$Falmer Hardened	Falmer Hardened	Falmer Renforcée	Gehärtete Falmerrüstung	Falmer Pesante	Falmer endurecida	Falmerský Tvrzený	Utwardzony Falmerski	Фалмерское Укреплённое	
+$Falmer Hardened	Falmer Hardened	Falmer Renforcée	Gehärtete Falmerrüstung	Falmer Pesante	Falmer endurecida	Falmerský Tvrzený	Wzmocniony Falmerski	Фалмерское Укреплённое	
 $Hunter	Hunter	Chasseur	Jäger	Cacciatore	Cazador	Lovci	Łowcy	Охотничье	ハンター
 $Vampire	Vampire	Vampire	Vampir	Vampiro	Vampiro	Upíři	Wampirzy	Вампирское	吸血鬼
 $Aetherium	Aetherium	Aetherium	Aetherium	Eterio	Aeterio	Aetherit	Aetherium	Этериевое	エセリウム
