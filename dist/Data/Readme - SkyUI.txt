@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.0-beta3
+Version:		3.0
 
 Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -32,7 +32,7 @@ The following mods/utilities are required for SkyUI:
 
 	3. Installation
 
-	4. Uninstallation/Upgrading
+	4. Uninstallation
 
 	5. Troubleshooting
 
@@ -210,8 +210,6 @@ Pick the method you prefer.
 
 2. The next time you start the Skyrim Launcher, SkyUI will be downloaded and installed automatically.
 
-3. Done!
-
 OR
 
 ------------------------------------------------------------
@@ -221,8 +219,6 @@ OR
 1.	Click the 'Download with manager' button on top of the file.
 
 2.	SkyUI will appear in in NMM's Mods list once it's downloaded. Double-click the SkyUI entry to activate it.
-
-3.	Done!
 
 OR
 
@@ -236,8 +232,6 @@ OR
 
 3.	SkyUI will now appear in the list. Double-click the entry to activate it.
 
-4.	Done!
-
 OR
 
 ------------------------------------------------------------
@@ -249,11 +243,11 @@ OR
 
 2.	Extract the contents of the downloaded archive file to the 'Data/' folder.
 
-3.	Done!
+3.	In the Skyrim Launcher, select 'Data Files' and enable 'SkyUI.esp'.
 
 
 ========================================================================================================================================
- 4. Uninstallation/Upgrading
+ 4. Uninstallation
 ========================================================================================================================================
 
 Before removing any files, it is recommended to make a 'clean' save game with SkyUI deactivated.
@@ -278,23 +272,20 @@ Any SkyUI version older than 3.0 (this includes alpha builds) has to be removed 
 For details, see the following instructions that match your current SkyUI version/installation method.
 
 ------------------------------------------------------------
- NMM installation
- Any SkyUI version
+ NMM installation / Any SkyUI version
 ------------------------------------------------------------
 
 In NMM's mod list, search for the SkyUI entry and deactivate the mod.
 
 ------------------------------------------------------------
- Steam workshop
- Any SkyUI version
+ Steam workshop / Any SkyUI version
 ------------------------------------------------------------
 
 Unsubscribe from the mod and deactivate it in Skyrim Launcher (if you haven't already).
 There, you can also completely remove it by highlighting it and pressing 'Delete Selected'.
 
 ------------------------------------------------------------
- Manual installation
- SkyUI pre-3.0 versions (1.0, 1.1, 2.0, 2.1, 2.2)
+ Manual installation / SkyUI 2.2 or older
 ------------------------------------------------------------
 
 If you installed the SkyUI files manually, then you also have to remove them manually.
@@ -309,8 +300,7 @@ and then use Steam to restore any original files you removed in the process by f
 Be aware, that this will break any other mods that installed files to the interface folder. You have to re-install them.
 
 ------------------------------------------------------------
- Manual installation
- SkyUI 3.0 alpha versions
+ Manual installation / SkyUI 3.0 alpha versions
 ------------------------------------------------------------
 
 The 3.0 alpha packages contained loose script files requires by mod authors to create MCM config menus.
@@ -325,8 +315,7 @@ You have to remove these files because they will override any newer scripts in S
 3.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder.
 
 ------------------------------------------------------------
- Manual installation
- SkyUI 3.0 beta and newer
+ Manual installation / SkyUI 3.0 and newer
 ------------------------------------------------------------
 
 1.	Locate the 'Data/' folder in your Skyrim installation directory.
@@ -340,7 +329,7 @@ You have to remove these files because they will override any newer scripts in S
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: There's a message telling me that I'm missing the Skyrim Script Extender (SKSE). What do I have to do?
+Problem: There's a message telling me that there's a problem with the Skyrim Script Extender (SKSE). What do I have to do?
 
 Solution: There are two things that can cause this:
 	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
@@ -349,6 +338,9 @@ Solution: There are two things that can cause this:
 	2)	Everything was fine before, then Skyrim was patched to a new version and the message started appearing.
 		This is because each new patch also requires an update of SKSE. So just you'll just have to wait until that is released, then
 		get the new version and everything should be back to normal.
+
+	If you have problems installing or running SKSE, have a look at Gopher's video guide:
+		http://www.youtube.com/watch?v=xTGnQIiNVqA
 
 ------------------------------------------------------------
 Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
@@ -363,6 +355,14 @@ Problem: My game crashes after I uninstalled SkyUI.
 Solution: Try making a clean save with SkyUI.esp deactivated instead of removing it completely.
 	The necessary steps are described at the beginning of section 4.
 
+------------------------------------------------------------
+Problem: Some gamepad buttons are not working in the menu.
+
+Solution: There's a known problem when using a custom controlmap.
+	The following functions must be mapped to only one key: Wait, Sprint, Shout, Sneak.
+
+	If that's not the case, uninstall whichever mod that changed it.
+	Alternatively, delete the 'Data/Interface/controls/' folder and 'Data/Interface/controlmap_custom.txt' to reset your controlmap.
 
 ========================================================================================================================================
  6. Mod Author Guide
