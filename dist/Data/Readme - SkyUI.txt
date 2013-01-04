@@ -329,7 +329,7 @@ You have to remove these files because they will override any newer scripts in S
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: There's a message telling me that there's a problem with the Skyrim Script Extender (SKSE). What do I have to do?
+Problem: There's an error message telling me that there's a problem with the Skyrim Script Extender (SKSE).
 
 Solution: There are two things that can cause this:
 	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
@@ -341,6 +341,19 @@ Solution: There are two things that can cause this:
 
 	If you have problems installing or running SKSE, have a look at Gopher's video guide:
 		http://www.youtube.com/watch?v=xTGnQIiNVqA
+
+------------------------------------------------------------
+Problem: There's an error message telling me about a problem with some outdated/incompatible menu (SWF) file.
+
+Solution: There are several reasons this might happen.
+	1)	You didn't uninstall the old version of SkyUI before upgrading to 3.0 or newer.
+		See the Uninstallation section and make sure you really removed everything, then install the new version again.
+
+	2)	There's another mod that overrides a particular menu file SkyUI is using as well.
+		If that's the case, you'll have to pick one of the two mods.
+
+	If you want another mod to be able to override certain menu files of SkyUI while keeping the rest, you can disable these
+	warning messages individually in the SkyUI configuration menu ('Advanced' page).
 
 ------------------------------------------------------------
 Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
@@ -363,6 +376,10 @@ Solution: There's a known problem when using a custom controlmap.
 
 	If that's not the case, uninstall whichever mod that changed it.
 	Alternatively, delete the 'Data/Interface/controls/' folder and 'Data/Interface/controlmap_custom.txt' to reset your controlmap.
+
+
+If your problem wasn't listed here, ask for help in the Nexus comments.
+
 
 ========================================================================================================================================
  6. Mod Author Guide
