@@ -53,7 +53,7 @@ The following mods/utilities are required for SkyUI:
  1. Introduction
 ========================================================================================================================================
 
-SkyUI is mod that aims to improve Skyrim's User Interface by making it easier to use with mouse and keyboard,
+SkyUI is a mod that aims to improve Skyrim's User Interface by making it easier to use with mouse and keyboard,
 less wasteful of available screen space, and nicer to look at.
 
 We do all that while keeping true to the style of the original UI, so new and old components are integrated seamlessly.
