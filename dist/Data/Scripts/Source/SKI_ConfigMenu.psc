@@ -290,7 +290,7 @@ event OnOptionSliderOpen(int a_option)
 	; -------------------------------------------------------
 	if (a_option == _itemlistQuantityMinCountOID_S)
 		SetSliderDialogStartValue(_itemlistQuantityMinCount)
-		SetSliderDialogDefaultValue(5)
+		SetSliderDialogDefaultValue(6)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 
