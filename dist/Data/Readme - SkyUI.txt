@@ -73,7 +73,7 @@ Further general objectives and design concepts are:
 
 Since improving the whole UI is a big undertaking, we release only single menus at a time as we make progress.
 The first menu we addressed was the Inventory. In version 2.0, we included new Barter, Container and Magic menus.
-Version 3.0 introduced a shared in-game control panel for mods.
+Version 3.0 introduced an in-game configuration menu for mods.
 
 For a more detailed description, please see our mod description on Skyrim Nexus.
 
@@ -303,8 +303,8 @@ Be aware, that this will break any other mods that installed files to the interf
  Manual installation / SkyUI 3.0 alpha versions
 ------------------------------------------------------------
 
-The 3.0 alpha packages contained loose script files requires by mod authors to create MCM config menus.
-You have to remove these files because they will override any newer scripts in SkyUI.BSA.
+The 3.0 alpha packages contained loose script files required by mod authors to create configuration menus.
+You have to remove these files because they will override any newer scripts in SkyUI.bsa.
 
 1.	Locate the 'Scripts/' folder in your Skyrim data directory.
 	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
@@ -329,7 +329,7 @@ You have to remove these files because they will override any newer scripts in S
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: There's an error message telling me that there's a problem with the Skyrim Script Extender (SKSE).
+Problem: There's an error message telling me about a problem with the Skyrim Script Extender (SKSE).
 
 Solution: There are two things that can cause this:
 	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
