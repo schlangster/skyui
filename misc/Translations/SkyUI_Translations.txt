@@ -154,14 +154,14 @@ $Vampire	Vampire	Vampire	Vampir	Vampiro	Vampiro	Upíři	Wampirzy	Вампирс�
 $Aetherium	Aetherium	Aetherium	Aetherium	Eterio	Aeterio	Aetherit	Aetherium	Этериевое	エセリウム
 $Dragonbone	Dragonbone	Os de Dragon	Drachenknochen	Ossa di Drago	Hueso de Dragón	Dračí kost	Smocza Kość	Драконорождённого	龍骨
 									
-$MOD CONFIGURATION	MOD CONFIGURATION	CONFIGURATION DU MOD	MOD-KONFIGURATION	CONFIGURAZIONE MOD	CONFIGURACIÓN DE MOD	NASTAVENÍ MODŮ	KONFIGURACJA MODA	НАСТРОЙКА МОДА	MOD設定
+$MOD CONFIGURATION	MOD CONFIGURATION	CONFIGURATION DU MOD	MOD-KONFIGURATION	CONFIGURAZIONE MOD	CONFIGURACIÓN DE MOD	NASTAVENÍ MODŮ	KONFIGURACJA MODÓW	НАСТРОЙКА МОДА	MOD設定
 $Default	Default	Par Défaut	Voreinstellung	Predefinito	Por Defecto	Základní	Domyślny	Умолчание	デフォルト
 $Defaults	Defaults	Par Défaut	Voreinstellungen	Predefiniti	Por Defecto	Základní	Domyślne	По умолчанию	デフォルト
 $Search	Search	Chercher	Suchen	Cerca	Buscar	Hledat	Szukaj	Поиск	検索
 $Magic	Magic	Magie	Magie	Magia	Magia	Magie	Magia	Магия	魔法
 $Inventory	Inventory	Inventaire	Inventar	Inventario	Inventario	Inventář	Ekwipunek	Инвентарь	所持品
 $Switch Tab	Switch Tab	Changer Onglet	Wechsle Reiter	Cambia Scheda	Cambiar Pestaña	Změnit Záložku	Przełącz Kartę	Переключение Вкладок	タブの切り替え
-$Equip Mode	Equip Mode	Gestion d'Équipement	Ausrüstungsmodus	Gestisci Equipaggiamento	Modo Equipamiento	Režim použití	Wybierz tryb	Режим Оснащения	装備モード
+$Equip Mode	Equip Mode	Gestion d'Équipement	Ausrüstungsmodus	Gestisci Equipaggiamento	Modo Equipamiento	Režim použití	Wybierz tryb	Режим Экипировки	装備モード
 $Column	Column	Colonne	Spalte	Colonna	Columna	Sloupek	Kolumna	Колонка	列
 $Order	Order	Trier	Sortierung	Ordina	Ordenar	Řazení	Kolejność	Заказ	ソート
 $Open Slider	Open Slider	Ouvrir Slider	Schieber Öffnen	Apri Scorrimento	Activar Cursor	Otevřít Posuvník	Otwórz Suwak	Открыть Ползунок	スライダーを開く
@@ -175,10 +175,11 @@ $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawans
 									
 $Item List	Item List	Liste des Objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam Předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
 $Font Size	Font Size	Taille de police	Schriftgröße	Dimensione del Font	Tamaño de Fuente	Velikost Písma	Wielkość Czcionki	Размер шрифта	フォントサイズ
-$Disable Icon Colors	Disable Icon Colors								
-$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte Min. pour le Menu de Quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. Размер Значения Меню	数量メニュー最小カウント
-$Item Card	Item Card	Carte de l'Objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta Předmětu	Karta przedmiotu	Элемент Карты	アイテムカード
-$3D Item	3D Item	Item 3D	3D Ansicht	Oggetto 3D	Objeto 3D	3D Objekt	Obiekt 3D	3D элемент	3D アイテム
+$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte Min. pour le Menu de Quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. кол-во эллементов в меню	数量メニュー最小カウント
+$Category Icon Theme	Category Icon Theme							Категория Темы иконок	
+$Disable Icon Colors	Disable Icon Colors						Wyłącz Kolory Ikon	Отключить цвет иконок	
+$Item Card	Item Card	Carte de l'Objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta Předmětu	Karta przedmiotu	Окно осмотра предмета	アイテムカード
+$3D Item	3D Item	Item 3D	3D Ansicht	Oggetto 3D	Objeto 3D	3D Objekt	Obiekt 3D	3D объект	3D アイテム
 $Align	Align	Alignement	Ausrichten	Allinea	Alinear	Zarovnání	Wyrównanie	Выравнивание	整列する
 $Horizontal Offset	Horizontal Offset	Axe horizontal	Horizontaler Abstand	Spostamento Orizzontale	Desplazamiento Horizontal	Vodorovné Odsazení	Przesunięcie poziome	Горизонтальное Смещение	水平オフセット
 $Vertical Offset	Vertical Offset	Axe vertical	Vertikaler Abstand	Spostamento Verticale	Desplazamiento Vertical	Svislé Odsazení	Przesuniecie pionowe	Вертикальное Смещение	垂直オフセット
@@ -198,7 +199,9 @@ $SKI_INFO6	Incompatible or outdated SWFs may break SkyUI functionality. This onl
 $SKI_INFO7	Default: Space	Défaut: Space	Voreinstellung: Space	Predefinito: Space	Predefinido: Space	Výchozí nastavení: Space	Domyślnie: Space	Умолчание: Space	デフォルト: Space
 $SKI_INFO8	Default: LAlt	Défaut: LAlt	Voreinstellung: LAlt	Predefinito: LAlt	Predefinido: LAlt	Výchozí nastavení: LAlt	Domyślnie: LAlt	Умолчание: LAlt	デフォルト: LAlt
 $SKI_INFO9	Default: Shift	Défaut: Shift	Voreinstellung: Shift	Predefinito: Shift	Predefinido: Shift	Výchozí nastavení: Shift	Domyślnie: Shift	Умолчание: Shift	デフォルト: Shift
-$SKI_INFO10	Default: Off								
+$SKI_INFO10	Default: Off						Domyślnie: Wyłączone	Умолчание: Выкл	
+$SKI_INFO11	Default: PsychoSteve							Умолчание: PsychoSteve	
+									
 $SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Эта функция должна быть назначена с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
 									
 									
@@ -206,4 +209,4 @@ $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	98.94%	98.94%	98.94%	98.94%	98.94%	98.94%	98.94%	96.30%
+% Completion	100.00%	97.91%	97.91%	97.91%	97.91%	97.91%	98.95%	100.00%	95.29%

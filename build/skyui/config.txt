@@ -29,9 +29,11 @@ quantityMenu.minCount = 5 ; Number of items required to trigger quantity dialog.
 ; =====================================================================================================================
 [Appearance] 
 ; =====================================================================================================================
-icons.source = 'skyui/skyui_icons_psychosteve.swf'
-icons.noColors = false
-icons.showStolen = true
+categoryIcons.source = 'skyui/icons_category_psychosteve.swf'
+
+itemIcons.source = 'skyui/icons_item_psychosteve.swf'
+itemIcons.noColor = false
+itemIcons.showStolen = true
 
 colors.text.enabled = 0xffffff
 colors.stolen.enabled = 0xffffff

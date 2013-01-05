@@ -34,7 +34,7 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		_iconList = new Array();
 		_compoundPropertyList = new Array();
 
-		_noIconColors = a_configAppearance.icons.noColor;
+		_noIconColors = a_configAppearance.itemIcons.noColor;
 		
 		var propertyLevel = "props";
 		var compoundLevel = "compoundProps";
