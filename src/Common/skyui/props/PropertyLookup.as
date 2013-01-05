@@ -8,7 +8,6 @@ class skyui.props.PropertyLookup
 	var propertiesToSet:Array;
 	var itemFilter:ItemFilter;
 	var defaultValues;
-	var overwrite:Boolean;
 
 	private var lastValue:Number = -1;
 	private var keywords:Object;
@@ -18,35 +17,32 @@ class skyui.props.PropertyLookup
 	// propertiesToSet the property names that may be set
 	// itemFilter will determine which objects should try to match against this list
 	// defaultValues: if defined then if no data match this value will be set on the propertyToSet
-	// overwrite: if true then set propertyToSet even if it already has a known value set
 	// keywords: keyword to match against and the values to set if matched.
 	// dataMember#: Filter to specify what to match and set object for properties to set when matched
-	function PropertyLookup(configObject:Object)
+	function PropertyLookup(a_configObject: Object)
 	{
-		this.propertiesToSet = configObject.propertiesToSet; //TODO: eventually determine this automatically?
-		this.itemFilter = new ItemFilter(configObject.filter);
-		this.defaultValues = configObject.defaultValues;
-		this.overwrite = configObject.overwrite;
-		this.keywords = configObject.keywords;
-		this._parseDataMemberList(configObject);
+		propertiesToSet = a_configObject.propertiesToSet; //TODO: eventually determine this automatically?
+		itemFilter = new ItemFilter(a_configObject.filter);
+		defaultValues = a_configObject.defaultValues;
+		keywords = a_configObject.keywords;
+		_parseDataMemberList(a_configObject);
 		
-		this.lastValue = -1;
+		lastValue = -1;
 	}
 	
-	private function _getPropertyValFromFilter(filter:Object):Array
+	private function _getPropertyValFromFilter(a_filter: Object):Array
 	{		
 		var numDataMembers:Number = 0;
 		var dataMembers:Array = new Array();
-		for (var dataMember:String in filter) {
+		for (var dataMember:String in a_filter) {
 			dataMembers.push(dataMember);
 			numDataMembers++;
 		}
 		
 		if (numDataMembers <= 0) {
-			return new Array("extended", 'true');
-		}
-		else if (numDataMembers == 1) {
-			return new Array(dataMembers[0], filter[dataMembers[0]]);
+			return new Array("extended", "true");
+		} else if (numDataMembers == 1) {
+			return new Array(dataMembers[0], a_filter[dataMembers[0]]);
 		}
 
 		// else numDataMembers > 1
@@ -54,7 +50,7 @@ class skyui.props.PropertyLookup
 		var dataMember:String = dataMembers.join(PropertyLookup._delimiter);
 		var valueArray:Array = new Array();
 		for (var i:Number = 0; i < numDataMembers; i++) {
-			valueArray.push(filter[dataMembers[i]]);
+			valueArray.push(a_filter[dataMembers[i]]);
 		}
 		var matchVal:String = valueArray.join(PropertyLookup._delimiter);
 		
@@ -62,7 +58,7 @@ class skyui.props.PropertyLookup
 		
 	}
 	
-	private function _parseDataMemberList(configObject:Object)
+	private function _parseDataMemberList(a_configObject: Object): Void
 	{
 		dataMembers = new Object();
 		
@@ -70,12 +66,12 @@ class skyui.props.PropertyLookup
 		for (var i:Number = 1; i < PropertyLookup.dataMemberLimit; i++) {
 			var dataMemberGroup:String = "dataMember" + i;
 			
-			if (configObject[dataMemberGroup] == undefined) {
+			if (a_configObject[dataMemberGroup] == undefined) {
 				// No more dataMember# to go through (they must be sequential)
 				break;
 			}
 
-			dataMemberGroupObj = configObject[dataMemberGroup];  //dataMember1 etc
+			dataMemberGroupObj = a_configObject[dataMemberGroup];  //dataMember1 etc
 			
 			var filter:Object = dataMemberGroupObj["filter"];
 			
@@ -86,27 +82,27 @@ class skyui.props.PropertyLookup
 			var matchVal = keyValue[1];
 			
 			// create object for this dataMember (formId etc) if it does not exist.
-			if (this.dataMembers[dataMember] == undefined) {
-				this.dataMembers[dataMember] = new Object();
+			if (dataMembers[dataMember] == undefined) {
+				dataMembers[dataMember] = new Object();
 			}
 			
-			this.dataMembers[dataMember][matchVal] = dataMemberGroupObj["set"];
+			dataMembers[dataMember][matchVal] = dataMemberGroupObj["set"];
 		}
 	}
 
-	function getKeywordValues(keyword:String)
+	function getKeywordValues(a_keyword: String)
 	{
-		return keywords[keyword];
+		return keywords[a_keyword];
 	}
 
-	function getDataMemberValues(dataMember:String, sourceValue)
+	function getDataMemberValues(a_dataMember: String, a_sourceValue)
 	{
-		return dataMembers[dataMember][sourceValue];
+		return dataMembers[a_dataMember][a_sourceValue];
 	}
 	
-	function keywordMatches(keyword:String)
+	function keywordMatches(a_keyword: String)
 	{
-		return (keywords[keyword] != undefined);
+		return (keywords[a_keyword] != undefined);
 	}
 	
 	function dataMemberMatches(keyword:String, sourceValue)
@@ -114,23 +110,23 @@ class skyui.props.PropertyLookup
 		return (dataMembers[keyword][sourceValue] != undefined);
 	}
 	
-	private function _getMultSourceVal(obj:Object, dataMember:String)
+	private function _getMultSourceVal(a_object: Object, a_dataMember: String)
 	{
-		var dataMembers:Array = dataMember.split(PropertyLookup._delimiter);
+		var dataMembers:Array = a_dataMember.split(PropertyLookup._delimiter);
 		if (dataMembers.length <= 0) {
 			// Shouldn't occur, just return undefined
 			return;
 		}
 		else if (dataMembers.length == 1) {
-			// only a single dataMember, simply try to get the value of it on obj
-			return obj[dataMember];
+			// only a single dataMember, simply try to get the value of it on a_object
+			return a_object[a_dataMember] ;
 		}
 		
 		// else dataMembers.length > 1
 		var valueArray:Array = new Array();
 		for (var i:Number = 0; i < dataMembers.length; i++) {
-			if (obj.hasOwnProperty(dataMembers[i])) {
-				valueArray.push(obj[dataMembers[i]]);
+			if (a_object.hasOwnProperty(dataMembers[i])) {
+				valueArray.push(a_object[dataMembers[i]]);
 			}
 			else {
 				// Missing a dataMember, return undefined
@@ -141,96 +137,57 @@ class skyui.props.PropertyLookup
 		
 	}
 	
-	function processProperty(obj:Object):Boolean
+	function processProperty(a_obj: Object): Void
 	{
 		// Check if this object passes the filter for this keyword search
-		if (!itemFilter.passesFilter(obj)) {
-			return false;
-		}
-		
-		// Overwrite is handled below anyway and without this we won't need propertiesToSet
-		// Otherwise we should detemine propertiesToSet ourself
-		/*
-		// Unless this.overwrite is true
-		// return if this object already has the all properties set to a known value
-		if (!this.overwrite) {
-			var allPropertiesSet:Boolean = true;
-			for (var propertyToSet:String in this.propertiesToSet) {
-				if (obj[propertyToSet] == undefined ||
-					obj[propertyToSet] == this.defaultValues[propertyToSet]) {
-					allPropertiesSet = false;
-				}
-			}
-			if (allPropertiesSet) {
-				// Nothing needs to be set and we haven't set a value, return false
-				return false;
+		if (!itemFilter.passesFilter(a_obj))
+			return;
+
+		// Set defaults
+		for (var propertyToDefault:String in defaultValues) {
+			if (defaultValues[propertyToDefault] != undefined) {
+				a_obj[propertyToDefault] = defaultValues[propertyToDefault];
 			}
 		}
-		*/
-		
-		var isValueSet:Boolean = false;
-		
-		// search for each keyword on the object (rather than each keyword to search against which is likely more)
-		// if found then set the propertyToSet property to the corresponding destination value
-		var val;
-		for(var keyword in obj.keywords) {
-			var keywordValues:Object = this.getKeywordValues(keyword);
+
+		var valToSet;
+
+		// Check for keywords
+		for(var keyword in a_obj.keywords) {
+			var keywordValues: Object = getKeywordValues(keyword);
 			if (keywordValues != undefined) {
 				// keyword match found
 				for (var propertyToSet:String in keywordValues) {
-					val = keywordValues[propertyToSet];
-					if (val != undefined && (this.overwrite || obj[propertyToSet] == undefined ||
-											 obj[propertyToSet] == this.defaultValues[propertyToSet])) {
-						obj[propertyToSet] = val;
-						isValueSet = true;
+					valToSet = keywordValues[propertyToSet];
+					// Don't bother setting if default value is already set
+					if (valToSet != undefined && valToSet != defaultValues[propertyToSet]) {
+						a_obj[propertyToSet] = valToSet;
 					}
 				}
-				// NOTE: Right now we will continue on to see if there is a data member match
-				//       but keywords take priority
-				// NOTE: Right now we don't check any other keywords once we find a match,
-				//       even if we didn't set a value.
 				break;
 			}
-		}	
-		
-		// For each dataMember such as 'subType' that we need to check
-		// Check if we have stored a dataMember with a matching required value and if so use
-		// setVal from it to set propertyToSet
-		
-		for(var dataMember in this.dataMembers) {
-			//var sourceValue = obj[dataMember];
-			var sourceValue = _getMultSourceVal(obj, dataMember);
-			if (sourceValue == undefined) {
+		}
+
+		// Check data members last, they take precedence (for example, matching baseID)
+		for(var dataMember in dataMembers) {
+			//var sourceValue = a_obj[dataMember];
+			var sourceValue = _getMultSourceVal(a_obj, dataMember);
+			if (sourceValue == undefined)
 				continue;
-			}
 			
-			var setValues:Object = this.getDataMemberValues(dataMember, sourceValue);
+			var setValues: Object = getDataMemberValues(dataMember, sourceValue);
 			if (setValues != undefined) {
 				// we have a match
 				for (var propertyToSet:String in setValues){
-					var val = setValues[propertyToSet];
-					if (val != undefined && (this.overwrite || obj[propertyToSet] == undefined ||
-											 obj[propertyToSet] == this.defaultValues[propertyToSet])) {
-						obj[propertyToSet] = val;
-						isValueSet = true;
+					var valToSet = setValues[propertyToSet];
+					if (valToSet != undefined && valToSet != defaultValues[propertyToSet]) {
+						a_obj[propertyToSet] = valToSet;
 					}
 		
 				}
-				// NOTE: Right now we continue on to set any remaining defaults.
-				// NOTE: Right now we don't continue on to any other data members once we find a match.
+
 				break;
 			}
 		}
-
-		// Set defaults
-		var valueSet:Boolean = false;
-		for (var propertyToDefault:String in this.defaultValues) {
-			if (obj[propertyToDefault] == undefined && this.defaultValues[propertyToDefault] != undefined) {
-				obj[propertyToDefault] = this.defaultValues[propertyToDefault];
-				valueSet = true;
-			}
-		}
-
-		return valueSet;
 	}
 }
