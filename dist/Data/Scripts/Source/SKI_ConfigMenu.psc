@@ -11,6 +11,7 @@ string[]	_alignmentValues
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
 int			_itemlistQuantityMinCountOID_S
+int			_itemlistNoIconColorsOID_B
 
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -33,6 +34,7 @@ int			_equipModeKeyOID_K
 ; State
 int			_itemlistFontSizeIdx		= 1
 int			_itemlistQuantityMinCount	= 6
+bool		_itemlistNoIconColors		= false
 
 int			_itemcardAlignIdx			= 2
 float		_itemcardXOffset			= 0.0
@@ -109,6 +111,7 @@ event OnPageReset(string a_page)
 
 		AddHeaderOption("$Item List")
 		_itemlistFontSizeOID_T			= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
+		_itemlistNoIconColorsOID_B		= AddToggleOption("$Disable Icon Colors", _itemlistNoIconColors)
 		_itemlistQuantityMinCountOID_S	= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityMinCount)
 
 		SetCursorPosition(1)
@@ -155,6 +158,11 @@ event OnOptionDefault(int a_option)
 		_itemlistFontSizeIdx = 1
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
+
+	elseif (a_option == _itemlistNoIconColorsOID_B)
+		_itemlistNoIconColors = false
+		SetToggleOptionValue(a_option, _itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$noColor", _itemlistNoIconColors)
 
 	elseif (a_option == _itemlistQuantityMinCountOID_S)
 		_itemlistQuantityMinCount = 6
@@ -244,6 +252,11 @@ event OnOptionSelect(int a_option)
 		endif
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
+
+	elseIf (a_option == _itemlistNoIconColorsOID_B)
+		_itemlistNoIconColors = !_itemlistNoIconColors
+		SetToggleOptionValue(a_option, _itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$noColor", _itemlistNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -412,6 +425,8 @@ event OnOptionHighlight(int a_option)
 
 	if (a_option == _itemlistFontSizeOID_T)
 		SetInfoText("$SKI_INFO1")
+	elseIf(a_option == _itemlistNoIconColorsOID_B)
+		SetInfoText("$SKI_INFO10")
 	elseIf(a_option == _itemlistQuantityMinCountOID_S)
 		SetInfoText("$SKI_INFO2")
 
