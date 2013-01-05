@@ -54,7 +54,7 @@ system(@argList) == 0 or error("Compile failed.");
 # Generate filegroup list
 open(OUT, ">$filegroupPath") or error("Cannot open $filegroupPath: $!");
 print OUT "Scripts\\" . basename($_) . "\n" foreach (<Data/Scripts/*.pex>);
-print OUT "Scripts\\Source\\" . basename($_) . "\n" foreach (<Data/Scripts/Source/*.psc>);
+# print OUT "Scripts\\Source\\" . basename($_) . "\n" foreach (<Data/Scripts/Source/*.psc>);
 close(OUT);
 
 # Copy *.pex to game dir
