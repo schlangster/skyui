@@ -114,9 +114,9 @@ event OnPageReset(string a_page)
 		SetCursorPosition(1)
 
 		AddHeaderOption("$Controls")
-		_searchKeyOID_K					= AddKeyMapOption("Search", _searchKey)
-		_switchTabKeyOID_K				= AddKeyMapOption("Switch Tab", _switchTabKey)
-		_equipModeKeyOID_K				= AddKeyMapOption("Equip Mode", _equipModeKey)
+		_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey)
+		_switchTabKeyOID_K				= AddKeyMapOption("$Switch Tab", _switchTabKey)
+		_equipModeKeyOID_K				= AddKeyMapOption("$Equip Mode", _equipModeKey)
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
