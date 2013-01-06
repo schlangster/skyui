@@ -350,10 +350,10 @@ class CategoryList extends BasicList
 
 		var selectedClip = _entryClipManager.getClip(_selectedIndex - _segmentOffset);
 
-		_targetSelectorPos = selectedClip._x + (selectedClip._width - selectorCenter._width) / 2;
+		_targetSelectorPos = selectedClip._x + (selectedClip.background._width - selectorCenter._width) / 2;
 		
 		selectorCenter._visible = true;
-		selectorCenter._y = selectedClip._y + selectedClip._height;
+		selectorCenter._y = selectedClip._y + selectedClip.background._height;
 		
 		if (selectorLeft != undefined) {
 			selectorLeft._visible = true;
