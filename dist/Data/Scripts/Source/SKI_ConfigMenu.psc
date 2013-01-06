@@ -5,12 +5,18 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; Lists
 string[]	_alignments
 string[]	_sizes
+string[]	_categoryIconThemes
 
 string[]	_alignmentValues
+string[]	_categoryIconThemeValues
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
 int			_itemlistQuantityMinCountOID_S
+
+int			_appearanceCategoryIconThemeOID_T
+int			_appearanceNoIconColorsOID_B
+
 
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -33,6 +39,9 @@ int			_equipModeKeyOID_K
 ; State
 int			_itemlistFontSizeIdx		= 1
 int			_itemlistQuantityMinCount	= 6
+
+int			_categoryIconThemeIdx		= 0
+bool		_appearanceNoIconColors		= false
 
 int			_itemcardAlignIdx			= 2
 float		_itemcardXOffset			= 0.0
@@ -72,11 +81,24 @@ event OnConfigInit()
 	_sizes[1] = "$Medium"
 	_sizes[2] = "$Large"
 
+
+	_categoryIconThemes = new string[4]
+	_categoryIconThemes[0] = "PsychoSteve"
+	_categoryIconThemes[1] = "Celtic"
+	_categoryIconThemes[2] = "Curved"
+	_categoryIconThemes[3] = "Straight"
+
 	; Strings used as variable values
 	_alignmentValues = new string[3]
 	_alignmentValues[0] = "left"
 	_alignmentValues[1] = "right"
 	_alignmentValues[2] = "center"
+
+	_categoryIconThemeValues = new string[4]
+	_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
+	_categoryIconThemeValues[1] = "skyui\\icons_category_celtic.swf"
+	_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
+	_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
 
 	ApplySettings()
 endEvent
@@ -108,40 +130,46 @@ event OnPageReset(string a_page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("$Item List")
-		_itemlistFontSizeOID_T			= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
-		_itemlistQuantityMinCountOID_S	= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityMinCount)
+		_itemlistFontSizeOID_T				= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
+		_itemlistQuantityMinCountOID_S		= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityMinCount)
+
+		AddEmptyOption()
+
+		AddHeaderOption("$Appearance")
+		_appearanceCategoryIconThemeOID_T	= AddTextOption("$Category Icon Theme", _categoryIconThemes[_categoryIconThemeIdx])
+		_appearanceNoIconColorsOID_B		= AddToggleOption("$Disable Icon Colors", _appearanceNoIconColors)
 
 		SetCursorPosition(1)
 
 		AddHeaderOption("$Controls")
-		_searchKeyOID_K					= AddKeyMapOption("Search", _searchKey)
-		_switchTabKeyOID_K				= AddKeyMapOption("Switch Tab", _switchTabKey)
-		_equipModeKeyOID_K				= AddKeyMapOption("Equip Mode", _equipModeKey)
+		_searchKeyOID_K						= AddKeyMapOption("$Search", _searchKey)
+		_switchTabKeyOID_K					= AddKeyMapOption("$Switch Tab", _switchTabKey)
+		_equipModeKeyOID_K					= AddKeyMapOption("$Equip Mode", _equipModeKey)
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("$Item Card")
-		_itemcardAlignOID_T				= AddTextOption("$Align", _alignments[_itemcardAlignIdx])
-		_itemcardXOffsetOID_S			= AddSliderOption("$Horizontal Offset", _itemcardXOffset)
-		_itemcardYOffsetOID_S			= AddSliderOption("$Vertical Offset", _itemcardYOffset)
+		_itemcardAlignOID_T					= AddTextOption("$Align", _alignments[_itemcardAlignIdx])
+		_itemcardXOffsetOID_S				= AddSliderOption("$Horizontal Offset", _itemcardXOffset)
+		_itemcardYOffsetOID_S				= AddSliderOption("$Vertical Offset", _itemcardYOffset)
 
 		AddEmptyOption()
 
 		AddHeaderOption("$3D Item")
-		_3DItemXOffsetOID_S				= AddSliderOption("$Horizontal Offset", _3DItemXOffset)
-		_3DItemYOffsetOID_S				= AddSliderOption("$Vertical Offset", _3DItemYOffset)
-		_3DItemScaleOID_S				= AddSliderOption("$Scale", _3DItemScale, "{1}")
+		_3DItemXOffsetOID_S					= AddSliderOption("$Horizontal Offset", _3DItemXOffset)
+		_3DItemYOffsetOID_S					= AddSliderOption("$Vertical Offset", _3DItemYOffset)
+		_3DItemScaleOID_S					= AddSliderOption("$Scale", _3DItemScale, "{1}")
 
 		SetCursorPosition(1)
 
 		AddHeaderOption("$SWF Version Checking")
-		_checkInventoryMenuOID_B		= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
-		_checkMagicMenuOID_B			= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
-		_checkBarterMenuOID_B			= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
-		_checkContainerMenuOID_B		= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
-		_checkGiftMenuOID_B				= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
+		_checkInventoryMenuOID_B			= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
+		_checkMagicMenuOID_B				= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
+		_checkBarterMenuOID_B				= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
+		_checkContainerMenuOID_B			= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
+		_checkGiftMenuOID_B					= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
 		
 	endIf
 endEvent
@@ -160,6 +188,17 @@ event OnOptionDefault(int a_option)
 		_itemlistQuantityMinCount = 6
 		SetSliderOptionValue(a_option, _itemlistQuantityMinCount)
 		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
+
+	; -------------------------------------------------------
+	elseIf (a_option == _appearanceCategoryIconThemeOID_T)
+		_itemlistFontSizeIdx = 0
+		SetTextOptionValue(a_option, _categoryIconThemes[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+
+	elseif (a_option == _appearanceNoIconColorsOID_B)
+		_appearanceNoIconColors = false
+		SetToggleOptionValue(a_option, _appearanceNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _appearanceNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _searchKeyOID_K)
@@ -244,6 +283,21 @@ event OnOptionSelect(int a_option)
 		endif
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
+
+	; -------------------------------------------------------
+	elseIf (a_option == _appearanceCategoryIconThemeOID_T)
+		if (_categoryIconThemeIdx < _categoryIconThemes.length - 1)
+			_categoryIconThemeIdx += 1
+		else
+			_categoryIconThemeIdx = 0
+		endif
+		SetTextOptionValue(a_option, _categoryIconThemes[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+
+	elseIf (a_option == _appearanceNoIconColorsOID_B)
+		_appearanceNoIconColors = !_appearanceNoIconColors
+		SetToggleOptionValue(a_option, _appearanceNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _appearanceNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -415,6 +469,11 @@ event OnOptionHighlight(int a_option)
 	elseIf(a_option == _itemlistQuantityMinCountOID_S)
 		SetInfoText("$SKI_INFO2")
 
+
+	elseIf(a_option == _appearanceCategoryIconThemeOID_T)
+		SetInfoText("$SKI_INFO11")
+	elseIf(a_option == _appearanceNoIconColorsOID_B)
+		SetInfoText("$SKI_INFO10")
 	
 	elseIf (a_option == _searchKeyOID_K)
 		SetInfoText("$SKI_INFO7") ; Default: Space

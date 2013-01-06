@@ -12,7 +12,8 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	private var _propertyList;
 	private var _iconList;
 	private var _compoundPropertyList;
-	private var _translateProperties;
+
+	private var _noIconColors: Boolean;
 	
 	
   /* PROPERTIES */
@@ -23,7 +24,7 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	
   /* CONSTRUCTORS */
 	
-	public function PropertyDataExtender(a_dataSource: Object, a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String)
+	public function PropertyDataExtender(a_configAppearance: Object, a_dataSource: Object, a_propertiesVar: String, a_iconsVar: String, a_compoundPropVar: String)
 	{
 		propertiesVar = a_propertiesVar;
 		iconsVar = a_iconsVar;
@@ -32,6 +33,8 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		_propertyList = new Array();
 		_iconList = new Array();
 		_compoundPropertyList = new Array();
+
+		_noIconColors = a_configAppearance.itemIcons.noColor;
 		
 		var propertyLevel = "props";
 		var compoundLevel = "compoundProps";
@@ -82,12 +85,8 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 	{
 		var entryList = a_list.entryList;
 		
-		for (var i=0; i<entryList.length; i++) {
-			if (entryList[i].skyui_propertyDataExtended)
-				continue;
-			entryList[i].skyui_propertyDataExtended = true;
+		for (var i=0; i<entryList.length; i++)
 			processEntry(entryList[i]);
-		}
 	}
 	
 	
@@ -109,6 +108,9 @@ class skyui.props.PropertyDataExtender implements IListProcessor
 		// Process compound properties 
 		// (concatenate several properties together, used for sorting)
 		for (var i=0; i<_compoundPropertyList.length; i++)
-			_compoundPropertyList[i].processCompoundProperty(a_entryObject);		
+			_compoundPropertyList[i].processCompoundProperty(a_entryObject);	
+
+		if (_noIconColors && a_entryObject.iconColor != undefined)
+			delete(a_entryObject.iconColor)
 	}
 }

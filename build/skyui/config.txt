@@ -29,8 +29,11 @@ quantityMenu.minCount = 5 ; Number of items required to trigger quantity dialog.
 ; =====================================================================================================================
 [Appearance] 
 ; =====================================================================================================================
-icons.source = 'skyui/skyui_icons_psychosteve.swf'
-icons.showStolen = true
+categoryIcons.source = 'skyui/icons_category_psychosteve.swf'
+
+itemIcons.source = 'skyui/icons_item_psychosteve.swf'
+itemIcons.noColor = false
+itemIcons.showStolen = true
 
 colors.text.enabled = 0xffffff
 colors.stolen.enabled = 0xffffff
@@ -113,7 +116,7 @@ columns.itemNameColumn.state1.sortOptions = {ASCENDING | CASEINSENSITIVE}
 
 columns.itemNameColumn.state2.label.text = '$EQUIPPED'
 columns.itemNameColumn.state2.entry.text = @text
-columns.itemNameColumn.state2.sortAttributes = <isEquipped, equipState text>
+columns.itemNameColumn.state2.sortAttributes = <isEquipped, equipState, text>
 columns.itemNameColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 columns.itemNameColumn.state2.playerOnly = true
 
@@ -121,6 +124,7 @@ columns.itemNameColumn.state3.label.text = '$STOLEN'
 columns.itemNameColumn.state3.entry.text = @text
 columns.itemNameColumn.state3.sortAttributes = <isStolen, text>
 columns.itemNameColumn.state3.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.itemNameColumn.state3.playerOnly = true
 
 columns.itemNameColumn.state4.label.text = '$ENCHANTED'
 columns.itemNameColumn.state4.entry.text = @text
@@ -362,6 +366,7 @@ columns.magicNameColumn.state2.label.text = '$FAVORITE'
 columns.magicNameColumn.state2.entry.text = @text
 columns.magicNameColumn.state2.sortAttributes = <favorite, text>
 columns.magicNameColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.magicNameColumn.state2.playerOnly = true
 
 
 ; SPELL COST COLUMN -------------------------------------------

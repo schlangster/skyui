@@ -24,7 +24,7 @@ class skyui.defines.Item
 	public static var MISC_DRAGONCLAW: Number		= 1;
 	public static var MISC_ARTIFACT: Number			= 2;
 	public static var MISC_LEATHER: Number			= 3;
-	public static var MISC_LEATHERSTRIPS: Number	= 6;
+	public static var MISC_LEATHERSTRIPS: Number	= 4;
 	public static var MISC_HIDE: Number				= 5;
 	public static var MISC_REMAINS: Number			= 6;
 	public static var MISC_INGOT: Number			= 7;

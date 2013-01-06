@@ -81,8 +81,8 @@ class ContainerMenu extends ItemMenu
 		
 		var itemList: TabularList = inventoryLists.itemList;		
 		itemList.addDataProcessor(new InventoryDataSetter());
-		itemList.addDataProcessor(new InventoryIconSetter());
-		itemList.addDataProcessor(new PropertyDataExtender(a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
+		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
+		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
 		itemList.layout = layout;

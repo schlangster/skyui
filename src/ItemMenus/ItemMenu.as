@@ -130,10 +130,10 @@ class ItemMenu extends MovieClip
 		var categoryListState = inventoryLists.categoryList.listState;
 		var appearance = a_config["Appearance"];
 		
-		categoryListState.iconSource = appearance.icons.source;
+		categoryListState.iconSource = appearance.categoryIcons.source;
 		
-		itemListState.iconSource = appearance.icons.source;
-		itemListState.showStolenIcon = appearance.icons.showStolen;
+		itemListState.iconSource = appearance.itemIcons.source;
+		itemListState.showStolenIcon = appearance.itemIcons.showStolen;
 		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
 		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
 		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;

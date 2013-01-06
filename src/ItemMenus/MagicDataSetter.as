@@ -4,8 +4,8 @@ class MagicDataSetter extends ItemcardDataExtender
 {
   /* PRIVATE VARIABLES */
 
-  	private var _defaultEnabledColor: Number;
-  	private var _defaultDisabledColor: Number;
+	private var _defaultEnabledColor: Number;
+	private var _defaultDisabledColor: Number;
 
 
   /* INITIALIZATION */
@@ -39,13 +39,13 @@ class MagicDataSetter extends ItemcardDataExtender
 				}
 				
 				if (a_itemInfo.word1) {
-					a_entryObject.word1 = a_itemInfo.word1 + " (" + recharge[1] + ")";;
+					a_entryObject.word1 = a_itemInfo.word1 + " (" + recharge[1] + ")";
 					a_entryObject.word1Recharge = recharge[1];
 					a_entryObject.word1Color = a_itemInfo.unlocked1 ? _defaultEnabledColor : _defaultDisabledColor;
 				}
 				
 				if (a_itemInfo.word2) {
-					a_entryObject.word2 = a_itemInfo.word2 + " (" + recharge[2] + ")";;
+					a_entryObject.word2 = a_itemInfo.word2 + " (" + recharge[2] + ")";
 					a_entryObject.word2Recharge = recharge[2];
 					a_entryObject.word2Color = a_itemInfo.unlocked2 ? _defaultEnabledColor : _defaultDisabledColor;
 				}

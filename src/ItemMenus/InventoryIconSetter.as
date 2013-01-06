@@ -10,11 +10,15 @@ import skyui.defines.Weapon;
 
 class InventoryIconSetter implements IListProcessor
 {
+  /* PRIVATE VARIABLES */
+
+	private var _noIconColors: Boolean;
 
   /* INITIALIZATION */
 
- 	public function InventoryIconSetter()
+ 	public function InventoryIconSetter(a_configAppearance: Object)
  	{
+ 		_noIconColors = a_configAppearance.itemIcons.noColor;
  	}
 
   /* PUBLIC FUNCTIONS */
@@ -77,6 +81,9 @@ class InventoryIconSetter implements IListProcessor
 				processSoulGemIcon(a_entryObject);
 				break;
 		}
+
+		if (_noIconColors && a_entryObject.iconColor != undefined)
+			delete(a_entryObject.iconColor);
 	}
 
 	private function processResist(a_entryObject: Object): Void

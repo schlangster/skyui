@@ -7,10 +7,15 @@ import skyui.defines.Inventory;
 
 class MagicIconSetter implements IListProcessor
 {
+  /* PRIVATE VARIABLES */
+
+	private var _noIconColors: Boolean;
+
   /* INITIALIZATION */
 
- 	public function MagicIconSetter()
+ 	public function MagicIconSetter(a_configAppearance: Object)
  	{
+ 		_noIconColors = a_configAppearance.itemIcons.noColor;
  	}
 	
 
@@ -28,7 +33,6 @@ class MagicIconSetter implements IListProcessor
   /* PRIVATE FUNCTIONS */
 	private function processEntry(a_entryObject: Object): Void
 	{
-		//skyui.util.Debug.dump(a_entryObject["text"], a_entryObject);
 		switch (a_entryObject.type) {
 			case Inventory.ICT_SPELL:
 				processSpellIcon(a_entryObject);
@@ -49,6 +53,9 @@ class MagicIconSetter implements IListProcessor
 			default:
 				break;
 		}
+
+		if (_noIconColors && a_entryObject.iconColor != undefined)
+			delete(a_entryObject.iconColor);
 	}
 
 	private function processSpellIcon(a_entryObject: Object): Void
