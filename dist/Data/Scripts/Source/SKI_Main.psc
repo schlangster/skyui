@@ -67,6 +67,13 @@ event OnGameReload()
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
+
+	; Could also check for != SKSE.GetVersionRelease(), but this should be strict enough
+	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
+		Error("Your Skyrim Script Extender (SKSE) scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!\n" \
+			+ "Required version: " + MinSKSEVersion + " or newer\n" \
+			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
+		return
 	endIf
 
 	; Check hudmenu.swf version
