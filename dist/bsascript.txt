@@ -1,6 +1,5 @@
 Log: Archive.log
 New Archive
-Check: Compress Archive
 Check: Menus
 Check: Misc
 Check: Retain Directory Names
