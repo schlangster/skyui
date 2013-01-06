@@ -1,22 +1,32 @@
 scriptname SKI_ConfigMenu extends SKI_ConfigBase
 
+; SCRIPT VERSION ----------------------------------------------------------------------------------
+;
+; History
+;
+; 1:	- Initial version
+;
+; 2:	- Added category icon theme option
+;		- Added noIconColor option
+
+int function GetVersion()
+	return 2
+endFunction
+
+
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
+
+; -- Version 1 --
 
 ; Lists
 string[]	_alignments
 string[]	_sizes
-string[]	_categoryIconThemes
 
 string[]	_alignmentValues
-string[]	_categoryIconThemeValues
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
 int			_itemlistFontSizeOID_T
 int			_itemlistQuantityMinCountOID_S
-
-int			_appearanceCategoryIconThemeOID_T
-int			_appearanceNoIconColorsOID_B
-
 
 int			_itemcardAlignOID_T
 int			_itemcardXOffsetOID_S
@@ -40,9 +50,6 @@ int			_equipModeKeyOID_K
 int			_itemlistFontSizeIdx		= 1
 int			_itemlistQuantityMinCount	= 6
 
-int			_categoryIconThemeIdx		= 0
-bool		_appearanceNoIconColors		= false
-
 int			_itemcardAlignIdx			= 2
 float		_itemcardXOffset			= 0.0
 float		_itemcardYOffset			= 0.0
@@ -58,6 +65,21 @@ int			_equipModeKey				= 42
 ; Internal
 float		_itemXBase
 float		_itemXBaseW
+
+; -- Version 2 --
+
+; Lists
+string[]	_categoryIconThemeShortNames
+string[]	_categoryIconThemeLongNames
+string[]	_categoryIconThemeValues
+
+; OIDs
+int			_itemlistCategoryIconThemeOID_M
+int			_itemlistNoIconColorsOID_B
+
+; State
+int			_categoryIconThemeIdx		= 0
+bool		_itemlistNoIconColors		= false
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -81,30 +103,14 @@ event OnConfigInit()
 	_sizes[1] = "$Medium"
 	_sizes[2] = "$Large"
 
-
-	_categoryIconThemes = new string[4]
-	_categoryIconThemes[0] = "PsychoSteve"
-	_categoryIconThemes[1] = "Celtic"
-	_categoryIconThemes[2] = "Curved"
-	_categoryIconThemes[3] = "Straight"
-
 	; Strings used as variable values
 	_alignmentValues = new string[3]
 	_alignmentValues[0] = "left"
 	_alignmentValues[1] = "right"
 	_alignmentValues[2] = "center"
 
-	_categoryIconThemeValues = new string[4]
-	_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
-	_categoryIconThemeValues[1] = "skyui\\icons_category_celtic.swf"
-	_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
-	_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
-
 	ApplySettings()
 endEvent
-
-
-; EVENTS ------------------------------------------------------------------------------------------
 
 ; @implements SKI_QuestBase
 event OnGameReload()
@@ -113,7 +119,36 @@ event OnGameReload()
 	ApplySettings()
 endEvent
 
-; -------------------------------------------------------------------------------------------------
+; @implements SKI_QuestBase
+event OnVersionUpdate(int a_version)
+
+	; Version 2
+	if (a_version >= 2 && CurrentVersion < 2)
+		Debug.Trace(self + ": Updating to script version 2")
+
+		_categoryIconThemeShortNames = new string[4]
+		_categoryIconThemeShortNames[0] = "SKYUI V3"
+		_categoryIconThemeShortNames[1] = "CELTIC"
+		_categoryIconThemeShortNames[2] = "CURVED"
+		_categoryIconThemeShortNames[3] = "STRAIGHT"
+
+		_categoryIconThemeLongNames = new string[4]
+		_categoryIconThemeLongNames[0] = "SkyUI V3, by PsychoSteve"
+		_categoryIconThemeLongNames[1] = "Celtic, by GreatClone"
+		_categoryIconThemeLongNames[2] = "Curved, by T3T"
+		_categoryIconThemeLongNames[3] = "Straight, by T3T"
+
+		_categoryIconThemeValues = new string[4]
+		_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
+		_categoryIconThemeValues[1] = "skyui\\icons_category_celtic.swf"
+		_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
+		_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
+	endIf
+endEvent
+
+
+; EVENTS ------------------------------------------------------------------------------------------
+
 ; @implements SKI_ConfigBase
 event OnPageReset(string a_page)
 
@@ -132,19 +167,21 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Item List")
 		_itemlistFontSizeOID_T				= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
 		_itemlistQuantityMinCountOID_S		= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityMinCount)
-
-		AddEmptyOption()
-
-		AddHeaderOption("$Appearance")
-		_appearanceCategoryIconThemeOID_T	= AddTextOption("$Category Icon Theme", _categoryIconThemes[_categoryIconThemeIdx])
-		_appearanceNoIconColorsOID_B		= AddToggleOption("$Disable Icon Colors", _appearanceNoIconColors)
+		_itemlistCategoryIconThemeOID_M		= AddMenuOption("$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		_itemlistNoIconColorsOID_B			= AddToggleOption("$Disable Icon Colors", _itemlistNoIconColors)
 
 		SetCursorPosition(1)
 
 		AddHeaderOption("$Controls")
-		_searchKeyOID_K						= AddKeyMapOption("$Search", _searchKey)
-		_switchTabKeyOID_K					= AddKeyMapOption("$Switch Tab", _switchTabKey)
-		_equipModeKeyOID_K					= AddKeyMapOption("$Equip Mode", _equipModeKey)
+		if (Game.UsingGamepad())	
+			_searchKeyOID_K					= AddKeyMapOption("$Search", 282, OPTION_FLAG_DISABLED) ; 282 == "???""
+			_switchTabKeyOID_K				= AddKeyMapOption("$Switch Tab", 271, OPTION_FLAG_DISABLED)
+			_equipModeKeyOID_K				= AddKeyMapOption("$Equip Mode", 282, OPTION_FLAG_DISABLED)
+		else
+			_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey)
+			_switchTabKeyOID_K				= AddKeyMapOption("$Switch Tab", _switchTabKey)
+			_equipModeKeyOID_K				= AddKeyMapOption("$Equip Mode", _equipModeKey)
+		endIf
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
@@ -189,16 +226,15 @@ event OnOptionDefault(int a_option)
 		SetSliderOptionValue(a_option, _itemlistQuantityMinCount)
 		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
 
-	; -------------------------------------------------------
-	elseIf (a_option == _appearanceCategoryIconThemeOID_T)
-		_itemlistFontSizeIdx = 0
-		SetTextOptionValue(a_option, _categoryIconThemes[_categoryIconThemeIdx])
+	elseIf (a_option == _itemlistCategoryIconThemeOID_M)
+		_categoryIconThemeIdx = 0
+		SetTextOptionValue(a_option, _categoryIconThemeShortNames[_categoryIconThemeIdx])
 		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
 
-	elseif (a_option == _appearanceNoIconColorsOID_B)
-		_appearanceNoIconColors = false
-		SetToggleOptionValue(a_option, _appearanceNoIconColors)
-		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _appearanceNoIconColors)
+	elseif (a_option == _itemlistNoIconColorsOID_B)
+		_itemlistNoIconColors = false
+		SetToggleOptionValue(a_option, _itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _itemlistNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _searchKeyOID_K)
@@ -284,20 +320,10 @@ event OnOptionSelect(int a_option)
 		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
 
-	; -------------------------------------------------------
-	elseIf (a_option == _appearanceCategoryIconThemeOID_T)
-		if (_categoryIconThemeIdx < _categoryIconThemes.length - 1)
-			_categoryIconThemeIdx += 1
-		else
-			_categoryIconThemeIdx = 0
-		endif
-		SetTextOptionValue(a_option, _categoryIconThemes[_categoryIconThemeIdx])
-		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
-
-	elseIf (a_option == _appearanceNoIconColorsOID_B)
-		_appearanceNoIconColors = !_appearanceNoIconColors
-		SetToggleOptionValue(a_option, _appearanceNoIconColors)
-		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _appearanceNoIconColors)
+	elseIf (a_option == _itemlistNoIconColorsOID_B)
+		_itemListNoIconColors = !_itemlistNoIconColors
+		SetToggleOptionValue(a_option, _itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _itemlistNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -421,6 +447,26 @@ event OnOptionSliderAccept(int a_option, float a_value)
 	endIf
 endEvent
 
+; -------------------------------------------------------
+; @implements SKI_ConfigBase
+event OnOptionMenuOpen(int a_option)
+	if (a_option == _itemlistCategoryIconThemeOID_M)
+		SetMenuDialogStartIndex(_categoryIconThemeIdx)
+		SetMenuDialogDefaultIndex(0)
+		SetMenuDialogOptions(_categoryIconThemeLongNames)
+	endIf
+endEvent
+
+; -------------------------------------------------------
+; @implements SKI_ConfigBase
+event OnOptionMenuAccept(int a_option, int a_index)
+	if (a_option == _itemlistCategoryIconThemeOID_M)
+		_categoryIconThemeIdx = a_index
+		SetMenuOptionValue(a_option, _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+	endIf
+endEvent
+
 ; -------------------------------------------------------------------------------------------------
 ; @implements SKI_ConfigBase
 event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
@@ -468,11 +514,9 @@ event OnOptionHighlight(int a_option)
 		SetInfoText("$SKI_INFO1")
 	elseIf(a_option == _itemlistQuantityMinCountOID_S)
 		SetInfoText("$SKI_INFO2")
-
-
-	elseIf(a_option == _appearanceCategoryIconThemeOID_T)
+	elseIf(a_option == _itemlistCategoryIconThemeOID_M)
 		SetInfoText("$SKI_INFO11")
-	elseIf(a_option == _appearanceNoIconColorsOID_B)
+	elseIf(a_option == _itemlistNoIconColorsOID_B)
 		SetInfoText("$SKI_INFO10")
 	
 	elseIf (a_option == _searchKeyOID_K)
@@ -480,7 +524,7 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _switchTabKeyOID_K)
 		SetInfoText("$SKI_INFO8") ; Default: Left Alt
 	elseIf (a_option == _equipModeKeyOID_K)
-		SetInfoText("$SKI_INFO9") ; Default: Left Shift
+		SetInfoText("$SKI_INFO9") ; Default: Shift
 
 	elseIf (a_option == _itemcardAlignOID_T)
 		SetInfoText("$SKI_INFO3")
