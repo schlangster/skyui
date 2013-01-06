@@ -27,13 +27,13 @@ endProperty
 
 int property		ReqSWFRelease
 	int function get()
-		return 7
+		return 8
 	endFunction
 endProperty
 
 string property		ReqSWFVersion
 	string function get()
-		return "3.0"
+		return "3.1"
 	endFunction
 endProperty
 
