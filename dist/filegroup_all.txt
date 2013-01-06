@@ -34,4 +34,11 @@ Scripts\SKI_Main.pex
 Scripts\SKI_PlayerLoadGameAlias.pex
 Scripts\SKI_QuestBase.pex
 Scripts\SKI_SettingsManager.pex
+Scripts\Source\SKI_ConfigBase.psc
+Scripts\Source\SKI_ConfigManager.psc
+Scripts\Source\SKI_ConfigMenu.psc
+Scripts\Source\SKI_Main.psc
+Scripts\Source\SKI_PlayerLoadGameAlias.psc
+Scripts\Source\SKI_QuestBase.psc
+Scripts\Source\SKI_SettingsManager.psc
 Readme - SkyUI.txt
