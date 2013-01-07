@@ -110,8 +110,8 @@ class skyui.components.MappedButton extends Button
 			if (controlInfo.keyCode != null) {
 				keyCode = controlInfo.keyCode;
 			} else {
-				var name = controlInfo.name;
-				var context = controlInfo.context;
+				var name: String = String(controlInfo.name);
+				var context: Number = Number(controlInfo.context);
 				keyCode = GlobalFunctions.getMappedKey(name, context, _platform != 0);
 			}
 			

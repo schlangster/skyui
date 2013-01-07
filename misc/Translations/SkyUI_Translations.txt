@@ -204,6 +204,10 @@ $SKI_INFO8	Default: LAlt	Défaut: LAlt	Voreinstellung: LAlt	Predefinito: LAlt	Pr
 $SKI_INFO9	Default: Shift	Défaut: Shift	Voreinstellung: Shift	Predefinito: Shift	Predefinido: Shift	Výchozí nastavení: Shift	Domyślnie: Shift	По умолчанию: Shift	デフォルト: Shift
 $SKI_INFO10	Default: Off	Défaut: Désactivé	Voreinstellung: Aus		Predefinido: Desactivado		Domyślnie: Wyłączone	По умолчанию: Выкл	
 $SKI_INFO11	Default: SkyUI v3	Défaut: SkyUI v3	Voreinstellung: SkyUI v3	Predefinito: SkyUI v3	Predefinido: SkyUI v3	Výchozí nastavení: SkyUI v3	Domyślnie: SkyUI v3	По умолчанию: SkyUI v3	デフォルト: SkyUI v3
+$SKI_INFO12	Default: Back	Défaut: Back	Voreinstellung: Back	Predefinito: Back	Predefinido: Back	Výchozí nastavení: Back	Domyślnie: Back	По умолчанию: Back	デフォルト: Back
+$SKI_INFO13	Default: LB	Défaut: LB	Voreinstellung: LB	Predefinito: LB	Predefinido: LB	Výchozí nastavení: LB	Domyślnie: LB	По умолчанию: LB	デフォルト: LB
+$SKI_INFO14	Default: RB	Défaut: RB	Voreinstellung: RB	Predefinito: RB	Predefinido: RB	Výchozí nastavení: RB	Domyślnie: RB	По умолчанию: RB	デフォルト: RB
+$SKI_INFO15	Default: LS	Défaut: LS	Voreinstellung: LS	Predefinito: LS	Predefinido: LS	Výchozí nastavení: LS	Domyślnie: LS	По умолчанию: LS	デフォルト: LS
 									
 $SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Эта функция должна быть назначена с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
 									
@@ -212,4 +216,4 @@ $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	98.45%	97.42%	96.91%	98.45%	96.91%	98.45%	98.45%	94.33%
+% Completion	100.00%	98.48%	97.47%	96.97%	98.48%	96.97%	98.48%	98.48%	94.44%

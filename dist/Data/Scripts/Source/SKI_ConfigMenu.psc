@@ -607,11 +607,11 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _switchTabButtonOID_K)
 		SetInfoText("$SKI_INFO12") ; Default: Back
 	elseIf (a_option == _prevColumnButtonOID_K)
-		SetInfoText("$SKI_INFO13") ; Default: LS
+		SetInfoText("$SKI_INFO13") ; Default: LB (L1, LEFT_SHOULDER)
 	elseIf (a_option == _nextColumnButtonOID_K)
-		SetInfoText("$SKI_INFO14") ; Default: RS
+		SetInfoText("$SKI_INFO14") ; Default: RB (R1, RIGHT_SHOULDER)
 	elseIf (a_option == _sortOrderButtonOID_K)
-		SetInfoText("$SKI_INFO15") ; Default: LT
+		SetInfoText("$SKI_INFO15") ; Default: LS (L3, LEFT_THUMB)
 
 	elseIf (a_option == _itemcardAlignOID_T)
 		SetInfoText("$SKI_INFO3")
