@@ -124,6 +124,8 @@ bool function ClearOverride(string a_key)
 	
 	_overrideKeys[index] = ""
 	_overrideValues[index] = ""
+	_overrideCount -= 1
+	
 	return true
 endFunction
 
