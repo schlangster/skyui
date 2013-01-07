@@ -18,7 +18,7 @@ class InventoryIconSetter implements IListProcessor
 
  	public function InventoryIconSetter(a_configAppearance: Object)
  	{
- 		_noIconColors = a_configAppearance.itemIcons.noColor;
+ 		_noIconColors = a_configAppearance.icons.item.noColor;
  	}
 
   /* PUBLIC FUNCTIONS */

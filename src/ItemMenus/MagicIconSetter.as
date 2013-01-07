@@ -15,7 +15,7 @@ class MagicIconSetter implements IListProcessor
 
  	public function MagicIconSetter(a_configAppearance: Object)
  	{
- 		_noIconColors = a_configAppearance.itemIcons.noColor;
+ 		_noIconColors = a_configAppearance.icons.item.noColor;
  	}
 	
 
