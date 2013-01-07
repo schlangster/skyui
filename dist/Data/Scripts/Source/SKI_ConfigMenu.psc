@@ -604,6 +604,14 @@ event OnOptionHighlight(int a_option)
 		SetInfoText("$SKI_INFO8") ; Default: Left Alt
 	elseIf (a_option == _equipModeKeyOID_K)
 		SetInfoText("$SKI_INFO9") ; Default: Shift
+	elseIf (a_option == _switchTabButtonOID_K)
+		SetInfoText("$SKI_INFO12") ; Default: Back
+	elseIf (a_option == _prevColumnButtonOID_K)
+		SetInfoText("$SKI_INFO13") ; Default: LS
+	elseIf (a_option == _nextColumnButtonOID_K)
+		SetInfoText("$SKI_INFO14") ; Default: RS
+	elseIf (a_option == _sortOrderButtonOID_K)
+		SetInfoText("$SKI_INFO15") ; Default: LT
 
 	elseIf (a_option == _itemcardAlignOID_T)
 		SetInfoText("$SKI_INFO3")
