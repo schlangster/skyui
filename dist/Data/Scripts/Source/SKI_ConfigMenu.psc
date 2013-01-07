@@ -203,7 +203,7 @@ event OnPageReset(string a_page)
 		else
 			_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey, OPTION_FLAG_DISABLED)
 			_switchTabButtonOID_K			= AddKeyMapOption("$Switch Tab", _switchTabButton)
-			_prevColumnButtonOID_K			= AddKeyMapOption("$Previus Column", _prevColumnButton)
+			_prevColumnButtonOID_K			= AddKeyMapOption("$Previous Column", _prevColumnButton)
 			_nextColumnButtonOID_K			= AddKeyMapOption("$Next Column", _nextColumnButton)
 			_sortOrderButtonOID_K			= AddKeyMapOption("$Sort Order", _sortOrderButton)
 			_switchTabKeyOID_K				= -1
