@@ -726,32 +726,32 @@ endFunction
 function SwapKeys(int a_newKey, int a_curKey)
 	if (a_newKey == _searchKey)
 		_searchKey = a_curKey
-		SetKeyMapOptionValue(_searchKeyOID_K, _searchKey)
+		SetKeyMapOptionValue(_searchKeyOID_K, _searchKey, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
 	elseIf (a_newKey == _switchTabKey)
 		_switchTabKey = a_curKey
-		SetKeyMapOptionValue(_switchTabKeyOID_K, _switchTabKey)
+		SetKeyMapOptionValue(_switchTabKeyOID_K, _switchTabKey, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
 	elseIf (a_newKey == _equipModeKey)
 		_equipModeKey = a_curKey
-		SetKeyMapOptionValue(_equipModeKeyOID_K, _equipModeKey)
+		SetKeyMapOptionValue(_equipModeKeyOID_K, _equipModeKey, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
 
 	elseIf (a_newKey == _switchTabButton)
 		_switchTabButton = a_curKey
-		SetKeyMapOptionValue(_switchTabButtonOID_K, _switchTabButton)
+		SetKeyMapOptionValue(_switchTabButtonOID_K, _switchTabButton, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
 	elseIf (a_newKey == _prevColumnButton)
 		_prevColumnButton = a_curKey
-		SetKeyMapOptionValue(_prevColumnButtonOID_K, _prevColumnButton)
+		SetKeyMapOptionValue(_prevColumnButtonOID_K, _prevColumnButton, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
 	elseIf (a_newKey == _nextColumnButton)
 		_nextColumnButton = a_curKey
-		SetKeyMapOptionValue(_nextColumnButtonOID_K, _nextColumnButton)
+		SetKeyMapOptionValue(_nextColumnButtonOID_K, _nextColumnButton, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
 	elseIf (a_newKey == _sortOrderButton)
 		_sortOrderButton = a_curKey
-		SetKeyMapOptionValue(_sortOrderButtonOID_K, _sortOrderButton)
+		SetKeyMapOptionValue(_sortOrderButtonOID_K, _sortOrderButton, true)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
 	endIf
 endFunction
