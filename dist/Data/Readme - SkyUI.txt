@@ -85,12 +85,21 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ------------------------------------------------------------
 3.1:
 
-TODO
+[General]
+- Updated SKSE version requirement to 1.6.6. Fixes the non-functional localization, also has an installer now.
+- Added option to select the category icon theme. Includes all themes from version 2.2 (Celtic, Curved, Straight).
+- Added option to configure some gamepad mappings manually. This should resolve conflicts with custom controlmaps.
+- Added option to disable icon colors.
+- Added a NMM installer script that detects/reports the most common installation problems (old 2.2 files and missing SKSE scripts).
+- Added runtime check for missing SKSE scripts.
+- Fixed leather strips type identifier.
+- Fixed minor mistakes in the config.
+- Fixed issues with PropertyDataExtender to allow custom config.txt overrides.
+- Fixed MCM logo hat madness.
+- Made some error messages clearer (missing or incompatible -> incompatible etc.).
 
 ------------------------------------------------------------
 3.0:
-
-NOTE: When upgrading from previous versions, make sure to uninstall them first!
 
 [General]
 - Added more columns to item lists and a drop-down menu to show/hide them.
