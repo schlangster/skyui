@@ -5,7 +5,7 @@ controls.pc.search = 57 ; SPACE
 controls.pc.switchTab = 56 ; ALT
 controls.pc.equipMode = 42 ; LSHIFT
 
-controls.gamepad.swichTab = 271 ; BACK
+controls.gamepad.switchTab = 271 ; BACK
 controls.gamepad.prevColumn = 274 ; LEFT_SHOULDER
 controls.gamepad.nextColumn = 275 ; RIGHT_SHOULDER
 controls.gamepad.sortOrder = 272 ; LEFT_THUMB
