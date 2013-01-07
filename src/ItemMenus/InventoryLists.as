@@ -53,9 +53,9 @@ class InventoryLists extends MovieClip
 	private var _currCategoryIndex: Number;
 	private var _savedSelectionIndex: Number = -1;
 	
-	private var _searchKey: Number;
-	private var _switchTabKey: Number;
-	private var _sortOrderKey: Number;
+	private var _searchKey: Number = -1;
+	private var _switchTabKey: Number = -1;
+	private var _sortOrderKey: Number = -1;
 	private var _sortOrderKeyHeld: Boolean = false;
 	
 	private var _bTabbed = false;
@@ -226,13 +226,6 @@ class InventoryLists extends MovieClip
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
-			
-		if (a_platform != 0) {
-			_sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
-			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
-		} else {
-			_sortOrderKey = -1;
-		}
 
 		categoryList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);
@@ -407,10 +400,14 @@ class InventoryLists extends MovieClip
   	private function onConfigLoad(event: Object): Void
 	{
 		var config = event.config;
-		_searchKey = config["Input"].controls.search;
+		_searchKey = config["Input"].controls.pc.search;
 		
 		if (_platform == 0)
-			_switchTabKey = config["Input"].controls.switchTab;
+			_switchTabKey = config["Input"].controls.pc.switchTab;
+		else {
+			_switchTabKey = config["Input"].controls.gamepad.switchTab;
+			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
+		}
 	}
   
 	private function onFilterChange(): Void

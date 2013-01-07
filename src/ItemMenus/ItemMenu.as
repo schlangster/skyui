@@ -33,7 +33,7 @@ class ItemMenu extends MovieClip
 	private var _searchControls: Object;
 	private var _switchControls: Object;
 	private var _sortColumnControls: Array;
-	private var _sortOrderControl: Object;
+	private var _sortOrderControls: Object;
 	
 	
   /* STAGE ELEMENTS */
@@ -130,10 +130,11 @@ class ItemMenu extends MovieClip
 		var categoryListState = inventoryLists.categoryList.listState;
 		var appearance = a_config["Appearance"];
 		
-		categoryListState.iconSource = appearance.categoryIcons.source;
+		categoryListState.iconSource = appearance.icons.category.source;
 		
-		itemListState.iconSource = appearance.itemIcons.source;
-		itemListState.showStolenIcon = appearance.itemIcons.showStolen;
+		itemListState.iconSource = appearance.icons.item.source;
+		itemListState.showStolenIcon = appearance.icons.item.showStolen;
+		
 		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
 		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
 		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
@@ -143,14 +144,23 @@ class ItemMenu extends MovieClip
 
 		_quantityMinCount = a_config["ItemList"].quantityMenu.minCount;
 		
-		_searchKey = a_config["Input"].controls.search;
-		_searchControls = {keyCode: _searchKey};
-		
 		if (_platform == 0) {
-			// For gamepad, we use "Wait", otherwise config value
-			_switchTabKey = a_config["Input"].controls.switchTab;			
-			_switchControls = {keyCode: _switchTabKey};
+			_switchTabKey = a_config["Input"].controls.pc.switchTab;
+		} else {
+			_switchTabKey = a_config["Input"].controls.gamepad.switchTab;
+			
+			var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
+			var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
+			var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
+			_sortColumnControls = [{keyCode: previousColumnKey},
+								   {keyCode: nextColumnKey}];
+			_sortOrderControls = {keyCode: sortOrderKey};
 		}
+		
+		_switchControls = {keyCode: _switchTabKey};
+		
+		_searchKey = a_config["Input"].controls.pc.search;
+		_searchControls = {keyCode: _searchKey};
 		
 		updateBottomBar(false);
 	}
@@ -163,26 +173,21 @@ class ItemMenu extends MovieClip
 		if (a_platform == 0) {
 			_acceptControls = Input.Enter;
 			_cancelControls = Input.Tab;
-			_switchTabKey = Input.Sprint; // Use as default until config is loaded
+			
+			// Defaults
+			_switchControls = Input.Alt;
 		} else {
-
 			_acceptControls = Input.Accept;
 			_cancelControls = Input.Cancel;
 			
-			_switchTabKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
-			var previousColumnKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, true);
-			var nextColumnKey = GlobalFunctions.getMappedKey("Shout", Input.CONTEXT_GAMEPLAY, true);
-			var sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
-
-			_sortColumnControls = [{keyCode: previousColumnKey},
-								   {keyCode: nextColumnKey}];
-			_sortOrderControl = {keyCode: sortOrderKey};
+			// Defaults
+			_switchControls = Input.GamepadBack;
+			_sortColumnControls = Input.SortColumn;
+			_sortOrderControls = Input.SortOrder;
 		}
 		
-		_switchControls = {keyCode: _switchTabKey};
-		
-		_searchKey = Input.Sprint; // Use as default until config is loaded
-		_searchControls = {keyCode: _searchKey};
+		// Defaults
+		_searchControls = Input.Space;
 		
 		inventoryLists.setPlatform(a_platform,a_bPS3Switch);
 		itemCard.SetPlatform(a_platform,a_bPS3Switch);

@@ -8,6 +8,7 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ;
 ; 2:	- Added category icon theme option
 ;		- Added noIconColor option
+;		- Added controls section for gamepad
 
 int function GetVersion()
 	return 2
@@ -77,9 +78,19 @@ string[]	_categoryIconThemeValues
 int			_itemlistCategoryIconThemeOID_M
 int			_itemlistNoIconColorsOID_B
 
+int			_switchTabButtonOID_K
+int			_prevColumnButtonOID_K
+int			_nextColumnButtonOID_K
+int			_sortOrderButtonOID_K
+
 ; State
 int			_categoryIconThemeIdx		= 0
 bool		_itemlistNoIconColors		= false
+
+int			_switchTabButton			= 271 ; BACK
+int			_prevColumnButton			= 274 ; LEFT_SHOULDER
+int			_nextColumnButton			= 275 ; RIGHT_SHOULDER
+int			_sortOrderButton			= 272 ; LEFT_THUMB
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -143,6 +154,14 @@ event OnVersionUpdate(int a_version)
 		_categoryIconThemeValues[1] = "skyui\\icons_category_celtic.swf"
 		_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
 		_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
+
+		; Have been renamed, so clear old overrides and set new ones
+		SKI_SettingsManagerInstance.ClearOverride("Input$controls$search")
+		SKI_SettingsManagerInstance.ClearOverride("Input$controls$switchTab")
+		SKI_SettingsManagerInstance.ClearOverride("Input$controls$equipMode")
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
 	endIf
 endEvent
 
@@ -173,14 +192,16 @@ event OnPageReset(string a_page)
 		SetCursorPosition(1)
 
 		AddHeaderOption("$Controls")
-		if (Game.UsingGamepad())	
-			_searchKeyOID_K					= AddKeyMapOption("$Search", 282, OPTION_FLAG_DISABLED) ; 282 == "???""
-			_switchTabKeyOID_K				= AddKeyMapOption("$Switch Tab", 271, OPTION_FLAG_DISABLED)
-			_equipModeKeyOID_K				= AddKeyMapOption("$Equip Mode", 282, OPTION_FLAG_DISABLED)
-		else
+		if (! Game.UsingGamepad())
 			_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey)
 			_switchTabKeyOID_K				= AddKeyMapOption("$Switch Tab", _switchTabKey)
 			_equipModeKeyOID_K				= AddKeyMapOption("$Equip Mode", _equipModeKey)
+		else
+			_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey, OPTION_FLAG_DISABLED)
+			_switchTabButtonOID_K			= AddKeyMapOption("$Switch Tab", _switchTabButton)
+			_prevColumnButtonOID_K			= AddKeyMapOption("$Previus Column", _prevColumnButton)
+			_nextColumnButtonOID_K			= AddKeyMapOption("$Next Column", _nextColumnButton)
+			_sortOrderButtonOID_K			= AddKeyMapOption("$Sort Order", _sortOrderButton)
 		endIf
 
 	; -------------------------------------------------------
@@ -229,26 +250,42 @@ event OnOptionDefault(int a_option)
 	elseIf (a_option == _itemlistCategoryIconThemeOID_M)
 		_categoryIconThemeIdx = 0
 		SetTextOptionValue(a_option, _categoryIconThemeShortNames[_categoryIconThemeIdx])
-		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
 
 	elseif (a_option == _itemlistNoIconColorsOID_B)
 		_itemlistNoIconColors = false
 		SetToggleOptionValue(a_option, _itemlistNoIconColors)
-		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$item$noColor", _itemlistNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _searchKeyOID_K)
 		_searchKey = 57
 		SetKeyMapOptionValue(a_option, _searchKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
 	elseIf (a_option == _switchTabKeyOID_K)
 		_switchTabKey = 56
 		SetKeyMapOptionValue(a_option, _switchTabKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
 	elseIf (a_option == _equipModeKeyOID_K)
 		_equipModeKey = 42
 		SetKeyMapOptionValue(a_option, _equipModeKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$equipMode", _equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
+	elseIf (a_option == _switchTabButtonOID_K)
+		_switchTabButton = 271
+		SetKeyMapOptionValue(a_option, _switchTabButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
+	elseIf (a_option == _prevColumnButtonOID_K)
+		_prevColumnButton = 274
+		SetKeyMapOptionValue(a_option, _prevColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
+	elseIf (a_option == _nextColumnButtonOID_K)
+		_nextColumnButton = 275
+		SetKeyMapOptionValue(a_option, _nextColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
+	elseIf (a_option == _sortOrderButtonOID_K)
+		_sortOrderButton = 272
+		SetKeyMapOptionValue(a_option, _sortOrderButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -323,7 +360,7 @@ event OnOptionSelect(int a_option)
 	elseIf (a_option == _itemlistNoIconColorsOID_B)
 		_itemListNoIconColors = !_itemlistNoIconColors
 		SetToggleOptionValue(a_option, _itemlistNoIconColors)
-		SKI_SettingsManagerInstance.SetOverride("Appearance$itemIcons$noColor", _itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$item$noColor", _itemlistNoIconColors)
 
 	; -------------------------------------------------------
 	elseIf (a_option == _itemcardAlignOID_T)
@@ -463,7 +500,7 @@ event OnOptionMenuAccept(int a_option, int a_index)
 	if (a_option == _itemlistCategoryIconThemeOID_M)
 		_categoryIconThemeIdx = a_index
 		SetMenuOptionValue(a_option, _categoryIconThemeShortNames[_categoryIconThemeIdx])
-		SKI_SettingsManagerInstance.SetOverride("Appearance$categoryIcons$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
 	endIf
 endEvent
 
@@ -476,33 +513,69 @@ event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl
 		return
 	endIf
 
-	; Can't detect for mouse, don't need for gamepad
-	if (a_keyCode > 255)
-		ShowMessage("$SKI_MSG1", false, "$OK")
-		return
-	endIf
+	; -------------------------------------------------------
+	if (! Game.UsingGamepad())
 
-	if (a_option == _searchKeyOID_K)
-		SwapKeys(a_keyCode, _searchKey)
+		; Can't detect for mouse, don't need for gamepad
+		if (a_keyCode > 255)
+			ShowMessage("$SKI_MSG1", false, "$OK")
+			return
+		endIf
 
-		_searchKey = a_keyCode
-		SetKeyMapOptionValue(a_option, _searchKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+		if (a_option == _searchKeyOID_K)
+			SwapKeys(a_keyCode, _searchKey)
 
-	elseIf (a_option == _switchTabKeyOID_K)
-		SwapKeys(a_keyCode, _switchTabKey)
+			_searchKey = a_keyCode
+			SetKeyMapOptionValue(a_option, _searchKey)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
 
-		_switchTabKey = a_keyCode
-		SetKeyMapOptionValue(a_option, _switchTabKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+		elseIf (a_option == _switchTabKeyOID_K)
+			SwapKeys(a_keyCode, _switchTabKey)
 
-	elseIf (a_option == _equipModeKeyOID_K)
-		SwapKeys(a_keyCode, _equipModeKey)
+			_switchTabKey = a_keyCode
+			SetKeyMapOptionValue(a_option, _switchTabKey)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
 
-		_equipModeKey = a_keyCode
-		SetKeyMapOptionValue(a_option, _equipModeKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$equipMode", _equipModeKey)
+		elseIf (a_option == _equipModeKeyOID_K)
+			SwapKeys(a_keyCode, _equipModeKey)
 
+			_equipModeKey = a_keyCode
+			SetKeyMapOptionValue(a_option, _equipModeKey)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
+
+		endIf
+
+	; -------------------------------------------------------
+	else
+		if (a_option == _switchTabButtonOID_K)
+			SwapKeys(a_keyCode, _switchTabButton)
+
+			_switchTabButton = a_keyCode
+			SetKeyMapOptionValue(a_option, _switchTabButton)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
+
+		elseIf (a_option == _prevColumnButtonOID_K)
+			SwapKeys(a_keyCode, _prevColumnButton)
+
+			_prevColumnButton = a_keyCode
+			SetKeyMapOptionValue(a_option, _prevColumnButton)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
+
+		elseIf (a_option == _nextColumnButtonOID_K)
+			SwapKeys(a_keyCode, _nextColumnButton)
+
+			_nextColumnButton = a_keyCode
+			SetKeyMapOptionValue(a_option, _nextColumnButton)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
+
+		elseIf (a_option == _sortOrderButtonOID_K)
+			SwapKeys(a_keyCode, _sortOrderButton)
+
+			_sortOrderButton = a_keyCode
+			SetKeyMapOptionValue(a_option, _sortOrderButton)
+			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
+
+		endIf
 	endIf
 endEvent
 
@@ -640,14 +713,31 @@ function SwapKeys(int a_newKey, int a_curKey)
 	if (a_newKey == _searchKey)
 		_searchKey = a_curKey
 		SetKeyMapOptionValue(_searchKeyOID_K, _searchKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$search", _searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
 	elseIf (a_newKey == _switchTabKey)
 		_switchTabKey = a_curKey
 		SetKeyMapOptionValue(_switchTabKeyOID_K, _switchTabKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$switchTab", _switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
 	elseIf (a_newKey == _equipModeKey)
 		_equipModeKey = a_curKey
 		SetKeyMapOptionValue(_equipModeKeyOID_K, _equipModeKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$equipMode", _equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
+
+	elseIf (a_newKey == _switchTabButton)
+		_switchTabButton = a_curKey
+		SetKeyMapOptionValue(_switchTabButtonOID_K, _switchTabButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
+	elseIf (a_newKey == _prevColumnButton)
+		_prevColumnButton = a_curKey
+		SetKeyMapOptionValue(_prevColumnButtonOID_K, _prevColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
+	elseIf (a_newKey == _nextColumnButton)
+		_nextColumnButton = a_curKey
+		SetKeyMapOptionValue(_nextColumnButtonOID_K, _nextColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
+	elseIf (a_newKey == _sortOrderButton)
+		_sortOrderButton = a_curKey
+		SetKeyMapOptionValue(_sortOrderButtonOID_K, _sortOrderButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
 	endIf
 endFunction

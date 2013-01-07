@@ -9,15 +9,16 @@ import skyui.components.list.ListLayout;
 import skyui.components.list.SortedListHeader;
 import skyui.components.list.ScrollingList;
 import skyui.filter.IFilter;
+import skyui.util.ConfigManager;
 
 
 class skyui.components.list.TabularList extends ScrollingList
 {
   /* PRIVATE VARIABLES */
 
-	private var _previousColumnKey: Number;
-	private var _nextColumnKey: Number;
-	private var _sortOrderKey: Number;
+	private var _previousColumnKey: Number = -1;
+	private var _nextColumnKey: Number = -1;
+	private var _sortOrderKey: Number = -1;
 
   /* STAGE ELEMENTS */
   
@@ -50,22 +51,12 @@ class skyui.components.list.TabularList extends ScrollingList
 	public function TabularList()
 	{
 		super();
+		
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
 
 
   /* PUBLIC FUNCTIONS */
-
-	// @override BasicList
-	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
-	{
-		super.setPlatform(a_platform,a_bPS3Switch);
-
-		if (_platform != 0) {
-			_previousColumnKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, true);
-			_nextColumnKey = GlobalFunctions.getMappedKey("Shout", Input.CONTEXT_GAMEPLAY, true);
-			_sortOrderKey = GlobalFunctions.getMappedKey("Sneak", Input.CONTEXT_GAMEPLAY, true);
-		}
-	}
 	
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -92,6 +83,17 @@ class skyui.components.list.TabularList extends ScrollingList
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+  	private function onConfigLoad(event: Object): Void
+	{
+		var config = event.config;
+		
+		if (_platform != 0) {
+			_previousColumnKey = config["Input"].controls.gamepad.prevColumn;
+			_nextColumnKey = config["Input"].controls.gamepad.nextColumn;
+			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
+		}
+	}
 	
 	private function onLayoutChange(event: Object): Void
 	{

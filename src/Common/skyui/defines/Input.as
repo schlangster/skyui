@@ -48,5 +48,8 @@
 	static var GamepadBack	= {keyCode: 271};
 	static var Enter		= {keyCode: 28};
 	static var Tab			= {keyCode: 15};
+	static var Shift		= {keyCode: 42};
+	static var Space		= {keyCode: 57};
+	static var Alt			= {keyCode: 56};
 	static var SortOrder	= {keyCode: 272};
 }

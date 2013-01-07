@@ -210,7 +210,7 @@ class MagicMenu extends ItemMenu
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControl});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
 			}
 			navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}
