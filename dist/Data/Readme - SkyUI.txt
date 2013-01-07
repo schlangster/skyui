@@ -85,12 +85,21 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ------------------------------------------------------------
 3.1:
 
-TODO
+[General]
+- Added MCM option to select the category icon theme. Includes all themes from version 2.2 (Celtic, Curved, Straight).
+- Added MCM options to configure some gamepad mappings manually. This should resolve conflicts with custom controlmaps.
+- Added MCM option to disable icon colors.
+- Added NMM installer script that detects/reports the most common installation problems (old 2.2 files and missing SKSE scripts).
+- Added runtime check for missing SKSE scripts.
+- Updated SKSE version requirement to 1.6.6. Fixes the non-functional localization.
+- Fixed leather strips type identifier.
+- Fixed minor mistakes in the config.
+- Fixed issues with PropertyDataExtender to allow custom config.txt overrides.
+- Fixed MCM logo hat madness.
+- Made some error messages clearer.
 
 ------------------------------------------------------------
 3.0:
-
-NOTE: When upgrading from previous versions, make sure to uninstall them first!
 
 [General]
 - Added more columns to item lists and a drop-down menu to show/hide them.
@@ -348,7 +357,7 @@ Solution: There are two things that can cause this:
 		http://www.youtube.com/watch?v=xTGnQIiNVqA
 
 ------------------------------------------------------------
-Problem: There's an error message telling me about a problem with some outdated/incompatible menu (SWF) file.
+Problem: There's an error message telling me about a problem with some incompatible menu (SWF) file.
 
 Solution: There are several reasons this might happen.
 	1)	You didn't uninstall an old version of SkyUI before upgrading to 3.0 or newer.
@@ -372,15 +381,6 @@ Problem: My game crashes after I uninstalled SkyUI.
 
 Solution: Try making a clean save with SkyUI.esp deactivated instead of removing it completely.
 	The necessary steps are described at the beginning of section 4.
-
-------------------------------------------------------------
-Problem: Some gamepad buttons are not working in the menu.
-
-Solution: There's a known problem when using a custom controlmap.
-	The following functions must be mapped to only one key: Wait, Sprint, Shout, and Sneak.
-
-	If that's not the case, uninstall whichever mod that changed it.
-	Alternatively, delete the 'Data/Interface/controls/' folder and 'Data/Interface/controlmap_custom.txt' to reset your controlmap.
 
 
 If your problem wasn't listed here, ask for help in the Nexus comments.

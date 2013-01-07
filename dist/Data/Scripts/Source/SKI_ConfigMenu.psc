@@ -205,7 +205,7 @@ event OnPageReset(string a_page)
 			_switchTabButtonOID_K			= AddKeyMapOption("$Switch Tab", _switchTabButton)
 			_prevColumnButtonOID_K			= AddKeyMapOption("$Previous Column", _prevColumnButton)
 			_nextColumnButtonOID_K			= AddKeyMapOption("$Next Column", _nextColumnButton)
-			_sortOrderButtonOID_K			= AddKeyMapOption("$Sort Order", _sortOrderButton)
+			_sortOrderButtonOID_K			= AddKeyMapOption("$Order", _sortOrderButton)
 			_switchTabKeyOID_K				= -1
 			_equipModeKeyOID_K				= -1
 		endIf
@@ -553,6 +553,11 @@ event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl
 
 	; -------------------------------------------------------
 	else
+		; If you removed the gamepad while in this menu, ignore other keys
+		if (a_keyCode < 266)
+			return
+		endIf
+
 		if (a_option == _switchTabButtonOID_K)
 			SwapKeys(a_keyCode, _switchTabButton)
 
