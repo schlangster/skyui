@@ -121,7 +121,7 @@ $Dragonscale	Dragonscale	Écaille de Dragon	Drachenschuppen	Scaglie di Drago	Esc
 $Orcish	Orcish	Orque	Orkisch	Orchesco	Orca	Orkský	Orkowy	Орочье	オーク
 $Steel Plate	Steel Plate	Plates	Stahlharnisch	Piastre d'Acciaio	Placas de Acero	Ocelové Pláty	Stalowy - Płytowy	Стальное Пластинчатое	スチールプレート
 $Glass	Glass	Verre	Glas	Vetro	Cristal	Sklo	Szklany	Стеклянное	碧水晶
-$Elven Gilded	Elven Gilded	Dorée Elfique	Elfenvergoldet	Elfico dorato	Dorada Élfica	Elfský Pozlacený	Elficki - Pozłacany	Эльфийское Позолоченное	エルフの黄金
+$Elven Gilded	Elven Gilded	Dorée Elfique	Elfenvergoldet	Elfico dorato	Dorada Élfica	Elfský Zlacený	Elficki - Pozłacany	Эльфийское Позолоченное	エルフの黄金
 $Dwarven	Dwarven	Dwemer	Dwemer	Nanico	Enana	Trpasličí	Krasnoludzki	Двемерское	ドワーフ
 $Scaled	Scaled	Écaille	Schuppen	Scaglie	Escamas	Šupiny	Łuskowy	Ламеллярное	スケール
 $Steel	Steel	Acier	Stahl	Acciaio	Acero	Ocel	Stalowy	Стальное	鋼鉄
@@ -133,7 +133,7 @@ $Imperial	Imperial	Impérial	Kaiserliche	Imperiale	Imperial	Císařští	Imperia
 $Studded	Studded	Clouté	Vernietet	Borchiato	Tachonada	Okované	Ćwiekowany	Клепаное	鋲付き
 $Fur	Fur	Peau	Fell	Pelliccia	Piel	Useň	Futrzany	Меховое	毛皮
 $Iron	Iron	Fer	Eisen	Ferro	Hierro	Železo	Żelazny	Железное	鉄
-$Stormcloak	Stormcloak	Sombrage	Sturmmantel	Manto della Tempesta	Capa de la Tormenta	Bouřné Hávy	Gromowładnych	Братьев Бури	ストームクローク
+$Stormcloak	Stormcloak	Sombrage	Sturmmantel	Manto della Tempesta	Capa de la Tormenta	Bouřní	Gromowładnych	Братьев Бури	ストームクローク
 $Silver	Silver	Argenté	Silber	Argento	Plata	Stříbro	Srebrny	Серебреное	銀
 $Wood	Wood	Bois	Holz	Legno	Madera	Dřevo	Drewniany	Деревянное	木製
 $Nordic	Nordic	Nordique	Nordisch	Nordico	Nórdica	Severský	Nordycki	Нордическое	ノルドの刻印
@@ -176,14 +176,13 @@ $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawans
 $Item List	Item List	Liste des Objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam Předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
 $Font Size	Font Size	Taille de police	Schriftgröße	Dimensione del Font	Tamaño de Fuente	Velikost Písma	Wielkość Czcionki	Размер шрифта	フォントサイズ
 $Quantity Menu Min. Count	Quantity Menu Min. Count	Compte Min. pour le Menu de Quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. кол-во эллементов в меню	数量メニュー最小カウント
-$Category Icon Theme	Category Icon Theme	Thème des icônes de catégories			Tema de iconos de categoría		Zestaw Ikon Kategorii	Категория Темы иконок	
-$Disable Icon Colors	Disable Icon Colors	Désactiver les icônes en couleur			Desactivar iconos en color		Wyłącz Kolory Ikon	Отключить цвет иконок	
-$Previous Column	Previous Column								
-$Next Column	Next Column								
-$Sort Order	Sort Order								
+$Category Icon Theme	Category Icon Theme	Thème des icônes de catégories	Symbolthema (Kategorie)	Tema delle icone di categoria	Tema de iconos de categoría	Vzhled ikon kategorií	Zestaw Ikon Kategorii	Категория Темы иконок	
+$Disable Icon Colors	Disable Icon Colors	Désactiver les icônes en couleur	Farbige Symbole deaktivieren	Disabilita Icone Colorate	Desactivar iconos en color	Vypnout barvy ikon	Wyłącz Kolory Ikon	Отключить цвет иконок	
+$Previous Column	Previous Column	Colonne précédente	Vorherige Spalte	Colonna Precedente	Columna Anterior	Předchozí sloupek	Poprzednia Kolumna	Предыдущая колонка	
+$Next Column	Next Column	Colonne suivante	Nächste Spalte	Colonna Successiva	Columna Siguiente	Další sloupek	Następna Kolumna	Следующая колонка	
 $Item Card	Item Card	Carte de l'Objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta Předmětu	Karta przedmiotu	Окно просмотра предмета	アイテムカード
 $3D Item	3D Item	Modèle 3D	3D Ansicht	Oggetto 3D	Objeto 3D	3D Objekt	Obiekt 3D	3D Объект	3D アイテム
-$Align	Align	Alignement	Ausrichten	Allinea	Alinear	Zarovnání	Wyrównanie	Выравнивание	整列する
+$Align	Align	Alignement	Ausrichtung	Allinea	Alinear	Zarovnání	Wyrównanie	Выравнивание	整列する
 $Horizontal Offset	Horizontal Offset	Axe horizontal	Horizontaler Abstand	Spostamento Orizzontale	Desplazamiento Horizontal	Vodorovné Odsazení	Przesunięcie poziome	Горизонтальное Смещение	水平オフセット
 $Vertical Offset	Vertical Offset	Axe vertical	Vertikaler Abstand	Spostamento Verticale	Desplazamiento Vertical	Svislé Odsazení	Przesuniecie pionowe	Вертикальное Смещение	垂直オフセット
 $Scale	Scale	Échelle	Größe	Scala	Escala	Měřítko	Skala	Масштаб	スケール
@@ -194,15 +193,15 @@ $Right	Right	Droite	Rechts	Destra	Derecha	Vpravo	Prawo	Право	右
 $Center	Center	Centre	Mitte	Centro	Centro	Na střed	Środek	Центр	中央
 									
 $SKI_INFO1	Default: Medium	Défaut: Moyen	Voreinstellung: Mittel	Predefinito: Medio	Predefinido: Medio	Výchozí nastavení: Střední	Domyślnie: Średni	По умолчанию: Среднее	デフォルト: 並
-$SKI_INFO2	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: 6	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: 6	Mindestgröße eines stapels zum anzeigen des mengendialogs.\nvoreinstellung: 6	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: 6	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: 6	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: 6	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: 6	Число элементов необходимое для инициализации значения меню, или 0 чтобы отключить.\nПо умолчанию: 6	
+$SKI_INFO2	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: 6	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: 6	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: 6	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: 6	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: 6	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: 6	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: 6	Число элементов необходимое для инициализации значения меню, или 0 чтобы отключить.\nПо умолчанию: 6	
 $SKI_INFO3	Default: Center	Défaut: Centre	Voreinstellung: Mittel	Predefinito: Centro	Predefinido: Centro	Výchozí nastavení: Na střed	Domyślnie: Środek	По умолчанию: Центр	デフォルト: 中央
 $SKI_INFO4	Default: 0	Défaut: 0	Voreinstellung: 0	Predefinito: 0	Predefinido: 0	Výchozí nastavení: 0	Domyślnie: 0	По умолчанию: 0	デフォルト: 0
 $SKI_INFO5	Default: 1.5	Défaut: 1.5	Voreinstellung: 1.5	Predefinito: 1.5	Predefinido: 1.5	Výchozí nastavení: 1.5	Domyślnie: 1.5	По умолчанию: 1.5	デフォルト: 1.5
-$SKI_INFO6	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: Activé	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: An	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: Attivo	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: Activo	 Nekonpatibilní nebo zastaralé SWF mohou narušit funkčnost SkyUI. Zaškrtnutí pouze vypne zobrazování varovných zpráv!\nVýchozí nastavení: Zapnuto	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: Włączone	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: Включено	
+$SKI_INFO6	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: On	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: Activé	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: An	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: Attivo	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: Activo	 Nekonpatibilní nebo zastaralé SWF mohou narušit funkčnost SkyUI. Zaškrtnutím vypnete zobrazování varovných zpráv!\nVýchozí nastavení: Zapnuto	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: Włączone	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: Включено	
 $SKI_INFO7	Default: Space	Défaut: Espace	Voreinstellung: Space	Predefinito: Space	Predefinido: Space	Výchozí nastavení: Space	Domyślnie: Space	По умолчанию: Space	デフォルト: Space
 $SKI_INFO8	Default: LAlt	Défaut: LAlt	Voreinstellung: LAlt	Predefinito: LAlt	Predefinido: LAlt	Výchozí nastavení: LAlt	Domyślnie: LAlt	По умолчанию: LAlt	デフォルト: LAlt
 $SKI_INFO9	Default: Shift	Défaut: Shift	Voreinstellung: Shift	Predefinito: Shift	Predefinido: Shift	Výchozí nastavení: Shift	Domyślnie: Shift	По умолчанию: Shift	デフォルト: Shift
-$SKI_INFO10	Default: Off	Défaut: Désactivé	Voreinstellung: Aus		Predefinido: Desactivado		Domyślnie: Wyłączone	По умолчанию: Выкл	
+$SKI_INFO10	Default: Off	Défaut: Désactivé	Voreinstellung: Aus	Predefinito: Disattivato	Predefinido: Desactivado	Výchozí nastavení: Vypnuto	Domyślnie: Wyłączone	По умолчанию: Выкл	
 $SKI_INFO11	Default: SkyUI v3	Défaut: SkyUI v3	Voreinstellung: SkyUI v3	Predefinito: SkyUI v3	Predefinido: SkyUI v3	Výchozí nastavení: SkyUI v3	Domyślnie: SkyUI v3	По умолчанию: SkyUI v3	デフォルト: SkyUI v3
 $SKI_INFO12	Default: Back	Défaut: Back	Voreinstellung: Back	Predefinito: Back	Predefinido: Back	Výchozí nastavení: Back	Domyślnie: Back	По умолчанию: Back	デフォルト: Back
 $SKI_INFO13	Default: LB	Défaut: LB	Voreinstellung: LB	Predefinito: LB	Predefinido: LB	Výchozí nastavení: LB	Domyślnie: LB	По умолчанию: LB	デフォルト: LB
@@ -216,4 +215,4 @@ $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	98.48%	97.47%	96.97%	98.48%	96.97%	98.48%	98.48%	94.44%
+% Completion	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	94.92%
