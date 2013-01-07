@@ -142,7 +142,8 @@ class CategoryList extends BasicList
 			var entryClip = getClipByIndex(i);
 
 			entryClip.setEntry(listEnumeration.at(i + _segmentOffset), listState);
-			entryClip._height = entryClip._width = iconSize;
+
+			entryClip.background._width = entryClip.background._height = iconSize;
 
 			listEnumeration.at(i + _segmentOffset).clipIndex = i;
 			entryClip.itemIndex = i + _segmentOffset;

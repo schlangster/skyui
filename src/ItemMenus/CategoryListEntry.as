@@ -7,6 +7,7 @@ class CategoryListEntry extends BasicListEntry
   /* PRIVATE VARIABLES */
 
 	private var _iconLabel: String;
+	private var _iconSize: Number;
 	
 	
   /* STAGE ELMENTS */
@@ -24,6 +25,7 @@ class CategoryListEntry extends BasicListEntry
 		iconLoader.addListener(this);
 
 		_iconLabel = CategoryList(a_state.list).iconArt[a_index];
+		_iconSize = CategoryList(a_state.list).iconSize;
 
 		iconLoader.loadClip(a_state.iconSource, icon);
 	}
@@ -47,6 +49,13 @@ class CategoryListEntry extends BasicListEntry
 	// @implements MovieClipLoader
 	private function onLoadInit(a_mc: MovieClip): Void
 	{
+		if (a_mc.background != undefined) {
+			// If the icon set has a background, scale the icon until background size would = icon size
+			a_mc._xscale = a_mc._yscale = (_iconSize/a_mc.background._width)*100;
+		} else {
+			a_mc._width = a_mc._height = _iconSize;
+		}
+		
 		a_mc.gotoAndStop(_iconLabel);
 	}
 }
