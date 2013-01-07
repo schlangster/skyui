@@ -553,6 +553,11 @@ event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl
 
 	; -------------------------------------------------------
 	else
+		; If you removed the gamepad while in this menu, ignore other keys
+		if (a_keyCode < 266)
+			return
+		endIf
+
 		if (a_option == _switchTabButtonOID_K)
 			SwapKeys(a_keyCode, _switchTabButton)
 
