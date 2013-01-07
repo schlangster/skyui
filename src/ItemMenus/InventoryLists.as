@@ -237,35 +237,37 @@ class InventoryLists extends MovieClip
 		if (_currentState != SHOW_PANEL)
 			return false;
 
-		if (_platform > 0) {
+		if (_platform != 0) {
 			if (details.skseKeycode == _sortOrderKey) {
-				_sortOrderKeyHeld = true;
 				if (details.value == "keyDown") {
+					_sortOrderKeyHeld = true;
+
 					if (_columnSelectDialog)
 						DialogManager.close();
 					else
 						_columnSelectInterval = setInterval(this, "onColumnSelectButtonPress", 1000, {type: "timeout"});
+
 					return true;
 				} else if (details.value == "keyUp") {
 					_sortOrderKeyHeld = false;
-					if (_columnSelectInterval) {
-						// keyPress not handled
-						//   Clear intervals and change value to keyDown to be processed later
-						clearInterval(_columnSelectInterval);
-						delete(_columnSelectInterval);
-						details.value = "keyDown";
-						// Continue
-					} else {
-						// keyPress handled:
-						//    Key was released after the interval expired
+
+					if (_columnSelectInterval == undefined)
+						// keyPress handled: Key was released after the interval expired, don't process any further
 						return true;
-					}
+
+					// keyPress not handled: Clear intervals and change value to keyDown to be processed later
+					clearInterval(_columnSelectInterval);
+					delete(_columnSelectInterval);
+					// Continue processing the event as a normal keyDown event
+					details.value = "keyDown";
 				} else if (_sortOrderKeyHeld && details.value == "keyHold") {
 					// Fix for opening journal menu while key is depressed
 					// For some reason this is the only time we receive a keyHold event
 					_sortOrderKeyHeld = false;
+
 					if (_columnSelectDialog)
 						DialogManager.close();
+
 					return true;
 				}
 			}
