@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Collections.Generic;
 
-class Script : FalloutNewVegasBaseScript {
+class Script : SkyrimBaseScript {
 
 	// Main dialog
 	static Form mainInstallForm;
@@ -43,6 +43,8 @@ class Script : FalloutNewVegasBaseScript {
 	static int problemCount = 0;
 
 	static List<string> foundLooseFiles = new List<string>();
+
+	static bool noSKSE = false;
 	static bool noSKSEScripts = false;
 	
 	public static bool OnActivate()
@@ -71,6 +73,7 @@ class Script : FalloutNewVegasBaseScript {
 		// Clean up previous data
 		problemCount = 0;
 		foundLooseFiles.Clear();
+		noSKSE = false;
 		noSKSEScripts = false;
 
 
@@ -82,7 +85,9 @@ class Script : FalloutNewVegasBaseScript {
  		if (foundLooseFiles.Count > 0)
  			problemCount++;
 
-		// 2. Check missing SKSE.pex
+ 		noSKSE = !ScriptExtenderPresent();
+
+		// 3. Check missing SKSE.pex
 		if (GetExistingDataFile("Scripts/SKSE.pex") == null) {
  			noSKSEScripts = true;
  			problemCount++;
@@ -125,7 +130,20 @@ class Script : FalloutNewVegasBaseScript {
 	 		PrintReport("");
 		}
 
-		if (noSKSEScripts) {
+		if (noSKSE) {
+			c++;
+			PrintReport("-----------");
+			PrintReport("Problem #" + c + ":");
+			PrintReport("-----------");
+			PrintReport("The Skyrim Script Extender (SKSE) is not installed.");
+			PrintReport("");
+			PrintReport("Potential causes:");
+	 		PrintReport("* You didn't install it.");
+	 		PrintReport("");
+	 		PrintReport("Solution:");
+			PrintReport("1. Install it.");			
+
+		} else if (noSKSEScripts) {
 			c++;
 			PrintReport("-----------");
 			PrintReport("Problem #" + c + ":");
@@ -136,7 +154,7 @@ class Script : FalloutNewVegasBaseScript {
 	 		PrintReport("* You didn't install the scripts with the rest of SKSE.");
 	 		PrintReport("");
 	 		PrintReport("Solution:");
-			PrintReport("1. Re-install SKSE. Make sure you extract the 'Scripts/' folder from the downloaded archive to your 'Data/' folder.");
+			PrintReport("1. Re-install SKSE. Make sure you extract the 'Data/' folder from the downloaded archive to your Skyrim installation directory.");
 		}
 		
 
