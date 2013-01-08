@@ -141,7 +141,8 @@ class Script : SkyrimBaseScript {
 	 		PrintReport("* You didn't install it.");
 	 		PrintReport("");
 	 		PrintReport("Solution:");
-			PrintReport("1. Install it.");			
+			PrintReport("1. Get the latest SKSE version from 'http://skse.silverlock.org/' and install it.");
+			PrintReport("   If you have problems installing it, have a look at this video: http://www.youtube.com/watch?v=xTGnQIiNVqA");
 
 		} else if (noSKSEScripts) {
 			c++;
