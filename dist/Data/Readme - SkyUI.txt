@@ -11,7 +11,7 @@ Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gib
 
 Version:		3.1
 
-Download:		http://www.skyrimnexus.com/downloads/file.php?id=3863
+Download:		http://skyrim.nexusmods.com/mods/3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
 
 Source code:	https://github.com/schlangster/skyui
@@ -64,11 +64,11 @@ Further general objectives and design concepts are:
 
 * Finding a good balance between 'dumbed down' and 'information overkill'.
 
-* Easy installation and setup by providing a user-friendly installer through the Nexus Mod Manager.
-
-* Great customization support by using a separate configuration file.
+* Easy installation and setup.
 
 * Blending features in as well as possible - players shouldn't feel reminded that they're using a mod.
+
+* Support for user customization.
 
 
 Since improving the whole UI is a big undertaking, we only release single menus at a time as progress is made.
@@ -89,7 +89,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Added MCM option to select the category icon theme. Includes all themes from version 2.2 (Celtic, Curved, Straight).
 - Added MCM options to configure some gamepad mappings manually. This should resolve conflicts with custom controlmaps.
 - Added MCM option to disable icon colors.
-- Added NMM installer script that detects/reports the most common installation problems (old 2.2 files and missing SKSE scripts).
+- Added NMM installer script that detects/reports the most common installation problems.
 - Added runtime check for missing SKSE scripts.
 - Updated SKSE version requirement to 1.6.6. Fixes the non-functional localization.
 - Fixed leather strips type identifier.
