@@ -549,6 +549,8 @@ class InventoryDataSetter extends ItemcardDataExtender
 	{
 		a_entryObject.subType = Item.OTHER;
 		a_entryObject.subTypeDisplay = "$Book";
+
+		a_entryObject.isRead = ((a_entryObject.flags & Item.BOOKFLAG_READ) != 0);
 		
 		if (a_entryObject.bookType == Item.BOOKTYPE_NOTE) {
 			a_entryObject.subType = Item.BOOK_NOTE;

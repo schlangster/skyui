@@ -54,6 +54,8 @@ class skyui.defines.Item
 	// BOOK Flags
 	public static var BOOKFLAG_SPELL: Number		= 0x01;
 	public static var BOOKFLAG_SKILL: Number		= 0x04;
+	public static var BOOKFLAG_READ: Number			= 0x08;
+
 	// BOOK bookTypes
 	public static var BOOKTYPE_NOTE: Number			= 0xFF;
 
