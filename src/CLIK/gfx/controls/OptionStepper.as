@@ -52,7 +52,7 @@
 			if (initialized) 
 			{
 				updateAfterStateChange();
-				prevBtn.disabled = nextBtn.__set__disabled(_disabled);
+				prevBtn.disabled = nextBtn.disabled = _disabled;
 				return;
 			}
 		}
@@ -210,7 +210,7 @@
 		prevBtn.focusTarget = nextBtn.focusTarget = this;
 		prevBtn.tabEnabled = nextBtn.tabEnabled = false;
 		prevBtn.autoRepeat = nextBtn.autoRepeat = true;
-		prevBtn.disabled = nextBtn.__set__disabled(_disabled);
+		prevBtn.disabled = nextBtn.disabled = _disabled;
 		constraints = new gfx.utils.Constraints(this, true);
 		constraints.addElement(textField, gfx.utils.Constraints.ALL);
 		updateAfterStateChange();
@@ -234,7 +234,7 @@
 	{
 		gotoAndPlay(_disabled ? "disabled" : (_focused ? "focused" : "default"));
 		updateAfterStateChange();
-		prevBtn.displayFocus = nextBtn.__set__displayFocus(_focused != 0);
+		prevBtn.displayFocus = nextBtn.displayFocus = _focused != 0;
 	}
 
 	function updateAfterStateChange()
