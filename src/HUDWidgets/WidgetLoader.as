@@ -1,6 +1,6 @@
 ﻿import skyui.util.GlobalFunctions;
 
-class WidgetLoader
+class WidgetLoader extends MovieClip
 {
 	#include "../version.as"
 	
@@ -37,6 +37,8 @@ class WidgetLoader
 		_widgetLoader.addListener(this);
 		
 		GlobalFunctions.addArrayFunctions();
+		
+//		skyui.util.Debug.log("Depth: " + _parent.getDepth());
 	}
 	
 	
