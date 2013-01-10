@@ -9,14 +9,10 @@ int		_groupEffectCount	= 8
 string	_orientation		= "vertical"
 string	_clampCorner		= "TR"
 
-string function GetWidgetType()
-	return "activeeffects"
-endFunction
-
 ; @overrides SKI_WidgetBase
-;event onInit()
-;	parent.onInit()
-;endEvent
+string function GetWidgetSource()
+	return "activeeffects.swf"
+endFunction
 
 bool Property Enabled
 	{Whether the active effects are displayed or not}

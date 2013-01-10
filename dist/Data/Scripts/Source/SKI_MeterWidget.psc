@@ -138,8 +138,8 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 ; @overrides SKI_WidgetBase
-string function GetWidgetType()
-	return "meter"
+string function GetWidgetSource()
+	return "meter.swf"
 endFunction
 
 function SetPercent(float a_percent, bool a_force = false)

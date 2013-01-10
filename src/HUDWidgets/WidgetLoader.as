@@ -4,41 +4,23 @@ class WidgetLoader extends MovieClip
 {
 	#include "../version.as"
 	
-  /* CONSTANTS */
-  
-	private static var WIDGET_PATH = "widgets/";
-	
-	
   /* PRIVATE VARIABLES */
+  
+	private var _widgetPath: String = "widgets/";
 
 	private var _widgetContainer: MovieClip;
 	
-	private var _widgetLoader: MovieClipLoader;
+	private var _mcLoader: MovieClipLoader;
 	
-	
-  /* PROPERTIES */
-  
-	static private var _instance: WidgetLoader;
-	
-	static public function get instance(): WidgetLoader
-	{
-		if (_instance == undefined)
-			_instance = new WidgetLoader();
-			
-		return _instance;
-	}
-	
-	
+
   /* INITIALIZATION */
 	
-	private function WidgetLoader()
+	public function WidgetLoader()
 	{
-		_widgetLoader = new MovieClipLoader();
-		_widgetLoader.addListener(this);
+		_mcLoader = new MovieClipLoader();
+		_mcLoader.addListener(this);
 		
-		GlobalFunctions.addArrayFunctions();
-		
-//		skyui.util.Debug.log("Depth: " + _parent.getDepth());
+		GlobalFunctions.addArrayFunctions();	
 	}
 	
 	
@@ -67,12 +49,18 @@ class WidgetLoader extends MovieClip
 		skse.SendModEvent("SKIWF_widgetError", "WidgetLoadFailure", Number(a_widgetHolder._name));
 	}
 	
-	public function loadWidgets(/* widgetTypes (128) */): Void
+	public function setWidgetPath(a_path: String): Void
+	{
+		skse.Log("WidgetLoader.as: setWidgetPath(a_path = " + a_path + ")");
+		_widgetPath = a_path;
+	}
+	
+	public function loadWidgets(/* widgetSources (128) */): Void
 	{
 		if (_widgetContainer != undefined) {
 			for(var s: String in _widgetContainer) {
 				if (_widgetContainer[s] instanceof MovieClip) {
-					_widgetLoader.unloadClip(_widgetContainer[s]);
+					_mcLoader.unloadClip(_widgetContainer[s]);
 					if (_root.HUDMovieBaseInstance.HudElements.hasOwnProperty(s))
 						delete(_root.HUDMovieBaseInstance.HudElements[s]); 
 				}
@@ -80,18 +68,18 @@ class WidgetLoader extends MovieClip
 		}
 		
 		for (var i: Number = 0; i < arguments.length; i++)
-			if (arguments[i] != undefined && arguments[i] != "None")
+			if (arguments[i] != undefined && arguments[i] != "")
 				loadWidget(String(i), arguments[i]);
 	}
 
-	public function loadWidget(a_widgetID: String, a_widgetType: String): Void
+	public function loadWidget(a_widgetID: String, a_widgetSource: String): Void
 	{
-		skse.Log("WidgetLoader.as: loadWidget(a_widgetID = " + a_widgetID + ", a_widgetType = " + a_widgetType + ")");
+		skse.Log("WidgetLoader.as: loadWidget(a_widgetID = " + a_widgetID + ", a_widgetSource = " + a_widgetSource + ")");
 		if (_widgetContainer == undefined)
 			createWidgetContainer();
 		
 		var widgetHolder: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		_widgetLoader.loadClip(WIDGET_PATH + a_widgetType + ".swf", widgetHolder);
+		_mcLoader.loadClip(_widgetPath + a_widgetSource, widgetHolder);
 	}
 	 
 	 
