@@ -596,8 +596,8 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 ; @overrides SKI_WidgetBase
-string function GetWidgetType()
-	return "status"
+string function GetWidgetSource()
+	return "status.swf"
 endFunction
 
 function SetPadding(float a_paddingTop, float a_paddingRight, float a_paddingBottom, float a_paddingLeft)

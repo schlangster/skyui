@@ -55,7 +55,7 @@ class WidgetLoader extends MovieClip
 		_widgetPath = a_path;
 	}
 	
-	public function loadWidgets(/* widgetTypes (128) */): Void
+	public function loadWidgets(/* widgetSources (128) */): Void
 	{
 		if (_widgetContainer != undefined) {
 			for(var s: String in _widgetContainer) {
@@ -72,14 +72,14 @@ class WidgetLoader extends MovieClip
 				loadWidget(String(i), arguments[i]);
 	}
 
-	public function loadWidget(a_widgetID: String, a_widgetType: String): Void
+	public function loadWidget(a_widgetID: String, a_widgetSource: String): Void
 	{
-		skse.Log("WidgetLoader.as: loadWidget(a_widgetID = " + a_widgetID + ", a_widgetType = " + a_widgetType + ")");
+		skse.Log("WidgetLoader.as: loadWidget(a_widgetID = " + a_widgetID + ", a_widgetSource = " + a_widgetSource + ")");
 		if (_widgetContainer == undefined)
 			createWidgetContainer();
 		
 		var widgetHolder: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		_mcLoader.loadClip(_widgetPath + a_widgetType + ".swf", widgetHolder);
+		_mcLoader.loadClip(_widgetPath + a_widgetSource, widgetHolder);
 	}
 	 
 	 

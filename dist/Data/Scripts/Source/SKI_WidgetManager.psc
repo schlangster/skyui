@@ -8,20 +8,16 @@ string property		HUD_MENU = "HUD Menu" autoReadOnly
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
 SKI_WidgetBase[]	_widgets
-string[]			_widgetTypes
-int					_curWidgetID
-int					_widgetCount
-
-bool				_loaderInjected		= false
+string[]			_widgetSources
+int					_curWidgetID		= 0
+int					_widgetCount		= 0
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
 	_widgets		= new SKI_WidgetBase[128]
-	_widgetTypes	= new string[128]
-	_curWidgetID	= 0
-	_widgetCount	= 0
+	_widgetSources	= new string[128]
 
 	; Wait until all widgets have registered their callbacks
 	Utility.Wait(0.5)
@@ -58,7 +54,7 @@ function CleanUp()
 		if (_widgets[i] == none || _widgets[i].GetFormID() == 0)
 			; Widget no longer exists
 			_widgets[i] = none
-			_widgetTypes[i] = ""
+			_widgetSources[i] = ""
 		else
 			_widgetCount += 1
 		endIf
@@ -106,7 +102,7 @@ function InitWidgetLoader()
 	endIf
 
 	; Load already registered widgets
-	UI.InvokeStringA(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.loadWidgets", _widgetTypes)
+	UI.InvokeStringA(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.loadWidgets", _widgetSources)
 	
 	SendModEvent("SKIWF_widgetManagerReady")
 endFunction
@@ -161,10 +157,10 @@ int function NextWidgetID()
 	return _curWidgetID
 endFunction
 
-function CreateWidget(int a_widgetID, string a_widgetType)
-	_widgetTypes[a_widgetID] = a_widgetType
+function CreateWidget(int a_widgetID, string a_widgetSource)
+	_widgetSources[a_widgetID] = a_widgetSource
 	string[] args = new string[2]
 	args[0] = a_widgetID as string
-	args[1] = a_widgetType
+	args[1] = a_widgetSource
 	UI.InvokeStringA(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.loadWidget", args);
 endFunction

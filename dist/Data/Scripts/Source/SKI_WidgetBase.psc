@@ -11,7 +11,6 @@ SKI_WidgetManager	_widgetManager
 
 bool				_initialized	= false
 int					_widgetID		= -1
-string				_type			= ""
 string				_widgetRoot		= ""
 string[]			_modes
 string				_hAlign			= "left"
@@ -135,19 +134,27 @@ endProperty
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	; Default Modes if not set via property
-	if (!_modes)
-		_modes = new string[2]
-		_modes[0] = "All"
-		_modes[1] = "StealthMode"
-	endIf
-	
 	OnGameReload()
 endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
 	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
+
+	if (!_initialized)
+		_initialized = true
+
+		; Default Modes if not set via property
+		if (!_modes)
+			_modes = new string[2]
+			_modes[0] = "All"
+			_modes[1] = "StealthMode"
+		endIf
+
+		OnWidgetInit()
+
+		Debug.Trace(self + " INITIALIZED")
+	endIf
 endEvent
 
 event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -163,21 +170,20 @@ event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	_widgetID = _widgetManager.RequestWidgetID(self)
 	if (_widgetID != -1)
 		_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget"
-		OnWidgetInit()
-		_widgetManager.CreateWidget(_widgetID, GetWidgetType())
+		_widgetManager.CreateWidget(_widgetID, GetWidgetSource())
 		_initialized = true
 	else
 		Debug.Trace("WidgetWarning: " + self as string + ": could not be loaded, too many widgets. Max is 128")
 	endIf
 endEvent
 
+
+; EVENTS ------------------------------------------------------------------------------------------
+
 ; @interface
 event OnWidgetInit()
 	{Handles any custom widget initialization}
 endEvent
-
-
-; EVENTS ------------------------------------------------------------------------------------------
 
 ; Executed after each game reload by widget manager.
 event OnWidgetLoad()
@@ -198,16 +204,11 @@ event OnWidgetReset()
 	UpdateWidgetAlpha()
 endEvent
 
-; Executed whenever a hudModeChange is observed
-; TODO
-event OnHudModeChange(string a_eventName, string a_hudMode, float a_numArg, Form sender)
-endEvent
-
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 ; @interface
-string function GetWidgetType()
+string function GetWidgetSource()
 	return ""
 endFunction
 
