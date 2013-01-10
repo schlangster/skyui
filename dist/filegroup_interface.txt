@@ -18,6 +18,7 @@ Interface\skyui\icons_item_psychosteve.swf
 Interface\skyui\skyui_splash.swf
 Interface\skyui\mcm_splash.swf
 Interface\skyui\res\mcm_logo.dds
+Interface\exported\skyui\widgetloader.swf
 Interface\translations\SkyUI_czech.txt
 Interface\translations\SkyUI_english.txt
 Interface\translations\SkyUI_french.txt

@@ -2,6 +2,8 @@
 
 class WidgetLoader
 {
+	#include "../version.as"
+	
   /* CONSTANTS */
   
 	private static var WIDGET_PATH = "widgets/";

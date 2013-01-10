@@ -1,4 +1,4 @@
-scriptname SKI_WidgetManager extends SKI_QuestBase hidden
+scriptname SKI_WidgetManager extends SKI_QuestBase
 
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
@@ -20,23 +20,36 @@ event OnInit()
 	_widgetTypes	= new string[128]
 	_curWidgetID	= 0
 	_widgetCount	= 0
-	
+
 	; Wait a few seconds until all widgets have registered their callbacks
-	Utility.Wait(1.5)
+	Utility.Wait(3)
 	
 	OnGameReload()
 endEvent
 
 event OnGameReload()
-	RegisterForModEvent("SKIWF_widgetLoaded", "OnWidgetLoad")
-	RegisterForModEvent("SKIWF_widgetError", "OnWidgetError")
+	;RegisterForModEvent("SKIWF_widgetLoaded", "OnWidgetLoad")
+	;RegisterForModEvent("SKIWF_widgetError", "OnWidgetError")
 
-	CleanUp()
+	;CleanUp()
 	
 	; Load already registered widgets
-	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.instance.loadWidgets", _widgetTypes)
+	;UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.instance.loadWidgets", _widgetTypes)
 	
-	SendModEvent("SKIWF_widgetManagerReady")
+	;SendModEvent("SKIWF_widgetManagerReady")
+
+	int[] args = new int[2]
+	args[0] = 1234
+	args[1] = 1000
+	
+	UI.InvokeIntA(HUD_MENU, "_root.createEmptyMovieClip", args)
+	UI.InvokeString(HUD_MENU, "_root.1234.loadMovie", "skyui/widgetloader.swf")
+	Utility.Wait(0.5)
+	int releaseIdx = UI.GetInt(HUD_MENU, "_root.1234.widgetLoader.SKYUI_RELEASE_IDX")
+	if (releaseIdx == 0)
+		UI.InvokeString(HUD_MENU, "_root.1234.loadMovie", "exported/skyui/widgetloader.swf")	
+		releaseIdx = UI.GetInt(HUD_MENU, "_root.1234.widgetLoader.SKYUI_RELEASE_IDX")
+	endIf
 endEvent
 
 function CleanUp()
