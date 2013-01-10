@@ -25,6 +25,21 @@ class WidgetLoader extends MovieClip
 	
 	
   /* PUBLIC FUNCTIONS */
+
+	public function onLoad(): Void
+	{
+		// Dispatch event with initial hudMode
+		var currentHudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
+		skse.SendModEvent("SKIWF_hudModeChanged", currentHudMode);
+
+		// Create dummy movieclip which dispatches events when hudMode is changed
+		_hudModeDispatcher = new MovieClip();
+		_hudModeDispatcher.onModeChange = function (a_hudMode: String): Void
+		{
+			skse.SendModEvent("SKIWF_hudModeChanged", a_hudMode);
+		}
+		_root.HUDMovieBaseInstance.HudElements.push(_hudModeDispatcher);
+	}
 	
 	public function onLoadInit(a_widgetHolder: MovieClip): Void
 	{
@@ -34,11 +49,11 @@ class WidgetLoader extends MovieClip
 			return;
 		}
 		
-		a_widgetHolder.onModeChange = function (a_HUDMode: String): Void
+		a_widgetHolder.onModeChange = function (a_hudMode: String): Void
 		{
 			var widgetHolder: MovieClip = this;
 			if (widgetHolder.widget.onModeChange != undefined)
-				widgetHolder.widget.onModeChange(a_HUDMode);
+				widgetHolder.widget.onModeChange(a_hudMode);
 		}
 		
 		skse.SendModEvent("SKIWF_widgetLoaded", a_widgetHolder._name);
