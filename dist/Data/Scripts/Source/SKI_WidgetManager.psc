@@ -1,4 +1,4 @@
-scriptname SKI_WidgetManager extends SKI_QuestBase hidden
+scriptname SKI_WidgetManager extends SKI_QuestBase
 
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
@@ -12,6 +12,8 @@ string[]			_widgetTypes
 int					_curWidgetID
 int					_widgetCount
 
+bool				_loaderInjected		= false
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -20,9 +22,9 @@ event OnInit()
 	_widgetTypes	= new string[128]
 	_curWidgetID	= 0
 	_widgetCount	= 0
-	
-	; Wait a few seconds until all widgets have registered their callbacks
-	Utility.Wait(1.5)
+
+	; Wait until all widgets have registered their callbacks
+	Utility.Wait(0.5)
 	
 	OnGameReload()
 endEvent
@@ -32,11 +34,20 @@ event OnGameReload()
 	RegisterForModEvent("SKIWF_widgetError", "OnWidgetError")
 
 	CleanUp()
-	
-	; Load already registered widgets
-	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.instance.loadWidgets", _widgetTypes)
-	
-	SendModEvent("SKIWF_widgetManagerReady")
+
+	; Init now, or delay until hudmenu has been loaded
+	if (UI.IsMenuOpen(HUD_MENU))
+		InitWidgetLoader()
+	else
+		RegisterForMenu(HUD_MENU)
+	endIf
+endEvent
+
+event OnMenuOpen(string a_menuName)
+	if (a_menuName == HUD_MENU)
+		UnregisterForMenu(HUD_MENU)
+		InitWidgetLoader()
+	endIf
 endEvent
 
 function CleanUp()
@@ -47,12 +58,56 @@ function CleanUp()
 		if (_widgets[i] == none || _widgets[i].GetFormID() == 0)
 			; Widget no longer exists
 			_widgets[i] = none
-			_widgetTypes[i] = none
+			_widgetTypes[i] = ""
 		else
 			_widgetCount += 1
 		endIf
 		i += 1
 	endWhile
+endFunction
+
+function InitWidgetLoader()
+    Debug.Trace("InitWidgetLoader()")
+
+	int releaseIdx = UI.GetInt(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.SKYUI_RELEASE_IDX")
+	debug.trace("index: " + releaseIdx)
+
+	; Not injected yet
+	if (releaseIdx == 0)
+ 
+		string[] args = new string[2]
+		args[0] = "widgetLoaderContainer"
+		args[1] = "-1000"
+		
+		; Create empty container clip
+		UI.InvokeStringA(HUD_MENU, "_root.createEmptyMovieClip", args)
+
+		; Try to load from Interface/exported/hudmenu.gfx
+		UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.loadMovie", "skyui/widgetloader.swf")
+		Utility.Wait(0.1)
+		releaseIdx = UI.GetInt(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.SKYUI_RELEASE_IDX")
+		debug.trace("index: " + releaseIdx)
+
+		; If failed, try to load from Interface/hudmenu.swf
+		if (releaseIdx == 0)
+			UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.loadMovie", "exported/skyui/widgetloader.swf")	
+			Utility.Wait(0.1)
+			releaseIdx = UI.GetInt(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.SKYUI_RELEASE_IDX")
+			debug.trace("index: " + releaseIdx)
+		endIf
+	endIf
+
+	; Injection failed
+	if (releaseIdx == 0)
+		debug.trace("index: " + releaseIdx)
+		Debug.Trace("InitWidgetLoader(): load failed")
+		return
+	endIf
+
+	; Load already registered widgets
+	UI.InvokeStringA(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.loadWidgets", _widgetTypes)
+	
+	SendModEvent("SKIWF_widgetManagerReady")
 endFunction
 
 
@@ -110,5 +165,5 @@ function CreateWidget(int a_widgetID, string a_widgetType)
 	string[] args = new string[2]
 	args[0] = a_widgetID as string
 	args[1] = a_widgetType
-	UI.InvokeStringA(HUD_MENU, "_global.WidgetLoader.instance.loadWidget", args);
+	UI.InvokeStringA(HUD_MENU, "_root.42.widgetLoader.loadWidget", args);
 endFunction
