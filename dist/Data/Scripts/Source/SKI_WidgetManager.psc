@@ -69,12 +69,13 @@ endFunction
 function InitWidgetLoader()
     Debug.Trace("InitWidgetLoader()")
 
-	int releaseIdx = UI.GetInt(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.SKYUI_RELEASE_IDX")
-	debug.trace("index: " + releaseIdx)
+	int releaseIdx = UI.GetInt(HUD_MENU, "_global.WidgetLoader.SKYUI_RELEASE_IDX")
 
 	; Not injected yet
 	if (releaseIdx == 0)
  
+		string widgetPath = "widgets/"
+
 		string[] args = new string[2]
 		args[0] = "widgetLoaderContainer"
 		args[1] = "-1000"
@@ -84,24 +85,24 @@ function InitWidgetLoader()
 
 		; Try to load from Interface/exported/hudmenu.gfx
 		UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.loadMovie", "skyui/widgetloader.swf")
-		Utility.Wait(0.1)
-		releaseIdx = UI.GetInt(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.SKYUI_RELEASE_IDX")
-		debug.trace("index: " + releaseIdx)
+		Utility.Wait(0.5)
+		releaseIdx = UI.GetInt(HUD_MENU, "_global.WidgetLoader.SKYUI_RELEASE_IDX")
 
 		; If failed, try to load from Interface/hudmenu.swf
 		if (releaseIdx == 0)
+			widgetPath = "exported/widgets/"
 			UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.loadMovie", "exported/skyui/widgetloader.swf")	
-			Utility.Wait(0.1)
-			releaseIdx = UI.GetInt(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.SKYUI_RELEASE_IDX")
-			debug.trace("index: " + releaseIdx)
+			Utility.Wait(0.5)
+			releaseIdx = UI.GetInt(HUD_MENU, "_global.WidgetLoader.SKYUI_RELEASE_IDX")
 		endIf
-	endIf
 
-	; Injection failed
-	if (releaseIdx == 0)
-		debug.trace("index: " + releaseIdx)
-		Debug.Trace("InitWidgetLoader(): load failed")
-		return
+		; Injection failed
+		if (releaseIdx == 0)
+			Debug.Trace("InitWidgetLoader(): load failed")
+			return
+		endIf
+
+		UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.setWidgetPath", widgetPath)
 	endIf
 
 	; Load already registered widgets
@@ -165,5 +166,5 @@ function CreateWidget(int a_widgetID, string a_widgetType)
 	string[] args = new string[2]
 	args[0] = a_widgetID as string
 	args[1] = a_widgetType
-	UI.InvokeStringA(HUD_MENU, "_root.42.widgetLoader.loadWidget", args);
+	UI.InvokeStringA(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.loadWidget", args);
 endFunction
