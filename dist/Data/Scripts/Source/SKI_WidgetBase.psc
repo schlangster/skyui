@@ -143,6 +143,7 @@ endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
+	_ready = false
 	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
 
 	if (!IsExtending() && RequireExtend)
@@ -179,7 +180,6 @@ event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	if (_widgetID != -1)
 		_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget"
 		_widgetManager.CreateWidget(_widgetID, GetWidgetSource())
-		_ready = true
 	else
 		Debug.Trace("WidgetWarning: " + self as string + ": could not be loaded, too many widgets. Max is 128")
 	endIf
@@ -194,6 +194,8 @@ endEvent
 
 ; Executed after each game reload by widget manager.
 event OnWidgetLoad()
+	_ready = true
+
 	OnWidgetReset()
 	
 	; Before that the widget was still hidden.
