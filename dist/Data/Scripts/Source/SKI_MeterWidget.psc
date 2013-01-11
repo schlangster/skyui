@@ -142,6 +142,11 @@ string function GetWidgetSource()
 	return "meter.swf"
 endFunction
 
+; @overrides SKI_WidgetBase
+string function GetWidgetType()
+ return "SKI_MeterWidget"
+endFunction
+
 function SetPercent(float a_percent, bool a_force = false)
 	{Sets the meter percent, a_force sets the meter percent without animation}
 	_percent = a_percent

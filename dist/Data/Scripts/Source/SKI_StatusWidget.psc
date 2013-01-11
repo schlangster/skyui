@@ -600,6 +600,11 @@ string function GetWidgetSource()
 	return "status.swf"
 endFunction
 
+; @overrides SKI_WidgetBase
+string function GetWidgetType()
+ return "SKI_StatusWidget"
+endFunction
+
 function SetPadding(float a_paddingTop, float a_paddingRight, float a_paddingBottom, float a_paddingLeft)
 	float[] args = new float[4]
 	args[0] = a_paddingTop
