@@ -11,6 +11,8 @@ class WidgetLoader extends MovieClip
 	private var _widgetContainer: MovieClip;
 	
 	private var _mcLoader: MovieClipLoader;
+
+	private var _hudModeDispatcher: MovieClip;
 	
 
   /* INITIALIZATION */
@@ -20,7 +22,7 @@ class WidgetLoader extends MovieClip
 		_mcLoader = new MovieClipLoader();
 		_mcLoader.addListener(this);
 		
-		GlobalFunctions.addArrayFunctions();	
+		GlobalFunctions.addArrayFunctions();
 	}
 	
 	
