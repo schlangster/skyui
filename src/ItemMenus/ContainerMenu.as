@@ -225,6 +225,7 @@ class ContainerMenu extends ItemMenu
 	{
 		if (_equipHand != undefined) {
 			GameDelegate.call("EquipItem",[_equipHand, event.amount]);
+			checkBook(inventoryLists.itemList.selectedEntry);
 			_equipHand = undefined;
 			return;
 		}
@@ -290,7 +291,8 @@ class ContainerMenu extends ItemMenu
 	private function startItemTransfer(): Void
 	{
 		if (inventoryLists.itemList.selectedEntry.enabled) {
-			// TODO: Maybe this should be removed?
+			// Don't remove. This is so if an item weighs nothing, it takes the whole stack
+			//  Gold, for example.
 			if (itemCard.itemInfo.weight == 0 && isViewingContainer()) {
 				onQuantityMenuSelect({amount:inventoryLists.itemList.selectedEntry.count});
 				return;
@@ -313,11 +315,11 @@ class ContainerMenu extends ItemMenu
 		}
 
 		GameDelegate.call("EquipItem",[a_equipHand]);
+		checkBook(inventoryLists.itemList.selectedEntry);
 	}
 	
 	private function isViewingContainer(): Boolean
 	{
 		return (inventoryLists.categoryList.activeSegment == 0);
 	}
-
 }

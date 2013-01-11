@@ -43,10 +43,10 @@ class ItemcardDataExtender implements IListProcessor
 		
 		for (var i = 0; i < entryList.length; i++) {
 			var e = entryList[i];
-			if (e.skyui_itemcardDataExtended || e.filterFlag == 0)
+			if (e.skyui_itemDataProcessed || e.filterFlag == 0)
 				continue;
 				
-			e.skyui_itemcardDataExtended = true;
+			e.skyui_itemDataProcessed = true;
 			
 			// Fix wrong property names
 			fixSKSEExtendedObject(e);

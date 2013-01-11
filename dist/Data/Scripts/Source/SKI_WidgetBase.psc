@@ -9,15 +9,16 @@ string property		HUD_MENU = "HUD Menu" autoReadOnly
 
 SKI_WidgetManager	_widgetManager
 
-bool				_initialized	= false
-int					_widgetID		= -1
-string				_widgetRoot		= ""
+bool				_initialized		= false
+int					_widgetID			= -1
+string				_widgetRoot			= ""
+bool				_allowInstanation	= false
 string[]			_modes
-string				_hAlign			= "left"
-string				_vAlign			= "top"
-float				_x				= 0.0
-float				_y				= 0.0
-float				_alpha			= 100.0
+string				_hAlign				= "left"
+string				_vAlign				= "top"
+float				_x					= 0.0
+float				_y					= 0.0
+float				_alpha				= 100.0
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -43,6 +44,20 @@ string property WidgetRoot
 	{Path to the root of the widget from _root of HudMenu. ReadOnly}
 	string function get()
 		return  _widgetRoot
+	endFunction
+endProperty
+
+; Write once
+bool property AllowInstanation
+	{Allow instanation of the widget without extending a base class. Write once}
+	bool function get()
+		return _allowInstanation
+	endFunction
+	
+	function set(bool a_val)
+		if (!Initialized)
+			_allowInstanation = a_val
+		endIf
 	endFunction
 endProperty
 
@@ -141,6 +156,10 @@ endEvent
 event OnGameReload()
 	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
 
+	if (!IsExtending() && !_allowInstanation)
+		Debug.MessageBox("WARNING!\n" + self as string + " must extend base script types")
+	endIf
+
 	if (!_initialized)
 		_initialized = true
 
@@ -177,7 +196,6 @@ event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	endIf
 endEvent
 
-
 ; EVENTS ------------------------------------------------------------------------------------------
 
 ; @interface
@@ -210,6 +228,22 @@ endEvent
 ; @interface
 string function GetWidgetSource()
 	return ""
+endFunction
+
+; @interface
+string function GetWidgetType()
+	; Must be the same as scriptname
+	return ""
+endFunction
+
+bool function IsExtending()
+	string s = self as string
+	string sn = GetWidgetType() + " "
+	s = StringUtil.Substring(s, 1, StringUtil.GetLength(sn))
+	if (s == sn)
+		return false
+	endIf
+	return true
 endFunction
 
 function UpdateWidgetClientInfo()

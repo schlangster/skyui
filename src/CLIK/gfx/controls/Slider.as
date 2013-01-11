@@ -87,7 +87,7 @@ dynamic class gfx.controls.Slider extends gfx.core.UIComponent
 			this.focusEnabled = this.tabEnabled = !this._disabled;
 			if (this.initialized) 
 			{
-				this.thumb.disabled = this.track.__set__disabled(this._disabled);
+				this.thumb.disabled = this.track.disabled = this._disabled;
 				this.invalidate();
 				return;
 			}
@@ -178,7 +178,7 @@ dynamic class gfx.controls.Slider extends gfx.core.UIComponent
 		this.thumb.addEventListener("press", this, "beginDrag");
 		this.track.addEventListener("press", this, "trackPress");
 		this.thumb.focusTarget = this.track.focusTarget = this;
-		this.thumb.disabled = this.track.__set__disabled(this._disabled);
+		this.thumb.disabled = this.track.disabled = this._disabled;
 		this.thumb.lockDragStateChange = true;
 		this.initSize();
 		this.constraints = new gfx.utils.Constraints(this);

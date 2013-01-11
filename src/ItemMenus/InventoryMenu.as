@@ -111,8 +111,10 @@ class InventoryMenu extends ItemMenu
 	public function AttemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
 	{
 		var bCheckOverList = a_bCheckOverList != undefined ? a_bCheckOverList : true;
-		if (shouldProcessItemsListInput(bCheckOverList) && confirmSelectedEntry())
+		if (shouldProcessItemsListInput(bCheckOverList) && confirmSelectedEntry()) {
 			GameDelegate.call("ItemSelect", [a_slot]);
+			checkBook(inventoryLists.itemList.selectedEntry);
+		}
 	}
 
 	// @API
@@ -205,8 +207,10 @@ class InventoryMenu extends ItemMenu
 	// @override ItemMenu
 	private function onItemSelect(event: Object): Void
 	{
-		if (event.entry.enabled && event.keyboardOrMouse != 0)
+		if (event.entry.enabled && event.keyboardOrMouse != 0) {
 			GameDelegate.call("ItemSelect", []);
+			checkBook(event.entry);
+		}
 	}
 
 	// @override ItemMenu

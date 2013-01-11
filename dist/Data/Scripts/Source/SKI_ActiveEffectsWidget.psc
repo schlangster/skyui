@@ -14,6 +14,11 @@ string function GetWidgetSource()
 	return "activeeffects.swf"
 endFunction
 
+; @overrides SKI_WidgetBase
+string function GetWidgetType()
+ return "SKI_ActiveEffectsWidget"
+endFunction
+
 bool Property Enabled
 	{Whether the active effects are displayed or not}
 	bool function get()

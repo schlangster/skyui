@@ -9,6 +9,7 @@ import skyui.util.ConfigManager;
 import skyui.components.ButtonPanel;
 
 import skyui.defines.Inventory;
+import skyui.defines.Item;
 
 
 class ItemMenu extends MovieClip
@@ -528,7 +529,25 @@ class ItemMenu extends MovieClip
 		GameDelegate.call("CloseMenu",[]);
 		skse.OpenMenu("Inventory Menu");
 	}
-	
+
+	/*
+		This method is only used in InventoryMenu and ContainerMenu.
+		It it allows determination of read books.
+		Item list isn't re-sent when you activate a book, unlike other items,
+		 so the flags don't get updated.
+		If the item is a book, we apply the book read flag and invalidate locally
+	*/
+	private function checkBook(a_entryObject: Object): Void
+	{
+
+		if (a_entryObject.type != Inventory.ICT_BOOK)
+			return;
+
+		a_entryObject.flags |= Item.BOOKFLAG_READ;
+		a_entryObject.skyui_itemDataProcessed = false;
+		
+		inventoryLists.itemList.requestInvalidate();
+	}
 	
 	private function getEquipButtonData(a_itemType: Number, a_bAlwaysEquip: Boolean): Object
 	{
