@@ -74,16 +74,7 @@ event OnGameReload()
 		return
 	endIf
 
-	; Check hudmenu.swf version
-	;if (HUDMenuCheckEnabled)
-	;	if (UI.IsMenuOpen(HUD_MENU))
-	;		CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
-	;	else
-	;		RegisterForMenu(HUD_MENU)
-	;	endIf
-	;endIf
-
-	; Check other menus, when they're opened
+	; Check menus, when they're opened
 	if (InventoryMenuCheckEnabled)
 		RegisterForMenu(INVENTORY_MENU)
 	endIf
@@ -140,11 +131,6 @@ event OnMenuOpen(string a_menuName)
 		UnregisterForMenu(JOURNAL_MENU)
 		CheckMenuVersion("quest_journal.swf", JOURNAL_MENU, "_global.Quest_Journal")
 		CheckMenuVersion("skyui/configpanel.swf", JOURNAL_MENU, "_global.ConfigPanel")
-
- 	;elseIf (a_menuName == HUD_MENU)
-	;	UnregisterForMenu(HUD_MENU)
-	;	CheckMenuVersion("hudmenu.swf", HUD_MENU, "_global.HUDMenu")
-	;
 	endIf
 endEvent
 
