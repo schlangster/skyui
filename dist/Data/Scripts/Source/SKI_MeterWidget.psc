@@ -21,7 +21,7 @@ float property Width
 	
 	function set(float a_val)
 		_width = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setWidth", _width)
 		endIf
 	endFunction
@@ -35,7 +35,7 @@ float property Height
 	
 	function set(float a_val)
 		_height = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setHeight", _height)
 		endIf
 	endFunction
@@ -49,7 +49,7 @@ int property PrimaryColor
 	
 	function set(int a_val)
 		_primaryColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setColor", _primaryColor)
 		endIf
 	endFunction
@@ -74,7 +74,7 @@ int property FlashColor
 	
 	function set(int a_val)
 		_flashColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setFlashColor", _flashColor)
 		endIf
 	endFunction
@@ -88,7 +88,7 @@ string property FillOrigin
 	
 	function set(string a_val)
 		_fillOrigin = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setFillOrigin", _fillOrigin)
 		endIf
 	endFunction
@@ -102,7 +102,7 @@ float property Percent
 	
 	function set(float a_val)
 		_percent = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setPercent", _percent)
 		endIf
 	endFunction
@@ -150,7 +150,7 @@ endFunction
 function SetPercent(float a_percent, bool a_force = false)
 	{Sets the meter percent, a_force sets the meter percent without animation}
 	_percent = a_percent
-	if (Initialized)
+	if (Ready)
 		float[] args = new float[2]
 		args[0] = a_percent
 		args[1] = a_force as float
@@ -166,7 +166,7 @@ endFunction
 
 function StartFlash(bool a_force = false)
 	{Starts meter flashing. a_force starts the meter flashing if it's already animating}
-	if (Initialized)
+	if (Ready)
 		UI.InvokeBool(HUD_MENU, WidgetRoot + ".startFlash", a_force)
 	endIf
 endFunction
@@ -183,7 +183,7 @@ function SetColors(int a_primaryColor, int a_secondaryColor = -1, int a_flashCol
 	_secondaryColor = a_secondaryColor;
 	_flashColor = a_flashColor;
 
-	if (Initialized)
+	if (Ready)
 		int[] args = new int[3]
 		args[0] = a_primaryColor
 		args[1] = a_secondaryColor

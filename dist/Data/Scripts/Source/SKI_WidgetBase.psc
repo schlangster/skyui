@@ -10,9 +10,9 @@ string property		HUD_MENU = "HUD Menu" autoReadOnly
 SKI_WidgetManager	_widgetManager
 
 bool				_initialized		= false
+bool				_ready				= false
 int					_widgetID			= -1
 string				_widgetRoot			= ""
-bool				_allowInstanation	= false
 string[]			_modes
 string				_hAlign				= "left"
 string				_vAlign				= "top"
@@ -23,6 +23,9 @@ float				_alpha				= 100.0
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
+bool property RequireExtend				= true	auto
+	{Require extending the widget type instead of using it directly.}
+
 ; Read-only
 int property WidgetID
 	{Unique ID of the widget. ReadOnly}
@@ -32,8 +35,8 @@ int property WidgetID
 endProperty
 
 ; Read-only
-bool property Initialized
-	{True when the widget has finished initializing. ReadOnly}
+bool property Ready
+	{True once the widget has registered. ReadOnly}
 	bool function get()
 		return  _initialized
 	endFunction
@@ -47,20 +50,6 @@ string property WidgetRoot
 	endFunction
 endProperty
 
-; Write once
-bool property AllowInstanation
-	{Allow instanation of the widget without extending a base class. Write once}
-	bool function get()
-		return _allowInstanation
-	endFunction
-	
-	function set(bool a_val)
-		if (!Initialized)
-			_allowInstanation = a_val
-		endIf
-	endFunction
-endProperty
-
 string[] property Modes
 	{HUDModes in which the widget is visible, see readme for available modes}
 	string[] function get()
@@ -69,7 +58,7 @@ string[] property Modes
 	
 	function set(string[] a_val)
 		_modes = a_val
-		if (_initialized)
+		if (Ready)
 			UpdateWidgetModes()
 		endIf
 	endFunction
@@ -83,7 +72,7 @@ string property HAlign
 	
 	function set(string a_val)
 		_hAlign = a_val
-		if (Initialized)
+		if (Ready)
 			UpdateWidgetHAlign()
 		endIf
 	endFunction
@@ -97,7 +86,7 @@ string property VAlign
 	
 	function set(string a_val)
 		_vAlign = a_val
-		if (Initialized)
+		if (Ready)
 			UpdateWidgetVAlign()
 		endIf
 	endFunction
@@ -111,7 +100,7 @@ float property X
 	
 	function set(float a_val)
 		_x = a_val
-		if (_initialized)
+		if (Ready)
 			UpdateWidgetPositionX()
 		endIf
 	endFunction
@@ -125,7 +114,7 @@ float property Y
 	
 	function set(float a_val)
 		_y = a_val
-		if (_initialized)
+		if (Ready)
 			UpdateWidgetPositionY()
 		endIf
 	endFunction
@@ -139,7 +128,7 @@ float property Alpha
 	
 	function set(float a_val)
 		_alpha = a_val
-		if (Initialized)
+		if (Ready)
 			UpdateWidgetAlpha()
 		endIf
 	endFunction
@@ -156,7 +145,7 @@ endEvent
 event OnGameReload()
 	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
 
-	if (!IsExtending() && !_allowInstanation)
+	if (!IsExtending() && RequireExtend)
 		Debug.MessageBox("WARNING!\n" + self as string + " must extend base script types")
 	endIf
 
@@ -190,7 +179,7 @@ event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	if (_widgetID != -1)
 		_widgetRoot = "_root.WidgetContainer." + _widgetID + ".widget"
 		_widgetManager.CreateWidget(_widgetID, GetWidgetSource())
-		_initialized = true
+		_ready = true
 	else
 		Debug.Trace("WidgetWarning: " + self as string + ": could not be loaded, too many widgets. Max is 128")
 	endIf

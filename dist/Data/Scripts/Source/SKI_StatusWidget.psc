@@ -61,7 +61,7 @@ float property Width
 	
 	function set(float a_val)
 		_width = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setWidth", _width)
 		endIf
 	endFunction
@@ -75,7 +75,7 @@ int property BackgroundColor
 	
 	function set(int a_val)
 		_backgroundColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setBackgroundColor", _backgroundColor) 
 		endIf
 	endFunction
@@ -89,7 +89,7 @@ float property BackgroundAlpha
 	
 	function set(float a_val)
 		_backgroundAlpha = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setBackgroundAlpha", _backgroundAlpha) 
 		endIf
 	endFunction
@@ -103,7 +103,7 @@ float property BorderWidth
 	
 	function set(float a_val)
 		_borderWidth = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setBorderWidth", _borderWidth) 
 		endIf
 	endFunction
@@ -117,7 +117,7 @@ int property BorderColor
 	
 	function set(int a_val)
 		_borderColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setBorderColor", _borderColor) 
 		endIf
 	endFunction
@@ -131,7 +131,7 @@ float property BorderAlpha
 	
 	function set(float a_val)
 		_borderAlpha = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setBorderAlpha", _borderAlpha) 
 		endIf
 	endFunction
@@ -145,7 +145,7 @@ bool property BorderRounded
 	
 	function set(bool a_val)
 		_borderRounded = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeBool(HUD_MENU, WidgetRoot + ".setBorderRounded", _borderRounded) 
 		endIf
 	endFunction
@@ -159,7 +159,7 @@ float property PaddingTop
 	
 	function set(float a_val)
 		_paddingTop = a_val
-		if (Initialized)
+		if (Ready)
 			SetPadding(_paddingTop, _paddingRight, _paddingBottom, _paddingLeft)
 		endIf
 	endFunction
@@ -173,7 +173,7 @@ float property PaddingRight
 	
 	function set(float a_val)
 		_paddingRight = a_val
-		if (Initialized)
+		if (Ready)
 			SetPadding(_paddingTop, _paddingRight, _paddingBottom, _paddingLeft)
 		endIf
 	endFunction
@@ -187,7 +187,7 @@ float property PaddingBottom
 	
 	function set(float a_val)
 		_paddingBottom = a_val
-		if (Initialized)
+		if (Ready)
 			SetPadding(_paddingTop, _paddingRight, _paddingBottom, _paddingLeft)
 		endIf
 	endFunction
@@ -201,7 +201,7 @@ float property PaddingLeft
 	
 	function set(float a_val)
 		_paddingLeft = a_val
-		if (Initialized)
+		if (Ready)
 			SetPadding(_paddingTop, _paddingRight, _paddingBottom, _paddingLeft)
 		endIf
 	endFunction
@@ -215,7 +215,7 @@ int property LabelTextColor
 	
 	function set(int a_val)
 		_labelTextColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setLabelTextColor", _labelTextColor) 
 		endIf
 	endFunction
@@ -229,7 +229,7 @@ float property LabelTextSize
 	
 	function set(float a_val)
 		_labelTextSize = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setLabelTextSize", _labelTextSize) 
 		endIf
 	endFunction
@@ -243,7 +243,7 @@ int property ValueTextColor
 	
 	function set(int a_val)
 		_valueTextColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setValueTextColor", _valueTextColor) 
 		endIf
 	endFunction
@@ -257,7 +257,7 @@ float property ValueTextSize
 	
 	function set(float a_val)
 		_valueTextSize = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setValueTextSize", _valueTextSize) 
 		endIf
 	endFunction
@@ -271,7 +271,7 @@ float property IconSize
 	
 	function set(float a_val)
 		_iconSize = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setIconSize", _iconSize) 
 		endIf
 	endFunction
@@ -285,7 +285,7 @@ int property IconColor
 	
 	function set(int a_val)
 		_iconColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setIconColor", _iconColor) 
 		endIf
 	endFunction
@@ -299,7 +299,7 @@ float property IconAlpha
 	
 	function set(float a_val)
 		_iconAlpha = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setIconAlpha", _iconAlpha) 
 		endIf
 	endFunction
@@ -313,7 +313,7 @@ float property IconSpacing
 	
 	function set(float a_val)
 		_iconSpacing = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setIconSpacing", _iconSpacing) 
 		endIf
 	endFunction
@@ -327,7 +327,7 @@ float property MeterScale
 	
 	function set(float a_val)
 		_meterScale = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setMeterScale", _meterScale) 
 		endIf
 	endFunction
@@ -341,7 +341,7 @@ int property MeterColorA
 	
 	function set(int a_val)
 		_meterColorA = a_val
-		if (Initialized)
+		if (Ready)
 			SetMeterColors(_meterColorA, _meterColorB)
 		endIf
 	endFunction
@@ -355,7 +355,7 @@ int property MeterColorB
 	
 	function set(int a_val)
 		_meterColorB = a_val
-		if (Initialized)
+		if (Ready)
 			SetMeterColors(_meterColorA, _meterColorB)
 		endIf
 	endFunction
@@ -369,7 +369,7 @@ float property MeterAlpha
 	
 	function set(float a_val)
 		_meterAlpha = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setMeterAlpha", _meterAlpha) 
 		endIf
 	endFunction
@@ -383,7 +383,7 @@ float property MeterSpacing
 	
 	function set(float a_val)
 		_meterSpacing = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setMeterSpacing", _meterSpacing) 
 		endIf
 	endFunction
@@ -397,7 +397,7 @@ int property MeterFlashColor
 	
 	function set(int a_val)
 		_meterFlashColor = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setMeterFlashColor", _meterFlashColor)
 		endIf
 	endFunction
@@ -411,7 +411,7 @@ string property LabelText
 	
 	function set(string a_val)
 		_labelText = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setLabelText", _labelText) 
 		endIf
 	endFunction
@@ -425,7 +425,7 @@ string property LabelTextFont
 	
 	function set(string a_val)
 		_labelTextFont = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setLabelTextFont", _labelTextFont) 
 		endIf
 	endFunction
@@ -439,7 +439,7 @@ string property ValueText
 	
 	function set(string a_val)
 		_valueText = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setValueText", _valueText) 
 		endIf
 	endFunction
@@ -453,7 +453,7 @@ string property ValueTextFont
 	
 	function set(string a_val)
 		_valueTextFont = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setValueTextFont", _valueTextFont) 
 		endIf
 	endFunction
@@ -467,7 +467,7 @@ string property TextAlign
 	
 	function set(string a_val)
 		_textAlign = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setTextAlign", _textAlign) 
 		endIf
 	endFunction
@@ -481,7 +481,7 @@ string property IconSource
 	
 	function set(string a_val)
 		_iconSource = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setIconSource", _iconSource) 
 		endIf
 	endFunction
@@ -495,7 +495,7 @@ string property IconName
 	
 	function set(string a_val)
 		_iconName = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setIconName", _iconName) 
 		endIf
 	endFunction
@@ -509,7 +509,7 @@ string property IconAlign
 	
 	function set(string a_val)
 		_iconAlign = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setIconAlign", _iconAlign) 
 		endIf
 	endFunction
@@ -523,7 +523,7 @@ string property MeterFillMode
 	
 	function set(string a_val)
 		_meterFillMode = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setMeterFillMode", _meterFillMode) 
 		endIf
 	endFunction
@@ -602,7 +602,7 @@ endFunction
 
 ; @overrides SKI_WidgetBase
 string function GetWidgetType()
- return "SKI_StatusWidget"
+	return "SKI_StatusWidget"
 endFunction
 
 function SetPadding(float a_paddingTop, float a_paddingRight, float a_paddingBottom, float a_paddingLeft)

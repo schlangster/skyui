@@ -27,7 +27,7 @@ bool Property Enabled
 
 	function set(bool a_val)
 		_enabled = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeBool(HUD_MENU, WidgetRoot + ".setEnabled", _enabled) 
 		endIf
 	endFunction
@@ -41,7 +41,7 @@ float property EffectSize
 
 	function set(float a_val)
 		_effectSize = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeFloat(HUD_MENU, WidgetRoot + ".setEffectSize", _effectSize) 
 		endIf
 	endFunction
@@ -55,7 +55,7 @@ int property GroupEffectCount
 
 	function set(int a_val)
 		_groupEffectCount = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setGroupEffectCount", _groupEffectCount) 
 		endIf
 	endFunction
@@ -69,7 +69,7 @@ string property ClampCorner
 
 	function set(string a_val)
 		_clampCorner = a_val
-		if (Initialized)
+		if (Ready)
 
 			if (_clampCorner == "BR")
 				HAlign = "right"
@@ -99,7 +99,7 @@ string property Orientation
 
 	function set(string a_val)
 		_orientation = a_val
-		if (Initialized)
+		if (Ready)
 			UI.InvokeString(HUD_MENU, WidgetRoot + ".setOrientation", _orientation) 
 		endIf
 	endFunction
