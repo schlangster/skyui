@@ -1,6 +1,4 @@
-﻿import skyui.defines.Actor;
-
-class skyui.defines.Magic
+﻿class skyui.defines.Magic
 {
 	// Archetype
 	public static var ARCHETYPE_VALUEMOD: Number = 0;
