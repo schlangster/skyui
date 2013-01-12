@@ -14,8 +14,8 @@ bool				_ready				= false
 int					_widgetID			= -1
 string				_widgetRoot			= ""
 string[]			_modes
-string				_hAlign				= "left"
-string				_vAlign				= "top"
+string				_hAnchor				= "left"
+string				_vAnchor				= "top"
 float				_x					= 0.0
 float				_y					= 0.0
 float				_alpha				= 100.0
@@ -64,30 +64,30 @@ string[] property Modes
 	endFunction
 endProperty
 
-string property HAlign
-	{Horizontal registration point of the widget ["left", "center", "right"]. Default: "left"}
+string property HAnchor
+	{Horizontal anchor point of the widget ["left", "center", "right"]. Default: "left"}
 	string function get()
-		return _hAlign
+		return _hAnchor
 	endFunction
 	
 	function set(string a_val)
-		_hAlign = a_val
+		_hAnchor = a_val
 		if (Ready)
-			UpdateWidgetHAlign()
+			UpdateWidgetHAnchor()
 		endIf
 	endFunction
 endProperty
 
-string property VAlign
-	{Vertical registration point of the widget ["top", "center", "bottom"]. Default: "top"}
+string property VAnchor
+	{Vertical anchor point of the widget ["top", "center", "bottom"]. Default: "top"}
 	string function get()
-		return _vAlign
+		return _vAnchor
 	endFunction
 	
 	function set(string a_val)
-		_vAlign = a_val
+		_vAnchor = a_val
 		if (Ready)
-			UpdateWidgetVAlign()
+			UpdateWidgetVAnchor()
 		endIf
 	endFunction
 endProperty
@@ -207,8 +207,8 @@ endEvent
 event OnWidgetReset()
 	; Reset base properties except modes to prevent widget from being drawn too early.
 	UpdateWidgetClientInfo()
-	UpdateWidgetHAlign()
-	UpdateWidgetVAlign()
+	UpdateWidgetHAnchor()
+	UpdateWidgetVAnchor()
 	UpdateWidgetPositionX()
 	UpdateWidgetPositionY()
 	UpdateWidgetAlpha()
@@ -254,12 +254,12 @@ function UpdateWidgetAlpha()
 	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setAlpha", Alpha)
 endFunction
 
-function UpdateWidgetHAlign()
-	UI.InvokeString(HUD_MENU, _widgetRoot + ".setHAlign", HAlign)
+function UpdateWidgetHAnchor()
+	UI.InvokeString(HUD_MENU, _widgetRoot + ".setHAnchor", HAnchor)
 endFunction
 
-function UpdateWidgetVAlign()
-	UI.InvokeString(HUD_MENU, _widgetRoot + ".setVAlign", VAlign)
+function UpdateWidgetVAnchor()
+	UI.InvokeString(HUD_MENU, _widgetRoot + ".setVAnchor", VAnchor)
 endFunction
 
 function UpdateWidgetModes()

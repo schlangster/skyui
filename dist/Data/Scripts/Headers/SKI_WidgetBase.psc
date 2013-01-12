@@ -60,8 +60,8 @@ string[] property Modes
 	endFunction
 endProperty
 
-string property HAlign
-	{Horizontal registration point of the widget ["left", "center", "right"]. Default: "left"}
+string property HAnchor
+	{Horizontal anchor point of the widget ["left", "center", "right"]. Default: "left"}
 	string function get()
 		Guard()
 		return ""
@@ -72,8 +72,8 @@ string property HAlign
 	endFunction
 endProperty
 
-string property VAlign
-	{Vertical registration point of the widget ["top", "center", "bottom"]. Default: "top"}
+string property VAnchor
+	{Vertical anchor point of the widget ["top", "center", "bottom"]. Default: "top"}
 	string function get()
 		Guard()
 		return ""
@@ -173,11 +173,11 @@ function UpdateWidgetAlpha()
 	Guard()
 endFunction
 
-function UpdateWidgetHAlign()
+function UpdateWidgetHAnchor()
 	Guard()
 endFunction
 
-function UpdateWidgetVAlign()
+function UpdateWidgetVAnchor()
 	Guard()
 endFunction
 

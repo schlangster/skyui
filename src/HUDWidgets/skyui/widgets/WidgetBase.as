@@ -7,11 +7,11 @@ class skyui.widgets.WidgetBase extends MovieClip
 	private static var MODES: Array = ["All", "Favor", "MovementDisabled", "Swimming", "WarhorseMode", "HorseMode", "InventoryMode", "BookMode", "DialogueMode", "StealthMode", "SleepWaitMode", "BarterMode", "TweenMode", "WorldMapMode", "JournalMode", "CartMode", "VATSPlayback"];
 	//private static var CROSSHAIR_MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
 
-	private static var ALIGN_LEFT: String = "left";
-	private static var ALIGN_RIGHT: String = "right";
-	private static var ALIGN_CENTER: String = "center";
-	private static var ALIGN_TOP: String = "top";
-	private static var ALIGN_BOTTOM: String = "bottom";
+	private static var ANCHOR_LEFT: String		= "left";
+	private static var ANCHOR_RIGHT: String		= "right";
+	private static var ANCHOR_CENTER: String	= "center";
+	private static var ANCHOR_TOP: String		= "top";
+	private static var ANCHOR_BOTTOM: String	= "bottom";
 	
 	
   /* PRIVATE VARIABLES */
@@ -22,8 +22,8 @@ class skyui.widgets.WidgetBase extends MovieClip
 	private var _widgetID: String;
 	private var _widgetHolder: MovieClip;
 
-	private var _vAlign: String;
-	private var _hAlign: String;
+	private var _vAnchor: String;
+	private var _hAnchor: String;
 	
 	
   /* INITIALIZATION */
@@ -92,27 +92,27 @@ class skyui.widgets.WidgetBase extends MovieClip
 	}
 
 	// @Papyrus
-	public function setHAlign(a_hAlign: String): Void
+	public function setHAnchor(a_hAnchor: String): Void
 	{
-		var hAlign: String = a_hAlign.toLowerCase();
+		var hAnchor: String = a_hAnchor.toLowerCase();
 
-		if (_hAlign == hAlign)
+		if (_hAnchor == hAnchor)
 			return;
 
-		_hAlign = hAlign;
+		_hAnchor = hAnchor;
 
 		invalidateSize();
 	}
 
 	// @Papyrus
-	public function setVAlign(a_vAlign: String): Void
+	public function setVAnchor(a_vAnchor: String): Void
 	{
-		var vAlign: String = a_vAlign.toLowerCase();
+		var vAnchor: String = a_vAnchor.toLowerCase();
 
-		if (_vAlign == vAlign)
+		if (_vAnchor == vAnchor)
 			return;
 
-		_vAlign = vAlign;
+		_vAnchor = vAnchor;
 
 		invalidateSize();
 	}
@@ -159,24 +159,24 @@ class skyui.widgets.WidgetBase extends MovieClip
 
 	private function invalidateSize(): Void
 	{
-		updateAlign();
+		updateAnchor();
 	}
 
-	private function updateAlign(): Void
+	private function updateAnchor(): Void
 	{
 		var xOffset: Number = getWidth();
 		var yOffset: Number = getHeight();
 		
-		if (_hAlign == ALIGN_RIGHT)
+		if (_hAnchor == ANCHOR_RIGHT)
 			_widgetHolder._x = -xOffset;
-		else if (_hAlign == ALIGN_CENTER)
+		else if (_hAnchor == ANCHOR_CENTER)
 			_widgetHolder._x = -xOffset/2;
 		else
 			_widgetHolder._x = 0;
 
-		if (_vAlign == ALIGN_BOTTOM)
+		if (_vAnchor == ANCHOR_BOTTOM)
 			_widgetHolder._y = -yOffset;
-		else if (_vAlign == ALIGN_CENTER)
+		else if (_vAnchor == ANCHOR_CENTER)
 			_widgetHolder._y = -yOffset/2;
 		else
 			_widgetHolder._y = 0;
