@@ -13,7 +13,6 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
   	// initObject
 	public var index: Number;
 	public var groupMoveDuration: Number;
-	public var groupSpacing: Number;
 	public var iconLocation: String;
 	public var effectBaseSize: Number;
 	public var effectSpacing: Number;
@@ -83,7 +82,7 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		index = a_newIndex;
 
 		var p = determinePosition(index);
-		TweenLite.to(this, 1, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
+		TweenLite.to(this, groupMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
 	}
 
 	public function onEffectRemoved(a_effectClip: MovieClip): Void
@@ -121,15 +120,15 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		// Orientation is the orientation of the EffectsGroups
 		if (orientation == "vertical") { // Orientation vertical means that the EffectsGroup acts as a column, so the next group needs to be added either to the left, or right
 			if (hAnchor == "right") { // Widget is anchored horizontally to the right of the stage, so need to add next EffectsGroup to the left
-				newX = -(groupSpacing + index * (effectBaseSize + groupSpacing));
+				newX = -(effectSpacing + index * (effectBaseSize + effectSpacing));
 			} else {
-				newX = +(groupSpacing + index * (effectBaseSize + groupSpacing));
+				newX = +(effectSpacing + index * (effectBaseSize + effectSpacing));
 			}
 		} else { // Orientation horizontal means that the EffectsGroup acts as a row, so the next group needs to be added either above, or below
 			if (vAnchor == "bottom") { // Widget is anchored vertically to the bottom of the stage, so need to add next EffectsGroup above
-				newY = -(groupSpacing + index * (effectBaseSize + groupSpacing));
+				newY = -(effectSpacing + index * (effectBaseSize + effectSpacing));
 			} else {
-				newY = +(groupSpacing + index * (effectBaseSize + groupSpacing));
+				newY = +(effectSpacing + index * (effectBaseSize + effectSpacing));
 			}
 
 		}

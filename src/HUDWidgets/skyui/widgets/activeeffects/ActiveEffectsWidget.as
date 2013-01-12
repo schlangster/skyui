@@ -1,5 +1,6 @@
 ﻿import skyui.widgets.WidgetBase;
 import skyui.widgets.activeeffects.ActiveEffectsGroup;
+import skyui.defines.Magic;
 
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
@@ -18,12 +19,11 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	
 
 	// config
-	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
+	private var _effectBaseSize: Number; // "small" = 32.0, "medium" = 48.0, "large" = 64.0, Default: "medium"
 	private var _groupEffectCount: Number;
 	private var _orientation: String;
 
-	private var _effectSpacing: Number; // _effectBaseSize/10
-	private var _groupSpacing: Number; // _effectBaseSize/10
+	private var _effectSpacing: Number; // == _effectBaseSize/10
 
 
   /* PRIVATE VARIABLES */
@@ -104,7 +104,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	// @Papyrus
 	public function initCommit(): Void
 	{
-		_groupSpacing = _effectSpacing = _effectBaseSize/10;
+		_effectSpacing = _effectBaseSize/10;
 		invalidateSize();
 
 		if (_enabled)
@@ -115,7 +115,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	public function setEffectSize(a_effectBaseSize: Number): Void
 	{
 		_effectBaseSize = a_effectBaseSize;
-		_groupSpacing = _effectSpacing = _effectBaseSize/10.0;
+		_effectSpacing = _effectBaseSize/10.0;
 
 		invalidateSize();
 		invalidateEffects();
@@ -170,6 +170,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			effectData = effectDataArray[i];
 			effectClip = _effectsHash[effectData.id];
 
+			if ((effectData.effectFlags & Magic.MGEFFLAG_HIDEINUI) != 0)
+				continue;
+
 			if (!effectClip) {
 				// New Effect
 				effectsGroup = getFreeEffectsGroup();
@@ -215,7 +218,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			var initObject: Object = {index: newGroupIdx,
 										iconLocation: _rootPath + ICON_SOURCE,
 										groupMoveDuration: GROUP_MOVE_DURATION,
-										groupSpacing: _groupSpacing,
 										effectBaseSize: _effectBaseSize,
 										effectSpacing: _effectSpacing,
 										effectFadeInDuration: EFFECT_FADE_IN_DURATION,

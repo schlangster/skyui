@@ -1,5 +1,4 @@
-﻿
-import skyui.util.EffectIconMap;
+﻿import skyui.util.EffectIconMap;
 import Shared.GlobalFunc;
 
 import com.greensock.TweenLite;
