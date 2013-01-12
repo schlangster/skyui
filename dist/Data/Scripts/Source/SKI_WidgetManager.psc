@@ -70,7 +70,8 @@ function InitWidgetLoader()
 	; Not injected yet
 	if (releaseIdx == 0)
  
-		string widgetPath = "widgets/"
+ 		; Interface/
+		string rootPath = ""
 
 		string[] args = new string[2]
 		args[0] = "widgetLoaderContainer"
@@ -86,7 +87,8 @@ function InitWidgetLoader()
 
 		; If failed, try to load from Interface/hudmenu.swf
 		if (releaseIdx == 0)
-			widgetPath = "exported/widgets/"
+			; Interface/exported
+			rootPath = "exported/"
 			UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.loadMovie", "exported/skyui/widgetloader.swf")	
 			Utility.Wait(0.5)
 			releaseIdx = UI.GetInt(HUD_MENU, "_global.WidgetLoader.SKYUI_RELEASE_IDX")
@@ -98,7 +100,7 @@ function InitWidgetLoader()
 			return
 		endIf
 
-		UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.setWidgetPath", widgetPath)
+		UI.InvokeString(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.setRootPath", rootPath)
 	endIf
 
 	; Load already registered widgets

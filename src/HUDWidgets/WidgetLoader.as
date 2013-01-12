@@ -6,7 +6,7 @@ class WidgetLoader extends MovieClip
 	
   /* PRIVATE VARIABLES */
   
-	private var _widgetPath: String = "widgets/";
+	private var _rootPath: String = "";
 
 	private var _widgetContainer: MovieClip;
 	
@@ -58,6 +58,8 @@ class WidgetLoader extends MovieClip
 				widgetHolder.widget.onModeChange(a_hudMode);
 		}
 		
+		a_widgetHolder.widget.setRootPath(_rootPath);
+		
 		skse.SendModEvent("SKIWF_widgetLoaded", a_widgetHolder._name);
 	}
 	
@@ -66,10 +68,10 @@ class WidgetLoader extends MovieClip
 		skse.SendModEvent("SKIWF_widgetError", "WidgetLoadFailure", Number(a_widgetHolder._name));
 	}
 	
-	public function setWidgetPath(a_path: String): Void
+	public function setRootPath(a_path: String): Void
 	{
-		skse.Log("WidgetLoader.as: setWidgetPath(a_path = " + a_path + ")");
-		_widgetPath = a_path;
+		skse.Log("WidgetLoader.as: setRootPath(a_path = " + a_path + ")");
+		_rootPath = a_path;
 	}
 	
 	public function loadWidgets(/* widgetSources (128) */): Void
@@ -96,7 +98,7 @@ class WidgetLoader extends MovieClip
 			createWidgetContainer();
 		
 		var widgetHolder: MovieClip = _widgetContainer.createEmptyMovieClip(a_widgetID, _widgetContainer.getNextHighestDepth());
-		_mcLoader.loadClip(_widgetPath + a_widgetSource, widgetHolder);
+		_mcLoader.loadClip(_rootPath + "widgets/" + a_widgetSource, widgetHolder);
 	}
 	 
 	 

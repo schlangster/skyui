@@ -16,6 +16,8 @@ class skyui.widgets.WidgetBase extends MovieClip
 	
   /* PRIVATE VARIABLES */
   
+	private var _rootPath: String = "";
+  
 	private var _clientInfo: Object;
 	private var _widgetID: String;
 	private var _widgetHolder: MovieClip;
@@ -41,6 +43,11 @@ class skyui.widgets.WidgetBase extends MovieClip
 	
 		
   /* PUBLIC FUNCTIONS */
+  
+	public function setRootPath(a_path: String): Void
+	{
+		_rootPath = a_path;
+	}
 
 	// @Papyrus
 	public function setClientInfo(a_clientString: String): Void

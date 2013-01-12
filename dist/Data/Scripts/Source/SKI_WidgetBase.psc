@@ -185,6 +185,7 @@ event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	endIf
 endEvent
 
+
 ; EVENTS ------------------------------------------------------------------------------------------
 
 ; @interface
