@@ -191,6 +191,8 @@ class skyui.widgets.WidgetBase extends MovieClip
 
 	private function updatePosition(): Void
 	{
+		// Removed, because we want absolute positioning, not relative positioning.
+		/*
 		var newX: Number;
 		var newY: Number;
 
@@ -236,5 +238,13 @@ class skyui.widgets.WidgetBase extends MovieClip
 
 		_x = newX;
 		_y = newY;
+		*/
+
+		// 0 -> -_hudMetrics.hMin
+		// 1280 -> _hudMetrics.hMax
+		_x = GlobalFunc.Lerp(-_hudMetrics.hMin, _hudMetrics.hMax, 0, 1280, __x);
+		// 0 -> -_hudMetrics.vMin
+		// 720 -> _hudMetrics.vMax
+		_y = GlobalFunc.Lerp(-_hudMetrics.vMin, _hudMetrics.vMax, 0, 720, __y);
 	}
 }

@@ -38,10 +38,10 @@ class WidgetLoader extends MovieClip
 		_root.globalToLocal(hudMaxXY);
 
 		_hudMetrics = {hMin: hudMinXY.x,
-						hCenter: (hudMaxXY.x - hudMinXY.x)/2,
+						//hCenter: (hudMaxXY.x - hudMinXY.x)/2,
 						hMax: hudMaxXY.x,
 						vMin: hudMinXY.y,
-						vCenter: (hudMaxXY.y - hudMinXY.y)/2,
+						//vCenter: (hudMaxXY.y - hudMinXY.y)/2,
 						vMax: hudMaxXY.y}
 
 		// Dispatch event with initial hudMode
