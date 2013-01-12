@@ -7,7 +7,6 @@ bool	_enabled			= false
 float	_effectSize			= 48.0
 int		_groupEffectCount	= 8
 string	_orientation		= "vertical"
-string	_clampCorner		= "TR"
 
 ; @overrides SKI_WidgetBase
 string function GetWidgetSource()

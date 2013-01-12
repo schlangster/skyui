@@ -14,8 +14,8 @@ bool				_ready				= false
 int					_widgetID			= -1
 string				_widgetRoot			= ""
 string[]			_modes
-string				_hAnchor				= "left"
-string				_vAnchor				= "top"
+string				_hAnchor			= "left"
+string				_vAnchor			= "top"
 float				_x					= 0.0
 float				_y					= 0.0
 float				_alpha				= 100.0
