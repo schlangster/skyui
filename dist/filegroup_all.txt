@@ -19,6 +19,7 @@ Interface\skyui\skyui_splash.swf
 Interface\skyui\mcm_splash.swf
 Interface\skyui\res\mcm_logo.dds
 Interface\exported\skyui\widgetloader.swf
+Interface\exported\skyui\icons_effect_psychosteve.swf
 Interface\exported\widgets\activeeffects.swf
 Interface\exported\widgets\meter.swf
 Interface\exported\widgets\status.swf
