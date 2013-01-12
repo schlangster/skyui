@@ -8,18 +8,27 @@ import com.greensock.easing.Linear;
 
 class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 {
-  /* PRIVATE VARIABLES */
-  
-	private static var _archetypeMap: Array = [];
-	private static var _posAVMap: Array = [];
-	private static var _negAVMap: Array = [];
-	
-	
   /* CONSTANTS */
   
 	private static var METER_WIDTH: Number = 15;
 	private static var METER_PADDING: Number = 5;
+	
+	
+  /* PRIVATE VARIABLES */
 
+	private var _meter: MovieClip;
+	
+	private var _meterEmptyIdx: Number;
+	private var _meterFullIdx: Number;
+	
+	// Icon
+	private var _iconLoader: MovieClipLoader;
+	private var _icon: MovieClip;
+	private var _iconHolder: MovieClip;
+	
+	private var _iconBaseLabel: String;
+	private var _iconEmblemLabel: String;
+	
 
   /* STAGE ELEMENTS */
   
@@ -46,22 +55,6 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	public var orientation: String;
 	
 	
-  /* PRIVATE VARIABLES */
-
-	private var _meter: MovieClip;
-	
-	private var _meterEmptyIdx: Number;
-	private var _meterFullIdx: Number;
-	
-	// Icon
-	private var _iconLoader: MovieClipLoader;
-	private var _icon: MovieClip;
-	private var _iconHolder: MovieClip;
-	
-	private var _iconBaseLabel: String;
-	private var _iconEmblemLabel: String;
-	
-	
   /* INITIALIZATION */
 	
 	public function ActiveEffect()
@@ -77,8 +70,9 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_width = _height = effectBaseSize;
 
 		// Force position
-		_x = determinePosition(index)[0];
-		_y = determinePosition(index)[1];
+		var p = determinePosition(index);
+		_x = p[0];
+		_y = p[1];
 		
 		initEffect();
 		_iconLoader.loadClip(iconLocation, _icon);
@@ -106,11 +100,11 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_meter.gotoAndStop(meterFrame);
 	}
 
-	public function updatePosition(a_newIndex): Void
+	public function updatePosition(a_newIndex: Number): Void
 	{
 		index = a_newIndex;
-
-		TweenLite.to(this, effectMoveDuration, {_x: determinePosition(index)[0], _y: determinePosition(index)[1], overwrite: 0, easing: Linear.easeNone});
+		var p = determinePosition(index);
+		TweenLite.to(this, effectMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
 	}
 
 	public function remove(): Void
@@ -146,7 +140,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 			// Instantaneous effect, no timer (e.g. Healing)
 			// Healing actually has a duration of 1, but it keeps reapplying itself after it's dispelled
 			// No meter, just icon: center the icon
-			_iconHolder._x = (background._width - _iconHolder._width) / 2;
+//			_iconHolder._x = (background._width - _iconHolder._width) / 2;
 		}
 	}
 
