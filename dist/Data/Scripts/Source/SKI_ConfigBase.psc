@@ -85,10 +85,11 @@ event OnGameReload()
 	if (!_initialized)
 		_initialized = true
 
-		_optionFlagsBuf	= new int[128]
-		_textBuf		= new string[128]
-		_strValueBuf	= new string[128]
-		_numValueBuf	= new float[128]
+		; Buffer alloc/free on config open/close
+		;_optionFlagsBuf	= new int[128]
+		;_textBuf		= new string[128]
+		;_strValueBuf	= new string[128]
+		;_numValueBuf	= new float[128]
 
 		; 0 startValue
 		; 1 defaultValue
@@ -577,6 +578,12 @@ function Error(string a_msg)
 endFunction
 
 function OpenConfig()
+	; Alloc
+	_optionFlagsBuf	= new int[128]
+	_textBuf		= new string[128]
+	_strValueBuf	= new string[128]
+	_numValueBuf	= new float[128]
+
 	SetPage("", -1)
 
 	OnConfigOpen()
@@ -588,6 +595,12 @@ function CloseConfig()
 	OnConfigClose()	
 	ClearOptionBuffers()
 	_waitForMessage = false
+
+	; Free
+	_optionFlagsBuf	= new int[1]
+	_textBuf		= new string[1]
+	_strValueBuf	= new string[1]
+	_numValueBuf	= new float[1]
 endFunction
 
 function SetPage(string a_page, int a_index)
@@ -663,8 +676,8 @@ function ClearOptionBuffers()
 	int i = 0
 	while (i < 128)
 		_optionFlagsBuf[i] = t
-		_textBuf[i] = none
-		_strValueBuf[i] = none
+		_textBuf[i] = ""
+		_strValueBuf[i] = ""
 		_numValueBuf[i] = 0
 		i += 1
 	endWhile
