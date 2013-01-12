@@ -242,14 +242,6 @@ function UpdateWidgetClientInfo()
 	UI.InvokeString(HUD_MENU, _widgetRoot + ".setClientInfo", self as string)
 endFunction
 
-function UpdateWidgetPositionX()
-	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionX", X)
-endFunction
-
-function UpdateWidgetPositionY()
-	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionY", Y)
-endFunction
-
 function UpdateWidgetAlpha()
 	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setAlpha", Alpha)
 endFunction
@@ -260,6 +252,14 @@ endFunction
 
 function UpdateWidgetVAnchor()
 	UI.InvokeString(HUD_MENU, _widgetRoot + ".setVAnchor", VAnchor)
+endFunction
+
+function UpdateWidgetPositionX()
+	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionX", X)
+endFunction
+
+function UpdateWidgetPositionY()
+	UI.InvokeFloat(HUD_MENU, _widgetRoot + ".setPositionY", Y)
 endFunction
 
 function UpdateWidgetModes()

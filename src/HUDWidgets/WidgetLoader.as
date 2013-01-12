@@ -12,6 +12,8 @@ class WidgetLoader extends MovieClip
 	
 	private var _mcLoader: MovieClipLoader;
 
+	private var _hudMetrics: Object
+
 	private var _hudModeDispatcher: MovieClip;
 	
 
@@ -30,6 +32,18 @@ class WidgetLoader extends MovieClip
 
 	public function onLoad(): Void
 	{
+		var hudMinXY: Object = {x: Stage.safeRect.x, y: Stage.safeRect.y};
+		var hudMaxXY: Object = {x: Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.height - Stage.safeRect.y};
+		_root.globalToLocal(hudMinXY);
+		_root.globalToLocal(hudMaxXY);
+
+		_hudMetrics = {hMin: hudMinXY.x,
+						hCenter: (hudMaxXY.x - hudMinXY.x)/2,
+						hMax: hudMaxXY.x,
+						vMin: hudMinXY.y,
+						vCenter: (hudMaxXY.y - hudMinXY.y)/2,
+						vMax: hudMaxXY.y}
+
 		// Dispatch event with initial hudMode
 		var currentHudMode: String = _root.HUDMovieBaseInstance.HUDModes[_root.HUDMovieBaseInstance.HUDModes.length - 1];
 		skse.SendModEvent("SKIWF_hudModeChanged", currentHudMode);
@@ -58,6 +72,7 @@ class WidgetLoader extends MovieClip
 				widgetHolder.widget.onModeChange(a_hudMode);
 		}
 		
+		a_widgetHolder.widget.setHudMetrics(_hudMetrics);
 		a_widgetHolder.widget.setRootPath(_rootPath);
 		
 		skse.SendModEvent("SKIWF_widgetLoaded", a_widgetHolder._name);
