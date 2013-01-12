@@ -6,52 +6,52 @@ class skyui.util.EffectIconMap
 {
 	private static var _archetypeMap: Array = [
 		null,			// 0 - ARCHETYPE_VALUEMOD					EMBLEM
-		null,			// 1 - ARCHETYPE_SCRIPT
-		null,			// 2 - ARCHETYPE_DISPEL
-		null,			// 3 - ARCHETYPE_CUREDISEASE
+		null,			// 1 - ARCHETYPE_SCRIPT						nn
+		null,			// 2 - ARCHETYPE_DISPEL						nn
+		null,			// 3 - ARCHETYPE_CUREDISEASE				nn
 		null,			// 4 - ARCHETYPE_ABSORB						EMBLEM
 		null,			// 5 - ARCHETYPE_DUALVALUEMOD				EMBLEM
-		"calm",			// 6 - ARCHETYPE_CALM
-		null,			// 7 - ARCHETYPE_DEMORALIZE
-		"frenzy",		// 8 - ARCHETYPE_FRENZY
-		null,			// 9 - ARCHETYPE_DISARM
-		"conjure",		// 10 - ARCHETYPE_COMMANDSUMMONED
-		"invisibility",	// 11 - ARCHETYPE_INVISIBILITY
-		"light",		// 12 - ARCHETYPE_LIGHT
+		null,			// 6 - ARCHETYPE_CALM						nn
+		null,			// 7 - ARCHETYPE_DEMORALIZE					nn
+		null,			// 8 - ARCHETYPE_FRENZY						nn
+		null,			// 9 - ARCHETYPE_DISARM						nn
+		"conjure",		// 10 - ARCHETYPE_COMMANDSUMMONED			OK
+		"invisibility",	// 11 - ARCHETYPE_INVISIBILITY				OK
+		"light",		// 12 - ARCHETYPE_LIGHT						OK
 		null,
 		null,
-		null,			// 15 - ARCHETYPE_LOCK
-		null,			// 16 - ARCHETYPE_OPEN
-		"bound_item",	// 17 - ARCHETYPE_BOUNDWEAPON
-		"conjure",		// 18 - ARCHETYPE_SUMMONCREATURE
-		"detectlife",	// 19 - ARCHETYPE_DETECTLIFE
-		"telekinesis",	// 20 - ARCHETYPE_TELEKINESIS
-		"paralysis",	// 21 - ARCHETYPE_PARALYSIS
-		"reanimate",	// 22 - ARCHETYPE_REANIMATE
-		"soultrap",		// 23 - ARCHETYPE_SOULTRAP
-		"turnundead",	// 24 - ARCHETYPE_TURNUNDEAD
-		"clairvoyance",	// 25 - ARCHETYPE_GUIDE
-		null,			// 26 - ARCHETYPE_WEREWOLFFEED
-		null,			// 27 - ARCHETYPE_CUREPARALYSIS
-		null,			// 28 - ARCHETYPE_CUREADDICTION
-		null,			// 29 - ARCHETYPE_CUREPOISON
-		null,			// 30 - ARCHETYPE_CONCUSSION
-		null,			// 31 - ARCHETYPE_VALUEANDPARTS
-		null,			// 32 - ARCHETYPE_ACCUMULATEMAGNITUDE
-		null,			// 33 - ARCHETYPE_STAGGER
+		null,			// 15 - ARCHETYPE_LOCK						nn
+		null,			// 16 - ARCHETYPE_OPEN						nn
+		"bound_item",	// 17 - ARCHETYPE_BOUNDWEAPON				OK
+		"conjure",		// 18 - ARCHETYPE_SUMMONCREATURE			OK
+		null,			// 19 - ARCHETYPE_DETECTLIFE				nn
+		null,			// 20 - ARCHETYPE_TELEKINESIS				nn
+		"paralysis",	// 21 - ARCHETYPE_PARALYSIS					?
+		null,			// 22 - ARCHETYPE_REANIMATE					nn
+		null,			// 23 - ARCHETYPE_SOULTRAP					nn
+		null,			// 24 - ARCHETYPE_TURNUNDEAD				nn
+		"clairvoyance",	// 25 - ARCHETYPE_GUIDE						X
+		null,			// 26 - ARCHETYPE_WEREWOLFFEED				nn
+		null,			// 27 - ARCHETYPE_CUREPARALYSIS				nn
+		null,			// 28 - ARCHETYPE_CUREADDICTION				nn
+		null,			// 29 - ARCHETYPE_CUREPOISON				nn
+		null,			// 30 - ARCHETYPE_CONCUSSION				nn
+		null,			// 31 - ARCHETYPE_VALUEANDPARTS				nn
+		null,			// 32 - ARCHETYPE_ACCUMULATEMAGNITUDE		nn
+		null,			// 33 - ARCHETYPE_STAGGER					nn
 		null,			// 34 - ARCHETYPE_PEAKVALUEMOD				EMBLEM
-		null,			// 35 - ARCHETYPE_CLOAK
-		"werewolf",		// 36 - ARCHETYPE_WEREWOLF
-		null,			// 37 - ARCHETYPE_SLOWTIME
-		"rally",		// 38 - ARCHETYPE_RALLY
-		null,			// 39 - ARCHETYPE_ENHANCEWEAPON
-		null,			// 40 - ARCHETYPE_SPAWNHAZARD
-		null,			// 41 - ARCHETYPE_ETHEREALIZE
-		"banish",		// 42 - ARCHETYPE_BANISH
+		"cloak",		// 35 - ARCHETYPE_CLOAK						X
+		"werewolf",		// 36 - ARCHETYPE_WEREWOLF					OK
+		"slowtime",		// 37 - ARCHETYPE_SLOWTIME					X
+		null,			// 38 - ARCHETYPE_RALLY						nn
+		"magicweapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				X
+		null,			// 40 - ARCHETYPE_SPAWNHAZARD				nn
+		null,			// 41 - ARCHETYPE_ETHEREALIZE				?
+		null,			// 42 - ARCHETYPE_BANISH					nn
 		null,
-		null,			// 44 - ARCHETYPE_DISGUISE
-		null,			// 45 - ARCHETYPE_GRABACTOR
-		"vampire"		// 46 - ARCHETYPE_VAMPIRELORD
+		null,			// 44 - ARCHETYPE_DISGUISE					?
+		null,			// 45 - ARCHETYPE_GRABACTOR					nn
+		"vampire"		// 46 - ARCHETYPE_VAMPIRELORD				OK
 	];
 	
 	private static var _avMap: Array = [
