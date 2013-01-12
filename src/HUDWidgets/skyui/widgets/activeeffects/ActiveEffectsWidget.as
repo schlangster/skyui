@@ -20,7 +20,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	// config
 	private var _effectBaseSize: Number; // {small: 32.0, medium: 48.0, large: 64.0} Default: medium
 	private var _groupEffectCount: Number;
-	private var _clampCorner: String;
 	private var _orientation: String;
 
 	private var _effectSpacing: Number; // _effectBaseSize/10
@@ -97,9 +96,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
 	// @Papyrus
-	public function initStrings(a_clampCorner: String, a_orientation: String): Void
+	public function initStrings(a_orientation: String): Void
 	{
-		updateClampCorner(a_clampCorner);
 		_orientation = a_orientation.toLowerCase();
 	}
 
@@ -132,14 +130,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
 	// @Papyrus
-	public function setClampCorner(a_clampCorner: String): Void
-	{
-		updateClampCorner(a_clampCorner);
-
-		invalidateEffects();
-	}
-
-	// @Papyrus
 	public function setEnabled(a_enabled: Boolean): Void
 	{
 		_enabled = a_enabled;
@@ -161,29 +151,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
   /* PRIVATE FUNCTIONS */
   
-	private function updateClampCorner(a_clampCorner: String): Void
-	{
-		_clampCorner = a_clampCorner.toUpperCase();
-		switch(_clampCorner) {
-			case "BR":
-				_hGrowDirection = "left";
-				_vGrowDirection = "up";
-				break;
-			case "BL":
-				_hGrowDirection = "right";
-				_vGrowDirection = "up";
-				break;
-			case "TL":
-				_hGrowDirection = "right";
-				_vGrowDirection = "down";
-				break;
-			default:
-				_clampCorner = "TR";
-				_hGrowDirection = "left";
-				_vGrowDirection = "down";
-		}
-	}
-	
 	private function onIntervalUpdate(): Void
 	{
 		effectDataArray.splice(0);
@@ -254,8 +221,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 										effectFadeInDuration: EFFECT_FADE_IN_DURATION,
 										effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
 										effectMoveDuration: EFFECT_MOVE_DURATION,
-										hGrowDirection: _hGrowDirection,
-										vGrowDirection: _vGrowDirection,
+										hAnchor: _hAnchor,
+										vAnchor: _vAnchor,
 										orientation: _orientation};
 										
 			// Name needs to be unique so append getNextHighestDepth() to the name

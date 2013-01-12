@@ -21,8 +21,8 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	public var effectFadeOutDuration: Number;
 	public var effectMoveDuration: Number;
 
-	public var hGrowDirection: String;
-	public var vGrowDirection: String;
+	public var hAnchor: String;
+	public var vAnchor: String;
 	public var orientation: String;
 
 
@@ -68,8 +68,8 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 									effectFadeInDuration: effectFadeInDuration,
 									effectFadeOutDuration: effectFadeOutDuration,
 									effectMoveDuration: effectMoveDuration,
-									hGrowDirection: hGrowDirection,
-									vGrowDirection: vGrowDirection,
+									hAnchor: hAnchor,
+									vAnchor: vAnchor,
 									orientation: orientation};
 		var effectClip: MovieClip = attachMovie("ActiveEffect", a_effectData.id, getNextHighestDepth(), initObject);
 		_effectsArray.push(effectClip);
@@ -113,25 +113,18 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
   
 	private function determinePosition(a_index: Number): Array
 	{
-		// defaults to vertical
-		//             vertical -> left
-		//          or horizontal -> down
-
 		var newX: Number = 0;
 		var newY: Number = 0;
 
-		// orientation the axis in which new effects will be added to after the total number of effects > GroupEffectCount
-		if (orientation == "vertical") {
-			// Orientation is vertical so...
-			// Group is a column, so next group will be shifted horizontally
-			if (hGrowDirection == "left") {
+		// Orientation is the orientation of the EffectsGroups
+		if (orientation == "vertical") { // Orientation vertical means that the EffectsGroup acts as a column, so the next group needs to be added either to the left, or right
+			if (hAnchor == "right") { // Widget is anchored horizontally to the right of the stage, so need to add next EffectsGroup to the left
 				newX = -(index * (effectBaseSize + groupSpacing));
 			} else {
 				newX = +(index * (effectBaseSize + groupSpacing));
 			}
-		} else {
-			// Group is a row, so next group will be shifted vertically
-			if (vGrowDirection == "up") {
+		} else { // Orientation horizontal means that the EffectsGroup acts as a row, so the next group needs to be added either above, or below
+			if (vAnchor == "bottom") { // Widget is anchored vertically to the bottom of the stage, so need to add next EffectsGroup above
 				newY = -(index * (effectBaseSize + groupSpacing));
 			} else {
 				newY = +(index * (effectBaseSize + groupSpacing));

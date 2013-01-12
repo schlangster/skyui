@@ -41,8 +41,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	public var effectFadeOutDuration: Number;
 	public var effectMoveDuration: Number;
 
-	public var hGrowDirection: String;
-	public var vGrowDirection: String;
+	public var hAnchor: String;
+	public var vAnchor: String;
 	public var orientation: String;
 	
 	
@@ -193,18 +193,15 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		var newX: Number = 0;
 		var newY: Number = 0;
 
-		// orientation the axis in which new effects will be added to after the total number of effects > GroupEffectCount
-		if (orientation == "vertical") {
-			// Orientation is vertical so...
-			// This effect is in a column, next effect will be shifted vertically
-			if (vGrowDirection == "up") {
+		// Orientation is the orientation of the EffectsGroups
+		if (orientation == "vertical") { // Orientation vertical means that the ActiveEffect is in a column, so the next effect needs to be added either above, or below
+			if (vAnchor == "bottom") {  // Widget is anchored vertically to the bottom of the stage, so need to add next ActiveEffect above
 				newY = -(index * (effectBaseSize + effectSpacing));
 			} else {
 				newY = +(index * (effectBaseSize + effectSpacing));
 			}
-		} else {
-			// This effect is in a row, next effect will be shifted horizontally
-			if (hGrowDirection == "left") {
+		} else { // Orientation horizontal means that the ActiveEffect is in a row, so the next effect needs to be added either to the left, or right
+			if (hAnchor == "right") {  // Widget is anchored horizontally to the right of the stage, so need to add next ActiveEffect to the left
 				newX = -(index * (effectBaseSize + effectSpacing));
 			} else {
 				newX = +(index * (effectBaseSize + effectSpacing));
