@@ -5,12 +5,12 @@ import skyui.defines.Actor;
 class skyui.util.EffectIconMap
 {
 	private static var _archetypeMap: Array = [
-		null,			// 0 - ARCHETYPE_VALUEMOD
+		null,			// 0 - ARCHETYPE_VALUEMOD					EMBLEM
 		null,			// 1 - ARCHETYPE_SCRIPT
 		null,			// 2 - ARCHETYPE_DISPEL
 		null,			// 3 - ARCHETYPE_CUREDISEASE
-		null,			// 4 - ARCHETYPE_ABSORB
-		null,			// 5 - ARCHETYPE_DUALVALUEMOD
+		null,			// 4 - ARCHETYPE_ABSORB						EMBLEM
+		null,			// 5 - ARCHETYPE_DUALVALUEMOD				EMBLEM
 		"calm",			// 6 - ARCHETYPE_CALM
 		null,			// 7 - ARCHETYPE_DEMORALIZE
 		"frenzy",		// 8 - ARCHETYPE_FRENZY
@@ -26,7 +26,7 @@ class skyui.util.EffectIconMap
 		"conjure",		// 18 - ARCHETYPE_SUMMONCREATURE
 		"detectlife",	// 19 - ARCHETYPE_DETECTLIFE
 		"telekinesis",	// 20 - ARCHETYPE_TELEKINESIS
-		"paralyze",		// 21 - ARCHETYPE_PARALYSIS
+		"paralysis",	// 21 - ARCHETYPE_PARALYSIS
 		"reanimate",	// 22 - ARCHETYPE_REANIMATE
 		"soultrap",		// 23 - ARCHETYPE_SOULTRAP
 		"turnundead",	// 24 - ARCHETYPE_TURNUNDEAD
@@ -39,8 +39,8 @@ class skyui.util.EffectIconMap
 		null,			// 31 - ARCHETYPE_VALUEANDPARTS
 		null,			// 32 - ARCHETYPE_ACCUMULATEMAGNITUDE
 		null,			// 33 - ARCHETYPE_STAGGER
-		null,			// 34 - ARCHETYPE_PEAKVALUEMOD
-		"invisibility",	// 35 - ARCHETYPE_CLOAK
+		null,			// 34 - ARCHETYPE_PEAKVALUEMOD				EMBLEM
+		null,			// 35 - ARCHETYPE_CLOAK
 		"werewolf",		// 36 - ARCHETYPE_WEREWOLF
 		null,			// 37 - ARCHETYPE_SLOWTIME
 		"rally",		// 38 - ARCHETYPE_RALLY
@@ -85,7 +85,7 @@ class skyui.util.EffectIconMap
 		"av_health_regen",			// 27 - AV_HEALRATE
 		"av_magicka_regen",			// 28 - AV_MAGICKARATE
 		"av_stamina_regen",			// 29 - AV_STAMINARATE
-		"destruction_special_slow",						// 30 - AV_SPEEDMULT			x
+		"destruction_special_slow",	// 30 - AV_SPEEDMULT			x
 		null, 						// 31 - AV_INVENTORYWEIGHT
 		"av_carryweight",			// 32 - AV_CARRYWEIGHT
 		null,						// 33 - AV_CRITCHANCE
@@ -112,13 +112,13 @@ class skyui.util.EffectIconMap
 		"invisibility",				// 54 - AV_INVISIBILITY
 		"nighteye",					// 55 - AV_NIGHTEYE
 		null,						// 56 - AV_DETECTLIFERANGE
-		"waterbreathing",			// 57 - AV_WATERBREATHING
+		"av_waterbreathing",		// 57 - AV_WATERBREATHING
 		null,						// 58 - AV_WATERWALKING
 		null,						// 59 - AV_IGNORECRIPPLEDLIMBS
 		null,						// 60 - AV_FAME
 		null,						// 61 - AV_INFAMY
 		null,						// 62 - AV_JUMPINGBONUS
-		"ward",						// 63 - AV_WARDPOWER
+		"av_ward",					// 63 - AV_WARDPOWER
 		null,						// 64 - AV_RIGHTITEMCHARGE
 		null,						// 65 - AV_ARMORPERKS
 		null,						// 66 - AV_SHIELDPERKS
@@ -221,51 +221,60 @@ class skyui.util.EffectIconMap
 		null						// 163 - AV_REFLECTDAMAGE
 	];
 	
-	public static function lookupIconLabel(a_effectData: Object): String
+	public static function lookupIconLabel(a_effectData: Object): Object
 	{
 		var archetype = a_effectData.archetype;
 		var actorValue = a_effectData.actorValue;
 			
-		// Attempt to lookup for simple archetypes
-		var iconLabel = _archetypeMap[archetype];
-		if (iconLabel)
-			return iconLabel;
-			
-		if (!actorValue)
-			return "default_effect";
+		var emblemLabel = "none";
+		
+		// Attempt to look up for simple archetypes
+		var baseLabel = _archetypeMap[archetype];
+		
+		// Found one, done
+		if (baseLabel)
+			return {baseLabel: baseLabel, emblemLabel: emblemLabel};
 		
 		// Archetype + ActorValue combinations
-		if (a_effectData.effectFlags & Magic.MGEFFLAG_DETRIMENTAL) {
-			// Negative value modifiers
-			iconLabel = _avMap[actorValue];
-			if (iconLabel)
-				return iconLabel;
+		
+		switch (archetype) {
+			case Magic.ARCHETYPE_VALUEMOD:
+			case Magic.ARCHETYPE_DUALVALUEMOD:
+			case Magic.ARCHETYPE_PEAKVALUEMOD:
+				var isDetrimental = a_effectData.effectFlags & Magic.MGEFFLAG_DETRIMENTAL;
+				var isRecovering = a_effectData.effectFlags & Magic.MGEFFLAG_RECOVER;
 				
-			switch (actorValue) {
-				case Actor.AV_HEALTH:
-					return archetype == Magic.ARCHETYPE_VALUEMOD ? "effect_restoration_health" : "effect_restoration_fortify_health";
-				case Actor.AV_MAGICKA:
-					return archetype == Magic.ARCHETYPE_VALUEMOD ? "effect_restoration_magicka" : "effect_restoration_fortify_magicka";
-				case Actor.AV_STAMINA:
-					return archetype == Magic.ARCHETYPE_VALUEMOD ? "effect_restoration_stamina" : "effect_restoration_fortify_stamina";
-			}
-				
-		} else {
-			// Positive value modifiers
-			iconLabel = _avMap[actorValue];
-			if (iconLabel)
-				return iconLabel;
+				if (isDetrimental) {
+					emblemLabel = isRecovering ? "drain" : "damage";
+				} else {
+					emblemLabel = isRecovering ? "fortify" : "restore";
+				}
+		}
+		
+		baseLabel = _avMap[actorValue];
+		if (baseLabel)
+			return {baseLabel: baseLabel, emblemLabel: emblemLabel};
 			
-			switch (actorValue) {
-				case Actor.AV_HEALTH:
-					return archetype == Magic.ARCHETYPE_VALUEMOD ? "effect_restoration_health" : "effect_restoration_fortify_health";
-				case Actor.AV_MAGICKA:
-					return archetype == Magic.ARCHETYPE_VALUEMOD ? "effect_restoration_magicka" : "effect_restoration_fortify_magicka";
-				case Actor.AV_STAMINA:
-					return archetype == Magic.ARCHETYPE_VALUEMOD ? "effect_restoration_stamina" : "effect_restoration_fortify_stamina";
+		// Replace health icon with resistType icon
+		if (actorValue == Actor.AV_HEALTH) {
+			var resistType = a_effectData.resistType;
+			
+			switch (a_effectData.resistType) {
+				case Actor.AV_FIRERESIST:
+					baseLabel = "magic_fire";
+					break;
+				case Actor.AV_FROSTRESIST:
+					baseLabel = "magic_fire";
+					break;
+				case Actor.AV_ELECTRICRESIST:
+					baseLabel = "magic_shock";
+					break;
 			}
 		}
 		
-		return "default_effect";
+		if (baseLabel)
+			baseLabel = "default_effect";
+		
+		return {baseLabel: baseLabel, emblemLabel: emblemLabel};
 	}
 }

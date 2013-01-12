@@ -58,7 +58,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	private var _icon: MovieClip;
 	private var _iconHolder: MovieClip;
 	
-	private var _iconLabel: String;
+	private var _iconBaseLabel: String;
+	private var _iconEmblemLabel: String;
 	
 	
   /* INITIALIZATION */
@@ -122,11 +123,13 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
   
 	private function initEffect(): Void
 	{
-		_iconLabel = EffectIconMap.lookupIconLabel(effectData);
+		var iconData = EffectIconMap.lookupIconLabel(effectData);
+		_iconBaseLabel = iconData.baseLabel;
+		_iconEmblemLabel = iconData.emblemLabel;
 		
-		skyui.util.Debug.log("Found icon " + _iconLabel);
+		skyui.util.Debug.log("Found icon " + _iconBaseLabel + ", emblem " + _iconEmblemLabel);
  
-		if (_iconLabel == "default_effect" || _iconLabel == undefined || _iconLabel == "") {
+		if (_iconBaseLabel == "default_effect" || _iconBaseLabel == undefined || _iconBaseLabel == "") {
 			skyui.util.Debug.log("[SkyUI Active Effects]: Couldn't determine icon for")
 			for (var s: String in effectData)
 				skyui.util.Debug.log("                        " + s + ": " + effectData[s])
@@ -164,7 +167,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 		// TODO, make it scale w/ icon size. All the icons we use are 128*128 so it doesn't matter
 		_icon._width = _icon._height = _iconHolder.iconBackground._width;
-		_icon.gotoAndStop(_iconLabel);
+		_icon.baseIcon.gotoAndStop(_iconBaseLabel);
+		_icon.emblemIcon.gotoAndStop(_iconEmblemLabel);
 	}
 
 	private function onLoadError(a_mc: MovieClip, a_errorCode: String): Void

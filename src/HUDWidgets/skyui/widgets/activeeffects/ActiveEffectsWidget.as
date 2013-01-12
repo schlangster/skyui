@@ -14,7 +14,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private static var EFFECT_MOVE_DURATION: Number = 1.00;
 	private static var GROUP_MOVE_DURATION: Number = 1.00;
 
-	private static var ICON_LOCATION: String = "skyui/skyui_icons_psychosteve.swf";
+	private static var ICON_SOURCE: String = "skyui/icons_effect_psychosteve.swf";
 	
 
 	// config
@@ -246,7 +246,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		if (freeEffectsGroup == undefined) {
 			var initObject: Object = {index: newGroupIdx,
-										iconLocation: ICON_LOCATION,
+										iconLocation: _rootPath + ICON_SOURCE,
 										groupMoveDuration: GROUP_MOVE_DURATION,
 										groupSpacing: _groupSpacing,
 										effectBaseSize: _effectBaseSize,
