@@ -8,6 +8,9 @@ class skyui.widgets.status.StatusWidget extends WidgetBase
 {
   /* CONSTANTS */
 
+  	public static var ALIGN_LEFT: String = "left";
+  	public static var ALIGN_RIGHT: String = "right";
+  	public static var ALIGN_CENTER: String = "center";
 	public static var ALIGN_BORDER: String = "border";
 	
 	public static var FILL_LEFT: String = "left";

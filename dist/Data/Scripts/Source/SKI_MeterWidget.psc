@@ -139,7 +139,7 @@ endEvent
 
 ; @overrides SKI_WidgetBase
 string function GetWidgetSource()
-	return "meter.swf"
+	return "skyui/meter.swf"
 endFunction
 
 ; @overrides SKI_WidgetBase

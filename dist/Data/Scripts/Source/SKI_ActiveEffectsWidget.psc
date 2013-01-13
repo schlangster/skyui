@@ -10,7 +10,7 @@ string	_orientation		= "vertical"
 
 ; @overrides SKI_WidgetBase
 string function GetWidgetSource()
-	return "activeeffects.swf"
+	return "skyui/activeeffects.swf"
 endFunction
 
 ; @overrides SKI_WidgetBase

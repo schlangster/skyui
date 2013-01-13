@@ -597,7 +597,7 @@ endEvent
 
 ; @overrides SKI_WidgetBase
 string function GetWidgetSource()
-	return "status.swf"
+	return "skyui/status.swf"
 endFunction
 
 ; @overrides SKI_WidgetBase

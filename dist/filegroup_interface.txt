@@ -20,10 +20,9 @@ Interface\skyui\mcm_splash.swf
 Interface\skyui\res\mcm_logo.dds
 Interface\exported\skyui\widgetloader.swf
 Interface\exported\skyui\icons_effect_psychosteve.swf
-Interface\exported\widgets\activeeffects.swf
-Interface\exported\widgets\meter.swf
-Interface\exported\widgets\status.swf
-Interface\exported\widgets\textbox.swf
+Interface\exported\widgets\skyui\activeeffects.swf
+Interface\exported\widgets\skyui\meter.swf
+Interface\exported\widgets\skyui\status.swf
 Interface\translations\SkyUI_czech.txt
 Interface\translations\SkyUI_english.txt
 Interface\translations\SkyUI_french.txt
