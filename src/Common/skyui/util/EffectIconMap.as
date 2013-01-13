@@ -26,7 +26,7 @@ class skyui.util.EffectIconMap
 		"conjure",		// 18 - ARCHETYPE_SUMMONCREATURE			OK
 		null,			// 19 - ARCHETYPE_DETECTLIFE				nn
 		null,			// 20 - ARCHETYPE_TELEKINESIS				nn
-		"paralysis",	// 21 - ARCHETYPE_PARALYSIS					?
+		"paralysis",	// 21 - ARCHETYPE_PARALYSIS					X
 		null,			// 22 - ARCHETYPE_REANIMATE					nn
 		null,			// 23 - ARCHETYPE_SOULTRAP					nn
 		null,			// 24 - ARCHETYPE_TURNUNDEAD				nn
@@ -44,9 +44,9 @@ class skyui.util.EffectIconMap
 		"werewolf",		// 36 - ARCHETYPE_WEREWOLF					OK
 		"slowtime",		// 37 - ARCHETYPE_SLOWTIME					X
 		null,			// 38 - ARCHETYPE_RALLY						nn
-		"magicweapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				X
+		"buffweapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				X
 		null,			// 40 - ARCHETYPE_SPAWNHAZARD				nn
-		null,			// 41 - ARCHETYPE_ETHEREALIZE				?
+		"ethereal",		// 41 - ARCHETYPE_ETHEREALIZE				X
 		null,			// 42 - ARCHETYPE_BANISH					nn
 		null,
 		null,			// 44 - ARCHETYPE_DISGUISE					?
@@ -55,12 +55,12 @@ class skyui.util.EffectIconMap
 	];
 	
 	private static var _avMap: Array = [
-		null,						// 0 - AV_AGGRESSION
-		null,						// 1 - AV_CONFIDENCE
-		null,						// 2 - AV_ENERGY
-		null,						// 3 - AV_MORALITY
-		null,						// 4 - AV_MOOD
-		null,						// 5 - AV_ASSISTANCE
+		null,						// 0 - AV_AGGRESSION			nn
+		null,						// 1 - AV_CONFIDENCE			nn
+		null,						// 2 - AV_ENERGY				nn
+		null,						// 3 - AV_MORALITY				nn
+		null,						// 4 - AV_MOOD					nn
+		null,						// 5 - AV_ASSISTANCE			nn
 		"av_skill_weapon_1h",		// 6 - AV_ONEHANDED
 		"av_skill_weapon_2h",		// 7 - AV_TWOHANDED
 		"av_skill_archery",			// 8 - AV_MARKSMAN
@@ -85,8 +85,8 @@ class skyui.util.EffectIconMap
 		"av_health_regen",			// 27 - AV_HEALRATE
 		"av_magicka_regen",			// 28 - AV_MAGICKARATE
 		"av_stamina_regen",			// 29 - AV_STAMINARATE
-		"destruction_special_slow",	// 30 - AV_SPEEDMULT			x
-		null, 						// 31 - AV_INVENTORYWEIGHT
+		"destruction_special_slow",	// 30 - AV_SPEEDMULT			X
+		null, 						// 31 - AV_INVENTORYWEIGHT		nn
 		"av_carryweight",			// 32 - AV_CARRYWEIGHT
 		null,						// 33 - AV_CRITCHANCE
 		"av_skill_unarmed",			// 34 - AV_MELEEDAMAGE
