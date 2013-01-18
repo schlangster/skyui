@@ -26,13 +26,12 @@ class skyui.util.MarkupParser
 		styleSheet.setStyle("p", {color: "#FFFFFF", fontSize: "17px"});
 		styleSheet.setStyle(".list", {color: "#FFFFFF", fontSize: "17px", textIndent: "10px"});
 		styleSheet.setStyle("bullet", {color: "#FFFFFF", fontSize: "20px"});
-		styleSheet.setStyle("strong", {color: "#DDDDDD", fontWeight: "bold"});
-		styleSheet.setStyle("em", {fontStyle: "italic"});
+		styleSheet.setStyle("strong", {color: "#DDDDDD", fontWeight: "bold", fontFamily: "$EverywhereBoldFont"});
+		styleSheet.setStyle("em", {fontStyle: "italic", fontFamily: "$EverywhereFont"});
 		styleSheet.setStyle("underline", {textDecoration: "underline"});
 		styleSheet.setStyle("a:link", {color: "#FFFFFF", textDecoration: "none"});
 		styleSheet.setStyle("a:hover", {color: "#FFFFFF", textDecoration: "underline"});
 		styleSheet.setStyle("a:active", {color: "#FFFFFF", textDecoration: "underline"});
-		styleSheet.setStyle("li", {color: "#FFFFFF", fontSize: "14px"});
 		styleSheet.setStyle("h1", {color: "#FFFFFF", fontSize: "28px"});
 		styleSheet.setStyle("h2", {color: "#FFFFFF", fontSize: "24px"});
 		styleSheet.setStyle("h3", {color: "#FFFFFF", fontSize: "18px"});
