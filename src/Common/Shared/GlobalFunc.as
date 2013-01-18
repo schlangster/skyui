@@ -30,7 +30,7 @@ class Shared.GlobalFunc
 
 	static function MaintainTextFormat(): Void
 	{
-		TextField.prototype.SetText = function (aText: String, abHTMLText: String)
+		TextField.prototype.SetText = function (aText: String, abHTMLText: Boolean)
 		{
 			if (aText == undefined || aText == "") 
 				aText = " ";
