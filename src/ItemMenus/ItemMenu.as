@@ -211,8 +211,8 @@ class ItemMenu extends MovieClip
 			
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
-			
-		if (GlobalFunc.IsKeyPressed(details) && details.navEquivalent == NavigationCode.TAB)
+		
+		if (GlobalFunc.IsKeyPressed(details) && (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.SHIFT_TAB))
 			GameDelegate.call("CloseMenu",[]);
 
 		return true;
@@ -537,16 +537,18 @@ class ItemMenu extends MovieClip
 		 so the flags don't get updated.
 		If the item is a book, we apply the book read flag and invalidate locally
 	*/
-	private function checkBook(a_entryObject: Object): Void
+	private function checkBook(a_entryObject: Object): Boolean
 	{
 
-		if (a_entryObject.type != Inventory.ICT_BOOK)
-			return;
+		if (a_entryObject.type != Inventory.ICT_BOOK || _global.skse == null)
+			return false;
 
 		a_entryObject.flags |= Item.BOOKFLAG_READ;
 		a_entryObject.skyui_itemDataProcessed = false;
 		
 		inventoryLists.itemList.requestInvalidate();
+
+		return true;
 	}
 	
 	private function getEquipButtonData(a_itemType: Number, a_bAlwaysEquip: Boolean): Object

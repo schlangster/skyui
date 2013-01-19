@@ -11,6 +11,7 @@ import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Input;
 import skyui.defines.Inventory;
+import skyui.defines.Item;
 
 
 class ContainerMenu extends ItemMenu
@@ -225,7 +226,10 @@ class ContainerMenu extends ItemMenu
 	{
 		if (_equipHand != undefined) {
 			GameDelegate.call("EquipItem",[_equipHand, event.amount]);
-			checkBook(inventoryLists.itemList.selectedEntry);
+
+			if (!checkBook(inventoryLists.itemList.selectedEntry))
+				checkPoison(inventoryLists.itemList.selectedEntry);
+
 			_equipHand = undefined;
 			return;
 		}
@@ -315,11 +319,36 @@ class ContainerMenu extends ItemMenu
 		}
 
 		GameDelegate.call("EquipItem",[a_equipHand]);
-		checkBook(inventoryLists.itemList.selectedEntry);
+		if (!checkBook(inventoryLists.itemList.selectedEntry))
+			checkPoison(inventoryLists.itemList.selectedEntry);
 	}
 	
 	private function isViewingContainer(): Boolean
 	{
 		return (inventoryLists.categoryList.activeSegment == 0);
+	}
+
+	/*
+		This method is only used in ContainerMenu.
+		If you attempt to use a poison in Container menu
+		  a dialog box is presented to ask whether you want to poison the equipped weapon
+		  If you release the _equipModeKey while the diaolog is present, the keyUp event
+		  for this key is not received by ContainerMenu, so _bEquipMode remains true
+		  meaning that the bottom bar buttons are incorrect
+	*/
+	private function checkPoison(a_entryObject: Object): Boolean
+	{
+		if (a_entryObject.type != Inventory.ICT_POTION || _global.skse == null)
+			return false;
+
+		if (a_entryObject.subType != Item.POTION_POISON)
+			return false;
+
+		// force equip mode to false.
+		// Use this until we can detect if a specific keyCode is depressed
+		// _bEquipMode = skse.IsKeyDown(_equipModeKey)
+		_bEquipMode = false;
+
+		return true;
 	}
 }

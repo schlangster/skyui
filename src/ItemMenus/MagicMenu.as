@@ -88,7 +88,7 @@ class MagicMenu extends ItemMenu
 			return true;
 			
 		if (GlobalFunc.IsKeyPressed(details)) {
-			if (details.navEquivalent == NavigationCode.TAB) {
+			if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.SHIFT_TAB ) {
 				startMenuFade();
 				GameDelegate.call("CloseTweenMenu",[]);
 			} else if (!inventoryLists.itemList.disableInput) {
