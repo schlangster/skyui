@@ -37,7 +37,6 @@ string property		ReqSWFVersion
 	endFunction
 endProperty
 
-bool property		HUDMenuCheckEnabled			= true auto
 bool property		InventoryMenuCheckEnabled	= true auto
 bool property		MagicMenuCheckEnabled		= true auto
 bool property		BarterMenuCheckEnabled		= true auto 
@@ -103,34 +102,41 @@ endEvent
 
 event OnMenuOpen(string a_menuName)
 	if (a_menuName == INVENTORY_MENU)
-		UnregisterForMenu(INVENTORY_MENU)
-		CheckMenuVersion("inventorymenu.swf", INVENTORY_MENU, "_global.InventoryMenu")
-		CheckItemMenuComponents(INVENTORY_MENU)
+		if (CheckMenuVersion("inventorymenu.swf", a_menuName, "_global.InventoryMenu") && \
+			CheckItemMenuComponents(a_menuName))
+			; Only unregister if all checks have been performed (regardless of check result)
+			UnregisterForMenu(a_menuName)
+		EndIf
 
 	elseIf (a_menuName == MAGIC_MENU)
-		UnregisterForMenu(MAGIC_MENU)
-		CheckMenuVersion("magicmenu.swf", MAGIC_MENU, "_global.MagicMenu")
-		CheckItemMenuComponents(MAGIC_MENU)
+		if (CheckMenuVersion("magicmenu.swf", a_menuName, "_global.MagicMenu") && \
+			CheckItemMenuComponents(a_menuName))
+			UnregisterForMenu(a_menuName)
+		EndIf
 
 	elseIf (a_menuName == CONTAINER_MENU)
-		UnregisterForMenu(CONTAINER_MENU)
-		CheckMenuVersion("containermenu.swf", CONTAINER_MENU, "_global.ContainerMenu")
-		CheckItemMenuComponents(CONTAINER_MENU)
+		if (CheckMenuVersion("containermenu.swf", a_menuName, "_global.ContainerMenu") && \
+			CheckItemMenuComponents(a_menuName))
+			UnregisterForMenu(a_menuName)
+		EndIf
 
 	elseIf (a_menuName == BARTER_MENU)
-		UnregisterForMenu(BARTER_MENU)
-		CheckMenuVersion("bartermenu.swf", BARTER_MENU, "_global.BarterMenu")
-		CheckItemMenuComponents(BARTER_MENU)
+		if (CheckMenuVersion("bartermenu.swf", a_menuName, "_global.BarterMenu") && \
+			CheckItemMenuComponents(a_menuName))
+			UnregisterForMenu(a_menuName)
+		EndIf
 
 	elseIf (a_menuName == GIFT_MENU)
-		UnregisterForMenu(GIFT_MENU)
-		CheckMenuVersion("giftmenu.swf", GIFT_MENU, "_global.GiftMenu")
-		CheckItemMenuComponents(GIFT_MENU)
+		if (CheckMenuVersion("giftmenu.swf", a_menuName, "_global.GiftMenu") && \
+			CheckItemMenuComponents(a_menuName))
+			UnregisterForMenu(a_menuName)
+		EndIf
 
 	elseIf (a_menuName == JOURNAL_MENU)
-		UnregisterForMenu(JOURNAL_MENU)
-		CheckMenuVersion("quest_journal.swf", JOURNAL_MENU, "_global.Quest_Journal")
-		CheckMenuVersion("skyui/configpanel.swf", JOURNAL_MENU, "_global.ConfigPanel")
+		if (CheckMenuVersion("quest_journal.swf", a_menuName, "_global.Quest_Journal") && \
+			CheckMenuVersion("skyui/configpanel.swf", a_menuName, "_global.ConfigPanel"))
+			UnregisterForMenu(a_menuName)
+		EndIf
 	endIf
 endEvent
 
@@ -142,9 +148,15 @@ function Error(string a_msg)
 	ErrorDetected = true
 endFunction
 
-function CheckMenuVersion(string a_swfName, string a_menu, string a_class)
+bool function CheckMenuVersion(string a_swfName, string a_menu, string a_class)
+	; Returns false if the menu is closed before UI.Get* receive their value
+
 	int releaseIdx = UI.GetInt(a_menu, a_class + ".SKYUI_RELEASE_IDX")
 	string version = UI.GetString(a_menu, a_class + ".SKYUI_VERSION_STRING")
+
+	if (!UI.IsMenuOpen(a_menu))
+		return false
+	endIf
 
 	if (releaseIdx == 0)
 		Error("Incompatible menu file (" + a_swfName + ").\nPlease make sure you installed everything correctly and no other mod has overwritten this file.\n" \
@@ -154,11 +166,16 @@ function CheckMenuVersion(string a_swfName, string a_menu, string a_class)
 		Error("Menu file version mismatch for " + a_swfName + ".\n" \
 			+ "Required version: " + ReqSWFVersion + "\n" \
 			+ "Detected version: " + version)
+
 	endIf
+
+	return true
 endFunction
 
-function CheckItemMenuComponents(string a_menu)
-	CheckMenuVersion("skyui/itemcard.swf", a_menu, "_global.ItemCard")
-	CheckMenuVersion("skyui/bottombar.swf", a_menu, "_global.BottomBar")
-	CheckMenuVersion("skyui/inventorylists.swf", a_menu, "_global.InventoryLists")
+bool function CheckItemMenuComponents(string a_menu)
+	; Returns false if the menu is closed before all checks have finished
+
+	return CheckMenuVersion("skyui/itemcard.swf", a_menu, "_global.ItemCard") && \
+			CheckMenuVersion("skyui/bottombar.swf", a_menu, "_global.BottomBar") && \
+			CheckMenuVersion("skyui/inventorylists.swf", a_menu, "_global.InventoryLists")
 endFunction
