@@ -37,9 +37,9 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 
 
 	// @papyrus
-	public function initStrings(a_fillOrigin: String): Void
+	public function initStrings(a_fillDirection: String): Void
 	{
-		meter.setFillOrigin(a_fillOrigin, true); //Reset fill origin and force percentage back
+		meter.setFillDirection(a_fillDirection, true); //Reset fill Direction and force percentage back
 	}
 
 	// @papyrus
@@ -93,9 +93,9 @@ class skyui.widgets.meter.MeterWidget extends WidgetBase
 	}
 
 	// @papyrus
-	public function setFillOrigin(a_fillOrigin: String): Void
+	public function setFillDirection(a_fillDirection: String): Void
 	{
-		meter.fillOrigin = a_fillOrigin;
+		meter.fillDirection = a_fillDirection;
 	}
 
 	// @papyrus

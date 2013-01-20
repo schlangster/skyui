@@ -8,9 +8,9 @@ class skyui.components.Meter extends MovieClip
 {
   /* CONSTANTS */
 
-	public static var FILL_ORIGIN_LEFT: String = "left";
-	public static var FILL_ORIGIN_RIGHT: String = "right";
-	public static var FILL_ORIGIN_CENTER: String = "center";
+	public static var FILL_DIRECTION_LEFT: String = "left";
+	public static var FILL_DIRECTION_RIGHT: String = "right";
+	public static var FILL_DIRECTION_CENTER: String = "center";
 
   /* PRIVATE VARIABLES */
 	
@@ -29,12 +29,12 @@ class skyui.components.Meter extends MovieClip
 
 	private var _currentPercent: Number;
 	private var _targetPercent: Number;
+	private var _fillDelta: Number = 0.02;
+	private var _emptyDelta: Number = 0.03;
 	private var _emptyIdx: Number;
 	private var _fullIdx: Number;
 	
-	private var _fillOrigin: String;
-	private var _fillSpeed: Number;
-	private var _emptySpeed: Number;
+	private var _fillDirection: String;
 	private var _secondaryColor: Number;
 	private var _primaryColor: Number;
 	private var _flashColor: Number;
@@ -85,7 +85,7 @@ class skyui.components.Meter extends MovieClip
 	public function onLoad(): Void
 	{
 		invalidateSize();
-		invalidateFillOrigin();
+		invalidateFillDirection();
 
 		onEnterFrame = enterFrameHandler;
 
@@ -200,24 +200,24 @@ class skyui.components.Meter extends MovieClip
 			invalidateFlashColor();
 	}
 
-	public function get fillOrigin(): String 
+	public function get fillDirection(): String 
 	{
-		return _fillOrigin;
+		return _fillDirection;
 	}
-	public function set fillOrigin(a_fillOrigin: String): Void
+	public function set fillDirection(a_fillDirection: String): Void
 	{
-		setFillOrigin(a_fillOrigin)
+		setFillDirection(a_fillDirection)
 	}
 
-	public function setFillOrigin(a_fillOrigin, a_restorePercent: Boolean): Void
+	public function setFillDirection(a_fillDirection, a_restorePercent: Boolean): Void
 	{
-		var fillOrigin: String = a_fillOrigin.toLowerCase();
-		if (_fillOrigin == fillOrigin && !a_restorePercent)
+		var fillDirection: String = a_fillDirection.toLowerCase();
+		if (_fillDirection == fillDirection && !a_restorePercent)
 			return;
-		_fillOrigin = fillOrigin;
+		_fillDirection = fillDirection;
 
 		if (_initialized)
-			invalidateFillOrigin(a_restorePercent);
+			invalidateFillDirection(a_restorePercent);
 	}
 
 	public function get percent(): Number 
@@ -232,7 +232,7 @@ class skyui.components.Meter extends MovieClip
 	public function setPercent(a_percent: Number, a_force: Boolean): Void
 	{
 		_targetPercent = Math.min(1, Math.max(a_percent, 0));
-		
+
 		if (a_force) {
 			_currentPercent = _targetPercent;
 			var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_emptyIdx, _fullIdx, 0, 1, _currentPercent));
@@ -282,18 +282,18 @@ class skyui.components.Meter extends MovieClip
 		_meterFillHolder._xscale = ((_meterFrameContent._width - 2*_originalCapWidth)/_originalMeterFillHolderWidth) * 100;
 	}
 
-	private function invalidateFillOrigin(a_restorePercent: Boolean): Void
+	private function invalidateFillDirection(a_restorePercent: Boolean): Void
 	{
-		switch(_fillOrigin) {
-			case FILL_ORIGIN_LEFT:
-			case FILL_ORIGIN_CENTER:
-			case FILL_ORIGIN_RIGHT:
+		switch(_fillDirection) {
+			case FILL_DIRECTION_LEFT:
+			case FILL_DIRECTION_CENTER:
+			case FILL_DIRECTION_RIGHT:
 				break;
 			default:
-				_fillOrigin = FILL_ORIGIN_LEFT;
+				_fillDirection = FILL_DIRECTION_LEFT;
 		}
 
-		_meterFillContent.gotoAndStop(_fillOrigin);
+		_meterFillContent.gotoAndStop(_fillDirection);
 		
 		drawMeterGradients();
 		
@@ -305,9 +305,7 @@ class skyui.components.Meter extends MovieClip
 		if (a_restorePercent || !_initialized)
 			setPercent(_currentPercent, true);
 		else
-			setPercent(0, true); // Reset to 0, assume that if fillOrigin is changed, meter data provider changed
-		_fillSpeed = 2;
-		_emptySpeed = 3;
+			setPercent(0, true); // Reset to 0, assume that if fillDirection is changed, meter data provider changed
 	}
 
 	private function drawMeterGradients(): Void
@@ -359,18 +357,18 @@ class skyui.components.Meter extends MovieClip
 			
 		meterGradient = _meterBar.createEmptyMovieClip("meterGradient", 0);
 		
-		switch(_fillOrigin) {
-			case FILL_ORIGIN_LEFT:
+		switch(_fillDirection) {
+			case FILL_DIRECTION_LEFT:
 				colors = [_secondaryColor, _primaryColor];
 				alphas = [100, 100];
 				ratios = [0, 255];
 				break;
-			case FILL_ORIGIN_CENTER:
+			case FILL_DIRECTION_CENTER:
 				colors = [_secondaryColor, _primaryColor, _secondaryColor];
 				alphas = [100, 100, 100];
 				ratios = [0, 127, 255];
 				break;
-			case FILL_ORIGIN_RIGHT:
+			case FILL_DIRECTION_RIGHT:
 			default:
 				colors = [_primaryColor, _secondaryColor];
 				alphas = [100, 100];
@@ -403,7 +401,6 @@ class skyui.components.Meter extends MovieClip
 
 	private function enterFrameHandler(): Void
 	{
-
 		/*if (!_initialized) {
 			_currentPercent = _targetPercent;
 		} else*/ if (_targetPercent == _currentPercent) {
@@ -411,11 +408,11 @@ class skyui.components.Meter extends MovieClip
 		}
 			
 		if (_currentPercent < _targetPercent) {
-			_currentPercent = _currentPercent + _fillSpeed;
+			_currentPercent = _currentPercent + _fillDelta;
 			if (_currentPercent > _targetPercent)
 				_currentPercent = _targetPercent;
 		} else {
-			_currentPercent = _currentPercent - _emptySpeed;
+			_currentPercent = _currentPercent - _emptyDelta;
 			if (_currentPercent < _targetPercent)
 				_currentPercent = _targetPercent;
 		}

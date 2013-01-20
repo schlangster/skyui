@@ -7,7 +7,7 @@ float	_height			= 25.2
 int		_primaryColor	= 0xFF0000
 int		_secondaryColor	= -1
 int		_flashColor		= -1
-string 	_fillOrigin		= "center"
+string 	_fillDirection	= "center"
 float	_percent		= 0.0
 
 
@@ -80,16 +80,16 @@ int property FlashColor
 	endFunction
 endProperty
 
-string property FillOrigin
+string property FillDirection
 	{The position at which the meter fills from, ["left", "center", "right"] . Default: center}
 	string function get()
-		return _fillOrigin
+		return _fillDirection
 	endFunction
 	
 	function set(string a_val)
-		_fillOrigin = a_val
+		_fillDirection = a_val
 		if (Ready)
-			UI.InvokeString(HUD_MENU, WidgetRoot + ".setFillOrigin", _fillOrigin)
+			UI.InvokeString(HUD_MENU, WidgetRoot + ".setFillDirection", _fillDirection)
 		endIf
 	endFunction
 endProperty
@@ -127,7 +127,7 @@ event OnWidgetReset()
 	
 	; Init strings
 	string[] stringArgs = new string[1] ;This is an array because I want to add more to it later...
-	stringArgs[0] = _fillOrigin
+	stringArgs[0] = _fillDirection
 	UI.InvokeStringA(HUD_MENU, WidgetRoot + ".initStrings", stringArgs)
 	
 	; Init commit
