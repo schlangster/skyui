@@ -26,7 +26,7 @@ class skyui.util.EffectIconMap
 		"conjure",		// 18 - ARCHETYPE_SUMMONCREATURE			OK
 		null,			// 19 - ARCHETYPE_DETECTLIFE				nn
 		null,			// 20 - ARCHETYPE_TELEKINESIS				nn
-		"paralysis",	// 21 - ARCHETYPE_PARALYSIS					?
+		"paralysis",	// 21 - ARCHETYPE_PARALYSIS					X
 		null,			// 22 - ARCHETYPE_REANIMATE					nn
 		null,			// 23 - ARCHETYPE_SOULTRAP					nn
 		null,			// 24 - ARCHETYPE_TURNUNDEAD				nn
@@ -42,11 +42,11 @@ class skyui.util.EffectIconMap
 		null,			// 34 - ARCHETYPE_PEAKVALUEMOD				EMBLEM
 		"cloak",		// 35 - ARCHETYPE_CLOAK						X
 		"werewolf",		// 36 - ARCHETYPE_WEREWOLF					OK
-		"slowtime",		// 37 - ARCHETYPE_SLOWTIME					X
+		"slow_time",	// 37 - ARCHETYPE_SLOWTIME					X
 		null,			// 38 - ARCHETYPE_RALLY						nn
-		"magicweapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				X
+		"ench_weapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				X
 		null,			// 40 - ARCHETYPE_SPAWNHAZARD				nn
-		null,			// 41 - ARCHETYPE_ETHEREALIZE				?
+		"ethereal",		// 41 - ARCHETYPE_ETHEREALIZE				X
 		null,			// 42 - ARCHETYPE_BANISH					nn
 		null,
 		null,			// 44 - ARCHETYPE_DISGUISE					?
@@ -55,50 +55,50 @@ class skyui.util.EffectIconMap
 	];
 	
 	private static var _avMap: Array = [
-		null,						// 0 - AV_AGGRESSION
-		null,						// 1 - AV_CONFIDENCE
-		null,						// 2 - AV_ENERGY
-		null,						// 3 - AV_MORALITY
-		null,						// 4 - AV_MOOD
-		null,						// 5 - AV_ASSISTANCE
-		"av_skill_weapon_1h",		// 6 - AV_ONEHANDED
-		"av_skill_weapon_2h",		// 7 - AV_TWOHANDED
-		"av_skill_archery",			// 8 - AV_MARKSMAN
-		"av_skill_block",			// 9 - AV_BLOCK
-		"av_skill_smithing",		// 10 - AV_SMITHING
-		"av_skill_armor_heavy",		// 11 - AV_HEAVYARMOR
-		"av_skill_armor_light",		// 12 - AV_LIGHTARMOR
-		"av_skill_pickpocket",		// 13 - AV_PICKPOCKET
-		"av_skill_lockpicking",		// 14 - AV_LOCKPICKING
-		"av_skill_sneak",			// 15 - AV_SNEAK
-		"av_skill_alchemy",			// 16- AV_ALCHEMY
-		"av_skill_persuasion",		// 17 - AV_SPEECHCRAFT
-		"av_skill_alteration",		// 18 - AV_ALTERATION
-		"av_skill_conjuration",		// 19 - AV_CONJURATION
-		"av_skill_destruction",		// 20 - AV_DESTRUCTION
-		"av_skill_illusion",		// 21 - AV_ILLUSION
-		"av_skill_restoration",		// 22 - AV_RESTORATION
-		"av_skill_enchanting",		// 23 - AV_ENCHANTING
-		"av_health",				// 24 - AV_HEALTH
-		"av_magica",				// 25 - AV_MAGICKA
-		"av_stamina",				// 26 - AV_STAMINA
-		"av_health_regen",			// 27 - AV_HEALRATE
-		"av_magicka_regen",			// 28 - AV_MAGICKARATE
-		"av_stamina_regen",			// 29 - AV_STAMINARATE
-		"destruction_special_slow",	// 30 - AV_SPEEDMULT			x
-		null, 						// 31 - AV_INVENTORYWEIGHT
-		"av_carryweight",			// 32 - AV_CARRYWEIGHT
+		null,						// 0 - AV_AGGRESSION					nn
+		null,						// 1 - AV_CONFIDENCE					nn
+		null,						// 2 - AV_ENERGY						nn
+		null,						// 3 - AV_MORALITY						nn
+		null,						// 4 - AV_MOOD							nn
+		null,						// 5 - AV_ASSISTANCE					nn
+		"av_skill_weapon_1h",		// 6 - AV_ONEHANDED						OK
+		"av_skill_weapon_2h",		// 7 - AV_TWOHANDED						OK
+		"av_skill_archery",			// 8 - AV_MARKSMAN						OK
+		"av_skill_block",			// 9 - AV_BLOCK							OK
+		"av_skill_smithing",		// 10 - AV_SMITHING						OK
+		"av_skill_armor_heavy",		// 11 - AV_HEAVYARMOR					OK
+		"av_skill_armor_light",		// 12 - AV_LIGHTARMOR					OK
+		"av_skill_pickpocket",		// 13 - AV_PICKPOCKET					OK
+		"av_skill_lockpicking",		// 14 - AV_LOCKPICKING					OK
+		"av_skill_sneak",			// 15 - AV_SNEAK						OK
+		"av_skill_alchemy",			// 16 - AV_ALCHEMY						OK
+		"av_skill_persuasion",		// 17 - AV_SPEECHCRAFT					OK
+		"av_skill_alteration",		// 18 - AV_ALTERATION					OK
+		"av_skill_conjuration",		// 19 - AV_CONJURATION					OK
+		"av_skill_destruction",		// 20 - AV_DESTRUCTION					OK
+		"av_skill_illusion",		// 21 - AV_ILLUSION						OK
+		"av_skill_restoration",		// 22 - AV_RESTORATION					OK
+		"av_skill_enchanting",		// 23 - AV_ENCHANTING					OK
+		"av_health",				// 24 - AV_HEALTH						OK
+		"av_magica",				// 25 - AV_MAGICKA						OK
+		"av_stamina",				// 26 - AV_STAMINA						OK
+		"av_health_regen",			// 27 - AV_HEALRATE						OK
+		"av_magicka_regen",			// 28 - AV_MAGICKARATE					OK
+		"av_stamina_regen",			// 29 - AV_STAMINARATE					OK
+		"destruction_special_slow",	// 30 - AV_SPEEDMULT					X
+		null, 						// 31 - AV_INVENTORYWEIGHT				nn
+		"av_carryweight",			// 32 - AV_CARRYWEIGHT					OK
 		null,						// 33 - AV_CRITCHANCE
-		"av_skill_unarmed",			// 34 - AV_MELEEDAMAGE
-		"av_skill_unarmed",			// 35 - AV_UNARMEDDAMAGE
+		"av_skill_unarmed",			// 34 - AV_MELEEDAMAGE					OK
+		"av_skill_unarmed",			// 35 - AV_UNARMEDDAMAGE				OK
 		null, 						// 36 - AV_MASS
 		null,						// 37 - AV_VOICEPOINTS
 		null,						// 38 - AV_VOICERATE
-		null,						// 39 - AV_DAMAGERESIST			x
+		null,						// 39 - AV_DAMAGERESIST					X
 		"av_resist_poison",			// 40 - AV_POISONRESIST
-		"av_resist_fire",			// 41 - AV_FIRERESIST
-		"av_resist_shock",			// 42 - AV_ELECTRICRESIST
-		"av_resist_frost",			// 43 - AV_FROSTRESIST
+		"av_resist_fire",			// 41 - AV_FIRERESIST					OK
+		"av_resist_shock",			// 42 - AV_ELECTRICRESIST				OK
+		"av_resist_frost",			// 43 - AV_FROSTRESIST					OK
 		"av_resist_magic",			// 44 - AV_MAGICRESIST
 		"av_resist_disease",		// 45 - AV_DISEASERESIST
 		null,						// 46 - AV_PERCEPTIONCONDITION
@@ -108,116 +108,116 @@ class skyui.util.EffectIconMap
 		null,						// 50 - AV_LEFTMOBILITYCONDITION
 		null,						// 51 - AV_RIGHTMOBILITYCONDITION
 		null,						// 52 - AV_BRAINCONDITION
-		null,						// 53 - AV_PARALYSIS
-		"invisibility",				// 54 - AV_INVISIBILITY
-		"nighteye",					// 55 - AV_NIGHTEYE
-		null,						// 56 - AV_DETECTLIFERANGE
-		"av_waterbreathing",		// 57 - AV_WATERBREATHING
+		"paralysis",				// 53 - AV_PARALYSIS					X
+		"invisibility",				// 54 - AV_INVISIBILITY					X
+		"av_nighteye",				// 55 - AV_NIGHTEYE						X
+		null,						// 56 - AV_DETECTLIFERANGE				nn
+		"av_waterbreathing",		// 57 - AV_WATERBREATHING				OK
 		null,						// 58 - AV_WATERWALKING
 		null,						// 59 - AV_IGNORECRIPPLEDLIMBS
-		null,						// 60 - AV_FAME
-		null,						// 61 - AV_INFAMY
+		null,						// 60 - AV_FAME							nn
+		null,						// 61 - AV_INFAMY						nn
 		null,						// 62 - AV_JUMPINGBONUS
 		"av_ward",					// 63 - AV_WARDPOWER
-		null,						// 64 - AV_RIGHTITEMCHARGE
+		null,						// 64 - AV_RIGHTITEMCHARGE				nn
 		null,						// 65 - AV_ARMORPERKS
 		null,						// 66 - AV_SHIELDPERKS
 		null,						// 67 - AV_WARDDEFLECTION
-		null,						// 68 - AV_VARIABLE01
-		null,						// 69 - AV_VARIABLE02
-		null,						// 70 - AV_VARIABLE03
-		null,						// 71 - AV_VARIABLE04
-		null,						// 72 - AV_VARIABLE05
-		null,						// 73 - AV_VARIABLE06
-		null,						// 74 - AV_VARIABLE07
-		null,						// 75 - AV_VARIABLE08
-		null,						// 76 - AV_VARIABLE09
-		null,						// 77 - AV_VARIABLE10
+		null,						// 68 - AV_VARIABLE01					nn
+		null,						// 69 - AV_VARIABLE02					nn
+		null,						// 70 - AV_VARIABLE03					nn
+		null,						// 71 - AV_VARIABLE04					nn
+		null,						// 72 - AV_VARIABLE05					nn
+		null,						// 73 - AV_VARIABLE06					nn
+		null,						// 74 - AV_VARIABLE07					nn
+		null,						// 75 - AV_VARIABLE08					nn
+		null,						// 76 - AV_VARIABLE09					nn
+		null,						// 77 - AV_VARIABLE10					nn
 		null,						// 78 - AV_BOWSPEEDBONUS
 		null,						// 79 - AV_FAVORACTIVE
 		null,						// 80 - AV_FAVORSPERDAY
-		null,						// 81 - AV_FAVORSPERDAYTIMER
+		null,						// 81 - AV_FAVORSPERDAYTIMER			nn
 		null,						// 82 - AV_LEFTITEMCHARGE
 		null,						// 83 - AV_ABSORBCHANCE
 		null,						// 84 - AV_BLINDNESS
 		null,						// 85 - AV_WEAPONSPEEDMULT
-		"av_skill_shout",			// 86 - AV_SHOUTRECOVERYMULT
+		"av_skill_shout",			// 86 - AV_SHOUTRECOVERYMULT			OK
 		null,						// 87 - AV_BOWSTAGGERBONUS
-		"telekinesis",				// 88 - AV_TELEKINESIS
+		null,						// 88 - AV_TELEKINESIS					nn
 		null,						// 89 - AV_FAVORPOINTSBONUS
-		null,						// 90 - AV_LASTBRIBEDINTIMIDATED
-		null,						// 91 - AV_LASTFLATTERED
-		"muffle",					// 92 - AV_MOVEMENTNOISEMULT
-		null,						// 93 - AV_BYPASSVENDORSTOLENCHECK
-		null,						// 94 - AV_BYPASSVENDORKEYWORDCHECK
-		null,						// 95 - AV_WAITINGFORPLAYER
-		"av_skill_weapon_1h",		// 96 - AV_ONEHANDEDMOD
-		"av_skill_weapon_2h",		// 97 - AV_TWOHANDEDMOD
-		"av_skill_archery",			// 98 - AV_MARKSMANMOD
-		"av_skill_block",			// 99 - AV_BLOCKMOD
-		"av_skill_smithing",		// 100 - AV_SMITHINGMOD
-		"av_skill_armor_heavy",		// 101 - AV_HEAVYARMORMOD
-		"av_skill_armor_light",		// 102 - AV_LIGHTARMORMOD
-		"av_skill_pickpocket",		// 103 - AV_PICKPOCKETMOD
-		"av_skill_lockpicking",		// 104 - AV_LOCKPICKINGMOD
-		"av_skill_sneak",			// 105 - AV_SNEAKMOD
-		"av_skill_alchemy",			// 106 - AV_ALCHEMYMOD
-		"av_skill_persuasion",		// 107 - AV_SPEECHCRAFTMOD
-		"av_skill_alteration",		// 108 - AV_ALTERATIONMOD
-		"av_skill_conjuration",		// 109 - AV_CONJURATIONMOD
-		"av_skill_destruction",		// 110 - AV_DESTRUCTIONMOD
-		"av_skill_illusion",		// 111 - AV_ILLUSIONMOD
-		"av_skill_restoration",		// 112 - AV_RESTORATIONMOD
-		"av_skill_enchanting",		// 113 - AV_ENCHANTINGMOD
-		null,						// 114 - AV_ONEHANDEDSKILLADVANCE
-		null,						// 115 - AV_TWOHANDEDSKILLADVANCE
-		null,						// 116 - AV_MARKSMANSKILLADVANCE
-		null,						// 117 - AV_BLOCKSKILLADVANCE
-		null,						// 118 - AV_SMITHINGSKILLADVANCE
-		null,						// 119 - AV_HEAVYARMORSKILLADVANCE
-		null,						// 120 - AV_LIGHTARMORSKILLADVANCE
-		null,						// 121 - AV_PICKPOCKETSKILLADVANCE
-		null,						// 122 - AV_LOCKPICKINGSKILLADVANCE
-		null,						// 123 - AV_SNEAKSKILLADVANCE
-		null,						// 124 - AV_ALCHEMYSKILLADVANCE
-		null,						// 125 - AV_SPEECHCRAFTSKILLADVANCE
-		null,						// 126 - AV_ALTERATIONSKILLADVANCE
-		null,						// 127 - AV_CONJURATIONSKILLADVANCE
-		null,						// 128 - AV_DESTRUCTIONSKILLADVANCE
-		null,						// 129 - AV_ILLUSIONSKILLADVANCE
-		null,						// 130 - AV_RESTORATIONSKILLADVANCE
-		null,						// 131 - AV_ENCHANTINGSKILLADVANCE
-		null,						// 132 - AV_LEFTWEAPONSPEEDMULT
-		null,						// 133 - AV_DRAGONSOULS
+		null,						// 90 - AV_LASTBRIBEDINTIMIDATED		nn
+		null,						// 91 - AV_LASTFLATTERED				nn
+		"av_noise",					// 92 - AV_MOVEMENTNOISEMULT			X
+		null,						// 93 - AV_BYPASSVENDORSTOLENCHECK		nn
+		null,						// 94 - AV_BYPASSVENDORKEYWORDCHECK		nn
+		null,						// 95 - AV_WAITINGFORPLAYER				nn
+		"av_skill_weapon_1h",		// 96 - AV_ONEHANDEDMOD					OK
+		"av_skill_weapon_2h",		// 97 - AV_TWOHANDEDMOD					OK
+		"av_skill_archery",			// 98 - AV_MARKSMANMOD					OK
+		"av_skill_block",			// 99 - AV_BLOCKMOD						OK
+		"av_skill_smithing",		// 100 - AV_SMITHINGMOD					OK
+		"av_skill_armor_heavy",		// 101 - AV_HEAVYARMORMOD				OK
+		"av_skill_armor_light",		// 102 - AV_LIGHTARMORMOD				OK
+		"av_skill_pickpocket",		// 103 - AV_PICKPOCKETMOD				OK
+		"av_skill_lockpicking",		// 104 - AV_LOCKPICKINGMOD				OK
+		"av_skill_sneak",			// 105 - AV_SNEAKMOD					OK
+		"av_skill_alchemy",			// 106 - AV_ALCHEMYMOD					OK
+		"av_skill_persuasion",		// 107 - AV_SPEECHCRAFTMOD				OK
+		"av_skill_alteration",		// 108 - AV_ALTERATIONMOD				OK
+		"av_skill_conjuration",		// 109 - AV_CONJURATIONMOD				OK
+		"av_skill_destruction",		// 110 - AV_DESTRUCTIONMOD				OK
+		"av_skill_illusion",		// 111 - AV_ILLUSIONMOD					OK
+		"av_skill_restoration",		// 112 - AV_RESTORATIONMOD				OK
+		"av_skill_enchanting",		// 113 - AV_ENCHANTINGMOD				OK
+		"av_skill_weapon_1h",		// 114 - AV_ONEHANDEDSKILLADVANCE		OK
+		"av_skill_weapon_2h",		// 115 - AV_TWOHANDEDSKILLADVANCE		OK
+		"av_skill_archery",			// 116 - AV_MARKSMANSKILLADVANCE		OK
+		"av_skill_block",			// 117 - AV_BLOCKSKILLADVANCE			OK
+		"av_skill_smithing",		// 118 - AV_SMITHINGSKILLADVANCE		OK
+		"av_skill_armor_heavy",		// 119 - AV_HEAVYARMORSKILLADVANCE		OK
+		"av_skill_armor_light",		// 120 - AV_LIGHTARMORSKILLADVANCE		OK
+		"av_skill_pickpocket",		// 121 - AV_PICKPOCKETSKILLADVANCE		OK
+		"av_skill_lockpicking",		// 122 - AV_LOCKPICKINGSKILLADVANCE		OK
+		"av_skill_sneak",			// 123 - AV_SNEAKSKILLADVANCE			OK
+		"av_skill_alchemy",			// 124 - AV_ALCHEMYSKILLADVANCE			OK
+		"av_skill_persuasion",		// 125 - AV_SPEECHCRAFTSKILLADVANCE		OK
+		"av_skill_alteration",		// 126 - AV_ALTERATIONSKILLADVANCE		OK
+		"av_skill_conjuration",		// 127 - AV_CONJURATIONSKILLADVANCE		OK
+		"av_skill_destruction",		// 128 - AV_DESTRUCTIONSKILLADVANCE		OK
+		"av_skill_illusion",		// 129 - AV_ILLUSIONSKILLADVANCE		OK
+		"av_skill_restoration",		// 130 - AV_RESTORATIONSKILLADVANCE		OK
+		"av_skill_enchanting",		// 131 - AV_ENCHANTINGSKILLADVANCE		OK
+		null,						// 132 - AV_LEFTWEAPONSPEEDMULT			OK
+		null,						// 133 - AV_DRAGONSOULS					nn
 		null,						// 134 - AV_COMBATHEALTHREGENMULT
-		"av_skill_weapon_1h",		// 135 - AV_ONEHANDEDPOWERMOD
-		"av_skill_weapon_2h",		// 136 - AV_TWOHANDEDPOWERMOD
-		"av_skill_archery",			// 137 - AV_MARKSMANPOWERMOD
-		"av_skill_block",			// 138 - AV_BLOCKPOWERMOD
-		"av_skill_smithing",		// 139 - AV_SMITHINGPOWERMOD
-		"av_skill_armor_heavy",		// 140 - AV_HEAVYARMORPOWERMOD
-		"av_skill_armor_light",		// 141 - AV_LIGHTARMORPOWERMOD
-		"av_skill_pickpocket",		// 142 - AV_PICKPOCKETPOWERMOD
-		"av_skill_lockpicking",		// 143 - AV_LOCKPICKINGPOWERMOD
-		"av_skill_sneak",			// 144 - AV_SNEAKPOWERMOD
-		"av_skill_alchemy",			// 145 - AV_ALCHEMYPOWERMOD
-		"av_skill_barter",			// 146 - AV_SPEECHCRAFTPOWERMOD
-		"av_skill_alteration",		// 147 - AV_ALTERATIONPOWERMOD
-		"av_skill_conjuration",		// 148 - AV_CONJURATIONPOWERMOD
-		"av_skill_destruction",		// 149 - AV_DESTRUCTIONPOWERMOD
-		"av_skill_illusion",		// 150 - AV_ILLUSIONPOWERMOD
-		"av_skill_restoration",		// 151 - AV_RESTORATIONPOWERMOD
-		"av_skill_enchanting",		// 152 - AV_ENCHANTINGPOWERMOD
+		"av_skill_weapon_1h",		// 135 - AV_ONEHANDEDPOWERMOD			OK
+		"av_skill_weapon_2h",		// 136 - AV_TWOHANDEDPOWERMOD			OK
+		"av_skill_archery",			// 137 - AV_MARKSMANPOWERMOD			OK
+		"av_skill_block",			// 138 - AV_BLOCKPOWERMOD				OK
+		"av_skill_smithing",		// 139 - AV_SMITHINGPOWERMOD			OK
+		"av_skill_armor_heavy",		// 140 - AV_HEAVYARMORPOWERMOD			OK
+		"av_skill_armor_light",		// 141 - AV_LIGHTARMORPOWERMOD			OK
+		"av_skill_pickpocket",		// 142 - AV_PICKPOCKETPOWERMOD			OK
+		"av_skill_lockpicking",		// 143 - AV_LOCKPICKINGPOWERMOD			OK
+		"av_skill_sneak",			// 144 - AV_SNEAKPOWERMOD				OK
+		"av_skill_alchemy",			// 145 - AV_ALCHEMYPOWERMOD				OK
+		"av_skill_persuasion",		// 146 - AV_SPEECHCRAFTPOWERMOD			OK
+		"av_skill_alteration",		// 147 - AV_ALTERATIONPOWERMOD			OK
+		"av_skill_conjuration",		// 148 - AV_CONJURATIONPOWERMOD			OK
+		"av_skill_destruction",		// 149 - AV_DESTRUCTIONPOWERMOD			OK
+		"av_skill_illusion",		// 150 - AV_ILLUSIONPOWERMOD			OK
+		"av_skill_restoration",		// 151 - AV_RESTORATIONPOWERMOD			OK
+		"av_skill_enchanting",		// 152 - AV_ENCHANTINGPOWERMOD			OK
 		null,						// 153 - AV_DRAGONREND
 		null,						// 154 - AV_ATTACKDAMAGEMULT
-		"av_health_regen",			// 155 - AV_HEALRATEMULT
-		"av_magicka_regen",			// 156 - AV_MAGICKARATEMULT
-		"av_stamina_regen",			// 157 - AV_STAMINARATEMULT
-		null,						// 158 - AV_WEREWOLFPERKS
-		null,						// 159 - AV_VAMPIREPERKS
-		null,						// 160 - AV_GRABACTOROFFSET
-		null,						// 161 - AV_GRABBED
-		null,						// 162 - AV_DEPRECATED05
+		"av_health_regen",			// 155 - AV_HEALRATEMULT				OK
+		"av_magicka_regen",			// 156 - AV_MAGICKARATEMULT				OK
+		"av_stamina_regen",			// 157 - AV_STAMINARATEMULT				OK
+		null,						// 158 - AV_WEREWOLFPERKS				nn
+		null,						// 159 - AV_VAMPIREPERKS				nn
+		null,						// 160 - AV_GRABACTOROFFSET				nn
+		null,						// 161 - AV_GRABBED						nn
+		null,						// 162 - AV_DEPRECATED05				nn
 		null						// 163 - AV_REFLECTDAMAGE
 	];
 	
