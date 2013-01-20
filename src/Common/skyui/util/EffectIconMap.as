@@ -49,7 +49,7 @@ class skyui.util.EffectIconMap
 		"ethereal",		// 41 - ARCHETYPE_ETHEREALIZE				X
 		null,			// 42 - ARCHETYPE_BANISH					nn
 		null,
-		null,			// 44 - ARCHETYPE_DISGUISE					?
+		null,			// 44 - ARCHETYPE_DISGUISE					nn
 		null,			// 45 - ARCHETYPE_GRABACTOR					nn
 		"vampire"		// 46 - ARCHETYPE_VAMPIRELORD				OK
 	];
@@ -88,41 +88,41 @@ class skyui.util.EffectIconMap
 		"destruction_special_slow",	// 30 - AV_SPEEDMULT					X
 		null, 						// 31 - AV_INVENTORYWEIGHT				nn
 		"av_carryweight",			// 32 - AV_CARRYWEIGHT					OK
-		null,						// 33 - AV_CRITCHANCE
+		null,						// 33 - AV_CRITCHANCE					nn
 		"av_skill_unarmed",			// 34 - AV_MELEEDAMAGE					OK
 		"av_skill_unarmed",			// 35 - AV_UNARMEDDAMAGE				OK
-		null, 						// 36 - AV_MASS
-		null,						// 37 - AV_VOICEPOINTS
-		null,						// 38 - AV_VOICERATE
+		null, 						// 36 - AV_MASS							nn
+		null,						// 37 - AV_VOICEPOINTS					nn
+		null,						// 38 - AV_VOICERATE					nn
 		null,						// 39 - AV_DAMAGERESIST					X
-		"av_resist_poison",			// 40 - AV_POISONRESIST
+		"av_resist_poison",			// 40 - AV_POISONRESIST					X
 		"av_resist_fire",			// 41 - AV_FIRERESIST					OK
 		"av_resist_shock",			// 42 - AV_ELECTRICRESIST				OK
 		"av_resist_frost",			// 43 - AV_FROSTRESIST					OK
-		"av_resist_magic",			// 44 - AV_MAGICRESIST
-		"av_resist_disease",		// 45 - AV_DISEASERESIST
-		null,						// 46 - AV_PERCEPTIONCONDITION
-		null,						// 47 - AV_ENDURANCECONDITION
-		null,						// 48 - AV_LEFTATTACKCONDITION
-		null,						// 49 - AV_RIGHTATTACKCONDITION
-		null,						// 50 - AV_LEFTMOBILITYCONDITION
-		null,						// 51 - AV_RIGHTMOBILITYCONDITION
-		null,						// 52 - AV_BRAINCONDITION
+		"av_resist_magic",			// 44 - AV_MAGICRESIST					X
+		"av_resist_disease",		// 45 - AV_DISEASERESIST				X
+		null,						// 46 - AV_PERCEPTIONCONDITION			nn
+		null,						// 47 - AV_ENDURANCECONDITION			nn
+		null,						// 48 - AV_LEFTATTACKCONDITION			nn
+		null,						// 49 - AV_RIGHTATTACKCONDITION			nn
+		null,						// 50 - AV_LEFTMOBILITYCONDITION		nn
+		null,						// 51 - AV_RIGHTMOBILITYCONDITION		nn
+		null,						// 52 - AV_BRAINCONDITION				nn
 		"paralysis",				// 53 - AV_PARALYSIS					X
 		"invisibility",				// 54 - AV_INVISIBILITY					X
 		"av_nighteye",				// 55 - AV_NIGHTEYE						X
 		null,						// 56 - AV_DETECTLIFERANGE				nn
 		"av_waterbreathing",		// 57 - AV_WATERBREATHING				OK
-		null,						// 58 - AV_WATERWALKING
-		null,						// 59 - AV_IGNORECRIPPLEDLIMBS
+		null,						// 58 - AV_WATERWALKING					X
+		null,						// 59 - AV_IGNORECRIPPLEDLIMBS			nn
 		null,						// 60 - AV_FAME							nn
 		null,						// 61 - AV_INFAMY						nn
-		null,						// 62 - AV_JUMPINGBONUS
-		"av_ward",					// 63 - AV_WARDPOWER
+		null,						// 62 - AV_JUMPINGBONUS					nn
+		"av_ward",					// 63 - AV_WARDPOWER					X
 		null,						// 64 - AV_RIGHTITEMCHARGE				nn
-		null,						// 65 - AV_ARMORPERKS
-		null,						// 66 - AV_SHIELDPERKS
-		null,						// 67 - AV_WARDDEFLECTION
+		null,						// 65 - AV_ARMORPERKS					X
+		null,						// 66 - AV_SHIELDPERKS					nn
+		null,						// 67 - AV_WARDDEFLECTION				nn
 		null,						// 68 - AV_VARIABLE01					nn
 		null,						// 69 - AV_VARIABLE02					nn
 		null,						// 70 - AV_VARIABLE03					nn
@@ -133,18 +133,18 @@ class skyui.util.EffectIconMap
 		null,						// 75 - AV_VARIABLE08					nn
 		null,						// 76 - AV_VARIABLE09					nn
 		null,						// 77 - AV_VARIABLE10					nn
-		null,						// 78 - AV_BOWSPEEDBONUS
-		null,						// 79 - AV_FAVORACTIVE
-		null,						// 80 - AV_FAVORSPERDAY
+		null,						// 78 - AV_BOWSPEEDBONUS				X
+		null,						// 79 - AV_FAVORACTIVE					nn
+		null,						// 80 - AV_FAVORSPERDAY					nn
 		null,						// 81 - AV_FAVORSPERDAYTIMER			nn
-		null,						// 82 - AV_LEFTITEMCHARGE
-		null,						// 83 - AV_ABSORBCHANCE
-		null,						// 84 - AV_BLINDNESS
-		null,						// 85 - AV_WEAPONSPEEDMULT
+		null,						// 82 - AV_LEFTITEMCHARGE				nn
+		null,						// 83 - AV_ABSORBCHANCE					X
+		null,						// 84 - AV_BLINDNESS					nn
+		null,						// 85 - AV_WEAPONSPEEDMULT				X
 		"av_skill_shout",			// 86 - AV_SHOUTRECOVERYMULT			OK
-		null,						// 87 - AV_BOWSTAGGERBONUS
+		null,						// 87 - AV_BOWSTAGGERBONUS				X
 		null,						// 88 - AV_TELEKINESIS					nn
-		null,						// 89 - AV_FAVORPOINTSBONUS
+		null,						// 89 - AV_FAVORPOINTSBONUS				nn
 		null,						// 90 - AV_LASTBRIBEDINTIMIDATED		nn
 		null,						// 91 - AV_LASTFLATTERED				nn
 		"av_noise",					// 92 - AV_MOVEMENTNOISEMULT			X
@@ -189,7 +189,7 @@ class skyui.util.EffectIconMap
 		"av_skill_enchanting",		// 131 - AV_ENCHANTINGSKILLADVANCE		OK
 		null,						// 132 - AV_LEFTWEAPONSPEEDMULT			OK
 		null,						// 133 - AV_DRAGONSOULS					nn
-		null,						// 134 - AV_COMBATHEALTHREGENMULT
+		null,						// 134 - AV_COMBATHEALTHREGENMULT		X
 		"av_skill_weapon_1h",		// 135 - AV_ONEHANDEDPOWERMOD			OK
 		"av_skill_weapon_2h",		// 136 - AV_TWOHANDEDPOWERMOD			OK
 		"av_skill_archery",			// 137 - AV_MARKSMANPOWERMOD			OK
@@ -208,8 +208,8 @@ class skyui.util.EffectIconMap
 		"av_skill_illusion",		// 150 - AV_ILLUSIONPOWERMOD			OK
 		"av_skill_restoration",		// 151 - AV_RESTORATIONPOWERMOD			OK
 		"av_skill_enchanting",		// 152 - AV_ENCHANTINGPOWERMOD			OK
-		null,						// 153 - AV_DRAGONREND
-		null,						// 154 - AV_ATTACKDAMAGEMULT
+		null,						// 153 - AV_DRAGONREND					nn
+		null,						// 154 - AV_ATTACKDAMAGEMULT			nn
 		"av_health_regen",			// 155 - AV_HEALRATEMULT				OK
 		"av_magicka_regen",			// 156 - AV_MAGICKARATEMULT				OK
 		"av_stamina_regen",			// 157 - AV_STAMINARATEMULT				OK
@@ -218,7 +218,7 @@ class skyui.util.EffectIconMap
 		null,						// 160 - AV_GRABACTOROFFSET				nn
 		null,						// 161 - AV_GRABBED						nn
 		null,						// 162 - AV_DEPRECATED05				nn
-		null						// 163 - AV_REFLECTDAMAGE
+		null						// 163 - AV_REFLECTDAMAGE				
 	];
 	
 	public static function lookupIconLabel(a_effectData: Object): Object
