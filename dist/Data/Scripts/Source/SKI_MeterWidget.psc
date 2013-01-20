@@ -7,7 +7,7 @@ float	_height			= 25.2
 int		_primaryColor	= 0xFF0000
 int		_secondaryColor	= -1
 int		_flashColor		= -1
-string 	_fillDirection	= "center"
+string 	_fillDirection	= "both"
 float	_percent		= 0.0
 
 

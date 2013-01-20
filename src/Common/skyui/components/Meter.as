@@ -10,7 +10,7 @@ class skyui.components.Meter extends MovieClip
 
 	public static var FILL_DIRECTION_LEFT: String = "left";
 	public static var FILL_DIRECTION_RIGHT: String = "right";
-	public static var FILL_DIRECTION_CENTER: String = "center";
+	public static var FILL_DIRECTION_BOTH: String = "both";
 
   /* PRIVATE VARIABLES */
 	
@@ -286,7 +286,7 @@ class skyui.components.Meter extends MovieClip
 	{
 		switch(_fillDirection) {
 			case FILL_DIRECTION_LEFT:
-			case FILL_DIRECTION_CENTER:
+			case FILL_DIRECTION_BOTH:
 			case FILL_DIRECTION_RIGHT:
 				break;
 			default:
@@ -363,7 +363,7 @@ class skyui.components.Meter extends MovieClip
 				alphas = [100, 100];
 				ratios = [0, 255];
 				break;
-			case FILL_DIRECTION_CENTER:
+			case FILL_DIRECTION_BOTH:
 				colors = [_secondaryColor, _primaryColor, _secondaryColor];
 				alphas = [100, 100, 100];
 				ratios = [0, 127, 255];
