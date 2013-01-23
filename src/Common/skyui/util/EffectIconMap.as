@@ -30,7 +30,7 @@ class skyui.util.EffectIconMap
 		null,			// 22 - ARCHETYPE_REANIMATE					nn
 		null,			// 23 - ARCHETYPE_SOULTRAP					nn
 		null,			// 24 - ARCHETYPE_TURNUNDEAD				nn
-		"clairvoyance",	// 25 - ARCHETYPE_GUIDE						X
+		"clairvoyance",	// 25 - ARCHETYPE_GUIDE						OK
 		null,			// 26 - ARCHETYPE_WEREWOLFFEED				nn
 		null,			// 27 - ARCHETYPE_CUREPARALYSIS				nn
 		null,			// 28 - ARCHETYPE_CUREADDICTION				nn
@@ -44,7 +44,7 @@ class skyui.util.EffectIconMap
 		"werewolf",		// 36 - ARCHETYPE_WEREWOLF					OK
 		"slow_time",	// 37 - ARCHETYPE_SLOWTIME					X
 		null,			// 38 - ARCHETYPE_RALLY						nn
-		"ench_weapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				X
+		"ench_weapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				OK
 		null,			// 40 - ARCHETYPE_SPAWNHAZARD				nn
 		"ethereal",		// 41 - ARCHETYPE_ETHEREALIZE				X
 		null,			// 42 - ARCHETYPE_BANISH					nn
