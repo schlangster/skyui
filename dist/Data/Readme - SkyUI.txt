@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.1
+Version:		3.2
 
 Download:		http://skyrim.nexusmods.com/mods/3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122

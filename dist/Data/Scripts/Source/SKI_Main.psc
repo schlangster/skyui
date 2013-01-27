@@ -10,6 +10,14 @@ string property		BARTER_MENU		= "BarterMenu" autoReadonly
 string property		GIFT_MENU		= "GiftMenu" autoReadonly
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 
+; PRIVATE VARIABLES -------------------------------------------------------------------------------
+
+bool _inventoryMenuCheckEnabled		= true
+bool _magicMenuCheckEnabled			= true
+bool _barterMenuCheckEnabled		= true
+bool _containerMenuCheckEnabled		= true
+bool _giftMenuCheckEnabled			= true
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -27,24 +35,93 @@ endProperty
 
 int property		ReqSWFRelease
 	int function get()
-		return 8
+		return 9
 	endFunction
 endProperty
 
 string property		ReqSWFVersion
 	string function get()
-		return "3.1"
+		return "3.2"
 	endFunction
 endProperty
 
-bool property		InventoryMenuCheckEnabled	= true auto
-bool property		MagicMenuCheckEnabled		= true auto
-bool property		BarterMenuCheckEnabled		= true auto 
-bool property		ContainerMenuCheckEnabled	= true auto
-bool property		GiftMenuCheckEnabled		= true auto
-
 bool property		ErrorDetected				= false auto
 
+
+bool property InventoryMenuCheckEnabled
+	bool function get()
+		return _inventoryMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_inventoryMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(INVENTORY_MENU)
+		else
+			UnregisterForMenu(INVENTORY_MENU)
+		endIf
+	endFunction
+endProperty
+
+bool property MagicMenuCheckEnabled
+	bool function get()
+		return _magicMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_magicMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(MAGIC_MENU)
+		else
+			UnregisterForMenu(MAGIC_MENU)
+		endIf
+	endFunction
+endProperty
+
+bool property BarterMenuCheckEnabled
+	bool function get()
+		return _barterMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_barterMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(BARTER_MENU)
+		else
+			UnregisterForMenu(BARTER_MENU)
+		endIf
+	endFunction
+endProperty
+
+bool property ContainerMenuCheckEnabled
+	bool function get()
+		return _containerMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_containerMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(CONTAINER_MENU)
+		else
+			UnregisterForMenu(CONTAINER_MENU)
+		endIf
+	endFunction
+endProperty
+
+bool property GiftMenuCheckEnabled
+	bool function get()
+		return _giftMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_giftMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(GIFT_MENU)
+		else
+			UnregisterForMenu(GIFT_MENU)
+		endIf
+	endFunction
+endProperty
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -70,6 +147,11 @@ event OnGameReload()
 	; Could also check for != SKSE.GetVersionRelease(), but this should be strict enough
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
 		Error("Your Skyrim Script Extender (SKSE) scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
+		return
+	endIf
+
+	if (Utility.GetINIInt("iMinMemoryPageSize:Papyrus") <= 0 || Utility.GetINIInt("iMaxMemoryPageSize:Papyrus") <= 0 || Utility.GetINIInt("iMaxAllocatedMemoryBytes:Papyrus") <= 0)
+		Error("Your Papyrus INI settings are invalid.")
 		return
 	endIf
 

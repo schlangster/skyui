@@ -9,9 +9,11 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; 2:	- Added category icon theme option
 ;		- Added noIconColor option
 ;		- Added controls section for gamepad
+;
+; 3:	- Added disable 3D item positioning option
 
 int function GetVersion()
-	return 2
+	return 3
 endFunction
 
 
@@ -92,6 +94,23 @@ int			_prevColumnButton			= 274 ; LEFT_SHOULDER
 int			_nextColumnButton			= 275 ; RIGHT_SHOULDER
 int			_sortOrderButton			= 272 ; LEFT_THUMB
 
+; -- Version 3 --
+
+; OIDs
+int			_3DItemDisablePositioningOID_B
+
+; State
+bool		_3DItemDisablePositioning		= false
+
+; Internal
+float		_fInventory3DItemPosXWide
+float		_fInventory3DItemPosX
+float		_fMagic3DItemPosXWide
+float		_fMagic3DItemPosX
+
+; Flags
+int			_3DItemFlags
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -163,6 +182,19 @@ event OnVersionUpdate(int a_version)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
 	endIf
+
+	if (a_version >= 3 && CurrentVersion < 3)
+		Debug.Trace(self + ": Updating to script version 3")
+
+		_3DItemFlags = OPTION_FLAG_NONE
+
+		;The below all reset to true with version 3.2
+		;SKI_MainInstance.InventoryMenuCheckEnabled
+		;SKI_MainInstance.MagicMenuCheckEnabled
+		;SKI_MainInstance.BarterMenuCheckEnabled
+		;SKI_MainInstance.ContainerMenuCheckEnabled
+		;SKI_MainInstance.GiftMenuCheckEnabled
+	endIf
 endEvent
 
 
@@ -222,9 +254,10 @@ event OnPageReset(string a_page)
 		AddEmptyOption()
 
 		AddHeaderOption("$3D Item")
-		_3DItemXOffsetOID_S					= AddSliderOption("$Horizontal Offset", _3DItemXOffset)
-		_3DItemYOffsetOID_S					= AddSliderOption("$Vertical Offset", _3DItemYOffset)
-		_3DItemScaleOID_S					= AddSliderOption("$Scale", _3DItemScale, "{1}")
+		_3DItemXOffsetOID_S					= AddSliderOption("$Horizontal Offset", _3DItemXOffset, a_flags=_3DItemFlags)
+		_3DItemYOffsetOID_S					= AddSliderOption("$Vertical Offset", _3DItemYOffset, a_flags=_3DItemFlags)
+		_3DItemScaleOID_S					= AddSliderOption("$Scale", _3DItemScale, "{1}", _3DItemFlags)
+		_3DItemDisablePositioningOID_B		= AddToggleOption("$Disable Positioning", _3DItemDisablePositioning) ; Version 3
 
 		SetCursorPosition(1)
 
@@ -325,6 +358,15 @@ event OnOptionDefault(int a_option)
 		SetSliderOptionValue(a_option, _3DItemScale, "{1}")
 		Apply3DItemScale()
 
+	elseIf (a_option == _3DItemDisablePositioningOID_B)
+		_3DItemDisablePositioning = false
+		SetOptionFlags(_3DItemXOffsetOID_S, _3DItemFlags, true)
+		SetOptionFlags(_3DItemYOffsetOID_S, _3DItemFlags, true)
+		SetOptionFlags(_3DItemScaleOID_S, _3DItemFlags, true)
+		SetToggleOptionValue(a_option, false)
+		Apply3DItemXOffset()
+		Apply3DItemYOffset()
+
 	; -------------------------------------------------------
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		SKI_MainInstance.InventoryMenuCheckEnabled = true
@@ -378,6 +420,25 @@ event OnOptionSelect(int a_option)
 		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
 		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
 
+	; -------------------------------------------------------
+	elseIf (a_option == _3DItemDisablePositioningOID_B)
+		bool newVal = !_3DItemDisablePositioning
+		_3DItemDisablePositioning = newVal
+
+		if (newVal)
+			_3DItemFlags = OPTION_FLAG_DISABLED
+		else
+			_3DItemFlags = OPTION_FLAG_NONE
+		endIf
+
+		SetOptionFlags(_3DItemXOffsetOID_S, _3DItemFlags, true)
+		SetOptionFlags(_3DItemYOffsetOID_S, _3DItemFlags, true)
+		SetOptionFlags(_3DItemScaleOID_S, _3DItemFlags, true)
+		SetToggleOptionValue(a_option, newVal)
+		Apply3DItemXOffset()
+		Apply3DItemYOffset()
+
+	; -------------------------------------------------------
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		bool newVal = !SKI_MainInstance.InventoryMenuCheckEnabled
 		SKI_MainInstance.InventoryMenuCheckEnabled = newVal
@@ -628,10 +689,11 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _3DItemXOffsetOID_S)
 		SetInfoText("$SKI_INFO4")
 	elseIf (a_option == _3DItemYOffsetOID_S)
-
 		SetInfoText("$SKI_INFO4")
 	elseIf (a_option == _3DItemScaleOID_S)
 		SetInfoText("$SKI_INFO5")
+	elseIf (a_option == _3DItemDisablePositioningOID_B)
+		SetInfoText("$SKI_INFO16")
 
 	elseIf (a_option == _checkInventoryMenuOID_B)
 		SetInfoText("$SKI_INFO6")
@@ -651,6 +713,12 @@ endEvent
 
 function ApplySettings()
 	; Apply settings that aren't handled by SKI_SettingsManagerInstance
+
+	_fInventory3DItemPosXWide	= Utility.GetINIFloat("fInventory3DItemPosXWide:Interface")
+	_fInventory3DItemPosX 		= Utility.GetINIFloat("fInventory3DItemPosX:Interface")
+	_fMagic3DItemPosXWide 		= Utility.GetINIFloat("fMagic3DItemPosXWide:Interface")
+	_fMagic3DItemPosX 			= Utility.GetINIFloat("fMagic3DItemPosX:Interface")
+
 	float h = Utility.GetINIInt("iSize H:Display")
 	float w = Utility.GetINIInt("iSize W:Display")
 	float ar = w / h
@@ -707,10 +775,17 @@ endFunction
 
 function Apply3DItemXOffset()
 	; Negative values shift the 3D item to the right
-	Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBaseW + _3DItemXOffset))
-	Utility.SetINIFloat("fInventory3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBaseW + _3DItemXOffset))
-	Utility.SetINIFloat("fMagic3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
+	if (_3DItemDisablePositioning)
+		Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", _fInventory3DItemPosXWide)
+		Utility.SetINIFloat("fInventory3DItemPosX:Interface", _fInventory3DItemPosX)
+		Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", _fMagic3DItemPosXWide)
+		Utility.SetINIFloat("fMagic3DItemPosX:Interface", _fMagic3DItemPosX)
+	else
+		Utility.SetINIFloat("fInventory3DItemPosXWide:Interface", (_itemXBaseW + _3DItemXOffset))
+		Utility.SetINIFloat("fInventory3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
+		Utility.SetINIFloat("fMagic3DItemPosXWide:Interface", (_itemXBaseW + _3DItemXOffset))
+		Utility.SetINIFloat("fMagic3DItemPosX:Interface", (_itemXBase + _3DItemXOffset))
+	endIf
 endFunction
 
 function Apply3DItemYOffset()
