@@ -360,6 +360,7 @@ event OnOptionDefault(int a_option)
 
 	elseIf (a_option == _3DItemDisablePositioningOID_B)
 		_3DItemDisablePositioning = false
+		_3DItemFlags = OPTION_FLAG_NONE
 		SetOptionFlags(_3DItemXOffsetOID_S, _3DItemFlags, true)
 		SetOptionFlags(_3DItemYOffsetOID_S, _3DItemFlags, true)
 		SetOptionFlags(_3DItemScaleOID_S, _3DItemFlags, true)
