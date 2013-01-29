@@ -6,6 +6,8 @@ import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import gfx.managers.FocusHandler;
 
+import skyui.components.ButtonPanel;
+
 class Quest_Journal extends MovieClip
 {
 	#include "../version.as"
@@ -19,7 +21,8 @@ class Quest_Journal extends MovieClip
 	
 	var PageArray: Array;
 	
-	var TabButtonHelp: MovieClip;
+	public var previousTabButton: MovieClip;
+	public var nextTabButton: MovieClip;
 	var TopmostPage: MovieClip;	
 	var QuestsFader: MovieClip;
 	var StatsFader: MovieClip;
@@ -31,6 +34,10 @@ class Quest_Journal extends MovieClip
 	var TabButtonGroup: ButtonGroup;
 	
 	var ConfigPanel: MovieClip;
+
+	public static var QUESTS_TAB: Number = 0;
+	public static var STATS_TAB: Number = 1;
+	public static var SETTINGS_TAB: Number = 2;
 
 	function Quest_Journal()
 	{
@@ -89,7 +96,7 @@ class Quest_Journal extends MovieClip
 			TopmostPage = PageArray[iCurrentTab]._parent;
 		}
 		TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
-		BottomBar_mc.SetMode(iCurrentTab);
+		BottomBar_mc.LevelMeterRect._visible = iCurrentTab != 0;
 	}
 
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -179,15 +186,21 @@ class Quest_Journal extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
+		if (aiPlatform == 0) {
+			previousTabButton._visible = nextTabButton._visible = false;
+		} else {
+			previousTabButton._visible = nextTabButton._visible = true;
+			previousTabButton.gotoAndStop(280); // LT
+			nextTabButton.gotoAndStop(281); // RT
+		}
+
 		for (var i: String in PageArray) {
-			if (PageArray[i].SetPlatform != undefined) 
-			{
+			if (PageArray[i].SetPlatform != undefined) {
 				PageArray[i].SetPlatform(aiPlatform, abPS3Switch);
 			}
 		}
-		BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
-		TabButtonHelp.gotoAndStop(aiPlatform + 1);
-		
+		BottomBar_mc.setPlatform(aiPlatform, abPS3Switch);
+			
 		ConfigPanel.setPlatform(aiPlatform, abPS3Switch);
 	}
 
