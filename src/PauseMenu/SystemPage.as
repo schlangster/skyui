@@ -73,6 +73,7 @@ class SystemPage extends MovieClip
 	var iSaveDelayTimerID: Number;
 	var iSavingSettingsTimerID: Number;
 
+	private var _saveDisabledList: Array;
 
 	private var _deleteControls: Object;
 	private var _defaultControls: Object;
@@ -112,10 +113,13 @@ class SystemPage extends MovieClip
 		CategoryList.entryList.push({text: "$SAVE", index: SystemPage.SAVE_INDEX});
 		CategoryList.entryList.push({text: "$LOAD", index: SystemPage.LOAD_INDEX});
 		CategoryList.entryList.push({text: "$SETTINGS", index: SystemPage.SETTINGS_INDEX});
-		CategoryList.entryList.push({text: "$MOD CONFIGURATION", index: SystemPage.MOD_CONFIG_INDEX});
 		CategoryList.entryList.push({text: "$CONTROLS", index: SystemPage.CONTROLS_INDEX});
 		CategoryList.entryList.push({text: "$HELP", index: SystemPage.HELP_INDEX});
 		CategoryList.entryList.push({text: "$QUIT", index: SystemPage.QUIT_INDEX});
+
+		_saveDisabledList = CategoryList.entryList.slice();  // Make copy
+		_saveDisabledList.splice(4, 1); //[CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5]]
+
 		CategoryList.InvalidateData();
 
 		CategoryList.addEventListener("itemPress", this, "onCategoryButtonPress");
@@ -160,30 +164,16 @@ class SystemPage extends MovieClip
 
 			GameDelegate.call("SetVersionText", [VersionText]);
 			GameDelegate.call("ShouldShowKinectTunerOption", [], this, "SetShouldShowKinectTunerOption");
-			var disabledOptions: Array = [];
-			for (var i: Number = 0; i < CategoryList.entryList.length; i++) {
-				var e: Object = CategoryList.entryList[i];
+			GameDelegate.call("SetSaveDisabled", _saveDisabledList);
 
-				if (e.index == SystemPage.MOD_CONFIG_INDEX && _global.skse == undefined) {
-					CategoryList.entryList.splice(i, 1);
-					i--;
-					continue;
-				}
-
-				if (e.index != SystemPage.HELP_INDEX)
-					disabledOptions.push(e);
+			if (_global.skse != undefined) {
+				CategoryList.entryList.push({text: "$MOD CONFIGURATION", index: SystemPage.MOD_CONFIG_INDEX});
+				CategoryList.entryList.sortOn("index");
+				CategoryList.InvalidateData();
+			} else {
+				CategoryList.entryList.sortOn("index");
+				CategoryList.UpdateList();
 			}
-
-			GameDelegate.call("SetSaveDisabled", disabledOptions);
-
-			CategoryList.InvalidateData();
-
-			ConfirmPanel.buttonPanel.clearButtons();
-			_acceptButton = ConfirmPanel.buttonPanel.addButton({text: "$Accept", controls: _acceptControls});
-			_acceptButton.addEventListener("click", this, "onAcceptMousePress");
-			_cancelButton = ConfirmPanel.buttonPanel.addButton({text: "$Cancel", controls: _cancelControls});
-			_cancelButton.addEventListener("click", this, "onCancelMousePress");
-			ConfirmPanel.buttonPanel.updateButtons(true);
 
 			bUpdated = true;
 			return;
@@ -761,7 +751,10 @@ class SystemPage extends MovieClip
 
 	function RefreshSystemButtons()
 	{
-		GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5], true]);
+		_saveDisabledList.push(true);
+		GameDelegate.call("SetSaveDisabled", _saveDisabledList);
+		_saveDisabledList.pop();
+
 		CategoryList.UpdateList();
 	}
 
@@ -953,6 +946,13 @@ class SystemPage extends MovieClip
 			_cancelControls = {keyCode: 15}; // Tab
 		}
 
+		ConfirmPanel.buttonPanel.clearButtons();
+		_acceptButton = ConfirmPanel.buttonPanel.addButton({text: "$Yes", controls: _acceptControls});
+		_acceptButton.addEventListener("click", this, "onAcceptMousePress");
+		_cancelButton = ConfirmPanel.buttonPanel.addButton({text: "$No", controls: _cancelControls});
+		_cancelButton.addEventListener("click", this, "onCancelMousePress");
+		ConfirmPanel.buttonPanel.updateButtons(true);
+
 		iPlatform = a_platform;
 		SaveLoadListHolder.platform = a_platform;
 
@@ -970,12 +970,12 @@ class SystemPage extends MovieClip
 		bShowKinectTunerButton = abFlag == true;
 	}
 
-	private function requestInputMappings(a_update: Boolean): Void
+	private function requestInputMappings(a_updateOnly: Boolean): Void
 	{
 		MappingList.entryList.splice(0);
 		GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
 		MappingList.entryList.sort(inputMappingSort);
-		if (a_update)
+		if (a_updateOnly)
 			MappingList.UpdateList();
 		else
 			MappingList.InvalidateData();
