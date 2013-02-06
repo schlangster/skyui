@@ -195,7 +195,7 @@
 	public static var BASEID_DLC1ELVENARROWBLOOD: Number				= 0x0098A0;
 	public static var BASEID_TESTDLC1BOLT: Number						= 0x00590C;
 	public static var BASEID_DLC2DWARVENBALLISTABOLT: Number			= 0x0339A1;
-	public static var BASEID_DLC2RIEKLINGSPEARTHROWN: Number			= 0x026239;
+	public static var BASEID_DLC2RIEKLINGSPEARTHROWN: Number			= 0x017720;
 	
 	// Misc
 	public static var BASEID_LOCKPICK: Number							= 0x00000A;
@@ -232,7 +232,7 @@
 	public static var BASEID_AXE01: Number 								= 0x02F2F4;
 	public static var BASEID_DUNHALTEDSTREAMPOACHERSAXE: Number 		= 0x0AE086;
 
-	// Fodm Ids
+	// Form Ids
 	// Sound Descriptors
 	public static var FORMID_ITMPotionUse: Number 						= 0x000B6435;
 
