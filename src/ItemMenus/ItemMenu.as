@@ -279,7 +279,7 @@ class ItemMenu extends MovieClip
 				delete this.onUnsuspend;
 			};
 		} else {
-			var categoryList = inventoryLists.categoryList;
+			
 			categoryList.onUnsuspend = function()
 			{
 				this.onItemPress(1, 0); // ALL

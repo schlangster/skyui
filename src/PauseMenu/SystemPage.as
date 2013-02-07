@@ -7,29 +7,29 @@ import gfx.managers.FocusHandler;
 
 class SystemPage extends MovieClip
 {
-	static var MAIN_STATE: Number = 0;
-	static var SAVE_LOAD_STATE: Number = 1;
-	static var SAVE_LOAD_CONFIRM_STATE: Number = 2;
-	static var SETTINGS_CATEGORY_STATE: Number = 3;
-	static var OPTIONS_LISTS_STATE: Number = 4;
-	static var DEFAULT_SETTINGS_CONFIRM_STATE: Number = 5;
-	static var INPUT_MAPPING_STATE: Number = 6;
-	static var QUIT_CONFIRM_STATE: Number = 7;
-	static var PC_QUIT_LIST_STATE: Number = 8;
-	static var PC_QUIT_CONFIRM_STATE: Number = 9;
-	static var DELETE_SAVE_CONFIRM_STATE: Number = 10;
-	static var HELP_LIST_STATE: Number = 11;
-	static var HELP_TEXT_STATE: Number = 12;
-	static var TRANSITIONING: Number = 13;
-	static var MOD_CONFIG_STATE: Number = 14;
+	public static var MAIN_STATE: Number = 0;
+	public static var SAVE_LOAD_STATE: Number = 1;
+	public static var SAVE_LOAD_CONFIRM_STATE: Number = 2;
+	public static var SETTINGS_CATEGORY_STATE: Number = 3;
+	public static var OPTIONS_LISTS_STATE: Number = 4;
+	public static var DEFAULT_SETTINGS_CONFIRM_STATE: Number = 5;
+	public static var INPUT_MAPPING_STATE: Number = 6;
+	public static var QUIT_CONFIRM_STATE: Number = 7;
+	public static var PC_QUIT_LIST_STATE: Number = 8;
+	public static var PC_QUIT_CONFIRM_STATE: Number = 9;
+	public static var DELETE_SAVE_CONFIRM_STATE: Number = 10;
+	public static var HELP_LIST_STATE: Number = 11;
+	public static var HELP_TEXT_STATE: Number = 12;
+	public static var TRANSITIONING: Number = 13;
+	public static var MOD_CONFIG_STATE: Number = 14;
 
-	static var SAVE_INDEX: Number = 0;
-	static var LOAD_INDEX: Number = 1;
-	static var SETTINGS_INDEX: Number = 2;
-	static var MOD_CONFIG_INDEX: Number = 3;
-	static var CONTROLS_INDEX: Number = 4;
-	static var HELP_INDEX: Number = 5;
-	static var QUIT_INDEX: Number = 6;
+	public static var SAVE_INDEX: Number = 0;
+	public static var LOAD_INDEX: Number = 1;
+	public static var SETTINGS_INDEX: Number = 2;
+	public static var MOD_CONFIG_INDEX: Number = 3;
+	public static var CONTROLS_INDEX: Number = 4;
+	public static var HELP_INDEX: Number = 5;
+	public static var QUIT_INDEX: Number = 6;
 	
 	var HelpButtonHolder: ButtonTextArtHolder;
 	
@@ -73,6 +73,18 @@ class SystemPage extends MovieClip
 	var iSaveDelayTimerID: Number;
 	var iSavingSettingsTimerID: Number;
 
+	private var _saveDisabledList: Array;
+
+	private var _deleteControls: Object;
+	private var _defaultControls: Object;
+	private var _kinectControls: Object;
+	private var _acceptControls: Object;
+	private var _cancelControls: Object;
+
+	private var _acceptButton: MovieClip;
+	private var _cancelButton: MovieClip;
+
+
 	function SystemPage()
 	{
 		super();
@@ -101,10 +113,13 @@ class SystemPage extends MovieClip
 		CategoryList.entryList.push({text: "$SAVE", index: SystemPage.SAVE_INDEX});
 		CategoryList.entryList.push({text: "$LOAD", index: SystemPage.LOAD_INDEX});
 		CategoryList.entryList.push({text: "$SETTINGS", index: SystemPage.SETTINGS_INDEX});
-		CategoryList.entryList.push({text: "$MOD CONFIGURATION", index: SystemPage.MOD_CONFIG_INDEX});
 		CategoryList.entryList.push({text: "$CONTROLS", index: SystemPage.CONTROLS_INDEX});
 		CategoryList.entryList.push({text: "$HELP", index: SystemPage.HELP_INDEX});
 		CategoryList.entryList.push({text: "$QUIT", index: SystemPage.QUIT_INDEX});
+
+		_saveDisabledList = CategoryList.entryList.slice();  // Make copy
+		_saveDisabledList.splice(4, 1); //[CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5]]
+
 		CategoryList.InvalidateData();
 
 		CategoryList.addEventListener("itemPress", this, "onCategoryButtonPress");
@@ -113,13 +128,11 @@ class SystemPage extends MovieClip
 		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
 		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
 		CategoryList.disableInput = true; // Bugfix for vanilla
+
 		ConfirmPanel.handleInput = function () {
 			return false;
 		};
-		ConfirmPanel.ButtonRect.AcceptMouseButton.addEventListener("click", this, "onAcceptMousePress");
-		ConfirmPanel.ButtonRect.CancelMouseButton.addEventListener("click", this, "onCancelMousePress");
-		ConfirmPanel.ButtonRect.AcceptMouseButton.SetPlatform(0, false);
-		ConfirmPanel.ButtonRect.CancelMouseButton.SetPlatform(0, false);
+
 		SaveLoadListHolder.addEventListener("saveGameSelected", this, "ConfirmSaveGame");
 		SaveLoadListHolder.addEventListener("loadGameSelected", this, "ConfirmLoadGame");
 		SaveLoadListHolder.addEventListener("saveListPopulated", this, "OnSaveListOpenSuccess");
@@ -151,16 +164,17 @@ class SystemPage extends MovieClip
 
 			GameDelegate.call("SetVersionText", [VersionText]);
 			GameDelegate.call("ShouldShowKinectTunerOption", [], this, "SetShouldShowKinectTunerOption");
-			GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[SystemPage.SAVE_INDEX], CategoryList.entryList[SystemPage.LOAD_INDEX], CategoryList.entryList[SystemPage.SETTINGS_INDEX], CategoryList.entryList[SystemPage.CONTROLS_INDEX], CategoryList.entryList[SystemPage.QUIT_INDEX]]);
-			if (_global.skse == undefined) {
-				// Removes Mod Config option from the category list
-				// Removed rather than added to avoid having logic in the SetSaveDisabled GameDelegate call
-				CategoryList.entryList.splice(SystemPage.MOD_CONFIG_INDEX, 1);
+			GameDelegate.call("SetSaveDisabled", _saveDisabledList);
+
+			if (_global.skse != undefined) {
+				CategoryList.entryList.push({text: "$MOD CONFIGURATION", index: SystemPage.MOD_CONFIG_INDEX});
+				CategoryList.entryList.sortOn("index");
+				CategoryList.InvalidateData();
+			} else {
+				CategoryList.entryList.sortOn("index");
+				CategoryList.UpdateList();
 			}
 
-			BottomBar_mc.SetButtonVisibility(1, false, 50);
-
-			CategoryList.InvalidateData();
 			bUpdated = true;
 			return;
 		}
@@ -169,8 +183,8 @@ class SystemPage extends MovieClip
 
 	function endPage(): Void
 	{
-		BottomBar_mc.SetButtonVisibility(1, false, 100);
-		BottomBar_mc.SetButtonVisibility(2, false, 100);
+		BottomBar_mc.buttonPanel.clearButtons();
+
 		CategoryList.disableInput = true; // Bugfix for vanilla
 	}
 
@@ -190,12 +204,13 @@ class SystemPage extends MovieClip
 		UpdateStateFocus(aiNewState);
 	}
 
-	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bhandledInput: Boolean = false;
 		if (bRemapMode || bMenuClosing || bSavingSettings || iCurrentState == SystemPage.TRANSITIONING) {
 			bhandledInput = true;
 		} else if (GlobalFunc.IsKeyPressed(details, iCurrentState != SystemPage.INPUT_MAPPING_STATE)) {
+
 			if (iCurrentState != SystemPage.OPTIONS_LISTS_STATE) {
 				if (details.navEquivalent == NavigationCode.RIGHT && iCurrentState == SystemPage.MAIN_STATE) {
 					details.navEquivalent = NavigationCode.ENTER;
@@ -203,17 +218,17 @@ class SystemPage extends MovieClip
 					details.navEquivalent = NavigationCode.TAB;
 				}
 			}
+
 			if ((details.navEquivalent == NavigationCode.GAMEPAD_L2 || details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_R2) && isConfirming()) {
 				bhandledInput = true;
-			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 88) && iCurrentState == SystemPage.SAVE_LOAD_STATE && BottomBar_mc.IsButtonVisible(1)) {
+			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 88) && iCurrentState == SystemPage.SAVE_LOAD_STATE) {
 				ConfirmDeleteSave();
 				bhandledInput = true;
-			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 84) && (iCurrentState == SystemPage.OPTIONS_LISTS_STATE || iCurrentState == SystemPage.INPUT_MAPPING_STATE) && BottomBar_mc.IsButtonVisible(1)) {
+			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 84) && (iCurrentState == SystemPage.OPTIONS_LISTS_STATE || iCurrentState == SystemPage.INPUT_MAPPING_STATE)) {
 				ConfirmTextField.SetText("$Reset settings to default values?");
 				StartState(SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE);
 				bhandledInput = true;
-			} else if (details.navEquivalent == NavigationCode.GAMEPAD_R1 && iCurrentState == SystemPage.OPTIONS_LISTS_STATE && BottomBar_mc.IsButtonVisible(2)) 
-			{
+			} else if (bShowKinectTunerButton && details.navEquivalent == NavigationCode.GAMEPAD_R1 && iCurrentState == SystemPage.OPTIONS_LISTS_STATE) {
 				GameDelegate.call("OpenKinectTuner", []);
 				bhandledInput = true;
 			} else if (!pathToFocus[0].handleInput(details, pathToFocus.slice(1))) {
@@ -239,7 +254,7 @@ class SystemPage extends MovieClip
 					bMenuClosing = true;
 					if (SaveLoadListHolder.isSaving) {
 						ConfirmPanel._visible = false;
-						if (iPlatform == Shared.ButtonChange.PLATFORM_360) {
+						if (iPlatform > 1) {
 							ErrorText.SetText("$Saving content. Please don\'t turn off your console.");
 						} else {
 							ErrorText.SetText("$Saving...");
@@ -271,7 +286,6 @@ class SystemPage extends MovieClip
 				if (SaveLoadListHolder.numSaves == 0) {
 					GetPanelForState(SystemPage.SAVE_LOAD_STATE).gotoAndStop(1);
 					GetPanelForState(SystemPage.DELETE_SAVE_CONFIRM_STATE).gotoAndStop(1);
-					BottomBar_mc.SetButtonVisibility(1, false);
 					currentState = SystemPage.MAIN_STATE;
 				} else {
 					EndState();
@@ -374,6 +388,7 @@ class SystemPage extends MovieClip
 			GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 			return;
 		}
+
 		if (iCurrentState == SystemPage.MAIN_STATE) 
 		{
 			switch (event.entry.index) {
@@ -397,11 +412,8 @@ class SystemPage extends MovieClip
 					break;
 					
 				case SystemPage.CONTROLS_INDEX:
-					if (MappingList.entryList.length == 0) {
-						GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
-						MappingList.entryList.sort(inputMappingSort);
-						MappingList.InvalidateData();
-					}
+					if (MappingList.entryList.length == 0)
+						requestInputMappings();
 					StartState(SystemPage.INPUT_MAPPING_STATE);
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					break;
@@ -511,10 +523,9 @@ class SystemPage extends MovieClip
 	function onSaveHighlight(event: Object): Void
 	{
 		if (iCurrentState == SystemPage.SAVE_LOAD_STATE) {
-			BottomBar_mc.SetButtonVisibility(1, true, event.index == -1 ? 50 : 100);
-			if (iPlatform == 0) {
+			BottomBar_mc.deleteButton._alpha = ((event.index == -1) ? 50 : 100);
+			if (iPlatform == 0)
 				GameDelegate.call("PlaySound", ["UIMenuFocus"]);
-			}
 		}
 	}
 
@@ -631,12 +642,12 @@ class SystemPage extends MovieClip
 		iDebounceRemapModeID = setInterval(this, "ClearRemapMode", 200);
 	}
 
-	function inputMappingSort(aObj1: Object, aObj2: Object): Number
+	private function inputMappingSort(a_obj1: Object, a_obj2: Object): Number
 	{
-		if (aObj1.sortIndex < aObj2.sortIndex) {
+		if (a_obj1.sortIndex < a_obj2.sortIndex) {
 			return -1;
 		}
-		if (aObj1.sortIndex > aObj2.sortIndex) {
+		if (a_obj1.sortIndex > a_obj2.sortIndex) {
 			return 1;
 		}
 		return 0;
@@ -654,6 +665,7 @@ class SystemPage extends MovieClip
 	{
 		if (iDebounceRemapModeID != undefined) {
 			clearInterval(iDebounceRemapModeID);
+			delete(iDebounceRemapModeID);
 		}
 		bRemapMode = false;
 	}
@@ -661,10 +673,7 @@ class SystemPage extends MovieClip
 	function ResetControlsToDefaults(): Void
 	{
 		GameDelegate.call("ResetControlsToDefaults", [MappingList.entryList]);
-		MappingList.entryList.splice(0, MappingList.entryList.length);
-		GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
-		MappingList.entryList.sort(inputMappingSort);
-		MappingList.UpdateList();
+		requestInputMappings(true);
 		bSettingsChanged = true;
 	}
 
@@ -681,9 +690,7 @@ class SystemPage extends MovieClip
 	{
 		var strTextWithButtons: String = HelpButtonHolder.CreateButtonArt(HelpText.textField);
 		if (strTextWithButtons != undefined) 
-		{
 			HelpText.htmlText = strTextWithButtons;
-		}
 	}
 
 	function populateQuitList(abOnPC: Boolean): Void
@@ -718,13 +725,19 @@ class SystemPage extends MovieClip
 
 	function SaveControls(): Void
 	{
-		clearInterval(iSavingSettingsTimerID);
+		if (iSavingSettingsTimerID != undefined) {
+			clearInterval(iSavingSettingsTimerID);
+			delete(iSavingSettingsTimerID);
+		}
 		GameDelegate.call("SaveControls", []);
 	}
 
 	function SaveSettings(): Void
 	{
-		clearInterval(iSavingSettingsTimerID);
+		if (iSavingSettingsTimerID != undefined) {
+			clearInterval(iSavingSettingsTimerID);
+			delete(iSavingSettingsTimerID);
+		}
 		GameDelegate.call("SaveSettings", []);
 	}
 
@@ -738,28 +751,31 @@ class SystemPage extends MovieClip
 
 	function RefreshSystemButtons()
 	{
-		GameDelegate.call("SetSaveDisabled", [CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5], true]);
+		_saveDisabledList.push(true);
+		GameDelegate.call("SetSaveDisabled", _saveDisabledList);
+		_saveDisabledList.pop();
+
 		CategoryList.UpdateList();
 	}
 
 	function StartState(aiState: Number): Void
 	{
+		BottomBar_mc.buttonPanel.clearButtons();
+
 		switch (aiState) {
 			case SystemPage.SAVE_LOAD_STATE:
 				SystemDivider.gotoAndStop("Left");
-				BottomBar_mc.SetButtonInfo(1, "$Delete", {PCArt: "X", XBoxArt: "360_X", PS3Art: "PS3_X"});
-				BottomBar_mc.SetButtonVisibility(1, true, 100);
+				BottomBar_mc.buttonPanel.addButton({text: "$Delete", controls: _deleteControls}); // X or 360_X
+				BottomBar_mc.buttonPanel.updateButtons(true);
 				break;
 				
 			case SystemPage.INPUT_MAPPING_STATE:
 				SystemDivider.gotoAndStop("Left");
 			case SystemPage.OPTIONS_LISTS_STATE:
-				BottomBar_mc.SetButtonInfo(1, "$Defaults", {PCArt: "T", XBoxArt: "360_Y", PS3Art: "PS3_Y"});
-				BottomBar_mc.SetButtonVisibility(1, true, 100);
-				if (aiState == SystemPage.OPTIONS_LISTS_STATE && this.bShowKinectTunerButton && this.iPlatform == 2 && this.SettingsList.selectedIndex == 0) {
-					this.BottomBar_mc.SetButtonInfo(2, "$Kinect Tuner", {PCArt: "K", XBoxArt: "360_RB", PS3Art: "PS3_RB"});
-					this.BottomBar_mc.SetButtonVisibility(2, true, 100);
-				}
+				BottomBar_mc.buttonPanel.addButton({text: "$Defaults", controls: _defaultControls}); // T or 360_Y
+				if (aiState == SystemPage.OPTIONS_LISTS_STATE && bShowKinectTunerButton && iPlatform == 2 && SettingsList.selectedIndex == 0)
+					BottomBar_mc.buttonPanel.addButton({text: "$Kinect Tuner", controls: _kinectControls}); // K or RB
+				BottomBar_mc.buttonPanel.updateButtons(true);
 				break;
 				
 			case SystemPage.SETTINGS_CATEGORY_STATE:
@@ -777,20 +793,20 @@ class SystemPage extends MovieClip
 				ConfirmPanel.returnState = iCurrentState;
 				break;
 		}
+
 		iCurrentState = SystemPage.TRANSITIONING;
 		GetPanelForState(aiState).gotoAndPlay("start");
 	}
 
 	function EndState(): Void
 	{
-	
+		BottomBar_mc.buttonPanel.clearButtons();
+
 		switch (iCurrentState) {
 			case SystemPage.SAVE_LOAD_STATE:
 			case SystemPage.INPUT_MAPPING_STATE:
 				SystemDivider.gotoAndStop("Right");
 			case SystemPage.OPTIONS_LISTS_STATE:
-				BottomBar_mc.SetButtonVisibility(1, false);
-				BottomBar_mc.SetButtonVisibility(2, false);
 				break;
 				
 			case SystemPage.HELP_LIST_STATE:
@@ -905,24 +921,42 @@ class SystemPage extends MovieClip
 		}
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
+	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		ConfirmPanel.ButtonRect.AcceptGamepadButton._visible = aiPlatform != 0;
-		ConfirmPanel.ButtonRect.CancelGamepadButton._visible = aiPlatform != 0;
-		ConfirmPanel.ButtonRect.AcceptMouseButton._visible = aiPlatform == 0;
-		ConfirmPanel.ButtonRect.CancelMouseButton._visible = aiPlatform == 0;
-		BottomBar_mc.SetPlatform(aiPlatform, abPS3Switch);
-		CategoryList.SetPlatform(aiPlatform, abPS3Switch);
-		if (aiPlatform != 0) {
-			ConfirmPanel.ButtonRect.AcceptGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-			ConfirmPanel.ButtonRect.CancelGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
+		BottomBar_mc.SetPlatform(a_platform, a_bPS3Switch);
+		CategoryList.SetPlatform(a_platform, a_bPS3Switch);
+
+
+		if (a_platform != 0) {
 			SettingsList.selectedIndex = 0;
 			PCQuitList.selectedIndex = 0;
 			HelpList.selectedIndex = 0;
 			MappingList.selectedIndex = 0;
+
+			_deleteControls = {keyCode: 278}; // 360_X
+			_defaultControls = {keyCode: 279}; // 360_Y
+			_kinectControls = {keyCode: 275}; // 360_RB
+			_acceptControls = {keyCode: 276}; // 360_A
+			_cancelControls = {keyCode: 277}; // 360_B
+		} else {
+			_deleteControls = {keyCode: 45}; // X
+			_defaultControls = {keyCode: 20}; // T
+			_kinectControls = {keyCode: 37}; // K
+			_acceptControls = {keyCode: 28}; // Enter
+			_cancelControls = {keyCode: 15}; // Tab
 		}
-		iPlatform = aiPlatform;
-		SaveLoadListHolder.platform = aiPlatform;
+
+		ConfirmPanel.buttonPanel.clearButtons();
+		_acceptButton = ConfirmPanel.buttonPanel.addButton({text: "$Yes", controls: _acceptControls});
+		_acceptButton.addEventListener("click", this, "onAcceptMousePress");
+		_cancelButton = ConfirmPanel.buttonPanel.addButton({text: "$No", controls: _cancelControls});
+		_cancelButton.addEventListener("click", this, "onCancelMousePress");
+		ConfirmPanel.buttonPanel.updateButtons(true);
+
+		iPlatform = a_platform;
+		SaveLoadListHolder.platform = a_platform;
+
+		requestInputMappings();
 	}
 
 	function BackOutFromLoadGame(): Void
@@ -934,5 +968,16 @@ class SystemPage extends MovieClip
 	function SetShouldShowKinectTunerOption(abFlag: Boolean): Void
 	{
 		bShowKinectTunerButton = abFlag == true;
+	}
+
+	private function requestInputMappings(a_updateOnly: Boolean): Void
+	{
+		MappingList.entryList.splice(0);
+		GameDelegate.call("RequestInputMappings", [MappingList.entryList]);
+		MappingList.entryList.sort(inputMappingSort);
+		if (a_updateOnly)
+			MappingList.UpdateList();
+		else
+			MappingList.InvalidateData();
 	}
 }

@@ -13,10 +13,8 @@ class QuestsPage extends MovieClip
 	var ObjectiveList: Object;
 	var ObjectivesHeader: MovieClip;
 	var QuestTitleText: TextField;
-	var ShowOnMapButton;
 	var TitleList: MovieClip;
 	var TitleList_mc: MovieClip;
-	var ToggleActiveButton: CrossPlatformButtons;
 	var bAllowShowOnMap: Boolean;
 	var bHasMiscQuests: Boolean;
 	var bUpdated: Boolean;
@@ -26,6 +24,14 @@ class QuestsPage extends MovieClip
 	var questDescriptionText: TextField;
 	var questTitleEndpieces: MovieClip;
 	var questTitleText: TextField;
+
+	private var _showOnMapButton: MovieClip;
+	private var _toggleActiveButton: MovieClip;
+	private var _bottomBar: MovieClip;
+
+	private var _toggleActiveControls: Object;
+	private var _showOnMapControls: Object;
+	private var _deleteControls: Object;
 
 	function QuestsPage()
 	{
@@ -37,6 +43,8 @@ class QuestsPage extends MovieClip
 		ObjectivesHeader = objectivesHeader;
 		bHasMiscQuests = false;
 		bUpdated = false;
+
+		_bottomBar = _parent._parent.BottomBar_mc;
 	}
 
 	function onLoad()
@@ -57,17 +65,30 @@ class QuestsPage extends MovieClip
 	function startPage()
 	{
 		TitleList.disableInput = false; // Bugfix for vanilla
+
 		if (!bUpdated) {
-			ShowOnMapButton = _parent._parent.BottomBar_mc.Button2_mc;
+			//ShowOnMapButton = _parent._parent._bottomBar.Button2_mc;
 			GameDelegate.call("RequestQuestsData", [TitleList], this, "onQuestsDataComplete");
-			ToggleActiveButton = _parent._parent.BottomBar_mc.Button1_mc;
+			//_toggleActiveButton = _parent._parent._bottomBar.Button1_mc;
 			bUpdated = true;
 		}
-		SwitchFocusToTitles();
+
+		_bottomBar.buttonPanel.clearButtons();
+		_toggleActiveButton = _bottomBar.buttonPanel.addButton({text: "$Toggle Active", controls: _toggleActiveControls});
+		if (bAllowShowOnMap)
+			_showOnMapButton = _bottomBar.buttonPanel.addButton({text: "$Show on Map", controls: _showOnMapControls});
+		_bottomBar.buttonPanel.updateButtons(true);
+		
+		switchFocusToTitles();
 	}
 
 	function endPage()
 	{
+		_showOnMapButton._alpha = 100;
+		_toggleActiveButton._alpha = 100;
+
+		_bottomBar.buttonPanel.clearButtons();
+
 		TitleList.disableInput = true; // Bugfix for vanilla
 	}
 
@@ -87,25 +108,25 @@ class QuestsPage extends MovieClip
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 77) && bAllowShowOnMap) 
 			{
-				var oitem: Object = undefined;
+				var quest: Object = undefined;
 				if (ObjectiveList.selectedEntry != undefined && ObjectiveList.selectedEntry.questTargetID != undefined) {
-					oitem = ObjectiveList.selectedEntry;
+					quest = ObjectiveList.selectedEntry;
 				} else {
-					oitem = ObjectiveList.entryList[0];
+					quest = ObjectiveList.entryList[0];
 				}
-				if (oitem != undefined && oitem.questTargetID != undefined) {
+				if (quest != undefined && quest.questTargetID != undefined) {
 					_parent._parent.CloseMenu();
-					GameDelegate.call("ShowTargetOnMap", [oitem.questTargetID]);
+					GameDelegate.call("ShowTargetOnMap", [quest.questTargetID]);
 				} else {
 					GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 				}
 				bhandledInput = true;
 			} else if (TitleList.entryList.length > 0) {
 				if (details.navEquivalent == NavigationCode.LEFT && FocusHandler.instance.getFocus(0) != TitleList) {
-					SwitchFocusToTitles();
+					switchFocusToTitles();
 					bhandledInput = true;
 				} else if (details.navEquivalent == NavigationCode.RIGHT && FocusHandler.instance.getFocus(0) != ObjectiveList) {
-					SwitchFocusToObjectives();
+					switchFocusToObjectives();
 					bhandledInput = true;
 				}
 			}
@@ -116,7 +137,7 @@ class QuestsPage extends MovieClip
 		return bhandledInput;
 	}
 
-	function IsViewingMiscObjectives(): Boolean
+	private function isViewingMiscObjectives(): Boolean
 	{
 		return bHasMiscQuests && TitleList.selectedEntry.formID == 0;
 	}
@@ -124,8 +145,8 @@ class QuestsPage extends MovieClip
 	function onTitleListSelect(): Void
 	{
 		if (TitleList.selectedEntry != undefined && !TitleList.selectedEntry.completed) {
-			if (!IsViewingMiscObjectives()) {
-				GameDelegate.call("ToggleQuestActiveStatus", [TitleList.selectedEntry.formID, TitleList.selectedEntry.instance], this, "ToggleQuestActiveCallback");
+			if (!isViewingMiscObjectives()) {
+				GameDelegate.call("ToggleQuestActiveStatus", [TitleList.selectedEntry.formID, TitleList.selectedEntry.instance], this, "onToggleQuestActive");
 				return;
 			}
 			TitleList.selectedEntry.active = !TitleList.selectedEntry.active;
@@ -136,74 +157,78 @@ class QuestsPage extends MovieClip
 
 	function onObjectiveListSelect(): Void
 	{
-		if (IsViewingMiscObjectives()) {
-			GameDelegate.call("ToggleQuestActiveStatus", [ObjectiveList.selectedEntry.formID, ObjectiveList.selectedEntry.instance], this, "ToggleQuestActiveCallback");
+		if (isViewingMiscObjectives()) {
+			GameDelegate.call("ToggleQuestActiveStatus", [ObjectiveList.selectedEntry.formID, ObjectiveList.selectedEntry.instance], this, "onToggleQuestActive");
 		}
 	}
 
-	function SwitchFocusToTitles(): Void
+	private function switchFocusToTitles(): Void
 	{
 		FocusHandler.instance.setFocus(TitleList, 0);
 		Divider.gotoAndStop("Right");
-		ToggleActiveButton._alpha = 100;
+		_toggleActiveButton._alpha = 100;
 		ObjectiveList.selectedIndex = -1;
 		if (iPlatform != 0) {
 			ObjectiveList.disableSelection = true;
 		}
-		UpdateShowOnMapButtonAlpha(0);
+		updateShowOnMapButtonAlpha(0);
 	}
 
-	function SwitchFocusToObjectives(): Void
+	private function switchFocusToObjectives(): Void
 	{
 		FocusHandler.instance.setFocus(ObjectiveList, 0);
 		Divider.gotoAndStop("Left");
-		ToggleActiveButton._alpha = IsViewingMiscObjectives() ? 100 : 50;
+		_toggleActiveButton._alpha = isViewingMiscObjectives() ? 100 : 50;
 		if (iPlatform != 0) {
 			ObjectiveList.disableSelection = false;
 		}
 		ObjectiveList.selectedIndex = 0;
-		UpdateShowOnMapButtonAlpha(0);
+		updateShowOnMapButtonAlpha(0);
 	}
 
-	function onObjectiveListHighlight(event): Void
+	private function onObjectiveListHighlight(event): Void
 	{
-		UpdateShowOnMapButtonAlpha(event.index);
+		updateShowOnMapButtonAlpha(event.index);
 	}
 
-	function UpdateShowOnMapButtonAlpha(aiObjIndex: Number): Void
+	private function updateShowOnMapButtonAlpha(a_entryIdx: Number): Void
 	{
-		var ialpha: Number = 50;
-		if ((aiObjIndex >= 0 && ObjectiveList.entryList[aiObjIndex].questTargetID != undefined) || (ObjectiveList.entryList.length > 0 && ObjectiveList.entryList[0].questTargetID != undefined)) {
-			ialpha = 100;
+		var alpha: Number = 50;
+
+		if (bAllowShowOnMap && (a_entryIdx >= 0 && ObjectiveList.entryList[a_entryIdx].questTargetID != undefined) || (ObjectiveList.entryList.length > 0 && ObjectiveList.entryList[0].questTargetID != undefined)) {
+			alpha = 100;
 		}
-		ShowOnMapButton._alpha = ialpha;
+		_toggleActiveButton._alpha = ((!TitleList.selectedEntry.completed) ? 100 : 50);
+
+		_showOnMapButton._alpha = alpha;
 	}
 
-	function ToggleQuestActiveCallback(abNewActiveStatus: Number): Void
+	private function onToggleQuestActive(a_bnewActiveStatus: Number): Void
 	{
-		if (IsViewingMiscObjectives()) {
+		if (isViewingMiscObjectives()) {
 			var iformID: Number = ObjectiveList.selectedEntry.formID;
 			var iinstance: Number = ObjectiveList.selectedEntry.instance;
 			for (var i: String in ObjectiveList.entryList) {
 				if (ObjectiveList.entryList[i].formID == iformID && ObjectiveList.entryList[i].instance == iinstance) {
-					ObjectiveList.entryList[i].active = abNewActiveStatus;
+					ObjectiveList.entryList[i].active = a_bnewActiveStatus;
 				}
 			}
 			ObjectiveList.UpdateList();
 		} else {
-			TitleList.selectedEntry.active = abNewActiveStatus;
+			TitleList.selectedEntry.active = a_bnewActiveStatus;
 			TitleList.UpdateList();
 		}
-		if (abNewActiveStatus) {
+		if (a_bnewActiveStatus) {
 			GameDelegate.call("PlaySound", ["UIQuestActive"]);
 			return;
 		}
 		GameDelegate.call("PlaySound", ["UIQuestInactive"]);
 	}
 
-	function onQuestsDataComplete(auiSavedFormID: Number, auiSavedInstance: Number, abAddMiscQuest: Boolean, abMiscQuestActive: Boolean, abAllowShowOnMap: Boolean): Void
+	private function onQuestsDataComplete(auiSavedFormID: Number, auiSavedInstance: Number, abAddMiscQuest: Boolean, abMiscQuestActive: Boolean, abAllowShowOnMap: Boolean): Void
 	{
 		bAllowShowOnMap = abAllowShowOnMap;
+
 		if (abAddMiscQuest)	{
 			TitleList.entryList.push({text: "$MISCELLANEOUS", formID: 0, instance: 0, active: abMiscQuestActive, completed: false, type: 0});
 			bHasMiscQuests = true;
@@ -285,15 +310,15 @@ class QuestsPage extends MovieClip
 			SetDescriptionText();
 			questTitleEndpieces.gotoAndStop(aCategories[TitleList.selectedEntry.type]);
 			questTitleEndpieces._visible = true;
-			ObjectivesHeader._visible = !IsViewingMiscObjectives();
+			ObjectivesHeader._visible = !isViewingMiscObjectives();
 			ObjectiveList.selectedIndex = -1;
 			ObjectiveList.scrollPosition = 0;
 			if (iPlatform != 0) {
 				ObjectiveList.disableSelection = true;
 			}
-			ToggleActiveButton._visible = !TitleList.selectedEntry.completed;
-			ShowOnMapButton._visible = !TitleList.selectedEntry.completed && bAllowShowOnMap;
-			UpdateShowOnMapButtonAlpha(0);
+
+			_showOnMapButton._visible = true;
+			updateShowOnMapButtonAlpha(0);
 		} else {
 			NoQuestsText.SetText("No Active Quests");
 			DescriptionText.SetText(" ");
@@ -301,7 +326,8 @@ class QuestsPage extends MovieClip
 			ObjectiveList.ClearList();
 			questTitleEndpieces._visible = false;
 			ObjectivesHeader._visible = false;
-			ShowOnMapButton._visible = false;
+
+			_showOnMapButton._visible = false;
 		}
 		ObjectiveList.InvalidateData();
 	}
@@ -315,7 +341,7 @@ class QuestsPage extends MovieClip
 		DescriptionText.SetText(TitleList.selectedEntry.description);
 		var oCharBoundaries: Object = DescriptionText.getCharBoundaries(DescriptionText.getLineOffset(DescriptionText.numLines - 1));
 		ObjectivesHeader._y = DescriptionText._y + oCharBoundaries.bottom + iHeaderyOffset;
-		if (IsViewingMiscObjectives()) {
+		if (isViewingMiscObjectives()) {
 			ObjectiveList._y = DescriptionText._y;
 		} else {
 			ObjectiveList._y = ObjectivesHeader._y + ObjectivesHeader._height + iObjectiveyOffset;
@@ -359,11 +385,21 @@ class QuestsPage extends MovieClip
 		ObjectiveList.moveSelectionUp();
 	}
 
-	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
+	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		iPlatform = aiPlatform;
-		TitleList.SetPlatform(aiPlatform, abPS3Switch);
-		ObjectiveList.SetPlatform(aiPlatform, abPS3Switch);
+		if (a_platform == 0) {
+			_toggleActiveControls = {keyCode: 28}; // Enter
+			_showOnMapControls = {keyCode: 50}; // M
+			_deleteControls = {keyCode: 45}; // X
+		} else {
+			_toggleActiveControls = {keyCode: 276}; // 360_A
+			_showOnMapControls = {keyCode: 278}; // 360_X
+			_deleteControls = {keyCode: 278}; // 360_X
+		}
+
+		iPlatform = a_platform;
+		TitleList.SetPlatform(a_platform, a_bPS3Switch);
+		ObjectiveList.SetPlatform(a_platform, a_bPS3Switch);
 	}
 
 }

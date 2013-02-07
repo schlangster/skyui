@@ -753,7 +753,7 @@ class ConfigPanel extends MovieClip
 		_highlightIndex = a_index;
 		
 		clearInterval(_highlightIntervalID);
-		_highlightIntervalID = setInterval(doHighlightOption, 200, a_index);
+		_highlightIntervalID = setInterval(this, "doHighlightOption", 200, a_index);
 	}
 	
 	private function doHighlightOption(a_index: Number): Void

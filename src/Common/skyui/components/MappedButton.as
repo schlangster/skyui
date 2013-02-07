@@ -51,8 +51,6 @@ class skyui.components.MappedButton extends Button
 	{
 		super();
 		
-		textField.autoSize = "left";
-		
 		_keyCodes = [];
 		
 		buttonArt = [];
@@ -66,7 +64,20 @@ class skyui.components.MappedButton extends Button
 		if (_parent.onButtonLoad != undefined)
 			_parent.onButtonLoad(this);
 	}
-	
+
+
+	private function updateAfterStateChange(): Void
+	{
+		if (textField != null && _label != null) {
+			textField.autoSize = "left";
+			textField.text = _label;
+			textField._width = textField.getLineMetrics(0).width;
+		}
+
+		update();
+
+		dispatchEvent({type:"stateChange", state:state});
+	}
 	
   /* PUBLIC FUNCTIONS */
 
@@ -77,8 +88,10 @@ class skyui.components.MappedButton extends Button
 			update();
 	}
 	
-	public function setButtonData(a_buttonData: Object)
+	public function setButtonData(a_buttonData: Object): Void
 	{
+		textField.autoSize = "left";
+
 		label = a_buttonData.text;
 		// Update textfield size - autoSize doesn't work reliably for large resolutions 
 		textField._width = textField.getLineMetrics(0).width;
@@ -88,6 +101,8 @@ class skyui.components.MappedButton extends Button
 
 	public function setMappedControls(a_controls): Void
 	{
+		constraints=null;
+
 		_keyCodes.splice(0);
 		
 		// Accept either single object or array for multiple icons
