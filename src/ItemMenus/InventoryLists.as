@@ -13,8 +13,8 @@ import skyui.components.list.BasicEnumeration;
 import skyui.components.list.TabularList;
 import skyui.components.list.SortedListHeader;
 import skyui.filter.ItemTypeFilter;
-import skyui.filter.ItemNameFilter;
-import skyui.filter.ItemSorter;
+import skyui.filter.NameFilter;
+import skyui.filter.SortFilter;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
@@ -45,8 +45,8 @@ class InventoryLists extends MovieClip
   /* PRIVATE VARIABLES */
 
 	private var _typeFilter: ItemTypeFilter;
-	private var _nameFilter: ItemNameFilter;
-	private var _sortFilter: ItemSorter;
+	private var _nameFilter: NameFilter;
+	private var _sortFilter: SortFilter;
 	
 	private var _platform: Number;
 	
@@ -127,8 +127,8 @@ class InventoryLists extends MovieClip
 		GameDelegate.addCallBack("InvalidateListData", this, "InvalidateListData");
 
 		_typeFilter = new ItemTypeFilter();
-		_nameFilter = new ItemNameFilter();
-		_sortFilter = new ItemSorter();
+		_nameFilter = new NameFilter();
+		_sortFilter = new SortFilter();
 		
 		categoryList = panelContainer.categoryList;
 		categoryLabel = panelContainer.categoryLabel;

@@ -3,7 +3,7 @@
 import skyui.filter.IFilter;
 
 
-class skyui.filter.ItemSorter implements skyui.filter.IFilter
+class skyui.filter.SortFilter implements skyui.filter.IFilter
 {
   /* PRIVATE VARIABLES */
   

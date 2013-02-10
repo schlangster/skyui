@@ -3,7 +3,7 @@
 import skyui.util.GlobalFunctions;
 
 
-class skyui.filter.ItemNameFilter implements skyui.filter.IFilter
+class skyui.filter.NameFilter implements skyui.filter.IFilter
 {
   /* PROPERTIES */
   
