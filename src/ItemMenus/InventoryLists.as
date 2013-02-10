@@ -158,6 +158,7 @@ class InventoryLists extends MovieClip
 		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
 
 		categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
+		categoryList.addEventListener("itemPressAux", this, "onCategoriesItemPress");
 		categoryList.addEventListener("selectionChange", this, "onCategoriesListSelectionChange");
 
 		itemList.disableInput = false;
