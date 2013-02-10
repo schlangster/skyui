@@ -4,6 +4,7 @@ import skyui.components.list.BasicListEntry;
 import skyui.util.ConfigManager;
 import skyui.util.GlobalFunctions;
 
+// Entry objects are the actual markers
 class Map.LocationListEntry extends BasicListEntry
 {
   /* CONSTANTS */
@@ -65,7 +66,7 @@ class Map.LocationListEntry extends BasicListEntry
 		
 		selectIndicator._visible = isSelected;
 		
-		icon.gotoAndStop(a_entryObject.type+1);
-		textField.SetText(a_entryObject.text);
+		icon.gotoAndStop(a_entryObject.iconType+1);
+		textField.SetText(a_entryObject.label);
 	}
 }

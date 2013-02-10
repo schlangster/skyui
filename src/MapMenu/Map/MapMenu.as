@@ -52,7 +52,13 @@ class Map.MapMenu
 	private var _findLocButton: MovieClip;
 	private var _searchButton: MovieClip;
 	
-	var locationFinder: LocationFinder;
+	private var _locationFinder: LocationFinder;
+	
+	
+  /* STAGE ELEMENTS */
+  
+  	public var locationFinderFader: MovieClip;
+	public var localMapFader: MovieClip;
 	
 
   /* PROPERTIES */
@@ -86,12 +92,15 @@ class Map.MapMenu
 		_markerList = new Array();
 		_nextCreateIndex = -1;
 		
-		LocalMapMenu = _mapMovie.LocalMapFader.MapClip;
+		LocalMapMenu = _mapMovie.localMapFader.MapClip;
+		
+		_locationFinder = _mapMovie.locationFinderFader.locationFinder;
 		
 		_bottomBar = _root.bottomBar;
 		
 		if (LocalMapMenu != undefined) {
 			LocalMapMenu.setBottomBar(_bottomBar);
+			LocalMapMenu.setLocationFinder(_locationFinder);
 			Mouse.addListener(this);
 		}
 		
@@ -114,13 +123,13 @@ class Map.MapMenu
 		if (_bottomBar != undefined)
 			_bottomBar.swapDepths(4);
 		
-		if (_mapMovie.LocalMapFader != undefined) {
-			_mapMovie.LocalMapFader.swapDepths(3);
-			_mapMovie.LocalMapFader.gotoAndStop("hide");
+		if (_mapMovie.localMapFader != undefined) {
+			_mapMovie.localMapFader.swapDepths(3);
+			_mapMovie.localMapFader.gotoAndStop("hide");
 		}
 		
-		if (_mapMovie.locationFinder != undefined) {
-			_mapMovie.locationFinder.swapDepths(5);
+		if (_mapMovie.locationFinderFader != undefined) {
+			_mapMovie.locationFinderFader.swapDepths(5);
 		}
 		
 		GameDelegate.addCallBack("RefreshMarkers", this, "RefreshMarkers");
@@ -167,8 +176,6 @@ class Map.MapMenu
 		if (_nextCreateIndex == -1 || _markerContainer == null)
 			return;
 			
-		var locationList = _mapMovie.locationFinder.list;
-			
 		var i = 0;
 		var j = _nextCreateIndex * Map.MapMenu.CREATE_STRIDE;
 		
@@ -190,9 +197,11 @@ class Map.MapMenu
 			mapMarker.label = markerName;				
 			mapMarker.textField._visible = false;
 			mapMarker.visible = false;
+			mapMarker.iconType = markerType;
 			
-			var entry = {text: markerName, enabled: true, type: markerType};
-			locationList.entryList.push(entry);
+			if (0 < markerType && markerType < Map.LocationFinder.TYPE_RANGE) {
+				_locationFinder.list.entryList.push(mapMarker);
+			}
 			
 			if (isUndiscovered && mapMarker.IconClip != undefined) {
 				var depth: Number = mapMarker.IconClip.getNextHighestDepth();
@@ -207,7 +216,7 @@ class Map.MapMenu
 		
 		if (_nextCreateIndex >= markersLen) {
 			_nextCreateIndex = -1;
-			locationList.InvalidateData();
+			_locationFinder.list.InvalidateData();
 		}
 	}
 

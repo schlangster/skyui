@@ -1,4 +1,5 @@
 ﻿import gfx.io.GameDelegate;
+import com.greensock.TweenNano;
 
 class Map.MapMarker extends gfx.controls.Button
 {
@@ -24,8 +25,9 @@ class Map.MapMarker extends gfx.controls.Button
 	
   /* STAGE ELEMENTS */
 	
-	var HitAreaClip: MovieClip;
-	var TextClip: MovieClip;
+	public var HitAreaClip: MovieClip;
+	public var TextClip: MovieClip;
+	public var IconClip: MovieClip;
 
 
   /* STATIC VARIABLES */
@@ -71,6 +73,8 @@ class Map.MapMarker extends gfx.controls.Button
 			}
 		}
 	}
+	
+	public var iconType: Number = 0;
 
 
   /* INITIALIZATION */
@@ -113,6 +117,9 @@ class Map.MapMarker extends gfx.controls.Button
 
 	public function MarkerRollOver(): Boolean
 	{
+		if (IconClip.foundIcon)
+			TweenNano.to(IconClip.foundIcon, 1, {_alpha: 0, onComplete: removeMovieClip, onCompleteScope: IconClip.foundIcon});
+		
 		var overState: Boolean = false;
 		setState("over");
 		overState = state == "over";

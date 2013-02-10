@@ -1,5 +1,6 @@
 ﻿import gfx.io.GameDelegate;
 import Map.MapMenu;
+import Map.LocationFinder;
 
 class Map.LocalMap extends MovieClip
 { 
@@ -17,6 +18,9 @@ class Map.LocalMap extends MovieClip
 	private var _bUpdated: Boolean = false;
   
 	private var _bottomBar: MovieClip;
+	
+	// The local map has to manage visiblity of the location finder as well.
+	private var _locationFinder: LocationFinder;
 	
 	private var _bShow: Boolean = false;
 	
@@ -107,6 +111,47 @@ class Map.LocalMap extends MovieClip
 		
 		_bRequestFindLoc = false;
 	}
+
+	// @API
+	public function SetTitle(a_name: String, a_cleared: String): Void
+	{
+		LocationDescription.text = a_name == undefined ? "" : a_name;
+		ClearedDescription.text = a_cleared == undefined ? "" : "(" + a_cleared + ")";
+	}
+	
+	public function showLocationFinder(): Void
+	{
+		// Local map mode
+		if (_state == STATE_LOCALMAP) {
+			setState(STATE_FINDLOCATION);
+
+		// World map mode - delay state update for Show()
+		} else if (_state == STATE_HIDDEN) {
+			_bRequestFindLoc = true;
+			GameDelegate.call("ToggleMapCallback", []);			
+		}
+		
+		// Ignore if state == STATE_FINDLOCATION already
+	}
+	
+	public function setBottomBar(a_bottomBar: MovieClip): Void
+	{
+		_bottomBar = a_bottomBar;
+	}
+	
+	public function setLocationFinder(a_locationFinder: LocationFinder): Void
+	{
+		_locationFinder = a_locationFinder;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+
+	private function onLoadInit(a_targetClip: MovieClip): Void
+	{
+		a_targetClip._width = _textureWidth;
+		a_targetClip._height = _textureHeight;
+	}
 	
 	private function setState(a_newState: Number): Void
 	{
@@ -136,6 +181,8 @@ class Map.LocalMap extends MovieClip
 				_parent._visible = false;
 			}
 			
+			_locationFinder.show();
+			
 			buttonPanel.button0.label = "$World Map";
 			buttonPanel.button2.visible = false;
 			buttonPanel.button3.visible = false;
@@ -146,6 +193,8 @@ class Map.LocalMap extends MovieClip
 		} else if (a_newState == STATE_HIDDEN) {
 			if (oldState == STATE_LOCALMAP) {
 				_parent.gotoAndPlay("fadeOut");
+			} else if (oldState == STATE_FINDLOCATION) {
+				_locationFinder.hide();
 			}
 			_parent._visible = true;
 			
@@ -162,7 +211,7 @@ class Map.LocalMap extends MovieClip
 		_state = a_newState;
 	}
 	
-	public function updateLocalMapExtends(a_bEnabled: Boolean): Void
+	private function updateLocalMapExtends(a_bEnabled: Boolean): Void
 	{
 		if (a_bEnabled) {
 			var textureTopLeft: Object = {x: _x, y: _y};
@@ -174,41 +223,5 @@ class Map.LocalMap extends MovieClip
 		} else {
 			GameDelegate.call("SetLocalMapExtents", [0, 0, 0, 0]);
 		}
-	}
-
-	// @API
-	public function SetTitle(a_name: String, a_cleared: String): Void
-	{
-		LocationDescription.text = a_name == undefined ? "" : a_name;
-		ClearedDescription.text = a_cleared == undefined ? "" : "(" + a_cleared + ")";
-	}
-	
-	public function showLocationFinder(): Void
-	{
-		// Local map mode
-		if (_state == STATE_LOCALMAP) {
-			setState(STATE_FINDLOCATION);
-
-		// World map mode - delay state update for Show()
-		} else if (_state == STATE_HIDDEN) {
-			_bRequestFindLoc = true;
-			GameDelegate.call("ToggleMapCallback", []);			
-		}
-		
-		// Ignore if state == STATE_FINDLOCATION already
-	}
-	
-	public function setBottomBar(a_bottomBar: MovieClip): Void
-	{
-		_bottomBar = a_bottomBar;
-	}
-	
-	
-  /* PRIVATE FUNCTIONS */
-
-	private function onLoadInit(a_targetClip: MovieClip): Void
-	{
-		a_targetClip._width = _textureWidth;
-		a_targetClip._height = _textureHeight;
 	}
 }
