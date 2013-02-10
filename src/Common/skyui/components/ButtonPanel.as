@@ -20,6 +20,8 @@
 	
 	public var buttonInitializer: Object;
 	
+	public var spacing: Number = 10;
+	
 
   /* INITIALIZATION */
   
@@ -81,6 +83,8 @@
 		
 		var btn = buttons[_buttonCount];
 		btn.setButtonData(a_buttonData);
+		
+		btn._visible = true;
 
 		_buttonCount++;
 		
@@ -107,17 +111,16 @@
 		for (var i=0; i < buttons.length; i++) {
 			var btn = buttons[i];
 			
-			if (btn.label.length > 0) {
-				btn._visible = true;
+			if (btn.label.length > 0 && btn._visible) {
 				btn.update();
 				
 				if (isReversed) {
 					offset -= btn.width;
 					btn._x = offset;
-					offset -= 10;
+					offset -= spacing;
 				} else {
 					btn._x = offset;
-					offset += btn.width + 10;
+					offset += btn.width + spacing;
 				}
 			}
 		}
