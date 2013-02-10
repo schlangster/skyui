@@ -7,7 +7,9 @@ class skyui.filter.NameFilter implements skyui.filter.IFilter
 {
   /* PROPERTIES */
   
-	private var _filterText: String;
+	public var nameAttribute: String = "text";
+  
+	private var _filterText: String = "";
 
 	public function get filterText(): String
 	{
@@ -28,10 +30,9 @@ class skyui.filter.NameFilter implements skyui.filter.IFilter
 	
   /* CONSTRUCTORS */
 	
-	public function ItemNameFilter()
+	public function NameFilter()
 	{
 		EventDispatcher.initialize(this);
-		_filterText = "";
 	}
 	
 
@@ -65,7 +66,7 @@ class skyui.filter.NameFilter implements skyui.filter.IFilter
 
 	private function isMatch(a_entry: Object): Boolean
 	{
-		var searchStr = a_entry.text.toLowerCase();
+		var searchStr = a_entry[nameAttribute].toLowerCase();
 
 		var seekIndex = 0;
 		var seek = false;
