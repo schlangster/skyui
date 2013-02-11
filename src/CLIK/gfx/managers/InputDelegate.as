@@ -2,13 +2,17 @@
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
+import skyui.defines.Input;
+import skyui.util.GlobalFunctions;
+
+
 class gfx.managers.InputDelegate extends EventDispatcher
 {
   /* SINGLETON */
 	
 	private static var _instance: InputDelegate;
 	
-	public static function get instance()
+	public static function get instance(): InputDelegate
 	{
 		if (_instance == null) 
 			_instance = new InputDelegate();
@@ -21,6 +25,14 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	
 	private var _keyRepeatStateLookup: Object;
 	private var _keyRepeatSuppressLookup: Object;
+	
+	private var _bEnableControlFixup: Boolean = false;
+	private var _acceptKeycode: Number = -1;
+	
+	
+  /* PROPERTIES */
+  
+  	public var isGamepad: Boolean = false;
 
 
   /* INITIALIZATION */
@@ -36,6 +48,16 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	
 	
   /* PUBLIC FUNCTIONS */
+  
+	// Certain menus wont receive navEquiv's, i.e. ENTER for activate in MapMenu
+	// Has to be disabled manually for skse.AllowTextInput
+	public function enableControlFixup(a_bEnabled: Boolean): Void
+	{
+		if (a_bEnabled)
+			_acceptKeycode = GlobalFunctions.getMappedKey("Accept", Input.CONTEXT_MENUMODE, isGamepad);
+			
+		_bEnableControlFixup = a_bEnabled;
+	}
 
 	public function setKeyRepeat(a_code: Number, a_value, a_controllerIdx: Number): Void
 	{
@@ -89,6 +111,12 @@ class gfx.managers.InputDelegate extends EventDispatcher
 					a_control = null;
 					a_skseKeycode = null;
 					break;
+			}
+		
+		// For != null, attempt fixup?
+		} else if (_bEnableControlFixup) {
+			if (a_skseKeycode == _acceptKeycode) {
+				navEquivalent = NavigationCode.ENTER;
 			}
 		}
 

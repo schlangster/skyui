@@ -2,6 +2,7 @@
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 import gfx.managers.FocusHandler;
+import gfx.managers.InputDelegate;
 
 import Map.LocalMap;
 import Map.LocationFinder;
@@ -11,6 +12,24 @@ import Shared.GlobalFunc;
 import skyui.components.ButtonPanel;
 import skyui.components.MappedButton;
 import skyui.defines.Input;
+
+/*
+	A few comments:
+	* The map menu set up somewhat complicated. There's a lot of @API, so changing that was not an option.
+	* The top-level clip contains 3 main components, and the bottombar.
+		Root
+		+-- MapMenu (aka WorldMap. this class)
+		+-- LocalMap
+		+-- LocationFinder (new)
+		+-- BottomBar
+	* To prevent WSAD etc from zooming while the location finder is active, we have to enter a fake local map mode.
+	* LocalMap handles the overall state of the menu: worldmap(aka hidden), localmap, locationfinder
+	* To open the LocationFinder, we send a request to localmap, which prepares the fake mode, then shows the location finder.
+	* For handleInput, MapMenu acts as the root.
+	* The bottombar changes happen in LocalMap when the mode is changed.
+	* To detect E as NavEquivalent.ENTER, we have to enable a custom fixup in InputDelegate.
+	* To receive mouse wheel input for the scrolling list, we need skse.EnableMapMenuMouseWheel(true).
+ */
 
 class Map.MapMenu
 {
@@ -111,9 +130,15 @@ class Map.MapMenu
 		MarkerDescriptionObj = _markerDescriptionHolder.Description;
 		
 		Stage.addListener(this);
-		FocusHandler.instance.setFocus(this,0);
 		
 		initialize();
+		
+		FocusHandler.instance.setFocus(this,0);
+	}
+	
+	public function InitExtensions(): Void
+	{
+		skse.EnableMapMenuMouseWheel(true);
 	}
 	
 	private function initialize(): Void
@@ -160,8 +185,8 @@ class Map.MapMenu
 		_nextCreateIndex = 0;
 		SetSelectedMarker(-1);
 		
-		var locationList = _mapMovie.locationFinder.list;
-		locationList.clearList();
+		_locationFinder.list.clearList();
+		_locationFinder.setLoading(true);
 	}
 
 	// @API
@@ -199,6 +224,8 @@ class Map.MapMenu
 			mapMarker.visible = false;
 			mapMarker.iconType = markerType;
 			
+			// Adding the markers directly so we don't have to create data objects.
+			// NOTE: Make sure internal entry properties (mappedIndex etc) dont conflict with marker properties
 			if (0 < markerType && markerType < Map.LocationFinder.TYPE_RANGE) {
 				_locationFinder.list.entryList.push(mapMarker);
 			}
@@ -214,9 +241,11 @@ class Map.MapMenu
 			j = j + Map.MapMenu.CREATE_STRIDE;
 		}
 		
+		_locationFinder.list.InvalidateData();
+		
 		if (_nextCreateIndex >= markersLen) {
+			_locationFinder.setLoading(false);
 			_nextCreateIndex = -1;
-			_locationFinder.list.InvalidateData();
 		}
 	}
 
@@ -291,6 +320,9 @@ class Map.MapMenu
 			_findLocButton.disabled = a_platform != ButtonChange.PLATFORM_PC;
 		}
 		
+		InputDelegate.instance.isGamepad = a_platform != ButtonChange.PLATFORM_PC;
+		InputDelegate.instance.enableControlFixup(true);
+		
 		_platform = a_platform;
 	}
 
@@ -320,15 +352,15 @@ class Map.MapMenu
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{			
 		var nextClip = pathToFocus.shift();
-			
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 		
+		// F
 		if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == 33)) {
 			LocalMapMenu.showLocationFinder();
 		}
 
-		return true;
+		return false;
 	}
 	
 	
@@ -378,7 +410,7 @@ class Map.MapMenu
 		
 		}
 		GlobalFunc.SetLockFunction();
-		MovieClip(_root.Bottom).Lock("B");
+		_bottomBar.Lock("B");
 	}
 	
 	private function createButtons(): Void
@@ -397,7 +429,7 @@ class Map.MapMenu
 		buttonPanel.addButton({text: "$Set Destination", controls: {keyCode: 256}}); // 5 - M1
 		
 		_searchButton = buttonPanel.addButton({text: "$Search", controls: Input.Space}); // 6 - F
-
+		_searchButton._visible = false;
 		
 		_localMapButton.addEventListener("click", this, "OnLocalButtonClick");
 		_journalButton.addEventListener("click", this, "OnJournalButtonClick");

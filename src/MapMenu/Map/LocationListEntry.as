@@ -53,7 +53,6 @@ class Map.LocationListEntry extends BasicListEntry
 	
   /* PUBLIC FUNCTIONS */
 	
-	
   	// @override BasicListEntry
 	public function initialize(a_index: Number, a_list: ScrollingList): Void
 	{
