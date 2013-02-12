@@ -425,13 +425,13 @@ function SetOptionFlags(int a_option, int a_flags, bool a_noUpdate = false)
 endFunction
 
 ; @interface
-function SetOptionFlagsST(int a_flags, bool a_noUpdate = false)
+function SetOptionFlagsST(int a_flags, string a_stateName = "", bool a_noUpdate = false)
 	if (_state == STATE_RESET)
 		Error("Cannot set option flags while in OnPageReset(). Pass flags to AddOption instead")
 		return
 	endIf
 
-	int index = GetCurrentStateOptionIndex()
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetOptionFlagsST outside a valid option state")
 		return
@@ -549,8 +549,8 @@ function SetKeyMapOptionValue(int a_option, int a_keyCode, bool a_noUpdate = fal
 endFunction
 
 ; @interface
-function SetTextOptionValueST(string a_value, bool a_noUpdate = false)
-	int index = GetCurrentStateOptionIndex()
+function SetTextOptionValueST(string a_value, string a_stateName = "", bool a_noUpdate = false)
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetTextOptionValueST outside a valid option state")
 		return
@@ -560,8 +560,8 @@ function SetTextOptionValueST(string a_value, bool a_noUpdate = false)
 endFunction
 
 ; @interface
-function SetToggleOptionValueST(bool a_checked, bool a_noUpdate = false)
-	int index = GetCurrentStateOptionIndex()
+function SetToggleOptionValueST(bool a_checked, string a_stateName = "", bool a_noUpdate = false)
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetToggleOptionValueST outside a valid option state")
 		return
@@ -571,8 +571,8 @@ function SetToggleOptionValueST(bool a_checked, bool a_noUpdate = false)
 endFunction
 
 ; @interface
-function SetSliderOptionValueST(float a_value, string a_formatString = "{0}", bool a_noUpdate = false)
-	int index = GetCurrentStateOptionIndex()
+function SetSliderOptionValueST(float a_value, string a_formatString = "{0}", string a_stateName = "", bool a_noUpdate = false)
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetSliderOptionValueST outside a valid option state")
 		return
@@ -582,8 +582,8 @@ function SetSliderOptionValueST(float a_value, string a_formatString = "{0}", bo
 endFunction
 
 ; @interface
-function SetMenuOptionValueST(string a_value, bool a_noUpdate = false)
-	int index = GetCurrentStateOptionIndex()
+function SetMenuOptionValueST(string a_value, string a_stateName = "", bool a_noUpdate = false)
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetMenuOptionValueST outside a valid option state")
 		return
@@ -593,8 +593,8 @@ function SetMenuOptionValueST(string a_value, bool a_noUpdate = false)
 endFunction
 
 ; @interface
-function SetColorOptionValueST(int a_color, bool a_noUpdate = false)
-	int index = GetCurrentStateOptionIndex()
+function SetColorOptionValueST(int a_color, string a_stateName = "", bool a_noUpdate = false)
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetColorOptionValueST outside a valid option state")
 		return
@@ -604,8 +604,8 @@ function SetColorOptionValueST(int a_color, bool a_noUpdate = false)
 endFunction
 
 ; @interface
-function SetKeyMapOptionValueST(int a_keyCode, bool a_noUpdate = false)
-	int index = GetCurrentStateOptionIndex()
+function SetKeyMapOptionValueST(int a_keyCode, string a_stateName = "", bool a_noUpdate = false)
+	int index = GetStateOptionIndex(a_stateName)
 	if (index < 0)
 		Error("Cannot use SetKeyMapOptionValueST outside a valid option state")
 		return
@@ -833,13 +833,16 @@ function AddOptionST(string a_stateName, int a_optionType, string a_text, string
 	_stateOptionMap[index] = a_stateName
 endFunction
 
-int function GetCurrentStateOptionIndex()
-	string st = GetState()
-	if (st == "")
+int function GetStateOptionIndex(string a_stateName)
+	if (a_stateName == "")
+		a_stateName = GetState()
+	endIf
+
+	if (a_stateName == "")
 		return -1
 	endIf
 
-	return _stateOptionMap.find(st)
+	return _stateOptionMap.find(a_stateName)
 endFunction
 
 function WriteOptionBuffers()
