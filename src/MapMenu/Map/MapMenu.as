@@ -340,12 +340,7 @@ class Map.MapMenu
 			
 			_bottomBar.buttonPanel.setPlatform(a_platform, a_bPS3Switch);
 
-			createButtons();
-
-			_localMapButton.disabled = a_platform != ButtonChange.PLATFORM_PC;
-			_journalButton.disabled = a_platform != ButtonChange.PLATFORM_PC;
-			_playerLocButton.disabled = a_platform != ButtonChange.PLATFORM_PC;
-			_findLocButton.disabled = a_platform != ButtonChange.PLATFORM_PC;
+			createButtons(a_platform != ButtonChange.PLATFORM_PC);
 		}
 		
 		InputDelegate.instance.isGamepad = a_platform != ButtonChange.PLATFORM_PC;
@@ -383,9 +378,11 @@ class Map.MapMenu
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 		
-		// Find Location
-		if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == _findLocControls.keyCode)) {
-			LocalMapMenu.showLocationFinder();
+		// Find Location - L
+		if (_platform == ButtonChange.PLATFORM_PC) {
+			if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == 33)) {
+				LocalMapMenu.showLocationFinder();
+			}
 		}
 
 		return false;
@@ -441,7 +438,7 @@ class Map.MapMenu
 		_bottomBar.Lock("B");
 	}
 	
-	private function createButtons(): Void
+	private function createButtons(a_bGamepad: Boolean): Void
 	{
 		var buttonPanel: ButtonPanel = _bottomBar.buttonPanel;
 		buttonPanel.clearButtons();
@@ -452,14 +449,20 @@ class Map.MapMenu
 		_playerLocButton =	buttonPanel.addButton({text: "$Current Location", controls: _playerLocControls});	// 3
 		_findLocButton =	buttonPanel.addButton({text: "$Find Location", controls: _findLocControls});		// 4
 							buttonPanel.addButton({text: "$Set Destination", controls: _setDestControls});		// 5
-		_searchButton =		buttonPanel.addButton({text: "$Search", controls: Input.Space});					// 6 
-		
-		_searchButton._visible = false;
+		_searchButton =		buttonPanel.addButton({text: "$Search", controls: Input.Space});					// 6
 		
 		_localMapButton.addEventListener("click", this, "OnLocalButtonClick");
 		_journalButton.addEventListener("click", this, "OnJournalButtonClick");
 		_playerLocButton.addEventListener("click", this, "OnPlayerLocButtonClick");
 		_findLocButton.addEventListener("click", this, "OnFindLocButtonClick");
+		
+		_localMapButton.disabled = a_bGamepad;
+		_journalButton.disabled = a_bGamepad;
+		_playerLocButton.disabled = a_bGamepad;
+		_findLocButton.disabled = a_bGamepad;
+		
+		_findLocButton.visible = !a_bGamepad;
+		_searchButton.visible = false;
 		
 		buttonPanel.updateButtons(true);
 	}

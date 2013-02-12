@@ -167,7 +167,8 @@ class Map.LocalMap extends MovieClip
 			buttonPanel.button0.label = "$World Map";
 			buttonPanel.button2.visible = true;
 			buttonPanel.button3.visible = true;
-			buttonPanel.button4.visible = true;
+			if (!buttonPanel.button4.disabled)
+				buttonPanel.button4.visible = true;
 			buttonPanel.button5.visible = false;
 			buttonPanel.button6.visible = false;
 			
@@ -201,7 +202,8 @@ class Map.LocalMap extends MovieClip
 			buttonPanel.button0.label = "$Local Map";
 			buttonPanel.button2.visible = true;
 			buttonPanel.button3.visible = true;
-			buttonPanel.button4.visible = true;
+			if (!buttonPanel.button4.disabled)
+				buttonPanel.button4.visible = true;
 			buttonPanel.button5.visible = true;
 			buttonPanel.button6.visible = false;
 		}
