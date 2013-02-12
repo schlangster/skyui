@@ -36,16 +36,16 @@ class Map.MapMenu
 {
   /* CONSTANTS */
   
-	static var REFRESH_SHOW: Number = 0;
-	static var REFRESH_X: Number = 1;
-	static var REFRESH_Y: Number = 2;
-	static var REFRESH_ROTATION: Number = 3;
-	static var REFRESH_STRIDE: Number = 4;
-	static var CREATE_NAME: Number = 0;
-	static var CREATE_ICONTYPE: Number = 1;
-	static var CREATE_UNDISCOVERED: Number = 2;
-	static var CREATE_STRIDE: Number = 3;
-	static var MARKER_CREATE_PER_FRAME: Number = 10;
+	private static var REFRESH_SHOW: Number = 0;
+	private static var REFRESH_X: Number = 1;
+	private static var REFRESH_Y: Number = 2;
+	private static var REFRESH_ROTATION: Number = 3;
+	private static var REFRESH_STRIDE: Number = 4;
+	private static var CREATE_NAME: Number = 0;
+	private static var CREATE_ICONTYPE: Number = 1;
+	private static var CREATE_UNDISCOVERED: Number = 2;
+	private static var CREATE_STRIDE: Number = 3;
+	private static var MARKER_CREATE_PER_FRAME: Number = 10;
 	
 	
   /* PRIVATE VARIABLES */
@@ -73,6 +73,13 @@ class Map.MapMenu
 	private var _searchButton: MovieClip;
 	
 	private var _locationFinder: LocationFinder;
+	
+	private var _localMapControls: Object;
+	private var _journalControls: Object;
+	private var _zoomControls: Object;
+	private var _playerLocControls: Object;
+	private var _setDestControls: Object;
+	private var _findLocControls: Object;
 	
 	
   /* STAGE ELEMENTS */
@@ -309,6 +316,26 @@ class Map.MapMenu
 	// @API
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
+	
+		if (a_platform == ButtonChange.PLATFORM_PC) {
+			_localMapControls = {keyCode: 38}; // L
+			_journalControls = {name: "Journal", context: Input.CONTEXT_GAMEPLAY};
+			_zoomControls = {keyCode: 283}; // special: mouse wheel
+			_playerLocControls = {keyCode: 18}; // E
+			_setDestControls = {keyCode: 256}; // Mouse1
+			_findLocControls = {keyCode: 33}; // F
+		} else {
+			_localMapControls = {keyCode: 278}; // X
+			_journalControls = {keyCode: 270}; // START
+			_zoomControls = [	// LT/RT
+				{keyCode: 280},
+				{keyCode: 281}
+			];
+			_playerLocControls = {keyCode: 279}; // Y
+			_setDestControls = {keyCode: 276}; // A
+			_findLocControls = {keyCode: 273}; // RS
+		}
+		
 		if (_bottomBar != undefined) {
 			
 			_bottomBar.buttonPanel.setPlatform(a_platform, a_bPS3Switch);
@@ -356,8 +383,8 @@ class Map.MapMenu
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 		
-		// F
-		if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == 33)) {
+		// Find Location
+		if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == _findLocControls.keyCode)) {
 			LocalMapMenu.showLocationFinder();
 		}
 
@@ -419,17 +446,14 @@ class Map.MapMenu
 		var buttonPanel: ButtonPanel = _bottomBar.buttonPanel;
 		buttonPanel.clearButtons();
 
-		_localMapButton = buttonPanel.addButton({text: "$Local Map", controls: {keyCode: 38}}); // 0 - L
-		_journalButton = buttonPanel.addButton({text: "$Journal", controls: {name: "Journal", context: Input.CONTEXT_GAMEPLAY}}); // 1
+		_localMapButton =	buttonPanel.addButton({text: "$Local Map", controls: _localMapControls});			// 0
+		_journalButton =	buttonPanel.addButton({text: "$Journal", controls: _journalControls});				// 1
+							buttonPanel.addButton({text: "$Zoom", controls: _zoomControls});					// 2
+		_playerLocButton =	buttonPanel.addButton({text: "$Current Location", controls: _playerLocControls});	// 3
+		_findLocButton =	buttonPanel.addButton({text: "$Find Location", controls: _findLocControls});		// 4
+							buttonPanel.addButton({text: "$Set Destination", controls: _setDestControls});		// 5
+		_searchButton =		buttonPanel.addButton({text: "$Search", controls: Input.Space});					// 6 
 		
-		buttonPanel.addButton({text: "$Zoom", controls: {keyCode: 283}}); // 2 - special: mouse wheel
-		
-		_playerLocButton = buttonPanel.addButton({text: "$Current Location", controls: {keyCode: 18}}); // 3 - E
-		_findLocButton = buttonPanel.addButton({text: "$Find Location", controls: {keyCode: 33}}); // 4 - F
-		
-		buttonPanel.addButton({text: "$Set Destination", controls: {keyCode: 256}}); // 5 - M1
-		
-		_searchButton = buttonPanel.addButton({text: "$Search", controls: Input.Space}); // 6 - F
 		_searchButton._visible = false;
 		
 		_localMapButton.addEventListener("click", this, "OnLocalButtonClick");
