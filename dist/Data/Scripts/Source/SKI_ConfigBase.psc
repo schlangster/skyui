@@ -58,6 +58,8 @@ string				_infoText
 bool				_messageResult		= false
 bool				_waitForMessage		= false
 
+string[]			_stateOptionMap
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -213,6 +215,56 @@ event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl
 	{Called when a key has been remapped}
 endEvent
 
+; @interface
+event OnHighlightST()
+	{Called when highlighting a state option}
+endEvent
+
+; @interface
+event OnSelectST()
+	{Called when a non-interactive state option has been selected}
+endEvent
+
+; @interface
+event OnDefaultST()
+	{Called when resetting a state option to its default value}
+endEvent
+
+; @interface
+event OnSliderOpenST()
+	{Called when a slider state option has been selected}
+endEvent
+
+; @interface
+event OnSliderAcceptST(float a_value)
+	{Called when a new slider state value has been accepted}
+endEvent
+
+; @interface
+event OnMenuOpenST()
+	{Called when a menu state option has been selected}
+endEvent
+
+; @interface
+event OnMenuAcceptST(int a_index)
+	{Called when a menu entry has been accepted}
+endEvent
+
+; @interface
+event OnColorOpenST()
+	{Called when a color state option has been selected}
+endEvent
+
+; @interface
+event OnColorAcceptST(int a_color)
+	{Called when a new color has been accepted}
+endEvent
+
+; @interface
+event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+	{Called when a key has been remapped}
+endEvent
+
 event OnMessageDialogClose(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	_messageResult = a_numArg as bool
 	_waitForMessage = false
@@ -304,6 +356,36 @@ int function AddKeyMapOption(string a_text, int a_keyCode, int a_flags = 0)
 endFunction
 
 ; @interface
+function AddTextOptionST(string a_stateName, string a_text, string a_value, int a_flags = 0)
+	AddOptionST(a_stateName, OPTION_TYPE_TEXT, a_text, a_value, 0, a_flags)
+endFunction
+
+; @interface
+function AddToggleOptionST(string a_stateName, string a_text, bool a_checked, int a_flags = 0)
+	AddOptionST(a_stateName, OPTION_TYPE_TOGGLE, a_text, none, a_checked as int, a_flags)
+endfunction
+
+; @interface
+function AddSliderOptionST(string a_stateName, string a_text, float a_value, string a_formatString = "{0}", int a_flags = 0)
+	AddOptionST(a_stateName, OPTION_TYPE_SLIDER, a_text, a_formatString, a_value, a_flags)
+endFunction
+
+; @interface
+function AddMenuOptionST(string a_stateName, string a_text, string a_value, int a_flags = 0)
+	AddOptionST(a_stateName, OPTION_TYPE_MENU, a_text, a_value, 0, a_flags)
+endFunction
+
+; @interface
+function AddColorOptionST(string a_stateName, string a_text, int a_color, int a_flags = 0)
+	AddOptionST(a_stateName, OPTION_TYPE_COLOR, a_text, none, a_color, a_flags)
+endFunction
+
+; @interface
+function AddKeyMapOptionST(string a_stateName, string a_text, int a_keyCode, int a_flags = 0)
+	AddOptionST(a_stateName, OPTION_TYPE_KEYMAP, a_text, none, a_keyCode, a_flags)
+endFunction
+
+; @interface
 function LoadCustomContent(string a_source, float a_x = 0.0, float a_y = 0.0)
 	float[] params = new float[2]
 	params[0] = a_x
@@ -340,6 +422,22 @@ function SetOptionFlags(int a_option, int a_flags, bool a_noUpdate = false)
 	if (!a_noUpdate)
 		UI.Invoke(JOURNAL_MENU, MENU_ROOT + ".invalidateOptionData")
 	endIf
+endFunction
+
+; @interface
+function SetOptionFlagsST(int a_flags, bool a_noUpdate = false)
+	if (_state == STATE_RESET)
+		Error("Cannot set option flags while in OnPageReset(). Pass flags to AddOption instead")
+		return
+	endIf
+
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetOptionFlagsST outside a valid option state")
+		return
+	endIf
+
+	SetOptionFlags(index, a_flags, a_noUpdate)
 endFunction
 
 ; @interface
@@ -448,6 +546,72 @@ function SetKeyMapOptionValue(int a_option, int a_keyCode, bool a_noUpdate = fal
 	endIf
 
 	SetOptionNumValue(index, a_keyCode, a_noUpdate)
+endFunction
+
+; @interface
+function SetTextOptionValueST(string a_value, bool a_noUpdate = false)
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetTextOptionValueST outside a valid option state")
+		return
+	endIf
+
+	SetTextOptionValue(index, a_value, a_noUpdate)
+endFunction
+
+; @interface
+function SetToggleOptionValueST(bool a_checked, bool a_noUpdate = false)
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetToggleOptionValueST outside a valid option state")
+		return
+	endIf
+
+	SetToggleOptionValue(index, a_checked, a_noUpdate)
+endFunction
+
+; @interface
+function SetSliderOptionValueST(float a_value, string a_formatString = "{0}", bool a_noUpdate = false)
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetSliderOptionValueST outside a valid option state")
+		return
+	endIf
+
+	SetSliderOptionValue(index, a_value, a_formatString, a_noUpdate)
+endFunction
+
+; @interface
+function SetMenuOptionValueST(string a_value, bool a_noUpdate = false)
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetMenuOptionValueST outside a valid option state")
+		return
+	endIf
+
+	SetMenuOptionValue(index, a_value, a_noUpdate)
+endFunction
+
+; @interface
+function SetColorOptionValueST(int a_color, bool a_noUpdate = false)
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetColorOptionValueST outside a valid option state")
+		return
+	endIf
+
+	SetColorOptionValue(index, a_color, a_noUpdate)
+endFunction
+
+; @interface
+function SetKeyMapOptionValueST(int a_keyCode, bool a_noUpdate = false)
+	int index = GetCurrentStateOptionIndex()
+	if (index < 0)
+		Error("Cannot use SetKeyMapOptionValueST outside a valid option state")
+		return
+	endIf
+
+	SetKeyMapOptionValue(index, a_keyCode, a_noUpdate)
 endFunction
 
 ; @interface
@@ -583,6 +747,7 @@ function OpenConfig()
 	_textBuf		= new string[128]
 	_strValueBuf	= new string[128]
 	_numValueBuf	= new float[128]
+	_stateOptionMap	= new string[128]
 
 	SetPage("", -1)
 
@@ -601,6 +766,7 @@ function CloseConfig()
 	_textBuf		= new string[1]
 	_strValueBuf	= new string[1]
 	_numValueBuf	= new float[1]
+	_stateOptionMap	= new string[1]
 endFunction
 
 function SetPage(string a_page, int a_index)
@@ -648,6 +814,34 @@ int function AddOption(int a_optionType, string a_text, string a_strValue, float
 	return pos + _currentPageNum * 0x100
 endFunction
 
+function AddOptionST(string a_stateName, int a_optionType, string a_text, string a_strValue, float a_numValue, int a_flags)
+	if (_stateOptionMap.find(a_stateName) != -1)
+		Error("State option name " + a_stateName + " is already in use")
+		return
+	endIf
+	
+	int index = AddOption(a_optionType, a_text, a_strValue, a_numValue, a_flags) % 0x100
+	if (index < 0)
+		return
+	endIf
+
+	if (_stateOptionMap[index] != "")
+		Error("State option index " + index + " already in use")
+		return
+	endIf
+
+	_stateOptionMap[index] = a_stateName
+endFunction
+
+int function GetCurrentStateOptionIndex()
+	string st = GetState()
+	if (st == "")
+		return -1
+	endIf
+
+	return _stateOptionMap.find(st)
+endFunction
+
 function WriteOptionBuffers()
 	string menu = JOURNAL_MENU
 	string root = MENU_ROOT
@@ -679,6 +873,9 @@ function ClearOptionBuffers()
 		_textBuf[i] = ""
 		_strValueBuf[i] = ""
 		_numValueBuf[i] = 0
+
+		; Also clear state map as it's tied to the buffers
+		_stateOptionMap[i] = ""
 		i += 1
 	endWhile
 
@@ -746,7 +943,17 @@ function RequestSliderDialogData(int a_index)
 	_sliderParams[4] = 1
 
 	_state = STATE_SLIDER
-	OnOptionSliderOpen(_activeOption)
+
+	string optionState = _stateOptionMap[a_index]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnSliderOpenST()
+		gotoState(oldState)
+	else
+		OnOptionSliderOpen(_activeOption)
+	endIf
+
 	_state = STATE_DEFAULT
 
 	UI.InvokeFloatA(JOURNAL_MENU, MENU_ROOT + ".setSliderDialogParams", _sliderParams)
@@ -760,7 +967,17 @@ function RequestMenuDialogData(int a_index)
 	_menuParams[1] = -1
 
 	_state = STATE_MENU
-	OnOptionMenuOpen(_activeOption)
+
+	string optionState = _stateOptionMap[a_index]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnMenuOpenST()
+		gotoState(oldState)
+	else
+		OnOptionMenuOpen(_activeOption)
+	endIf
+
 	_state = STATE_DEFAULT
 
 	UI.InvokeIntA(JOURNAL_MENU, MENU_ROOT + ".setMenuDialogParams", _menuParams)
@@ -774,45 +991,115 @@ function RequestColorDialogData(int a_index)
 	_colorParams[1] = -1
 
 	_state = STATE_COLOR
-	OnOptionColorOpen(_activeOption)
+
+	string optionState = _stateOptionMap[a_index]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnColorOpenST()
+		gotoState(oldState)
+	else
+		OnOptionColorOpen(_activeOption)
+	endIf
+
 	_state = STATE_DEFAULT
 
 	UI.InvokeIntA(JOURNAL_MENU, MENU_ROOT + ".setColorDialogParams", _colorParams)
 endFunction
 
 function SetSliderValue(float a_value)
-	OnOptionSliderAccept(_activeOption, a_value)
+	string optionState = _stateOptionMap[_activeOption % 0x100]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnSliderAcceptST(a_value)
+		gotoState(oldState)
+	else
+		OnOptionSliderAccept(_activeOption, a_value)
+	endIf
 	_activeOption = -1
 endFunction
 
 function SetMenuIndex(int a_index)
-	OnOptionMenuAccept(_activeOption, a_index)
+	string optionState = _stateOptionMap[_activeOption % 0x100]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnMenuAcceptST(a_index)
+		gotoState(oldState)
+	else
+		OnOptionMenuAccept(_activeOption, a_index)
+	endIf
 	_activeOption = -1
 endFunction
 
 function SetColorValue(int a_color)
-	OnOptionColorAccept(_activeOption, a_color)
+	string optionState = _stateOptionMap[_activeOption % 0x100]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnColorAcceptST(a_color)
+		gotoState(oldState)
+	else
+		OnOptionColorAccept(_activeOption, a_color)
+	endIf
 	_activeOption = -1
 endFunction
 
 function SelectOption(int a_index)
-	int option = a_index + _currentPageNum * 0x100
-	OnOptionSelect(option)
+	string optionState = _stateOptionMap[a_index]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnSelectST()
+		gotoState(oldState)
+	else
+		int option = a_index + _currentPageNum * 0x100
+		OnOptionSelect(option)
+	endIf
 endFunction
 
 function ResetOption(int a_index)
-	int option = a_index + _currentPageNum * 0x100
-	OnOptionDefault(option)
+	string optionState = _stateOptionMap[a_index]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnDefaultST()
+		gotoState(oldState)
+	else
+		int option = a_index + _currentPageNum * 0x100
+		OnOptionDefault(option)
+	endIf
 endFunction
 
 function HighlightOption(int a_index)
 	_infoText = ""
-	int option = a_index + _currentPageNum * 0x100
-	OnOptionHighlight(option)
+
+	if (a_index != -1)
+		string optionState = _stateOptionMap[a_index]
+		if (optionState != "")
+			string oldState = GetState()
+			gotoState(optionState)
+			OnHighlightST()
+			gotoState(oldState)
+		else
+			int option = a_index + _currentPageNum * 0x100
+			OnOptionHighlight(option)
+		endIf
+	endIf
+
 	UI.InvokeString(JOURNAL_MENU, MENU_ROOT + ".setInfoText", _infoText)
 endFunction
 
 function RemapKey(int a_index, int a_keyCode, string a_conflictControl, string a_conflictName)
-	int option = a_index + _currentPageNum * 0x100
-	OnOptionKeyMapChange(option, a_keyCode, a_conflictControl, a_conflictName)
+	string optionState = _stateOptionMap[a_index]
+	if (optionState != "")
+		string oldState = GetState()
+		gotoState(optionState)
+		OnKeyMapChangeST(a_keyCode, a_conflictControl, a_conflictName)
+		gotoState(oldState)
+	else
+		int option = a_index + _currentPageNum * 0x100
+		OnOptionKeyMapChange(option, a_keyCode, a_conflictControl, a_conflictName)
+	endIf
 endFunction
