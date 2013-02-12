@@ -9,6 +9,8 @@ string property		CONTAINER_MENU	= "ContainerMenu" autoReadonly
 string property		BARTER_MENU		= "BarterMenu" autoReadonly
 string property		GIFT_MENU		= "GiftMenu" autoReadonly
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
+string property		MAP_MENU		= "MapMenu" autoReadonly
+
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
@@ -17,33 +19,16 @@ bool _magicMenuCheckEnabled			= true
 bool _barterMenuCheckEnabled		= true
 bool _containerMenuCheckEnabled		= true
 bool _giftMenuCheckEnabled			= true
+bool _mapMenuCheckEnabled			= true
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-int property		MinSKSERelease
-	int function get()
-		return 34
-	endFunction
-endProperty
+int property		MinSKSERelease	= 34		autoReadonly
+string property		MinSKSEVersion	= "1.6.6"	autoReadonly
 
-string property		MinSKSEVersion
-	string function get()
-		return "1.6.6"
-	endFunction
-endProperty
-
-int property		ReqSWFRelease
-	int function get()
-		return 9
-	endFunction
-endProperty
-
-string property		ReqSWFVersion
-	string function get()
-		return "3.2"
-	endFunction
-endProperty
+int property		ReqSWFRelease	= 9			autoReadonly
+string property		ReqSWFVersion	= "3.2"		autoReadonly
 
 bool property		ErrorDetected				= false auto
 
@@ -123,6 +108,21 @@ bool property GiftMenuCheckEnabled
 	endFunction
 endProperty
 
+bool property MapMenuCheckEnabled
+	bool function get()
+		return _mapMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_mapMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(MAP_MENU)
+		else
+			UnregisterForMenu(MAP_MENU)
+		endIf
+	endFunction
+endProperty
+
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
@@ -151,7 +151,7 @@ event OnGameReload()
 	endIf
 
 	if (Utility.GetINIInt("iMinMemoryPageSize:Papyrus") <= 0 || Utility.GetINIInt("iMaxMemoryPageSize:Papyrus") <= 0 || Utility.GetINIInt("iMaxAllocatedMemoryBytes:Papyrus") <= 0)
-		Error("Your Papyrus INI settings are invalid.")
+		Error("Your Papyrus INI settings are invalid. Please fix this, otherwise SkyUI will stop working at some point.")
 		return
 	endIf
 
@@ -176,6 +176,10 @@ event OnGameReload()
 		RegisterForMenu(GIFT_MENU)
 	endIf
 
+	if (GiftMenuCheckEnabled)
+		RegisterForMenu(MAP_MENU)
+	endIf
+
 	RegisterForMenu(JOURNAL_MENU)
 endEvent
 
@@ -188,37 +192,42 @@ event OnMenuOpen(string a_menuName)
 			CheckItemMenuComponents(a_menuName))
 			; Only unregister if all checks have been performed (regardless of check result)
 			UnregisterForMenu(a_menuName)
-		EndIf
+		endIf
 
 	elseIf (a_menuName == MAGIC_MENU)
 		if (CheckMenuVersion("magicmenu.swf", a_menuName, "_global.MagicMenu") && \
 			CheckItemMenuComponents(a_menuName))
 			UnregisterForMenu(a_menuName)
-		EndIf
+		endIf
 
 	elseIf (a_menuName == CONTAINER_MENU)
 		if (CheckMenuVersion("containermenu.swf", a_menuName, "_global.ContainerMenu") && \
 			CheckItemMenuComponents(a_menuName))
 			UnregisterForMenu(a_menuName)
-		EndIf
+		endIf
 
 	elseIf (a_menuName == BARTER_MENU)
 		if (CheckMenuVersion("bartermenu.swf", a_menuName, "_global.BarterMenu") && \
 			CheckItemMenuComponents(a_menuName))
 			UnregisterForMenu(a_menuName)
-		EndIf
+		endIf
 
 	elseIf (a_menuName == GIFT_MENU)
 		if (CheckMenuVersion("giftmenu.swf", a_menuName, "_global.GiftMenu") && \
 			CheckItemMenuComponents(a_menuName))
 			UnregisterForMenu(a_menuName)
-		EndIf
+		endIf
 
 	elseIf (a_menuName == JOURNAL_MENU)
 		if (CheckMenuVersion("quest_journal.swf", a_menuName, "_global.Quest_Journal") && \
 			CheckMenuVersion("skyui/configpanel.swf", a_menuName, "_global.ConfigPanel"))
 			UnregisterForMenu(a_menuName)
-		EndIf
+		endIf
+
+	elseIf (a_menuName == MAP_MENU)
+		if (CheckMenuVersion("mapmenu.swf", a_menuName, "_global.Map.MapMenu"))
+			UnregisterForMenu(a_menuName)
+		endIf
 	endIf
 endEvent
 

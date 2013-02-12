@@ -6,6 +6,7 @@ Scripts\SKI_Main.pex
 Scripts\SKI_PlayerLoadGameAlias.pex
 Scripts\SKI_QuestBase.pex
 Scripts\SKI_SettingsManager.pex
+Scripts\SKI_StatusWidget.pex
 Scripts\SKI_WidgetBase.pex
 Scripts\SKI_WidgetManager.pex
 Scripts\Source\SKI_ActiveEffectsWidget.psc
@@ -16,5 +17,6 @@ Scripts\Source\SKI_Main.psc
 Scripts\Source\SKI_PlayerLoadGameAlias.psc
 Scripts\Source\SKI_QuestBase.psc
 Scripts\Source\SKI_SettingsManager.psc
+Scripts\Source\SKI_StatusWidget.psc
 Scripts\Source\SKI_WidgetBase.psc
 Scripts\Source\SKI_WidgetManager.psc

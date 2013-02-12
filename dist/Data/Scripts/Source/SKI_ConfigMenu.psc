@@ -11,6 +11,9 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ;		- Added controls section for gamepad
 ;
 ; 3:	- Added disable 3D item positioning option
+;
+; 4:	- Added map menu version check
+;		- Added active effects widget configuration
 
 int function GetVersion()
 	return 3
@@ -111,6 +114,11 @@ float		_fMagic3DItemPosX
 ; Flags
 int			_3DItemFlags
 
+; -- Version 4 --
+
+; OIDs
+int			_checkMapMenuOID_B
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -195,6 +203,11 @@ event OnVersionUpdate(int a_version)
 		;SKI_MainInstance.ContainerMenuCheckEnabled
 		;SKI_MainInstance.GiftMenuCheckEnabled
 	endIf
+
+	if (a_version >= 4 && CurrentVersion < 4)
+		Debug.Trace(self + ": Updating to script version 4")
+
+	endIf
 endEvent
 
 
@@ -267,6 +280,7 @@ event OnPageReset(string a_page)
 		_checkBarterMenuOID_B				= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
 		_checkContainerMenuOID_B			= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
 		_checkGiftMenuOID_B					= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
+		_checkMapMenuOID_B					= AddToggleOption("Map Menu", SKI_MainInstance.MapMenuCheckEnabled)
 		
 	endIf
 endEvent
@@ -389,6 +403,10 @@ event OnOptionDefault(int a_option)
 		SKI_MainInstance.GiftMenuCheckEnabled = true
 		SetToggleOptionValue(a_option, true)
 
+	elseIf (a_option == _checkMapMenuOID_B)
+		SKI_MainInstance.MapMenuCheckEnabled = true
+		SetToggleOptionValue(a_option, true)
+
 	endIf
 endEvent
 
@@ -463,6 +481,11 @@ event OnOptionSelect(int a_option)
 	elseIf (a_option == _checkGiftMenuOID_B)
 		bool newVal = !SKI_MainInstance.GiftMenuCheckEnabled
 		SKI_MainInstance.GiftMenuCheckEnabled = newVal
+		SetToggleOptionValue(a_option, newVal)
+
+	elseIf (a_option == _checkMapMenuOID_B)
+		bool newVal = !SKI_MainInstance.MapMenuCheckEnabled
+		SKI_MainInstance.MapMenuCheckEnabled = newVal
 		SetToggleOptionValue(a_option, newVal)
 
 	endIf
@@ -705,6 +728,8 @@ event OnOptionHighlight(int a_option)
 	elseIf (a_option == _checkContainerMenuOID_B)
 		SetInfoText("$SKI_INFO6")
 	elseIf (a_option == _checkGiftMenuOID_B)
+		SetInfoText("$SKI_INFO6")
+	elseIf (a_option == _checkMapMenuOID_B)
 		SetInfoText("$SKI_INFO6")
 	endIf
 endEvent

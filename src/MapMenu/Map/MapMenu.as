@@ -34,6 +34,8 @@ import skyui.defines.Input;
 
 class Map.MapMenu
 {
+	#include "../../version.as"
+	
   /* CONSTANTS */
   
 	private static var REFRESH_SHOW: Number = 0;
