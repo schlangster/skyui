@@ -26,7 +26,11 @@ float				_alpha				= 100.0
 bool property RequireExtend				= true	auto
 	{Require extending the widget type instead of using it directly.}
 
-; Read-only
+; @interface
+string property WidgetName				= "I-forgot-to-set-the-widget name" auto
+	{Name of the widget. Used to identify it in the user interface.}
+
+; @interface
 int property WidgetID
 	{Unique ID of the widget. ReadOnly}
 	int function get()
@@ -34,7 +38,7 @@ int property WidgetID
 	endFunction
 endProperty
 
-; Read-only
+; @interface
 bool property Ready
 	{True once the widget has registered. ReadOnly}
 	bool function get()
@@ -42,7 +46,7 @@ bool property Ready
 	endFunction
 endProperty
 
-; Read-only
+; @interface
 string property WidgetRoot
 	{Path to the root of the widget from _root of HudMenu. ReadOnly}
 	string function get()
@@ -64,6 +68,7 @@ string[] property Modes
 	endFunction
 endProperty
 
+; @interface
 string property HAnchor
 	{Horizontal anchor point of the widget ["left", "center", "right"]. Default: "left"}
 	string function get()
@@ -78,6 +83,7 @@ string property HAnchor
 	endFunction
 endProperty
 
+; @interface
 string property VAnchor
 	{Vertical anchor point of the widget ["top", "center", "bottom"]. Default: "top"}
 	string function get()
@@ -92,6 +98,7 @@ string property VAnchor
 	endFunction
 endProperty
 
+; @interface
 float property X
 	{Horizontal position of the widget in pixels at a resolution of 1280x720 [0.0, 1280.0]. Default: 0.0}
 	float function get()
@@ -106,6 +113,7 @@ float property X
 	endFunction
 endProperty
 
+; @interface
 float property Y
 	{Vertical position of the widget in pixels at a resolution of 1280x720 [0.0, 720.0]. Default: 0.0}
 	float function get()
@@ -120,6 +128,7 @@ float property Y
 	endFunction
 endProperty
 
+; @interface
 float property Alpha
 	{Opacity of the widget [0.0, 100.0]. Default: 0.0}
 	float function get()
@@ -147,7 +156,7 @@ event OnGameReload()
 	RegisterForModEvent("SKIWF_widgetManagerReady", "OnWidgetManagerReady")
 
 	if (!IsExtending() && RequireExtend)
-		Debug.MessageBox("WARNING!\n" + self as string + " must extend base script types")
+		Debug.MessageBox("WARNING!\n" + self as string + " must extend a base script type.")
 	endIf
 
 	if (!_initialized)
@@ -226,6 +235,15 @@ endFunction
 string function GetWidgetType()
 	; Must be the same as scriptname
 	return ""
+endFunction
+
+; @interface
+float[] function GetDimensions()
+	{Return the dimensions of the widget (width,height).}
+	float[] dim = new float[2]
+	dim[0] = 0
+	dim[1] = 0
+	return dim
 endFunction
 
 bool function IsExtending()

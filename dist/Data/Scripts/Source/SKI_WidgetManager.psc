@@ -166,3 +166,16 @@ function CreateWidget(int a_widgetID, string a_widgetSource)
 	args[1] = a_widgetSource
 	UI.InvokeStringA(HUD_MENU, "_root.widgetLoaderContainer.widgetLoader.loadWidget", args);
 endFunction
+
+SKI_WidgetBase[] function GetWidgets()
+	; Return a copy
+	SKI_WidgetBase[] widgetsCopy = new SKI_WidgetBase[128]
+	int i = 0
+	
+	while (i < _widgets.length)
+		widgetsCopy[i] = _widgets[i]
+		i += 1
+	endWhile
+
+	return widgetsCopy
+endFunction
