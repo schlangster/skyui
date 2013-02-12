@@ -29,6 +29,7 @@ import skyui.defines.Input;
 	* The bottombar changes happen in LocalMap when the mode is changed.
 	* To detect E as NavEquivalent.ENTER, we have to enable a custom fixup in InputDelegate.
 	* To receive mouse wheel input for the scrolling list, we need skse.EnableMapMenuMouseWheel(true).
+	* Oh, and the localmap reuses this class somehow for its IconView...
  */
 
 class Map.MapMenu
@@ -120,7 +121,9 @@ class Map.MapMenu
 		if (LocalMapMenu != undefined) {
 			LocalMapMenu.setBottomBar(_bottomBar);
 			LocalMapMenu.setLocationFinder(_locationFinder);
+			
 			Mouse.addListener(this);
+			FocusHandler.instance.setFocus(this,0);
 		}
 		
 		_markerDescriptionHolder = _mapMovie.attachMovie("DescriptionHolder", "markerDescriptionHolder", _mapMovie.getNextHighestDepth());
@@ -132,8 +135,6 @@ class Map.MapMenu
 		Stage.addListener(this);
 		
 		initialize();
-		
-		FocusHandler.instance.setFocus(this,0);
 	}
 	
 	public function InitExtensions(): Void
@@ -154,7 +155,7 @@ class Map.MapMenu
 		}
 		
 		if (_mapMovie.locationFinderFader != undefined) {
-			_mapMovie.locationFinderFader.swapDepths(5);
+			_mapMovie.locationFinderFader.swapDepths(6);
 		}
 		
 		GameDelegate.addCallBack("RefreshMarkers", this, "RefreshMarkers");

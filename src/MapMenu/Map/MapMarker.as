@@ -124,7 +124,7 @@ class Map.MapMarker extends gfx.controls.Button
 		setState("over");
 		overState = state == "over";
 		if (overState) {
-			var topInstance: MovieClip = _parent.getInstanceAtDepth(Map.MapMarker.TopDepth);
+			var topInstance: MovieClip = _parent.getInstanceAtDepth(Map.MapMarker.topDepth);
 			if (topInstance != null)
 				topInstance.swapDepths(Map.MapMarker(topInstance).index);
 			swapDepths(Map.MapMarker.topDepth);
