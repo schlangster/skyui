@@ -31,26 +31,26 @@ string[]	_sizes
 string[]	_alignmentValues
 
 ; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
-int			_itemlistFontSizeOID_T
-int			_itemlistQuantityMinCountOID_S
+; (removed, v4) int			_itemlistFontSizeOID_T
+; (removed, v4) int			_itemlistQuantityMinCountOID_S
 
-int			_itemcardAlignOID_T
-int			_itemcardXOffsetOID_S
-int			_itemcardYOffsetOID_S
+; (removed, v4) int			_itemcardAlignOID_T
+; (removed, v4) int			_itemcardXOffsetOID_S
+; (removed, v4) int			_itemcardYOffsetOID_S
 
-int			_3DItemXOffsetOID_S
-int			_3DItemYOffsetOID_S
-int			_3DItemScaleOID_S
+; (removed, v4) int			_3DItemXOffsetOID_S
+; (removed, v4) int			_3DItemYOffsetOID_S
+; (removed, v4) int			_3DItemScaleOID_S
 
-int			_checkInventoryMenuOID_B
-int			_checkMagicMenuOID_B
-int			_checkBarterMenuOID_B
-int			_checkContainerMenuOID_B
-int			_checkGiftMenuOID_B
+; (removed, v4) int			_checkInventoryMenuOID_B
+; (removed, v4) int			_checkMagicMenuOID_B
+; (removed, v4) int			_checkBarterMenuOID_B
+; (removed, v4) int			_checkContainerMenuOID_B
+; (removed, v4) int			_checkGiftMenuOID_B
 
-int			_searchKeyOID_K
-int			_switchTabKeyOID_K
-int			_equipModeKeyOID_K
+; (removed, v4) int			_searchKeyOID_K
+; (removed, v4) int			_switchTabKeyOID_K
+; (removed, v4) int			_equipModeKeyOID_K
 
 ; State
 int			_itemlistFontSizeIdx		= 1
@@ -80,13 +80,13 @@ string[]	_categoryIconThemeLongNames
 string[]	_categoryIconThemeValues
 
 ; OIDs
-int			_itemlistCategoryIconThemeOID_M
-int			_itemlistNoIconColorsOID_B
+; (removed, v4) int			_itemlistCategoryIconThemeOID_M
+; (removed, v4) int			_itemlistNoIconColorsOID_B
 
-int			_switchTabButtonOID_K
-int			_prevColumnButtonOID_K
-int			_nextColumnButtonOID_K
-int			_sortOrderButtonOID_K
+; (removed, v4) int			_switchTabButtonOID_K
+; (removed, v4) int			_prevColumnButtonOID_K
+; (removed, v4) int			_nextColumnButtonOID_K
+; (removed, v4) int			_sortOrderButtonOID_K
 
 ; State
 int			_categoryIconThemeIdx		= 0
@@ -100,7 +100,7 @@ int			_sortOrderButton			= 272 ; LEFT_THUMB
 ; -- Version 3 --
 
 ; OIDs
-int			_3DItemDisablePositioningOID_B
+; (removed, v4) int			_3DItemDisablePositioningOID_B
 
 ; State
 bool		_3DItemDisablePositioning		= false
@@ -115,9 +115,6 @@ float		_fMagic3DItemPosX
 int			_3DItemFlags
 
 ; -- Version 4 --
-
-; OIDs
-int			_checkMapMenuOID_B
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -229,30 +226,24 @@ event OnPageReset(string a_page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("$Item List")
-		_itemlistFontSizeOID_T				= AddTextOption("$Font Size", _sizes[_itemlistFontSizeIdx])
-		_itemlistQuantityMinCountOID_S		= AddSliderOption("$Quantity Menu Min. Count", _itemlistQuantityMinCount)
-		_itemlistCategoryIconThemeOID_M		= AddMenuOption("$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
-		_itemlistNoIconColorsOID_B			= AddToggleOption("$Disable Icon Colors", _itemlistNoIconColors)
+		AddTextOptionST("ITEMLIST_FONT_SIZE", "$Font Size", _sizes[_itemlistFontSizeIdx])
+		AddSliderOptionST("ITEMLIST_QUANTITY_MIN_COUNT", "$Quantity Menu Min. Count", _itemlistQuantityMinCount)
+		AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		AddToggleOptionST("ITEMLIST_NO_ICON_COLORS", "$Disable Icon Colors", _itemlistNoIconColors)
 
 		SetCursorPosition(1)
 
 		AddHeaderOption("$Controls")
 		if (! Game.UsingGamepad())
-			_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey)
-			_switchTabKeyOID_K				= AddKeyMapOption("$Switch Tab", _switchTabKey)
-			_equipModeKeyOID_K				= AddKeyMapOption("$Equip Mode", _equipModeKey)
-			_switchTabButtonOID_K			= -1
-			_prevColumnButtonOID_K			= -1
-			_nextColumnButtonOID_K			= -1
-			_sortOrderButtonOID_K			= -1
+			AddKeyMapOptionST("SEARCH_KEY", "$Search", _searchKey)
+			AddKeyMapOptionST("SWITCH_TAB_KEY", "$Switch Tab", _switchTabKey)
+			AddKeyMapOptionST("EQUIP_MODE_KEY", "$Equip Mode", _equipModeKey)
 		else
-			_searchKeyOID_K					= AddKeyMapOption("$Search", _searchKey, OPTION_FLAG_DISABLED)
-			_switchTabButtonOID_K			= AddKeyMapOption("$Switch Tab", _switchTabButton)
-			_prevColumnButtonOID_K			= AddKeyMapOption("$Previous Column", _prevColumnButton)
-			_nextColumnButtonOID_K			= AddKeyMapOption("$Next Column", _nextColumnButton)
-			_sortOrderButtonOID_K			= AddKeyMapOption("$Order", _sortOrderButton)
-			_switchTabKeyOID_K				= -1
-			_equipModeKeyOID_K				= -1
+			AddKeyMapOptionST("SEARCH_KEY", "$Search", _searchKey, OPTION_FLAG_DISABLED)
+			AddKeyMapOptionST("SWITCH_TAB_BUTTON", "$Switch Tab", _switchTabButton)
+			AddKeyMapOptionST("PREV_COLUMN_BUTTON", "$Previous Column", _prevColumnButton)
+			AddKeyMapOptionST("NEXT_COLUMN_BUTTON", "$Next Column", _nextColumnButton)
+			AddKeyMapOptionST("SORT_ORDER_BUTTON", "$Order", _sortOrderButton)
 		endIf
 
 	; -------------------------------------------------------
@@ -260,187 +251,492 @@ event OnPageReset(string a_page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
 		AddHeaderOption("$Item Card")
-		_itemcardAlignOID_T					= AddTextOption("$Align", _alignments[_itemcardAlignIdx])
-		_itemcardXOffsetOID_S				= AddSliderOption("$Horizontal Offset", _itemcardXOffset)
-		_itemcardYOffsetOID_S				= AddSliderOption("$Vertical Offset", _itemcardYOffset)
+		AddTextOptionST("ITEMCARD_ALIGN", "$Align", _alignments[_itemcardAlignIdx])
+		AddSliderOptionST("ITEMCARD_XOFFSET", "$Horizontal Offset", _itemcardXOffset)
+		AddSliderOptionST("ITEMCARD_YOFFSET", "$Vertical Offset", _itemcardYOffset)
 
 		AddEmptyOption()
 
 		AddHeaderOption("$3D Item")
-		_3DItemXOffsetOID_S					= AddSliderOption("$Horizontal Offset", _3DItemXOffset, a_flags=_3DItemFlags)
-		_3DItemYOffsetOID_S					= AddSliderOption("$Vertical Offset", _3DItemYOffset, a_flags=_3DItemFlags)
-		_3DItemScaleOID_S					= AddSliderOption("$Scale", _3DItemScale, "{1}", _3DItemFlags)
-		_3DItemDisablePositioningOID_B		= AddToggleOption("$Disable Positioning", _3DItemDisablePositioning) ; Version 3
+		AddSliderOptionST("XD_ITEM_XOFFSET", "$Horizontal Offset", _3DItemXOffset, _3DItemFlags)
+		AddSliderOptionST("XD_ITEM_YOFFSET", "$Vertical Offset", _3DItemYOffset, _3DItemFlags)
+		AddSliderOptionST("XD_ITEM_SCALE", "$Scale", _3DItemScale, "{1}", _3DItemFlags)
+		AddToggleOptionST("XD_ITEM_POSITIONING", "$Disable Positioning", _3DItemDisablePositioning) ; Version 3
 
 		SetCursorPosition(1)
 
 		AddHeaderOption("$SWF Version Checking")
-		_checkInventoryMenuOID_B			= AddToggleOption("Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
-		_checkMagicMenuOID_B				= AddToggleOption("Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
-		_checkBarterMenuOID_B				= AddToggleOption("Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
-		_checkContainerMenuOID_B			= AddToggleOption("Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
-		_checkGiftMenuOID_B					= AddToggleOption("Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
-		_checkMapMenuOID_B					= AddToggleOption("Map Menu", SKI_MainInstance.MapMenuCheckEnabled)
-		
+		AddToggleOptionST("CHECK_INVENTORY_MENU", "Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
+		AddToggleOptionST("CHECK_MAGIC_MENU", "Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
+		AddToggleOptionST("CHECK_BARTER_MENU", "Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
+		AddToggleOptionST("CHECK_CONTAINER_MENU", "Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
+		AddToggleOptionST("CHECK_GIFT_MENU", "Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
+		AddToggleOptionST("CHECK_MAP_MENU", "Map Menu", SKI_MainInstance.MapMenuCheckEnabled)
 	endIf
 endEvent
 
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionDefault(int a_option)
 
-	; -------------------------------------------------------
-	if (a_option == _itemlistFontSizeOID_T)
-		_itemlistFontSizeIdx = 1
-		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
-		ApplyItemListFontSize()
+; STATE OPTIONS -----------------------------------------------------------------------------------
 
-	elseif (a_option == _itemlistQuantityMinCountOID_S)
-		_itemlistQuantityMinCount = 6
-		SetSliderOptionValue(a_option, _itemlistQuantityMinCount)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
+; -------------------------------------------------------
+state ITEMLIST_FONT_SIZE	; TEXT
 
-	elseIf (a_option == _itemlistCategoryIconThemeOID_M)
-		_categoryIconThemeIdx = 0
-		SetTextOptionValue(a_option, _categoryIconThemeShortNames[_categoryIconThemeIdx])
-		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
-
-	elseif (a_option == _itemlistNoIconColorsOID_B)
-		_itemlistNoIconColors = false
-		SetToggleOptionValue(a_option, _itemlistNoIconColors)
-		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$item$noColor", _itemlistNoIconColors)
-
-	; -------------------------------------------------------
-	elseIf (a_option == _searchKeyOID_K)
-		_searchKey = 57
-		SetKeyMapOptionValue(a_option, _searchKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
-	elseIf (a_option == _switchTabKeyOID_K)
-		_switchTabKey = 56
-		SetKeyMapOptionValue(a_option, _switchTabKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
-	elseIf (a_option == _equipModeKeyOID_K)
-		_equipModeKey = 42
-		SetKeyMapOptionValue(a_option, _equipModeKey)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
-	elseIf (a_option == _switchTabButtonOID_K)
-		_switchTabButton = 271
-		SetKeyMapOptionValue(a_option, _switchTabButton)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
-	elseIf (a_option == _prevColumnButtonOID_K)
-		_prevColumnButton = 274
-		SetKeyMapOptionValue(a_option, _prevColumnButton)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
-	elseIf (a_option == _nextColumnButtonOID_K)
-		_nextColumnButton = 275
-		SetKeyMapOptionValue(a_option, _nextColumnButton)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
-	elseIf (a_option == _sortOrderButtonOID_K)
-		_sortOrderButton = 272
-		SetKeyMapOptionValue(a_option, _sortOrderButton)
-		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
-
-	; -------------------------------------------------------
-	elseIf (a_option == _itemcardAlignOID_T)
-		_itemcardAlignIdx = 2
-		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
-
-	elseIf (a_option == _itemcardXOffsetOID_S)
-		_itemcardXOffset = 0.0
-		SetSliderOptionValue(a_option, _itemcardXOffset)
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
-
-	elseIf (a_option == _itemcardYOffsetOID_S)
-		_itemcardYOffset = 0.0
-		SetSliderOptionValue(a_option, _itemcardYOffset)
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
-
-	; -------------------------------------------------------
-	elseIf (a_option == _3DItemXOffsetOID_S)
-		_3DItemXOffset = 0.0
-		SetSliderOptionValue(a_option, _3DItemXOffset)
-		Apply3DItemXOffset()
-
-	elseIf (a_option == _3DItemYOffsetOID_S)
-		_3DItemYOffset = 0.0
-		SetSliderOptionValue(a_option, _3DItemYOffset)
-		Apply3DItemYOffset()
-
-	elseIf (a_option == _3DItemScaleOID_S)
-		_3DItemScale = 1.5
-		SetSliderOptionValue(a_option, _3DItemScale, "{1}")
-		Apply3DItemScale()
-
-	elseIf (a_option == _3DItemDisablePositioningOID_B)
-		_3DItemDisablePositioning = false
-		_3DItemFlags = OPTION_FLAG_NONE
-		SetOptionFlags(_3DItemXOffsetOID_S, _3DItemFlags, true)
-		SetOptionFlags(_3DItemYOffsetOID_S, _3DItemFlags, true)
-		SetOptionFlags(_3DItemScaleOID_S, _3DItemFlags, true)
-		SetToggleOptionValue(a_option, false)
-		Apply3DItemXOffset()
-		Apply3DItemYOffset()
-
-	; -------------------------------------------------------
-	elseIf (a_option == _checkInventoryMenuOID_B)
-		SKI_MainInstance.InventoryMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
-	elseIf (a_option == _checkMagicMenuOID_B)
-		SKI_MainInstance.MagicMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
-	elseIf (a_option == _checkBarterMenuOID_B)
-		SKI_MainInstance.BarterMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
-	elseIf (a_option == _checkContainerMenuOID_B)
-		SKI_MainInstance.ContainerMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
-	elseIf (a_option == _checkGiftMenuOID_B)
-		SKI_MainInstance.GiftMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
-	elseIf (a_option == _checkMapMenuOID_B)
-		SKI_MainInstance.MapMenuCheckEnabled = true
-		SetToggleOptionValue(a_option, true)
-
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionSelect(int a_option)
-
-	; -------------------------------------------------------
-	if (a_option == _itemlistFontSizeOID_T)
+	event OnSelectST()
 		if (_itemlistFontSizeIdx < _sizes.length - 1)
 			_itemlistFontSizeIdx += 1
 		else
 			_itemlistFontSizeIdx = 0
 		endif
-		SetTextOptionValue(a_option, _sizes[_itemlistFontSizeIdx])
+		SetTextOptionValueST(_sizes[_itemlistFontSizeIdx])
 		ApplyItemListFontSize()
+	endEvent
 
-	elseIf (a_option == _itemlistNoIconColorsOID_B)
+	event OnDefaultST()
+		_itemlistFontSizeIdx = 1
+		SetTextOptionValueST(_sizes[_itemlistFontSizeIdx])
+		ApplyItemListFontSize()
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state ITEMLIST_QUANTITY_MIN_COUNT	; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_itemlistQuantityMinCount)
+		SetSliderDialogDefaultValue(6)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_itemlistQuantityMinCount = a_value as int
+		SetSliderOptionValueST(_itemlistQuantityMinCount)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
+	endEvent
+
+	event OnDefaultST()
+		_itemlistQuantityMinCount = 6
+		SetSliderOptionValueST(_itemlistQuantityMinCount)
+		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO2")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state ITEMLIST_CATEGORY_ICON_THEME	; MENU
+
+	event OnMenuOpenST()
+		SetMenuDialogStartIndex(_categoryIconThemeIdx)
+		SetMenuDialogDefaultIndex(0)
+		SetMenuDialogOptions(_categoryIconThemeLongNames)
+	endEvent
+
+	event OnMenuAcceptST(int a_index)
+		_categoryIconThemeIdx = a_index
+		SetMenuOptionValueST(_categoryIconThemeShortNames[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+	endEvent
+
+	event OnDefaultST()
+		_categoryIconThemeIdx = 0
+		SetTextOptionValueST(_categoryIconThemeShortNames[_categoryIconThemeIdx])
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO11")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state ITEMLIST_NO_ICON_COLORS	; TOGGLE
+
+	event OnSelectST()
 		_itemListNoIconColors = !_itemlistNoIconColors
-		SetToggleOptionValue(a_option, _itemlistNoIconColors)
+		SetToggleOptionValueST(_itemlistNoIconColors)
 		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$item$noColor", _itemlistNoIconColors)
+	endEvent
 
-	; -------------------------------------------------------
-	elseIf (a_option == _itemcardAlignOID_T)
+	event OnDefaultST()
+		_itemlistNoIconColors = false
+		SetToggleOptionValueST(_itemlistNoIconColors)
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$item$noColor", _itemlistNoIconColors)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO10")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state SEARCH_KEY	; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, false))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _searchKey)
+
+		_searchKey = a_keyCode
+		SetKeyMapOptionValueST(_searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
+	endEvent
+
+	event OnDefaultST()
+		_searchKey = 57
+		SetKeyMapOptionValueST(_searchKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO7") ; Default: Space
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state SWITCH_TAB_KEY	; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, false))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _switchTabKey)
+
+		_switchTabKey = a_keyCode
+		SetKeyMapOptionValueST(_switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
+	endEvent
+
+	event OnDefaultST()
+		_switchTabKey = 56
+		SetKeyMapOptionValueST(_switchTabKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO8") ; Default: Left Alt
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state EQUIP_MODE_KEY	; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, false))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _equipModeKey)
+
+		_equipModeKey = a_keyCode
+		SetKeyMapOptionValueST(_equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
+	endEvent
+
+	event OnDefaultST()
+		_equipModeKey = 42
+		SetKeyMapOptionValueST(_equipModeKey)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO9") ; Default: Shift
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state SWITCH_TAB_BUTTON		; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, true))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _switchTabButton)
+
+		_switchTabButton = a_keyCode
+		SetKeyMapOptionValueST(_switchTabButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
+	endEvent
+
+	event OnDefaultST()
+		_switchTabButton = 271
+		SetKeyMapOptionValueST(_switchTabButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO12") ; Default: Back
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state PREV_COLUMN_BUTTON	; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, true))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _prevColumnButton)
+
+		_prevColumnButton = a_keyCode
+		SetKeyMapOptionValueST(_prevColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
+	endEvent
+
+	event OnDefaultST()
+		_prevColumnButton = 274
+		SetKeyMapOptionValueST(_prevColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO13") ; Default: LB (L1, LEFT_SHOULDER)
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state NEXT_COLUMN_BUTTON	; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, true))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _nextColumnButton)
+
+		_nextColumnButton = a_keyCode
+		SetKeyMapOptionValueST(_nextColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
+	endEvent
+
+	event OnDefaultST()
+		_nextColumnButton = 275
+		SetKeyMapOptionValueST(_nextColumnButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO14") ; Default: RB (R1, RIGHT_SHOULDER)
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state SORT_ORDER_BUTTON		; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		if (! ValidateKey(a_keyCode, true))
+			return
+		endIf
+
+		SwapKeys(a_keyCode, _sortOrderButton)
+
+		_sortOrderButton = a_keyCode
+		SetKeyMapOptionValueST(_sortOrderButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
+	endEvent
+
+	event OnDefaultST()
+		_sortOrderButton = 272
+		SetKeyMapOptionValueST(_sortOrderButton)
+		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO15") ; Default: LS (L3, LEFT_THUMB)
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state ITEMCARD_ALIGN	; KEYMAP
+
+	event OnSelectST()
 		if (_itemcardAlignIdx < _alignments.length - 1)
 			_itemcardAlignIdx += 1
 		else
 			_itemcardAlignIdx = 0
 		endif
-		SetTextOptionValue(a_option, _alignments[_itemcardAlignIdx])
+		SetTextOptionValueST(_alignments[_itemcardAlignIdx])
 		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
+	endEvent
 
-	; -------------------------------------------------------
-	elseIf (a_option == _3DItemDisablePositioningOID_B)
+	event OnDefaultST()
+		_itemcardAlignIdx = 2
+		SetTextOptionValueST(_alignments[_itemcardAlignIdx])
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO3")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state ITEMCARD_XOFFSET	; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_itemcardXOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-1000, 1000)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_itemcardXOffset = a_value
+		SetSliderOptionValueST(_itemcardXOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
+	endEvent
+
+	event OnDefaultST()
+		_itemcardXOffset = 0.0
+		SetSliderOptionValueST(_itemcardXOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO4")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state ITEMCARD_YOFFSET	; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_itemcardYOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-1000, 1000)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_itemcardYOffset = a_value
+		SetSliderOptionValueST(_itemcardYOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
+	endEvent
+
+	event OnDefaultST()
+		_itemcardYOffset = 0.0
+		SetSliderOptionValueST(_itemcardYOffset)
+		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO4")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state XD_ITEM_XOFFSET	; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_3DItemXOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-128, 128)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_3DItemXOffset = a_value
+		SetSliderOptionValueST(_3DItemXOffset)
+		Apply3DItemXOffset()
+	endEvent
+
+	event OnDefaultST()
+		_3DItemXOffset = 0.0
+		SetSliderOptionValueST(_3DItemXOffset)
+		Apply3DItemXOffset()
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO4")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state XD_ITEM_YOFFSET	; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_3DItemYOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-128, 128)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_3DItemYOffset = a_value
+		SetSliderOptionValueST(_3DItemYOffset)
+		Apply3DItemYOffset()
+	endEvent
+
+	event OnDefaultST()
+		_3DItemYOffset = 0.0
+		SetSliderOptionValueST(_3DItemYOffset)
+		Apply3DItemYOffset()
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO4")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state XD_ITEM_SCALE	; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_3DItemScale)
+		SetSliderDialogDefaultValue(1.5)
+		SetSliderDialogRange(0.5, 5)
+		SetSliderDialogInterval(0.1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_3DItemScale = a_value
+		SetSliderOptionValueST(_3DItemScale, "{1}")
+		Apply3DItemScale()
+	endEvent
+
+	event OnDefaultST()
+		_3DItemScale = 1.5
+		SetSliderOptionValueST(_3DItemScale, "{1}")
+		Apply3DItemScale()
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO5")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state XD_ITEM_POSITIONING	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !_3DItemDisablePositioning
 		_3DItemDisablePositioning = newVal
 
@@ -450,289 +746,150 @@ event OnOptionSelect(int a_option)
 			_3DItemFlags = OPTION_FLAG_NONE
 		endIf
 
-		SetOptionFlags(_3DItemXOffsetOID_S, _3DItemFlags, true)
-		SetOptionFlags(_3DItemYOffsetOID_S, _3DItemFlags, true)
-		SetOptionFlags(_3DItemScaleOID_S, _3DItemFlags, true)
-		SetToggleOptionValue(a_option, newVal)
+		SetOptionFlagsST(_3DItemFlags, true, "XD_ITEM_XOFFSET")
+		SetOptionFlagsST(_3DItemFlags, true, "XD_ITEM_YOFFSET")
+		SetOptionFlagsST(_3DItemFlags, true, "XD_ITEM_SCALE")
+		SetToggleOptionValueST(newVal)
 		Apply3DItemXOffset()
 		Apply3DItemYOffset()
+	endEvent
 
-	; -------------------------------------------------------
-	elseIf (a_option == _checkInventoryMenuOID_B)
+	event OnDefaultST()
+		_3DItemDisablePositioning = false
+		_3DItemFlags = OPTION_FLAG_NONE
+		SetOptionFlagsST(_3DItemFlags, true, "XD_ITEM_XOFFSET")
+		SetOptionFlagsST(_3DItemFlags, true, "XD_ITEM_YOFFSET")
+		SetOptionFlagsST(_3DItemFlags, true, "XD_ITEM_SCALE")
+		SetToggleOptionValueST(false)
+		Apply3DItemXOffset()
+		Apply3DItemYOffset()
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO16")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+state CHECK_INVENTORY_MENU	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !SKI_MainInstance.InventoryMenuCheckEnabled
 		SKI_MainInstance.InventoryMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
+		SetToggleOptionValueST(newVal)
+	endEvent
 
-	elseIf (a_option == _checkMagicMenuOID_B)
+	event OnDefaultST()
+		SKI_MainInstance.InventoryMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state CHECK_MAGIC_MENU	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !SKI_MainInstance.MagicMenuCheckEnabled
 		SKI_MainInstance.MagicMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
+		SetToggleOptionValueST(newVal)
+	endEvent
 
-	elseIf (a_option == _checkBarterMenuOID_B)
+	event OnDefaultST()
+		SKI_MainInstance.MagicMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state CHECK_BARTER_MENU	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !SKI_MainInstance.BarterMenuCheckEnabled
 		SKI_MainInstance.BarterMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
+		SetToggleOptionValueST(newVal)
+	endEvent
 
-	elseIf (a_option == _checkContainerMenuOID_B)
+	event OnDefaultST()
+		SKI_MainInstance.BarterMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state CHECK_CONTAINER_MENU	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !SKI_MainInstance.ContainerMenuCheckEnabled
 		SKI_MainInstance.ContainerMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
+		SetToggleOptionValueST(newVal)
+	endEvent
 
-	elseIf (a_option == _checkGiftMenuOID_B)
+	event OnDefaultST()
+		SKI_MainInstance.ContainerMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state CHECK_GIFT_MENU	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !SKI_MainInstance.GiftMenuCheckEnabled
 		SKI_MainInstance.GiftMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
+		SetToggleOptionValueST(newVal)
+	endEvent
 
-	elseIf (a_option == _checkMapMenuOID_B)
+	event OnDefaultST()
+		SKI_MainInstance.GiftMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
+state CHECK_MAP_MENU	; SLIDER
+
+	event OnSelectST()
 		bool newVal = !SKI_MainInstance.MapMenuCheckEnabled
 		SKI_MainInstance.MapMenuCheckEnabled = newVal
-		SetToggleOptionValue(a_option, newVal)
+		SetToggleOptionValueST(newVal)
+	endEvent
 
-	endIf
-endEvent
+	event OnDefaultST()
+		SKI_MainInstance.MapMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
 
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionSliderOpen(int a_option)
-
-	; -------------------------------------------------------
-	if (a_option == _itemlistQuantityMinCountOID_S)
-		SetSliderDialogStartValue(_itemlistQuantityMinCount)
-		SetSliderDialogDefaultValue(6)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(1)
-
-	; -------------------------------------------------------
-	elseIf (a_option == _itemcardXOffsetOID_S)
-		SetSliderDialogStartValue(_itemcardXOffset)
-		SetSliderDialogDefaultValue(0)
-		SetSliderDialogRange(-1000, 1000)
-		SetSliderDialogInterval(1)
-
-	elseIf (a_option == _itemcardYOffsetOID_S)
-		SetSliderDialogStartValue(_itemcardYOffset)
-		SetSliderDialogDefaultValue(0)
-		SetSliderDialogRange(-1000, 1000)
-		SetSliderDialogInterval(1)
-
-	elseIf (a_option == _3DItemXOffsetOID_S)
-		SetSliderDialogStartValue(_3DItemXOffset)
-		SetSliderDialogDefaultValue(0)
-		SetSliderDialogRange(-128, 128)
-		SetSliderDialogInterval(1)
-
-	elseIf (a_option == _3DItemYOffsetOID_S)
-		SetSliderDialogStartValue(_3DItemYOffset)
-		SetSliderDialogDefaultValue(0)
-		SetSliderDialogRange(-128, 128)
-		SetSliderDialogInterval(1)
-		
-	elseIf (a_option == _3DItemScaleOID_S)
-		SetSliderDialogStartValue(_3DItemScale)
-		SetSliderDialogDefaultValue(1.5)
-		SetSliderDialogRange(0.5, 5)
-		SetSliderDialogInterval(0.1)
-
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionSliderAccept(int a_option, float a_value)
-
-	; -------------------------------------------------------
-	if (a_option == _itemlistQuantityMinCountOID_S)
-		_itemlistQuantityMinCount = a_value as int
-		SetSliderOptionValue(a_option, _itemlistQuantityMinCount)
-		SKI_SettingsManagerInstance.SetOverride("ItemList$quantityMenu$minCount", _itemlistQuantityMinCount)
-
-	; -------------------------------------------------------
-	elseIf (a_option == _itemcardXOffsetOID_S)
-		_itemcardXOffset = a_value
-		SetSliderOptionValue(a_option, _itemcardXOffset)
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$xOffset", _itemcardXOffset)
-
-	elseIf (a_option == _itemcardYOffsetOID_S)
-		_itemcardYOffset = a_value
-		SetSliderOptionValue(a_option, _itemcardYOffset)
-		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$yOffset", _itemcardYOffset)
-
-	elseIf (a_option == _3DItemXOffsetOID_S)
-		_3DItemXOffset = a_value
-		SetSliderOptionValue(a_option, _3DItemXOffset)
-		Apply3DItemXOffset()
-
-	elseIf (a_option == _3DItemYOffsetOID_S)
-		_3DItemYOffset = a_value
-		SetSliderOptionValue(a_option, _3DItemYOffset)
-		Apply3DItemYOffset()
-
-	elseIf (a_option == _3DItemScaleOID_S)
-		_3DItemScale = a_value
-		SetSliderOptionValue(a_option, _3DItemScale, "{1}")
-		Apply3DItemScale()
-
-	endIf
-endEvent
-
-; -------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionMenuOpen(int a_option)
-	if (a_option == _itemlistCategoryIconThemeOID_M)
-		SetMenuDialogStartIndex(_categoryIconThemeIdx)
-		SetMenuDialogDefaultIndex(0)
-		SetMenuDialogOptions(_categoryIconThemeLongNames)
-	endIf
-endEvent
-
-; -------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionMenuAccept(int a_option, int a_index)
-	if (a_option == _itemlistCategoryIconThemeOID_M)
-		_categoryIconThemeIdx = a_index
-		SetMenuOptionValue(a_option, _categoryIconThemeShortNames[_categoryIconThemeIdx])
-		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl, string a_conflictName)
-
-	; Do nothing for ESC
-	if (a_keyCode == 1)
-		return
-	endIf
-
-	; -------------------------------------------------------
-	if (! Game.UsingGamepad())
-
-		; Can't detect for mouse, don't need for gamepad
-		if (a_keyCode > 255)
-			ShowMessage("$SKI_MSG1", false, "$OK")
-			return
-		endIf
-
-		if (a_option == _searchKeyOID_K)
-			SwapKeys(a_keyCode, _searchKey)
-
-			_searchKey = a_keyCode
-			SetKeyMapOptionValue(a_option, _searchKey)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
-
-		elseIf (a_option == _switchTabKeyOID_K)
-			SwapKeys(a_keyCode, _switchTabKey)
-
-			_switchTabKey = a_keyCode
-			SetKeyMapOptionValue(a_option, _switchTabKey)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
-
-		elseIf (a_option == _equipModeKeyOID_K)
-			SwapKeys(a_keyCode, _equipModeKey)
-
-			_equipModeKey = a_keyCode
-			SetKeyMapOptionValue(a_option, _equipModeKey)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
-
-		endIf
-
-	; -------------------------------------------------------
-	else
-		; If you removed the gamepad while in this menu, ignore other keys
-		if (a_keyCode < 266)
-			return
-		endIf
-
-		if (a_option == _switchTabButtonOID_K)
-			SwapKeys(a_keyCode, _switchTabButton)
-
-			_switchTabButton = a_keyCode
-			SetKeyMapOptionValue(a_option, _switchTabButton)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
-
-		elseIf (a_option == _prevColumnButtonOID_K)
-			SwapKeys(a_keyCode, _prevColumnButton)
-
-			_prevColumnButton = a_keyCode
-			SetKeyMapOptionValue(a_option, _prevColumnButton)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
-
-		elseIf (a_option == _nextColumnButtonOID_K)
-			SwapKeys(a_keyCode, _nextColumnButton)
-
-			_nextColumnButton = a_keyCode
-			SetKeyMapOptionValue(a_option, _nextColumnButton)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
-
-		elseIf (a_option == _sortOrderButtonOID_K)
-			SwapKeys(a_keyCode, _sortOrderButton)
-
-			_sortOrderButton = a_keyCode
-			SetKeyMapOptionValue(a_option, _sortOrderButton)
-			SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
-
-		endIf
-	endIf
-endEvent
-
-; -------------------------------------------------------------------------------------------------
-; @implements SKI_ConfigBase
-event OnOptionHighlight(int a_option)
-
-	if (a_option == _itemlistFontSizeOID_T)
-		SetInfoText("$SKI_INFO1")
-	elseIf(a_option == _itemlistQuantityMinCountOID_S)
-		SetInfoText("$SKI_INFO2")
-	elseIf(a_option == _itemlistCategoryIconThemeOID_M)
-		SetInfoText("$SKI_INFO11")
-	elseIf(a_option == _itemlistNoIconColorsOID_B)
-		SetInfoText("$SKI_INFO10")
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
 	
-	elseIf (a_option == _searchKeyOID_K)
-		SetInfoText("$SKI_INFO7") ; Default: Space
-	elseIf (a_option == _switchTabKeyOID_K)
-		SetInfoText("$SKI_INFO8") ; Default: Left Alt
-	elseIf (a_option == _equipModeKeyOID_K)
-		SetInfoText("$SKI_INFO9") ; Default: Shift
-	elseIf (a_option == _switchTabButtonOID_K)
-		SetInfoText("$SKI_INFO12") ; Default: Back
-	elseIf (a_option == _prevColumnButtonOID_K)
-		SetInfoText("$SKI_INFO13") ; Default: LB (L1, LEFT_SHOULDER)
-	elseIf (a_option == _nextColumnButtonOID_K)
-		SetInfoText("$SKI_INFO14") ; Default: RB (R1, RIGHT_SHOULDER)
-	elseIf (a_option == _sortOrderButtonOID_K)
-		SetInfoText("$SKI_INFO15") ; Default: LS (L3, LEFT_THUMB)
-
-	elseIf (a_option == _itemcardAlignOID_T)
-		SetInfoText("$SKI_INFO3")
-	elseIf (a_option == _itemcardXOffsetOID_S)
-		SetInfoText("$SKI_INFO4")
-	elseIf (a_option == _itemcardYOffsetOID_S)
-		SetInfoText("$SKI_INFO4")
-
-	elseIf (a_option == _3DItemXOffsetOID_S)
-		SetInfoText("$SKI_INFO4")
-	elseIf (a_option == _3DItemYOffsetOID_S)
-		SetInfoText("$SKI_INFO4")
-	elseIf (a_option == _3DItemScaleOID_S)
-		SetInfoText("$SKI_INFO5")
-	elseIf (a_option == _3DItemDisablePositioningOID_B)
-		SetInfoText("$SKI_INFO16")
-
-	elseIf (a_option == _checkInventoryMenuOID_B)
-		SetInfoText("$SKI_INFO6")
-	elseIf (a_option == _checkMagicMenuOID_B)
-		SetInfoText("$SKI_INFO6")
-	elseIf (a_option == _checkBarterMenuOID_B)
-		SetInfoText("$SKI_INFO6")
-	elseIf (a_option == _checkContainerMenuOID_B)
-		SetInfoText("$SKI_INFO6")
-	elseIf (a_option == _checkGiftMenuOID_B)
-		SetInfoText("$SKI_INFO6")
-	elseIf (a_option == _checkMapMenuOID_B)
-		SetInfoText("$SKI_INFO6")
-	endIf
-endEvent
+endState
 
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
@@ -829,35 +986,63 @@ function Apply3DItemScale()
 	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
 endFunction
 
+bool function ValidateKey(int a_keyCode, bool a_gamepad)
+	; Do nothing for ESC
+	if (a_keyCode == 1)
+		return false
+	endIf
+
+	bool isGamepad = Game.UsingGamepad()
+
+	if (isGamepad != a_gamepad)
+		return false
+	endIf
+
+	if (!isGamepad)
+		; Can't detect for mouse, don't need for gamepad
+		if (a_keyCode > 255)
+			ShowMessage("$SKI_MSG1", false, "$OK")
+			return false
+		endIf
+	else
+		; If you removed the gamepad while in this menu, ignore other keys
+		if (a_keyCode < 266)
+			return false
+		endIf
+	endIf
+
+	return true
+endFunction
+
 function SwapKeys(int a_newKey, int a_curKey)
 	if (a_newKey == _searchKey)
 		_searchKey = a_curKey
-		SetKeyMapOptionValue(_searchKeyOID_K, _searchKey, true)
+		SetKeyMapOptionValueST(_searchKey, true, "SEARCH_KEY")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$search", _searchKey)
 	elseIf (a_newKey == _switchTabKey)
 		_switchTabKey = a_curKey
-		SetKeyMapOptionValue(_switchTabKeyOID_K, _switchTabKey, true)
+		SetKeyMapOptionValueST(_switchTabKey, true, "SWITCH_TAB_KEY")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$switchTab", _switchTabKey)
 	elseIf (a_newKey == _equipModeKey)
 		_equipModeKey = a_curKey
-		SetKeyMapOptionValue(_equipModeKeyOID_K, _equipModeKey, true)
+		SetKeyMapOptionValueST(_equipModeKey, true, "EQUIP_MODE_KEY")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$pc$equipMode", _equipModeKey)
 
 	elseIf (a_newKey == _switchTabButton)
 		_switchTabButton = a_curKey
-		SetKeyMapOptionValue(_switchTabButtonOID_K, _switchTabButton, true)
+		SetKeyMapOptionValueST(_switchTabButton, true, "SWITCH_TAB_BUTTON")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$switchTab", _switchTabButton)
 	elseIf (a_newKey == _prevColumnButton)
 		_prevColumnButton = a_curKey
-		SetKeyMapOptionValue(_prevColumnButtonOID_K, _prevColumnButton, true)
+		SetKeyMapOptionValueST(_prevColumnButton, true, "PREV_COLUMN_BUTTON")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$prevColumn", _prevColumnButton)
 	elseIf (a_newKey == _nextColumnButton)
 		_nextColumnButton = a_curKey
-		SetKeyMapOptionValue(_nextColumnButtonOID_K, _nextColumnButton, true)
+		SetKeyMapOptionValueST(_nextColumnButton, true, "NEXT_COLUMN_BUTTON")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$nextColumn", _nextColumnButton)
 	elseIf (a_newKey == _sortOrderButton)
 		_sortOrderButton = a_curKey
-		SetKeyMapOptionValue(_sortOrderButtonOID_K, _sortOrderButton, true)
+		SetKeyMapOptionValueST(_sortOrderButton, true, "SORT_ORDER_BUTTON")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
 	endIf
 endFunction
