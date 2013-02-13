@@ -12,11 +12,12 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ;
 ; 3:	- Added disable 3D item positioning option
 ;
-; 4:	- Added map menu version check
+; 4:	- Converted script to use state options
+;		- Added map menu version check
 ;		- Added active effects widget configuration
 
 int function GetVersion()
-	return 3
+	return 4
 endFunction
 
 
@@ -26,31 +27,8 @@ endFunction
 
 ; Lists
 string[]	_alignments
-string[]	_sizes
-
 string[]	_alignmentValues
-
-; OIDs (T:Text B:Toggle S:Slider M:Menu, C:Color, K:Key)
-; (removed, v4) int			_itemlistFontSizeOID_T
-; (removed, v4) int			_itemlistQuantityMinCountOID_S
-
-; (removed, v4) int			_itemcardAlignOID_T
-; (removed, v4) int			_itemcardXOffsetOID_S
-; (removed, v4) int			_itemcardYOffsetOID_S
-
-; (removed, v4) int			_3DItemXOffsetOID_S
-; (removed, v4) int			_3DItemYOffsetOID_S
-; (removed, v4) int			_3DItemScaleOID_S
-
-; (removed, v4) int			_checkInventoryMenuOID_B
-; (removed, v4) int			_checkMagicMenuOID_B
-; (removed, v4) int			_checkBarterMenuOID_B
-; (removed, v4) int			_checkContainerMenuOID_B
-; (removed, v4) int			_checkGiftMenuOID_B
-
-; (removed, v4) int			_searchKeyOID_K
-; (removed, v4) int			_switchTabKeyOID_K
-; (removed, v4) int			_equipModeKeyOID_K
+string[]	_sizes
 
 ; State
 int			_itemlistFontSizeIdx		= 1
@@ -72,21 +50,13 @@ int			_equipModeKey				= 42
 float		_itemXBase
 float		_itemXBaseW
 
+
 ; -- Version 2 --
 
 ; Lists
 string[]	_categoryIconThemeShortNames
 string[]	_categoryIconThemeLongNames
 string[]	_categoryIconThemeValues
-
-; OIDs
-; (removed, v4) int			_itemlistCategoryIconThemeOID_M
-; (removed, v4) int			_itemlistNoIconColorsOID_B
-
-; (removed, v4) int			_switchTabButtonOID_K
-; (removed, v4) int			_prevColumnButtonOID_K
-; (removed, v4) int			_nextColumnButtonOID_K
-; (removed, v4) int			_sortOrderButtonOID_K
 
 ; State
 int			_categoryIconThemeIdx		= 0
@@ -98,9 +68,6 @@ int			_nextColumnButton			= 275 ; RIGHT_SHOULDER
 int			_sortOrderButton			= 272 ; LEFT_THUMB
 
 ; -- Version 3 --
-
-; OIDs
-; (removed, v4) int			_3DItemDisablePositioningOID_B
 
 ; State
 bool		_3DItemDisablePositioning		= false
@@ -116,11 +83,38 @@ int			_3DItemFlags
 
 ; -- Version 4 --
 
+; Lists
+string[]	_orientations
+string[]	_orientationValues
+
+string[]	_vertAlignments
+string[]	_vertAlignmentValues
+
+float[]		_effectWidgetIconSizeValues
+
+float[]		_alignmentBaseOffsets
+float[]		_vertAlignmentBaseOffsets
+
+; State
+int			_effectWidgetIconSizeIdx		= 1		; medium
+int			_effectWidgetVAnchorIdx			= 0		; top
+int			_effectWidgetHAnchorIdx			= 1		; right
+int			_effectWidgetGroupCount			= 8
+int			_effectWidgetOrientationIdx		= 1		; vertical
+float		_effectWidgetXOffset			= 0.0
+float		_effectWidgetYOffset			= 0.0
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
+; -- Version 1 --
+
 SKI_SettingsManager property		SKI_SettingsManagerInstance auto
 SKI_Main property					SKI_MainInstance auto
+
+; -- Version 4 --
+
+SKI_ActiveEffectsWidget property		SKI_ActiveEffectsWidgetInstance auto
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -204,6 +198,48 @@ event OnVersionUpdate(int a_version)
 	if (a_version >= 4 && CurrentVersion < 4)
 		Debug.Trace(self + ": Updating to script version 4")
 
+		_orientations = new string[2]
+		_orientations[0] = "$Horizontal"
+		_orientations[1] = "$Vertical"
+
+		_orientationValues = new string[2]
+		_orientationValues[0] = "horizontal"
+		_orientationValues[1] = "vertical"
+
+		_vertAlignments = new string[3]
+		_vertAlignments[0] = "$Top"
+		_vertAlignments[1] = "$Bottom"
+		_vertAlignments[2] = "$Center"
+
+		_vertAlignmentValues = new string[3]
+		_vertAlignmentValues[0] = "top"
+		_vertAlignmentValues[1] = "bottom"
+		_vertAlignmentValues[2] = "center"
+
+		_effectWidgetIconSizeValues = new float[3]
+		_effectWidgetIconSizeValues[0] = 32.0
+		_effectWidgetIconSizeValues[1] = 48.0
+		_effectWidgetIconSizeValues[2] = 64.0
+
+		_alignmentBaseOffsets = new float[3]
+		_alignmentBaseOffsets[0] = 0.0
+		_alignmentBaseOffsets[1] = 1280.0
+		_alignmentBaseOffsets[2] = 640.0
+
+		_vertAlignmentBaseOffsets = new float[3]
+		_vertAlignmentBaseOffsets[0] = 0.0
+		_vertAlignmentBaseOffsets[1] = 720.0
+		_vertAlignmentBaseOffsets[2] = 360.0
+
+		; Sync widget default values
+		SKI_ActiveEffectsWidgetInstance.Enabled				= true
+		SKI_ActiveEffectsWidgetInstance.EffectSize			= _effectWidgetIconSizeValues[_effectWidgetIconSizeIdx]
+		SKI_ActiveEffectsWidgetInstance.HAnchor				= _alignmentValues[_effectWidgetHAnchorIdx]
+		SKI_ActiveEffectsWidgetInstance.VAnchor				= _vertAlignmentValues[_effectWidgetVAnchorIdx]
+		SKI_ActiveEffectsWidgetInstance.GroupEffectCount	= _effectWidgetGroupCount
+		SKI_ActiveEffectsWidgetInstance.Orientation			= _orientationValues[_effectWidgetOrientationIdx]
+		SKI_ActiveEffectsWidgetInstance.X					= _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		SKI_ActiveEffectsWidgetInstance.Y					= _vertAlignmentBaseOffsets[_effectWidgetVAnchorIdx] + _effectWidgetYOffset
 	endIf
 endEvent
 
@@ -230,6 +266,18 @@ event OnPageReset(string a_page)
 		AddSliderOptionST("ITEMLIST_QUANTITY_MIN_COUNT", "$Quantity Menu Min. Count", _itemlistQuantityMinCount)
 		AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
 		AddToggleOptionST("ITEMLIST_NO_ICON_COLORS", "$Disable Icon Colors", _itemlistNoIconColors)
+
+		AddEmptyOption()
+
+		AddHeaderOption("Active Effects HUD")
+		AddToggleOptionST("EFFECT_WIDGET_ENABLED", "Enabled", SKI_ActiveEffectsWidgetInstance.Enabled)
+		AddTextOptionST("EFFECT_WIDGET_ICON_SIZE","Icon Size", _sizes[_effectWidgetIconSizeIdx])
+		AddTextOptionST("EFFECT_WIDGET_ORIENTATION", "Orientation", _orientations[_effectWidgetOrientationIdx])
+		AddTextOptionST("EFFECT_WIDGET_HORIZONTAL_ANCHOR", "Horizontal Anchor", _alignments[_effectWidgetHAnchorIdx])
+		AddTextOptionST("EFFECT_WIDGET_VERTICAL_ANCHOR", "Vertical Anchor", _vertAlignments[_effectWidgetVAnchorIdx])
+		AddSliderOptionST("EFFECT_WIDGET_GROUP_COUNT", "Max Effect Width", SKI_ActiveEffectsWidgetInstance.GroupEffectCount, "{0}")
+		AddSliderOptionST("EFFECT_WIDGET_XOFFSET", "X Offset", _effectWidgetXOffset)
+		AddSliderOptionST("EFFECT_WIDGET_YOFFSET", "Y Offset", _effectWidgetYOffset)
 
 		SetCursorPosition(1)
 
@@ -261,7 +309,7 @@ event OnPageReset(string a_page)
 		AddSliderOptionST("XD_ITEM_XOFFSET", "$Horizontal Offset", _3DItemXOffset, _3DItemFlags)
 		AddSliderOptionST("XD_ITEM_YOFFSET", "$Vertical Offset", _3DItemYOffset, _3DItemFlags)
 		AddSliderOptionST("XD_ITEM_SCALE", "$Scale", _3DItemScale, "{1}", _3DItemFlags)
-		AddToggleOptionST("XD_ITEM_POSITIONING", "$Disable Positioning", _3DItemDisablePositioning) ; Version 3
+		AddToggleOptionST("XD_ITEM_POSITIONING", "$Disable Positioning", _3DItemDisablePositioning)
 
 		SetCursorPosition(1)
 
@@ -278,8 +326,7 @@ endEvent
 
 ; STATE OPTIONS -----------------------------------------------------------------------------------
 
-; -------------------------------------------------------
-state ITEMLIST_FONT_SIZE	; TEXT
+state ITEMLIST_FONT_SIZE ; TEXT
 
 	event OnSelectST()
 		if (_itemlistFontSizeIdx < _sizes.length - 1)
@@ -303,8 +350,7 @@ state ITEMLIST_FONT_SIZE	; TEXT
 	
 endState
 
-; -------------------------------------------------------
-state ITEMLIST_QUANTITY_MIN_COUNT	; SLIDER
+state ITEMLIST_QUANTITY_MIN_COUNT ; SLIDER
 
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(_itemlistQuantityMinCount)
@@ -331,8 +377,7 @@ state ITEMLIST_QUANTITY_MIN_COUNT	; SLIDER
 	
 endState
 
-; -------------------------------------------------------
-state ITEMLIST_CATEGORY_ICON_THEME	; MENU
+state ITEMLIST_CATEGORY_ICON_THEME ; MENU
 
 	event OnMenuOpenST()
 		SetMenuDialogStartIndex(_categoryIconThemeIdx)
@@ -358,8 +403,7 @@ state ITEMLIST_CATEGORY_ICON_THEME	; MENU
 	
 endState
 
-; -------------------------------------------------------
-state ITEMLIST_NO_ICON_COLORS	; TOGGLE
+state ITEMLIST_NO_ICON_COLORS ; TOGGLE
 
 	event OnSelectST()
 		_itemListNoIconColors = !_itemlistNoIconColors
@@ -380,7 +424,210 @@ state ITEMLIST_NO_ICON_COLORS	; TOGGLE
 endState
 
 ; -------------------------------------------------------
-state SEARCH_KEY	; KEYMAP
+
+state EFFECT_WIDGET_ENABLED ; TOGGLE
+
+	event OnSelectST()
+		bool newValue = !SKI_ActiveEffectsWidgetInstance.Enabled
+		SKI_ActiveEffectsWidgetInstance.Enabled = newValue
+		SetToggleOptionValueST(newValue)
+	endEvent
+
+	event OnDefaultST()
+		SKI_ActiveEffectsWidgetInstance.Enabled = false
+		SetToggleOptionValueST(false)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: Yes")
+	endEvent
+	
+endState
+
+state EFFECT_WIDGET_ICON_SIZE ; TEXT
+
+	event OnSelectST()
+		if (_effectWidgetIconSizeIdx < _sizes.length - 1)
+			_effectWidgetIconSizeIdx += 1
+		else
+			_effectWidgetIconSizeIdx = 0
+		endIf
+
+		SKI_ActiveEffectsWidgetInstance.EffectSize = _effectWidgetIconSizeValues[_effectWidgetIconSizeIdx]
+		SetTextOptionValueST(_sizes[_effectWidgetIconSizeIdx])
+	endEvent
+
+	event OnDefaultST()
+		_effectWidgetIconSizeIdx = 1
+		SKI_ActiveEffectsWidgetInstance.EffectSize = _effectWidgetIconSizeValues[_effectWidgetIconSizeIdx]
+		SetTextOptionValueST(_sizes[_effectWidgetIconSizeIdx])
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: Medium")
+	endEvent
+	
+endState
+
+state EFFECT_WIDGET_ORIENTATION ; TEXT
+
+	event OnSelectST()
+		if (_effectWidgetOrientationIdx < _orientations.length - 1)
+		  _effectWidgetOrientationIdx += 1
+		else
+		  _effectWidgetOrientationIdx = 0
+		endIf
+		
+		SKI_ActiveEffectsWidgetInstance.Orientation = _orientationValues[_effectWidgetOrientationIdx]
+		SetTextOptionValueST(_orientations[_effectWidgetOrientationIdx])
+	endEvent
+
+	event OnDefaultST()
+		_effectWidgetOrientationIdx = 1
+		SKI_ActiveEffectsWidgetInstance.Orientation = _orientationValues[_effectWidgetOrientationIdx]
+		SetTextOptionValueST(_orientations[_effectWidgetOrientationIdx])
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: Vertical")
+	endEvent
+
+endState
+
+state EFFECT_WIDGET_HORIZONTAL_ANCHOR ; TEXT
+
+	event OnSelectST()
+		if (_effectWidgetHAnchorIdx < _alignments.length - 1)
+		  _effectWidgetHAnchorIdx += 1
+		else
+		  _effectWidgetHAnchorIdx = 0
+		endIf
+
+		SKI_ActiveEffectsWidgetInstance.HAnchor = _alignmentValues[_effectWidgetHAnchorIdx]
+		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx])
+	endEvent
+
+	event OnDefaultST()
+		_effectWidgetVAnchorIdx = 2
+		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx])
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: Right")
+	endEvent
+
+endState
+
+state EFFECT_WIDGET_VERTICAL_ANCHOR ; TEXT
+
+	event OnSelectST()
+		if (_effectWidgetVAnchorIdx < _vertAlignments.length - 1)
+		  _effectWidgetVAnchorIdx += 1
+		else
+		  _effectWidgetVAnchorIdx = 0
+		endIf
+
+		SKI_ActiveEffectsWidgetInstance.VAnchor = _vertAlignmentValues[_effectWidgetVAnchorIdx]
+		SKI_ActiveEffectsWidgetInstance.Y = _vertAlignmentBaseOffsets[_effectWidgetVAnchorIdx] + _effectWidgetYOffset
+		SetTextOptionValueST(_vertAlignments[_effectWidgetVAnchorIdx])
+	endEvent
+
+	event OnDefaultST()
+		_effectWidgetVAnchorIdx = 0
+		SKI_ActiveEffectsWidgetInstance.Y = _vertAlignmentBaseOffsets[_effectWidgetVAnchorIdx] + _effectWidgetYOffset
+		SetTextOptionValueST(_vertAlignments[_effectWidgetVAnchorIdx])
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: Top")
+	endEvent
+
+endState
+
+state EFFECT_WIDGET_GROUP_COUNT ; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(SKI_ActiveEffectsWidgetInstance.GroupEffectCount)
+		SetSliderDialogDefaultValue(8)
+		SetSliderDialogRange(1, 16)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		SKI_ActiveEffectsWidgetInstance.GroupEffectCount = a_value as int
+		SetSliderOptionValueST(a_value as int)
+	endEvent
+
+	event OnDefaultST()
+		SKI_ActiveEffectsWidgetInstance.GroupEffectCount = 8
+		SetSliderOptionValueST(8)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: 8")
+	endEvent
+
+endState
+
+state EFFECT_WIDGET_XOFFSET ; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_effectWidgetXOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-1280, 1280)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_effectWidgetXOffset = a_value
+		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		SetSliderOptionValueST(_effectWidgetXOffset)
+	endEvent
+
+	event OnDefaultST()
+		_effectWidgetXOffset = 0.0
+		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		SetSliderOptionValueST(_effectWidgetXOffset)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: 0")
+	endEvent
+
+endState
+
+state EFFECT_WIDGET_YOFFSET ; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(_effectWidgetYOffset)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(-720, 720)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		_effectWidgetYOffset = a_value
+		SKI_ActiveEffectsWidgetInstance.Y = _vertAlignmentBaseOffsets[_effectWidgetVAnchorIdx] + _effectWidgetYOffset
+		SetSliderOptionValueST(_effectWidgetYOffset)
+	endEvent
+
+	event OnDefaultST()
+		_effectWidgetYOffset = 0.0
+		SKI_ActiveEffectsWidgetInstance.Y = _vertAlignmentBaseOffsets[_effectWidgetVAnchorIdx] + _effectWidgetYOffset
+		SetSliderOptionValueST(_effectWidgetYOffset)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("Default: 0")
+	endEvent
+
+endState
+
+; -------------------------------------------------------
+
+state SEARCH_KEY ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, false))
@@ -406,8 +653,7 @@ state SEARCH_KEY	; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state SWITCH_TAB_KEY	; KEYMAP
+state SWITCH_TAB_KEY ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, false))
@@ -433,8 +679,7 @@ state SWITCH_TAB_KEY	; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state EQUIP_MODE_KEY	; KEYMAP
+state EQUIP_MODE_KEY ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, false))
@@ -460,8 +705,7 @@ state EQUIP_MODE_KEY	; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state SWITCH_TAB_BUTTON		; KEYMAP
+state SWITCH_TAB_BUTTON ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, true))
@@ -487,8 +731,7 @@ state SWITCH_TAB_BUTTON		; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state PREV_COLUMN_BUTTON	; KEYMAP
+state PREV_COLUMN_BUTTON ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, true))
@@ -514,8 +757,7 @@ state PREV_COLUMN_BUTTON	; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state NEXT_COLUMN_BUTTON	; KEYMAP
+state NEXT_COLUMN_BUTTON ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, true))
@@ -541,8 +783,7 @@ state NEXT_COLUMN_BUTTON	; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state SORT_ORDER_BUTTON		; KEYMAP
+state SORT_ORDER_BUTTON ; KEYMAP
 
 	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 		if (! ValidateKey(a_keyCode, true))
@@ -569,7 +810,8 @@ state SORT_ORDER_BUTTON		; KEYMAP
 endState
 
 ; -------------------------------------------------------
-state ITEMCARD_ALIGN	; KEYMAP
+
+state ITEMCARD_ALIGN ; KEYMAP
 
 	event OnSelectST()
 		if (_itemcardAlignIdx < _alignments.length - 1)
@@ -593,8 +835,7 @@ state ITEMCARD_ALIGN	; KEYMAP
 
 endState
 
-; -------------------------------------------------------
-state ITEMCARD_XOFFSET	; SLIDER
+state ITEMCARD_XOFFSET ; SLIDER
 
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(_itemcardXOffset)
@@ -621,8 +862,7 @@ state ITEMCARD_XOFFSET	; SLIDER
 
 endState
 
-; -------------------------------------------------------
-state ITEMCARD_YOFFSET	; SLIDER
+state ITEMCARD_YOFFSET ; SLIDER
 
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(_itemcardYOffset)
@@ -650,7 +890,8 @@ state ITEMCARD_YOFFSET	; SLIDER
 endState
 
 ; -------------------------------------------------------
-state XD_ITEM_XOFFSET	; SLIDER
+
+state XD_ITEM_XOFFSET ; SLIDER
 
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(_3DItemXOffset)
@@ -677,8 +918,7 @@ state XD_ITEM_XOFFSET	; SLIDER
 
 endState
 
-; -------------------------------------------------------
-state XD_ITEM_YOFFSET	; SLIDER
+state XD_ITEM_YOFFSET ; SLIDER
 
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(_3DItemYOffset)
@@ -705,8 +945,7 @@ state XD_ITEM_YOFFSET	; SLIDER
 
 endState
 
-; -------------------------------------------------------
-state XD_ITEM_SCALE	; SLIDER
+state XD_ITEM_SCALE ; SLIDER
 
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(_3DItemScale)
@@ -733,8 +972,7 @@ state XD_ITEM_SCALE	; SLIDER
 
 endState
 
-; -------------------------------------------------------
-state XD_ITEM_POSITIONING	; SLIDER
+state XD_ITEM_POSITIONING ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !_3DItemDisablePositioning
@@ -772,7 +1010,8 @@ state XD_ITEM_POSITIONING	; SLIDER
 endState
 
 ; -------------------------------------------------------
-state CHECK_INVENTORY_MENU	; SLIDER
+
+state CHECK_INVENTORY_MENU ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !SKI_MainInstance.InventoryMenuCheckEnabled
@@ -791,8 +1030,7 @@ state CHECK_INVENTORY_MENU	; SLIDER
 	
 endState
 
-; -------------------------------------------------------
-state CHECK_MAGIC_MENU	; SLIDER
+state CHECK_MAGIC_MENU ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !SKI_MainInstance.MagicMenuCheckEnabled
@@ -811,8 +1049,7 @@ state CHECK_MAGIC_MENU	; SLIDER
 	
 endState
 
-; -------------------------------------------------------
-state CHECK_BARTER_MENU	; SLIDER
+state CHECK_BARTER_MENU ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !SKI_MainInstance.BarterMenuCheckEnabled
@@ -831,8 +1068,7 @@ state CHECK_BARTER_MENU	; SLIDER
 	
 endState
 
-; -------------------------------------------------------
-state CHECK_CONTAINER_MENU	; SLIDER
+state CHECK_CONTAINER_MENU ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !SKI_MainInstance.ContainerMenuCheckEnabled
@@ -851,8 +1087,7 @@ state CHECK_CONTAINER_MENU	; SLIDER
 	
 endState
 
-; -------------------------------------------------------
-state CHECK_GIFT_MENU	; SLIDER
+state CHECK_GIFT_MENU ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !SKI_MainInstance.GiftMenuCheckEnabled
@@ -871,8 +1106,7 @@ state CHECK_GIFT_MENU	; SLIDER
 	
 endState
 
-; -------------------------------------------------------
-state CHECK_MAP_MENU	; SLIDER
+state CHECK_MAP_MENU ; SLIDER
 
 	event OnSelectST()
 		bool newVal = !SKI_MainInstance.MapMenuCheckEnabled
@@ -1046,3 +1280,38 @@ function SwapKeys(int a_newKey, int a_curKey)
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
 	endIf
 endFunction
+
+
+; REMOVED DATA  -----------------------------------------------------------------------------------
+											
+; -- Version 1 --							; (remove version)
+
+; int		_itemlistFontSizeOID_T			; (4)
+; int		_itemlistQuantityMinCountOID_S	; (4)
+; int		_itemcardAlignOID_T				; (4)
+; int		_itemcardXOffsetOID_S			; (4)
+; int		_itemcardYOffsetOID_S			; (4)
+; int		_3DItemXOffsetOID_S				; (4)
+; int		_3DItemYOffsetOID_S				; (4)
+; int		_3DItemScaleOID_S				; (4)
+; int		_checkInventoryMenuOID_B		; (4)
+; int		_checkMagicMenuOID_B			; (4)
+; int		_checkBarterMenuOID_B			; (4)
+; int		_checkContainerMenuOID_B		; (4)
+; int		_checkGiftMenuOID_B				; (4)
+; int		_searchKeyOID_K					; (4)
+; int		_switchTabKeyOID_K				; (4)
+; int		_equipModeKeyOID_K				; (4)
+
+; -- Version 2 --
+
+; int		_itemlistCategoryIconThemeOID_M	; (4)
+; int		_itemlistNoIconColorsOID_B 		; (4)
+; int		_switchTabButtonOID_K 			; (4)
+; int		_prevColumnButtonOID_K 			; (4)
+; int		_nextColumnButtonOID_K 			; (4)
+; int		_sortOrderButtonOID_K 			; (4)
+
+; -- Version 3 --
+
+; int		_3DItemDisablePositioningOID_B	; (4)
