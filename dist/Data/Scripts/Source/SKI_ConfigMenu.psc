@@ -274,15 +274,15 @@ event OnPageReset(string a_page)
 
 		AddEmptyOption()
 
-		AddHeaderOption("Active Effects HUD")
-		AddToggleOptionST("EFFECT_WIDGET_ENABLED", "Enabled", SKI_ActiveEffectsWidgetInstance.Enabled)
-		AddTextOptionST("EFFECT_WIDGET_ICON_SIZE","Icon Size", _sizes[_effectWidgetIconSizeIdx])
-		AddTextOptionST("EFFECT_WIDGET_ORIENTATION", "Orientation", _orientations[_effectWidgetOrientationIdx])
-		AddTextOptionST("EFFECT_WIDGET_HORIZONTAL_ANCHOR", "Horizontal Anchor", _alignments[_effectWidgetHAnchorIdx])
-		AddTextOptionST("EFFECT_WIDGET_VERTICAL_ANCHOR", "Vertical Anchor", _vertAlignments[_effectWidgetVAnchorIdx])
-		AddSliderOptionST("EFFECT_WIDGET_GROUP_COUNT", "Max Effect Width", SKI_ActiveEffectsWidgetInstance.GroupEffectCount, "{0}")
-		AddSliderOptionST("EFFECT_WIDGET_XOFFSET", "X Offset", _effectWidgetXOffset)
-		AddSliderOptionST("EFFECT_WIDGET_YOFFSET", "Y Offset", _effectWidgetYOffset)
+		AddHeaderOption("$Active Effects HUD")
+		AddToggleOptionST("EFFECT_WIDGET_ENABLED", "$Enabled", SKI_ActiveEffectsWidgetInstance.Enabled)
+		AddTextOptionST("EFFECT_WIDGET_ICON_SIZE","$Icon Size", _sizes[_effectWidgetIconSizeIdx])
+		AddTextOptionST("EFFECT_WIDGET_ORIENTATION", "$Orientation", _orientations[_effectWidgetOrientationIdx])
+		AddTextOptionST("EFFECT_WIDGET_HORIZONTAL_ANCHOR", "$Horizontal Anchor", _alignments[_effectWidgetHAnchorIdx])
+		AddTextOptionST("EFFECT_WIDGET_VERTICAL_ANCHOR", "$Vertical Anchor", _vertAlignments[_effectWidgetVAnchorIdx])
+		AddSliderOptionST("EFFECT_WIDGET_GROUP_COUNT", "$Icon Group Count", SKI_ActiveEffectsWidgetInstance.GroupEffectCount, "{0}")
+		AddSliderOptionST("EFFECT_WIDGET_XOFFSET", "$Horizontal Offset", _effectWidgetXOffset)
+		AddSliderOptionST("EFFECT_WIDGET_YOFFSET", "$Vertical Offset", _effectWidgetYOffset)
 
 		SetCursorPosition(1)
 
@@ -467,7 +467,7 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: Yes")
+		SetInfoText("$SKI_INFO17")
 	endEvent
 	
 endState
@@ -492,7 +492,7 @@ state EFFECT_WIDGET_ICON_SIZE ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: Medium")
+		SetInfoText("$SKI_INFO1")
 	endEvent
 	
 endState
@@ -517,7 +517,7 @@ state EFFECT_WIDGET_ORIENTATION ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: Vertical")
+		SetInfoText("$SKI_INFO18")
 	endEvent
 
 endState
@@ -537,13 +537,13 @@ state EFFECT_WIDGET_HORIZONTAL_ANCHOR ; TEXT
 	endEvent
 
 	event OnDefaultST()
-		_effectWidgetVAnchorIdx = 2
+		_effectWidgetVAnchorIdx = 1
 		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
 		SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx])
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: Right")
+		SetInfoText("$SKI_INFO19")
 	endEvent
 
 endState
@@ -569,7 +569,7 @@ state EFFECT_WIDGET_VERTICAL_ANCHOR ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: Top")
+		SetInfoText("$SKI_INFO20")
 	endEvent
 
 endState
@@ -594,7 +594,7 @@ state EFFECT_WIDGET_GROUP_COUNT ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: 8")
+		SetInfoText("$SKI_INFO21")
 	endEvent
 
 endState
@@ -621,7 +621,7 @@ state EFFECT_WIDGET_XOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: 0")
+		SetInfoText("$SKI_INFO4")
 	endEvent
 
 endState
@@ -648,7 +648,7 @@ state EFFECT_WIDGET_YOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("Default: 0")
+		SetInfoText("$SKI_INFO4")
 	endEvent
 
 endState
