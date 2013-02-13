@@ -104,6 +104,9 @@ int			_effectWidgetOrientationIdx		= 1		; vertical
 float		_effectWidgetXOffset			= 0.0
 float		_effectWidgetYOffset			= 0.0
 
+; Flags
+int			_effectWidgetFlags
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -230,6 +233,8 @@ event OnVersionUpdate(int a_version)
 		_vertAlignmentBaseOffsets[0] = 0.0
 		_vertAlignmentBaseOffsets[1] = 720.0
 		_vertAlignmentBaseOffsets[2] = 360.0
+
+		_effectWidgetFlags = OPTION_FLAG_NONE
 
 		; Sync widget default values
 		SKI_ActiveEffectsWidgetInstance.Enabled				= true
@@ -428,14 +433,37 @@ endState
 state EFFECT_WIDGET_ENABLED ; TOGGLE
 
 	event OnSelectST()
-		bool newValue = !SKI_ActiveEffectsWidgetInstance.Enabled
-		SKI_ActiveEffectsWidgetInstance.Enabled = newValue
-		SetToggleOptionValueST(newValue)
+		bool newVal = !SKI_ActiveEffectsWidgetInstance.Enabled
+		SKI_ActiveEffectsWidgetInstance.Enabled = newVal
+
+		if (newVal)
+			_effectWidgetFlags = OPTION_FLAG_NONE
+		else
+			_effectWidgetFlags = OPTION_FLAG_DISABLED
+		endIf
+
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ORIENTATION")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_HORIZONTAL_ANCHOR")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_VERTICAL_ANCHOR")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_GROUP_COUNT")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_XOFFSET")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_YOFFSET")
+		SetToggleOptionValueST(newVal)
 	endEvent
 
 	event OnDefaultST()
-		SKI_ActiveEffectsWidgetInstance.Enabled = false
-		SetToggleOptionValueST(false)
+		SKI_ActiveEffectsWidgetInstance.Enabled = true
+
+		_effectWidgetFlags = OPTION_FLAG_NONE
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ORIENTATION")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_HORIZONTAL_ANCHOR")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_VERTICAL_ANCHOR")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_GROUP_COUNT")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_XOFFSET")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_YOFFSET")
+		SetToggleOptionValueST(true)
 	endEvent
 
 	event OnHighlightST()
