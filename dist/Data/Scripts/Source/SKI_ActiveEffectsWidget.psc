@@ -1,22 +1,15 @@
 scriptname SKI_ActiveEffectsWidget extends SKI_WidgetBase
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
-; Config
+
 ; Make sure defaults match those in ConfigMenuInstance
 bool	_enabled			= false
 float	_effectSize			= 48.0
 int		_groupEffectCount	= 8
 string	_orientation		= "vertical"
 
-; @overrides SKI_WidgetBase
-string function GetWidgetSource()
-	return "skyui/activeeffects.swf"
-endFunction
 
-; @overrides SKI_WidgetBase
-string function GetWidgetType()
- return "SKI_ActiveEffectsWidget"
-endFunction
+; PROPERTIES --------------------------------------------------------------------------------------
 
 bool Property Enabled
 	{Whether the active effects are displayed or not}
@@ -33,7 +26,7 @@ bool Property Enabled
 endProperty
 
 float property EffectSize
-	{Size of each effect in pixels at a resolution of 1280x720}
+	{Size of each effect icon in pixels at a resolution of 1280x720}
 	float function get()
 		return _effectSize
 	endFunction
@@ -93,3 +86,16 @@ event OnWidgetReset()
 	; Init commit
 	UI.Invoke(HUD_MENU, WidgetRoot + ".initCommit")
 endEvent
+
+
+; FUNCTIONS ---------------------------------------------------------------------------------------
+
+; @overrides SKI_WidgetBase
+string function GetWidgetSource()
+	return "skyui/activeeffects.swf"
+endFunction
+
+; @overrides SKI_WidgetBase
+string function GetWidgetType()
+ return "SKI_ActiveEffectsWidget"
+endFunction
