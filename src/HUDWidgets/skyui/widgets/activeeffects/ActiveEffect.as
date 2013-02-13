@@ -129,7 +129,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		}
 		
 		// TODO: make icons scale. All the icons we use are 128*128 so it doesn't matter
-		_iconHolder._width = _iconHolder._height = (_iconHolder._width - METER_PADDING - METER_WIDTH);
+		_iconHolder._width = _iconHolder._height = (background._width - METER_PADDING - METER_WIDTH);
 		_iconHolder._y = (background._height - _iconHolder._height) / 2;
 
 		if (effectData.duration - effectData.elapsed > 1) {

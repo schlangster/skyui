@@ -135,6 +135,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		_enabled = a_enabled;
 
 		if (_enabled) {
+			eraseEffects();
 			drawEffects();
 		} else {
 			eraseEffects();
@@ -237,6 +238,24 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		return freeEffectsGroup;
 	}
 
+	// @override WidgetBase
+	private function updatePosition(): Void
+	{
+		super.updatePosition();
+		invalidateEffects();
+	}
+
+	private function invalidateEffects(): Void
+	{
+		if (!_enabled)
+			return;
+
+		eraseEffects();
+
+		// Logic here to check if in the right HUD Mode, avoid unnecessary updates?
+		drawEffects();
+	}
+
 	private function eraseEffects(): Void
 	{
 		clearInterval(_intervalId);
@@ -256,16 +275,5 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		_sortFlag = true;
 		_intervalId = setInterval(this, "onIntervalUpdate", _updateInterval);
-	}
-
-	private function invalidateEffects(): Void
-	{
-		if (!_enabled)
-			return;
-
-		eraseEffects();
-
-		// Logic here to check if in the right HUD Mode, avoid unnecessary updates?
-		drawEffects();
 	}
 }
