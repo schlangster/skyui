@@ -3,7 +3,7 @@ import gfx.io.GameDelegate;
 
 class SaveLoadPanel extends MovieClip
 {
-	static var SCREENSHOT_DELAY: Number = 750;
+	static var SCREENSHOT_DELAY: Number = 200; //750
 	
 	
 	var List_mc: MovieClip;
@@ -40,7 +40,7 @@ class SaveLoadPanel extends MovieClip
 		GameDelegate.addCallBack("ScreenshotReady", this, "ShowScreenshot");
 		SaveLoadList_mc.addEventListener("itemPress", this, "onSaveLoadItemPress");
 		SaveLoadList_mc.addEventListener("selectionChange", this, "onSaveLoadItemHighlight");
-		iBatchSize = SaveLoadList_mc.maxEntries;
+		iBatchSize = 0x7FFFFFFF; //SaveLoadList_mc.maxEntries;
 		PlayerInfoText.createTextField("LevelText", PlayerInfoText.getNextHighestDepth(), 0, 0, 200, 30);
 		PlayerInfoText.LevelText.text = "$Level";
 		PlayerInfoText.LevelText._visible = false;
