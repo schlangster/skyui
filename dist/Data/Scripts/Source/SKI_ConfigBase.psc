@@ -247,7 +247,7 @@ endEvent
 
 ; @interface
 event OnMenuAcceptST(int a_index)
-	{Called when a menu entry has been accepted}
+	{Called when a menu entry has been accepted for this state option}
 endEvent
 
 ; @interface
@@ -257,12 +257,12 @@ endEvent
 
 ; @interface
 event OnColorAcceptST(int a_color)
-	{Called when a new color has been accepted}
+	{Called when a new color has been accepted for this state option}
 endEvent
 
 ; @interface
 event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
-	{Called when a key has been remapped}
+	{Called when a key has been remapped for this state option}
 endEvent
 
 event OnMessageDialogClose(string a_eventName, string a_strArg, float a_numArg, Form a_sender)

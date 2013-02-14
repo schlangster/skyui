@@ -1,7 +1,7 @@
 scriptname SKI_ConfigBase extends SKI_QuestBase
 
 ;##################################################################################################
-; File Version:		1.0
+; API Version:		2
 ;##################################################################################################
 ;
 ; Base script for custom config menus.
@@ -14,21 +14,22 @@ scriptname SKI_ConfigBase extends SKI_QuestBase
 ;
 ;##################################################################################################
 
-
-; CONSTANTS ---------------------------------------------------------------------------------------
+; CONSTANTS -------------------------------------------------------------------------- Version 1 --
 
 int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
 int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
 
-int property		LEFT_TO_RIGHT	= 1	autoReadonly
-int property		TOP_TO_BOTTOM	= 2 autoReadonly
+int property		LEFT_TO_RIGHT			= 1	autoReadonly
+int property		TOP_TO_BOTTOM			= 2 autoReadonly
 
 
-; PROPERTIES --------------------------------------------------------------------------------------
+; PROPERTIES ------------------------------------------------------------------------- Version 1 --
 
 string property		ModName auto
+
 string[] property	Pages auto
-string property CurrentPage
+
+string property		CurrentPage
 	string function get()
 		Guard()
 		return  ""
@@ -36,7 +37,7 @@ string property CurrentPage
 endProperty
 
 
-; EVENTS ------------------------------------------------------------------------------------------
+; EVENTS ----------------------------------------------------------------------------- Version 1 --
 
 event OnConfigInit()
 	{Called when this config menu is initialized}
@@ -119,7 +120,60 @@ event OnOptionKeyMapChange(int a_option, int a_keyCode, string a_conflictControl
 endEvent
 
 
-; FUNCTIONS ---------------------------------------------------------------------------------------
+; EVENTS ----------------------------------------------------------------------------- Version 2 --
+
+event OnHighlightST()
+	{Called when highlighting a state option}
+	Guard()
+endEvent
+
+event OnSelectST()
+	{Called when a non-interactive state option has been selected}
+	Guard()
+endEvent
+
+event OnDefaultST()
+	{Called when resetting a state option to its default value}
+	Guard()
+endEvent
+
+event OnSliderOpenST()
+	{Called when a slider state option has been selected}
+	Guard()
+endEvent
+
+event OnSliderAcceptST(float a_value)
+	{Called when a new slider state value has been accepted}
+	Guard()
+endEvent
+
+event OnMenuOpenST()
+	{Called when a menu state option has been selected}
+	Guard()
+endEvent
+
+event OnMenuAcceptST(int a_index)
+	{Called when a menu entry has been accepted for this state option}
+	Guard()
+endEvent
+
+event OnColorOpenST()
+	{Called when a color state option has been selected}
+	Guard()
+endEvent
+
+event OnColorAcceptST(int a_color)
+	{Called when a new color has been accepted for this state option}
+	Guard()
+endEvent
+
+event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+	{Called when a key has been remapped for this state option}
+	Guard()
+endEvent
+
+
+; FUNCTIONS -------------------------------------------------------------------------- Version 1 --
 
 int function GetVersion()
 	{Returns version of this script. Override if necessary}
@@ -291,6 +345,79 @@ bool function ShowMessage(string a_message, bool a_withCancel = true, string a_a
 	Guard()
 endFunction
 
+
+; FUNCTIONS -------------------------------------------------------------------------- Version 2 --
+
+function AddTextOptionST(string a_stateName, string a_text, string a_value, int a_flags = 0)
+	{Adds a generic text/value state option}
+	Guard()
+endFunction
+
+function AddToggleOptionST(string a_stateName, string a_text, bool a_checked, int a_flags = 0)
+	{Adds a check box state option that can be toggled on and off}
+	Guard()
+endfunction
+
+function AddSliderOptionST(string a_stateName, string a_text, float a_value, string a_formatString = "{0}", int a_flags = 0)
+	{Adds a state option that opens a slider dialog when selected}
+	Guard()
+endFunction
+
+function AddMenuOptionST(string a_stateName, string a_text, string a_value, int a_flags = 0)
+	{Adds a state option that opens a menu dialog when selected}
+	Guard()
+endFunction
+
+function AddColorOptionST(string a_stateName, string a_text, int a_color, int a_flags = 0)
+	{Adds a state option that opens a color swatch dialog when selected}
+	Guard()
+endFunction
+
+function AddKeyMapOptionST(string a_stateName, string a_text, int a_keyCode, int a_flags = 0)
+	{Adds a key mapping state option}
+	Guard()
+endFunction
+
+; @interface
+function SetOptionFlagsST(int a_flags, bool a_noUpdate = false, string a_stateName = "")
+	{Sets the state option flags}
+	Guard()
+endFunction
+
+function SetTextOptionValueST(string a_value, bool a_noUpdate = false, string a_stateName = "")
+	{Sets the value(s) of an existing state option}
+	Guard()
+endFunction
+
+function SetToggleOptionValueST(bool a_checked, bool a_noUpdate = false, string a_stateName = "")
+	{Sets the value(s) of an existing state option}
+	Guard()
+endFunction
+
+function SetSliderOptionValueST(float a_value, string a_formatString = "{0}", bool a_noUpdate = false, string a_stateName = "")
+	{Sets the value(s) of an existing state option}
+	Guard()
+endFunction
+
+function SetMenuOptionValueST(string a_value, bool a_noUpdate = false, string a_stateName = "")
+	{Sets the value(s) of an existing state option}
+	Guard()
+endFunction
+
+function SetColorOptionValueST(int a_color, bool a_noUpdate = false, string a_stateName = "")
+	{Sets the value(s) of an existing state option}
+	Guard()
+endFunction
+
+function SetKeyMapOptionValueST(int a_keyCode, bool a_noUpdate = false, string a_stateName = "")
+	{Sets the value(s) of an existing state option}
+	Guard()
+endFunction
+
+
+; -------------------------------------------------------------------------------------------------
+
 function Guard()
 	Debug.MessageBox("SKI_ConfigBase: Don't recompile this script!")
 endFunction
+
