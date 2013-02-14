@@ -350,7 +350,7 @@ state ITEMLIST_FONT_SIZE ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO1")
+		SetInfoText("$SKI_INFO1{" + _sizes[1] + "}")
 	endEvent
 	
 endState
@@ -377,7 +377,7 @@ state ITEMLIST_QUANTITY_MIN_COUNT ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO2")
+		SetInfoText("$SKI_INFO2{6}")
 	endEvent
 	
 endState
@@ -403,7 +403,7 @@ state ITEMLIST_CATEGORY_ICON_THEME ; MENU
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO11")
+		SetInfoText("$SKI_INFO1{" + _categoryIconThemeShortNames[0] + "}")
 	endEvent
 	
 endState
@@ -423,7 +423,7 @@ state ITEMLIST_NO_ICON_COLORS ; TOGGLE
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO10")
+		SetInfoText("$SKI_INFO1{$Off}")
 	endEvent
 	
 endState
@@ -467,7 +467,7 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO17")
+		SetInfoText("$SKI_INFO1{$On}")
 	endEvent
 	
 endState
@@ -492,7 +492,7 @@ state EFFECT_WIDGET_ICON_SIZE ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO1")
+		SetInfoText("$SKI_INFO1{" + _sizes[1] + "}")
 	endEvent
 	
 endState
@@ -517,7 +517,7 @@ state EFFECT_WIDGET_ORIENTATION ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO18")
+		SetInfoText("$SKI_INFO1{" + _orientations[1] + "}")
 	endEvent
 
 endState
@@ -543,7 +543,7 @@ state EFFECT_WIDGET_HORIZONTAL_ANCHOR ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO19")
+		SetInfoText("$SKI_INFO1{" + _alignments[1] + "}")
 	endEvent
 
 endState
@@ -569,7 +569,7 @@ state EFFECT_WIDGET_VERTICAL_ANCHOR ; TEXT
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO20")
+		SetInfoText("$SKI_INFO1{" + _vertAlignments[0] + "}")
 	endEvent
 
 endState
@@ -594,7 +594,7 @@ state EFFECT_WIDGET_GROUP_COUNT ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO21")
+		SetInfoText("$SKI_INFO1{8}")
 	endEvent
 
 endState
@@ -621,7 +621,7 @@ state EFFECT_WIDGET_XOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO4")
+		SetInfoText("$SKI_INFO1{0}")
 	endEvent
 
 endState
@@ -648,7 +648,7 @@ state EFFECT_WIDGET_YOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO4")
+		SetInfoText("$SKI_INFO1{0}")
 	endEvent
 
 endState
@@ -676,7 +676,7 @@ state SEARCH_KEY ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO7") ; Default: Space
+		SetInfoText("$SKI_INFO1{Space}")
 	endEvent
 
 endState
@@ -702,7 +702,7 @@ state SWITCH_TAB_KEY ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO8") ; Default: Left Alt
+		SetInfoText("$SKI_INFO1{LAlt}")
 	endEvent
 
 endState
@@ -728,7 +728,7 @@ state EQUIP_MODE_KEY ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO9") ; Default: Shift
+		SetInfoText("$SKI_INFO1{Shift}")
 	endEvent
 
 endState
@@ -754,7 +754,7 @@ state SWITCH_TAB_BUTTON ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO12") ; Default: Back
+		SetInfoText("$SKI_INFO1{Back}")
 	endEvent
 
 endState
@@ -780,7 +780,7 @@ state PREV_COLUMN_BUTTON ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO13") ; Default: LB (L1, LEFT_SHOULDER)
+		SetInfoText("$SKI_INFO1{LB}")
 	endEvent
 
 endState
@@ -806,7 +806,7 @@ state NEXT_COLUMN_BUTTON ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO14") ; Default: RB (R1, RIGHT_SHOULDER)
+		SetInfoText("$SKI_INFO1{RB}")
 	endEvent
 
 endState
@@ -832,7 +832,7 @@ state SORT_ORDER_BUTTON ; KEYMAP
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO15") ; Default: LS (L3, LEFT_THUMB)
+		SetInfoText("$SKI_INFO1{LS}")
 	endEvent
 
 endState
@@ -847,18 +847,18 @@ state ITEMCARD_ALIGN ; KEYMAP
 		else
 			_itemcardAlignIdx = 0
 		endif
-		SetTextOptionValueST(_alignments[_itemcardAlignIdx])
 		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
+		SetTextOptionValueST(_alignments[_itemcardAlignIdx])
 	endEvent
 
 	event OnDefaultST()
 		_itemcardAlignIdx = 2
-		SetTextOptionValueST(_alignments[_itemcardAlignIdx])
 		SKI_SettingsManagerInstance.SetOverride("ItemInfo$itemcard$align", _alignmentValues[_itemcardAlignIdx])
+		SetTextOptionValueST(_alignments[_itemcardAlignIdx])
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO3")
+		SetInfoText("$SKI_INFO1{" + _alignments[2] + "}")
 	endEvent
 
 endState
@@ -885,7 +885,7 @@ state ITEMCARD_XOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO4")
+		SetInfoText("$SKI_INFO1{0}")
 	endEvent
 
 endState
@@ -912,7 +912,7 @@ state ITEMCARD_YOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO4")
+		SetInfoText("$SKI_INFO1{0}")
 	endEvent
 
 endState
@@ -941,7 +941,7 @@ state XD_ITEM_XOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO4")
+		SetInfoText("$SKI_INFO1{0}")
 	endEvent
 
 endState
@@ -968,7 +968,7 @@ state XD_ITEM_YOFFSET ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO4")
+		SetInfoText("$SKI_INFO1{0}")
 	endEvent
 
 endState
@@ -995,7 +995,7 @@ state XD_ITEM_SCALE ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO5")
+		SetInfoText("$SKI_INFO1{1.5}")
 	endEvent
 
 endState
@@ -1032,7 +1032,7 @@ state XD_ITEM_POSITIONING ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO16")
+		SetInfoText("$SKI_INFO4{$Off}")
 	endEvent
 
 endState
@@ -1053,7 +1053,7 @@ state CHECK_INVENTORY_MENU ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO6")
+		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
 	
 endState
@@ -1072,7 +1072,7 @@ state CHECK_MAGIC_MENU ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO6")
+		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
 	
 endState
@@ -1091,7 +1091,7 @@ state CHECK_BARTER_MENU ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO6")
+		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
 	
 endState
@@ -1110,7 +1110,7 @@ state CHECK_CONTAINER_MENU ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO6")
+		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
 	
 endState
@@ -1129,7 +1129,7 @@ state CHECK_GIFT_MENU ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO6")
+		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
 	
 endState
@@ -1148,7 +1148,7 @@ state CHECK_MAP_MENU ; SLIDER
 	endEvent
 
 	event OnHighlightST()
-		SetInfoText("$SKI_INFO6")
+		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
 	
 endState

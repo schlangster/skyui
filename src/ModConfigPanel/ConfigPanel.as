@@ -236,7 +236,7 @@ class ConfigPanel extends MovieClip
 	
 	public function setInfoText(a_text: String): Void
 	{
-		_infoText = Translator.translate(a_text);
+		_infoText = Translator.translateNested(a_text);
 		
 		// Don't apply yet if waiting for option data
 		if (_state != WAIT_FOR_OPTION_DATA)
