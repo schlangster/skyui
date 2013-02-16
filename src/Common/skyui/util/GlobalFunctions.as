@@ -223,4 +223,14 @@ class skyui.util.GlobalFunctions
 			return keyCode;
 		}
 	}
+
+	public static function hookFunction(a_scope: Object, a_memberFn: String, a_hookScope: Object, a_hookFn: String): Boolean
+	{
+		var memberFn: Function = a_scope[a_memberFn];
+		if (memberFn == null || a_scope[a_memberFn] == null)
+			return false;
+
+		a_scope[a_memberFn] = function () {memberFn.apply(a_scope, arguments); a_hookScope[a_hookFn].apply(a_hookScope, arguments);}
+		return true;
+	}
 }
