@@ -16,7 +16,7 @@ class skyui.util.EffectIconMap
 		null,			// 8 - ARCHETYPE_FRENZY						nn
 		null,			// 9 - ARCHETYPE_DISARM						nn
 		"conjure",		// 10 - ARCHETYPE_COMMANDSUMMONED			OK
-		"invisibility",	// 11 - ARCHETYPE_INVISIBILITY				X
+		"invisibility",	// 11 - ARCHETYPE_INVISIBILITY				OK
 		"light",		// 12 - ARCHETYPE_LIGHT						OK
 		null,
 		null,
@@ -40,13 +40,13 @@ class skyui.util.EffectIconMap
 		null,			// 32 - ARCHETYPE_ACCUMULATEMAGNITUDE		nn
 		null,			// 33 - ARCHETYPE_STAGGER					nn
 		null,			// 34 - ARCHETYPE_PEAKVALUEMOD				EMBLEM
-		"cloak",		// 35 - ARCHETYPE_CLOAK						X
+		"cloak",		// 35 - ARCHETYPE_CLOAK						OK
 		"werewolf",		// 36 - ARCHETYPE_WEREWOLF					OK
-		"slow_time",	// 37 - ARCHETYPE_SLOWTIME					X
+		"slow_time",	// 37 - ARCHETYPE_SLOWTIME					OK
 		null,			// 38 - ARCHETYPE_RALLY						nn
 		"ench_weapon",	// 39 - ARCHETYPE_ENHANCEWEAPON				OK
 		null,			// 40 - ARCHETYPE_SPAWNHAZARD				nn
-		"ethereal",		// 41 - ARCHETYPE_ETHEREALIZE				X
+		"ethereal",		// 41 - ARCHETYPE_ETHEREALIZE				OK
 		null,			// 42 - ARCHETYPE_BANISH					nn
 		null,
 		null,			// 44 - ARCHETYPE_DISGUISE					nn
@@ -80,7 +80,7 @@ class skyui.util.EffectIconMap
 		"av_skill_restoration",		// 22 - AV_RESTORATION					OK
 		"av_skill_enchanting",		// 23 - AV_ENCHANTING					OK
 		"av_health",				// 24 - AV_HEALTH						OK
-		"av_magica",				// 25 - AV_MAGICKA						OK
+		"av_magicka",				// 25 - AV_MAGICKA						OK
 		"av_stamina",				// 26 - AV_STAMINA						OK
 		"av_health_regen",			// 27 - AV_HEALRATE						OK
 		"av_magicka_regen",			// 28 - AV_MAGICKARATE					OK
@@ -100,7 +100,7 @@ class skyui.util.EffectIconMap
 		"av_resist_shock",			// 42 - AV_ELECTRICRESIST				OK
 		"av_resist_frost",			// 43 - AV_FROSTRESIST					OK
 		"av_resist_magic",			// 44 - AV_MAGICRESIST					OK
-		"av_resist_disease",		// 45 - AV_DISEASERESIST				X
+		"av_resist_disease",		// 45 - AV_DISEASERESIST				OK
 		null,						// 46 - AV_PERCEPTIONCONDITION			nn
 		null,						// 47 - AV_ENDURANCECONDITION			nn
 		null,						// 48 - AV_LEFTATTACKCONDITION			nn
@@ -109,16 +109,16 @@ class skyui.util.EffectIconMap
 		null,						// 51 - AV_RIGHTMOBILITYCONDITION		nn
 		null,						// 52 - AV_BRAINCONDITION				nn
 		"paralysis",				// 53 - AV_PARALYSIS					OK
-		"invisibility",				// 54 - AV_INVISIBILITY					X
-		"av_nighteye",				// 55 - AV_NIGHTEYE						X
+		"invisibility",				// 54 - AV_INVISIBILITY					OK
+		"av_nighteye",				// 55 - AV_NIGHTEYE						OK
 		null,						// 56 - AV_DETECTLIFERANGE				nn
 		"av_waterbreathing",		// 57 - AV_WATERBREATHING				OK
-		"av_waterwalking",			// 58 - AV_WATERWALKING					X
+		"av_waterwalking",			// 58 - AV_WATERWALKING					OK
 		null,						// 59 - AV_IGNORECRIPPLEDLIMBS			nn
 		null,						// 60 - AV_FAME							nn
 		null,						// 61 - AV_INFAMY						nn
 		null,						// 62 - AV_JUMPINGBONUS					nn
-		"av_ward",					// 63 - AV_WARDPOWER					X
+		"av_ward",					// 63 - AV_WARDPOWER					OK
 		null,						// 64 - AV_RIGHTITEMCHARGE				nn
 		"av_armorperks",			// 65 - AV_ARMORPERKS					OK
 		null,						// 66 - AV_SHIELDPERKS					nn
@@ -147,7 +147,7 @@ class skyui.util.EffectIconMap
 		null,						// 89 - AV_FAVORPOINTSBONUS				nn
 		null,						// 90 - AV_LASTBRIBEDINTIMIDATED		nn
 		null,						// 91 - AV_LASTFLATTERED				nn
-		"av_noise",					// 92 - AV_MOVEMENTNOISEMULT			X
+		"av_noise",					// 92 - AV_MOVEMENTNOISEMULT			OK
 		null,						// 93 - AV_BYPASSVENDORSTOLENCHECK		nn
 		null,						// 94 - AV_BYPASSVENDORKEYWORDCHECK		nn
 		null,						// 95 - AV_WAITINGFORPLAYER				nn
@@ -228,15 +228,16 @@ class skyui.util.EffectIconMap
 			
 		var emblemLabel = "none";
 		
-		// Attempt to look up for simple archetypes
+		// 1. Attempt to look up for simple archetypes
 		var baseLabel = _archetypeMap[archetype];
 		
 		// Found one, done
 		if (baseLabel)
 			return {baseLabel: baseLabel, emblemLabel: emblemLabel};
 		
-		// Archetype + ActorValue combinations
+		// 2. Archetype + ActorValue combinations
 		
+		// Set emblem
 		switch (archetype) {
 			case Magic.ARCHETYPE_VALUEMOD:
 			case Magic.ARCHETYPE_DUALVALUEMOD:
@@ -251,11 +252,10 @@ class skyui.util.EffectIconMap
 				}
 		}
 		
+		// Lookup base icon
 		baseLabel = _avMap[actorValue];
-		if (baseLabel)
-			return {baseLabel: baseLabel, emblemLabel: emblemLabel};
 			
-		// Replace health icon with resistType icon
+		// Replace base icon for damage health with resistType icon
 		if (actorValue == Actor.AV_HEALTH) {
 			var resistType = a_effectData.resistType;
 			
@@ -272,7 +272,8 @@ class skyui.util.EffectIconMap
 			}
 		}
 		
-		if (baseLabel)
+		// 3. No match? Default
+		if (!baseLabel)
 			baseLabel = "default_effect";
 		
 		return {baseLabel: baseLabel, emblemLabel: emblemLabel};

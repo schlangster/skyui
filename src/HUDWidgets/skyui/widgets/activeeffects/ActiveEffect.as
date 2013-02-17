@@ -119,28 +119,18 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		var iconData = EffectIconMap.lookupIconLabel(effectData);
 		_iconBaseLabel = iconData.baseLabel;
 		_iconEmblemLabel = iconData.emblemLabel;
-		
-		skyui.util.Debug.log("Found icon " + _iconBaseLabel + ", emblem " + _iconEmblemLabel);
  
 		if (_iconBaseLabel == "default_effect" || _iconBaseLabel == undefined || _iconBaseLabel == "") {
-			skyui.util.Debug.log("[SkyUI Active Effects]: Couldn't determine icon for")
+			skyui.util.Debug.log("[SkyUI Active Effects]: Missing icon")
 			for (var s: String in effectData)
-				skyui.util.Debug.log("                        " + s + ": " + effectData[s])
+				skyui.util.Debug.log("\t\t" + s + ": " + effectData[s])
 		}
 		
-		// TODO: make icons scale. All the icons we use are 128*128 so it doesn't matter
 		_iconHolder._width = _iconHolder._height = (background._width - METER_PADDING - METER_WIDTH);
 		_iconHolder._y = (background._height - _iconHolder._height) / 2;
 
-		if (effectData.duration - effectData.elapsed > 1) {
-			// Effect with duration, e.g. Potion of Fortifty Health
+		if (effectData.duration - effectData.elapsed > 1)
 			initMeter();
-		} else {
-			// Instantaneous effect, no timer (e.g. Healing)
-			// Healing actually has a duration of 1, but it keeps reapplying itself after it's dispelled
-			// No meter, just icon: center the icon
-//			_iconHolder._x = (background._width - _iconHolder._width) / 2;
-		}
 	}
 
 	private function initMeter(): Void

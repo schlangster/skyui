@@ -45,33 +45,28 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	{
 		return _effectsArray.length;
 	}
-
-	// Used if you want to access effectsGroup.effects[effectIndex]; for instance
-	/*
-	public function get effects(): Array
-	{
-		return _effectsArray;
-	}
-	*/
-
+	
 
   /* PUBLIC FUNCTIONS */
   
 	public function addEffect(a_effectData: Object): MovieClip
 	{
-		var effectIdx: Number = _effectsArray.length;
-		var initObject: Object = {index: _effectsArray.length,
-									effectData: a_effectData,
-									iconLocation: iconLocation,
-									effectBaseSize: effectBaseSize,
-									effectSpacing: effectSpacing,
-									effectFadeInDuration: effectFadeInDuration,
-									effectFadeOutDuration: effectFadeOutDuration,
-									effectMoveDuration: effectMoveDuration,
-									hAnchor: hAnchor,
-									vAnchor: vAnchor,
-									orientation: orientation};
-		var effectClip: MovieClip = attachMovie("ActiveEffect", a_effectData.id, getNextHighestDepth(), initObject);
+		var effectIdx = _effectsArray.length;
+		var initObject = {
+			index: _effectsArray.length,
+			effectData: a_effectData,
+			iconLocation: iconLocation,
+			effectBaseSize: effectBaseSize,
+			effectSpacing: effectSpacing,
+			effectFadeInDuration: effectFadeInDuration,
+			effectFadeOutDuration: effectFadeOutDuration,
+			effectMoveDuration: effectMoveDuration,
+			hAnchor: hAnchor,
+			vAnchor: vAnchor,
+			orientation: orientation
+		};
+		
+		var effectClip = attachMovie("ActiveEffect", a_effectData.id, getNextHighestDepth(), initObject);
 		_effectsArray.push(effectClip);
 
 		return effectClip;

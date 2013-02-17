@@ -1,5 +1,6 @@
 ﻿import skyui.widgets.WidgetBase;
 import skyui.widgets.activeeffects.ActiveEffectsGroup;
+import skyui.widgets.activeeffects.ActiveEffect;
 import skyui.defines.Magic;
 
 import com.greensock.TweenLite;
@@ -28,7 +29,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
   /* PRIVATE VARIABLES */
   
+  	// Phases between 0 and 1 during update intervals
 	private var _marker: Number = 1;
+	
 	private var _sortFlag: Boolean = true;
 
 	private var _effectsHash: Object;
@@ -163,24 +166,21 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 			_sortFlag = false;
 		}
 
-		var effectData: Object;
-		var effectClip: MovieClip;
-		var effectsGroup: MovieClip;
-
-		for (var i: Number = 0; i < effectDataArray.length; i++) {
-			effectData = effectDataArray[i];
-			effectClip = _effectsHash[effectData.id];
+		for (var i=0; i < effectDataArray.length; i++) {
+			var effectData = effectDataArray[i];
 
 			if ((effectData.effectFlags & Magic.MGEFFLAG_HIDEINUI) != 0)
 				continue;
+				
+			var effectClip: ActiveEffect = _effectsHash[effectData.id];
 
 			if (!effectClip) {
 				// New Effect
-				effectsGroup = getFreeEffectsGroup();
+				var effectsGroup = getFreeEffectsGroup();
 				effectClip = effectsGroup.addEffect(effectData);
 				_effectsHash[effectData.id] = effectClip;
 			} else {
-				// Current Effect
+				// Existing Effect
 				effectClip.updateEffect(effectData);
 			}
 
@@ -188,7 +188,7 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		}
 
 		for (var s: String in _effectsHash) {
-			effectClip = _effectsHash[s];
+			var effectClip = _effectsHash[s];
 
 			if (effectClip.marker != _marker) {
 				effectClip.remove();
@@ -202,40 +202,34 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	private function getFreeEffectsGroup(): MovieClip
 	{
-		var newGroupIdx: Number = _effectsGroups.length;
-
-		var effectsGroup: MovieClip;
-		var freeEffectsGroup: MovieClip;
-		for (var i: Number = 0; i < newGroupIdx; i++) {
-			effectsGroup = _effectsGroups[i];
-
-			if (effectsGroup.length < _groupEffectCount) {
-				freeEffectsGroup = effectsGroup;
-				break;
-			}
+		// Existing group has free slots?
+		for (var i=0; i < _effectsGroups.length; i++) {
+			var group = _effectsGroups[i];
+			if (group.length < _groupEffectCount)
+				return group;
 		}
-
-		if (freeEffectsGroup == undefined) {
-			var initObject: Object = {index: newGroupIdx,
-										iconLocation: _rootPath + ICON_SOURCE,
-										groupMoveDuration: GROUP_MOVE_DURATION,
-										effectBaseSize: _effectBaseSize,
-										effectSpacing: _effectSpacing,
-										effectFadeInDuration: EFFECT_FADE_IN_DURATION,
-										effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
-										effectMoveDuration: EFFECT_MOVE_DURATION,
-										hAnchor: _hAnchor,
-										vAnchor: _vAnchor,
-										orientation: _orientation};
+		
+		// No free slots, create new group
+		var newGroupIdx = _effectsGroups.length;
+		var initObject = {
+			index: newGroupIdx,
+			iconLocation: _rootPath + ICON_SOURCE,
+			groupMoveDuration: GROUP_MOVE_DURATION,
+			effectBaseSize: _effectBaseSize,
+			effectSpacing: _effectSpacing,
+			effectFadeInDuration: EFFECT_FADE_IN_DURATION,
+			effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
+			effectMoveDuration: EFFECT_MOVE_DURATION,
+			hAnchor: _hAnchor,
+			vAnchor: _vAnchor,
+			orientation: _orientation
+		};
 										
-			// Name needs to be unique so append getNextHighestDepth() to the name
-			effectsGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + getNextHighestDepth(), getNextHighestDepth(), initObject);
-			_effectsGroups.push(effectsGroup);
+		// Name needs to be unique so append getNextHighestDepth() to the name
+		var newGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + getNextHighestDepth(), getNextHighestDepth(), initObject);
+		_effectsGroups.push(newGroup);
 
-			freeEffectsGroup = effectsGroup;
-		}
-
-		return freeEffectsGroup;
+		return newGroup;
 	}
 
 	// @override WidgetBase
