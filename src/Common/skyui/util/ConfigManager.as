@@ -10,7 +10,7 @@ class skyui.util.ConfigManager
   /* CONSTANTS */
   
 	private static var CONFIG_PATH = "skyui/config.txt";
-	private static var TIMEOUT = 1000;
+	private static var TIMEOUT = 3000;
 	
 	private static var LOAD_NONE = 0;
 	private static var LOAD_FILE = 1;
