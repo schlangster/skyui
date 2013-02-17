@@ -28,7 +28,6 @@ class skyui.components.list.ListLayout
   /* PRIVATE VARIABLES */
   
 	private var _activeViewIndex: Number = -1;
-	private var _activeColumnState: Number = 1;
 		
 	private var _layoutData: Object;
 	private var _viewData: Object;
@@ -71,6 +70,13 @@ class skyui.components.list.ListLayout
 	public function get columnCount(): Number
 	{
 		return _columnLayoutData.length;
+	}
+	
+	private var _activeColumnState: Number = 1;
+	
+	public function get activeColumnState(): Number
+	{
+		return _activeColumnState;
 	}
 	
 	private var _columnLayoutData: Array;
@@ -242,6 +248,25 @@ class skyui.components.list.ListLayout
 			else
 				_activeColumnState = 1;
 		}
+		
+		// Save as preferred state
+		_prefData.column = col;
+		_prefData.stateIndex = _activeColumnState;
+			
+		updateLayout();
+	}
+	
+	public function restoreColumnState(a_activeIndex: Number, a_activeState: Number): Void
+	{
+		var listIndex = toColumnListIndex(a_activeIndex);
+		var col = _columnList[listIndex];
+		
+		// Invalid column
+		if (col == null || col.passive)
+			return;
+			
+		_activeColumnIndex = a_activeIndex;
+		_activeColumnState = a_activeState;
 		
 		// Save as preferred state
 		_prefData.column = col;
