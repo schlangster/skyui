@@ -246,6 +246,37 @@ float[] function GetDimensions()
 	return dim
 endFunction
 
+; @interface
+function TweenToX(float a_x, float a_duration)
+	{Moves the widget to a new x position over time}
+	TweenTo(a_x, _y, a_duration)
+endFunction
+
+; @interface
+function TweenToY(float a_y, float a_duration)
+	{Moves the widget to a new y position over time}
+	TweenTo(_x, a_y, a_duration)
+endFunction
+
+; @interface
+function TweenTo(float a_x, float a_y, float a_duration)
+	{Moves the widget to a new x, y position over time}
+	float[] args = new float[3]
+	args[0] = a_x
+	args[1] = a_y
+	args[2] = a_duration
+	UI.InvokeFloatA(HUD_MENU, _widgetRoot + ".tweenTo", args)
+endFunction
+
+; @interface
+function FadeTo(float a_alpha, float a_duration)
+	{Fades the widget to a new alpha over time}
+	float[] args = new float[2]
+	args[0] = a_alpha
+	args[1] = a_duration
+	UI.InvokeFloatA(HUD_MENU, _widgetRoot + ".fadeTo", args)
+endFunction
+
 bool function IsExtending()
 	string s = self as string
 	string sn = GetWidgetType() + " "

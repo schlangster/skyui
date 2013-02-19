@@ -1,4 +1,7 @@
-﻿import Shared.GlobalFunc;
+﻿import com.greensock.TweenLite;
+import com.greensock.easing.Linear;
+
+import Shared.GlobalFunc;
 
 class skyui.widgets.WidgetBase extends MovieClip
 {
@@ -145,6 +148,24 @@ class skyui.widgets.WidgetBase extends MovieClip
 	public function setAlpha(a_alpha: Number): Void
 	{
 		_alpha = a_alpha;
+	}
+
+	// @Papyrus
+	public function tweenTo(a_newX: Number, a_newY: Number, a_duration: Number): Void
+	{
+		var newX: Number = GlobalFunc.Lerp(-_hudMetrics.hMin, _hudMetrics.hMax, 0, 1280, a_newX);
+		var newY: Number = GlobalFunc.Lerp(-_hudMetrics.vMin, _hudMetrics.vMax, 0, 720, a_newY);
+		var duration: Number = Math.max(0, a_duration || 0);
+
+		TweenLite.to(this, duration, {_x: newX, _y: newY, overwrite: 0, easing: Linear.easeNone});
+	}
+
+	// @Papyrus
+	public function fadeTo(a_alpha: Number, a_duration: Number): Void
+	{
+		var duration: Number = Math.max(0, a_duration || 0);
+
+		TweenLite.to(this, duration, {_alpha: a_alpha, overwrite: 0, easing: Linear.easeNone});
 	}
 
   /* PRIVATE FUNCTIONS */
