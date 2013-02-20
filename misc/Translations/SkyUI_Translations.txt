@@ -8,7 +8,7 @@ $ENCHANTED	ENCHANTED	ENCHANTÉ	VERZAUBERT	INCANTATO	ENCANTADO	OČAROVANÉ	ZACZAR
 $V/W	V/W	V/P	W/G	V/P	V/P	C/H	C/W	Ц/В	金額/重量
 $VALUE/WEIGHT	VALUE/WEIGHT	VALEUR/POIDS	WERT/GEWICHT	VALORE/PESO	VALOR/PESO	CENA/HMOTNOST	CENA/WAGA	ЦЕНА/ВЕС	金額/重量
 $SPELL COST	SPELL COST	COÛT MAGIQUE	KOSTEN	COSTO	COSTE DE HECHIZO	MANA	KOSZT CZARU	СТОИМОСТЬ	コスト
-$FIRST WORD	FIRST WORD	PREMIER MOT	ERSTES WORT	PRIMA PAROLA	PRIMERA PALABRA	PRVNÍ SLOVO	PIERWSZY WYRAZ	ПЕРВОЕ СЛОВО	第一の言葉
+$FIRST WORD	FIRST WORD	PREMIER MOT	ERSTES WORT	PRIMA PAROLA	PRIMERO PALABRA	PRVNÍ SLOVO	PIERWSZY WYRAZ	ПЕРВОЕ СЛОВО	第一の言葉
 $SECOND WORD	SECOND WORD	DEUXIÈME MOT	ZWEITES WORT	SECONDA PAROLA	SEGUNDA PALABRA	DRUHÉ SLOVO	DRUGI WYRAZ	ВТОРОЕ СЛОВО	第二の言葉
 $THIRD WORD	THIRD WORD	TROISIÈME MOT	DRITTES WORT	TERZA PAROLA	TERCERA PALABRA	TŘETÍ SLOVO	TRZECI WYRAZ	ТРЕТЬЕ СЛОВО	第三の言葉
 $SCHOOL	SCHOOL	ÉCOLE	MAGIESCHULE	SCUOLA	ESCUELA	ŠKOLA	SZKOŁA	ШКОЛА	系統
@@ -160,7 +160,7 @@ $Defaults	Defaults	Par Défaut	Voreinstellungen	Predefiniti	Por Defecto	Základn
 $Search	Search	Chercher	Suchen	Cerca	Buscar	Hledat	Szukaj	Поиск	検索
 $Magic	Magic	Magie	Magie	Magia	Magia	Magie	Magia	Магия	魔法
 $Inventory	Inventory	Inventaire	Inventar	Inventario	Inventario	Inventář	Ekwipunek	Инвентарь	所持品
-$Switch Tab	Switch Tab	Changer Onglet	Wechsle Reiter	Cambia Scheda	Cambiar Pestaña	Změnit Záložku	Przełącz Kartę	Переключение Вкладок	タブの切り替え
+$Switch Tab	Switch Tab	Changer Onglet	Reiter Wechseln	Cambia Scheda	Cambiar Pestaña	Změnit Záložku	Przełącz Kartę	Переключение Вкладок	タブの切り替え
 $Equip Mode	Equip Mode	Gestion d'Équipement	Ausrüstungsmodus	Gestisci Equipaggiamento	Modo Equipamiento	Režim použití	Tryb Wyposażenia	Режим Экипировки	装備モード
 $Column	Column	Colonne	Spalte	Colonna	Columna	Sloupek	Kolumna	Колонка	列
 $Order	Order	Trier	Sortierung	Ordina	Ordenar	Řazení	Kolejność	Порядок	ソート
@@ -169,6 +169,7 @@ $Open Menu	Open Menu	Ouvrir Menu	Menü Öffnen	Apri Menu	Abrir Menu	Otevřít Me
 $Toggle	Toggle	Activer/Désactiver	Umschalten	Seleziona	Seleccionar	Zaškrtnout	Przełącz	Переключить	トグル
 $Pick Color	Pick Color	Sélectionner Couleur	Farbauswahl	Seleziona Colore	Seleccionar Color	Vybrat barvu	Wybierz Kolor	Выбор Цвета	色を選択
 $Remap	Remap	Réaffecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Перераспределение	再割り当て
+$Find Location	Find Location	Trouver localisation	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
 									
 $General	General	Général	Allgemein	Generale	General	Základní	Ogólne	Общие	一般
 $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawansowane	Дополнительно	高度
@@ -185,33 +186,33 @@ $3D Item	3D Item	Modèle 3D	3D Ansicht	Oggetto 3D	Objeto 3D	3D Objekt	Obiekt 3D	
 $Align	Align	Alignement	Ausrichtung	Allinea	Alinear	Zarovnání	Wyrównanie	Выравнивание	整列する
 $Horizontal Offset	Horizontal Offset	Axe horizontal	Horizontaler Abstand	Spostamento Orizzontale	Desplazamiento Horizontal	Vodorovné odsazení	Przesunięcie Poziome	Горизонтальное Смещение	水平オフセット
 $Vertical Offset	Vertical Offset	Axe vertical	Vertikaler Abstand	Spostamento Verticale	Desplazamiento Vertical	Svislé odsazení	Przesunięcie Pionowe	Вертикальное Смещение	垂直オフセット
-$Horizontal Anchor	Horizontal Anchor	Alignement horizontal	Horizontale Ausrichtung			Horizontální ukotvení	Wyrównanie Poziome	Фиксация по Горизонтали	
-$Vertical Anchor	Vertical Anchor	Alignement vertical	Vertikale Ausrichtung			Vertikální ukotvení	Wyrównanie Pionowe	Фиксация по Вертикали	
-$Orientation	Orientation	Orientation	Orientierung			Orientace	Orientacja	Ориентация	
-$Icon Size	Icon Size	Taille d'icône	Symbolgröße			Velikost ikon	Rozmiar Ikon	Размер Иконок	
-$Icon Group Count	Icon Group Count	Nombre d'icônes groupées	Symbolgruppengröße				Liczba Ikon Grupy	Кол-во Груп Иконок	
+$Horizontal Anchor	Horizontal Anchor	Alignement horizontal	Horizontale Ausrichtung	Orientamento Orizzontale	Alineamiento horizontal	Horizontální ukotvení	Wyrównanie Poziome	Фиксация по Горизонтали	
+$Vertical Anchor	Vertical Anchor	Alignement vertical	Vertikale Ausrichtung	Orientamento Verticale	Alineamiento vertical	Vertikální ukotvení	Wyrównanie Pionowe	Фиксация по Вертикали	
+$Orientation	Orientation	Orientation	Orientierung	Orientamento	Alineamiento	Orientace	Orientacja	Ориентация	
+$Icon Size	Icon Size	Taille d'icône	Symbolgröße	Dimensione Icona	Dimensión del icono	Velikost ikon	Rozmiar Ikon	Размер Иконок	
+$Icon Group Count	Icon Group Count	Nombre d'icônes groupées	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Груп Иконок	
 $Scale	Scale	Échelle	Größe	Scala	Escala	Měřítko	Skala	Масштаб	スケール
-$Disable Positioning	Disable Positioning	Désactiver positionnement	Keine Positionsanpassung			Zakázat polohování	Wyłącz Pozycjonowanie	Отключить Позиционирование	
+$Disable Positioning	Disable Positioning	Désactiver positionnement	Keine Positionsanpassung	Disabilita Posizionamento	Desactivar el posicionamiento	Zakázat polohování	Wyłącz Pozycjonowanie	Отключить Позиционирование	
 $SWF Version Checking	SWF Version Checking	Fichiers SWF - Vérification de Version	SWF Versions-Check	Controllo Versione SWF	Comprobar Versión SWF	Kontrola Verze SWF	Sprawdzanie Wersji SWF	Проверка Версии SWF	SWF のバージョンの確認
-$Active Effects HUD	Active Effects HUD	Interface d'Effets Actifs					HUD Aktywnych Efektów	Активные эффекты HUD	
+$Active Effects HUD	Active Effects HUD	Interface d'Effets Actifs	Anzeige für Aktive Effekte	HUD degli Effetti Attivi	HUD de Effectos Activos	Aktivovat HUD Efektů	Aktywne Efekty HUD	Активные эффекты HUD	
 									
 $Left	Left	Gauche	Links	Sinistra	Izquierda	Vlevo	Lewo	Лево	左
 $Right	Right	Droite	Rechts	Destra	Derecha	Vpravo	Prawo	Право	右
 $Center	Center	Centre	Mitte	Centro	Centro	Na střed	Środek	Центр	中央
-$Top	Top	Haut	Oben			Nahoře	Góra	Верх	
-$Bottom	Bottom	Bas	Unten			Dole	Dół	Низ	
+$Top	Top	Haut	Oben	Sopra	Alto	Nahoře	Góra	Верх	
+$Bottom	Bottom	Bas	Unten	Sotto	Abajo	Dole	Dół	Низ	
 $On	On	Activé	An	Attivo	Activo	Zapnuto	Włączone	Включено	
-$Off	Off	Désactivé	Aus	Disattivato	Desactivado	Vypnuto	Wyłączone	Выкл	
+$Off	Off	Désactivé	Aus	Disattivato	Desactivado	Vypnuto	Wyłączone	Выключено	
 									
 $SKI_INFO1{}	Default: {}	Défaut: {}	Voreinstellung: {}	Predefinito: {}	Predefinido: {}	Výchozí nastavení: {}	Domyślnie: {}	По умолчанию: {}	デフォルト: {}
 $SKI_INFO2{}	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: {}	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: {}	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: {}	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: {}	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: {}	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: {}	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: {}	Число элементов необходимое для инициализации значения меню, или 0 чтобы отключить.\nПо умолчанию: {}	
 $SKI_INFO3{}	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: {}	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: {}	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: {}	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: {}	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: {}	 Nekonpatibilní nebo zastaralé SWF může narušit funkčnost SkyUI. Zaškrtnutím vypnete zobrazování varovných zpráv!\nVýchozí nastavení: {}	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: {}	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: {}	
-$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDefault: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}			Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Отключить Позиционирование для 3D Просмотра Предмета.\nПо умолчанию: {}	
+$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDefault: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}		Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Отключить Позиционирование для 3D Просмотра Предмета.\nПо умолчанию: {}	
 									
-$SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Эта функция должна быть назначена с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
+$SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche du clavier.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Эта функция должна быть назначена с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
 									
 $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	100.00%	99.49%	94.92%	94.92%	98.98%	100.00%	100.00%	90.36%
+% Completion	100.00%	100.00%	100.00%	100.00%	99.49%	100.00%	100.00%	100.00%	89.90%
