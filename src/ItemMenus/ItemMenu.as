@@ -270,16 +270,16 @@ class ItemMenu extends MovieClip
 				delete this.onUnsuspend;
 			};
 			
+			// scrollPosition and selectedIndex are restored in TabularList.InvalidateData
 			itemList.listState.restoredScrollPosition = arguments[2];
 			itemList.listState.restoredSelectedIndex = arguments[1];
+
 			itemList.listState.restoredActiveColumnIndex = arguments[3];
 			itemList.listState.restoredActiveColumnState = arguments[4];
 
 			itemList.onUnsuspend = function()
 			{
 				this.layout.restoreColumnState(this.listState.restoredActiveColumnIndex, this.listState.restoredActiveColumnState);
-				this.scrollPosition = this.listState.restoredScrollPosition;
-				this.selectedIndex = this.listState.restoredSelectedIndex;
 				delete this.onUnsuspend;
 			};
 		} else {

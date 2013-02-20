@@ -31,7 +31,7 @@ class skyui.filter.SortFilter implements skyui.filter.IFilter
 	public var cleanUpEvents: Function;
 
 	// Change the filter attributes and options and trigger an update if necessary.
-	public function setSortBy(a_sortAttributes: Array, a_sortOptions: Array, a_restoring: Boolean): Void
+	public function setSortBy(a_sortAttributes: Array, a_sortOptions: Array): Void
 	{
 		if (_sortAttributes == a_sortAttributes && _sortOptions == a_sortOptions)
 			return;
@@ -39,7 +39,7 @@ class skyui.filter.SortFilter implements skyui.filter.IFilter
 		_sortAttributes = a_sortAttributes;
 		_sortOptions = a_sortOptions;
 		
-		dispatchEvent({type: "filterChange", restoring: a_restoring});
+		dispatchEvent({type: "filterChange"});
 	}
 
 	// @override skyui.IFilter
