@@ -211,6 +211,8 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	_modNames[configID] = a_modName
 	
 	_configCount += 1
+
+	Log("Registered " + a_menu + ", id " + configID)
 	
 	return configID
 endFunction
@@ -223,6 +225,9 @@ bool function UnregisterMod(SKI_ConfigBase a_menu)
 			_modConfigs[i] = none
 			_modNames[i] = ""
 			_configCount -= 1
+
+			Log("Unregistered " + a_menu + ", id " + i)
+
 			return true
 		endIf
 			
@@ -230,6 +235,24 @@ bool function UnregisterMod(SKI_ConfigBase a_menu)
 	endWhile
 
 	return false
+endFunction
+
+; @interface
+function ForceReset()
+	Log("Resetting config manager...")
+	SendModEvent("SKICP_configManagerReset")
+
+	int i = 0
+	while (i < _modConfigs.length)
+		_modConfigs[i] = none
+		_modNames[i] = ""
+		i += 1
+	endWhile
+
+	_curConfigID = 0
+	_configCount = 0
+
+	SendModEvent("SKICP_configManagerReady")
 endFunction
 
 int function NextID()
@@ -246,4 +269,8 @@ int function NextID()
 	endWhile
 	
 	return _curConfigID
+endFunction
+
+function Log(string a_msg)
+	Debug.Trace(self + ": " + a_msg)
 endFunction

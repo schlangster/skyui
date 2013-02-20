@@ -31,6 +31,7 @@ Interface\translations\SkyUI_polish.txt
 Interface\translations\SkyUI_russian.txt
 Interface\translations\SkyUI_spanish.txt
 Interface\translations\SkyUI_japanese.txt
+Scripts\QF_SKI_ConfigManagerInstance.pex
 Scripts\SKI_ActiveEffectsWidget.pex
 Scripts\SKI_ConfigBase.pex
 Scripts\SKI_ConfigManager.pex
@@ -41,6 +42,7 @@ Scripts\SKI_QuestBase.pex
 Scripts\SKI_SettingsManager.pex
 Scripts\SKI_WidgetBase.pex
 Scripts\SKI_WidgetManager.pex
+Scripts\Source\QF_SKI_ConfigManagerInstance.psc
 Scripts\Source\SKI_ActiveEffectsWidget.psc
 Scripts\Source\SKI_ConfigBase.psc
 Scripts\Source\SKI_ConfigManager.psc

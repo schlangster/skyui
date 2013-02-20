@@ -83,6 +83,7 @@ endEvent
 ; @implements SKI_QuestBase
 event OnGameReload()
 	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
+	RegisterForModEvent("SKICP_configManagerReset", "OnConfigManagerReset")
 
 	if (!_initialized)
 		_initialized = true
@@ -114,22 +115,6 @@ event OnGameReload()
 	endIf
 
 	CheckVersion()
-endEvent
-
-event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	SKI_ConfigManager newManager = a_sender as SKI_ConfigManager
-
-	; Already registered?
-	if (_configManager == newManager)
-		return
-	endIf
-	
-	_configManager = newManager
-	
-	_configID = _configManager.RegisterMod(self, ModName)
-	if (_configID != -1)
-		OnConfigRegister()
-	endIf
 endEvent
 
 
@@ -263,6 +248,26 @@ endEvent
 ; @interface
 event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
 	{Called when a key has been remapped for this state option}
+endEvent
+
+event OnConfigManagerReset(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	_configManager = none
+endEvent
+
+event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	SKI_ConfigManager newManager = a_sender as SKI_ConfigManager
+
+	; Already registered?
+	if (_configManager == newManager)
+		return
+	endIf
+	
+	_configManager = newManager
+	
+	_configID = _configManager.RegisterMod(self, ModName)
+	if (_configID != -1)
+		OnConfigRegister()
+	endIf
 endEvent
 
 event OnMessageDialogClose(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
