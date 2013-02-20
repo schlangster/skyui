@@ -54,10 +54,7 @@ class Script : SkyrimBaseScript {
 		// Detected problems? Show report. Otherwise just install
 		if (problemCount > 0) {
 			InitializeComponents();
-
-			do {
-				mainInstallForm.ShowDialog(); 
-			} while (install == true && problemCount > 0 && MessageBox("There are still unresolved problems left. Install anyway?", "SkyUI Problem Report", MessageBoxButtons.YesNo) != DialogResult.Yes);
+			mainInstallForm.ShowDialog(); 
 		} else {
 			install = true;
 		}
