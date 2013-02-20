@@ -13,6 +13,8 @@ using System.Collections.Generic;
 
 class Script : SkyrimBaseScript {
 
+	static Version SKSE_MIN_VERSION = new Version("0.1.6.8");
+
 	// Main dialog
 	static Form mainInstallForm;
 	static TextBox textArea;
@@ -31,11 +33,17 @@ class Script : SkyrimBaseScript {
 		"Scripts/SKI_StatusWidget.pex",
 		"Scripts/SKI_WidgetBase.pex",
 		"Scripts/SKI_WidgetManager.pex",
+		"Interface/skyui_cfg.txt",
+		"Interface/skyui_translate.txt",
 		"Interface/bartermenu.swf",
-		"Interface/inventorymenu.swf",
 		"Interface/containermenu.swf",
+		"Interface/inventorymenu.swf",
 		"Interface/magicmenu.swf",
-		"Interface/skyui/"
+		"Interface/skyui/inventorylists.swf",
+		"Interface/skyui/tabbedinventorylists.swf",
+		"Interface/skyui/skyui_icons_cat.swf",
+		"Interface/skyui/skyui_icons_inv.swf",
+		"Interface/skyui/skyui_icons_magic.swf"
 	};
 
 	static bool install = false;
@@ -46,6 +54,7 @@ class Script : SkyrimBaseScript {
 
 	static bool noSKSE = false;
 	static bool noSKSEScripts = false;
+	static Version skseVersion;
 	
 	public static bool OnActivate()
 	{
@@ -72,6 +81,7 @@ class Script : SkyrimBaseScript {
 		foundLooseFiles.Clear();
 		noSKSE = false;
 		noSKSEScripts = false;
+		skseVersion = new Version();
 
 
 		// 1. Check Loose files
@@ -82,9 +92,17 @@ class Script : SkyrimBaseScript {
  		if (foundLooseFiles.Count > 0)
  			problemCount++;
 
+ 		// 2. Check if skse is present
  		noSKSE = !ScriptExtenderPresent();
+ 		if (noSKSE)
+ 			problemCount++;
 
-		// 3. Check missing SKSE.pex
+		// 3. Check SKSE version
+ 		skseVersion = GetSkseVersion();
+ 		if (skseVersion == null || skseVersion < SKSE_MIN_VERSION)
+ 			problemCount++;
+
+		// 4. Check missing SKSE.pex
 		if (GetExistingDataFile("Scripts/SKSE.pex") == null) {
  			noSKSEScripts = true;
  			problemCount++;
@@ -133,13 +151,26 @@ class Script : SkyrimBaseScript {
 			PrintReport("Problem #" + c + ":");
 			PrintReport("-----------");
 			PrintReport("The Skyrim Script Extender (SKSE) is not installed.");
-			PrintReport("");
-			PrintReport("Potential causes:");
-	 		PrintReport("* You didn't install it.");
 	 		PrintReport("");
 	 		PrintReport("Solution:");
 			PrintReport("1. Get the latest SKSE version from 'http://skse.silverlock.org/' and install it.");
-			PrintReport("   If you have problems installing it, have a look at this video: http://www.youtube.com/watch?v=xTGnQIiNVqA");
+			PrintReport("   If you have problems installing it, have a look at this video:");
+			PrintReport("   http://www.youtube.com/watch?v=xTGnQIiNVqA");
+
+		} else if (skseVersion == null || skseVersion < SKSE_MIN_VERSION) {
+			c++;
+			PrintReport("-----------");
+			PrintReport("Problem #" + c + ":");
+			PrintReport("-----------");
+			PrintReport("Your SKSE version is too old.");
+			PrintReport("");
+			PrintReport("Detected version: " + skseVersion);
+			PrintReport("Required version: " + SKSE_MIN_VERSION + " (or newer)");
+	 		PrintReport("");
+	 		PrintReport("Solution:");
+			PrintReport("1. Get the latest SKSE version from 'http://skse.silverlock.org/' and install it.");
+			PrintReport("   If you have problems installing it, have a look at this video:");
+			PrintReport("   http://www.youtube.com/watch?v=xTGnQIiNVqA");
 
 		} else if (noSKSEScripts) {
 			c++;
