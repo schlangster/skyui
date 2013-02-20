@@ -80,18 +80,6 @@ class skyui.components.list.TabularList extends ScrollingList
 		}
 		return false;
 	}
-
-	// @override ScrollingList
-	public function InvalidateData(): Void
-	{
-		super.InvalidateData();
-		
-		if (layout.bRestore) {
-			scrollPosition = listState.restoredScrollPosition;
-			selectedIndex = listState.restoredSelectedIndex;
-			layout.bRestore = false;
-		}
-	}
 	
 	
   /* PRIVATE FUNCTIONS */

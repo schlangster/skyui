@@ -54,7 +54,6 @@ class skyui.components.list.ListLayout
 	
 	
   /* PROPERTIES */
-  	public var bRestore: Boolean = false;
 	
 	public function get currentView(): Object
 	{
@@ -259,7 +258,6 @@ class skyui.components.list.ListLayout
 	
 	public function restoreColumnState(a_activeIndex: Number, a_activeState: Number): Void
 	{
-		bRestore = true;
 		var listIndex = toColumnListIndex(a_activeIndex);
 		var col = _columnList[listIndex];
 		

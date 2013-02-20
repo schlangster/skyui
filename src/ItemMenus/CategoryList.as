@@ -124,6 +124,9 @@ class CategoryList extends BasicList
 			_selectedIndex = listEnumeration.size() - 1;
 
 		UpdateList();
+		
+		if (onInvalidate)
+			onInvalidate();
 	}
 	
 	// @override BasicList

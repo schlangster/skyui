@@ -191,6 +191,7 @@ class skyui.components.list.BasicList extends BSList
 	
 	// Custom handlers
 	public var onUnsuspend: Function;
+	public var onInvalidate: Function;
 	
 	public function addDataProcessor(a_dataProcessor: IListProcessor): Void
 	{
@@ -278,6 +279,9 @@ class skyui.components.list.BasicList extends BSList
 			_selectedIndex = listEnumeration.size() - 1;
 
 		UpdateList();
+		
+		if (onInvalidate)
+			onInvalidate();
 	}
 
 	// @override BSList

@@ -226,6 +226,9 @@ class skyui.components.list.ScrollingList extends BasicList
 			
 			doSetSelectedIndex(entryClip.itemIndex, SELECT_KEYBOARD);
 		}
+		
+		if (onInvalidate)
+			onInvalidate();
 	}
 	
 	public function moveSelectionUp(a_bScrollPage: Boolean): Void
