@@ -24,8 +24,8 @@ bool _mapMenuCheckEnabled			= true
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-int property		MinSKSERelease	= 34		autoReadonly
-string property		MinSKSEVersion	= "1.6.6"	autoReadonly
+int property		MinSKSERelease	= 36		autoReadonly
+string property		MinSKSEVersion	= "1.6.8"	autoReadonly
 
 int property		ReqSWFRelease	= 9			autoReadonly
 string property		ReqSWFVersion	= "3.2"		autoReadonly
