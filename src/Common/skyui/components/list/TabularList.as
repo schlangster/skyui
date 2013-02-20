@@ -98,12 +98,14 @@ class skyui.components.list.TabularList extends ScrollingList
 	private function onLayoutChange(event: Object): Void
 	{
 		entryHeight = _layout.entryHeight;
-		
 		_maxListIndex = Math.floor((_listHeight / entryHeight) + 0.05);
 		
 		if (_layout.sortAttributes && _layout.sortOptions)
-			dispatchEvent({type:"sortChange", attributes: _layout.sortAttributes, options:  _layout.sortOptions});
+			dispatchEvent({type:"sortChange", attributes: _layout.sortAttributes, options:  _layout.sortOptions, restoring: event.restoring});
 		
-		requestUpdate();
+		if (event.restoring)
+			UpdateList();
+		else
+			requestUpdate();
 	}
 }

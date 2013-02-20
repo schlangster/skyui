@@ -413,9 +413,12 @@ class InventoryLists extends MovieClip
 		}
 	}
   
-	private function onFilterChange(): Void
+	private function onFilterChange(event: Object): Void
 	{
-		itemList.requestInvalidate();
+		if (event.restoring)
+			itemList.InvalidateData();
+		else
+			itemList.requestInvalidate();
 	}
 	
 	private function onTabBarLoad(): Void
@@ -505,7 +508,7 @@ class InventoryLists extends MovieClip
 
 	private function onSortChange(event: Object): Void
 	{
-		_sortFilter.setSortBy(event.attributes, event.options);
+		_sortFilter.setSortBy(event.attributes, event.options, event.restoring);
 	}
 
 	private function onSearchInputStart(event: Object): Void

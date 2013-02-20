@@ -28,7 +28,6 @@ class skyui.components.list.ListLayout
   /* PRIVATE VARIABLES */
   
 	private var _activeViewIndex: Number = -1;
-	private var _activeColumnState: Number = 1;
 		
 	private var _layoutData: Object;
 	private var _viewData: Object;
@@ -71,6 +70,13 @@ class skyui.components.list.ListLayout
 	public function get columnCount(): Number
 	{
 		return _columnLayoutData.length;
+	}
+
+	private var _activeColumnState: Number = 1;
+
+	public function get activeColumnState(): Number
+	{
+		return _activeColumnState;
 	}
 	
 	private var _columnLayoutData: Array;
@@ -249,11 +255,34 @@ class skyui.components.list.ListLayout
 			
 		updateLayout();
 	}
+
+
+	public function restoreColumnState(a_activeIndex: Number, a_activeState: Number): Void
+	{
+		var listIndex = toColumnListIndex(a_activeIndex);
+		var col = _columnList[listIndex];
+		
+		// Invalid column
+		if (col == null || col.passive)
+			return;
+
+		if (a_activeState < 1 || a_activeState > col.states)
+			return;
+		
+		_activeColumnIndex = a_activeIndex;
+		_activeColumnState = a_activeState;
+		
+		// Save as preferred state
+		_prefData.column = col;
+		_prefData.stateIndex = _activeColumnState;
+	
+		updateLayout(true);
+	}
 	
 
   /* PRIVATE FUNCTIONS */
 	
-	private function updateLayout(): Void
+	private function updateLayout(a_restoring: Boolean): Void
 	{
 		_layoutUpdateCount++;
 
@@ -471,7 +500,7 @@ class skyui.components.list.ListLayout
 		
 		// sortChange might not always trigger an update, so we have to make sure the list is updated,
 		// even if that means we update it twice.
-		dispatchEvent({type: "layoutChange"});
+		dispatchEvent({type: "layoutChange", restoring: a_restoring});
 	}
 	
 	private function updateSortParams(stateData: Object): Void
@@ -584,3 +613,4 @@ class skyui.components.list.ListLayout
 		}
 	}
 }
+
