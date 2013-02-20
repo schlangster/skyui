@@ -20,7 +20,7 @@ Source code:	https://github.com/schlangster/skyui
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.6 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.8 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################
@@ -81,6 +81,34 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ========================================================================================================================================
  2. Changelog
 ========================================================================================================================================
+
+------------------------------------------------------------
+3.2:
+
+[General]
+- Updated SKSE version requirement to 1.6.8.
+- Inventory and magic menus now remember and restore last selected column and sorting state.
+- Added separate icons for read books/scrolls.
+- Fixed several Dragonborn icons.
+- Improved visbility of equip icons.
+- Fixed an issue in the NMM installer that could cause a crash when trying to force the installation.
+- Fixed issue where closing a menu before any checks are able to complete would cause false error messages to appear.
+- Optimized memory usage of config menu buffers.
+- Increased config timeout delay from 1 to 3 seconds.
+
+[ModConfigurationMenu]
+- Added a repair console command that forces all menus to re-register: setStage SKI_ConfigManagerInstance 1
+- Improved SetInfoText to support nested translation strings. See MCM API reference for details.
+- Added an new method to organize options as states. Fully backward compatible. See state MCM state option guide for details.
+
+[MapMenu]
+- Initial release
+
+[ActiveEffectsWidget]
+- Initial release
+
+[HUDWidgetLoader]
+- Initial release
 
 ------------------------------------------------------------
 3.1:
@@ -452,6 +480,11 @@ SkyUI is utilizing TweenLite, a high-performance tweening library (http://www.gr
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
 	ToJKa, HellKnight, xporc, MadCat221, Ismelda, Gribbles, freesta, Cartrodus, TheCastle (in random order)
+
+Thanks to all translators who helped localizing SkyUI to different languages, among them being:
+	Sagittarius22 (French)
+	xlwarrior (Spanish)
+	Starfis (Czech)
 
 Last but not least, thanks to the whole SKSE team, because without their Script Extender creating this mod wouldn't have been possible.
 
