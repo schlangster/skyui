@@ -173,6 +173,8 @@ event OnGameReload()
 
 		Debug.Trace(self + " INITIALIZED")
 	endIf
+
+	CheckVersion()
 endEvent
 
 event OnWidgetManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)

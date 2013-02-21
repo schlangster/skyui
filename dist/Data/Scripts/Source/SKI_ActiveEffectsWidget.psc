@@ -1,6 +1,20 @@
 scriptname SKI_ActiveEffectsWidget extends SKI_WidgetBase
 
+; SCRIPT VERSION ----------------------------------------------------------------------------------
+;
+; History
+;
+; 1:	- Initial version
+;
+; 2:	- Updated hudModes
+
+int function GetVersion()
+	return 2
+endFunction
+
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
+
+; -- Version 1 --
 
 ; Make sure defaults match those in ConfigMenuInstance
 bool	_enabled			= false
@@ -66,6 +80,29 @@ string property Orientation
 		endIf
 	endFunction
 endProperty
+
+; INITIALIZATION ----------------------------------------------------------------------------------
+
+; @implements SKI_QuestBase
+event OnVersionUpdate(int a_version)
+	
+	; Version 2
+	if (a_version >= 2 && CurrentVersion < 2)
+		Debug.Trace(self + ": Updating to script version 2")
+
+		string[] hudModes = new string[6]
+		hudModes[0] = "All"
+		hudModes[1] = "StealthMode"
+		hudModes[2] = "Favor"
+		hudModes[3] = "Swimming"
+		hudModes[4] = "HorseMode"
+		hudModes[5] = "WarHorseMode"
+
+		Modes = hudModes
+	endIf
+endEvent
+
+; EVENTS ------------------------------------------------------------------------------------------
 
 ; @override SKI_WidgetBase
 event OnWidgetReset()

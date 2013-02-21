@@ -8,6 +8,26 @@ class skyui.widgets.WidgetBase extends MovieClip
   /* CONSTANTS */
 	
 	private static var MODES: Array = ["All", "Favor", "MovementDisabled", "Swimming", "WarhorseMode", "HorseMode", "InventoryMode", "BookMode", "DialogueMode", "StealthMode", "SleepWaitMode", "BarterMode", "TweenMode", "WorldMapMode", "JournalMode", "CartMode", "VATSPlayback"];
+
+	private static var MODEMAP: Object = {
+		all: "All",
+		favor: "Favor",
+		movementdisabled: "MovementDisabled",
+		swimming: "Swimming",
+		warhorsemode: "WarhorseMode",
+		horsemode: "HorseMode",
+		inventorymode: "InventoryMode",
+		bookmode: "BookMode",
+		dialoguemode: "DialogueMode",
+		stealthmode: "StealthMode",
+		sleepwaitmode: "SleepWaitMode",
+		bartermode: "BarterMode",
+		tweenmode: "TweenMode",
+		worldmapmode: "WorldMapMode",
+		journalmode: "JournalMode",
+		cartmode: "CartMode",
+		vatsplayback: "VATSPlayback"
+	};
 	//private static var CROSSHAIR_MODES: Array = ["All", "Favor", "DialogueMode", "StealthMode", "Swimming", "HorseMode", "WarHorseMode"];
 
 	private static var ANCHOR_LEFT: String		= "left";
@@ -89,8 +109,8 @@ class skyui.widgets.WidgetBase extends MovieClip
 			delete(_widgetHolder[MODES[i]]);
 			
 		for (var i=0; i<arguments.length; i++) {
-			var m = arguments[i];
-			if (MODES.indexOf(m) != undefined) {
+			var m = MODEMAP[arguments[i].toLowerCase()];
+			if (m != undefined) {
 				_widgetHolder[m] = true;
 				numValidModes++;
 			}
