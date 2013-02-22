@@ -52,20 +52,20 @@ $Ears	Ears	Oreilles	Ohren	Orecchie	Orejas	Uši	Uszy	Уши	耳
 $Tail	Tail	Queue	Schwanz	Coda	Capa	Ocas	Ogon	Хвост	尻尾
 									
 $Weapon	Weapon	Arme	Waffe	Arma	Arma	Zbraň	Broń	Оружие	武器
-$Melee	Melee	Corps à Corps	Nahkampf	Corpo a Corpo	Cuerpo a Cuerpo	Pěsti	Pięści	Ближ. бой	挌闘
+$Melee	Melee	Corps à corps	Nahkampf	Corpo a Corpo	Cuerpo a Cuerpo	Pěsti	Pięści	Ближ. бой	挌闘
 $Sword	Sword	Épée	Schwert	Spada	Espada	Meč	Miecz	Меч	剣
 $Dagger	Dagger	Dague	Dolch	Pugnale	Daga	Dýka	Sztylet	Кинжал	ダガー
 $War Axe	War Axe	Hache	Kriegsaxt	Ascia	Hacha de guerra	Válečná Sekera	Topór Wojenny	Боевой топор	片手斧
 $Mace	Mace	Masse	Streitkolben	Mazza	Maza	Palcát	Buława	Булава	メイス
 $Greatsword	Greatsword	Espadon	Zweihänder	Spadone	Mandoble	Obouruční Meč	Wielki Miecz	Двуручный меч	グレートソード
 $Warhammer	Warhammer	Marteau	Kriegshammer	Martello	Martillo	Kladivo	Młot Bojowy	Боевой молот	戦鎚
-$Battleaxe	Battleaxe	Hache de Guerre	Streitaxt	Ascia	Hacha de combate	Bojová Sekera	Topór Bojowy	Секира	両手斧
+$Battleaxe	Battleaxe	Hache de guerre	Streitaxt	Ascia	Hacha de combate	Bojová Sekera	Topór Bojowy	Секира	両手斧
 $Bow	Bow	Arc	Bogen	Arco	Arco	Luk	Łuk	Лук	弓
 $Staff	Staff	Bâton	Stab	Bastone	Bastón	Hůl	Kostur	Посох	杖
 $Crossbow	Crossbow	Arbalète	Armbrust	Balestra	Ballesta	Kuše	Kusza	Арбалет	クロスボウ
 $Spear	Spear	Lance	Speer	Lancia	Lanza	Kopí	Włócznia	Копьё	槍
 $Pickaxe	Pickaxe	Pioche	Spitzhacke	Piccone	Pico	Krumpáč	Kilof	Кирка	つるはし
-$Wood Axe	Wood Axe	Hache	Holzaxt	Accetta del Taglialegna	Hacha de Leñador	Sekera na dřevo	Siekiera Drwala	Колун	木こりの斧
+$Wood Axe	Wood Axe	Hache de bûcheron	Holzaxt	Accetta del Taglialegna	Hacha de Leñador	Sekera na dřevo	Siekiera Drwala	Колун	木こりの斧
 									
 $Arrow	Arrow	Flèche	Pfeil	Freccia	Flecha	Šíp	Strzała	Стрела	矢
 $Bolt	Bolt	Carreau	Bolzen	Dardo	Virote	Šipka	Bełt	Болт	ボルト
@@ -98,12 +98,12 @@ $Claw	Claw	Griffe	Klaue	Artiglio	Garra	Spár	Szpon	Коготь	爪
 $Clutter	Clutter	Autres	Zeug	Altro	Otros	Krámy	Klamoty	Хлам	雑貨
 $Torch	Torch	Torche	Fackel	Torcia	Antorcha	Pochodeň	Pochodnia	Факел	たいまつ
 $Key	Key	Clé	Schlüssel	Chiave	Llave	Klíč	Klucz	Ключ	鍵
-$Soul Gem	Soul Gem	Gemme Spirituelle	Seelenstein	Gemma Dell'Anima	Gema de Alma	Kámen duší	Klejnot Duszy	Камень Душ	魂石
-$Firewood	Firewood	Feu de Bois	Feuerholz	Legna da Ardere	Leña	Dřevo	Drewno Opałowe	Полено	薪
+$Soul Gem	Soul Gem	Gemme spirituelle	Seelenstein	Gemma Dell'Anima	Gema de Alma	Kámen duší	Klejnot Duszy	Камень Душ	魂石
+$Firewood	Firewood	Feu de bois	Feuerholz	Legna da Ardere	Leña	Dřevo	Drewno Opałowe	Полено	薪
 $Gold	Gold	Or	Gold	Oro	Oro	Zlato	Złoto	Золото	ゴールド
 $Artifact	Artifact	Artefact	Artefakt	Artefatto	Artefacto	Artefakt	Artefakt	Артефакт	アーティファクト
 $Toy	Toy	Jouet	Spielzeug	Giocattolo	Juguete	Hračka	Zabawka	Игрушка	玩具
-$House Part	House Part	Partie de Maison	Hausbau	Parte della Casa	Parte de la Casa	Část domu	Część Domu	Часть Дома	建材
+$House Part	House Part	Partie de maison	Hausbau	Parte della Casa	Parte de la Casa	Část domu	Część Domu	Часть Дома	建材
 									
 $Spell	Spell	Sort	Zauber	Incantesimo	Hechizo	Kouzlo	Zaklęcie	Заклинание	スペル
 $Alteration	Alteration	Altération	Veränderung	Alterazione	Alteración	Proměna	Przemiana	Изменение	変性
@@ -114,10 +114,10 @@ $Restoration	Restoration	Restauration	Wiederherstellung	Recupero	Restauración	O
 $Other	Other	Autre	Andere	Altro	Otros	Jiné	Inne	Другое	その他
 $Magical	Magical	Magique	Magisch	Magico	Mágica	Magické	Magiczny	Магическое	魔法
 $Daedric	Daedric	Daedrique	Daedrisch	Daedrico	Daédrica	Daedrické	Daedryczny	Даэдрическое	デイドラ
-$Dragonplate	Dragonplate	Plates Draconique	Drachenknochen	Piastre di Drago	Placas de Dragón	Dračí pláty	Smoczy Płytowy	Драконье Панцирное	ドラゴンプレート
+$Dragonplate	Dragonplate	Plates de dragon	Drachenknochen	Piastre di Drago	Placas de Dragón	Dračí pláty	Smoczy Płytowy	Драконье Панцирное	ドラゴンプレート
 $Nightingale	Nightingale	Rossignol	Nachtigall	Nightingale	Ruiseñor	Slavíci	Słowiczy	Соловьиное	ナイチンゲール
 $Ebony	Ebony	Ébonite	Ebenerz	Ebano	Ébano	Ebenit	Ebonowy	Эбонитовое	黒檀
-$Dragonscale	Dragonscale	Écaille de Dragon	Drachenschuppen	Scaglie di Drago	Escamas de Dragón	Dračí šupiny	Smoczy Łuskowy	Драконье Чешуйчатое	ドラゴンスケール
+$Dragonscale	Dragonscale	Écaille de dragon	Drachenschuppen	Scaglie di Drago	Escamas de Dragón	Dračí šupiny	Smoczy Łuskowy	Драконье Чешуйчатое	ドラゴンスケール
 $Orcish	Orcish	Orque	Orkisch	Orchesco	Orca	Orkský	Orkowy	Орочье	オーク
 $Steel Plate	Steel Plate	Plates	Stahlharnisch	Piastre d'Acciaio	Placas de Acero	Ocelové pláty	Stalowy Płytowy	Стальное Пластинчатое	スチールプレート
 $Glass	Glass	Verre	Glas	Vetro	Cristal	Sklo	Szklany	Стеклянное	碧水晶
@@ -127,7 +127,7 @@ $Scaled	Scaled	Écaille	Schuppen	Scaglie	Escamas	Šupiny	Łuskowy	Ламелля
 $Steel	Steel	Acier	Stahl	Acciaio	Acero	Ocel	Stalowy	Стальное	鋼鉄
 $Brotherhood	Brotherhood	Confrérie	Bruderschaft	Confraternita	Hermandad	Bratrstvo	Bractwa	Братства	闇の一党
 $Elven	Elven	Elfique	Elfen	Elfico	Élfica	Elfský	Elficki	Эльфийское	エルフ
-$Iron Banded	Iron Banded	Fer Rubané	Eisenbebändert	Ferro Laminato	Hierro Bandeado	Železo s pásky	Żelazny Łączony	Прочное Железное	帯鉄
+$Iron Banded	Iron Banded	Fer rubané	Eisenbebändert	Ferro Laminato	Hierro Bandeado	Železo s pásky	Żelazny Łączony	Прочное Железное	帯鉄
 $Leather	Leather	Cuir	Leder	Pelle	Cuero	Kůže	Skórzany	Кожаное	革
 $Imperial	Imperial	Impérial	Kaiserliche	Imperiale	Imperial	Císařští	Imperialny	Имперское	帝国軍
 $Studded	Studded	Clouté	Vernietet	Borchiato	Tachonada	Okované	Ćwiekowany	Клепаное	鋲付き
@@ -143,45 +143,45 @@ $Morag Tong	Morag Tong	Morag Tong	Morag Tong	Morag Tong	Morag Tong	Morag Tong	Mo
 $Stalhrim	Stalhrim	Stalhrim	Stalhrim	Stalhrim	Stalhrim	Stalhrim	Stalhrim	Сталгримовое	スタルリム
 $Deathbrand	Deathbrand	Balafré	Todesmal	Marchio Mortale	Marca de muerte	Deathbrand	Deathbrand	Клеймо Смерти	デスブランド
 $Draugr	Draugr	Draugr	Draugr	Draugr	Draugr	Draugirský	Draugrowy	Драургское	ドラウグル
-$Draugr Honed	Draugr Honed	Draugr Affûtée	Draugr Geschliffen	Draugr Affilata	Draugr Afilada	Draug. ostřený	Draugrowy Naostrzony	Хорошее Драугрское	
+$Draugr Honed	Draugr Honed	Draugr affûtée	Draugr Geschliffen	Draugr Affilata	Draugr Afilada	Draug. ostřený	Draugrowy Naostrzony	Хорошее Драугрское	
 $Falmer	Falmer	Falmer	Falmer	Falmer	Falmer	Falmerský	Falmerski	Фалмерское	ファルメル
-$Falmer Honed	Falmer Honed	Falmer Affûtée	Falmer Geschliffen	Falmer Affilata	Falmer Afilada	Falmer. ostřený	Falmerski Naostrzony	Хорошее Фалмерское	
+$Falmer Honed	Falmer Honed	Falmer affûtée	Falmer Geschliffen	Falmer Affilata	Falmer Afilada	Falmer. ostřený	Falmerski Naostrzony	Хорошее Фалмерское	
 $Forsworn	Forsworn	Parjure	Abgeschworene	Rinnegato	Renegado	Zapřisáhlí	Renegatów	Изгоев	フォースウォーン
-$Dawnguard	Dawnguard	Garde de l'Aube	Dämmerwacht	Dawnguard	Guardia del Alba	Strážci Úsvitu	Dawnguard	Стражи Рассвета	ドーンガード
-$Falmer Hardened	Falmer Hardened	Falmer Renforcée	Gehärtete Falmerrüstung	Falmer Pesante	Falmer endurecida	Falmer. tvrzený	Falmerski Wzmocniony	Фалмерское Укрепленное	
+$Dawnguard	Dawnguard	Garde de l'aube	Dämmerwacht	Dawnguard	Guardia del Alba	Strážci Úsvitu	Dawnguard	Стражи Рассвета	ドーンガード
+$Falmer Hardened	Falmer Hardened	Falmer renforcée	Gehärtete Falmerrüstung	Falmer Pesante	Falmer endurecida	Falmer. tvrzený	Falmerski Wzmocniony	Фалмерское Укрепленное	
 $Hunter	Hunter	Chasseur	Jäger	Cacciatore	Cazador	Lovci	Łowcy	Охотничье	ハンター
 $Vampire	Vampire	Vampire	Vampir	Vampiro	Vampiro	Upíři	Wampirzy	Вампирское	吸血鬼
 $Aetherium	Aetherium	Aetherium	Aetherium	Eterio	Aeterio	Aetherit	Aetherium	Этериевое	エセリウム
-$Dragonbone	Dragonbone	Os de Dragon	Drachenknochen	Ossa di Drago	Hueso de Dragón	Dračí kost	Smocza Kość	Кость Дракона	龍骨
+$Dragonbone	Dragonbone	Os de dragon	Drachenknochen	Ossa di Drago	Hueso de Dragón	Dračí kost	Smocza Kość	Кость Дракона	龍骨
 									
 $MOD CONFIGURATION	MOD CONFIGURATION	CONFIGURATION DU MOD	MOD-KONFIGURATION	CONFIGURAZIONE MOD	CONFIGURACIÓN DE MOD	NASTAVENÍ MODŮ	KONFIGURACJA MODÓW	НАСТРОЙКИ МОДОВ	MOD設定
-$Default	Default	Par Défaut	Voreinstellung	Predefinito	Por Defecto	Základní	Domyślny	По умолчанию	デフォルト
-$Defaults	Defaults	Par Défaut	Voreinstellungen	Predefiniti	Por Defecto	Základní	Domyślne	По умолчанию	デフォルト
+$Default	Default	Par défaut	Voreinstellung	Predefinito	Por Defecto	Základní	Domyślny	По умолчанию	デフォルト
+$Defaults	Defaults	Par défauts	Voreinstellungen	Predefiniti	Por Defecto	Základní	Domyślne	По умолчанию	デフォルト
 $Search	Search	Chercher	Suchen	Cerca	Buscar	Hledat	Szukaj	Поиск	検索
 $Magic	Magic	Magie	Magie	Magia	Magia	Magie	Magia	Магия	魔法
 $Inventory	Inventory	Inventaire	Inventar	Inventario	Inventario	Inventář	Ekwipunek	Инвентарь	所持品
-$Switch Tab	Switch Tab	Changer Onglet	Reiter Wechseln	Cambia Scheda	Cambiar Pestaña	Změnit Záložku	Przełącz Kartę	Переключение Вкладок	タブの切り替え
-$Equip Mode	Equip Mode	Gestion d'Équipement	Ausrüstungsmodus	Gestisci Equipaggiamento	Modo Equipamiento	Režim použití	Tryb Wyposażenia	Режим Экипировки	装備モード
+$Switch Tab	Switch Tab	Changer d'onglet	Reiter Wechseln	Cambia Scheda	Cambiar Pestaña	Změnit Záložku	Przełącz Kartę	Переключение Вкладок	タブの切り替え
+$Equip Mode	Equip Mode	Gestion d'équipement	Ausrüstungsmodus	Gestisci Equipaggiamento	Modo Equipamiento	Režim použití	Tryb Wyposażenia	Режим Экипировки	装備モード
 $Column	Column	Colonne	Spalte	Colonna	Columna	Sloupek	Kolumna	Колонка	列
 $Order	Order	Trier	Sortierung	Ordina	Ordenar	Řazení	Kolejność	Порядок	ソート
-$Open Slider	Open Slider	Ouvrir Slider	Schieber Öffnen	Apri Scorrimento	Activar Cursor	Otevřít posuvník	Otwórz Suwak	Открыть Ползунок	スライダーを開く
-$Open Menu	Open Menu	Ouvrir Menu	Menü Öffnen	Apri Menu	Abrir Menu	Otevřít Menu	Otwórz Menu	Открыть Меню	メニューを開く
+$Open Slider	Open Slider	Ouvrir le curseur	Schieber Öffnen	Apri Scorrimento	Activar Cursor	Otevřít posuvník	Otwórz Suwak	Открыть Ползунок	スライダーを開く
+$Open Menu	Open Menu	Ouvrir le menu	Menü Öffnen	Apri Menu	Abrir Menu	Otevřít Menu	Otwórz Menu	Открыть Меню	メニューを開く
 $Toggle	Toggle	Activer/Désactiver	Umschalten	Seleziona	Seleccionar	Zaškrtnout	Przełącz	Переключить	トグル
-$Pick Color	Pick Color	Sélectionner Couleur	Farbauswahl	Seleziona Colore	Seleccionar Color	Vybrat barvu	Wybierz Kolor	Выбор Цвета	色を選択
-$Remap	Remap	Réaffecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Перераспределение	再割り当て
-$Find Location	Find Location	Trouver localisation	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
+$Pick Color	Pick Color	Choisir la couleur	Farbauswahl	Seleziona Colore	Seleccionar Color	Vybrat barvu	Wybierz Kolor	Выбор Цвета	色を選択
+$Remap	Remap	Ré-affecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Перераспределение	再割り当て
+$Find Location	Find Location	Trouver la localisation	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
 									
 $General	General	Général	Allgemein	Generale	General	Základní	Ogólne	Общие	一般
 $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawansowane	Дополнительно	高度
 									
-$Item List	Item List	Liste des Objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
+$Item List	Item List	Liste des objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
 $Font Size	Font Size	Taille de police	Schriftgröße	Dimensione del Font	Tamaño de Fuente	Velikost písma	Wielkość Czcionki	Размер Шрифта	フォントサイズ
-$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte Min. pour le Menu de Quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. Кол-во Элементов в Меню	数量メニュー最小カウント
+$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte min. pour le menu de quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. Кол-во Элементов в Меню	数量メニュー最小カウント
 $Category Icon Theme	Category Icon Theme	Thème des icônes de catégories	Symbolthema (Kategorie)	Tema delle icone di categoria	Tema de iconos de categoría	Vzhled ikon kategorií	Zestaw Ikon Kategorii	Тема Иконок Категорий	
-$Disable Icon Colors	Disable Icon Colors	Désactiver les icônes en couleur	Farbige Symbole deaktivieren	Disabilita Icone Colorate	Desactivar iconos en color	Vypnout barvy ikon	Wyłącz Kolory Ikon	Отключить Цвет Иконок	
+$Disable Icon Colors	Disable Icon Colors	Désactiver les couleur d'icônes	Farbige Symbole deaktivieren	Disabilita Icone Colorate	Desactivar iconos en color	Vypnout barvy ikon	Wyłącz Kolory Ikon	Запретить Цветные Иконки	
 $Previous Column	Previous Column	Colonne précédente	Vorherige Spalte	Colonna Precedente	Columna Anterior	Předchozí sloupek	Poprzednia Kolumna	Предыдущая Колонка	前の欄
 $Next Column	Next Column	Colonne suivante	Nächste Spalte	Colonna Successiva	Columna Siguiente	Další sloupek	Następna Kolumna	Следующая Колонка	次の欄
-$Item Card	Item Card	Carte de l'Objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta předmětu	Karta Przedmiotu	Окно Просмотра Предмета	アイテムカード
+$Item Card	Item Card	Carte de l'objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta předmětu	Karta Przedmiotu	Окно Просмотра Предмета	アイテムカード
 $3D Item	3D Item	Modèle 3D	3D Ansicht	Oggetto 3D	Objeto 3D	3D Objekt	Obiekt 3D	3D Вид Предмета	3D アイテム
 $Align	Align	Alignement	Ausrichtung	Allinea	Alinear	Zarovnání	Wyrównanie	Выравнивание	整列する
 $Horizontal Offset	Horizontal Offset	Axe horizontal	Horizontaler Abstand	Spostamento Orizzontale	Desplazamiento Horizontal	Vodorovné odsazení	Przesunięcie Poziome	Горизонтальное Смещение	水平オフセット
@@ -192,9 +192,9 @@ $Orientation	Orientation	Orientation	Orientierung	Orientamento	Alineamiento	Orie
 $Icon Size	Icon Size	Taille d'icône	Symbolgröße	Dimensione Icona	Dimensión del icono	Velikost ikon	Rozmiar Ikon	Размер Иконок	
 $Icon Group Count	Icon Group Count	Nombre d'icônes groupées	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Груп Иконок	
 $Scale	Scale	Échelle	Größe	Scala	Escala	Měřítko	Skala	Масштаб	スケール
-$Disable Positioning	Disable Positioning	Désactiver positionnement	Keine Positionsanpassung	Disabilita Posizionamento	Desactivar el posicionamiento	Zakázat polohování	Wyłącz Pozycjonowanie	Отключить Позиционирование	
-$SWF Version Checking	SWF Version Checking	Fichiers SWF - Vérification de Version	SWF Versions-Check	Controllo Versione SWF	Comprobar Versión SWF	Kontrola Verze SWF	Sprawdzanie Wersji SWF	Проверка Версии SWF	SWF のバージョンの確認
-$Active Effects HUD	Active Effects HUD	Interface d'Effets Actifs	Anzeige für Aktive Effekte	HUD degli Effetti Attivi	HUD de Effectos Activos	Aktivovat HUD Efektů	Aktywne Efekty HUD	Активные эффекты HUD	
+$Disable Positioning	Disable Positioning	Désactiver le positionnement	Keine Positionsanpassung	Disabilita Posizionamento	Desactivar el posicionamiento	Zakázat polohování	Wyłącz Pozycjonowanie	Запретить Позиционирование	
+$SWF Version Checking	SWF Version Checking	Vérification des versions	SWF Versions-Check	Controllo Versione SWF	Comprobar Versión SWF	Kontrola Verze SWF	Sprawdzanie Wersji SWF	Проверка Версии SWF	SWF のバージョンの確認
+$Active Effects HUD	Active Effects HUD	Interface des effets actifs	Anzeige für Aktive Effekte	HUD degli Effetti Attivi	HUD de Effectos Activos	Aktivovat HUD Efektů	Aktywne Efekty HUD	Активные эффекты HUD	
 									
 $Left	Left	Gauche	Links	Sinistra	Izquierda	Vlevo	Lewo	Лево	左
 $Right	Right	Droite	Rechts	Destra	Derecha	Vpravo	Prawo	Право	右
@@ -203,16 +203,19 @@ $Top	Top	Haut	Oben	Sopra	Alto	Nahoře	Góra	Верх
 $Bottom	Bottom	Bas	Unten	Sotto	Abajo	Dole	Dół	Низ	
 $On	On	Activé	An	Attivo	Activo	Zapnuto	Włączone	Включено	
 $Off	Off	Désactivé	Aus	Disattivato	Desactivado	Vypnuto	Wyłączone	Выключено	
+$Enabled	Enabled	Activé	Aktiv	Abilitato	Activado	Aktivní	Aktywne	Разрешино	
+$Vertical	Vertical	Vertical	Vertikal	Verticale	Vertical	Vertikální	Pionowe	Вертикально	
+$Horizontal	Horizontal	Horizontal	Horizontal	Orizzontale	Horizontal	Horizontální	Poziome	Горизонтально	
 									
 $SKI_INFO1{}	Default: {}	Défaut: {}	Voreinstellung: {}	Predefinito: {}	Predefinido: {}	Výchozí nastavení: {}	Domyślnie: {}	По умолчанию: {}	デフォルト: {}
 $SKI_INFO2{}	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: {}	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: {}	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: {}	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: {}	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: {}	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: {}	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: {}	Число элементов необходимое для инициализации значения меню, или 0 чтобы отключить.\nПо умолчанию: {}	
 $SKI_INFO3{}	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: {}	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: {}	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: {}	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: {}	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: {}	 Nekonpatibilní nebo zastaralé SWF může narušit funkčnost SkyUI. Zaškrtnutím vypnete zobrazování varovných zpráv!\nVýchozí nastavení: {}	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: {}	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: {}	
-$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDefault: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}		Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Отключить Позиционирование для 3D Просмотра Предмета.\nПо умолчанию: {}	
+$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDéfaut: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}	Desactiva el posicionamiento del objeto 3D.\nPredefinido: {}	Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Запретить Позиционирование для 3D Просмотра Предмета.\nПо умолчанию: {}	
 									
-$SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche du clavier.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Эта функция должна быть назначена с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
+$SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche du clavier.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Необходимо назначить действие для этой кнопки с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
 									
 $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	100.00%	100.00%	100.00%	99.49%	100.00%	100.00%	100.00%	89.90%
+% Completion	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	88.56%
