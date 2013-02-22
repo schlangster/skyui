@@ -23,12 +23,13 @@ class InventoryListEntry extends TabularListEntry
   	public var itemIcon: MovieClip;
   	public var equipIcon: MovieClip;
 	
-  	public var bestIcon: MovieClip;
-  	public var favoriteIcon: MovieClip;
+	public var favIcon: MovieClip;
+	public var bestIcon: MovieClip;
+	public var favoriteIcon: MovieClip;
 	public var poisonIcon: MovieClip;
 	public var stolenIcon: MovieClip;
 	public var enchIcon: MovieClip;
-	public var favIcon: MovieClip;
+	public var readIcon: MovieClip;
 	
 	
   /* INITIALIZATION */
@@ -63,12 +64,14 @@ class InventoryListEntry extends TabularListEntry
 		poisonIcon._height = poisonIcon._width = iconSize;
 		stolenIcon._height = stolenIcon._width = iconSize;
 		enchIcon._height = enchIcon._width = iconSize;
+		readIcon._height = readIcon._width = iconSize;
 			
 		bestIcon._y = iconY;
 		favIcon._y = iconY;
 		poisonIcon._y = iconY;
 		stolenIcon._y = iconY;
 		enchIcon._y = iconY;
+		readIcon._y = iconY;
 	}
 
   	// @override TabularListEntry
@@ -169,6 +172,15 @@ class InventoryListEntry extends TabularListEntry
 			enchIcon.gotoAndStop("show");
 		} else {
 			enchIcon.gotoAndStop("hide");
+		}
+
+		// Enchanted Icon
+		if (a_entryObject.isRead == true) {
+			readIcon._x = iconPos;
+			iconPos = iconPos + iconSpace;
+			readIcon.gotoAndStop("show");
+		} else {
+			readIcon.gotoAndStop("hide");
 		}
 	}
 	

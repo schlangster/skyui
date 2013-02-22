@@ -287,7 +287,7 @@ class InventoryIconSetter implements IListProcessor
 	// Books
 	private function processBookIcon(a_entryObject: Object): Void
 	{
-		a_entryObject.iconLabel = (!a_entryObject.isRead) ? "default_book" : "default_book_read";
+		a_entryObject.iconLabel = "default_book";
 
 		switch(a_entryObject.subType) {
 			case Item.BOOK_RECIPE:
@@ -296,7 +296,7 @@ class InventoryIconSetter implements IListProcessor
 				break;
 
 			case Item.BOOK_SPELLTOME:
-				a_entryObject.iconLabel = (!a_entryObject.isRead) ? "book_tome" : "book_tome_read";
+				a_entryObject.iconLabel = "book_tome";
 				break;
 		}
 	}
