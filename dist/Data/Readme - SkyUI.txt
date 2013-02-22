@@ -20,7 +20,7 @@ Source code:	https://github.com/schlangster/skyui
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.8 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.9 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################
@@ -88,13 +88,14 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 [General]
 - Updated SKSE version requirement to 1.6.8.
 - Inventory and magic menus now remember and restore last selected column and sorting state.
-- Added separate icons for read books/scrolls.
+- Added emblem to indicate read books/scrolls.
 - Fixed several Dragonborn icons.
 - Improved visbility of equip icons.
 - Fixed an issue in the NMM installer that could cause a crash when trying to force the installation.
 - Fixed issue where closing a menu before any checks are able to complete would cause false error messages to appear.
 - Optimized memory usage of config menu buffers.
 - Increased config timeout delay from 1 to 3 seconds.
+- Added error message to detect invalid Papyrus .ini settings.
 
 [ModConfigurationMenu]
 - Added a repair console command that forces all menus to re-register: setStage SKI_ConfigManagerInstance 1
@@ -482,9 +483,10 @@ Thanks to all the testers, who helped a great deal with improving the overall qu
 	ToJKa, HellKnight, xporc, MadCat221, Ismelda, Gribbles, freesta, Cartrodus, TheCastle (in random order)
 
 Thanks to all translators who helped localizing SkyUI to different languages, among them being:
-	Sagittarius22 (French)
+	Sagittarius22, LLFBandit (French)
 	xlwarrior (Spanish)
 	Starfis (Czech)
+	Rhaegal (Italian)
 
 Last but not least, thanks to the whole SKSE team, because without their Script Extender creating this mod wouldn't have been possible.
 
