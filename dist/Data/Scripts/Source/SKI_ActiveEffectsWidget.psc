@@ -84,7 +84,7 @@ endProperty
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 ; @implements SKI_QuestBase
-event OnVersionUpdateBase(int a_version)
+event OnVersionUpdate(int a_version)
 	
 	; Version 2
 	if (a_version >= 2 && CurrentVersion < 2)
