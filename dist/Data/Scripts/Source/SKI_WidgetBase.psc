@@ -164,9 +164,13 @@ event OnGameReload()
 
 		; Default Modes if not set via property
 		if (!_modes)
-			_modes = new string[2]
+			_modes = new string[6]
 			_modes[0] = "All"
 			_modes[1] = "StealthMode"
+			_modes[2] = "Favor"
+			_modes[3] = "Swimming"
+			_modes[4] = "HorseMode"
+			_modes[5] = "WarHorseMode"
 		endIf
 
 		OnWidgetInit()

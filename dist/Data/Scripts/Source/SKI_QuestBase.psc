@@ -13,6 +13,7 @@ int property CurrentVersion auto hidden
 function CheckVersion()
 	int version = GetVersion()
 	if (CurrentVersion < version)
+		OnVersionUpdateBase(version)
 		OnVersionUpdate(version)
 		CurrentVersion = version
 	endIf
@@ -21,6 +22,9 @@ endFunction
 int function GetVersion()
 	return 1
 endFunction
+
+event OnVersionUpdateBase(int a_version)
+endEvent
 
 event OnVersionUpdate(int a_version)
 endEvent
