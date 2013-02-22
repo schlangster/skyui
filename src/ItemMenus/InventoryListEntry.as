@@ -23,7 +23,6 @@ class InventoryListEntry extends TabularListEntry
   	public var itemIcon: MovieClip;
   	public var equipIcon: MovieClip;
 	
-	public var favIcon: MovieClip;
 	public var bestIcon: MovieClip;
 	public var favoriteIcon: MovieClip;
 	public var poisonIcon: MovieClip;
@@ -67,7 +66,7 @@ class InventoryListEntry extends TabularListEntry
 		readIcon._height = readIcon._width = iconSize;
 			
 		bestIcon._y = iconY;
-		favIcon._y = iconY;
+		favoriteIcon._y = iconY;
 		poisonIcon._y = iconY;
 		stolenIcon._y = iconY;
 		enchIcon._y = iconY;
