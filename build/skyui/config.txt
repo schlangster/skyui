@@ -398,12 +398,12 @@ columns.spellCostColumn.state1.label.text = '$COST'
 columns.spellCostColumn.state1.label.arrowDown = true
 columns.spellCostColumn.state1.entry.text = @spellCostDisplay
 columns.spellCostColumn.state1.sortAttributes = <spellCostDisplay, text>
-columns.spellCostColumn.state1.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.spellCostColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.spellCostColumn.state2.label.text = '$COST'
 columns.spellCostColumn.state2.entry.text = @spellCostDisplay
 columns.spellCostColumn.state2.sortAttributes = <infoSpellCost, text>
-columns.spellCostColumn.state2.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
+columns.spellCostColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; WORD 1 COLUMN -------------------------------------------
