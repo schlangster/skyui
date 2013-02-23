@@ -154,7 +154,7 @@ columns.arColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASE
 columns.arColumn.state2.label.text = '$ARM'
 columns.arColumn.state2.entry.text = @infoArmor
 columns.arColumn.state2.sortAttributes = <infoArmor, text>
-columns.arColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.arColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; SUBTYPE COLUMN -------------------------------------------------------
@@ -179,28 +179,40 @@ columns.subTypeColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DES
 ; MATERIAL COLUMN -------------------------------------------------------
 columns.materialColumn.type = TEXT
 columns.materialColumn.name = '$MATERIAL'
-columns.materialColumn.states = 1
+columns.materialColumn.states = 2
 columns.materialColumn.width = 0.10
 columns.materialColumn.border = a_textBorder
 columns.materialColumn.hidden = true
 
 columns.materialColumn.state1.label.text = '$MAT'
 columns.materialColumn.state1.entry.text = @materialDisplay
-columns.materialColumn.state1.sortAttributes = <material, formType, weightClass, subType, text>
-columns.materialColumn.state1.sortOptions = <{ASCENDING | NUMERIC},  {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.materialColumn.state1.sortAttributes = <materialDisplay, text>
+columns.materialColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.materialColumn.state2.label.text = '$MAT'
+columns.materialColumn.state2.entry.text = @materialDisplay
+columns.materialColumn.state2.entry.arrowDown = true
+columns.materialColumn.state2.sortAttributes = <materialDisplay, text>
+columns.materialColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; CLASS COLUMN -------------------------------------------------------
 columns.classColumn.type = TEXT
 columns.classColumn.name = '$CLASS'
-columns.classColumn.states = 1
+columns.classColumn.states = 2
 columns.classColumn.width = 0.10
 columns.classColumn.border = a_textBorder
 
 columns.classColumn.state1.label.text = '$CLASS'
 columns.classColumn.state1.entry.text = @weightClassDisplay
-columns.classColumn.state1.sortAttributes = <weightClass, formType, subType, material, text>
-columns.classColumn.state1.sortOptions = <{ASCENDING | NUMERIC},  {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.classColumn.state1.sortAttributes = <weightClassDisplay, text>
+columns.classColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.classColumn.state2.label.text = '$CLASS'
+columns.classColumn.state2.entry.text = @weightClassDisplay
+columns.classColumn.state2.entry.arrowDown = true
+columns.classColumn.state2.sortAttributes = <weightClassDisplay, text>
+columns.classColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; MAGNITUDE COLUMN -------------------------------------------------------
@@ -219,7 +231,7 @@ columns.magnitudeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING
 columns.magnitudeColumn.state2.label.text = '$MAG'
 columns.magnitudeColumn.state2.entry.text = @magnitude
 columns.magnitudeColumn.state2.sortAttributes = <magnitude, text>
-columns.magnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.magnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; DURATION COLUMN -------------------------------------------------------
@@ -238,7 +250,7 @@ columns.durationColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING 
 columns.durationColumn.state2.label.text = '$TIME'
 columns.durationColumn.state2.entry.text = @duration
 columns.durationColumn.state2.sortAttributes = <duration, text>
-columns.durationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.durationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; MAGIC MAGNITUDE COLUMN -------------------------------------------------------
@@ -257,7 +269,7 @@ columns.magicMagnitudeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCE
 columns.magicMagnitudeColumn.state2.label.text = '$MAG'
 columns.magicMagnitudeColumn.state2.entry.text = @magnitude
 columns.magicMagnitudeColumn.state2.sortAttributes = <magnitude, text>
-columns.magicMagnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.magicMagnitudeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; MAGIC DURATION COLUMN -------------------------------------------------------
@@ -276,7 +288,7 @@ columns.magicDurationColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCEN
 columns.magicDurationColumn.state2.label.text = '$TIME'
 columns.magicDurationColumn.state2.entry.text = @duration
 columns.magicDurationColumn.state2.sortAttributes = <duration, text>
-columns.magicDurationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.magicDurationColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; DAMAGE COLUMN -------------------------------------------------------
@@ -295,7 +307,7 @@ columns.damageColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | 
 columns.damageColumn.state2.label.text = '$DAM'
 columns.damageColumn.state2.entry.text = @infoDamage
 columns.damageColumn.state2.sortAttributes = <infoDamage, text>
-columns.damageColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.damageColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; WEIGHT COLUMN -------------------------------------------------------
@@ -314,7 +326,7 @@ columns.weightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | 
 columns.weightColumn.state2.label.text = '$WGT'
 columns.weightColumn.state2.entry.text = @infoWeight
 columns.weightColumn.state2.sortAttributes = <infoWeight, text>
-columns.weightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.weightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; VALUE COLUMN -------------------------------------------------------
@@ -333,7 +345,7 @@ columns.valueColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | C
 columns.valueColumn.state2.label.text = '$VAL'
 columns.valueColumn.state2.entry.text = @infoValue
 columns.valueColumn.state2.sortAttributes = <infoValue, text>
-columns.valueColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.valueColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; VALUE/WEIGHT COLUMN -------------------------------------------------------
@@ -353,7 +365,7 @@ columns.valueWeightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDI
 columns.valueWeightColumn.state2.label.text = '$V/W'
 columns.valueWeightColumn.state2.entry.text = @infoValueWeight
 columns.valueWeightColumn.state2.sortAttributes = <infoValueWeight, text>
-columns.valueWeightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.valueWeightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; MAGIC NAME COLUMN -------------------------------------------------------
@@ -385,14 +397,13 @@ columns.spellCostColumn.border = a_textBorder
 columns.spellCostColumn.state1.label.text = '$COST'
 columns.spellCostColumn.state1.label.arrowDown = true
 columns.spellCostColumn.state1.entry.text = @spellCostDisplay
-columns.spellCostColumn.state1.sortAttributes = <infoSpellCost, text>
-columns.spellCostColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.spellCostColumn.state1.sortAttributes = <spellCostDisplay, text>
+columns.spellCostColumn.state1.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.spellCostColumn.state2.label.text = '$COST'
-columns.spellCostColumn.state2.label.arrowDown = false
 columns.spellCostColumn.state2.entry.text = @spellCostDisplay
 columns.spellCostColumn.state2.sortAttributes = <infoSpellCost, text>
-columns.spellCostColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.spellCostColumn.state2.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; WORD 1 COLUMN -------------------------------------------
@@ -410,10 +421,9 @@ columns.word0Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | C
 columns.word0Column.state1.colorAttribute = word0Color
 
 columns.word0Column.state2.label.text = '$FIRST WORD'
-columns.word0Column.state2.label.arrowDown = false
 columns.word0Column.state2.entry.text = @word0
 columns.word0Column.state2.sortAttributes = <word0Recharge, text>
-columns.word0Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word0Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 columns.word0Column.state2.colorAttribute = word0Color
 
 
@@ -432,10 +442,9 @@ columns.word1Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | C
 columns.word1Column.state1.colorAttribute = word1Color
 
 columns.word1Column.state2.label.text = '$SECOND WORD'
-columns.word1Column.state2.label.arrowDown = false
 columns.word1Column.state2.entry.text = @word1
 columns.word1Column.state2.sortAttributes = <word1Recharge, text>
-columns.word1Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word1Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 columns.word1Column.state2.colorAttribute = word1Color
 
 
@@ -454,10 +463,9 @@ columns.word2Column.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | C
 columns.word2Column.state1.colorAttribute = word2Color
 
 columns.word2Column.state2.label.text = '$THIRD WORD'
-columns.word2Column.state2.label.arrowDown = false
 columns.word2Column.state2.entry.text = @word2
 columns.word2Column.state2.sortAttributes = <word2Recharge, text>
-columns.word2Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.word2Column.state2.sortOptions = <{ASCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 columns.word2Column.state2.colorAttribute = word2Color
 
 
@@ -469,7 +477,6 @@ columns.schoolColumn.width = 0.15
 columns.schoolColumn.border = a_textBorder
 
 columns.schoolColumn.state1.label.text = '$SCHOOL'
-columns.schoolColumn.state1.label.arrowDown = false
 columns.schoolColumn.state1.entry.text = @infoSchoolName
 columns.schoolColumn.state1.sortAttributes = <infoSchoolName, text>
 columns.schoolColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
@@ -478,7 +485,7 @@ columns.schoolColumn.state2.label.text = '$SCHOOL'
 columns.schoolColumn.state2.label.arrowDown = true
 columns.schoolColumn.state2.entry.text = @infoSchoolName
 columns.schoolColumn.state2.sortAttributes = <infoSchoolName, text>
-columns.schoolColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.schoolColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; LEVEL COLUMN -------------------------------------------
@@ -489,7 +496,6 @@ columns.levelColumn.width = 0.15
 columns.levelColumn.border = a_textBorder
 
 columns.levelColumn.state1.label.text = '$LEVEL'
-columns.levelColumn.state1.label.arrowDown = false
 columns.levelColumn.state1.entry.text = @infoCastLevel
 columns.levelColumn.state1.sortAttributes = <skillLevel, text>
 columns.levelColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
@@ -498,7 +504,7 @@ columns.levelColumn.state2.label.text = '$LEVEL'
 columns.levelColumn.state2.label.arrowDown = true
 columns.levelColumn.state2.entry.text = @infoCastLevel
 columns.levelColumn.state2.sortAttributes = <skillLevel, text>
-columns.levelColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.levelColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; TIME REMAINING COLUMN -------------------------------------------
@@ -510,7 +516,6 @@ columns.timeRemainingColumn.label.textFormat.align = center
 columns.timeRemainingColumn.entry.textFormat.align = center
 
 columns.timeRemainingColumn.state1.label.text = '$TIME LEFT'
-columns.timeRemainingColumn.state1.label.arrowDown = false
 columns.timeRemainingColumn.state1.entry.text = @timeRemainingDisplay
 columns.timeRemainingColumn.state1.sortAttributes = <timeRemaining, text>
 columns.timeRemainingColumn.state1.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
@@ -519,7 +524,7 @@ columns.timeRemainingColumn.state2.label.text = '$TIME LEFT'
 columns.timeRemainingColumn.state2.label.arrowDown = true
 columns.timeRemainingColumn.state2.entry.text = @timeRemainingDisplay
 columns.timeRemainingColumn.state2.sortAttributes = <timeRemaining, text>
-columns.timeRemainingColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.timeRemainingColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; EFFECT ITEM COLUMN -------------------------------------------
@@ -531,7 +536,6 @@ columns.effectItemColumn.label.textFormat.align = right
 columns.effectItemColumn.entry.textFormat.align = right
 
 columns.effectItemColumn.state1.label.text = '$SOURCE'
-columns.effectItemColumn.state1.label.arrowDown = false
 columns.effectItemColumn.state1.entry.text = @cardName
 columns.effectItemColumn.state1.sortAttributes = <cardName, text>
 columns.effectItemColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
@@ -540,7 +544,7 @@ columns.effectItemColumn.state2.label.text = '$SOURCE'
 columns.effectItemColumn.state2.label.arrowDown = true
 columns.effectItemColumn.state2.entry.text = @cardName
 columns.effectItemColumn.state2.sortAttributes = <cardName, text>
-columns.effectItemColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
+columns.effectItemColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | CASEINSENSITIVE}>
 
 
 ; ITEM VIEWS -------------------------------------------------------
