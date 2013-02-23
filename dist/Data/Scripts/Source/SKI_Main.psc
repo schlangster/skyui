@@ -176,7 +176,7 @@ event OnGameReload()
 		RegisterForMenu(GIFT_MENU)
 	endIf
 
-	if (GiftMenuCheckEnabled)
+	if (MapMenuCheckEnabled)
 		RegisterForMenu(MAP_MENU)
 	endIf
 
