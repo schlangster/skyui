@@ -6,15 +6,17 @@ import skyui.defines.Magic;
 import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
 
+import gfx.events.EventDispatcher;
+
 
 class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 {
   /* CONSTANTS */
-  
-	private static var EFFECT_FADE_IN_DURATION: Number = 0.25;
-	private static var EFFECT_FADE_OUT_DURATION: Number = 0.75;
-	private static var EFFECT_MOVE_DURATION: Number = 1.00;
-	private static var GROUP_MOVE_DURATION: Number = 1.00;
+	
+	private static var EFFECT_SPACING: Number			= 5.00;
+	private static var EFFECT_FADE_IN_DURATION: Number	= 0.25;
+	private static var EFFECT_FADE_OUT_DURATION: Number	= 0.75;
+	private static var EFFECT_MOVE_DURATION: Number		= 1.00;
 
 	private static var ICON_SOURCE: String = "skyui/icons_effect_psychosteve.swf";
 	
@@ -24,12 +26,10 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private var _groupEffectCount: Number;
 	private var _orientation: String;
 
-	private var _effectSpacing: Number; // == _effectBaseSize/10
-
 
   /* PRIVATE VARIABLES */
-  
-  	// Phases between 0 and 1 during update intervals
+	
+	// Phases between 0 and 1 during update intervals
 	private var _marker: Number = 1;
 	
 	private var _sortFlag: Boolean = true;
@@ -38,23 +38,21 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	private var _effectsGroups: Array;
 
 	private var _intervalId: Number;
-	private var _updateInterval: Number = 150; // Put in config?
-
-	//Grow dir
-	private var _hGrowDirection: String;
-	private var _vGrowDirection: String;
+	private var _updateInterval: Number = 150;
 
 	private var _enabled: Boolean;
 	
 
   /* PUBLIC VARIABLES */
-  
+	
 	// Passed from SKSE
 	public var effectDataArray: Array;
 
 	public function ActiveEffectsWidget()
 	{
 		super();
+
+		EventDispatcher.initialize(this);
 
 		_effectsHash = new Object();
 		_effectsGroups = new Array();
@@ -63,33 +61,28 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
   /* PUBLIC FUNCTIONS */
+	
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
   
 	// @overrides WidgetBase
-	public function getWidth(): Number {
-		return _effectBaseSize;
-	}
-
-	// @overrides WidgetBase
-	public function getHeight(): Number {
-		return _effectBaseSize;
-	}
-
-	// Called from ActiveEffectsGroup
-	public function onGroupRemoved(a_group: MovieClip): Void
+	public function getWidth(): Number
 	{
-		var removedGroup: MovieClip = a_group;
-		var groupIdx: Number = removedGroup.index;
-
-		_effectsGroups.splice(groupIdx, 1);
-		removedGroup.removeMovieClip();
-
-		var effectsGroup: MovieClip;
-		for (var i: Number = groupIdx; i < _effectsGroups.length; i++) {
-			effectsGroup = _effectsGroups[i];
-			effectsGroup.updatePosition(i); //Sets new index
-		}	
+		return _effectBaseSize;
 	}
-  
+
+	// @overrides WidgetBase
+	public function getHeight(): Number
+	{
+		return _effectBaseSize;
+	}
+	
 	// @Papyrus
 	public function initNumbers(a_enabled: Boolean, a_effectSize: Number, a_groupEffectCount: Number): Void
 	{
@@ -107,7 +100,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	// @Papyrus
 	public function initCommit(): Void
 	{
-		_effectSpacing = _effectBaseSize/10;
 		invalidateSize();
 
 		if (_enabled)
@@ -118,7 +110,6 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	public function setEffectSize(a_effectBaseSize: Number): Void
 	{
 		_effectBaseSize = a_effectBaseSize;
-		_effectSpacing = _effectBaseSize/10.0;
 
 		invalidateSize();
 		invalidateEffects();
@@ -154,7 +145,14 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 
   /* PRIVATE FUNCTIONS */
-  
+	
+	// @override WidgetBase
+	private function updatePosition(): Void
+	{
+		super.updatePosition();
+		invalidateEffects();
+	}
+
 	private function onIntervalUpdate(): Void
 	{
 		effectDataArray.splice(0);
@@ -214,9 +212,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 		var initObject = {
 			index: newGroupIdx,
 			iconLocation: _rootPath + ICON_SOURCE,
-			groupMoveDuration: GROUP_MOVE_DURATION,
 			effectBaseSize: _effectBaseSize,
-			effectSpacing: _effectSpacing,
+			effectSpacing: EFFECT_SPACING,
 			effectFadeInDuration: EFFECT_FADE_IN_DURATION,
 			effectFadeOutDuration: EFFECT_FADE_OUT_DURATION,
 			effectMoveDuration: EFFECT_MOVE_DURATION,
@@ -227,16 +224,26 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 										
 		// Name needs to be unique so append getNextHighestDepth() to the name
 		var newGroup = attachMovie("ActiveEffectsGroup", "effectsGroup" + getNextHighestDepth(), getNextHighestDepth(), initObject);
+		newGroup.addEventListener("groupRemoved", this, "onGroupRemoved");
 		_effectsGroups.push(newGroup);
 
 		return newGroup;
 	}
 
-	// @override WidgetBase
-	private function updatePosition(): Void
+	// Called from ActiveEffectsGroup
+	public function onGroupRemoved(event: Object): Void
 	{
-		super.updatePosition();
-		invalidateEffects();
+		var removedGroup: MovieClip = event.target;
+		var groupIdx: Number = removedGroup.index;
+
+		_effectsGroups.splice(groupIdx, 1);
+		removedGroup.removeMovieClip();
+
+		var effectsGroup: MovieClip;
+		for (var i: Number = groupIdx; i < _effectsGroups.length; i++) {
+			effectsGroup = _effectsGroups[i];
+			effectsGroup.updatePosition(i); //Sets new index
+		}
 	}
 
 	private function invalidateEffects(): Void

@@ -1,4 +1,6 @@
-﻿import skyui.util.EffectIconMap;
+﻿import gfx.events.EventDispatcher;
+
+import skyui.util.EffectIconMap;
 import Shared.GlobalFunc;
 
 import com.greensock.TweenLite;
@@ -59,12 +61,15 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	public function ActiveEffect()
 	{
 		super();
+
+		EventDispatcher.initialize(this);
 		
 		_iconLoader = new MovieClipLoader();
 		_iconLoader.addListener(this);
 		
 		_iconHolder = content.iconContent;
-		_icon = _iconHolder.createEmptyMovieClip("icon", getNextHighestDepth());
+		_icon = _iconHolder.createEmptyMovieClip("icon", _iconHolder.getNextHighestDepth());
+		_icon.noIconLoaded = true; // Is removed when MovieClipLoader loads a clip
 
 		_width = _height = effectBaseSize;
 
@@ -72,14 +77,13 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		var p = determinePosition(index);
 		_x = p[0];
 		_y = p[1];
-		
-		initEffect();
-		_iconLoader.loadClip(iconLocation, _icon);
-		
-		updateEffect(effectData);
-		
+
 		background._alpha = 0;
 		_iconHolder.iconBackground._alpha = 0;
+		
+		initEffect();
+
+		updateEffect(effectData);
 
 		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: 0, easing: Linear.easeNone});
 	}
@@ -87,16 +91,20 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
   /* PUBLIC FUNCTIONS */
 
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
+
 	public function updateEffect(a_effectData: Object): Void
 	{
-		if (_meter == undefined) // Constant effects, no timer (e.g. Healing)
-			return;
-		
 		effectData = a_effectData;
-		var newPercent: Number = (100 * (effectData.duration - effectData.elapsed)) / effectData.duration;
-		newPercent = Math.min(100, Math.max(newPercent, 0));
-		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_meterEmptyIdx, _meterFullIdx, 0, 100, newPercent));
-		_meter.gotoAndStop(meterFrame);
+
+		updateMeter();
 	}
 
 	public function updatePosition(a_newIndex: Number): Void
@@ -106,9 +114,15 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		TweenLite.to(this, effectMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
 	}
 
-	public function remove(): Void
+	public function remove(a_immediate: Boolean): Void
 	{
-		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onEffectRemoved, onCompleteParams: [this], overwrite: 0, easing: Linear.easeNone});
+		if (a_immediate == true) {
+			_alpha = 0;
+			dispatchEvent({type: "effectRemoved"})
+			return;
+		}
+
+		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: this, onComplete: dispatchEvent, onCompleteParams: [{type: "effectRemoved"}], overwrite: 0, easing: Linear.easeNone});
 	}
 
 
@@ -131,6 +145,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 		if (effectData.duration - effectData.elapsed > 1)
 			initMeter();
+
+		_iconLoader.loadClip(iconLocation, _icon);
 	}
 
 	private function initMeter(): Void
@@ -142,9 +158,27 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_meter.gotoAndStop("Full");
 		_meterFullIdx = _meter._currentframe;
 	}
+
+	private function updateMeter(): Void
+	{
+		if (_meter == undefined) // Constant effects, no timer (e.g. Healing)
+			return;
+
+		var newPercent: Number = (100 * (effectData.duration - effectData.elapsed)) / effectData.duration;
+		newPercent = Math.min(100, Math.max(newPercent, 0));
+		var meterFrame: Number = Math.floor(GlobalFunc.Lerp(_meterEmptyIdx, _meterFullIdx, 0, 100, newPercent));
+		_meter.gotoAndStop(meterFrame);
+	}
 	
 	private function onLoadInit(a_mc: MovieClip): Void
 	{
+		// Fix for spamming effects causing MovieClipLoader to do strainge things
+		// (a_mc === _icon) == true, but a_mc.noIconLoaded == undefined whereas _icon.noIconLoaded == true;
+		if (_icon.noIconLoaded == true) {
+			remove(true);
+			return;
+		}
+
 		_icon._x = 0;
 		_icon._y = 0;
 
@@ -152,11 +186,13 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_icon._width = _icon._height = _iconHolder.iconBackground._width;
 		_icon.baseIcon.gotoAndStop(_iconBaseLabel);
 		_icon.emblemIcon.gotoAndStop(_iconEmblemLabel);
+
+		updateEffect(effectData);
 	}
 
 	private function onLoadError(a_mc: MovieClip, a_errorCode: String): Void
 	{
-		var errorTextField: TextField = _iconHolder.createTextField("ErrorTextField", _iconHolder.getNextHighestDepth(), 0, 0, _iconHolder.iconBackground._width, _iconHolder.iconBackground._height);
+		var errorTextField: TextField = _iconHolder.createTextField("ErrorTextField", _icon.getNextHighestDepth(), 0, 0, _iconHolder.iconBackground._width, _iconHolder.iconBackground._height);
 		errorTextField.verticalAlign = "center";
 		errorTextField.textAutoSize = "fit";
 		errorTextField.multiLine = true;

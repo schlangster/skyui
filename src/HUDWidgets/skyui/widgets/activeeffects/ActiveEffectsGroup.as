@@ -1,35 +1,37 @@
-﻿import com.greensock.TweenLite;
+﻿import gfx.events.EventDispatcher;
+
+import com.greensock.TweenLite;
 import com.greensock.easing.Linear;
 
 class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 {
   /* PRIVATE VARIABLES */
-  
+	
 	private var _effectsArray: Array
 
 
   /* PUBLIC VARIABLES */
-  
-  	// initObject
+	
+	// initObject
 	public var index: Number;
-	public var groupMoveDuration: Number;
 	public var iconLocation: String;
 	public var effectBaseSize: Number;
 	public var effectSpacing: Number;
 	public var effectFadeInDuration: Number;
 	public var effectFadeOutDuration: Number;
 	public var effectMoveDuration: Number;
-
 	public var hAnchor: String;
 	public var vAnchor: String;
 	public var orientation: String;
 
 
   /* INITIALIZATION */
-  
+	
 	public function ActiveEffectsGroup()
 	{
 		super();
+
+		EventDispatcher.initialize(this);
 
 		_effectsArray = new Array();
 
@@ -38,9 +40,20 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		_y = p[1];
 	}
 
+  /* PUBLIC FUNCTIONS */
+	
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
+
 
   /* PROPERTIES */
-  
+	
 	public function get length(): Number
 	{
 		return _effectsArray.length;
@@ -48,7 +61,7 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	
 
   /* PUBLIC FUNCTIONS */
-  
+	
 	public function addEffect(a_effectData: Object): MovieClip
 	{
 		var effectIdx = _effectsArray.length;
@@ -67,6 +80,7 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		};
 		
 		var effectClip = attachMovie("ActiveEffect", a_effectData.id, getNextHighestDepth(), initObject);
+		effectClip.addEventListener("effectRemoved", this, "onEffectRemoved");
 		_effectsArray.push(effectClip);
 
 		return effectClip;
@@ -77,12 +91,14 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		index = a_newIndex;
 
 		var p = determinePosition(index);
-		TweenLite.to(this, groupMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
+		TweenLite.to(this, effectMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
 	}
 
-	public function onEffectRemoved(a_effectClip: MovieClip): Void
+  /* PRIVATE FUNCTIONS */
+	
+	private function onEffectRemoved(event: Object): Void
 	{
-		var removedEffectClip: MovieClip = a_effectClip;
+		var removedEffectClip: MovieClip = event.target;
 		var effectIdx: Number = removedEffectClip.index;
 
 		_effectsArray.splice(effectIdx, 1);
@@ -99,14 +115,12 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 			// If the group had a background, for example, we'd call
 			// this.remove()
 			// which would fade out the group then, onComplete, call
-			// _parent.onGroupRemoved(this);
-			_parent.onGroupRemoved(this);
+			// dispatchEvent({type: "groupRemoved"});
+			dispatchEvent({type: "groupRemoved"});
 		}
 	}
 
 
-  /* PRIVATE FUNCTIONS */
-  
 	private function determinePosition(a_index: Number): Array
 	{
 		var newX: Number = 0;
@@ -131,13 +145,13 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		return [newX, newY];
 	}
 
-  	// Not needed, see onEffectRemoved();
-  	/*
-  	private function remove(): Void
-  	{
-		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: _parent, onComplete: _parent.onGroupRemoved, onCompleteParams: [this], overwrite: 2, easing: Linear.easeNone});
-  	}
-  	*/
+	// Not needed, see onEffectRemoved();
+	/*
+	private function remove(): Void
+	{
+	TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: this, onComplete: dispatchEvent, onCompleteParams: [{type: "groupRemoved"}], overwrite: 2, easing: Linear.easeNone});
+	}
+	*/
 }
 
 
