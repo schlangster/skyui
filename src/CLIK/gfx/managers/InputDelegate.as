@@ -161,6 +161,9 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 34:	return NavigationCode.PAGE_DOWN;
 			case 33:	return NavigationCode.PAGE_UP;
 			case 27:	return NavigationCode.ESCAPE;
+
+
+// TODO: should ignore these if platform != 0
 			case 96:	return NavigationCode.GAMEPAD_A;
 			case 97:	return NavigationCode.GAMEPAD_B;
 			case 98:	return NavigationCode.GAMEPAD_X;
@@ -174,6 +177,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 106:	return NavigationCode.GAMEPAD_START;
 			case 107:	return NavigationCode.GAMEPAD_BACK;
 		}
+		
 		return null;
 	}
 }
