@@ -127,8 +127,14 @@ class skyui.components.list.ScrollingList extends BasicList
 				moveSelectionDown(details.navEquivalent == NavigationCode.PAGE_DOWN);
 				return true;
 			} else if (!disableSelection && details.navEquivalent == NavigationCode.ENTER) {
+				// TODO: See gfx.managers.InputDelegate.inputToNav(); stop it from converting numberpad -> navEquivalent
+				// Fix for numberpad 0 being handled as ENTER
+				if (details.code == 96 && _platform == PLATFORM_PC)
+					return false;
+
 				onItemPress();
 				return true;
+
 			}
 		}
 		return false;

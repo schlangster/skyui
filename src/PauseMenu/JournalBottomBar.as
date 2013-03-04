@@ -32,6 +32,7 @@ class JournalBottomBar extends MovieClip
 	public function SetPlayerInfo(): Void
 	{
 		DateText.SetText(arguments[0]);
+		LevelMeterRect.LevelNumberLabel.textAutoSize = "shrink";
 		LevelMeterRect.LevelNumberLabel.SetText(arguments[1]);
 		LevelMeter_mc.SetPercent(arguments[2]);
 	}

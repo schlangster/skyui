@@ -485,6 +485,8 @@ dynamic class gfx.controls.ScrollingList extends gfx.controls.CoreList
 			return undefined;
 		}
 		var __reg2 = this._scrollBar != undefined && this._scrollBar.pageScrollSize != undefined ? this._scrollBar.pageScrollSize : 1;
+		// Version 1.9.26 uses, which seems less safe
+		// var __reg2 = this._scrollBar == undefined ? 1 : this._scrollBar.pageScrollSize;
 		this.scrollPosition = this._scrollPosition - delta * __reg2;
 	}
 

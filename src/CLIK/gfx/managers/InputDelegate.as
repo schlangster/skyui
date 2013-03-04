@@ -152,7 +152,6 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 40:	return NavigationCode.DOWN;
 			case 37:	return NavigationCode.LEFT;
 			case 39:	return NavigationCode.RIGHT;
-//			case 32:	// Added in 1.8.145.0 - we ignore because space is already in use for search etc.
 			case 13:	return NavigationCode.ENTER;
 			case 8:		return NavigationCode.BACK;
 			case 9:		return Key.isDown(16) ? NavigationCode.SHIFT_TAB : NavigationCode.TAB;
@@ -161,6 +160,9 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 34:	return NavigationCode.PAGE_DOWN;
 			case 33:	return NavigationCode.PAGE_UP;
 			case 27:	return NavigationCode.ESCAPE;
+
+
+// TODO: should ignore these if platform != 0
 			case 96:	return NavigationCode.GAMEPAD_A;
 			case 97:	return NavigationCode.GAMEPAD_B;
 			case 98:	return NavigationCode.GAMEPAD_X;
@@ -174,6 +176,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 106:	return NavigationCode.GAMEPAD_START;
 			case 107:	return NavigationCode.GAMEPAD_BACK;
 		}
+		
 		return null;
 	}
 }
