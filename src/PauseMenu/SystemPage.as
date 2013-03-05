@@ -84,6 +84,10 @@ class SystemPage extends MovieClip
 	private var _acceptButton: MovieClip;
 	private var _cancelButton: MovieClip;
 
+	private var _skyrimVersion: Number;
+	private var _skyrimVersionMinor: Number;
+	private var _skyrimVersionBuild: Number;
+
 
 	function SystemPage()
 	{
@@ -163,6 +167,12 @@ class SystemPage extends MovieClip
 			currentState = SystemPage.MAIN_STATE;
 
 			GameDelegate.call("SetVersionText", [VersionText]);
+
+			var versionArr: Array = VersionText.text.split("."); // "1.8.151.0.7" without SKSE, "1.8.151.0.7 (SKSE 1.6.9 rel 37)" with
+			_skyrimVersion = versionArr[0];
+			_skyrimVersionMinor = versionArr[1];
+			_skyrimVersionBuild = versionArr[2];
+
 			GameDelegate.call("ShouldShowKinectTunerOption", [], this, "SetShouldShowKinectTunerOption");
 			GameDelegate.call("SetSaveDisabled", _saveDisabledList);
 
@@ -562,6 +572,8 @@ class SystemPage extends MovieClip
 		switch (SettingsList.selectedIndex) {
 			case 0:
 				List_mc.entryList = [{text: "$Invert Y", movieType: 2}, {text: "$Look Sensitivity", movieType: 0}, {text: "$Vibration", movieType: 2}, {text: "$360 Controller", movieType: 2}, {text: "$Difficulty", movieType: 1, options: ["$Very Easy", "$Easy", "$Normal", "$Hard", "$Very Hard", "$Legendary"]}, {text: "$Show Floating Markers", movieType: 2}, {text: "$Save on Rest", movieType: 2}, {text: "$Save on Wait", movieType: 2}, {text: "$Save on Travel", movieType: 2}, {text: "$Save on Pause", movieType: 1, options: ["$5 Mins", "$10 Mins", "$15 Mins", "$30 Mins", "$45 Mins", "$60 Mins", "$Disabled"]}, {text: "$Use Kinect Commands", movieType: 2}];
+				if (_skyrimVersion == 1 && _skyrimVersionMinor < 9)
+					List_mc.entryList[4].options.pop(); // Versions prior to 1.9.26 don't have the Legendary option
 				GameDelegate.call("RequestGameplayOptions", [List_mc.entryList]);
 				break;
 				
@@ -573,9 +585,8 @@ class SystemPage extends MovieClip
 			case 2:
 				List_mc.entryList = [{text: "$Master", movieType: 0}];
 				GameDelegate.call("RequestAudioOptions", [List_mc.entryList]);
-				for (var i: String in List_mc.entryList) {
+				for (var i: String in List_mc.entryList)
 					List_mc.entryList[i].movieType = 0;
-				}
 				break;
 		}
 		
