@@ -37,7 +37,6 @@ endEvent
 ; 1. Create quest
 ; 2. Add player alias to quest
 ; 3. Attach SKI_PlayerLoadGameAlias to player alias
-; 4. Set InitQuest property of alias script to quest
 
 event OnGameReload()
 endEvent
