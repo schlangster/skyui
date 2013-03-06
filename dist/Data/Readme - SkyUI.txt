@@ -86,7 +86,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 3.2:
 
 [General]
-- Updated SKSE version requirement to 1.6.8.
+- Updated SKSE version requirement to 1.6.9.
 - Inventory and magic menus now remember and restore last selected column and sorting state.
 - Added emblem to indicate read books/scrolls.
 - Fixed several Dragonborn icons.
@@ -96,6 +96,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Optimized memory usage of config menu buffers.
 - Increased config timeout delay from 1 to 3 seconds.
 - Added error message to detect invalid Papyrus .ini settings.
+- Updated quest_journal.swf to support legendary difficulty that has been added in Skyrim 1.9.
 
 [ModConfigurationMenu]
 - Added a repair console command that forces all menus to re-register: setStage SKI_ConfigManagerInstance 1
@@ -487,6 +488,8 @@ Thanks to all translators who helped localizing SkyUI to different languages, am
 	xlwarrior (Spanish)
 	Starfis (Czech)
 	Rhaegal (Italian)
+	patryk110 (Polish)
+	vova2112 (Russian)
 
 Last but not least, thanks to the whole SKSE team, because without their Script Extender creating this mod wouldn't have been possible.
 
