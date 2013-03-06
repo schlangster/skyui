@@ -91,7 +91,7 @@ $Tool	Tool	Outil	Werkzeug	Utensile	Herramienta	Nástroj	Narzędzie	Инстру�
 $Remains	Remains	Restes	Überreste	Resti	Restos	Pozůstatky	Szczątki	Останки	遺骨
 $Leather	Leather	Cuir	Leder	Pelle	Cuero	Kůže	Skórzany	Кожа	革
 $Strips	Strips	Bandes	Streifen	Strisce	Tiras	Odřezky	Paski	Полоски Кожи	ひも
-$Hide	Hide	Cacher	Haut	Pelle	Piel	Useň	Skóra	Шкура	皮
+$Hide	Hide	Peau	Haut	Pelle	Piel	Useň	Skóra	Шкура	皮
 $Ore	Ore	Minerai	Erz	Minerale	Mineral	Ruda	Ruda	Руда	鉱石
 $Ingot	Ingot	Lingot	Barren	Lingotto	Lingote	Ingot	Sztaba	Слиток	インゴット
 $Claw	Claw	Griffe	Klaue	Artiglio	Garra	Spár	Szpon	Коготь	爪
@@ -121,7 +121,7 @@ $Dragonscale	Dragonscale	Écaille de dragon	Drachenschuppen	Scaglie di Drago	Esc
 $Orcish	Orcish	Orque	Orkisch	Orchesco	Orca	Orkský	Orkowy	Орочье	オーク
 $Steel Plate	Steel Plate	Plates	Stahlharnisch	Piastre d'Acciaio	Placas de Acero	Ocelové pláty	Stalowy Płytowy	Стальное Пластинчатое	スチールプレート
 $Glass	Glass	Verre	Glas	Vetro	Cristal	Sklo	Szklany	Стеклянное	碧水晶
-$Elven Gilded	Elven Gilded	Dorée Elfique	Elfenvergoldet	Elfico dorato	Dorada Élfica	Elfský Zlacený	Elficki Pozłacany	Эльфийское Золоченое	エルフの黄金
+$Elven Gilded	Elven Gilded	Dorée elfique	Elfenvergoldet	Elfico dorato	Dorada Élfica	Elfský Zlacený	Elficki Pozłacany	Эльфийское Золоченое	エルフの黄金
 $Dwarven	Dwarven	Dwemer	Dwemer	Nanico	Enana	Trpasličí	Krasnoludzki	Двемерское	ドワーフ
 $Scaled	Scaled	Écaille	Schuppen	Scaglie	Escamas	Šupiny	Łuskowy	Ламеллярное	スケール
 $Steel	Steel	Acier	Stahl	Acciaio	Acero	Ocel	Stalowy	Стальное	鋼鉄
@@ -169,7 +169,7 @@ $Open Menu	Open Menu	Ouvrir le menu	Menü Öffnen	Apri Menu	Abrir Menu	Otevřít
 $Toggle	Toggle	Activer/Désactiver	Umschalten	Seleziona	Seleccionar	Zaškrtnout	Przełącz	Переключить	トグル
 $Pick Color	Pick Color	Choisir la couleur	Farbauswahl	Seleziona Colore	Seleccionar Color	Vybrat barvu	Wybierz Kolor	Выбор Цвета	色を選択
 $Remap	Remap	Ré-affecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Перераспределение	再割り当て
-$Find Location	Find Location	Trouver la localisation	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
+$Find Location	Find Location	Chercher un lieu	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
 									
 $General	General	Général	Allgemein	Generale	General	Základní	Ogólne	Общие	一般
 $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawansowane	Дополнительно	高度
@@ -178,10 +178,10 @@ $Item List	Item List	Liste des objets	Gegenstandsliste	Lista degli Oggetti	Lista
 $Font Size	Font Size	Taille de police	Schriftgröße	Dimensione del Font	Tamaño de Fuente	Velikost písma	Wielkość Czcionki	Размер Шрифта	フォントサイズ
 $Quantity Menu Min. Count	Quantity Menu Min. Count	Compte min. pour le menu de quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. Кол-во Элементов в Меню	数量メニュー最小カウント
 $Category Icon Theme	Category Icon Theme	Thème des icônes de catégories	Symbolthema (Kategorie)	Tema delle icone di categoria	Tema de iconos de categoría	Vzhled ikon kategorií	Zestaw Ikon Kategorii	Тема Иконок Категорий	
-$Disable Icon Colors	Disable Icon Colors	Désactiver les couleur d'icônes	Farbige Symbole deaktivieren	Disabilita Icone Colorate	Desactivar iconos en color	Vypnout barvy ikon	Wyłącz Kolory Ikon	Запретить Цветные Иконки	
+$Disable Icon Colors	Disable Icon Colors	Désactiver les couleurs d'icônes	Farbige Symbole deaktivieren	Disabilita Icone Colorate	Desactivar iconos en color	Vypnout barvy ikon	Wyłącz Kolory Ikon	Запретить Цветные Иконки	
 $Previous Column	Previous Column	Colonne précédente	Vorherige Spalte	Colonna Precedente	Columna Anterior	Předchozí sloupek	Poprzednia Kolumna	Предыдущая Колонка	前の欄
 $Next Column	Next Column	Colonne suivante	Nächste Spalte	Colonna Successiva	Columna Siguiente	Další sloupek	Następna Kolumna	Следующая Колонка	次の欄
-$Item Card	Item Card	Carte de l'objet	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta předmětu	Karta Przedmiotu	Окно Просмотра Предмета	アイテムカード
+$Item Card	Item Card	Carte d'objets	Gegenstandskarte	Scheda dell'Oggetto	Tarjeta del Objeto	Karta předmětu	Karta Przedmiotu	Окно Просмотра Предмета	アイテムカード
 $3D Item	3D Item	Modèle 3D	3D Ansicht	Oggetto 3D	Objeto 3D	3D Objekt	Obiekt 3D	3D Вид Предмета	3D アイテム
 $Align	Align	Alignement	Ausrichtung	Allinea	Alinear	Zarovnání	Wyrównanie	Выравнивание	整列する
 $Horizontal Offset	Horizontal Offset	Axe horizontal	Horizontaler Abstand	Spostamento Orizzontale	Desplazamiento Horizontal	Vodorovné odsazení	Przesunięcie Poziome	Горизонтальное Смещение	水平オフセット
@@ -190,7 +190,7 @@ $Horizontal Anchor	Horizontal Anchor	Alignement horizontal	Horizontale Ausrichtu
 $Vertical Anchor	Vertical Anchor	Alignement vertical	Vertikale Ausrichtung	Orientamento Verticale	Alineamiento vertical	Vertikální ukotvení	Wyrównanie Pionowe	Фиксация по Вертикали	
 $Orientation	Orientation	Orientation	Orientierung	Orientamento	Alineamiento	Orientace	Orientacja	Ориентация	
 $Icon Size	Icon Size	Taille d'icône	Symbolgröße	Dimensione Icona	Dimensión del icono	Velikost ikon	Rozmiar Ikon	Размер Иконок	
-$Icon Group Count	Icon Group Count	Nombre d'icônes groupées	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Груп Иконок	
+$Icon Group Count	Icon Group Count	Nombre de groupes d'icônes	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Груп Иконок	
 $Scale	Scale	Échelle	Größe	Scala	Escala	Měřítko	Skala	Масштаб	スケール
 $Disable Positioning	Disable Positioning	Désactiver le positionnement	Keine Positionsanpassung	Disabilita Posizionamento	Desactivar el posicionamiento	Zakázat polohování	Wyłącz Pozycjonowanie	Запретить Позиционирование	
 $SWF Version Checking	SWF Version Checking	Vérification des versions	SWF Versions-Check	Controllo Versione SWF	Comprobar Versión SWF	Kontrola Verze SWF	Sprawdzanie Wersji SWF	Проверка Версии SWF	SWF のバージョンの確認
@@ -208,11 +208,11 @@ $Vertical	Vertical	Vertical	Vertikal	Verticale	Vertical	Vertikální	Pionowe	В�
 $Horizontal	Horizontal	Horizontal	Horizontal	Orizzontale	Horizontal	Horizontální	Poziome	Горизонтально	
 									
 $SKI_INFO1{}	Default: {}	Défaut: {}	Voreinstellung: {}	Predefinito: {}	Predefinido: {}	Výchozí nastavení: {}	Domyślnie: {}	По умолчанию: {}	デフォルト: {}
-$SKI_INFO2{}	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: {}	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: {}	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: {}	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: {}	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: {}	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: {}	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: {}	Число элементов необходимое для инициализации значения меню, или 0 чтобы отключить.\nПо умолчанию: {}	
+$SKI_INFO2{}	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: {}	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: {}	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: {}	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: {}	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: {}	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: {}	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: {}	Количество элементов необходимое для инициализации меню, число или 0 чтобы отключить.\nПо умолчанию: {}	
 $SKI_INFO3{}	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: {}	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: {}	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: {}	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: {}	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: {}	 Nekonpatibilní nebo zastaralé SWF může narušit funkčnost SkyUI. Zaškrtnutím vypnete zobrazování varovných zpráv!\nVýchozí nastavení: {}	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: {}	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: {}	
-$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDéfaut: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}	Desactiva el posicionamiento del objeto 3D.\nPredefinido: {}	Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Запретить Позиционирование для 3D Просмотра Предмета.\nПо умолчанию: {}	
+$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDéfaut: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}	Desactiva el posicionamiento del objeto 3D.\nPredefinido: {}	Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Запретить Позиционирование 3D предмета в окне просмотра.\nПо умолчанию: {}	
 									
-$SKI_MSG1	This control requires a keyboard mapping.	Cette fonction requiert un réglage de touche du clavier.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Необходимо назначить действие для этой кнопки с клавиатуры.	このコントロールは、キーボードのマッピングを必要とします。
+$SKI_MSG1	This control requires a keyboard mapping.	Cette fonction doit être affectée à une touche.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Для этой функции необходимо назначить клавишу.	このコントロールは、キーボードのマッピングを必要とします。
 									
 $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
