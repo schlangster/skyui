@@ -211,8 +211,6 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	_modNames[configID] = a_modName
 	
 	_configCount += 1
-
-	Log("Registered " + a_menu + ", id " + configID)
 	
 	return configID
 endFunction
@@ -225,8 +223,6 @@ bool function UnregisterMod(SKI_ConfigBase a_menu)
 			_modConfigs[i] = none
 			_modNames[i] = ""
 			_configCount -= 1
-
-			Log("Unregistered " + a_menu + ", id " + i)
 
 			return true
 		endIf
