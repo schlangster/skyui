@@ -11,6 +11,13 @@ string property		GIFT_MENU		= "GiftMenu" autoReadonly
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MAP_MENU		= "MapMenu" autoReadonly
 
+int property		ERR_SKSE_MISSING		= 1 autoReadonly
+int property		ERR_SKSE_VERSION_RT		= 2 autoReadonly
+int property		ERR_SKSE_VERSION_SCPT	= 3 autoReadonly
+int property		ERR_INI_PAPYRUS			= 4 autoReadonly
+int property		ERR_SWF_INVALID			= 5 autoReadonly
+int property		ERR_SWF_VERSION			= 6 autoReadonly
+
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
@@ -134,24 +141,24 @@ event OnGameReload()
 	ErrorDetected = false
 
 	if (SKSE.GetVersionRelease() == 0)
-		Error("The Skyrim Script Extender (SKSE) is not running.\nSkyUI will not work correctly!\n\n" \
+		Error(ERR_SKSE_MISSING, "The Skyrim Script Extender (SKSE) is not running.\nSkyUI will not work correctly!\n\n" \
 			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSE has been updated, then install the new version.")
 		return
 
 	elseIf (SKSE.GetVersionRelease() < MinSKSERelease)
-		Error("Your Skyrim Script Extender (SKSE) is outdated.\nSkyUI will not work correctly!\n" \
+		Error(ERR_SKSE_VERSION_RT, "Your Skyrim Script Extender (SKSE) is outdated.\nSkyUI will not work correctly!\n" \
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
 
 	; Could also check for != SKSE.GetVersionRelease(), but this should be strict enough
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
-		Error("Your Skyrim Script Extender (SKSE) scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
+		Error(ERR_SKSE_VERSION_SCPT, "Your Skyrim Script Extender (SKSE) scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
 		return
 	endIf
 
 	if (Utility.GetINIInt("iMinMemoryPageSize:Papyrus") <= 0 || Utility.GetINIInt("iMaxMemoryPageSize:Papyrus") <= 0 || Utility.GetINIInt("iMaxAllocatedMemoryBytes:Papyrus") <= 0)
-		Error("Your Papyrus INI settings are invalid. Please fix this, otherwise SkyUI will stop working at some point.")
+		Error(ERR_INI_PAPYRUS, "Your Papyrus INI settings are invalid. Please fix this, otherwise SkyUI will stop working at some point.")
 		return
 	endIf
 
@@ -234,8 +241,8 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
-function Error(string a_msg)
-	Debug.MessageBox("SKYUI ERROR\n\n" + a_msg + "\n\nFor more help, see the SkyUI mod description.")
+function Error(int a_errId, string a_msg)
+	Debug.MessageBox("SKYUI ERROR CODE " + a_errId + "\n\n" + a_msg + "\n\nFor help, see the SkyUI mod description.")
 	ErrorDetected = true
 endFunction
 
@@ -250,11 +257,11 @@ bool function CheckMenuVersion(string a_swfName, string a_menu, string a_class)
 	endIf
 
 	if (releaseIdx == 0)
-		Error("Incompatible menu file (" + a_swfName + ").\nPlease make sure you installed everything correctly and no other mod has overwritten this file.\n" \
+		Error(ERR_SWF_INVALID, "Incompatible menu file (" + a_swfName + ").\nPlease make sure you installed everything correctly and no other mod has overwritten this file.\n" \
 			+ "If you were using an older SkyUI version, un-install it and re-install the latest version.")
 
 	elseIf (releaseIdx != ReqSWFRelease)
-		Error("Menu file version mismatch for " + a_swfName + ".\n" \
+		Error(ERR_SWF_VERSION, "Menu file version mismatch for " + a_swfName + ".\n" \
 			+ "Required version: " + ReqSWFVersion + "\n" \
 			+ "Detected version: " + version)
 
