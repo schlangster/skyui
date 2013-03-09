@@ -146,14 +146,14 @@ event OnGameReload()
 		return
 
 	elseIf (SKSE.GetVersionRelease() < MinSKSERelease)
-		Error(ERR_SKSE_VERSION_RT, "Your Skyrim Script Extender (SKSE) is outdated.\nSkyUI will not work correctly!\n" \
+		Error(ERR_SKSE_VERSION_RT, "SKSE is outdated.\nSkyUI will not work correctly!\n" \
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
 
 	; Could also check for != SKSE.GetVersionRelease(), but this should be strict enough
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
-		Error(ERR_SKSE_VERSION_SCPT, "Your Skyrim Script Extender (SKSE) scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
+		Error(ERR_SKSE_VERSION_SCPT, "SKSE scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
 		return
 	endIf
 
