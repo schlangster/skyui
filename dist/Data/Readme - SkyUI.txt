@@ -102,6 +102,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Added a repair console command that forces all menus to re-register: setStage SKI_ConfigManagerInstance 1
 - Improved SetInfoText to support nested translation strings. See MCM API reference for details.
 - Added an new method to organize options as states. Fully backward compatible. See state MCM state option guide for details.
+- Fixed issue where it would take several reloads until all menus registered successfully when running a lot of mods.
 
 [MapMenu]
 - Initial release
@@ -233,8 +234,8 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 
 ------------------------------------------------------------
 IMPORTANT:
-If you were using older versions of SkyUI (this includes 3.0 alpha builds),
-you MUST remove them before installing the new one.
+If you were using SkyUI 2.2 or older,
+you MUST remove it before installing the new one.
 See section 4 for instructions.
 ------------------------------------------------------------
 
@@ -294,22 +295,6 @@ OR
  4. Uninstallation
 ========================================================================================================================================
 
-Before removing any files, it is recommended to make a 'clean' save game with SkyUI deactivated.
-(Note that when uninstalling versions 2.2 or older, this is NOT necessary)
-
-1.	Start the Skyrim Launcher and select 'Data Files'.
-
-2.	Search 'SkyUI.esp' and uncheck it.
-	(If you don't have this file, there's no need for a clean save anyway and you can skip it)
-
-3.	In-game, load your latest save, then save the game again.
-
-4.	This new save game is now cleaned of SkyUI data.
-
-------------------------------------------------------------
-
-You can now proceed to uninstall the files.
-
 The uninstallation method depends on which SkyUI version you were using before and how you installed it.
 Any SkyUI version older than 3.0 (this includes alpha builds) has to be removed before upgrading.
 
@@ -344,21 +329,6 @@ and then use Steam to restore any original files you removed in the process by f
 Be aware, that this will break any other mods that installed files to the interface folder. You will have to re-install them.
 
 ------------------------------------------------------------
- Manual installation / SkyUI 3.0 alpha versions
-------------------------------------------------------------
-
-The 3.0 alpha packages contained loose script files required by mod authors to create configuration menus.
-You have to remove these files because they will override any newer scripts in SkyUI.bsa.
-
-1.	Locate the 'Scripts/' folder in your Skyrim data directory.
-	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
-
-2.	Delete any script files (.pex) that start with SKI_, for example
-		SKI_ConfigBase.pex, SKI_Main.pex, etc.
-
-3.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder.
-
-------------------------------------------------------------
  Manual installation / SkyUI 3.0 and newer
 ------------------------------------------------------------
 
@@ -367,37 +337,44 @@ You have to remove these files because they will override any newer scripts in S
 
 2.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder.
 
+------------------------------------------------------------
+ SkyUI 3.0 alpha versions
+------------------------------------------------------------
+
+Before removing any files, it is recommended to make a 'clean' save game with SkyUI deactivated.
+
+1.	Start the Skyrim Launcher and select 'Data Files'.
+
+2.	Search 'SkyUI.esp' and uncheck it.
+	(If you don't have this file, there's no need for a clean save anyway and you can skip it)
+
+3.	In-game, load your latest save, then save the game again.
+
+4.	This new save game is now cleaned of SkyUI data.
+
+You can now proceed to uninstall the files.
+
+The 3.0 alpha packages contained loose script files required by mod authors to create configuration menus.
+Make absolutely sure to remove these files because they will override any newer scripts in SkyUI.bsa.
+
+1.	Locate the 'Scripts/' folder in your Skyrim data directory.
+	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
+
+2.	Delete any script files (.pex) that start with SKI_, for example
+		SKI_ConfigBase.pex, SKI_Main.pex, etc.
+
+3.	Delete 'SkyUI.esp' and 'SkyUI.bsa' from the data folder if present.
+
 
 ========================================================================================================================================
  5. Troubleshooting
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: There's an error message telling me about a problem with the Skyrim Script Extender (SKSE).
+Problem: I received an error message "SKYUI ERROR CODE X".
 
-Solution: There are two things that can cause this:
-	1)	You didn't install the Skyrim Script Extender (or you installed it incorrectly).
-		Get it from http://skse.silverlock.org/ and follow the included instructions.
-		
-	2)	Everything was fine before, then Skyrim was patched to a new version and the message started appearing.
-		This is because each new patch also requires an update of SKSE. So just you'll just have to wait until that is released, then
-		get the new version and everything should be back to normal.
+Solution: See https://github.com/schlangster/skyui/wiki/SkyUI-Errors for help.
 
-	If you have problems installing or running SKSE, have a look at Gopher's video guide:
-		http://www.youtube.com/watch?v=xTGnQIiNVqA
-
-------------------------------------------------------------
-Problem: There's an error message telling me about a problem with some incompatible menu (SWF) file.
-
-Solution: There are several reasons this might happen.
-	1)	You didn't uninstall an old version of SkyUI before upgrading to 3.0 or newer.
-		See the Uninstallation section and make sure you really removed everything, and then install the new version again.
-
-	2)	There's another mod that overrides a particular menu file SkyUI is using as well.
-		If this is the case, you'll have to pick one of the two mods.
-
-	If you want another mod to be able to override certain menu files of SkyUI while keeping the rest, you can disable these
-	warning messages individually in the SkyUI configuration menu ('Advanced' page).
 
 ------------------------------------------------------------
 Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
@@ -405,12 +382,6 @@ Problem: There are dollar signs ($) in front of all words in the main menu (and 
 Solution: This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'.
 	To restore it, use Steam to verify the integrity of Skyrim's game-cache
 	(Steam -> Library -> Properties of Skyrim -> Local files tab -> Verify integrity of game cache).
-
-------------------------------------------------------------
-Problem: My game crashes after I uninstalled SkyUI.
-
-Solution: Try making a clean save with SkyUI.esp deactivated instead of removing it completely.
-	The necessary steps are described at the beginning of section 4.
 
 
 If your problem wasn't listed here, ask for help in the Nexus comments.
