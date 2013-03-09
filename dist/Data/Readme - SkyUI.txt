@@ -235,7 +235,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ------------------------------------------------------------
 IMPORTANT:
 If you were using SkyUI 2.2 or older,
-you MUST remove it before installing the new one.
+you MUST remove it before installing the new version.
 See section 4 for instructions.
 ------------------------------------------------------------
 
@@ -371,9 +371,9 @@ Make absolutely sure to remove these files because they will override any newer 
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: I received an error message "SKYUI ERROR CODE X".
+Problem: There's an error message "SKYUI ERROR CODE X"...
 
-Solution: See https://github.com/schlangster/skyui/wiki/SkyUI-Errors for help.
+Solution: See https://github.com/schlangster/skyui/wiki/SkyUI-Errors for potential problems and their solutions.
 
 
 ------------------------------------------------------------
@@ -443,6 +443,7 @@ MisterPete:
 
 Psychosteve:
 	Created our new primary icon theme for version 3.0.
+	He also created the Active Effect icons that have been added in version 3.2.
 
 Pelinor:
 	The creator of MCM for Fallout: New Vegas. Allowed us to use his original logo.
