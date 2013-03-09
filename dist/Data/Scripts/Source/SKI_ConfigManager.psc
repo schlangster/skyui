@@ -33,8 +33,7 @@ SKI_ConfigBase		_activeConfig
 ; -- Version 2 --
 
 bool				_lockInit		= false
-Form				_lockHolder		= none
-int					_lockCount		= 0
+bool				_locked			= false
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -98,7 +97,6 @@ event OnMenuOpen(string a_menuName)
 endEvent
 
 event OnMenuClose(string a_menuName)
-
 	if (_activeConfig)
 		_activeConfig.CloseConfig()
 	endIf
@@ -306,19 +304,15 @@ int function NextID()
 endFunction
 
 function AcquireLock()
-	while (_lockInit == true && _lockHolder != self && _lockCount > 0)
+	while (_lockInit && _locked)
 		Debug.GetPlatformName() ; using this over Utility.Wait to avoid menu mode issues
 	endWhile
 
-	_lockHolder = self
-	_lockCount += 1
+	_locked = true
 endFunction
 
 function ReleaseLock()
-	_lockCount -= 1
-	if (_lockCount == 0)
-		_lockHolder = none
-	endif
+	_locked = false
 endFunction
 
 function Log(string a_msg)
