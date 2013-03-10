@@ -371,7 +371,7 @@ Make absolutely sure to remove these files because they will override any newer 
 ========================================================================================================================================
 
 ------------------------------------------------------------
-Problem: There's an error message "SKYUI ERROR CODE X"...
+Problem: There's an error message, reporting "SKYUI ERROR CODE X"...
 
 Solution: See https://github.com/schlangster/skyui/wiki/SkyUI-Errors for potential problems and their solutions.
 
