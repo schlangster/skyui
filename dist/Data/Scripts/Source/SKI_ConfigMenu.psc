@@ -310,8 +310,8 @@ event OnPageReset(string a_page)
 		AddTextOptionST("EFFECT_WIDGET_HORIZONTAL_ANCHOR", "$Horizontal Anchor", _alignments[_effectWidgetHAnchorIdx], _effectWidgetFlags)
 		AddTextOptionST("EFFECT_WIDGET_VERTICAL_ANCHOR", "$Vertical Anchor", _vertAlignments[_effectWidgetVAnchorIdx], _effectWidgetFlags)
 		AddSliderOptionST("EFFECT_WIDGET_GROUP_COUNT", "$Icon Group Count", SKI_ActiveEffectsWidgetInstance.GroupEffectCount, "{0}", _effectWidgetFlags)
-		AddSliderOptionST("EFFECT_WIDGET_XOFFSET", "$Horizontal Offset", _effectWidgetXOffset, _effectWidgetFlags)
-		AddSliderOptionST("EFFECT_WIDGET_YOFFSET", "$Vertical Offset", _effectWidgetYOffset, _effectWidgetFlags)
+		AddSliderOptionST("EFFECT_WIDGET_XOFFSET", "$Horizontal Offset", _effectWidgetXOffset, "{0}", _effectWidgetFlags)
+		AddSliderOptionST("EFFECT_WIDGET_YOFFSET", "$Vertical Offset", _effectWidgetYOffset, "{0}", _effectWidgetFlags)
 
 		SetCursorPosition(1)
 
@@ -320,6 +320,7 @@ event OnPageReset(string a_page)
 		AddSliderOptionST("ITEMCARD_XOFFSET", "$Horizontal Offset", _itemcardXOffset)
 		AddSliderOptionST("ITEMCARD_YOFFSET", "$Vertical Offset", _itemcardYOffset)
 
+		AddEmptyOption()
 		AddEmptyOption()
 
 		AddHeaderOption("$SWF Version Checking")
