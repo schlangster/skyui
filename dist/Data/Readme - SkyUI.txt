@@ -355,7 +355,7 @@ Before removing any files, it is recommended to make a 'clean' save game with Sk
 You can now proceed to uninstall the files.
 
 The 3.0 alpha packages contained loose script files required by mod authors to create configuration menus.
-Make absolutely sure to remove these files because they will override any newer scripts in SkyUI.bsa.
+Make absolutely sure to remove these files, because they will override any newer scripts in SkyUI.bsa.
 
 1.	Locate the 'Scripts/' folder in your Skyrim data directory.
 	It's typically found at 'Program Files/Steam/steamapps/common/skyrim/Data/Scripts/'.
@@ -373,15 +373,22 @@ Make absolutely sure to remove these files because they will override any newer 
 ------------------------------------------------------------
 Problem: There's an error message, reporting "SKYUI ERROR CODE X"...
 
-Solution: See https://github.com/schlangster/skyui/wiki/SkyUI-Errors for potential problems and their solutions.
+See https://github.com/schlangster/skyui/wiki/SkyUI-Errors for potential problems and their solutions.
 
 
 ------------------------------------------------------------
 Problem: There are dollar signs ($) in front of all words in the main menu (and in lots of other places, too)!
 
-Solution: This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'.
-	To restore it, use Steam to verify the integrity of Skyrim's game-cache
-	(Steam -> Library -> Properties of Skyrim -> Local files tab -> Verify integrity of game cache).
+This happens if you accidently removed 'Data/Interface/Translate_<language>.txt'.
+To restore it, use Steam to verify the integrity of Skyrim's game-cache
+(Steam -> Library -> Properties of Skyrim -> Local files tab -> Verify integrity of game cache).
+
+
+------------------------------------------------------------
+Problem: There are mods missing from my MCM list. Is there anything I can do about it?
+
+Before starting to reinstall mods, you can try to run a repair script we added in SkyUI 3.2.
+To do this, open the console and enter "setStage SKI_ConfigManagerInstance 1" (without the quotes).
 
 
 If your problem wasn't listed here, ask for help in the Nexus comments.
