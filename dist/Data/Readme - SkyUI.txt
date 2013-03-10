@@ -460,7 +460,9 @@ SkyUI is utilizing TweenLite, a high-performance tweening library (http://www.gr
 	Thanks to Jack Doyle and his team for creating it and allowing us to use it under their “No Charge” license.
 
 Thanks to all the testers, who helped a great deal with improving the overall quality of this mod:
-	ToJKa, HellKnight, xporc, MadCat221, Ismelda, Gribbles, freesta, Cartrodus, TheCastle (in random order)
+	ToJKa, HellKnight, xporc, MadCat221, Ismelda, Gribbles, freesta, Cartrodus, TheCastle,
+	NewRaven, T-qb, V4N0, Noritep, claudekennilol, dj2005, llfbandit, webrunner, 352, Erelde, tejon, Sagittarius22
+	(in random order)
 
 Thanks to all translators who helped localizing SkyUI to different languages, among them being:
 	Sagittarius22, LLFBandit (French)
