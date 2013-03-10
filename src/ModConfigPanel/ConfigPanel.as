@@ -176,7 +176,7 @@ class ConfigPanel extends MovieClip
 		for (var i=0; i<arguments.length; i++) {
 			var s = arguments[i];
 			if (s != "")
-				_modList.entryList.push({modIndex: i, text: s, align: "right", enabled: true});
+				_modList.entryList.push({modIndex: i, modName: s, text: Translator.translate(s), align: "right", enabled: true});
 		}
 
 		_modList.entryList.sortOn("text", Array.CASEINSENSITIVE);
@@ -188,9 +188,11 @@ class ConfigPanel extends MovieClip
 		_subList.clearList();
 		_subList.listState.savedIndex = null;
 		
-		for (var i=0; i<arguments.length; i++)
-			if (arguments[i].toLowerCase() != "none")
-				_subList.entryList.push({pageIndex: i, text: arguments[i], align: "right", enabled: true});
+		for (var i=0; i<arguments.length; i++) {
+			var s = arguments[i];
+			if (s.toLowerCase() != "none")
+				_subList.entryList.push({pageIndex: i, pageName: s, text: Translator.translate(s), align: "right", enabled: true});
+		}
 		_subList.InvalidateData();
 	}
 	
@@ -650,7 +652,7 @@ class ConfigPanel extends MovieClip
 			
 			// Send name as well so mod doesn't have to look it up by index later
 			_state = WAIT_FOR_OPTION_DATA;
-			skse.SendModEvent("SKICP_pageSelected", a_entry.text, a_entry.pageIndex);
+			skse.SendModEvent("SKICP_pageSelected", a_entry.pageName, a_entry.pageIndex);
 			
 		// Special case for ForcePageReset without any pages
 		} else {
