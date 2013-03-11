@@ -40,7 +40,7 @@ class SaveLoadPanel extends MovieClip
 		GameDelegate.addCallBack("ScreenshotReady", this, "ShowScreenshot");
 		SaveLoadList_mc.addEventListener("itemPress", this, "onSaveLoadItemPress");
 		SaveLoadList_mc.addEventListener("selectionChange", this, "onSaveLoadItemHighlight");
-		iBatchSize = 2000; // original = SaveLoadList_mc.maxEntries; max = 0x7FFFFFFF;
+		iBatchSize = SaveLoadList_mc.maxEntries; //max = 0x7FFFFFFF;
 		PlayerInfoText.createTextField("LevelText", PlayerInfoText.getNextHighestDepth(), 0, 0, 200, 30);
 		PlayerInfoText.LevelText.text = "$Level";
 		PlayerInfoText.LevelText._visible = false;
