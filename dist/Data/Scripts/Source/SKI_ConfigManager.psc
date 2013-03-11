@@ -304,7 +304,7 @@ int function NextID()
 endFunction
 
 function AcquireLock()
-	while (_lockInit && _locked)
+	while (_lockInit == false || _locked)
 		Debug.GetPlatformName() ; using this over Utility.Wait to avoid menu mode issues
 	endWhile
 
