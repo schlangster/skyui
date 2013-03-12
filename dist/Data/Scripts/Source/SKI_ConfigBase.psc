@@ -77,6 +77,13 @@ endProperty
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
+	; Delegate to another event so the menu is registered after OnInit() is done
+	RegisterForModEvent("_INIT_" + self, "OnPostInit")
+	SendModEvent("_INIT_" + self)
+endEvent
+
+event OnPostInit(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	UnregisterForModEvent("_INIT_" + self)
 	OnGameReload()
 endEvent
 
