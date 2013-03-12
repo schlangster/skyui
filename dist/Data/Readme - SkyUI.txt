@@ -83,6 +83,20 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ========================================================================================================================================
 
 ------------------------------------------------------------
+3.3:
+
+[General]
+- Reverted batch load size to default to avoid delays with lots of saves.
+- Fixed map.swf filename in conflict warning message.
+- Fixed "Disable positioning" option.
+
+[ModConfigurationMenu]
+- Fixed a threading issue that could leave the MCM config manager permanently suspended, resulting in an empty mod list.
+
+[HUDWidgetLoader]
+- Fixed bug that kept health bar permanently visible (or hidden).
+
+------------------------------------------------------------
 3.2:
 
 [General]
