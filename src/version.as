@@ -10,11 +10,12 @@
 //	3.0				7
 //	3.1				8
 //	3.2				9
+//	3.3				10
 
-public static var SKYUI_RELEASE_IDX: Number		= 9;
+public static var SKYUI_RELEASE_IDX: Number		= 10;
 
 public static var SKYUI_VERSION_MAJOR: Number	= 3;
-public static var SKYUI_VERSION_MINOR: Number	= 2;
+public static var SKYUI_VERSION_MINOR: Number	= 3;
 
 public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR);
 
