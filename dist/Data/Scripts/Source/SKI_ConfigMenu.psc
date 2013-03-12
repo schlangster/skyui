@@ -15,9 +15,11 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; 4:	- Converted script to use state options
 ;		- Added map menu version check
 ;		- Added active effects widget configuration
+;
+; 5:	- Fixed 3DItemDisablePositioning
 
 int function GetVersion()
-	return 4
+	return 5
 endFunction
 
 
@@ -106,6 +108,19 @@ float		_effectWidgetYOffset			= 0.0
 
 ; Flags
 int			_effectWidgetFlags
+
+; -- Version 5 --
+
+; Internal
+float		_fInventory3DItemPosZWide
+float		_fInventory3DItemPosZ
+float		_fMagic3DItemPosZWide
+float		_fMagic3DItemPosZ
+
+float		_fInventory3DItemPosScaleWide
+float		_fMagic3DItemPosScaleWide
+float		_fInventory3DItemPosScale
+float		_fMagic3DItemPosScale
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -245,6 +260,10 @@ event OnVersionUpdate(int a_version)
 		SKI_ActiveEffectsWidgetInstance.Orientation			= _orientationValues[_effectWidgetOrientationIdx]
 		SKI_ActiveEffectsWidgetInstance.X					= _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
 		SKI_ActiveEffectsWidgetInstance.Y					= _vertAlignmentBaseOffsets[_effectWidgetVAnchorIdx] + _effectWidgetYOffset
+	endIf
+
+	if (a_version >= 5 && CurrentVersion < 5)
+		Debug.Trace(self + ": Updating to script version 5")
 	endIf
 endEvent
 
@@ -1023,6 +1042,7 @@ state XD_ITEM_POSITIONING ; SLIDER
 		SetToggleOptionValueST(newVal)
 		Apply3DItemXOffset()
 		Apply3DItemYOffset()
+		Apply3DItemScale()
 	endEvent
 
 	event OnDefaultST()
@@ -1034,6 +1054,7 @@ state XD_ITEM_POSITIONING ; SLIDER
 		SetToggleOptionValueST(false)
 		Apply3DItemXOffset()
 		Apply3DItemYOffset()
+		Apply3DItemScale()
 	endEvent
 
 	event OnHighlightST()
@@ -1164,10 +1185,20 @@ endState
 function ApplySettings()
 	; Apply settings that aren't handled by SKI_SettingsManagerInstance
 
-	_fInventory3DItemPosXWide	= Utility.GetINIFloat("fInventory3DItemPosXWide:Interface")
-	_fInventory3DItemPosX 		= Utility.GetINIFloat("fInventory3DItemPosX:Interface")
-	_fMagic3DItemPosXWide 		= Utility.GetINIFloat("fMagic3DItemPosXWide:Interface")
-	_fMagic3DItemPosX 			= Utility.GetINIFloat("fMagic3DItemPosX:Interface")
+	_fInventory3DItemPosXWide		= Utility.GetINIFloat("fInventory3DItemPosXWide:Interface")
+	_fInventory3DItemPosX 			= Utility.GetINIFloat("fInventory3DItemPosX:Interface")
+	_fMagic3DItemPosXWide 			= Utility.GetINIFloat("fMagic3DItemPosXWide:Interface")
+	_fMagic3DItemPosX 				= Utility.GetINIFloat("fMagic3DItemPosX:Interface")
+
+	_fInventory3DItemPosZWide		= Utility.GetINIFloat("fInventory3DItemPosZWide:Interface")
+	_fInventory3DItemPosZ 			= Utility.GetINIFloat("fInventory3DItemPosZ:Interface")
+	_fMagic3DItemPosZWide 			= Utility.GetINIFloat("fMagic3DItemPosZWide:Interface")
+	_fMagic3DItemPosZ 				= Utility.GetINIFloat("fMagic3DItemPosZ:Interface")
+
+	_fInventory3DItemPosScaleWide	= Utility.GetINIFloat("fInventory3DItemPosScaleWide:Interface")
+	_fMagic3DItemPosScaleWide		= Utility.GetINIFloat("fMagic3DItemPosScaleWide:Interface")
+	_fInventory3DItemPosScale		= Utility.GetINIFloat("fInventory3DItemPosScale:Interface")
+	_fMagic3DItemPosScale			= Utility.GetINIFloat("fMagic3DItemPosScale:Interface")
 
 	float h = Utility.GetINIInt("iSize H:Display")
 	float w = Utility.GetINIInt("iSize W:Display")
@@ -1240,17 +1271,31 @@ endFunction
 
 function Apply3DItemYOffset()
 	; Negative values shift the 3D item to the bottom
-	Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-	Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
-	Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
-	Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
+	if (_3DItemDisablePositioning)
+		Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", _fInventory3DItemPosZWide)
+		Utility.SetINIFloat("fInventory3DItemPosZ:Interface", _fInventory3DItemPosZ)
+		Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", _fMagic3DItemPosZWide)
+		Utility.SetINIFloat("fMagic3DItemPosZ:Interface", _fMagic3DItemPosZ)
+	else
+		Utility.SetINIFloat("fInventory3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+		Utility.SetINIFloat("fInventory3DItemPosZ:Interface", (16 + _3DItemYOffset))
+		Utility.SetINIFloat("fMagic3DItemPosZWide:Interface", (12 + _3DItemYOffset))
+		Utility.SetINIFloat("fMagic3DItemPosZ:Interface", (16 + _3DItemYOffset))
+	endIf
 endFunction
 
 function Apply3DItemScale()
-	Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
-	Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
-	Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
-	Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+	if (_3DItemDisablePositioning)
+		Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _fInventory3DItemPosScaleWide)
+		Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _fMagic3DItemPosScaleWide)
+		Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _fInventory3DItemPosScale)
+		Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _fMagic3DItemPosScale)
+	else
+		Utility.SetINIFloat("fInventory3DItemPosScaleWide:Interface", _3DItemScale)
+		Utility.SetINIFloat("fMagic3DItemPosScaleWide:Interface", _3DItemScale)
+		Utility.SetINIFloat("fInventory3DItemPosScale:Interface", _3DItemScale)
+		Utility.SetINIFloat("fMagic3DItemPosScale:Interface", _3DItemScale)
+	endIf
 endFunction
 
 bool function ValidateKey(int a_keyCode, bool a_gamepad)

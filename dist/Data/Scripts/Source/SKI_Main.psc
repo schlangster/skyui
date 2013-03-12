@@ -232,7 +232,7 @@ event OnMenuOpen(string a_menuName)
 		endIf
 
 	elseIf (a_menuName == MAP_MENU)
-		if (CheckMenuVersion("mapmenu.swf", a_menuName, "_global.Map.MapMenu"))
+		if (CheckMenuVersion("map.swf", a_menuName, "_global.Map.MapMenu"))
 			UnregisterForMenu(a_menuName)
 		endIf
 	endIf
