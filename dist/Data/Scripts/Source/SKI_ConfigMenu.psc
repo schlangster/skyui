@@ -467,12 +467,6 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 		endIf
 
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ORIENTATION")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_HORIZONTAL_ANCHOR")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_VERTICAL_ANCHOR")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_GROUP_COUNT")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_XOFFSET")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_YOFFSET")
 		SetToggleOptionValueST(newVal)
 	endEvent
 
@@ -481,12 +475,6 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 
 		_effectWidgetFlags = OPTION_FLAG_NONE
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ORIENTATION")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_HORIZONTAL_ANCHOR")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_VERTICAL_ANCHOR")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_GROUP_COUNT")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_XOFFSET")
-		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_YOFFSET")
 		SetToggleOptionValueST(true)
 	endEvent
 
