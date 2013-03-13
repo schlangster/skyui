@@ -23,7 +23,7 @@ class Map.MapMarker extends gfx.controls.Button
 	];
 
 	private static var ICON_SIZE: Number = 30;
-	private static var ICONCLIP_SIZE: Number = 50;
+	private static var ICONHOLDER_SIZE: Number = 50;
 	private static var UNDISCOVERED_OFFSET: Number = 80;
 	
 	
@@ -109,7 +109,7 @@ class Map.MapMarker extends gfx.controls.Button
 		IconClip.iconHolder.background._visible = false;
 		IconClip.iconHolder.icon.gotoAndStop(iconFrame);
 		IconClip._alpha = 60;
-		IconClip._width = IconClip._height = ICONCLIP_SIZE;
+		IconClip._width = IconClip._height = ICONHOLDER_SIZE;
 
 		switch (_iconName) {
 			case "MineMarker":
@@ -191,9 +191,9 @@ class Map.MapMarker extends gfx.controls.Button
 		switch (_iconName) {
 			case "DoorMarker":
 				if (a_state == "over")
-					TweenNano.to(IconClip, 10, {_width: ICONCLIP_SIZE * 1.5, _height: ICONCLIP_SIZE * 1.5, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE * 1.5, _height: ICONHOLDER_SIZE * 1.5, useFrames: true});
 				else
-					TweenNano.to(IconClip, 10, {_width: ICONCLIP_SIZE, _height: ICONCLIP_SIZE, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE, _height: ICONHOLDER_SIZE, useFrames: true});
 				break;
 
 			case "QuestTargetMarker":
@@ -204,16 +204,16 @@ class Map.MapMarker extends gfx.controls.Button
 
 			case "PlayerSetMarker":
 				if (a_state == "over")
-					TweenNano.to(IconClip, 10, {_alpha: 100, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_alpha: 100, useFrames: true});
 				else
-					TweenNano.to(IconClip, 10, {_alpha: 60, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_alpha: 60, useFrames: true});
 				break;
 
 			default:
 				if (a_state == "over")
-					TweenNano.to(IconClip, 10, {_width: ICONCLIP_SIZE * 1.5, _height: ICONCLIP_SIZE * 1.5, _alpha: 100, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE * 1.5, _height: ICONHOLDER_SIZE * 1.5, _alpha: 100, useFrames: true});
 				else
-					TweenNano.to(IconClip, 10, {_width: ICONCLIP_SIZE, _height: ICONCLIP_SIZE, _alpha: 60, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE, _height: ICONHOLDER_SIZE, _alpha: 60, useFrames: true});
 		}
 	}
 
