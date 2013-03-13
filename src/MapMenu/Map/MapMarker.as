@@ -107,11 +107,10 @@ class Map.MapMarker extends gfx.controls.Button
 		onRollOut = function () {};
 
 		var iconHolder: MovieClip = IconClip.iconHolder;
+		var icon: MovieClip = iconHolder.icon;
 
 		iconHolder.background._visible = false;
-		iconHolder.icon.gotoAndStop(iconFrame);
-		iconHolder._alpha = 60;
-		iconHolder._width = iconHolder._height = ICONHOLDER_SIZE;
+		icon.gotoAndStop(iconFrame);
 
 		switch (_iconName) {
 			case "MineMarker":
@@ -133,7 +132,7 @@ class Map.MapMarker extends gfx.controls.Button
 				break;
 
 			case "DoorMarker":
-				IconClip._alpha = 100;
+				iconHolder._alpha = 100;
 				break;
 
 			case "YouAreHereMarker":
@@ -166,12 +165,12 @@ class Map.MapMarker extends gfx.controls.Button
 		}
 
 		// Scale the icons to fit _iconSize square without overflow
-		if (iconHolder.icon._width > iconHolder.icon._height) {
-			iconHolder.icon._height *= _iconSize / iconHolder.icon._width;
-			iconHolder.icon._width = _iconSize;
+		if (icon._width > icon._height) {
+			icon._height *= _iconSize / icon._width;
+			icon._width = _iconSize;
 		} else {
-			iconHolder.icon._width *= _iconSize / iconHolder.icon._height;
-			iconHolder.icon._height = _iconSize;
+			icon._width *= _iconSize / icon._height;
+			icon._height = _iconSize;
 		}
 	}
 
