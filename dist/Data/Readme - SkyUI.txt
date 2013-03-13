@@ -91,7 +91,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Fixed "Disable positioning" option.
 
 [ModConfigurationMenu]
-- Fixed a threading issue that could leave the MCM config manager permanently suspended, resulting in an empty mod list.
+- Reverted menu registration code back to 3.1 until I have more time to resolve all issues with the new method.
 
 [HUDWidgetLoader]
 - Fixed bug that kept health bar permanently visible (or hidden).
