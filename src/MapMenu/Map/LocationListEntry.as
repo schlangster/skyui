@@ -38,7 +38,16 @@ class Map.LocationListEntry extends BasicListEntry
 		
 		selectIndicator._visible = isSelected;
 		
-		icon.gotoAndStop(a_entryObject.iconType+1);
+		icon.gotoAndStop(a_entryObject.iconFrame);
+
+		if (icon._width > icon._height) {
+			icon._height *= 30 / icon._width;
+			icon._width = 30;
+		} else {
+			icon._width *= 30 / icon._height;
+			icon._height = 30;
+		}
+
 		textField.SetText(a_entryObject.label);
 	}
 }
