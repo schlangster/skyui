@@ -106,10 +106,12 @@ class Map.MapMarker extends gfx.controls.Button
 		onRollOver = function () {};
 		onRollOut = function () {};
 
-		IconClip.iconHolder.background._visible = false;
-		IconClip.iconHolder.icon.gotoAndStop(iconFrame);
-		IconClip._alpha = 60;
-		IconClip._width = IconClip._height = ICONHOLDER_SIZE;
+		var iconHolder: MovieClip = IconClip.iconHolder;
+
+		iconHolder.background._visible = false;
+		iconHolder.icon.gotoAndStop(iconFrame);
+		iconHolder._alpha = 60;
+		iconHolder._width = iconHolder._height = ICONHOLDER_SIZE;
 
 		switch (_iconName) {
 			case "MineMarker":
@@ -164,17 +166,12 @@ class Map.MapMarker extends gfx.controls.Button
 		}
 
 		// Scale the icons to fit _iconSize square without overflow
-		if (IconClip.iconHolder.icon._width > IconClip.iconHolder.icon._height) {
-			IconClip.iconHolder.icon._height *= _iconSize / IconClip.iconHolder.icon._width;
-			IconClip.iconHolder.icon._width = _iconSize;
+		if (iconHolder.icon._width > iconHolder.icon._height) {
+			iconHolder.icon._height *= _iconSize / iconHolder.icon._width;
+			iconHolder.icon._width = _iconSize;
 		} else {
-			IconClip.iconHolder.icon._width *= _iconSize / IconClip.iconHolder.icon._height;
-			IconClip.iconHolder.icon._height = _iconSize;
-		}
-		if (_iconName == "QuestTargetDoorMarker")
-		{
-			skyui.util.Debug.log("IconClip.iconHolder.icon._width: " + IconClip.iconHolder.icon._width)
-			skyui.util.Debug.log("IconClip.iconHolder.icon._height: " + IconClip.iconHolder.icon._height)
+			iconHolder.icon._width *= _iconSize / iconHolder.icon._height;
+			iconHolder.icon._height = _iconSize;
 		}
 	}
 
