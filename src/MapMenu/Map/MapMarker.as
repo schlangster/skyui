@@ -94,9 +94,9 @@ class Map.MapMarker extends gfx.controls.Button
 		super();
 		
 		disableFocus = true;
-
-		iconFrame = markerType + ((isUndiscovered) ? UNDISCOVERED_OFFSET : 0) + 1; // Frame numbers start at 1
 		_iconName = ICON_MAP[markerType];
+		iconFrame = (_iconName == null) ? 0 : markerType;
+		iconFrame += ((isUndiscovered == true) ? UNDISCOVERED_OFFSET : 0) + 1; // Frame numbers start at 1
 	}
 
 	public function configUI(): Void
@@ -156,6 +156,10 @@ class Map.MapMarker extends gfx.controls.Button
 			case "QuestTargetDoorMarker":
 				IconClip.gotoAndPlay("StartBlink");
 				_iconSize += 2*_iconSize/3;
+				break;
+
+			case "EmptyMarker":
+				IconClip._alpha = 0;
 				break;
 		}
 
