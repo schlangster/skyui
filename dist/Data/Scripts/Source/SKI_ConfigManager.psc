@@ -7,9 +7,11 @@ scriptname SKI_ConfigManager extends SKI_QuestBase hidden
 ; 1:	- Initial version
 ;
 ; 2:	- Added lock for API functions
+;
+; 3:	- Removed lock again until I have time to test it properly
 
 int function GetVersion()
-	return 2
+	return 3
 endFunction
 
 
@@ -32,6 +34,7 @@ SKI_ConfigBase		_activeConfig
 
 ; -- Version 2 --
 
+; keep those for now
 bool				_lockInit		= false
 bool				_locked			= false
 
@@ -41,6 +44,9 @@ bool				_locked			= false
 event OnInit()
 	_modConfigs	= new SKI_ConfigBase[128]
 	_modNames	= new string[128]
+
+	; Wait a few ticks until any initial menus have registered for events
+	Utility.Wait(0.1)
 
 	OnGameReload()
 endEvent
@@ -60,18 +66,18 @@ event OnGameReload()
 	RegisterForModEvent("SKICP_colorSelected", "OnColorSelect")
 	RegisterForModEvent("SKICP_colorAccepted", "OnColorAccept")
 	RegisterForModEvent("SKICP_dialogCanceled", "OnDialogCancel")
-	
+
 	RegisterForMenu(JOURNAL_MENU)
 
-	; Must be set before cleanup!!
+	; no longer used but better safe than sorry
 	_lockInit = true
 
 	CleanUp()
+
+	SendModEvent("SKICP_configManagerReady")
 endEvent
 
 function CleanUp()
-	AcquireLock()
-
 	_configCount = 0
 	int i = 0
 	while (i < _modConfigs.length)
@@ -81,11 +87,9 @@ function CleanUp()
 		else
 			_configCount += 1
 		endIf
-		
+
 		i += 1
 	endWhile
-
-	ReleaseLock()
 endFunction
 
 
@@ -210,12 +214,9 @@ endEvent
 
 ; @interface
 int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
-	AcquireLock()
-
-	Log("Registering config menu: " + a_menu + "(" + a_modName + ")")
+	;Log("Registering config menu: " + a_menu + "(" + a_modName + ")")
 
 	if (_configCount >= 128)
-		ReleaseLock()
 		return -1
 	endIf
 
@@ -223,7 +224,6 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	int i = 0
 	while (i < _modConfigs.length)
 		if (_modConfigs[i] == a_menu)
-			ReleaseLock()
 			return i
 		endIf
 			
@@ -236,16 +236,13 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	_modNames[configID] = a_modName
 	
 	_configCount += 1
-	
-	ReleaseLock()
+
 	return configID
 endFunction
 
 ; @interface
 bool function UnregisterMod(SKI_ConfigBase a_menu)
-	AcquireLock()
-
-	Log("Unregistering config menu: " + a_menu)
+	;Log("Unregistering config menu: " + a_menu)
 
 	int i = 0
 	while (i < _modConfigs.length)
@@ -254,21 +251,17 @@ bool function UnregisterMod(SKI_ConfigBase a_menu)
 			_modNames[i] = ""
 			_configCount -= 1
 
-			ReleaseLock()
 			return true
 		endIf
 			
 		i += 1
 	endWhile
 
-	ReleaseLock()
 	return false
 endFunction
 
 ; @interface
 function ForceReset()
-	AcquireLock()
-
 	Log("Forcing config manager reset...")
 	SendModEvent("SKICP_configManagerReset")
 
@@ -283,8 +276,6 @@ function ForceReset()
 	_configCount = 0
 
 	SendModEvent("SKICP_configManagerReady")
-
-	ReleaseLock()
 endFunction
 
 int function NextID()
@@ -301,18 +292,6 @@ int function NextID()
 	endWhile
 	
 	return _curConfigID
-endFunction
-
-function AcquireLock()
-	while (_lockInit == false || _locked)
-		Debug.GetPlatformName() ; using this over Utility.Wait to avoid menu mode issues
-	endWhile
-
-	_locked = true
-endFunction
-
-function ReleaseLock()
-	_locked = false
 endFunction
 
 function Log(string a_msg)

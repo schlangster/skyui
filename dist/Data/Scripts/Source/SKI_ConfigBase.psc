@@ -123,9 +123,6 @@ event OnGameReload()
 	endIf
 
 	CheckVersion()
-
-	SKI_ConfigManager newManager = Game.GetFormFromFile(0x00000802, "SkyUI.esp") As SKI_ConfigManager
-	SetConfigManager(newManager)
 endEvent
 
 
@@ -266,8 +263,19 @@ event OnConfigManagerReset(string a_eventName, string a_strArg, float a_numArg, 
 endEvent
 
 event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	SetConfigManager(a_sender as SKI_ConfigManager)
-endEvent
+	SKI_ConfigManager newManager = a_sender as SKI_ConfigManager
+	; Already registered?
+	if (_configManager == newManager)
+		return
+	endIf
+
+	_configManager = newManager
+
+	_configID = _configManager.RegisterMod(self, ModName)
+	if (_configID != -1)
+		OnConfigRegister()
+	endIf
+ endEvent
 
 event OnMessageDialogClose(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	_messageResult = a_numArg as bool
@@ -743,19 +751,6 @@ endFunction
 
 function Error(string a_msg)
 	Debug.Trace(self + " ERROR: " +  a_msg)
-endFunction
-
-function SetConfigManager(SKI_ConfigManager newManager)
-	; Already registered?
-	if (_configManager == newManager)
-		return
-	endIf
-	
-	_configID = newManager.RegisterMod(self, ModName)
-	if (_configID != -1)
-		_configManager = newManager
-		OnConfigRegister()
-	endIf
 endFunction
 
 function OpenConfig()
