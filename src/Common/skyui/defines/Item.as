@@ -73,7 +73,7 @@ class skyui.defines.Item
 	public static var SOULGEM_PETTY: Number			= 1;
 	public static var SOULGEM_LESSER: Number		= 2;
 	public static var SOULGEM_COMMON: Number		= 3;
-	public static var SOULGEM_GRAND: Number			= 4;
-	public static var SOULGEM_GREATER: Number		= 5;
+	public static var SOULGEM_GREATER: Number		= 4;
+	public static var SOULGEM_GRAND: Number			= 5;
 	public static var SOULGEM_AZURA: Number			= 6;
 }
