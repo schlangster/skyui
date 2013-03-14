@@ -46,7 +46,7 @@ event OnInit()
 	_modNames	= new string[128]
 
 	; Wait a few ticks until any initial menus have registered for events
-	Utility.Wait(0.1)
+	Utility.Wait(0.5)
 
 	OnGameReload()
 endEvent

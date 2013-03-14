@@ -77,22 +77,11 @@ endProperty
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	; Delegate to another event so the menu is registered after OnInit() is done
-	RegisterForModEvent("_INIT_" + self, "OnPostInit")
-	SendModEvent("_INIT_" + self)
-endEvent
-
-event OnPostInit(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	UnregisterForModEvent("_INIT_" + self)
 	OnGameReload()
 endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
-	; We need those when resetting the config manager
-	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
-	RegisterForModEvent("SKICP_configManagerReset", "OnConfigManagerReset")
-
 	if (!_initialized)
 		_initialized = true
 
@@ -121,6 +110,9 @@ event OnGameReload()
 
 		Debug.Trace(self + " INITIALIZED")
 	endIf
+
+	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
+	RegisterForModEvent("SKICP_configManagerReset", "OnConfigManagerReset")
 
 	CheckVersion()
 endEvent
