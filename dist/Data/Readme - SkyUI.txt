@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
 
-Version:		3.3
+Version:		3.4
 
 Download:		http://skyrim.nexusmods.com/mods/3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -81,6 +81,12 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ========================================================================================================================================
  2. Changelog
 ========================================================================================================================================
+
+------------------------------------------------------------
+3.4:
+
+[ModConfigurationMenu]
+- Fixed issue that could prevent certain MCM mods from registering correctly (i.e. Wet and Cold).
 
 ------------------------------------------------------------
 3.3:
