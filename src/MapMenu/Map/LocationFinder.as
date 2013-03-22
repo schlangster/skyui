@@ -104,6 +104,7 @@ class Map.LocationFinder extends MovieClip
 		
 		_bShown = true;
 		_parent.gotoAndPlay("fadeIn");
+		searchWidget.isDisabled = false;
 		list.disableInput = list.disableSelection = false;
 		list.selectedIndex = -1;
 		
@@ -117,6 +118,8 @@ class Map.LocationFinder extends MovieClip
 			_parent.gotoAndStop("hide");
 		else
 			_parent.gotoAndPlay("fadeOut");
+
+		searchWidget.isDisabled = true;
 		list.disableInput = list.disableSelection = true;
 	}
 	

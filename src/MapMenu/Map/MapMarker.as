@@ -84,6 +84,9 @@ class Map.MapMarker extends gfx.controls.Button
 
 
   /* PRIVATE VARIABLES */
+
+	private var _iconWidth = 1;
+	private var _iconHeight = 1;
 	private var _iconName: String = "";
 
 
@@ -174,6 +177,10 @@ class Map.MapMarker extends gfx.controls.Button
 			icon._width *= markerSize / icon._height;
 			icon._height = markerSize;
 		}
+
+		// Store height and width of iconHolder for scaling
+		_iconWidth = iconHolder._width;
+		_iconHeight = iconHolder._height;
 	}
 
   /* PUBLIC FUNCTIONS */
@@ -189,9 +196,9 @@ class Map.MapMarker extends gfx.controls.Button
 		switch (_iconName) {
 			case "DoorMarker":
 				if (a_state == "over")
-					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE * 1.5, _height: ICONHOLDER_SIZE * 1.5, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth * 1.5, _height: _iconHeight * 1.5, useFrames: true});
 				else
-					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE, _height: ICONHOLDER_SIZE, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth, _height: _iconHeight, useFrames: true});
 				break;
 
 			case "QuestTargetMarker":
@@ -209,9 +216,9 @@ class Map.MapMarker extends gfx.controls.Button
 
 			default:
 				if (a_state == "over")
-					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE * 1.5, _height: ICONHOLDER_SIZE * 1.5, _alpha: 100, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth * 1.5, _height: _iconHeight * 1.5, _alpha: 100, useFrames: true});
 				else
-					TweenNano.to(IconClip.iconHolder, 10, {_width: ICONHOLDER_SIZE, _height: ICONHOLDER_SIZE, _alpha: 60, useFrames: true});
+					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth, _height: _iconHeight, _alpha: 60, useFrames: true});
 		}
 	}
 

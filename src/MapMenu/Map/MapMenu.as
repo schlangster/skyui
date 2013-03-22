@@ -83,7 +83,7 @@ class Map.MapMenu
 	private var _setDestControls: Object;
 	private var _findLocControls: Object;
 
-	private var _markerSize: Number = 30;
+	private var _markerSize: Number = 30; // s, m, l: 25, 30, 35  ... xl=40 
 	
 	
   /* STAGE ELEMENTS */
@@ -375,7 +375,7 @@ class Map.MapMenu
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 		
-		// Find Location - L
+		// Find Location - F
 		if (_platform == ButtonChange.PLATFORM_PC) {
 			if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == 33)) {
 				LocalMapMenu.showLocationFinder();
