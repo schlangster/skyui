@@ -82,6 +82,8 @@ class Map.MapMenu
 	private var _playerLocControls: Object;
 	private var _setDestControls: Object;
 	private var _findLocControls: Object;
+
+	private var _markerSize: Number = 30;
 	
 	
   /* STAGE ELEMENTS */
@@ -222,7 +224,7 @@ class Map.MapMenu
 			var markerName = MarkerData[idx + CREATE_NAME];
 			var isUndiscovered = MarkerData[idx + CREATE_UNDISCOVERED];
 			
-			var mapMarker: MovieClip = _markerContainer.attachMovie("MapMarker", "Marker" + _nextCreateIndex, _nextCreateIndex, {markerType: markerType, isUndiscovered: isUndiscovered});
+			var mapMarker: MovieClip = _markerContainer.attachMovie("MapMarker", "Marker" + _nextCreateIndex, _nextCreateIndex, {markerSize: _markerSize, markerType: markerType, isUndiscovered: isUndiscovered});
 			_markerList[_nextCreateIndex] = mapMarker;
 			
 			if (markerType == PlayerLocationMarkerType) {

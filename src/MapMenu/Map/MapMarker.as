@@ -21,14 +21,14 @@ class Map.MapMarker extends gfx.controls.Button
 		"", "DoorMarker", "QuestTargetMarker", "QuestTargetDoorMarker", "MultipleQuestTargetMarker",
 		"PlayerSetMarker", "YouAreHereMarker"
 	];
-
-	private static var ICON_SIZE: Number = 30;
+	
 	private static var ICONHOLDER_SIZE: Number = 50;
 	private static var UNDISCOVERED_OFFSET: Number = 80;
 	
 	
   /* STAGE ELEMENTS */
 	public var IconClip: MovieClip;
+	public var HitArea: MovieClip;
 
 
   /* STATIC VARIABLES */
@@ -78,13 +78,13 @@ class Map.MapMarker extends gfx.controls.Button
 	public var iconFrame: Number = 1;
 	
 	// initObject
-	public var markerType: Number = 0;
-	public var isUndiscovered: Boolean = false;
+	public var markerType: Number;
+	public var isUndiscovered: Boolean;
+	public var markerSize: Number;
 
 
   /* PRIVATE VARIABLES */
 	private var _iconName: String = "";
-	private var _iconSize: Number = ICON_SIZE;
 
 
   /* INITIALIZATION */
@@ -92,6 +92,8 @@ class Map.MapMarker extends gfx.controls.Button
 	public function MapMarker()
 	{
 		super();
+
+		hitArea = HitArea;
 		
 		disableFocus = true;
 		_iconName = ICON_MAP[markerType];
@@ -128,7 +130,7 @@ class Map.MapMarker extends gfx.controls.Button
 			case "NordicDwellingMarker":
 			case "WheatMillMarker":
 			case "WoodMillMarker":
-				_iconSize -= _iconSize/3;
+				markerSize -= markerSize/3;
 				break;
 
 			case "DoorMarker":
@@ -151,12 +153,12 @@ class Map.MapMarker extends gfx.controls.Button
 			case "FalkreathCapitolMarker":
 			case "DawnstarCapitolMarker":
 			case "PlayerSetMarker":
-				_iconSize += _iconSize/3;
+				markerSize += markerSize/3;
 				break;
 
 			case "QuestTargetDoorMarker":
 				IconClip.gotoAndPlay("StartBlink");
-				_iconSize += 2*_iconSize/3;
+				markerSize += 2*markerSize/3;
 				break;
 
 			case "EmptyMarker":
@@ -164,13 +166,13 @@ class Map.MapMarker extends gfx.controls.Button
 				break;
 		}
 
-		// Scale the icons to fit _iconSize square without overflow
+		// Scale the icons to fit markerSize square without overflow
 		if (icon._width > icon._height) {
-			icon._height *= _iconSize / icon._width;
-			icon._width = _iconSize;
+			icon._height *= markerSize / icon._width;
+			icon._width = markerSize;
 		} else {
-			icon._width *= _iconSize / icon._height;
-			icon._height = _iconSize;
+			icon._width *= markerSize / icon._height;
+			icon._height = markerSize;
 		}
 	}
 
