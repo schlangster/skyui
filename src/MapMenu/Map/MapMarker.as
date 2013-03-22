@@ -22,7 +22,7 @@ class Map.MapMarker extends gfx.controls.Button
 		"PlayerSetMarker", "YouAreHereMarker"
 	];
 	
-	private static var ICONHOLDER_SIZE: Number = 50;
+	private static var MARKER_BASE_SIZE: Number = 35;
 	private static var UNDISCOVERED_OFFSET: Number = 80;
 	
 	
@@ -80,7 +80,6 @@ class Map.MapMarker extends gfx.controls.Button
 	// initObject
 	public var markerType: Number;
 	public var isUndiscovered: Boolean;
-	public var markerSize: Number;
 
 
   /* PRIVATE VARIABLES */
@@ -88,6 +87,8 @@ class Map.MapMarker extends gfx.controls.Button
 	private var _iconWidth = 1;
 	private var _iconHeight = 1;
 	private var _iconName: String = "";
+
+	private var _markerSize: Number;
 
 
   /* INITIALIZATION */
@@ -99,6 +100,7 @@ class Map.MapMarker extends gfx.controls.Button
 		hitArea = HitArea;
 		
 		disableFocus = true;
+		_markerSize = MARKER_BASE_SIZE;
 		_iconName = ICON_MAP[markerType];
 		iconFrame = (_iconName == null) ? 0 : markerType;
 		iconFrame += ((isUndiscovered == true) ? UNDISCOVERED_OFFSET : 0) + 1; // Frame numbers start at 1
@@ -133,7 +135,7 @@ class Map.MapMarker extends gfx.controls.Button
 			case "NordicDwellingMarker":
 			case "WheatMillMarker":
 			case "WoodMillMarker":
-				markerSize -= markerSize/3;
+				_markerSize -= _markerSize/3;
 				break;
 
 			case "DoorMarker":
@@ -156,12 +158,12 @@ class Map.MapMarker extends gfx.controls.Button
 			case "FalkreathCapitolMarker":
 			case "DawnstarCapitolMarker":
 			case "PlayerSetMarker":
-				markerSize += markerSize/3;
+				_markerSize += _markerSize/3;
 				break;
 
 			case "QuestTargetDoorMarker":
 				IconClip.gotoAndPlay("StartBlink");
-				markerSize += 2*markerSize/3;
+				_markerSize += 2*_markerSize/3;
 				break;
 
 			case "EmptyMarker":
@@ -169,13 +171,13 @@ class Map.MapMarker extends gfx.controls.Button
 				break;
 		}
 
-		// Scale the icons to fit markerSize square without overflow
+		// Scale the icons to fit _markerSize square without overflow
 		if (icon._width > icon._height) {
-			icon._height *= markerSize / icon._width;
-			icon._width = markerSize;
+			icon._height *= _markerSize / icon._width;
+			icon._width = _markerSize;
 		} else {
-			icon._width *= markerSize / icon._height;
-			icon._height = markerSize;
+			icon._width *= _markerSize / icon._height;
+			icon._height = _markerSize;
 		}
 
 		// Store height and width of iconHolder for scaling
