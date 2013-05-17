@@ -18,6 +18,7 @@ class FavoritesListEntry extends BasicListEntry
   	public var equipIcon: MovieClip;
 	public var textField: TextField;
   	public var selectIndicator: MovieClip;
+	public var hotkeyIcon: MovieClip;
 	
 	
   /* INITIALIZATION */
@@ -42,10 +43,22 @@ class FavoritesListEntry extends BasicListEntry
 		if (a_entryObject.text == undefined) {
 			textField.SetText(" ");
 		} else {
-			if (a_entryObject.hotkey != undefined && a_entryObject.hotkey != -1) {
-				appendHotkeyText(textField, a_entryObject.hotkey, a_entryObject.text);
+			var hotkey = a_entryObject.hotkey;
+			if (hotkey != undefined && hotkey != -1) {
+				if (hotkey >= 0 && hotkey <= 7) {
+					textField.SetText(a_entryObject.text);
+					
+					hotkeyIcon._visible = true;
+					hotkeyIcon.gotoAndStop(hotkey + 1);
+				} else {
+					textField.SetText("$HK" + hotkey);
+					textField.SetText(textField.text + ". " + a_entryObject.text);
+					hotkeyIcon._visible = false;
+				}
+				
 			} else {
 				textField.SetText(a_entryObject.text);
+				hotkeyIcon._visible = false;
 			}
 			var maxTextLength: Number = 35;
 			if (textField.text.length > maxTextLength) {
@@ -53,6 +66,7 @@ class FavoritesListEntry extends BasicListEntry
 			}
 		}
 		textField.textAutoSize = "shrink";
+
 		
 		if (a_entryObject == null)
 			equipIcon.gotoAndStop("None");
@@ -62,15 +76,4 @@ class FavoritesListEntry extends BasicListEntry
 	
 	
   /* PRIVATE FUNCTIONS */
-  
-	function appendHotkeyText(atfText: TextField, aiHotkey: Number, astrItemName: String): Void
-	{
-		if (aiHotkey >= 0 && aiHotkey <= 7) {
-			atfText.SetText(aiHotkey + 1 + ". " + astrItemName);
-			return;
-		}
-		atfText.SetText("$HK" + aiHotkey);
-		atfText.SetText(atfText.text + ". " + astrItemName);
-	}
-  
 }
