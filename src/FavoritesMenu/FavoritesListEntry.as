@@ -15,6 +15,7 @@ class FavoritesListEntry extends BasicListEntry
 	
   /* STAGE ELMENTS */
   
+  	public var itemIcon: MovieClip;
   	public var equipIcon: MovieClip;
 	public var textField: TextField;
   	public var selectIndicator: MovieClip;
@@ -67,6 +68,9 @@ class FavoritesListEntry extends BasicListEntry
 		}
 		textField.textAutoSize = "shrink";
 
+		var iconLabel = a_entryObject.iconLabel != undefined ? a_entryObject.iconLabel : "default_misc";
+		itemIcon.gotoAndStop(iconLabel);
+		itemIcon._alpha = isSelected ? 90 : 50;
 		
 		if (a_entryObject == null)
 			equipIcon.gotoAndStop("None");

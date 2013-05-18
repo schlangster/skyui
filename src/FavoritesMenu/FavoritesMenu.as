@@ -15,7 +15,6 @@ import skyui.components.list.BasicEnumeration;
 import skyui.components.list.FilteredEnumeration;
 
 import skyui.filter.ItemTypeFilter;
-import skyui.filter.NameFilter;
 import skyui.filter.SortFilter;
 
 
@@ -28,7 +27,6 @@ class FavoritesMenu extends MovieClip
 	private var _platform: Number;
 	
 	private var _typeFilter: ItemTypeFilter;
-	private var _nameFilter: NameFilter;
 	private var _sortFilter: SortFilter;
 	
 	private var _categoryButtons: Array;
@@ -70,7 +68,6 @@ class FavoritesMenu extends MovieClip
 		//dbgIntvl = setInterval(this, "TestMenu", 1000);
 		
 		_typeFilter = new ItemTypeFilter();
-		_nameFilter = new NameFilter();
 		_sortFilter = new SortFilter();
 		
 		_categoryButtonGroup = new ButtonGroup("CategoryButtonGroup");
@@ -97,10 +94,10 @@ class FavoritesMenu extends MovieClip
 		_categoryButtonGroup.addEventListener("change", this, "onCategorySelect");
 		
 		itemList.addDataProcessor(new FilterDataExtender());
+		itemList.addDataProcessor(new FavoritesIconSetter());
 
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
-		//listEnumeration.addFilter(_nameFilter);
 		listEnumeration.addFilter(_sortFilter);
 		
 		_typeFilter.addEventListener("filterChange", this, "onFilterChange");

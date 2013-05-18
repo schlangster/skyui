@@ -14,12 +14,14 @@ class InventoryIconSetter implements IListProcessor
 
 	private var _noIconColors: Boolean;
 
+
   /* INITIALIZATION */
 
  	public function InventoryIconSetter(a_configAppearance: Object)
  	{
  		_noIconColors = a_configAppearance.icons.item.noColor;
  	}
+
 
   /* PUBLIC FUNCTIONS */
 	
@@ -32,7 +34,9 @@ class InventoryIconSetter implements IListProcessor
 			processEntry(entryList[i]);
 	}
 
+
   /* PRIVATE FUNCTIONS */
+  
 	private function processEntry(a_entryObject: Object): Void
 	{
 		switch (a_entryObject.formType) {
