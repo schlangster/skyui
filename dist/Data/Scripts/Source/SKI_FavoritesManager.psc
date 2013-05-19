@@ -94,7 +94,7 @@ event OnGameReload()
 	RegisterForModEvent("SKIFM_groupAdded", "OnGroupAdd")
 	RegisterForModEvent("SKIFM_groupRemoved", "OnGroupRemove")
 	RegisterForModEvent("SKIFM_groupUsed", "OnGroupUse")
-
+	CheckProperties()
 	CleanUp()
 	DebugT("OnGameReload End!")
 endEvent
@@ -434,6 +434,15 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
+function CheckProperties()
+	If PlayerREF == None
+		DebugT("WARNING! PlayerREF Property is not set. Setting it using Game.GetPlayer() but check the script properties!")
+		PlayerREF == Game.GetPlayer()
+	EndIf
+	If AudioCategoryUI == None
+		DebugT("WARNING! AudioCategoryUI Property is not set. This will cause errors. Check the script properties!")
+	EndIf
+endFunction
 
 ; DEBUG ---------------------------------------------------------------------------------------
 
