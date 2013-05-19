@@ -5,6 +5,12 @@ scriptname SKI_FavoritesManager extends SKI_QuestBase
 string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
 string property		MENU_ROOT		= "_root.Menu_mc" autoReadonly
 
+int property		FAV_FLAG_LISTONLY	= 	0 	AutoReadOnly
+int property		FAV_FLAG_ALLOWUSE	= 	1 	AutoReadOnly
+int property		FAV_FLAG_EQUIPSET	= 	2 	AutoReadOnly
+int property		FAV_FLAG_NOWEAPON	= 	4 	AutoReadOnly
+int property		FAV_FLAG_NOARMOR	= 	8 	AutoReadOnly
+int property		FAV_FLAG_NOAMMO		= 	16 	AutoReadOnly
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -47,7 +53,18 @@ int[]		_formIds2
 
 int[]		_groupCounts
 
-bool 		usedebug = True
+; index is 0-7 for groups
+; Flags: 
+;   0 = Standard list, Disallow group use
+;   1 = Allow group use
+;   2 = Act like equipment set (unequip any gear not in the group)
+;   4 = Don't remove equipped Weapons or Spells
+;   8 = Don't remove equipped Armor
+;  16 = Don't remove equipped Ammo
+int[]		_groupFlags
+
+bool 		_useDebug = True
+bool		_silenceEquipSounds = False
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -224,11 +241,11 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 				DebugT(item + " is WeaponType " + WeaponType)
 				If WeaponType > 4 && handSlot == 1; It's two-handed and both hands are free
 					; use SKSE EquipItemEX which hopefully avoids the enchantment bug and lets us pick the hand
-					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = False)
+					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 					handSlot += 2
 					DebugT("Equipped " + item.GetName() + " in both hands!")
 				ElseIf WeaponType <= 4 && handSlot < 3 ; It's one-handed and the player has a free hand
-					PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = False)
+					PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = _silenceEquipSounds)
 					DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
 					handSlot += 1
 				Else
@@ -240,11 +257,11 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 				If SlotMask == 512 && handSlot > 2; It's a shield but player's left hand is already full
 					DebugT("Player tried to equip shield " + item.GetName() + " but doesn't have a free left hand!")
 				Else
-					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = False)
+					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 					DebugT("Equipped " + item.GetName() + "!")
 				EndIf
 			ElseIf itemType == 42 ;kAmmo
-				PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = False)
+				PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 				DebugT("Equipped " + item.GetName() + "!")
 			ElseIf itemType == 22 ;kSpell
 				DebugT("Equipping " + item.GetName() + "...")
@@ -311,6 +328,23 @@ event OnMenuOpen(string a_menuName)
 	SynchronizeGroupData()
 endEvent
 
+event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	; Just remembered that the mod event only supports a single numberic argument as per Schlangster
+	; Fortunately strings be coerced into ints. 
+	DebugT("OnGroupFlag!")
+	DebugT("  a_eventName: " + a_eventName)
+	DebugT("  a_strArg: " + a_strArg)
+	DebugT("  a_numArg: " + a_numArg)
+	DebugT("  a_sender: " + a_sender)
+	
+	Form	item = a_sender
+	int		flags = a_strArg as Int
+	int		groupIndex = a_numArg as int
+
+	_groupFlags[groupIndex] = flags
+	
+	DebugT("OnGroupFlag end!")
+EndEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
@@ -404,7 +438,7 @@ endFunction
 ; DEBUG ---------------------------------------------------------------------------------------
 
 Function DebugT(string DebugString)
-	If usedebug
+	If _useDebug
 		Debug.Trace("SKI_Favs: " + DebugString)
 	EndIf
 EndFunction
@@ -426,14 +460,28 @@ event OnUpdate()
 
 	;OnGroupUse("SKIFM_groupAdded", "", 0, none)
 	DebugT("onUpdate end!")
-	
 endEvent
 
-WEAPON Property Weapon1  Auto  
-WEAPON Property Weapon2  Auto  
-Armor Property Armor1  Auto  
-Armor Property Armor2  Auto  
-Armor Property Ring1  Auto  
-Armor Property Ring2  Auto  
-Armor Property Ring3  Auto  
-Armor Property Ring4  Auto  
+Bool Function CheckFlag(Int group, Int flag)
+	Return Math.LogicalAnd(_groupFlags[group],flag) as Bool
+EndFunction
+
+Function ParseFlags(Int Flags)
+	DebugT("Flags: " + Flags)
+	If Math.LogicalAnd(Flags,FAV_FLAG_ALLOWUSE)
+		DebugT(" FAV_FLAG_ALLOWUSE")
+	EndIf
+	If Math.LogicalAnd(Flags,FAV_FLAG_EQUIPSET)
+		DebugT(" FAV_FLAG_EQUIPSET")
+	EndIf
+	If Math.LogicalAnd(Flags,FAV_FLAG_NOWEAPON)
+		DebugT(" FAV_FLAG_NOWEAPON")
+	EndIf
+	If Math.LogicalAnd(Flags,FAV_FLAG_NOARMOR)
+		DebugT(" FAV_FLAG_NOARMOR")
+	EndIf
+	If Math.LogicalAnd(Flags,FAV_FLAG_NOAMMO)
+		DebugT(" FAV_FLAG_NOAMMO")
+	EndIf
+EndFunction
+
