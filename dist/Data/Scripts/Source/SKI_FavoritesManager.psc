@@ -99,7 +99,6 @@ event OnGameReload()
 	DebugT("OnGameReload End!")
 endEvent
 
-
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -210,6 +209,9 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		typeDescriptors = _typeDescriptors1
 	endIf
 
+	Form[] deferredItems
+	deferredItems = new Form[32]
+	int deferredIdx
 	
 	Form item
 	Int itemType
@@ -263,7 +265,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			ElseIf itemType == 42 ;kAmmo
 				PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 				DebugT("Equipped " + item.GetName() + "!")
-			ElseIf itemType == 22 ;kSpell
+			ElseIf itemType == 22 || itemType == 23 ;kSpell or kScroll, should work the same way.
 				DebugT("Equipping " + item.GetName() + "...")
 				If item == item as Spell
 					DebugT("Item is the same as its spell version!")
@@ -271,6 +273,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 					DebugT("Item is NOT THE SAME as its spell version!")
 				EndIf
 				;This is annoying. Since there's apparently no way to get a spell's EquipType (i.e. right/left/both/power), we have to use trial and error
+				;FIXME: A future revision of SKSE will be adding a way to get the EquipType from a spell, so this can be fixed whenever it comes out.
 				Spell powerSpell = PlayerREF.GetEquippedSpell(2) ; Save currently equipped Power
 				PlayerREF.EquipSpell(item as Spell,2) ; Try to equip the spell as a Power
 				Bool SpellFound = False
@@ -308,17 +311,58 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			ElseIf itemType == 119 ;kShout
 				PlayerREF.EquipShout(item as Shout)
 				DebugT("Equipped " + item.GetName() + " as a Shout!")
+			ElseIf itemType == 46 ;kPotion
+				If (item as Potion).IsHostile() ; This is a poison and should only be applied after new weapons have been equipped.
+					deferredItems[deferredIdx] = item
+					deferredIdx += 1
+					DebugT("Deferred " + item.GetName() + " as a Poison!")
+				Else ; This is a non-hostile potion, food, or... something? and can be used immediately
+					PlayerREF.EquipItem(item as Potion, abSilent = True)
+					DebugT("Consumed " + item.GetName() + " as a Potion/Food!")
+				EndIf
+			ElseIf itemType == 30 ;kIngredient
+				PlayerREF.EquipItem(item as Ingredient, abSilent = True)
+				DebugT("Consumed " + item.GetName() + " as a Ingredient!")
+			ElseIf itemType == 31 ;kLight, hopefully a torch.
+				;Should be equipped last, as it depends on having the left hand free
+				deferredItems[deferredIdx] = item
+				deferredIdx += 1
+				DebugT("Deferred " + item.GetName() + " as a Light!")
 			EndIf
 		ElseIf !item
-			DebugT("items[" + i + "] is none!")
+			;DebugT("items[" + i + "] is none!")
 		ElseIf !itemCount
 			DebugT("Player tried to equip " + item.GetName() + " but doesn't have one!")
 		Else
-			DebugT("Something totally weird happened on items[" + i + "]!")
+			DebugT("WARNING! Something totally weird happened on items[" + i + "]!")
 		EndIf
 
 		i += 1
 	endWhile
+	i = 0
+	;If !PlayerREF.IsOnMount() ; Do not use this when mounted, as per instructions
+	;	PlayerREF.QueueNiNodeUpdate()
+	;EndIf
+	DebugT("Checking for deferred items...")
+	While i < deferredIdx
+		item = deferredItems[i]
+		itemType = item.GetType()
+		If itemType == 46 ; kPotion which, since it was deferred, should be hostile, aka poison. 
+			DebugT("Consuming deferred item " + i + ", " + item.GetName())
+			PlayerREF.EquipItem(deferredItems[i], abSilent = True)
+		ElseIf itemType == 31 ; kLight, probably a torch, which needs the left hand free
+			If handSlot < 3 ; Left hand is free
+				PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
+				DebugT("Equipped deferred item " + item.GetName())
+			Else
+				DebugT("Player tried to equip light " + item.GetName() + " but doesn't have a free left hand!")
+			EndIf
+		Else ; Some other deferred item. 
+			DebugT("Equipping deferred item " + i + ", " + item.GetName())
+			PlayerREF.EquipItem(deferredItems[i], abSilent = True)
+		EndIf
+		i += 1
+	EndWhile
 	AudioCategoryUI.Mute() ; Turn UI sounds back on
 	DebugT("OnGroupUse end!")
 endEvent
