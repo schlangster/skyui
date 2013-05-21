@@ -160,13 +160,6 @@ event OnConfigInit()
 endEvent
 
 ; @implements SKI_QuestBase
-event OnGameReload()
-	parent.OnGameReload()
-	
-	ApplySettings()
-endEvent
-
-; @implements SKI_QuestBase
 event OnVersionUpdate(int a_version)
 
 	; Version 2
