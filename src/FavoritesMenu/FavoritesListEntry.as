@@ -35,11 +35,15 @@ class FavoritesListEntry extends BasicListEntry
 	
   	// @override BasicListEntry
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
-	{
+	{		
+		var isAssigned = a_entryObject == a_state.assignedEntry;
 		var isSelected = a_entryObject == a_state.list.selectedEntry;
 		
+		enabled = a_state.assignedEntry == null || isAssigned;
+		_alpha = enabled ? 100 : 25;
+		
 		if (selectIndicator != undefined)
-			selectIndicator._visible = isSelected;
+			selectIndicator._visible = isSelected || isAssigned;
 		
 		if (a_entryObject.text == undefined) {
 			textField.SetText(" ");

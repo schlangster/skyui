@@ -1,6 +1,4 @@
-﻿import gfx.io.GameDelegate;
-
-import skyui.defines.Form;
+﻿import skyui.defines.Form;
 
 import skyui.components.list.BasicList;
 import skyui.components.list.IListProcessor;
@@ -15,9 +13,15 @@ class FilterDataExtender implements IListProcessor
 	public static var FILTERFLAG_GEAR		= 0x00000002;
 	public static var FILTERFLAG_AID		= 0x00000004;
 	public static var FILTERFLAG_MAGIC		= 0x00000008;
+
+	public static var FILTERFLAG_GROUP_ADD	= 0x00000010;
+	public static var FILTERFLAG_GROUP_0	= 0x00000020;
+	// Group N+1 = (GROUP_N << 1) | GROUP_ADD
 	
 	
   /* PRIVATE VARIABLES */
+  
+  /* PROPERTIES */
 	
   /* INITIALIZATION */
 	
@@ -35,7 +39,7 @@ class FilterDataExtender implements IListProcessor
 		
 		for (var i = 0; i < entryList.length; i++) {
 			var e = entryList[i];
-			if (e.skyui_itemDataProcessed || e.filterFlag == 0)
+			if (e.skyui_itemDataProcessed)
 				continue;
 				
 			e.skyui_itemDataProcessed = true;
