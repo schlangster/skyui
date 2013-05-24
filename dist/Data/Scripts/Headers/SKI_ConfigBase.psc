@@ -378,7 +378,6 @@ function AddKeyMapOptionST(string a_stateName, string a_text, int a_keyCode, int
 	Guard()
 endFunction
 
-; @interface
 function SetOptionFlagsST(int a_flags, bool a_noUpdate = false, string a_stateName = "")
 	{Sets the state option flags}
 	Guard()
