@@ -37,7 +37,7 @@ class skyui.components.list.ScrollingList extends BasicList
 
 	private var _scrollPosition: Number = 0;
 	
-	public function get scrollPosition()
+	public function get scrollPosition(): Number
 	{
 		return _scrollPosition;
 	}
