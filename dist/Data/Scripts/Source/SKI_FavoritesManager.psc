@@ -12,6 +12,10 @@ int property		FAV_FLAG_NOWEAPON	= 	4	autoReadonly
 int property		FAV_FLAG_NOARMOR	= 	8	autoReadonly
 int property		FAV_FLAG_NOAMMO		= 	16 	autoReadonly
 
+int property		FAV_ITEM_FLAG_NONE	= 	0	autoReadonly
+int property		FAV_ITEM_FLAG_RIGHT	= 	1	autoReadonly
+int property		FAV_ITEM_FLAG_LEFT	= 	2	autoReadonly
+int property		FAV_ITEM_FLAG_BOTH	= 	4	autoReadonly
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -71,14 +75,32 @@ event OnGameReload()
 	RegisterForModEvent("SKIFM_groupAdded", "OnGroupAdd")
 	RegisterForModEvent("SKIFM_groupRemoved", "OnGroupRemove")
 	RegisterForModEvent("SKIFM_groupUsed", "OnGroupUse")
-
+	
 	RegisterForMenu(FAVORITES_MENU)
-
+	RegisterForSingleUpdate(5)
 	CleanUp()
 endEvent
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
+
+event onUpdate()
+ Actor p = Game.GetPlayer() 
+ Weapon w = Game.GetFormFromFile(0x00012EB7, "Skyrim.esm") as Weapon
+ ;OnGroupAdd("Yahoo!", "", 0, w)
+ DebugT("Flags on item 1:")
+ _itemFlags1[0] = RequestFlag(0)
+ DebugT("RequestFlag(0) returned " + _itemFlags1[0])
+ _itemFlags1[0] = RequestFlag(0)
+ DebugT("RequestFlag(0) returned " + _itemFlags1[0])
+ _itemFlags1[0] = RequestFlag(0)
+ DebugT("RequestFlag(0) returned " + _itemFlags1[0])
+ _itemFlags1[0] = RequestFlag(0)
+ DebugT("RequestFlag(0) returned " + _itemFlags1[0])
+ _itemFlags1[0] = RequestFlag(0)
+ DebugT("RequestFlag(0) returned " + _itemFlags1[0])
+
+EndEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	DebugT("OnGroupAdd!")
@@ -222,9 +244,17 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 					handSlot += 2
 					DebugT("Equipped " + item.GetName() + " in both hands!")
 				elseIf (WeaponType <= 4 && handSlot < 3) ; It's one-handed and the player has a free hand
-					PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = _silenceEquipSounds)
-					DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
-					handSlot += 1
+					If PlayerREF.GetItemCount(item) > 1 && handSlot == 1; Player has at least two of these and two free hands, so dual-wield them
+						; For some reason if we don't call EquipItemEX sequentially, the second one fails sometimes
+						PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = _silenceEquipSounds)
+						PlayerREF.EquipItemEX(item, equipSlot = handSlot + 1, equipSound = _silenceEquipSounds)
+						handSlot += 2
+						DebugT("Equipped " + item.GetName() + " in each hand (dual wielding)!")
+					Else ; Player only has one, or only has one free hand
+						PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = _silenceEquipSounds)
+						DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
+						handSlot += 1
+					EndIf
 				else
 					DebugT("Player tried to equip " + item.GetName() + " but doesn't have a free hand!")
 				endIf
@@ -249,6 +279,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 				endIf
 				;This is annoying. Since there's apparently no way to get a spell's EquipType (i.e. right/left/both/power), we have to use trial and error
 				;FIXME: A future revision of SKSE will be adding a way to get the EquipType from a spell, so this can be fixed whenever it comes out.
+				DebugT("EquipType of " + item.GetName() + " is " + (item as Spell).GetEquipType())
 				Spell powerSpell = PlayerREF.GetEquippedSpell(2) ; Save currently equipped Power
 				PlayerREF.EquipSpell(item as Spell,2) ; Try to equip the spell as a Power
 				Bool SpellFound = False
@@ -356,7 +387,7 @@ event OnMenuOpen(string a_menuName)
 endEvent
 
 event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	; Just remembered that the mod event only supports a single numberic argument as per Schlangster
+	; Just remembered that the mod event only supports a single numeric argument as per Schlangster
 	; Fortunately strings be coerced into ints. 
 	DebugT("OnGroupFlag!")
 	DebugT("  a_eventName: " + a_eventName)
@@ -499,6 +530,102 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
+int function RequestFlag(int itemIdx)
+	;Return "next" flag based on what is current set for the item
+	; Order should go Right->Left->Both->None (1->2->4->0)
+	; Skip flags that don't apply to a given item
+	; None/0 means the item will still be equipped onGroupUse, just not to a specific hand. 
+	;  0 also applies to voice, powers, ammo, etc that can't be equipped to a hand
+	
+	int[] itemFlags
+	form[] items
+	if (itemIdx >= 128)
+		itemIdx -= 128
+		itemFlags = _itemFlags2
+		items = _items2
+	else
+		itemFlags = _itemFlags1
+		items = _items1
+	endIf
+	
+	int cFlag = itemFlags[itemIdx]
+	form item = items[itemIdx]
+	int itemType = item.GetType()
+	
+	DebugT("items[" + itemIdx + "] is " + item)
+	DebugT(item.GetName() + " is Type " + itemType)
+	DebugT("itemFlags[" + itemIdx + "] is " + cFlag)
+	ParseItemFlags(cFlag)
+	
+	; == Begin special cases
+	If (itemType == 41)
+		; TODO: Implement GetEquipType here when SKSE is updated, probably merge weapon/spell test
+		DebugT("WeaponType is " + (item as Weapon).GetWeaponType())
+		If (item as Weapon).GetWeaponType() > 4 ; Two handed, so only return Both/None
+			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_BOTH) ; Item is flagged BOTH, set to None
+				Return FAV_ITEM_FLAG_NONE
+			Else ; Item is flagged none, or some invalid value
+				Return FAV_ITEM_FLAG_BOTH
+			EndIf
+		EndIf
+	ElseIf (itemType == 26) ; separate the GetSlotMask to avoid logspam
+		 If (item as Armor).GetSlotMask() == 512 ; it's a shield, so it's always left hand
+			DebugT("Shield!")
+			Return FAV_ITEM_FLAG_LEFT
+		 EndIf
+	ElseIf (itemType == 31) ; it's a light, probably a torch, so another always left-handed item
+		DebugT("Light!")
+		Return FAV_ITEM_FLAG_LEFT
+	ElseIf (itemType == 22) ; it's a spell, so it might be Both or Left only
+		int EquipType = (item as Spell).GetEquipType()
+		DebugT("Spell equiptype is " + EquipType)
+		If EquipType == 0 ; Two handed, so only return Both/None
+			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_BOTH) ; Item is flagged BOTH, set to None
+				Return FAV_ITEM_FLAG_NONE
+			Else ; Item is flagged none, or some invalid value
+				Return FAV_ITEM_FLAG_BOTH
+			EndIf
+		ElseIf EquipType == 2 ; Left-handed, so only return Left/None
+			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_LEFT) ; Item is flagged LEFT, set to None
+				Return FAV_ITEM_FLAG_NONE
+			Else ; Item is flagged none, or some invalid value
+				Return FAV_ITEM_FLAG_LEFT
+			EndIf
+		ElseIf EquipType == 4 ; Right-handed, so only return Right/None 
+			;FIXME: Is there ANY right-handed-only spell? Do we even need this?
+			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_RIGHT) ; Item is flagged RIGHT, set to None
+				Return FAV_ITEM_FLAG_NONE
+			Else ; Item is flagged none, or some invalid value
+				Return FAV_ITEM_FLAG_RIGHT
+			EndIf
+		ElseIf EquipType == 6 ; Voice or Power, so always return None
+			Return FAV_ITEM_FLAG_NONE
+		EndIf
+	EndIf
+	; == End special cases
+	
+	; If we've gotten this far, then this item should be handled in the normal fashion
+	; Otherwise we would have returned by now
+	DebugT("Not a special case!")
+	If (itemType == 41) || (itemType == 22) ; Weapons or spells will go through the default
+		If cFlag == FAV_ITEM_FLAG_NONE ; Currently None, leftshift doesn't work on 0
+			Return FAV_ITEM_FLAG_RIGHT
+		ElseIf cFlag < FAV_ITEM_FLAG_BOTH 
+			If (itemType == 41) && (PlayerREF.GetItemCount(item) == 1) && (cFlag == FAV_ITEM_FLAG_LEFT)
+				;Player tried to switch to Both but only had one of the weapon, so DENIED!
+				Return FAV_ITEM_FLAG_NONE
+			Else
+				;Right->Left->Both
+				Return Math.LeftShift(cFlag,1)
+			EndIf
+		Else ;Currently Both, rollover to None
+			Return FAV_ITEM_FLAG_NONE
+		EndIf
+	Else ; Item doesn't support handedness
+		Return FAV_ITEM_FLAG_NONE
+	EndIf
+EndFunction
+
 ; DEBUG ---------------------------------------------------------------------------------------
 
 function DebugT(string DebugString)
@@ -507,11 +634,22 @@ function DebugT(string DebugString)
 	endIf
 endFunction
 
-bool function CheckFlag(int a_group, int a_flag)
+bool function CheckGroupFlag(int a_group, int a_flag)
 	Return Math.LogicalAnd(_groupFlags[a_group], a_flag) as bool
 endFunction
 
-function ParseFlags(int a_flags)
+bool function CheckItemFlag(int a_item, int a_flag)
+	int[] itemFlags
+	if (a_item >= 128)
+		a_item -= 128
+		itemFlags = _itemFlags2
+	else
+		itemFlags = _itemFlags1
+	endIf
+	Return Math.LogicalAnd(itemFlags[a_item], a_flag) as bool
+endFunction
+
+function ParseGroupFlags(int a_flags)
 	DebugT("Flags: " + a_flags)
 	if (Math.LogicalAnd(a_flags, FAV_FLAG_ALLOWUSE))
 		DebugT(" FAV_FLAG_ALLOWUSE")
@@ -529,3 +667,17 @@ function ParseFlags(int a_flags)
 		DebugT(" FAV_FLAG_NOAMMO")
 	endIf
 endFunction
+
+function ParseItemFlags(int a_flags)
+	DebugT("Flags: " + a_flags)
+	if (Math.LogicalAnd(a_flags, FAV_ITEM_FLAG_RIGHT))
+		DebugT(" FAV_ITEM_FLAG_RIGHT")
+	endIf
+	if (Math.LogicalAnd(a_flags, FAV_ITEM_FLAG_LEFT))
+		DebugT(" FAV_ITEM_FLAG_LEFT")
+	endIf
+	if (Math.LogicalAnd(a_flags, FAV_ITEM_FLAG_BOTH))
+		DebugT(" FAV_ITEM_FLAG_BOTH")
+	endIf
+endFunction
+
