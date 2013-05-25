@@ -12,11 +12,6 @@ int property		FAV_FLAG_NOWEAPON	= 	4	autoReadonly
 int property		FAV_FLAG_NOARMOR	= 	8	autoReadonly
 int property		FAV_FLAG_NOAMMO		= 	16 	autoReadonly
 
-int property		FAV_ITEM_FLAG_NONE	= 	0	autoReadonly
-int property		FAV_ITEM_FLAG_RIGHT	= 	1	autoReadonly
-int property		FAV_ITEM_FLAG_LEFT	= 	2	autoReadonly
-int property		FAV_ITEM_FLAG_BOTH	= 	4	autoReadonly
-
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 Actor Property		PlayerREF Auto ; Needed for GetItemCount and EquipItem
@@ -28,8 +23,6 @@ Form[]				_items1
 Form[]				_items2
 int[]				_itemFormIds1
 int[]				_itemFormIds2
-int[]				_itemFlags1
-int[]				_itemFlags2
 
 int[]				_groupCounts
 
@@ -56,8 +49,6 @@ event OnInit()
 	_items2			= new Form[128]
 	_itemFormIds1	= new int[128]
 	_itemFormIds2	= new int[128]
-	_itemFlags1		= new int[128]
-	_itemFlags2		= new int[128]
 
 	_groupCounts	= new int[8]
 	_groupFlags		= new int[8]
@@ -85,20 +76,6 @@ endEvent
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event onUpdate()
- Actor p = Game.GetPlayer() 
- Weapon w = Game.GetFormFromFile(0x00012EB7, "Skyrim.esm") as Weapon
- ;OnGroupAdd("Yahoo!", "", 0, w)
- DebugT("Flags on item 1:")
- _itemFlags1[0] = RequestFlag(0)
- DebugT("RequestFlag(0) returned " + _itemFlags1[0])
- _itemFlags1[0] = RequestFlag(0)
- DebugT("RequestFlag(0) returned " + _itemFlags1[0])
- _itemFlags1[0] = RequestFlag(0)
- DebugT("RequestFlag(0) returned " + _itemFlags1[0])
- _itemFlags1[0] = RequestFlag(0)
- DebugT("RequestFlag(0) returned " + _itemFlags1[0])
- _itemFlags1[0] = RequestFlag(0)
- DebugT("RequestFlag(0) returned " + _itemFlags1[0])
 
 EndEvent
 
@@ -411,10 +388,8 @@ EndEvent
 function InitMenuGroupData()
 	DebugT("InitMenuGroupData called!")
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupFlags", _itemFlags1)
 
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupFlags", _itemFlags2)
 
 	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", true)
 
@@ -427,15 +402,12 @@ function UpdateMenuGroupData(int a_groupIndex)
 	int offset = 32 * a_groupIndex
 
 	int[] itemFormIds
-	int[] itemFlags
 
 	if (offset >= 128)
 		offset -= 128
 		itemFormIds = _itemFormIds2
-		itemFlags = _itemFlags2
 	else
 		itemFormIds = _itemFormIds1
-		itemFlags = _itemFlags1
 	endIf
 
 	; startIndex + 32 * (form, flag)
@@ -445,7 +417,11 @@ function UpdateMenuGroupData(int a_groupIndex)
 
 	int i=1
 	int j=offset
-
+	
+	; FIXME: Snakster, this next bit I wasn't sure how to alter to make sure it updates right to the UI
+	;  So I just dummied out itemFlags and left the while block alone. -Vert
+	int[] itemFlags
+	itemFlags = new int[128]
 	while (i<65)
 		args[i] = itemFormIds[j]
 		args[i+1] = itemFlags[j]
@@ -530,102 +506,6 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
-int function RequestFlag(int itemIdx)
-	;Return "next" flag based on what is current set for the item
-	; Order should go Right->Left->Both->None (1->2->4->0)
-	; Skip flags that don't apply to a given item
-	; None/0 means the item will still be equipped onGroupUse, just not to a specific hand. 
-	;  0 also applies to voice, powers, ammo, etc that can't be equipped to a hand
-	
-	int[] itemFlags
-	form[] items
-	if (itemIdx >= 128)
-		itemIdx -= 128
-		itemFlags = _itemFlags2
-		items = _items2
-	else
-		itemFlags = _itemFlags1
-		items = _items1
-	endIf
-	
-	int cFlag = itemFlags[itemIdx]
-	form item = items[itemIdx]
-	int itemType = item.GetType()
-	
-	DebugT("items[" + itemIdx + "] is " + item)
-	DebugT(item.GetName() + " is Type " + itemType)
-	DebugT("itemFlags[" + itemIdx + "] is " + cFlag)
-	ParseItemFlags(cFlag)
-	
-	; == Begin special cases
-	If (itemType == 41)
-		; TODO: Implement GetEquipType here when SKSE is updated, probably merge weapon/spell test
-		DebugT("WeaponType is " + (item as Weapon).GetWeaponType())
-		If (item as Weapon).GetWeaponType() > 4 ; Two handed, so only return Both/None
-			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_BOTH) ; Item is flagged BOTH, set to None
-				Return FAV_ITEM_FLAG_NONE
-			Else ; Item is flagged none, or some invalid value
-				Return FAV_ITEM_FLAG_BOTH
-			EndIf
-		EndIf
-	ElseIf (itemType == 26) ; separate the GetSlotMask to avoid logspam
-		 If (item as Armor).GetSlotMask() == 512 ; it's a shield, so it's always left hand
-			DebugT("Shield!")
-			Return FAV_ITEM_FLAG_LEFT
-		 EndIf
-	ElseIf (itemType == 31) ; it's a light, probably a torch, so another always left-handed item
-		DebugT("Light!")
-		Return FAV_ITEM_FLAG_LEFT
-	ElseIf (itemType == 22) ; it's a spell, so it might be Both or Left only
-		int EquipType = (item as Spell).GetEquipType()
-		DebugT("Spell equiptype is " + EquipType)
-		If EquipType == 0 ; Two handed, so only return Both/None
-			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_BOTH) ; Item is flagged BOTH, set to None
-				Return FAV_ITEM_FLAG_NONE
-			Else ; Item is flagged none, or some invalid value
-				Return FAV_ITEM_FLAG_BOTH
-			EndIf
-		ElseIf EquipType == 2 ; Left-handed, so only return Left/None
-			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_LEFT) ; Item is flagged LEFT, set to None
-				Return FAV_ITEM_FLAG_NONE
-			Else ; Item is flagged none, or some invalid value
-				Return FAV_ITEM_FLAG_LEFT
-			EndIf
-		ElseIf EquipType == 4 ; Right-handed, so only return Right/None 
-			;FIXME: Is there ANY right-handed-only spell? Do we even need this?
-			If Math.LogicalAnd(cFlag, FAV_ITEM_FLAG_RIGHT) ; Item is flagged RIGHT, set to None
-				Return FAV_ITEM_FLAG_NONE
-			Else ; Item is flagged none, or some invalid value
-				Return FAV_ITEM_FLAG_RIGHT
-			EndIf
-		ElseIf EquipType == 6 ; Voice or Power, so always return None
-			Return FAV_ITEM_FLAG_NONE
-		EndIf
-	EndIf
-	; == End special cases
-	
-	; If we've gotten this far, then this item should be handled in the normal fashion
-	; Otherwise we would have returned by now
-	DebugT("Not a special case!")
-	If (itemType == 41) || (itemType == 22) ; Weapons or spells will go through the default
-		If cFlag == FAV_ITEM_FLAG_NONE ; Currently None, leftshift doesn't work on 0
-			Return FAV_ITEM_FLAG_RIGHT
-		ElseIf cFlag < FAV_ITEM_FLAG_BOTH 
-			If (itemType == 41) && (PlayerREF.GetItemCount(item) == 1) && (cFlag == FAV_ITEM_FLAG_LEFT)
-				;Player tried to switch to Both but only had one of the weapon, so DENIED!
-				Return FAV_ITEM_FLAG_NONE
-			Else
-				;Right->Left->Both
-				Return Math.LeftShift(cFlag,1)
-			EndIf
-		Else ;Currently Both, rollover to None
-			Return FAV_ITEM_FLAG_NONE
-		EndIf
-	Else ; Item doesn't support handedness
-		Return FAV_ITEM_FLAG_NONE
-	EndIf
-EndFunction
-
 ; DEBUG ---------------------------------------------------------------------------------------
 
 function DebugT(string DebugString)
@@ -636,17 +516,6 @@ endFunction
 
 bool function CheckGroupFlag(int a_group, int a_flag)
 	Return Math.LogicalAnd(_groupFlags[a_group], a_flag) as bool
-endFunction
-
-bool function CheckItemFlag(int a_item, int a_flag)
-	int[] itemFlags
-	if (a_item >= 128)
-		a_item -= 128
-		itemFlags = _itemFlags2
-	else
-		itemFlags = _itemFlags1
-	endIf
-	Return Math.LogicalAnd(itemFlags[a_item], a_flag) as bool
 endFunction
 
 function ParseGroupFlags(int a_flags)
@@ -665,19 +534,6 @@ function ParseGroupFlags(int a_flags)
 	endIf
 	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOAMMO))
 		DebugT(" FAV_FLAG_NOAMMO")
-	endIf
-endFunction
-
-function ParseItemFlags(int a_flags)
-	DebugT("Flags: " + a_flags)
-	if (Math.LogicalAnd(a_flags, FAV_ITEM_FLAG_RIGHT))
-		DebugT(" FAV_ITEM_FLAG_RIGHT")
-	endIf
-	if (Math.LogicalAnd(a_flags, FAV_ITEM_FLAG_LEFT))
-		DebugT(" FAV_ITEM_FLAG_LEFT")
-	endIf
-	if (Math.LogicalAnd(a_flags, FAV_ITEM_FLAG_BOTH))
-		DebugT(" FAV_ITEM_FLAG_BOTH")
 	endIf
 endFunction
 
