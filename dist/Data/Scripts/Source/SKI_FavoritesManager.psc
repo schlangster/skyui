@@ -26,6 +26,12 @@ int[]				_itemFormIds2
 
 int[]				_groupCounts
 
+; array of forms that are marked "primary hand" for each group
+Form[]				_groupPrimaries
+
+; array of forms that are marked as the group icon
+Form[]				_groupIconForms
+
 ; index is 0-7 for groups
 ; Flags: 
 ;   0 = Standard list, Disallow group use
@@ -52,7 +58,10 @@ event OnInit()
 
 	_groupCounts	= new int[8]
 	_groupFlags		= new int[8]
-
+	_groupPrimaries = new Form[8]
+	_groupIconForms = new Form[8]
+	
+	
 	_audioCategoryUI = Game.GetFormFromFile(0x00064451, "Skyrim.esm") as SoundCategory
 
 	OnGameReload()
@@ -434,6 +443,16 @@ function UpdateMenuGroupData(int a_groupIndex)
 
 	DebugT("UpdateMenuGroupData end!")
 endFunction
+
+; This will set a form as the PrimaryHand form for a group
+function SetPrimaryHand(int groupIndex, form a_Sender)
+	_groupPrimaries[groupIndex] = a_Sender
+EndFunction
+
+; This will set a form as the icon form for a group
+function SetGroupIcon(int groupIndex, form a_Sender)
+	_groupIconForms[groupIndex] = a_Sender
+EndFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
 function CleanUp()
