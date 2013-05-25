@@ -25,15 +25,12 @@ class FavoritesMenu extends MovieClip
 	var dbgIntvl;
 	
   /* CONSTANTS */
-  
-  	private static var GROUP_SIZE = 32;
 	
   	private static var ITEM_SELECT = 0;
 	private static var GROUP_ASSIGN = 1;
-	private static var GROUP_CONFIG = 2;
-	private static var WAIT_FOR_GROUP_DATA = 3;
-	private static var WAIT_FOR_GROUP_USE = 4;
-	private static var CLOSING = 5;
+	private static var GROUP_ASSIGN_SYNC = 2;
+	private static var GROUP_CONFIG = 3;
+	private static var CLOSING = 4;
 	
 	
   /* PRIVATE VARIABLES */
@@ -43,7 +40,7 @@ class FavoritesMenu extends MovieClip
 	private var _typeFilter: ItemTypeFilter;
 	private var _sortFilter: SortFilter;
 	
-	private var _entryLookup: EntryLookupHelper;
+	private var _groupDataExtender: GroupDataExtender;
 	
 	private var _categoryButtonGroup: ButtonGroup;
 	private var _groupButtonGroup: ButtonGroup;
@@ -56,8 +53,6 @@ class FavoritesMenu extends MovieClip
 	private var _jumpKeycode: Number;
 	
 	private var _state: Number;
-	
-	private var _groupDataBuffer: Array;
 	
 	// A workaround to prevent bla blablabla
 	private var _useMouseNavigation: Boolean = false;
@@ -74,6 +69,9 @@ class FavoritesMenu extends MovieClip
 	
 	private var _groupButtonsShown: Boolean = false;
 	private var _waitingForGroupData: Boolean = true;
+	
+	private var _groupDataFormCounter: Number = 0;
+	private var _groupDataFlagsCounter: Number = 0;
 	
 	
   /* STAGE ELEMENTS */
@@ -105,60 +103,73 @@ class FavoritesMenu extends MovieClip
 	{
 		super();
 
-		dbgIntvl = setInterval(this, "TestMenu", 1000);
+		//dbgIntvl = setInterval(this, "TestMenu", 1000);
 		
 		_typeFilter = new ItemTypeFilter();
 		_sortFilter = new SortFilter();
 		
 		_categoryButtonGroup = new ButtonGroup("CategoryButtonGroup");
 		_groupButtonGroup = new ButtonGroup("GroupButtonGroup");
-		
+
+		_groupDataExtender = new GroupDataExtender(); 
+
 		Mouse.addListener(this);
-		
-		_state = ITEM_SELECT;
-		_groupDataBuffer = [];
 	}
 	
 	
   /* PAPYRUS INTERFACE */
-  
-  	public function unlock(): Void
+	
+	public function setGroupNames(/* string[] */): Void
 	{
-		_state = ITEM_SELECT;
+		for (var i=0; i<8; i++)
+			groupButtonFader.groupButtonHolder["btnGroup" + (i+1)].text = arguments[i];
 	}
 	
-	public function pushGroupData(/* formIds */): Void
+	public function setGroupFlags(/* int[] */): Void
 	{
-		for (var i=0; i<arguments.length; i++)
-			_groupDataBuffer.push(arguments[i]);
 	}
 	
-	public function commitGroupData(): Void
+	public function pushGroupForms(/* formIds[] */): Void
 	{
-		var c = 0;
-		var filterFlag = FilterDataExtender.FILTERFLAG_GROUP_0;
-		
-		for (var i=0; i<_groupDataBuffer.length; i++, c++) {
-			if (c == GROUP_SIZE) {
-				filterFlag = filterFlag << 1;
-				c = 0;
-			}
-			
-			var formId = _groupDataBuffer[i];
-			if (formId != null && formId > 0) {
-				var e = _entryLookup.FormIdMap[formId];
-				if (e != null)
-					e.filterFlag |= filterFlag;
-			}
-		}
-		
-
-		_groupDataBuffer.splice(0);
-		
+		var j = _groupDataFormCounter;
+		for (var i=0; i<arguments.length; i++, j++)
+			_groupDataExtender.groupData[j] = {formId: arguments[i]};
+		_groupDataFormCounter = j;
+	}
+	
+	public function pushGroupFlags(/* flags[] */): Void
+	{
+		var j = _groupDataFlagsCounter;
+		for (var i=0; i<arguments.length; i++, j++)
+			_groupDataExtender.groupData[j].flags = arguments[i];
+		_groupDataFlagsCounter = j;
+	}
+	
+	public function finishGroupData(): Void
+	{
 		itemList.requestInvalidate();
 		
 		_waitingForGroupData = false;
 		enableGroupButtons(true);
+	}
+	
+	public function updateGroupData(a_groupIndex: Number /*, (formId,flag)[] */): Void
+	{
+		var startIndex = a_groupIndex * GroupDataExtender.GROUP_SIZE;
+		
+		for (var i=1, j=startIndex ; i<arguments.length; i=i+2, j++) {
+			var e = _groupDataExtender.groupData[j];
+			e.formId = arguments[i];
+			e.flags  = arguments[i+1];
+			
+			skse.Log(j + " " + e.formId + " " + e.flags);
+		}
+		
+		itemList.requestInvalidate();
+		
+		// Received group data as result of group assignment?
+		if (_state == GROUP_ASSIGN_SYNC)
+			endGroupAssignment();
 	}
 	
 	
@@ -190,9 +201,7 @@ class FavoritesMenu extends MovieClip
 		
 		itemList.addDataProcessor(new FilterDataExtender());
 		itemList.addDataProcessor(new FavoritesIconSetter());
-		
-		_entryLookup = new EntryLookupHelper(); 
-		itemList.addDataProcessor(_entryLookup);
+		itemList.addDataProcessor(_groupDataExtender);
 
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
@@ -218,7 +227,12 @@ class FavoritesMenu extends MovieClip
 		
 		_sortFilter.setSortBy(["text"], [], false);
 		
-		_categoryButtonGroup.setSelectedButton(btnAll);
+		setGroupFocus(false);
+		
+		_state = ITEM_SELECT;
+		
+		// Wait for initial group data
+		_waitingForGroupData = true;
 		
 		navButton.visible = false;
 	}
@@ -237,11 +251,8 @@ class FavoritesMenu extends MovieClip
 
 		itemList.clearList();
 		for (var i=0; i<100; i++) {
-			itemList.entryList.push({text: "test " + i, equipState: 0, filterFlag: 1, disabled: false});
+			itemList.entryList.push({text: "test " + i, equipState: 0, filterFlag: 1, disabled: false, formId: i+100});
 		}
-		itemList.InvalidateData();
-		
-		commitGroupData();
 	}
 
 	// @GFx
@@ -259,7 +270,7 @@ class FavoritesMenu extends MovieClip
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
 				if (_state == GROUP_ASSIGN) {
-					endGroupAssignMode(true);
+					endGroupAssignment();
 				} else {
 					startFadeOut();
 				}
@@ -279,24 +290,26 @@ class FavoritesMenu extends MovieClip
 					if (idx < 0)
 						idx = _groupButtonGroup.length - 1;
 					_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(idx));
+					
+				} else if (_state == ITEM_SELECT) {
 				
-				} else if (_groupButtonFocus) {
-					_groupIndex--;
-					if (_groupIndex < 0)
-						_groupIndex = _groupButtonGroup.length - 1;
-					_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
-				} else {
-					_categoryIndex--;
-					if (_categoryIndex < 0)
-						_categoryIndex = _categoryButtonGroup.length - 1;
-					_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
+					if (_groupButtonFocus) {
+						_groupIndex--;
+						if (_groupIndex < 0)
+							_groupIndex = _groupButtonGroup.length - 1;
+						_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
+					} else {
+						_categoryIndex--;
+						if (_categoryIndex < 0)
+							_categoryIndex = _categoryButtonGroup.length - 1;
+						_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
+					}
 				}
 
 				return true;
 				
 			} else if (details.navEquivalent == NavigationCode.RIGHT || details.skseKeycode == _rightKeycode) {
 				if (_state == GROUP_ASSIGN) {
-					
 					// Don't change the index here, leave it to onGroupSelect so it can detect assignment confirmation
 					var idx = _groupAssignIndex;
 					
@@ -309,36 +322,39 @@ class FavoritesMenu extends MovieClip
 						idx = 0;
 					_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(idx));
 					
-				} else if (_groupButtonFocus) {
-					_groupIndex++;
-					if (_groupIndex >= _groupButtonGroup.length)
-						_groupIndex = 0;
-					_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
-				} else {
-					_categoryIndex++;
-					if (_categoryIndex >= _categoryButtonGroup.length)
-						_categoryIndex = 0;
-					_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
+				} else if (_state == ITEM_SELECT) {
+					if (_groupButtonFocus) {
+						_groupIndex++;
+						if (_groupIndex >= _groupButtonGroup.length)
+							_groupIndex = 0;
+						_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
+					} else {
+						_categoryIndex++;
+						if (_categoryIndex >= _categoryButtonGroup.length)
+							_categoryIndex = 0;
+						_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
+					}
 				}
 
 				return true;
 				
 			} else if (details.skseKeycode == _favKeycode || details.code == 70) {
 				
-				if (_state == ITEM_SELECT)
-					startGroupAssignMode();
-				else if (_state == GROUP_ASSIGN)
-					endGroupAssignMode(true);
+				if (_state == ITEM_SELECT && !_groupButtonFocus) {
+					startGroupAssignment();					
+				} else if (_state == GROUP_ASSIGN) {
+					endGroupAssignment();
+				}
 				
 				return true;
 
 			} else if (_state == GROUP_ASSIGN && details.navEquivalent == NavigationCode.ENTER) {
 				if (_groupAssignIndex != -1)
-					endGroupAssignMode();
+					applyGroupAssignment();
 				return true;
 				
 			} else if (details.skseKeycode == _readyKeycode || details.code == 82) {
-				if (_state == ITEM_SELECT)
+				if (_state == ITEM_SELECT && _groupButtonFocus)
 					requestGroupUse();
 				return true;
 				
@@ -347,7 +363,7 @@ class FavoritesMenu extends MovieClip
 				
 			} else if (details.skseKeycode == _jumpKeycode || details.code == 32) {
 				if (_state == ITEM_SELECT)
-					toggleGroupFocus();
+					setGroupFocus(!_groupButtonFocus); // toggle
 				return true;
 			}
 		}
@@ -440,7 +456,7 @@ class FavoritesMenu extends MovieClip
 		
 		if (_state == GROUP_ASSIGN) {
 			if (_groupAssignIndex == index) {
-				endGroupAssignMode();
+				applyGroupAssignment();
 			} else {
 				navButton.setButtonData({text: (Translator.translate("$ADD TO") + " " + btn.text), controls: Input.Accept});
 				_groupAssignIndex = index;				
@@ -448,16 +464,6 @@ class FavoritesMenu extends MovieClip
 		} else {
 			_groupIndex = index;
 		}
-	}
-	
-	private function toggleGroupFocus(): Void
-	{
-		_groupButtonFocus = !_groupButtonFocus;
-		
-		if (_groupButtonFocus)
-			_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
-		else
-			_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
 	}
 
 	private function startFadeOut(): Void
@@ -481,13 +487,15 @@ class FavoritesMenu extends MovieClip
 		_useMouseNavigation = true;
 	}
 	
-	private function startGroupAssignMode(): Void
+	private function startGroupAssignment(): Void
 	{
 		var selectedEntry = itemList.selectedEntry;
 		if (selectedEntry == null)
 			return;
 			
 		_state = GROUP_ASSIGN;
+		
+		headerText._visible = false;
 		
 		_groupAssignIndex = -1;
 		
@@ -502,6 +510,9 @@ class FavoritesMenu extends MovieClip
 		itemList.selectedIndex = -1;
 		itemList.disableSelection = true;		
 		itemList.requestUpdate();
+
+		navButton.visible = true;
+		navButton.setButtonData({text: "$SELECT GROUP", controls: Input.LeftRight});
 		
 		btnAll.disabled = true;
 		btnGear.disabled = true;
@@ -512,17 +523,30 @@ class FavoritesMenu extends MovieClip
 		btnGear.visible = false;
 		btnAid.visible = false;
 		btnMagic.visible = false;
-		
-		headerText._visible = false;
-		
-		navButton.visible = true;
-		navButton.setButtonData({text: "$SELECT GROUP", controls: Input.LeftRight});
 	}
 	
-	private function endGroupAssignMode(a_cancel: Boolean): Void
+	private function applyGroupAssignment(): Void
+	{
+		var formId: Number = itemList.listState.assignedEntry.formId;
+		
+		if (formId == null || formId == 0 || _groupAssignIndex == -1) {
+			endGroupAssignment();
+		} else {
+			// Suspend list to avoid redundant invalidate before new synced group data arrives
+			itemList.suspended = true
+			enableGroupButtons(false);
+			_state = GROUP_ASSIGN_SYNC;
+			skse.SendModEvent("SKIFM_groupAdded", "", _groupAssignIndex, formId);
+		}
+	}
+	
+	private function endGroupAssignment(): Void
 	{
 		itemList.listState.assignedEntry.filterFlag &= ~FilterDataExtender.FILTERFLAG_GROUP_ADD;
 		itemList.listState.assignedEntry = null;
+		
+		itemList.disableSelection = false;
+		itemList.requestInvalidate();
 		
 		itemList.onInvalidate = function()
 		{
@@ -530,9 +554,14 @@ class FavoritesMenu extends MovieClip
 			this.selectedIndex = this.listState.restoredSelectedIndex;
 			delete this.onInvalidate;
 		};
-
+		
+		_state = ITEM_SELECT;
+				
+		itemList.suspended = false;
 		itemList.disableSelection = false;
 		itemList.requestInvalidate();
+			
+		_groupAssignIndex = -1;
 		
 		btnAll.disabled = false;
 		btnGear.disabled = false;
@@ -545,21 +574,10 @@ class FavoritesMenu extends MovieClip
 		btnMagic.visible = true
 
 		headerText._visible = true;
-		
 		navButton.visible = false;
 		
-		var formId: Number = itemList.selectedEntry.formId;
-		
-		if (a_cancel || formId == null || _groupAssignIndex == -1) {
-			_state = ITEM_SELECT;
-		} else {
-			_waitingForGroupData = true;
-			skse.SendModEvent("SKIFM_groupAdded", "", _groupAssignIndex, formId);
-		}
-			
-		_groupAssignIndex = -1;
-		
-		_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
+		setGroupFocus(false);
+		enableGroupButtons(true);
 	}
 	
 	private function requestGroupUse(): Void
@@ -570,9 +588,9 @@ class FavoritesMenu extends MovieClip
 		}
 	}
 	
-	public function enableGroupButtons(a_enabled: Boolean): Void
+	private function enableGroupButtons(a_enabled: Boolean): Void
 	{
-		if (!_groupButtonsShown) {
+		if (a_enabled && !_groupButtonsShown) {
 			_groupButtonsShown = true;
 			groupButtonFader.gotoAndPlay("show");
 		}
@@ -581,11 +599,24 @@ class FavoritesMenu extends MovieClip
 			groupButtonFader.groupButtonHolder["btnGroup" + i].disabled = t;
 	}
 	
+	private function setGroupFocus(a_focus: Boolean): Void
+	{
+		if (a_focus) {
+			if (_groupButtonsShown) {
+				_groupButtonFocus = true;
+				_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
+			}
+		} else {
+			_groupButtonFocus = false;
+			_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
+		}
+	}
+	
 	// Added to prevent clicks on the scrollbar from equipping/using stuff
 	private function confirmSelectedEntry(): Boolean
 	{
 		// only confirm when using mouse
-		if (_platform != 0 || !_useMouseNavigation)
+		if (_platform != 0 || !_useMouseNavigation || _state != ITEM_SELECT)
 			return true;
 		
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)

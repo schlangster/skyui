@@ -22,8 +22,10 @@ Actor Property		PlayerREF Auto ; Needed for GetItemCount and EquipItem
 
 Form[]				_items1
 Form[]				_items2
-int[]				_formIds1
-int[]				_formIds2
+int[]				_itemFormIds1
+int[]				_itemFormIds2
+int[]				_itemFlags1
+int[]				_itemFlags2
 
 int[]				_groupCounts
 
@@ -46,13 +48,15 @@ SoundCategory		_audioCategoryUI
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
-	_items1				= new Form[128]
-	_items2				= new Form[128]
-	_formIds1			= new int[128]
-	_formIds2			= new int[128]
+	_items1			= new Form[128]
+	_items2			= new Form[128]
+	_itemFormIds1	= new int[128]
+	_itemFormIds2	= new int[128]
+	_itemFlags1		= new int[128]
+	_itemFlags2		= new int[128]
 
-	_groupCounts		= new int[8]
-	_groupFlags			= new int[8]
+	_groupCounts	= new int[8]
+	_groupFlags		= new int[8]
 
 	_audioCategoryUI = Game.GetFormFromFile(0x00064451, "Skyrim.esm") as SoundCategory
 
@@ -100,10 +104,10 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _formIds2
+		formIds = _itemFormIds2
 	else
 		items = _items1
-		formIds = _formIds1
+		formIds = _itemFormIds1
 	endIf
 
 	; Pick next free slot
@@ -117,7 +121,7 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
 	endIf
 
-	SynchronizeGroupData()
+	UpdateMenuGroupData(groupIndex)
 
 	DebugT("OnGroupAdd end!")
 endEvent
@@ -141,10 +145,10 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	if (itemIndex >= 128)
 		itemIndex -= 128
 		items = _items2
-		formIds = _formIds2
+		formIds = _itemFormIds2
 	else
 		items = _items1
-		formIds = _formIds1
+		formIds = _itemFormIds1
 	endIf
 
 	items[itemIndex] = none
@@ -172,10 +176,10 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _formIds2
+		formIds = _itemFormIds2
 	else
 		items = _items1
-		formIds = _formIds1
+		formIds = _itemFormIds1
 	endIf
 
 	Form[] deferredItems = new Form[32]
@@ -348,7 +352,7 @@ endEvent
 
 event OnMenuOpen(string a_menuName)
 	DebugT("OnMenuOpen!")
-	SynchronizeGroupData()
+	InitMenuGroupData()
 endEvent
 
 event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -373,15 +377,55 @@ EndEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
-function SynchronizeGroupData()
-	DebugT("SynchronizeGroupData called!")
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupData", _formIds1)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupData", _formIds2)
-	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".commitGroupData", true)
+function InitMenuGroupData()
+	DebugT("InitMenuGroupData called!")
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupFlags", _itemFlags1)
 
-	; The UI has a full list of all favorite entries at this point, including their formIds.
-	; For each formId it receives here, it can lookup the respective entry and mark it.
-	DebugT("SynchronizeGroupData end!")
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupFlags", _itemFlags2)
+
+	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", true)
+
+	DebugT("InitMenuGroupData end!")
+endFunction
+
+function UpdateMenuGroupData(int a_groupIndex)
+	DebugT("UpdateMenuGroupData called!")
+
+	int offset = 32 * a_groupIndex
+
+	int[] itemFormIds
+	int[] itemFlags
+
+	if (offset >= 128)
+		offset -= 128
+		itemFormIds = _itemFormIds2
+		itemFlags = _itemFlags2
+	else
+		itemFormIds = _itemFormIds1
+		itemFlags = _itemFlags1
+	endIf
+
+	; startIndex + 32 * (form, flag)
+	int[] args = new int[65]
+
+	args[0] = a_groupIndex
+
+	int i=1
+	int j=offset
+
+	while (i<65)
+		args[i] = itemFormIds[j]
+		args[i+1] = itemFlags[j]
+
+		i += 2
+		j += 1
+	endWhile
+	
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".updateGroupData", args)
+
+	DebugT("UpdateMenuGroupData end!")
 endFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
@@ -401,7 +445,7 @@ function CleanUp()
 
 		if (_items1[i] == none || _items1[i].GetFormID() == 0)
 			_items1[i] = none
-			_formIds1[i] = 0
+			_itemFormIds1[i] = 0
 		else
 			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
 		endIf
@@ -418,7 +462,7 @@ function CleanUp()
 
 		if (_items2[i] == none || _items2[i].GetFormID() == 0)
 			_items2[i] = none
-			_formIds2[i] = 0
+			_itemFormIds2[i] = 0
 		else
 			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
 		endIf

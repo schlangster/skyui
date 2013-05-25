@@ -35,6 +35,10 @@
 	static var Cancel		= {name: "Cancel", context: CONTEXT_MENUMODE};
 	
 	// Custom
+	static var LeftRight: Array = [
+		{name: "Left", context: CONTEXT_MENUMODE},
+		{name: "Right", context: CONTEXT_MENUMODE}
+	];
 	static var Equip: Array = [
 		{name: "RightEquip", context: CONTEXT_ITEMMENU},
 		{name: "LeftEquip", context: CONTEXT_ITEMMENU}

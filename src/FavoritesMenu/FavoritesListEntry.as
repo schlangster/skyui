@@ -37,13 +37,13 @@ class FavoritesListEntry extends BasicListEntry
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{		
 		var isAssigned = a_entryObject == a_state.assignedEntry;
-		var isSelected = a_entryObject == a_state.list.selectedEntry;
+		var isSelected = a_entryObject == a_state.list.selectedEntry || isAssigned;
 		
 		enabled = a_state.assignedEntry == null || isAssigned;
 		_alpha = enabled ? 100 : 25;
 		
 		if (selectIndicator != undefined)
-			selectIndicator._visible = isSelected || isAssigned;
+			selectIndicator._visible = isSelected;
 		
 		if (a_entryObject.text == undefined) {
 			textField.SetText(" ");
