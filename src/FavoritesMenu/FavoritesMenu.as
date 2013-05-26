@@ -32,6 +32,8 @@ class FavoritesMenu extends MovieClip
 	private static var GROUP_ASSIGN_SYNC = 2;
 	private static var GROUP_CONFIG = 3;
 	private static var CLOSING = 4;
+	private static var SET_MAIN_HAND_SYNC = 5;
+	private static var SET_ICON_SYNC = 6;
 	
 	
   /* PRIVATE VARIABLES */
@@ -51,6 +53,7 @@ class FavoritesMenu extends MovieClip
 	private var _groupAddKey: Number = -1;
 	private var _groupUseKey: Number = -1;
 	private var _setIconKey: Number = -1;
+	private var _setMainHandKey: Number = -1;
 	private var _toggleFocusKey: Number = -1;
 	
 	private var _state: Number;
@@ -71,8 +74,7 @@ class FavoritesMenu extends MovieClip
 	private var _groupButtonsShown: Boolean = false;
 	private var _waitingForGroupData: Boolean = true;
 	
-	private var _groupDataFormCounter: Number = 0;
-	private var _groupDataFlagsCounter: Number = 0;
+	private var _isInitialized: Boolean = false;
 	
 	
   /* STAGE ELEMENTS */
@@ -137,7 +139,8 @@ class FavoritesMenu extends MovieClip
 		for (i=0; i<a_groupCount; i++, offset++)
 			_groupDataExtender.iconData.push(arguments[offset]);
 		
-		itemList.requestInvalidate();
+		if (_isInitialized)
+			itemList.InvalidateData();
 		
 		_waitingForGroupData = false;
 		enableGroupButtons(true);
@@ -153,11 +156,16 @@ class FavoritesMenu extends MovieClip
 		for (var i=3, j=startIndex ; i<arguments.length; i++, j++)
 			_groupDataExtender.groupData[j] = arguments[i];
 		
-		itemList.requestInvalidate();
+		if (_isInitialized)
+			itemList.InvalidateData();
 		
 		// Received group data as result of group assignment?
 		if (_state == GROUP_ASSIGN_SYNC)
 			endGroupAssignment();
+		else if (_state == SET_ICON_SYNC)
+			endSetGroupIcon();
+		else if (_state == SET_MAIN_HAND_SYNC)
+			endSetMainHand();
 	}
 	
 	
@@ -214,14 +222,21 @@ class FavoritesMenu extends MovieClip
 		
 		_sortFilter.setSortBy(["text"], [], false);
 		
-		setGroupFocus(false);
-		
 		_state = ITEM_SELECT;
 		
 		// Wait for initial group data
 		_waitingForGroupData = true;
 		
 		navButton.visible = false;
+		
+		restoreIndices();
+		
+		setGroupFocus(false);
+		
+		// We avoid any invalidates before this point.
+		// After it, the next invalidate should be triggered from game code after filling list data.
+		// That is when we can restore selectedIndex and scroll position
+		_isInitialized = true;
 	}
 	
 	// @API
@@ -342,12 +357,17 @@ class FavoritesMenu extends MovieClip
 				return true;
 				
 			} else if (details.skseKeycode == _groupUseKey || details.code == 82) {
-				if (_state == ITEM_SELECT && _groupButtonFocus)
+				if (_state == ITEM_SELECT)
 					requestGroupUse();
 				return true;
 				
 			} else if (details.skseKeycode == _setIconKey || details.code == 18) {
-				return true;
+				if (_state == ITEM_SELECT)
+					startSetGroupIcon();
+					
+			} else if (details.skseKeycode == _setMainHandKey || details.code == 18) {
+				if (_state == ITEM_SELECT)
+					startSetMainHand();
 				
 			} else if (details.skseKeycode == _toggleFocusKey || details.code == 32) {
 				if (_state == ITEM_SELECT)
@@ -368,22 +388,17 @@ class FavoritesMenu extends MovieClip
 	// @API
 	public function setSelectedItem(a_index: Number): Void
 	{
-		var t = [];
-		skse.LoadIndices("FavoriteIndices", t);
-		
-		for (var c=0; c<t.length; c++)
-		{
-			skse.Log("Loaded " + t[c]);
-		}
-		
+		// We use skse.Store/LoadIndices to restore the selected item on our terms
+		return;
+		/*
 		for (var i = 0; i < itemList.entryList.length; i++) {
 			if (itemList.entryList[i].index == a_index) {
 				itemList.selectedIndex = i;
-//				itemList.RestoreScrollPosition(i);
+				//itemList.RestoreScrollPosition(i);
 				itemList.UpdateList();
 				return;
 			}
-		}
+		}*/
 	}
 
 	// @API
@@ -399,6 +414,8 @@ class FavoritesMenu extends MovieClip
 		_groupUseKey = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, isGamepad);
 		
 		_setIconKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, isGamepad);
+		_setMainHandKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, isGamepad);
+		
 		_toggleFocusKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, isGamepad);
 		
 		navButton.setPlatform(a_platform);
@@ -414,7 +431,8 @@ class FavoritesMenu extends MovieClip
   
 	private function onFilterChange(a_event: Object): Void
 	{
-		itemList.requestInvalidate();
+		if (_isInitialized)
+			itemList.InvalidateData();
 	}
 
 	private function onItemPress(a_event: Object): Void
@@ -487,11 +505,7 @@ class FavoritesMenu extends MovieClip
 	
 	private function onFadeOutCompletion(): Void
 	{
-		var t = [itemList.selectedIndex, itemList.scrollPosition, _categoryIndex];
-		skse.StoreIndices("FavoriteIndices", t);
-		
-		skse.Log("Stored " + itemList.selectedIndex + " " + itemList.scrollPosition + " " + _categoryIndex);
-		
+		saveIndices();
 		GameDelegate.call("FadeDone", [itemList.selectedIndex]);
 	}
 	
@@ -563,21 +577,18 @@ class FavoritesMenu extends MovieClip
 		itemList.listState.assignedEntry.filterFlag &= ~FilterDataExtender.FILTERFLAG_GROUP_ADD;
 		itemList.listState.assignedEntry = null;
 		
-		itemList.disableSelection = false;
-		itemList.requestInvalidate();
-		
 		itemList.onInvalidate = function()
 		{
 			this.scrollPosition = this.listState.restoredScrollPosition;
 			this.selectedIndex = this.listState.restoredSelectedIndex;
 			delete this.onInvalidate;
 		};
-		
-		_state = ITEM_SELECT;
-				
-		itemList.suspended = false;
+
 		itemList.disableSelection = false;
 		itemList.requestInvalidate();
+		itemList.suspended = false;
+		
+		_state = ITEM_SELECT;
 			
 		_groupAssignIndex = -1;
 		
@@ -606,6 +617,34 @@ class FavoritesMenu extends MovieClip
 		}
 	}
 	
+	private function startSetMainHand(): Void
+	{
+		var formId: Number = itemList.selectedEntry.formId;
+		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
+			_state = SET_MAIN_HAND_SYNC;
+			skse.SendModEvent("SKIFM_setMainHand", "", _groupIndex, formId);
+		}
+	}
+	
+	private function endSetMainHand(): Void
+	{
+		_state = ITEM_SELECT;
+	}
+	
+	private function startSetGroupIcon(): Void
+	{
+		var formId: Number = itemList.selectedEntry.formId;
+		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
+			_state = SET_ICON_SYNC;
+			skse.SendModEvent("SKIFM_setGroupIcon", "", _groupIndex, formId);
+		}
+	}
+	
+	private function endSetGroupIcon(): Void
+	{
+		_state = ITEM_SELECT;
+	}
+	
 	private function enableGroupButtons(a_enabled: Boolean): Void
 	{
 		if (a_enabled && !_groupButtonsShown) {
@@ -621,11 +660,9 @@ class FavoritesMenu extends MovieClip
 	{
 		if (a_focus) {
 			if (_groupButtonsShown) {
-				_groupButtonFocus = true;
 				_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(_groupIndex));
 			}
 		} else {
-			_groupButtonFocus = false;
 			_categoryButtonGroup.setSelectedButton(_categoryButtonGroup.getButtonAt(_categoryIndex));
 		}
 	}
@@ -646,6 +683,34 @@ class FavoritesMenu extends MovieClip
 				return true;
 				
 		return false;
+	}
+	
+	private function saveIndices(): Void
+	{
+		var indicesIn: Array = [_categoryIndex, _groupIndex, itemList.selectedIndex, itemList.scrollPosition];
+		skse.StoreIndices("SKI_FavoritesMenuState", indicesIn);
+	}
+	
+	private function restoreIndices(): Void
+	{
+		var indicesOut: Array = [];
+		skse.LoadIndices("SKI_FavoritesMenuState", indicesOut);
+		
+		if (indicesOut.length != 4)
+			return;
+		
+		_categoryIndex = indicesOut[0];
+		_groupIndex = indicesOut[1];
+
+		itemList.listState.restoredSelectedIndex = indicesOut[2];
+		itemList.listState.restoredScrollPosition = indicesOut[3];
+		
+		itemList.onInvalidate = function()
+		{
+			this.scrollPosition = this.listState.restoredScrollPosition;
+			this.selectedIndex = this.listState.restoredSelectedIndex;
+			delete this.onInvalidate;
+		};
 	}
 	
 	private function updateNavButtons(): Void

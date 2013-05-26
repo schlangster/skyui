@@ -183,6 +183,9 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	items[itemIndex] = none
 	formIds[itemIndex] = 0
 	_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+
+	UpdateMenuGroupData(groupIndex)
+
 	DebugT("OnGroupRemove end!")
 endEvent
 
@@ -473,6 +476,8 @@ event OnSetMainHand(string a_eventName, string a_strArg, float a_numArg, Form a_
 
 	_groupMainHandItems[groupIndex] = item
 	_groupMainHandFormIds[groupIndex] = item.GetFormID()
+
+	UpdateMenuGroupData(groupIndex)
 endEvent
 
 ; This will set a form as the icon form for a group
@@ -486,6 +491,8 @@ event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a
 
 	_groupIconItems[groupIndex] = item
 	_groupIconFormIds[groupIndex] = item.GetFormID()
+
+	UpdateMenuGroupData(groupIndex)
 endEvent
 
 

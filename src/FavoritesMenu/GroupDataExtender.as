@@ -106,12 +106,10 @@ class GroupDataExtender implements IListProcessor
 			var formId: Number = iconData[i];
 			if (formId) {
 				var t = _formIdMap[formId];
-				skse.Log("found form " + t);
 				iconLabel = t.iconLabel ? t.iconLabel : "none";
 			} else {
 				iconLabel = "none";
 			}
-			skse.Log("itemLabel " + iconLabel);
 			_groupButtons[i].itemIcon.gotoAndStop(iconLabel);
 		}
 	}
