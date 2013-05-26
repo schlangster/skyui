@@ -218,19 +218,19 @@ $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATREZZATURA	EQUIPO				
-$AID	AID	AIDE	HILFSMITTEL	AIUTO	AYUDA				
-$GROUP	GROUP	GROUPE 	GRUPPE	GRUPPO	GRUPO				
-$Confirm Group	Confirm Group	Confirmer groupe	Gruppe Bestätigen	Confirmare gruppo	Confirmar grupo				
-$Select Group	Select Group	Choisir groupe	Gruppe Auswählen	Selezionare gruppo	Seleccionar grupo				
-$Group	Group	Grouper 	Gruppieren	Raggruppare	Agrupar				
-$Ungroup	Ungroup	Dégrouper	Gruppierung Aufheben	Anullamento gruppo	Desagrupar				
-$Set Group Icon	Set Group Icon	Choisir icône groupe	Symbol Setzen	Scegliere icona gruppo	Elegir icono de grupo				
-$Set Main Hand	Set Main Hand	Choisir main principale	Primärhand Setzen	Scegliere mano principale	Elegir mano principal				
-$Group Use	Group Use	Utiliser groupe	Gruppe Benutzen	Usare gruppo	Usar grupo				
-$Toggle Focus	Toggle Focus	Changer Focus	Fokus Wechseln	Cambiare Focus	Cambiar enfoque				
-$Unequip Armor	Unequip Armor	Déséquiper armure	Rüstung Freimachen		Desequipar Armadura				
-$Unequip Hands	Unequip Hands	Déséquiper mains	Hände Freimachen		Desequipar manos				
-$Unequp Ammo	Unequip Ammo	Déséquiper munitions	Munition Freimachen		Desequipar munición				
+$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATREZZATURA	EQUIPO			Экипировать	
+$AID	AID	AIDE	HILFSMITTEL	AIUTO	AYUDA			Помощь	
+$GROUP	GROUP	GROUPE 	GRUPPE	GRUPPO	GRUPO			Группа	
+$Confirm Group	Confirm Group	Confirmer groupe	Gruppe Bestätigen	Confirmare gruppo	Confirmar grupo			Подтвердить Группу	
+$Select Group	Select Group	Choisir groupe	Gruppe Auswählen	Selezionare gruppo	Seleccionar grupo			Выбрать Группу	
+$Group	Group	Grouper 	Gruppieren	Raggruppare	Agrupar			Добавить в Группу	
+$Ungroup	Ungroup	Dégrouper	Gruppierung Aufheben	Anullamento gruppo	Desagrupar			Убрать из Группы	
+$Set Group Icon	Set Group Icon	Choisir icône groupe	Symbol Setzen	Scegliere icona gruppo	Elegir icono de grupo			Выбрать Иконки Группы	
+$Set Main Hand	Set Main Hand	Choisir main principale	Primärhand Setzen	Scegliere mano principale	Elegir mano principal			Выбрать Основную Руку	
+$Group Use	Group Use	Utiliser groupe	Gruppe Benutzen	Usare gruppo	Usar grupo			Использовать Группу	
+$Toggle Focus	Toggle Focus	Changer Focus	Fokus Wechseln	Cambiare Focus	Cambiar enfoque			Переместить Фокус	
+$Unequip Armor	Unequip Armor	Déséquiper armure	Rüstung Freimachen	Disattrezzare corazza	Desequipar Armadura			Снять Броню	
+$Unequip Hands	Unequip Hands	Déséquiper mains	Hände Freimachen	Disattrezzare mani	Desequipar manos			Разоружить Руки	
+$Unequip Ammo	Unequip Ammo	Déséquiper munitions	Munition Freimachen	Disattrezzare munizione	Desequipar munición			Снять Боеприпасы	
 									
-% Completion	100.00%	100.00%	100.00%	98.60%	100.00%	93.49%	93.49%	93.49%	88.56%
+% Completion	100.00%	100.00%	100.00%	100.00%	100.00%	93.49%	93.49%	100.00%	88.56%
