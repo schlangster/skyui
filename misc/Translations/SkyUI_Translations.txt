@@ -176,7 +176,7 @@ $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawans
 									
 $Item List	Item List	Liste des objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
 $Font Size	Font Size	Taille de police	Schriftgröße	Dimensione del Font	Tamaño de Fuente	Velikost písma	Wielkość Czcionki	Размер Шрифта	フォントサイズ
-$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte min. pour le menu de quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. Кол-во Элементов в Меню	数量メニュー最小カウント
+$Quantity Menu Min. Count	Quantity Menu Min. Count	Compte min. du menu de quantité	Mindestauswahlmenge	Contatore Min. per il Menù di Quantità	Número Mín. para Menú de Cantidad	Min. Počet Obj. Pro Kvant. Menu	Menu Ilości Min. Liczba	Мин. Кол-во Элементов в Меню	数量メニュー最小カウント
 $Category Icon Theme	Category Icon Theme	Thème des icônes de catégories	Symbolthema (Kategorie)	Tema delle icone di categoria	Tema de iconos de categoría	Vzhled ikon kategorií	Zestaw Ikon Kategorii	Тема Иконок Категорий	
 $Disable Icon Colors	Disable Icon Colors	Désactiver les couleurs d'icônes	Farbige Symbole deaktivieren	Disabilita Icone Colorate	Desactivar iconos en color	Vypnout barvy ikon	Wyłącz Kolory Ikon	Запретить Цветные Иконки	
 $Previous Column	Previous Column	Colonne précédente	Vorherige Spalte	Colonna Precedente	Columna Anterior	Předchozí sloupek	Poprzednia Kolumna	Предыдущая Колонка	前の欄
@@ -218,4 +218,19 @@ $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-% Completion	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	88.56%
+$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATREZZATURA	EQUIPO				
+$AID	AID	AIDE	HILFSMITTEL	AIUTO	AYUDA				
+$GROUP	GROUP	GROUPE 	GRUPPE	GRUPPO	GRUPO				
+$Confirm Group	Confirm Group	Confirmer groupe	Gruppe Bestätigen	Confirmare gruppo	Confirmar grupo				
+$Select Group	Select Group	Choisir groupe	Gruppe Auswählen	Selezionare gruppo	Seleccionar grupo				
+$Group	Group	Grouper 	Gruppieren	Raggruppare	Agrupar				
+$Ungroup	Ungroup	Dégrouper	Gruppierung Aufheben	Anullamento gruppo	Desagrupar				
+$Set Group Icon	Set Group Icon	Choisir icône groupe	Symbol Setzen	Scegliere icona gruppo	Elegir icono de grupo				
+$Set Main Hand	Set Main Hand	Choisir main principale	Primärhand Setzen	Scegliere mano principale	Elegir mano principal				
+$Group Use	Group Use	Utiliser groupe	Gruppe Benutzen	Usare gruppo	Usar grupo				
+$Toggle Focus	Toggle Focus	Changer Focus	Fokus Wechseln	Cambiare Focus	Cambiar enfoque				
+$Unequip Armor	Unequip Armor	Déséquiper armure	Rüstung Freimachen		Desequipar Armadura				
+$Unequip Hands	Unequip Hands	Déséquiper mains	Hände Freimachen		Desequipar manos				
+$Unequp Ammo	Unequip Ammo	Déséquiper munitions	Munition Freimachen		Desequipar munición				
+									
+% Completion	100.00%	100.00%	100.00%	98.60%	100.00%	93.49%	93.49%	93.49%	88.56%
