@@ -1,4 +1,5 @@
 ﻿import gfx.controls.Button;
+import skyui.util.Translator;
 
 class GroupButton extends gfx.controls.Button
 {
@@ -41,6 +42,6 @@ class GroupButton extends gfx.controls.Button
 	public function GroupButton()
 	{
 		super();
-		text = "$GROUP " + (groupIndex + 1);
+		text = Translator.translate("$GROUP") + " " + (groupIndex + 1);
 	}
 }

@@ -11,6 +11,7 @@ import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 import skyui.defines.Input;
 
+import skyui.components.ButtonPanel;
 import skyui.components.MappedButton;
 import skyui.components.list.ScrollingList;
 import skyui.components.list.BasicEnumeration;
@@ -45,12 +46,12 @@ class FavoritesMenu extends MovieClip
 	private var _categoryButtonGroup: ButtonGroup;
 	private var _groupButtonGroup: ButtonGroup;
 	
-	private var _leftKeycode: Number;
-	private var _rightKeycode: Number;
-	private var _favKeycode: Number;
-	private var _readyKeycode: Number;
-	private var _sprintKeycode: Number;
-	private var _jumpKeycode: Number;
+	private var _leftKeycode: Number = -1;
+	private var _rightKeycode: Number = -1;
+	private var _groupAddKey: Number = -1;
+	private var _groupUseKey: Number = -1;
+	private var _setIconKey: Number = -1;
+	private var _toggleFocusKey: Number = -1;
 	
 	private var _state: Number;
 	
@@ -89,6 +90,9 @@ class FavoritesMenu extends MovieClip
 	public var navButton: MappedButton;
 	
 	public var headerText: TextField;
+
+	public var navPanel: MovieClip;
+//	public var navPanels: ButtonPanel;
 	
 	
   /* PROPERTIES */
@@ -111,59 +115,43 @@ class FavoritesMenu extends MovieClip
 		_categoryButtonGroup = new ButtonGroup("CategoryButtonGroup");
 		_groupButtonGroup = new ButtonGroup("GroupButtonGroup");
 
-		_groupDataExtender = new GroupDataExtender(); 
-
 		Mouse.addListener(this);
 	}
 	
 	
   /* PAPYRUS INTERFACE */
 	
-	public function setGroupNames(/* string[] */): Void
-	{
-		for (var i=0; i<8; i++)
-			groupButtonFader.groupButtonHolder["btnGroup" + (i+1)].text = arguments[i];
-	}
-	
-	public function setGroupFlags(/* int[] */): Void
-	{
-	}
-	
 	public function pushGroupForms(/* formIds[] */): Void
 	{
-		var j = _groupDataFormCounter;
-		for (var i=0; i<arguments.length; i++, j++)
-			_groupDataExtender.groupData[j] = {formId: arguments[i]};
-		_groupDataFormCounter = j;
+		for (var i=0; i<arguments.length; i++)
+			_groupDataExtender.groupData.push(arguments[i]);
 	}
 	
-	public function pushGroupFlags(/* flags[] */): Void
+	public function finishGroupData(a_groupCount: Number /*, mainHandFormIds[], groupIconFormIds[] */): Void
 	{
-		var j = _groupDataFlagsCounter;
-		for (var i=0; i<arguments.length; i++, j++)
-			_groupDataExtender.groupData[j].flags = arguments[i];
-		_groupDataFlagsCounter = j;
-	}
-	
-	public function finishGroupData(): Void
-	{
+		var offset = 1;
+		var i: Number;
+		
+		for (i=0; i<a_groupCount; i++, offset++)
+			_groupDataExtender.mainHandData.push(arguments[offset]);
+		for (i=0; i<a_groupCount; i++, offset++)
+			_groupDataExtender.iconData.push(arguments[offset]);
+		
 		itemList.requestInvalidate();
 		
 		_waitingForGroupData = false;
 		enableGroupButtons(true);
 	}
 	
-	public function updateGroupData(a_groupIndex: Number /*, (formId,flag)[] */): Void
+	public function updateGroupData(a_groupIndex: Number, a_mainHandFormId: Number, a_iconFormId: Number /*, formId[] */): Void
 	{
 		var startIndex = a_groupIndex * GroupDataExtender.GROUP_SIZE;
 		
-		for (var i=1, j=startIndex ; i<arguments.length; i=i+2, j++) {
-			var e = _groupDataExtender.groupData[j];
-			e.formId = arguments[i];
-			e.flags  = arguments[i+1];
-			
-			skse.Log(j + " " + e.formId + " " + e.flags);
-		}
+		_groupDataExtender.mainHandData[a_groupIndex] = a_mainHandFormId;
+		_groupDataExtender.iconData[a_groupIndex] = a_iconFormId;
+		
+		for (var i=3, j=startIndex ; i<arguments.length; i++, j++)
+			_groupDataExtender.groupData[j] = arguments[i];
 		
 		itemList.requestInvalidate();
 		
@@ -180,27 +168,26 @@ class FavoritesMenu extends MovieClip
 	{
 		skse.ExtendData(true);
 		
-		_leftKeycode = GlobalFunctions.getMappedKey("Left", Input.CONTEXT_MENUMODE, false);
-		_rightKeycode = GlobalFunctions.getMappedKey("Right", Input.CONTEXT_MENUMODE, false);
-		_favKeycode = GlobalFunctions.getMappedKey("Toggle POV", Input.CONTEXT_GAMEPLAY, false);
-		_readyKeycode = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, false);
-		
-		_sprintKeycode = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, false);
-		_jumpKeycode = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, false);
-		
 		btnAll.group = _categoryButtonGroup;
 		btnGear.group = _categoryButtonGroup;
 		btnAid.group = _categoryButtonGroup;
 		btnMagic.group = _categoryButtonGroup;
 		
-		for (var i=1; i<=8; i++)
-			groupButtonFader.groupButtonHolder["btnGroup" + i].group = _groupButtonGroup
+		var groupButtons: Array = [];
+		for (var i=1; i<=8; i++) {
+			var btn = groupButtonFader.groupButtonHolder["btnGroup" + i];
+			btn.text
+			groupButtons.push(btn);
+			btn.group = _groupButtonGroup
+		}
 		
 		_categoryButtonGroup.addEventListener("change", this, "onCategorySelect");
 		_groupButtonGroup.addEventListener("change", this, "onGroupSelect");
 		
 		itemList.addDataProcessor(new FilterDataExtender());
 		itemList.addDataProcessor(new FavoritesIconSetter());
+		
+		_groupDataExtender = new GroupDataExtender(groupButtons); 
 		itemList.addDataProcessor(_groupDataExtender);
 
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
@@ -248,6 +235,7 @@ class FavoritesMenu extends MovieClip
 		clearInterval(dbgIntvl);
 		
 		InitExtensions();
+		SetPlatform(0);
 
 		itemList.clearList();
 		for (var i=0; i<100; i++) {
@@ -338,7 +326,7 @@ class FavoritesMenu extends MovieClip
 
 				return true;
 				
-			} else if (details.skseKeycode == _favKeycode || details.code == 70) {
+			} else if (details.skseKeycode == _groupAddKey || details.code == 70) {
 				
 				if (_state == ITEM_SELECT && !_groupButtonFocus) {
 					startGroupAssignment();					
@@ -353,15 +341,15 @@ class FavoritesMenu extends MovieClip
 					applyGroupAssignment();
 				return true;
 				
-			} else if (details.skseKeycode == _readyKeycode || details.code == 82) {
+			} else if (details.skseKeycode == _groupUseKey || details.code == 82) {
 				if (_state == ITEM_SELECT && _groupButtonFocus)
 					requestGroupUse();
 				return true;
 				
-			} else if (details.skseKeycode == _sprintKeycode || details.code == 18) {
+			} else if (details.skseKeycode == _setIconKey || details.code == 18) {
 				return true;
 				
-			} else if (details.skseKeycode == _jumpKeycode || details.code == 32) {
+			} else if (details.skseKeycode == _toggleFocusKey || details.code == 32) {
 				if (_state == ITEM_SELECT)
 					setGroupFocus(!_groupButtonFocus); // toggle
 				return true;
@@ -380,6 +368,14 @@ class FavoritesMenu extends MovieClip
 	// @API
 	public function setSelectedItem(a_index: Number): Void
 	{
+		var t = [];
+		skse.LoadIndices("FavoriteIndices", t);
+		
+		for (var c=0; c<t.length; c++)
+		{
+			skse.Log("Loaded " + t[c]);
+		}
+		
 		for (var i = 0; i < itemList.entryList.length; i++) {
 			if (itemList.entryList[i].index == a_index) {
 				itemList.selectedIndex = i;
@@ -394,7 +390,23 @@ class FavoritesMenu extends MovieClip
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
+		
+		var isGamepad = _platform != 0;
+		
+		_leftKeycode = GlobalFunctions.getMappedKey("Left", Input.CONTEXT_MENUMODE, isGamepad);
+		_rightKeycode = GlobalFunctions.getMappedKey("Right", Input.CONTEXT_MENUMODE, isGamepad);
+		_groupAddKey = GlobalFunctions.getMappedKey("Toggle POV", Input.CONTEXT_GAMEPLAY, isGamepad);
+		_groupUseKey = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, isGamepad);
+		
+		_setIconKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, isGamepad);
+		_toggleFocusKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, isGamepad);
+		
 		navButton.setPlatform(a_platform);
+		
+		navPanel.row1.setPlatform(a_platform,a_bPS3Switch);
+		navPanel.row2.setPlatform(a_platform,a_bPS3Switch);
+		
+		updateNavButtons();
 	}
 	
 
@@ -422,6 +434,7 @@ class FavoritesMenu extends MovieClip
 	private function onItemSelectionChange(a_event: Object): Void
 	{
 		_useMouseNavigation = a_event.keyboardOrMouse == 0;
+		updateNavButtons();
 	}
 	
 	private function onCategorySelect(a_event: Object): Void
@@ -458,7 +471,7 @@ class FavoritesMenu extends MovieClip
 			if (_groupAssignIndex == index) {
 				applyGroupAssignment();
 			} else {
-				navButton.setButtonData({text: (Translator.translate("$ADD TO") + " " + btn.text), controls: Input.Accept});
+				navButton.setButtonData({text: "$Confirm Group", controls: Input.Accept});
 				_groupAssignIndex = index;				
 			}
 		} else {
@@ -474,6 +487,11 @@ class FavoritesMenu extends MovieClip
 	
 	private function onFadeOutCompletion(): Void
 	{
+		var t = [itemList.selectedIndex, itemList.scrollPosition, _categoryIndex];
+		skse.StoreIndices("FavoriteIndices", t);
+		
+		skse.Log("Stored " + itemList.selectedIndex + " " + itemList.scrollPosition + " " + _categoryIndex);
+		
 		GameDelegate.call("FadeDone", [itemList.selectedIndex]);
 	}
 	
@@ -512,7 +530,7 @@ class FavoritesMenu extends MovieClip
 		itemList.requestUpdate();
 
 		navButton.visible = true;
-		navButton.setButtonData({text: "$SELECT GROUP", controls: Input.LeftRight});
+		navButton.setButtonData({text: "$Select Group", controls: Input.LeftRight});
 		
 		btnAll.disabled = true;
 		btnGear.disabled = true;
@@ -615,8 +633,12 @@ class FavoritesMenu extends MovieClip
 	// Added to prevent clicks on the scrollbar from equipping/using stuff
 	private function confirmSelectedEntry(): Boolean
 	{
+		// only allow item selection while in item select state
+		if (_state != ITEM_SELECT)
+			return false;
+		
 		// only confirm when using mouse
-		if (_platform != 0 || !_useMouseNavigation || _state != ITEM_SELECT)
+		if (_platform != 0 || !_useMouseNavigation)
 			return true;
 		
 		for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)
@@ -624,5 +646,33 @@ class FavoritesMenu extends MovieClip
 				return true;
 				
 		return false;
+	}
+	
+	private function updateNavButtons(): Void
+	{
+		var row1: ButtonPanel = navPanel.row1;
+		var row2: ButtonPanel = navPanel.row2;
+		
+		row1.clearButtons();
+		row1.addButton({text: "$Toggle Focus", controls: Input.Jump});
+		if (_groupButtonFocus) {
+			row1.addButton({text: "$Ungroup", controls: Input.TogglePOV});
+		} else {
+			row1.addButton({text: "$Group", controls: Input.TogglePOV});
+		}
+		row1.updateButtons(true);
+		
+		row2.clearButtons();
+		if (_groupButtonFocus) {
+			row2.addButton({text: "$Group Use", controls: Input.ReadyWeapon});
+			if (itemList.selectedEntry != null) {
+				row2.addButton({text: "$Set Group Icon", controls: Input.Sprint});
+				row2.addButton({text: "$Set Main Hand", controls: Input.Wait});
+			}
+		}
+		row2.updateButtons(true);
+		
+		row1._x = -(row1._width / 2);
+		row2._x = -(row2._width / 2);
 	}
 }
