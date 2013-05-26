@@ -27,10 +27,12 @@ int[]				_itemFormIds2
 int[]				_groupCounts
 
 ; array of forms that are marked "primary hand" for each group
-Form[]				_groupPrimaries
+Form[]    			_groupMainHandItems
+int[]    			_groupMainHandFormIds
 
 ; array of forms that are marked as the group icon
-Form[]				_groupIconForms
+Form[]    			_groupIconItems
+int[]    			_groupIconFormIds
 
 ; index is 0-7 for groups
 ; Flags: 
@@ -47,6 +49,12 @@ bool				_silenceEquipSounds = False
 
 SoundCategory		_audioCategoryUI
 
+; Forms to support EquipSlot comparisons
+EquipSlot 			_RightHand
+EquipSlot 			_EitherHand
+EquipSlot 			_LeftHand
+EquipSlot 			_BothHand
+EquipSlot 			_Voice
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -58,14 +66,21 @@ event OnInit()
 
 	_groupCounts	= new int[8]
 	_groupFlags		= new int[8]
-	_groupPrimaries = new Form[8]
-	_groupIconForms = new Form[8]
-	
+	_groupMainHandItems = new Form[8]
+	_groupMainHandFormIds = new int[8]
+	_groupIconItems = new Form[8]
+	_groupIconFormIDs = new int[8]
 	
 	_audioCategoryUI = Game.GetFormFromFile(0x00064451, "Skyrim.esm") as SoundCategory
 
+	_RightHand 		= Game.GetFormFromFile(0x00013f42, "Skyrim.esm") as EquipSlot
+	_LeftHand 		= Game.GetFormFromFile(0x00013f43, "Skyrim.esm") as EquipSlot
+	_EitherHand		= Game.GetFormFromFile(0x00013f44, "Skyrim.esm") as EquipSlot
+	_BothHand 		= Game.GetFormFromFile(0x00013f45, "Skyrim.esm") as EquipSlot
+	_Voice	 		= Game.GetFormFromFile(0x00025bee, "Skyrim.esm") as EquipSlot
+	
 	OnGameReload()
-
+	
 	; DEBUG
 	;RegisterForSingleUpdate(5)
 endEvent
@@ -77,7 +92,7 @@ event OnGameReload()
 	RegisterForModEvent("SKIFM_groupUsed", "OnGroupUse")
 	
 	RegisterForMenu(FAVORITES_MENU)
-	RegisterForSingleUpdate(5)
+;	RegisterForSingleUpdate(5)
 	CleanUp()
 endEvent
 
@@ -85,7 +100,12 @@ endEvent
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event onUpdate()
-
+	Weapon w = Game.GetFormFromFile(0x00012EB7, "Skyrim.esm") as Weapon
+;	PlayerREF.AddItem(w)
+	OnGroupAdd("Foo!","",0,w)
+	SetPrimaryHand(0, w)
+	OnGroupUse("foo!","",0,None)
+	
 EndEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -193,19 +213,32 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	Form[] deferredItems = new Form[32]
 	int deferredIdx
 	
+	
 	Form item
+	Form itemMH
+	
 	int itemType
 	int itemCount
 	int handSlot = 1
 	int ringSlot
 	int i = offset
-
+	
+	bool mhProcessed = false
+	itemMH = _groupMainHandItems[groupIndex]
+	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
 
 	while (i < offset+32)
 		item = items[i]
+		If itemMH && !mhProcessed; player has a mainhand item set for this group, so do some trickery to make sure it gets in first
+			i -= 1 ; Dec the counter so this run doesn't progress the count
+			item = itemMH
+			mhProcessed = true
+		ElseIf item == itemMH && mhProcessed
+			item = none ; Avoid double-processing the MH item 
+		EndIf 
+		
 		itemCount = 0
-
 		if (item) ;prevent logspam if item is none
 			DebugT("items[" + i + "] is " + item)
 			itemType = item.GetType()
@@ -222,27 +255,41 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 
 		if (item != None && itemCount) ;Item exists and player has at least one of it
 			if (itemType == 41) ;kWeapon
-				int WeaponType = (item as Weapon).GetWeaponType()
+				Weapon itemW = item as Weapon
+				int WeaponType = itemW.GetWeaponType()
 				DebugT(item + " is WeaponType " + WeaponType)
+				DebugT("EquipType of " + itemW.GetName() + " is " + itemW.GetEquipType())
 				if (WeaponType > 4 && handSlot == 1) ; It's two-handed and both hands are free
 					; use SKSE EquipItemEX which hopefully avoids the enchantment bug and lets us pick the hand
-					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
+					PlayerREF.EquipItemEX(itemW, equipSlot = 0, equipSound = _silenceEquipSounds)
 					handSlot += 2
-					DebugT("Equipped " + item.GetName() + " in both hands!")
+					DebugT("Equipped " + itemW.GetName() + " in both hands!")
+					DebugT("Handslot is now " + handSlot)
 				elseIf (WeaponType <= 4 && handSlot < 3) ; It's one-handed and the player has a free hand
-					If PlayerREF.GetItemCount(item) > 1 && handSlot == 1; Player has at least two of these and two free hands, so dual-wield them
+					If PlayerREF.GetItemCount(itemW) > 1 && handSlot == 1; Player has at least two of these and two free hands, so dual-wield them
 						; For some reason if we don't call EquipItemEX sequentially, the second one fails sometimes
-						PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = _silenceEquipSounds)
-						PlayerREF.EquipItemEX(item, equipSlot = handSlot + 1, equipSound = _silenceEquipSounds)
+						; Equipping the left hand first seems to prevent this
+						PlayerREF.EquipItemEX(itemW, equipSlot = 2, equipSound = _silenceEquipSounds)
+						PlayerREF.EquipItemEX(itemW, equipSlot = 1, equipSound = _silenceEquipSounds)
+						;double-check it
+						if PlayerREF.GetEquippedWeapon(abLeftHand = true) != item || PlayerREF.GetEquippedWeapon(abLeftHand = false) != item
+							DebugT("Equip to dual hand failed, retrying...")
+							PlayerREF.UnEquipItemEX(itemW, 1)
+							PlayerREF.UnEquipItemEX(itemW, 2)
+							PlayerREF.EquipItemEX(itemW as Weapon, equipSlot = 2, equipSound = _silenceEquipSounds)
+							PlayerREF.EquipItemEX(itemW as Weapon, equipSlot = 1, equipSound = _silenceEquipSounds)
+						endIf
 						handSlot += 2
-						DebugT("Equipped " + item.GetName() + " in each hand (dual wielding)!")
+						DebugT("Equipped " + itemW.GetName() + " in each hand (dual wielding)!")
+						DebugT("Handslot is now " + handSlot)
 					Else ; Player only has one, or only has one free hand
-						PlayerREF.EquipItemEX(item, equipSlot = handSlot, equipSound = _silenceEquipSounds)
-						DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
+						PlayerREF.EquipItemEX(itemW, equipSlot = handSlot, equipSound = _silenceEquipSounds)
+						DebugT("Equipped " + itemW.GetName() + " in hand " + handSlot + "!")
 						handSlot += 1
+						DebugT("Handslot is now " + handSlot)
 					EndIf
 				else
-					DebugT("Player tried to equip " + item.GetName() + " but doesn't have a free hand!")
+					DebugT("Player tried to equip " + itemW.GetName() + " but doesn't have a free hand!")
 				endIf
 			elseIf (itemType == 26) ;kArmor
 				int SlotMask = (item as Armor).GetSlotMask()
@@ -291,11 +338,13 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 					SpellFound = True
 					DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
 					handSlot += 1
+					DebugT("Handslot is now " + handSlot)
 				endIf
 				if (PlayerREF.GetEquippedSpell(0) == item as Spell) ; Spell took up the left hand
 					SpellFound = True
 					DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
 					handSlot += 1
+					DebugT("Handslot is now " + handSlot)
 				endIf
 				if (!SpellFound)
 					DebugT("Spell " + item.GetName() + " was not equipped, probably had no free hands!")
@@ -328,7 +377,6 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		else
 			DebugT("WARNING! Something totally weird happened on items[" + i + "]!")
 		endIf
-
 		i += 1
 	endWhile
 	
@@ -446,12 +494,20 @@ endFunction
 
 ; This will set a form as the PrimaryHand form for a group
 function SetPrimaryHand(int groupIndex, form a_Sender)
-	_groupPrimaries[groupIndex] = a_Sender
+	DebugT("SetPrimaryHand!")
+	DebugT("  groupIndex: " + groupIndex)
+	DebugT("  a_Sender: " + a_Sender)
+	_groupMainHandItems[groupIndex] = a_Sender
+	_groupMainHandFormIds[groupIndex] = a_Sender.GetFormID()
 EndFunction
 
 ; This will set a form as the icon form for a group
 function SetGroupIcon(int groupIndex, form a_Sender)
-	_groupIconForms[groupIndex] = a_Sender
+	DebugT("SetGroupIcon!")
+	DebugT("  groupIndex: " + groupIndex)
+	DebugT("  a_Sender: " + a_Sender)
+	_groupIconItems[groupIndex] = a_Sender
+	_groupIconFormIds[groupIndex] = a_Sender.GetFormID()
 EndFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
