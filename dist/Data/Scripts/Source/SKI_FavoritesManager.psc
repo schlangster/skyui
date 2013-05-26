@@ -24,8 +24,6 @@ Form[]				_items1
 Form[]				_items2
 int[]				_itemFormIds1
 int[]				_itemFormIds2
-int[]				_itemFlags1
-int[]				_itemFlags2
 
 int[]				_groupCounts
 
@@ -38,6 +36,12 @@ int[]				_groupCounts
 ;   8 = Don't remove equipped Armor
 ;  16 = Don't remove equipped Ammo
 int[]				_groupFlags
+
+Form[]				_groupMainHandItems
+int[]				_groupMainHandFormIds
+
+Form[]				_groupIconItems
+int[]				_groupIconFormIds
 
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
@@ -52,11 +56,15 @@ event OnInit()
 	_items2			= new Form[128]
 	_itemFormIds1	= new int[128]
 	_itemFormIds2	= new int[128]
-	_itemFlags1		= new int[128]
-	_itemFlags2		= new int[128]
 
 	_groupCounts	= new int[8]
 	_groupFlags		= new int[8]
+
+	_groupMainHandItems = new Form[8]
+	_groupMainHandFormIds = new int[8]
+
+	_groupIconItems = new Form[8]
+	_groupIconFormIds = new int[8]
 
 	_audioCategoryUI = Game.GetFormFromFile(0x00064451, "Skyrim.esm") as SoundCategory
 
@@ -115,10 +123,17 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 
 	; Store received data
 	if (index != -1)
+		int formId = item.GetFormID()
 		items[index] = item
-		formIds[index] = item.GetFormID()
+		formIds[index] = formId
 
 		_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+
+		; If there's no icon item set yet, use this one
+		if (_groupIconItems[groupIndex] == none)
+			_groupIconItems[groupIndex] = item
+			_groupIconFormIds[groupIndex] = formId
+		endIf
 	endIf
 
 	UpdateMenuGroupData(groupIndex)
@@ -379,13 +394,30 @@ EndEvent
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
 function InitMenuGroupData()
 	DebugT("InitMenuGroupData called!")
+
+	; groupCount, mainHandFormId[8], iconFormId[8]
+	int[] args = new int[17]
+	args[0] = 8
+
+	int c=1
+
+	int i=0
+	while (i<8)
+		args[c] = _groupMainHandFormIds[i]
+		i += 1
+		c += 1
+	endWhile
+
+	i=0
+	while (i<8)
+		args[c] = _groupIconFormIds[i]
+		i += 1
+		c += 1
+	endWhile
+
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupFlags", _itemFlags1)
-
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupFlags", _itemFlags2)
-
-	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", true)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
 
 	DebugT("InitMenuGroupData end!")
 endFunction
@@ -396,30 +428,28 @@ function UpdateMenuGroupData(int a_groupIndex)
 	int offset = 32 * a_groupIndex
 
 	int[] itemFormIds
-	int[] itemFlags
 
 	if (offset >= 128)
 		offset -= 128
 		itemFormIds = _itemFormIds2
-		itemFlags = _itemFlags2
 	else
 		itemFormIds = _itemFormIds1
-		itemFlags = _itemFlags1
 	endIf
 
-	; startIndex + 32 * (form, flag)
-	int[] args = new int[65]
+	; groupIndex, mainHandFormId, iconFormId, itemFormIds[32]
+	int[] args = new int[35]
 
 	args[0] = a_groupIndex
+	args[1] = _groupMainHandFormIds[a_groupIndex]
+	args[2] = _groupIconFormIds[a_groupIndex]
 
-	int i=1
+	int i=3
 	int j=offset
 
-	while (i<65)
+	while (i<35)
 		args[i] = itemFormIds[j]
-		args[i+1] = itemFlags[j]
 
-		i += 2
+		i += 1
 		j += 1
 	endWhile
 	
