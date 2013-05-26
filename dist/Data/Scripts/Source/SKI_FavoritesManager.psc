@@ -217,9 +217,13 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	Form item
 	Form itemMH
 	
+	Form rHandItem
+	Form lHandItem
+	Form voiceItem
+	
 	int itemType
 	int itemCount
-	int handSlot = 1
+	;int handSlot = 1
 	int ringSlot
 	int i = offset
 	
@@ -235,6 +239,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			item = itemMH
 			mhProcessed = true
 		ElseIf item == itemMH && mhProcessed
+			DebugT("items[" + i + "] is MH item and should already be equipped, skipping it...")
 			item = none ; Avoid double-processing the MH item 
 		EndIf 
 		
@@ -259,14 +264,14 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 				int WeaponType = itemW.GetWeaponType()
 				DebugT(item + " is WeaponType " + WeaponType)
 				DebugT("EquipType of " + itemW.GetName() + " is " + itemW.GetEquipType())
-				if (WeaponType > 4 && handSlot == 1) ; It's two-handed and both hands are free
+				if (WeaponType > 4) && !rHandItem && !lHandItem ; It's two-handed and both hands are free
 					; use SKSE EquipItemEX which hopefully avoids the enchantment bug and lets us pick the hand
 					PlayerREF.EquipItemEX(itemW, equipSlot = 0, equipSound = _silenceEquipSounds)
-					handSlot += 2
 					DebugT("Equipped " + itemW.GetName() + " in both hands!")
-					DebugT("Handslot is now " + handSlot)
-				elseIf (WeaponType <= 4 && handSlot < 3) ; It's one-handed and the player has a free hand
-					If PlayerREF.GetItemCount(itemW) > 1 && handSlot == 1; Player has at least two of these and two free hands, so dual-wield them
+					rHandItem = itemW
+					lHandItem = rHandItem
+				elseIf (WeaponType <= 4) && (!rHandItem || !lHandItem) ; It's one-handed and the player has a free hand
+					If PlayerREF.GetItemCount(itemW) > 1 && !rHandItem && !lHandItem ; Player has at least two of these and two free hands, so dual-wield them
 						; For some reason if we don't call EquipItemEX sequentially, the second one fails sometimes
 						; Equipping the left hand first seems to prevent this
 						PlayerREF.EquipItemEX(itemW, equipSlot = 2, equipSound = _silenceEquipSounds)
@@ -274,19 +279,22 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 						;double-check it
 						if PlayerREF.GetEquippedWeapon(abLeftHand = true) != item || PlayerREF.GetEquippedWeapon(abLeftHand = false) != item
 							DebugT("Equip to dual hand failed, retrying...")
-							PlayerREF.UnEquipItemEX(itemW, 1)
-							PlayerREF.UnEquipItemEX(itemW, 2)
+							PlayerREF.UnEquipItemEX(itemW, equipSlot = 1)
+							PlayerREF.UnEquipItemEX(itemW, equipSlot = 2)
 							PlayerREF.EquipItemEX(itemW as Weapon, equipSlot = 2, equipSound = _silenceEquipSounds)
 							PlayerREF.EquipItemEX(itemW as Weapon, equipSlot = 1, equipSound = _silenceEquipSounds)
 						endIf
-						handSlot += 2
 						DebugT("Equipped " + itemW.GetName() + " in each hand (dual wielding)!")
-						DebugT("Handslot is now " + handSlot)
+						rHandItem = itemW
+						lHandItem = rHandItem
 					Else ; Player only has one, or only has one free hand
-						PlayerREF.EquipItemEX(itemW, equipSlot = handSlot, equipSound = _silenceEquipSounds)
-						DebugT("Equipped " + itemW.GetName() + " in hand " + handSlot + "!")
-						handSlot += 1
-						DebugT("Handslot is now " + handSlot)
+						If !rHandItem
+							PlayerREF.EquipItemEX(itemW, 1, equipSound = _silenceEquipSounds)
+							DebugT("Equipped " + itemW.GetName() + " in Rhand!")
+						ElseIf !lHandItem
+							PlayerREF.EquipItemEX(itemW, 2, equipSound = _silenceEquipSounds)
+							DebugT("Equipped " + itemW.GetName() + " in Lhand!")
+						EndIf
 					EndIf
 				else
 					DebugT("Player tried to equip " + itemW.GetName() + " but doesn't have a free hand!")
@@ -294,9 +302,15 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			elseIf (itemType == 26) ;kArmor
 				int SlotMask = (item as Armor).GetSlotMask()
 				DebugT(item + " has armor SlotMask " + SlotMask)
-				if (SlotMask == 512 && handSlot > 2) ; It's a shield but player's left hand is already full
-					DebugT("Player tried to equip shield " + item.GetName() + " but doesn't have a free left hand!")
-				else
+				if (SlotMask == 512) ; It's a shield... 
+					If (!lHandItem) ; ... and player's left hand is empty. What luck!
+						PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
+						lHandItem = item
+						DebugT("Equipped " + item.GetName() + " in Lhand!")
+					Else ; ... player's left hand is already full, too bad :(
+						DebugT("Player tried to equip shield " + item.GetName() + " but doesn't have a free left hand!")
+					EndIf
+				else ; It's not a shield, just equip it
 					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 					DebugT("Equipped " + item.GetName() + "!")
 				endIf
@@ -305,53 +319,54 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 				DebugT("Equipped " + item.GetName() + "!")
 			elseIf (itemType == 22 || itemType == 23) ;kSpell or kScroll, should work the same way.
 				DebugT("Equipping " + item.GetName() + "...")
-				if (item == item as Spell)
-					DebugT("Item is the same as its spell version!")
-				else ; test to see if maybe powers act differently because their default type is Form, rather than Spell
-					DebugT("Item is NOT THE SAME as its spell version!")
-				endIf
-				;This is annoying. Since there's apparently no way to get a spell's EquipType (i.e. right/left/both/power), we have to use trial and error
-				;FIXME: A future revision of SKSE will be adding a way to get the EquipType from a spell, so this can be fixed whenever it comes out.
-				DebugT("EquipType of " + item.GetName() + " is " + (item as Spell).GetEquipType())
-				Spell powerSpell = PlayerREF.GetEquippedSpell(2) ; Save currently equipped Power
-				PlayerREF.EquipSpell(item as Spell,2) ; Try to equip the spell as a Power
-				Bool SpellFound = False
-				if (PlayerREF.GetEquippedSpell(2) == item as Spell) ; Spell equipped as Power/Shout
-					DebugT("Equipped " + item.GetName() + " as Power/Shout!")
-					SpellFound = True
-				elseIf (PlayerREF.GetEquippedSpell(3) == item as Spell) ; Spell went.. somewhere else?
-					DebugT("Equipped " + item.GetName() + " as Instant(?)!")
-					SpellFound = True
-				endIf
-				if (!SpellFound) ; Spell failed to equip as a Power, so it must be a handed Spell
-					if (powerSpell) ; Restore equipped Power, as it will have been removed by the failed attempt
-						PlayerREF.EquipSpell(powerSpell,2) 
-					endIf
-					if (handSlot == 1) ; Both hands are free
-						PlayerREF.EquipSpell(item as Spell,1) ; Try to equip the spell in right hand
-					elseIf (handSlot == 2) ; Left hand is free
-						PlayerREF.EquipSpell(item as Spell,0) ; Try to equip the spell in left hand
-					endIf
-				endIf
-				; The following are separate if (statements so if the spell took up both hands, we know both hands are full)
-				if (PlayerREF.GetEquippedSpell(1) == item as Spell) ; Spell took up the right hand
-					SpellFound = True
-					DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
-					handSlot += 1
-					DebugT("Handslot is now " + handSlot)
-				endIf
-				if (PlayerREF.GetEquippedSpell(0) == item as Spell) ; Spell took up the left hand
-					SpellFound = True
-					DebugT("Equipped " + item.GetName() + " in hand " + handSlot + "!")
-					handSlot += 1
-					DebugT("Handslot is now " + handSlot)
-				endIf
-				if (!SpellFound)
-					DebugT("Spell " + item.GetName() + " was not equipped, probably had no free hands!")
-				endIf
+				Spell itemSpell = item as Spell
+				DebugT("EquipType of " + itemSpell.GetName() + " is " + itemSpell.GetEquipType())
+				EquipSlot spellEquipSlot = itemSpell.GetEquipType()
+				If spellEquipSlot == _EitherHand ; spell is eitherhanded
+					If !rHandItem
+						PlayerREF.EquipSpell(itemSpell, 1)
+						rHandItem = item
+						DebugT("Equipped " + itemSpell.GetName() + " in Rhand!")
+					ElseIf !lHandItem
+						PlayerREF.EquipSpell(itemSpell, 0)
+						lHandItem = item
+						DebugT("Equipped " + itemSpell.GetName() + " in Lhand!")
+					Else
+						DebugT("Player tried to equip " + itemSpell.GetName() + " but doesn't have a free hand!")
+					EndIf
+				ElseIf spellEquipSlot == _BothHand ; Spell requires two hands ...
+					If !rHandItem && !lHandItem ; .. and Player has both hands free
+						PlayerREF.EquipSpell(itemSpell, 1)
+						rHandItem = item
+						lHandItem = rHandItem
+					Else
+						DebugT("Player tried to equip " + itemSpell.GetName() + " but doesn't two free hands!")
+					EndIf
+				ElseIf spellEquipSlot == _LeftHand ; a lot of NPC spells are left-hand only, so if the player is using PSB they'll need this
+					If !lHandItem
+						PlayerREF.EquipSpell(itemSpell, 0)
+						lHandItem = item
+						DebugT("Equipped " + itemSpell.GetName() + " in Lhand!")
+					Else
+						DebugT("Player tried to equip Lhand-only spell " + itemSpell.GetName() + " but doesn't have a free Lhand!")
+					EndIf
+				ElseIf spellEquipSlot == _Voice
+					If !voiceItem
+						PlayerREF.EquipSpell(itemSpell, 2)
+						DebugT("Equipped " + itemSpell.GetName() + " as a Power!")
+						voiceItem = item
+					Else
+						DebugT("Player tried to equip Power " + itemSpell.GetName() + " but the shout/power slot is already full!")
+					EndIf
+				EndIf
 			elseIf (itemType == 119) ;kShout
-				PlayerREF.EquipShout(item as Shout)
-				DebugT("Equipped " + item.GetName() + " as a Shout!")
+				If !voiceItem
+					PlayerREF.EquipShout(item as Shout)
+					DebugT("Equipped " + item.GetName() + " as a Shout!")
+					voiceItem = item
+				Else
+					DebugT("Player tried to equip Shout " + item.GetName() + " but the shout/power slot is already full!")
+				EndIf
 			elseIf (itemType == 46) ;kPotion
 				if ((item as Potion).IsHostile()) ; This is a poison and should only be applied after new weapons have been equipped.
 					deferredItems[deferredIdx] = item
@@ -396,9 +411,10 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			DebugT("Consuming deferred item " + i + ", " + item.GetName())
 			PlayerREF.EquipItem(deferredItems[i], abSilent = True)
 		elseIf (itemType == 31) ; kLight, probably a torch, which needs the left hand free
-			if (handSlot < 3) ; Left hand is free
+			if (!lHandItem) ; Left hand is free
 				PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 				DebugT("Equipped deferred item " + item.GetName())
+				lHandItem = item
 			else
 				DebugT("Player tried to equip light " + item.GetName() + " but doesn't have a free left hand!")
 			endIf
@@ -410,8 +426,15 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		i += 1
 	endWhile
 
+	DebugT("Checking for one handed spell that should be dual-wielded...")
+	If rHandItem ; check for none first to avoid logspam
+		If rHandItem.GetType() == 22 && !lHandItem && !PlayerREF.GetEquippedSpell(0); Player has a spell equipped in the right hand, left is empty
+			PlayerREF.EquipSpell(rHandItem as Spell,0) ; Equip empty left hand with a copy of right hand spell
+			DebugT("Equipped " + rHandItem.GetName() + " in left hand for dual-wielding!")
+		EndIf
+	EndIf
 	_audioCategoryUI.Mute() ; Turn UI sounds back on
-
+	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
 	DebugT("OnGroupUse end!")
 endEvent
 
