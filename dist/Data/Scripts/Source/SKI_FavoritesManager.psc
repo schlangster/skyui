@@ -221,7 +221,8 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 			_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1			
 			i = n
 		else
-			if (items[i] != none)
+			if (items[i] != none && iconReplacement == none)
+				; Pick any != none form as potential icon replacement
 				iconReplacement = items[i]
 			endIf
 			i += 1
@@ -243,15 +244,7 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	DebugT("OnGroupRemove end!")
 endEvent
 
-event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	DebugT("OnGroupUse!")
-	DebugT("  a_eventName: " + a_eventName)
-	DebugT("  a_strArg: " + a_strArg)
-	DebugT("  a_numArg: " + a_numArg)
-	DebugT("  a_sender: " + a_sender)
 
-	GroupUse(a_numArg as int)
-endEvent
 
 event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	; Just remembered that the mod event only supports a single numeric argument as per Schlangster
@@ -341,18 +334,29 @@ event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a
 	UpdateMenuGroupData(groupIndex)
 endEvent
 
+event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	gotoState("PROCESSING")
+
+	GroupUse(a_numArg as int)
+
+	gotoState("")
+endEvent
+
 event OnKeyDown(int a_keyCode)
-	gotoState("PROCESSING_INPUT")
+	gotoState("PROCESSING")
 
 	int groupIndex = _groupHotkeys.Find(a_keyCode)
-	if (groupIndex != -1)
+	if (groupIndex != -1 && !Utility.IsInMenuMode())
 		GroupUse(groupIndex)
 	endIf
 
 	gotoState("")
 endEvent
 
-state PROCESSING_INPUT
+state PROCESSING
+
+	event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	endEvent
 
 	event OnKeyDown(int a_keyCode)
 	endEvent
@@ -802,16 +806,16 @@ function GroupUse(int a_groupIndex)
 			aRemove = PlayerRef.GetWornForm(h) ;as Armor
 			if aRemove
 				DebugT(" Found " + aRemove.GetName() + "!")
-				If !Math.LogicalAND(h,outfitSlot)
+				If !LogicalAND(h,outfitSlot)
 					DebugT("  Doesn't fit outfitSlot, removing it!")
 					PlayerREF.UnEquipItemEX(aRemove)
 				EndIf
 			EndIf
-			h = Math.LeftShift(h,1)
+			h = LeftShift(h,1)
 		EndWhile
 	EndIf
 	
-	_audioCategoryUI.Mute() ; Turn UI sounds back on
+	_audioCategoryUI.UnMute() ; Turn UI sounds back on
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
 	DebugT("outfitSlot: " + outfitSlot)
 	DebugT("OnGroupUse end!")
