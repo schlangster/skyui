@@ -22,6 +22,8 @@ int property		OPTION_TYPE_KEYMAP	= 0x07 autoReadonly
 
 int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
 int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
+int property		OPTION_FLAG_HIDDEN		= 0x02 autoReadonly
+int property		OPTION_FLAG_WITH_UNMAP	= 0x04 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly

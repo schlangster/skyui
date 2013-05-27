@@ -81,6 +81,7 @@ class ConfigPanel extends MovieClip
 	private var _acceptControls: Object;
 	private var _cancelControls: Object;
 	private var _defaultControls: Object;
+	private var _unmapControls: Object;
 	
 	private var _bDefaultEnabled: Boolean = false;
 	
@@ -446,12 +447,14 @@ class ConfigPanel extends MovieClip
 		
 		if (a_platform == 0) {
 			_acceptControls = Input.Enter;
-			_defaultControls = Input.ReadyWeapon;
 			_cancelControls = Input.Tab;
+			_defaultControls = Input.ReadyWeapon;
+			_unmapControls = Input.JournalYButton;
 		} else {
 			_acceptControls = Input.Accept;
-			_defaultControls = Input.YButton;
 			_cancelControls = Input.Cancel;
+			_defaultControls = Input.JournalXButton;
+			_unmapControls = Input.JournalYButton;
 		}
 		
 		_buttonPanelL.setPlatform(a_platform, a_bPS3Switch);
@@ -524,6 +527,9 @@ class ConfigPanel extends MovieClip
 			} else if (details.control == _defaultControls.name) {
 				requestDefaults();
 				return true;
+			} else if (details.control == _unmapControls.name) {
+				requestUnmap();
+				return true;
 			}
 		}
 		
@@ -536,6 +542,9 @@ class ConfigPanel extends MovieClip
   
 	private function requestDefaults(): Void
 	{
+		if (_state != READY)
+			return;
+		
 		var index = _optionsList.selectedIndex;
 		if (index == -1)
 			return;
@@ -545,6 +554,26 @@ class ConfigPanel extends MovieClip
 			
 		_state = WAIT_FOR_DEFAULT;
 		skse.SendModEvent("SKICP_optionDefaulted", null, index);
+	}
+	
+	private function requestUnmap(): Void
+	{
+		if (_state != READY)
+			return;
+			
+		var index = _optionsList.selectedIndex;
+		if (index == -1)
+			return;
+			
+		if (_optionsList.selectedEntry.flags & (OptionsListEntry.FLAG_DISABLED | OptionsListEntry.FLAG_HIDDEN))
+			return
+			
+		if (!(_optionsList.selectedEntry.flags & OptionsListEntry.FLAG_WITH_UNMAP))
+			return
+			
+		selectedKeyCode = -1;
+		_state = WAIT_FOR_SELECT;
+		skse.SendModEvent("SKICP_keymapChanged", null, index);
 	}
   
 	private function onModListEnter(event: Object): Void
@@ -844,7 +873,7 @@ class ConfigPanel extends MovieClip
 		
 		_buttonPanelL.clearButtons();
 		
-		if (entry != null && !(entry.flags & OptionsListEntry.FLAG_DISABLED)) {
+		if (entry != null && !(entry.flags & (OptionsListEntry.FLAG_DISABLED | OptionsListEntry.FLAG_HIDDEN))) {
 			var type = entry.optionType;
 			switch (type) {
 				case OptionsListEntry.OPTION_EMPTY:
@@ -867,6 +896,8 @@ class ConfigPanel extends MovieClip
 					break;
 				case OptionsListEntry.OPTION_KEYMAP:
 					_buttonPanelL.addButton({text: "$Remap", controls: _acceptControls});
+					if (entry.flags & OptionsListEntry.FLAG_WITH_UNMAP)
+						_buttonPanelL.addButton({text: "$Unmap", controls: _unmapControls});
 					break;
 			}
 

@@ -29,11 +29,14 @@
 	static var Wait			= {name: "Wait", context: CONTEXT_GAMEPLAY};
 	static var Jump			= {name: "Jump", context: CONTEXT_GAMEPLAY};
 	static var Sprint		= {name: "Sprint", context: CONTEXT_GAMEPLAY};
+	static var Shout		= {name: "Shout", context: CONTEXT_GAMEPLAY};
 	static var Activate		= {name: "Activate", context: CONTEXT_GAMEPLAY};
 	static var ReadyWeapon	= {name: "Ready Weapon", context: CONTEXT_GAMEPLAY};
 	static var TogglePOV	= {name: "Toggle POV", context: CONTEXT_GAMEPLAY};
 	static var Accept		= {name: "Accept", context: CONTEXT_MENUMODE};
 	static var Cancel		= {name: "Cancel", context: CONTEXT_MENUMODE};
+	static var JournalXButton	= {name: "XButton", context: CONTEXT_JOURNAL};
+	static var JournalYButton	= {name: "YButton", context: CONTEXT_JOURNAL};
 	
 	// Custom
 	static var LeftRight: Array = [
