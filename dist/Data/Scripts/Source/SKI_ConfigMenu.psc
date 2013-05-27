@@ -289,14 +289,14 @@ event OnVersionUpdate(int a_version)
 		Pages[2] = "$Advanced"
 
 		_favGroupNames = new string[8]
-		_favGroupNames[0] = "Group 1"
-		_favGroupNames[1] = "Group 2"
-		_favGroupNames[2] = "Group 3"
-		_favGroupNames[3] = "Group 4"
-		_favGroupNames[4] = "Group 5"
-		_favGroupNames[5] = "Group 6"
-		_favGroupNames[6] = "Group 7"
-		_favGroupNames[7] = "Group 8"
+		_favGroupNames[0] = "$Group {1}"
+		_favGroupNames[1] = "$Group {2}"
+		_favGroupNames[2] = "$Group {3}"
+		_favGroupNames[3] = "$Group {4}"
+		_favGroupNames[4] = "$Group {5}"
+		_favGroupNames[5] = "$Group {6}"
+		_favGroupNames[6] = "$Group {7}"
+		_favGroupNames[7] = "$Group {8}"
 	endIf
 endEvent
 
@@ -358,8 +358,8 @@ event OnPageReset(string a_page)
 
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
-		AddHeaderOption("$Group Preferences")
-		AddMenuOptionST("FAV_GROUP_SELECT", "$Current Group", _favCurGroupIdx+1)
+		AddHeaderOption("$Preferences")
+		AddMenuOptionST("FAV_GROUP_SELECT", "", "$Group {" + (_favCurGroupIdx+1) + "}")
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_ARMOR", "$Unequip Armor", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG))
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_AMMO", "$Unequip Ammo", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG))
@@ -367,19 +367,19 @@ event OnPageReset(string a_page)
 		
 		
 		if (! Game.UsingGamepad())
-			int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupUseHotkeys()
+			int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupHotkeys()
 
 			SetCursorPosition(1)
 
-			AddHeaderOption("$Hotkeys")
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY1", "Group 1", groupHotkeys[0])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY2", "Group 2", groupHotkeys[1])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY3", "Group 3", groupHotkeys[2])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY4", "Group 4", groupHotkeys[3])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY5", "Group 5", groupHotkeys[4])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY6", "Group 6", groupHotkeys[5])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY7", "Group 7", groupHotkeys[6])
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY8", "Group 8", groupHotkeys[7])
+			AddHeaderOption("$Controls")
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY1", "$Group {1}", groupHotkeys[0], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY2", "$Group {2}", groupHotkeys[1], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY3", "$Group {3}", groupHotkeys[2], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY4", "$Group {4}", groupHotkeys[3], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY5", "$Group {5}", groupHotkeys[4], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY6", "$Group {6}", groupHotkeys[5], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY7", "$Group {7}", groupHotkeys[6], OPTION_FLAG_WITH_UNMAP)
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY8", "$Group {8}", groupHotkeys[7], OPTION_FLAG_WITH_UNMAP)
 		endIf
 
 	; -------------------------------------------------------
@@ -425,6 +425,134 @@ endEvent
 
 ; STATE OPTIONS -----------------------------------------------------------------------------------
 
+state FAV_GROUP_USE_HOTKEY1 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(0, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(0, 59)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{F1}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY2 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(1, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(1, 60)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{F2}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY3 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(2, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(2, 61)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{F3}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY4 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(3, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(3, 62)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{F4}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY5 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(4, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(4, -1)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{$Off}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY6 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(5, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(5, -1)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{$Off}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY7 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(6, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(6, -1)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{$Off}")
+	endEvent
+
+endState
+
+state FAV_GROUP_USE_HOTKEY8 ; KEYMAP
+
+	event OnKeyMapChangeST(int a_keyCode, string a_conflictControl, string a_conflictName)
+		SetGroupHotkey(7, a_keyCode, a_conflictControl, a_conflictName)
+	endEvent
+
+	event OnDefaultST()
+		SetGroupHotkey(7, -1)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{$Off}")
+	endEvent
+
+endState
+
 state FAV_MENU_HELP_ENABLED ; TOGGLE
 
 	event OnSelectST()
@@ -459,7 +587,7 @@ state FAV_GROUP_SELECT ; MENU
 
 		SetCurrentFavoriteGroup(_favCurGroupIdx)
 
-		SetMenuOptionValueST(_favCurGroupIdx+1)
+		SetMenuOptionValueST(_favGroupNames[_favCurGroupIdx])
 	endEvent
 
 	event OnDefaultST()
@@ -1368,6 +1496,18 @@ endState
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
+; @interface
+string function GetCustomControl(int a_keyCode)
+	int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupHotkeys()
+
+	int index = groupHotkeys.Find(a_keyCode)
+	if (index != -1)
+		return ("Group " + (index+1))
+	endIf
+
+	return ""
+endFunction
+
 function ApplySettings()
 	; Apply settings that aren't handled by SKI_SettingsManagerInstance
 
@@ -1553,6 +1693,42 @@ function SetCurrentFavoriteGroup(int a_index)
 	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG), true, "FAV_GROUP_UNEQUIP_ARMOR")
 	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG), true, "FAV_GROUP_UNEQUIP_AMMO")
 	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG), true, "FAV_GROUP_UNEQUIP_HANDS")
+endFunction
+
+function SetGroupHotkey(int a_groupIndex, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
+
+	bool continue = true
+
+	if (a_conflictControl != "" && a_conflictName != ModName)
+		string msg
+
+		if (a_conflictName != "")
+			msg = "$SKI_MSG2{" + a_conflictControl + " (" + a_conflictName + ")}"
+		else
+			msg = "$SKI_MSG2{" + a_conflictControl + "}"
+		endIf
+
+		continue = ShowMessage(msg, true, "$Yes", "$No")
+	endIf
+
+	if (!continue)
+		return
+	endIf
+
+	if (!SKI_FavoritesManagerInstance.SetGroupHotkey(a_groupIndex, a_keyCode))
+		return
+	endIf
+
+	; Update
+	int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupHotkeys()
+	SetKeyMapOptionValueST(groupHotkeys[0], true, "FAV_GROUP_USE_HOTKEY1")
+	SetKeyMapOptionValueST(groupHotkeys[1], true, "FAV_GROUP_USE_HOTKEY2")
+	SetKeyMapOptionValueST(groupHotkeys[2], true, "FAV_GROUP_USE_HOTKEY3")
+	SetKeyMapOptionValueST(groupHotkeys[3], true, "FAV_GROUP_USE_HOTKEY4")
+	SetKeyMapOptionValueST(groupHotkeys[4], true, "FAV_GROUP_USE_HOTKEY5")
+	SetKeyMapOptionValueST(groupHotkeys[5], true, "FAV_GROUP_USE_HOTKEY6")
+	SetKeyMapOptionValueST(groupHotkeys[6], true, "FAV_GROUP_USE_HOTKEY7")
+	SetKeyMapOptionValueST(groupHotkeys[7], false, "FAV_GROUP_USE_HOTKEY8")
 endFunction
 
 

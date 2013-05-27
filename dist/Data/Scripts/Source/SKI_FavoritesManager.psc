@@ -48,7 +48,7 @@ int[]				_groupOffHandFormIds
 Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
-int[]				_groupUseHotkeys
+int[]				_groupHotkeys
 
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
@@ -83,12 +83,15 @@ event OnInit()
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
-	_groupUseHotkeys	= new int[8]
-	int i=0
-	while (i<8)
-		_groupUseHotkeys[i] = -1
-		i += 1
-	endWhile
+	_groupHotkeys = new int[8]
+	_groupHotkeys[0] = 59
+	_groupHotkeys[1] = 60
+	_groupHotkeys[2] = 61
+	_groupHotkeys[3] = 62
+	_groupHotkeys[4] = -1
+	_groupHotkeys[5] = -1
+	_groupHotkeys[6] = -1
+	_groupHotkeys[7] = -1
 
 	_audioCategoryUI	= Game.GetFormFromFile(0x00064451, "Skyrim.esm") as SoundCategory
 
@@ -622,18 +625,19 @@ function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
 	endIf
 endFunction
 
-int[] function GetGroupUseHotkeys()
+int[] function GetGroupHotkeys()
 	int[] result = new int[8]
 	int i=0
 	while (i<8)
-		result[i] = _groupUseHotkeys[i]
+		result[i] = _groupHotkeys[i]
 		i += 1
 	endWhile
 	return result
 endFunction
 
-function SetGroupUseHotkey(int a_groupIndex, int a_keycode)
-	_groupUseHotkeys[a_groupIndex] = a_keycode
+bool function SetGroupHotkey(int a_groupIndex, int a_keycode)
+	_groupHotkeys[a_groupIndex] = a_keycode
+	return true
 endFunction
 
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
