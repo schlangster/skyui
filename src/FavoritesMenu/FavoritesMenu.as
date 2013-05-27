@@ -473,6 +473,7 @@ class FavoritesMenu extends MovieClip
 	
 	private function onItemSelectionChange(a_event: Object): Void
 	{
+		GameDelegate.call("PlaySound",["UIMenuFocus"]);
 		_useMouseNavigation = a_event.keyboardOrMouse == 0;
 		updateNavButtons();
 	}
@@ -491,6 +492,8 @@ class FavoritesMenu extends MovieClip
 		
 		headerText.SetText(btn.text);
 		_typeFilter.changeFilterFlag(btn.filterFlag);
+		
+		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 	}
 	
 	private function onGroupSelect(a_event: Object): Void
@@ -519,6 +522,8 @@ class FavoritesMenu extends MovieClip
 		} else {
 			_groupIndex = index;
 		}
+		
+		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 	}
 
 	private function startFadeOut(): Void
@@ -526,6 +531,7 @@ class FavoritesMenu extends MovieClip
 		_state = CLOSING;
 		updateNavButtons();
 		_parent.gotoAndPlay("startFadeOut");
+		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 	
 	private function onFadeOutCompletion(): Void
@@ -590,12 +596,14 @@ class FavoritesMenu extends MovieClip
 		
 		if (formId == null || formId == 0 || _groupAssignIndex == -1) {
 			endGroupAssignment();
+			GameDelegate.call("PlaySound", ["UIMenuCancel"]);
 		} else {
 			// Suspend list to avoid redundant invalidate before new synced group data arrives
 			itemList.suspended = true
 			enableGroupButtons(false);
 			_state = GROUP_ASSIGN_SYNC;
 			skse.SendModEvent("SKIFM_groupAdd", "", _groupAssignIndex, formId);
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
 	
@@ -642,6 +650,7 @@ class FavoritesMenu extends MovieClip
 		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
 			_state = GROUP_REMOVE_SYNC;
 			skse.SendModEvent("SKIFM_groupRemove", "", _groupIndex, formId);
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
 	
@@ -664,6 +673,7 @@ class FavoritesMenu extends MovieClip
 		if (_groupButtonFocus && _groupIndex >= 0) {
 			_state = SAVE_EQUIP_STATE_SYNC;
 			skse.SendModEvent("SKIFM_saveEquipState", "", _groupIndex);
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
 	
@@ -678,6 +688,7 @@ class FavoritesMenu extends MovieClip
 		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
 			_state = SET_ICON_SYNC;
 			skse.SendModEvent("SKIFM_setGroupIcon", "", _groupIndex, formId);
+			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
 	
@@ -781,11 +792,9 @@ class FavoritesMenu extends MovieClip
 			var selectedEntry = itemList.selectedEntry;
 			twoRows = true;
 			row2.addButton({text: "$Group Use", controls: Input.ReadyWeapon});
-			if (selectedEntry != null) {
+			row2.addButton({text: "$Save Equip State", controls: Input.Wait});
+			if (selectedEntry != null)
 				row2.addButton({text: "$Set Group Icon", controls: Input.Sprint});
-				if (allowAsMainHand(selectedEntry))
-					row2.addButton({text: "$Set Main Hand", controls: Input.Wait});
-			}
 		}
 		row2.updateButtons(true);
 		
@@ -793,14 +802,5 @@ class FavoritesMenu extends MovieClip
 		row1._y = twoRows ? 10 : 35;
 		row2._x = -(row2._width / 2);
 		row2._y = 65;
-	}
-	
-	private static function allowAsMainHand(a_entry: Object): Boolean
-	{
-		var equipSlot = a_entry.equipSlot;
-		if (equipSlot)
-			return (equipSlot == Form.EQUIP_RIGHT_HAND || equipSlot == Form.EQUIP_BOTH_HANDS || equipSlot == Form.EQUIP_EITHER_HAND);
-		else
-			return false;
 	}
 }
