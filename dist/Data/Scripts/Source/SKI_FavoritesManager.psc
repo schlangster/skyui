@@ -11,6 +11,7 @@ int property		FAV_FLAG_UNEQAMMO	= 	4	autoReadonly
 int property		FAV_FLAG_NONGREEDY	= 	8	autoReadonly
 int property		FAV_FLAG_LEFTFIRST	= 	16 	autoReadonly
 
+bool property		ButtonHelpEnabled	= 	true	auto
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -250,18 +251,6 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
 
-	;int h = 0x00000001
-	;Form aRemove
-	;While h < 0x80000000
-		;DebugT("Unequipping armor at " + h)
-		;aRemove = PlayerRef.GetWornForm(h) ;as Armor
-		;if aRemove
-			;DebugT("Found " + aRemove.GetName() + ", removing it!")
-			;PlayerREF.UnEquipItemEX(aRemove)
-		;EndIf
-		;h = Math.LeftShift(h,1)
-	;EndWhile
-
 	while (i < offset+32)
 		item = items[i]
 		If itemMH && !mhProcessed; player has a mainhand item set for this group, so do some trickery to make sure it gets in first
@@ -464,21 +453,23 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			DebugT("Equipped " + rHandItem.GetName() + " in left hand for dual-wielding!")
 		EndIf
 	EndIf
-	
-	int h = 0x00000001
-	Form aRemove
-	While h < 0x80000000
-		DebugT("Unequipping armor at " + h)
-		aRemove = PlayerRef.GetWornForm(h) ;as Armor
-		if aRemove
-			DebugT("Found " + aRemove.GetName() + "!")
-			If !Math.LogicalAND(h,outfitSlot)
-				DebugT("Doesn't fit outfitSlot, removing it!")
-				PlayerREF.UnEquipItemEX(aRemove)
+
+	If GetGroupFlag(groupIndex,FAV_FLAG_UNEQARMOR)
+		int h = 0x00000001
+		Form aRemove
+		While h < 0x80000000
+			DebugT("Checking slot " + h)
+			aRemove = PlayerRef.GetWornForm(h) ;as Armor
+			if aRemove
+				DebugT(" Found " + aRemove.GetName() + "!")
+				If !Math.LogicalAND(h,outfitSlot)
+					DebugT("  Doesn't fit outfitSlot, removing it!")
+					PlayerREF.UnEquipItemEX(aRemove)
+				EndIf
 			EndIf
-		EndIf
-		h = Math.LeftShift(h,1)
-	EndWhile
+			h = Math.LeftShift(h,1)
+		EndWhile
+	EndIf
 	
 	_audioCategoryUI.Mute() ; Turn UI sounds back on
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
@@ -543,6 +534,22 @@ endEvent
 
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
+
+;get whether a flag is set for the specified group
+bool function GetGroupFlag(int a_groupIndex, int a_flag)
+	Return Math.LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
+endFunction
+
+;set a flag for the specified group
+function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
+	if GetGroupFlag(a_groupIndex,a_flag) && (!a_value) ; flag is set and we want to unset it
+		_groupFlags[a_groupIndex] = _groupFlags[a_groupIndex] - a_flag ; apparently -= and += don't work on array components
+	elseIf !GetGroupFlag(a_groupIndex,a_flag) && (a_value) ; flag is not set and we want to set it
+		_groupFlags[a_groupIndex] = _groupFlags[a_groupIndex] + a_flag
+	else ; flag state matches the desired state, do nothing
+		
+	endIf
+endFunction
 
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
 function InitMenuGroupData()
@@ -719,10 +726,6 @@ function DebugT(string DebugString)
 	if (_useDebug)
 		Debug.Trace("SKI_Favs: " + DebugString)
 	endIf
-endFunction
-
-bool function CheckGroupFlag(int a_group, int a_flag)
-	Return Math.LogicalAnd(_groupFlags[a_group], a_flag) as bool
 endFunction
 
 function ParseGroupFlags(int a_flags)
