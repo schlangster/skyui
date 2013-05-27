@@ -255,7 +255,7 @@ class ConfigPanel extends MovieClip
 	public function setOptionTextBuffer(/* values */): Void
 	{
 		for (var i = 0; i < arguments.length; i++)
-			_optionTextBuffer[i] = arguments[i];
+			_optionTextBuffer[i] = Translator.translateNested(arguments[i]);
 	}
 	
 	public function setOptionStrValueBuffer(/* values */): Void
@@ -301,8 +301,9 @@ class ConfigPanel extends MovieClip
 			
 			// Cut off rest of the buffer once the first emtpy string was found
 			if (s.toLowerCase() == "none" || s == "")
-				break;			
-			_menuDialogOptions[i] = arguments[i];
+				break;
+				
+			_menuDialogOptions[i] = Translator.translateNested(arguments[i]);
 		}
 	}
 	

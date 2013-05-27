@@ -18,11 +18,14 @@ class skyui.util.Translator
   
   	// Translate simple strings
 	public static function translate(a_str: String): String
-	{		
+	{
 		if (_translator == undefined) {
 			_translator = _root.createTextField("_translator", _root.getNextHighestDepth(), 0, 0, 1, 1);
 			_translator._visible = false;
 		}
+		
+		if (a_str == "")
+			return "";
 		
 		if (a_str.charAt(0) != "$")
 			return a_str;
@@ -39,6 +42,13 @@ class skyui.util.Translator
 	// Translate with support for substrings, i.e. "$My text, default value {$Default value}" 
 	public static function translateNested(a_str: String): String
 	{
+		if (a_str == "")
+			return "";
+		
+		// Quick test to decide if we can skip
+		if (a_str.indexOf("{") == -1)
+			return translate(a_str);
+		
 		// Collect substrings
 		var subStrings: Array = [];
 		var offset = 0;
