@@ -40,6 +40,9 @@ int[]				_groupFlags
 Form[]				_groupMainHandItems
 int[]				_groupMainHandFormIds
 
+Form[]				_groupOffHandItems
+int[]				_groupOffHandFormIds
+
 Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
@@ -69,6 +72,9 @@ event OnInit()
 	_groupMainHandItems		= new Form[8]
 	_groupMainHandFormIds	= new int[8]
 
+	_groupOffHandItems		= new Form[8]
+	_groupOffHandFormIds	= new int[8]
+	
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
@@ -502,19 +508,63 @@ event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_se
 	DebugT("OnGroupFlag end!")
 endEvent
 
-; This will set a form as the PrimaryHand form for a group
+; Read the player's current equipment and save it to the target group
+event OnSaveEquipState(float a_numArg)
+	DebugT("OnSaveEquipState!")
+	DebugT("  a_numArg: " + a_numArg)
+	
+	int groupIndex = a_numArg as int
+	form[] handItems
+	
+	handItems = new form[2]
+	
+	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
+	; Lame!
+	Int aiHand 
+	
+	while aiHand < 2
+		int itemType = PlayerREF.GetEquippedItemType(aiHand)
+		if (aiHand == 0) ; Shields are left-handed only
+			handItems[aiHand] = PlayerREF.GetEquippedShield()
+		endIf
+		if (!handItems[aiHand]) ;No shield found, check for a weapon
+			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
+		endIf
+		if (!handItems[aiHand]) ;No weapon found, check for a spell
+			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
+		endIf
+		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
+
+		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+		
+		if (handItems[aiHand]) ; check for none to avoid logspam
+			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
+				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
+				handItems[aiHand] = None
+			endIf
+		endIf
+		aiHand += 1
+	endWhile
+
+	_groupMainHandItems[groupIndex] = handItems[1]
+	if handItems[1] 
+		_groupMainHandFormIDs[groupIndex] = handItems[1].GetFormID()
+	else ; set formid to 0 if none
+		_groupMainHandFormIDs[groupIndex] = 0
+	endIf
+	
+	_groupOffHandItems[groupIndex] = handItems[0]
+	if handItems[0] 
+		_groupOffHandFormIDs[groupIndex] = handItems[0].GetFormID()
+	else ; set formid to 0 if none
+		_groupOffHandFormIDs[groupIndex] = 0
+	endIf
+	
+endEvent
+
 event OnSetMainHand(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	DebugT("OnSetMainHand!")
-	DebugT("  groupIndex: " + groupIndex)
-	DebugT("  a_Sender: " + a_sender)
-
-	Form	item = a_sender
-	int		groupIndex = a_numArg as int
-
-	_groupMainHandItems[groupIndex] = item
-	_groupMainHandFormIds[groupIndex] = item.GetFormID()
-
-	UpdateMenuGroupData(groupIndex)
+	;FIXME: this is a stub so I could test OnSaveEquipState with the UI
+	OnSaveEquipState(a_numArg)
 endEvent
 
 ; This will set a form as the icon form for a group
@@ -542,12 +592,10 @@ endFunction
 
 ;set a flag for the specified group
 function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
-	if GetGroupFlag(a_groupIndex,a_flag) && (!a_value) ; flag is set and we want to unset it
-		_groupFlags[a_groupIndex] = _groupFlags[a_groupIndex] - a_flag ; apparently -= and += don't work on array components
-	elseIf !GetGroupFlag(a_groupIndex,a_flag) && (a_value) ; flag is not set and we want to set it
-		_groupFlags[a_groupIndex] = _groupFlags[a_groupIndex] + a_flag
-	else ; flag state matches the desired state, do nothing
-		
+	if (a_value)
+		_groupFlags[a_groupIndex] = Math.LogicalOr(_groupFlags[a_groupIndex], a_flag)
+	else
+		_groupFlags[a_groupIndex] = Math.LogicalAnd(_groupFlags[a_groupIndex], Math.LogicalNot(a_flag))
 	endIf
 endFunction
 
@@ -555,8 +603,9 @@ endFunction
 function InitMenuGroupData()
 	DebugT("InitMenuGroupData called!")
 
-	; groupCount, mainHandFormId[8], iconFormId[8]
-	int[] args = new int[17]
+	;FIXME: Adjust the UI to expect the offhand args
+	; groupCount, mainHandFormId[8], offHandFormId[8], iconFormId[8]
+	int[] args = new int[17] ;FIXME: 25
 	args[0] = 8
 
 	int c=1
@@ -568,13 +617,21 @@ function InitMenuGroupData()
 		c += 1
 	endWhile
 
+	;FIXME
+	;i=0
+	;while (i<8)
+		;args[c] = _groupOffHandFormIds[i]
+		;i += 1
+		;c += 1
+	;endWhile
+	
 	i=0
 	while (i<8)
 		args[c] = _groupIconFormIds[i]
 		i += 1
 		c += 1
 	endWhile
-
+	
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
@@ -596,17 +653,19 @@ function UpdateMenuGroupData(int a_groupIndex)
 		itemFormIds = _itemFormIds1
 	endIf
 
-	; groupIndex, mainHandFormId, iconFormId, itemFormIds[32]
-	int[] args = new int[35]
+	; groupIndex, mainHandFormId, offHandFormID, iconFormId, itemFormIds[32]
+	;FIXME: Adjust the UI to expect the offhand args
+	int[] args = new int[35] ;FIXME: 36
 
 	args[0] = a_groupIndex
 	args[1] = _groupMainHandFormIds[a_groupIndex]
-	args[2] = _groupIconFormIds[a_groupIndex]
+	;FIXME: args[2] = _groupOffHandFormIds[a_groupIndex]
+	args[2] = _groupIconFormIds[a_groupIndex] ;FIXME: args[3]
 
-	int i=3
+	int i=3 ;FIXME: 4
 	int j=offset
 
-	while (i<35)
+	while (i<35) ;FIXME: 36
 		args[i] = itemFormIds[j]
 
 		i += 1
@@ -689,35 +748,32 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
-; utility function to see if form is in the specified group. expensive, use sparingly
-int function IsFormInGroup(int groupIndex, form item)
+; utility function to see if form is in the specified group. 
+bool function IsFormInGroup(int groupIndex, form item)
 	DebugT("IsFormInGroup!")
 	DebugT("  groupIndex: " + groupIndex)
 	DebugT("  item: " + item)
 
 	int offset = 32 * groupIndex
-
+	bool itemFound = false
 	; Select the target set of arrays, adjust offset
 	Form[] items
-	string[] typeDescriptors
-	int[] formIds
 
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _itemFormIds2
 	else
 		items = _items1
-		formIds = _itemFormIds1
 	endIf
 	
 	int i
 	while (i < offset+32)
 		if items[i] == item
-			return i
+			itemFound = true
 		endIf
+		i += 1
 	endWhile
-	return 0
+	return itemFound
 endFunction
 
 ; DEBUG ---------------------------------------------------------------------------------------
