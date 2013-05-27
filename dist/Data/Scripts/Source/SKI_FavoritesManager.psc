@@ -237,9 +237,9 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	Form[] deferredItems = new Form[32]
 	int deferredIdx
 	
-	
 	Form item
 	Form itemMH
+	Form itemOH
 	
 	Form rHandItem
 	Form lHandItem
@@ -251,26 +251,31 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	;int handSlot = 1
 	int ringSlot
 	int i = offset
+	int j
 	
 	bool mhProcessed = false
 	itemMH = _groupMainHandItems[groupIndex]
+	itemOH = _groupOffHandItems[groupIndex]
+	
+	Form[] sortedItems = new Form[32]
+	sortedItems[0] = itemMH
+	sortedItems[1] = itemOH
+	j = 2
+	while (i < offset+32)
+		if (items[i] != itemMH) && (items[i] != itemOH)
+			sortedItems[j] = items[i]
+			j += 1
+		endIf
+		i += 1
+	endWhile
 	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
-
-	while (i < offset+32)
-		item = items[i]
-		If itemMH && !mhProcessed; player has a mainhand item set for this group, so do some trickery to make sure it gets in first
-			i -= 1 ; Dec the counter so this run doesn't progress the count
-			item = itemMH
-			mhProcessed = true
-		ElseIf item == itemMH && mhProcessed
-			DebugT("items[" + i + "] is MH item and should already be equipped, skipping it...")
-			item = none ; Avoid double-processing the MH item 
-		EndIf 
-		
+	i = 0
+	while (i < sortedItems.Length)
+		item = sortedItems[i]
 		itemCount = 0
 		if (item) ;prevent logspam if item is none
-			DebugT("items[" + i + "] is " + item)
+			DebugT("sortedItems[" + i + "] is " + item)
 			itemType = item.GetType()
 			DebugT(item.GetName() + " is Type " + itemType)
 			
