@@ -41,11 +41,20 @@ class GroupDataExtender implements IListProcessor
   	// @override IListProcessor
 	public function processList(a_list: BasicList): Void
 	{
+		var groupCount = int(groupData.length / GROUP_SIZE);
+		
+		var clearFlag = 0;
+		for (var c=0; c<groupCount; c++)
+			clearFlag |= FilterDataExtender.FILTERFLAG_GROUP_0 << c;
+		
+		skse.Log("ClearFlag is " + clearFlag);
+		
 		var entryList = a_list.entryList;
 		
-		// Create map for formid->entry and determine group icon
+		// Create map for formid->entry, clear group filter flags
 		for (var i = 0; i < entryList.length; i++) {
 			var e = entryList[i];
+			e.filterFlag &= ~clearFlag;
 			if (e.formId != null)
 				_formIdMap[e.formId] = e;
 		}
@@ -84,17 +93,13 @@ class GroupDataExtender implements IListProcessor
 	private function processMainHandData(): Void
 	{
 		// Set filterFlags for group membership
-		var curMainHandFlag = FilterDataExtender.FILTERFLAG_GROUP_0;
-		
 		for (var i=0; i<mainHandData.length; i++) {
 			var formId: Number = mainHandData[i];
 			if (formId) {
 				var t = _formIdMap[formId];
 				if (t != null)
-					t.mainHandFlag |= curMainHandFlag;
+					t.mainHandFlag |= 1 << i;
 			}
-			
-			curMainHandFlag = curMainHandFlag << 1;
 		}
 	}
 

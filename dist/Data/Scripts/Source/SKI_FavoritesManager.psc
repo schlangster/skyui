@@ -17,7 +17,6 @@ int property		FAV_FLAG_NOAMMO		= 	16 	autoReadonly
 
 Actor Property		PlayerREF Auto ; Needed for GetItemCount and EquipItem
 
-
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
 Form[]				_items1
@@ -162,17 +161,17 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	DebugT("  a_numArg: " + a_numArg)
 	DebugT("  a_sender: " + a_sender)
 
-	; This index treats the arrays as one big 256 length array
-	int itemIndex = a_numArg as int
-	int groupIndex = (itemIndex / 32) as int
+	Form	item = a_sender
+	int		groupIndex = a_numArg as int
 
-	; Select the target set of arrays, adjust index
+	int offset = 32 * groupIndex
+
+	; Select the target set of arrays, adjust offset
 	Form[] items
-	string[] typeDescriptors
 	int[] formIds
 
-	if (itemIndex >= 128)
-		itemIndex -= 128
+	if (offset >= 128)
+		offset -= 128
 		items = _items2
 		formIds = _itemFormIds2
 	else
@@ -180,9 +179,18 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 		formIds = _itemFormIds1
 	endIf
 
-	items[itemIndex] = none
-	formIds[itemIndex] = 0
-	_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+	int i=offset
+	int n=offset+32
+	while (i < n)
+		if (items[i] == item)
+			items[i] = none
+			formIds[i] = 0
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1			
+			i = n
+		else
+			i += 1
+		endIf
+	endWhile
 
 	UpdateMenuGroupData(groupIndex)
 
@@ -634,6 +642,18 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	return -1
 
 	DebugT("FindFreeIndex end!")
+endFunction
+
+int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	4	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_HANDS	= 	4	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_AMMO	= 	4	autoReadonly
+
+bool property		ButtonHelpEnabled	= 	true	auto
+
+bool function GetGroupFlag(int a_groupIndex, int a_flag)
+endFunction
+
+function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
 endFunction
 
 ; DEBUG ---------------------------------------------------------------------------------------

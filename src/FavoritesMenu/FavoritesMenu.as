@@ -10,6 +10,7 @@ import gfx.ui.NavigationCode;
 import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 import skyui.defines.Input;
+import skyui.defines.Form;
 
 import skyui.components.ButtonPanel;
 import skyui.components.MappedButton;
@@ -30,7 +31,7 @@ class FavoritesMenu extends MovieClip
   	private static var ITEM_SELECT = 0;
 	private static var GROUP_ASSIGN = 1;
 	private static var GROUP_ASSIGN_SYNC = 2;
-	private static var GROUP_CONFIG = 3;
+	private static var GROUP_REMOVE_SYNC = 3;
 	private static var CLOSING = 4;
 	private static var SET_MAIN_HAND_SYNC = 5;
 	private static var SET_ICON_SYNC = 6;
@@ -75,6 +76,8 @@ class FavoritesMenu extends MovieClip
 	private var _waitingForGroupData: Boolean = true;
 	
 	private var _isInitialized: Boolean = false;
+	
+	private var _navPanelEnabled: Boolean = false;
 	
 	
   /* STAGE ELEMENTS */
@@ -122,6 +125,12 @@ class FavoritesMenu extends MovieClip
 	
 	
   /* PAPYRUS INTERFACE */
+  
+	public function enableNavigationHelp(a_enabled: Boolean): Void
+	{
+		_navPanelEnabled = a_enabled;
+		updateNavButtons();
+	}
 	
 	public function pushGroupForms(/* formIds[] */): Void
 	{
@@ -162,6 +171,8 @@ class FavoritesMenu extends MovieClip
 		// Received group data as result of group assignment?
 		if (_state == GROUP_ASSIGN_SYNC)
 			endGroupAssignment();
+		else if (_state == GROUP_REMOVE_SYNC)
+			endGroupRemoval();
 		else if (_state == SET_ICON_SYNC)
 			endSetGroupIcon();
 		else if (_state == SET_MAIN_HAND_SYNC)
@@ -237,6 +248,8 @@ class FavoritesMenu extends MovieClip
 		// After it, the next invalidate should be triggered from game code after filling list data.
 		// That is when we can restore selectedIndex and scroll position
 		_isInitialized = true;
+		
+		updateNavButtons();
 	}
 	
 	// @API
@@ -343,8 +356,11 @@ class FavoritesMenu extends MovieClip
 				
 			} else if (details.skseKeycode == _groupAddKey || details.code == 70) {
 				
-				if (_state == ITEM_SELECT && !_groupButtonFocus) {
-					startGroupAssignment();					
+				if (_state == ITEM_SELECT) {
+					if (!_groupButtonFocus)
+						startGroupAssignment();
+					else
+						startGroupRemoval();
 				} else if (_state == GROUP_ASSIGN) {
 					endGroupAssignment();
 				}
@@ -433,6 +449,8 @@ class FavoritesMenu extends MovieClip
 	{
 		if (_isInitialized)
 			itemList.InvalidateData();
+			
+		updateNavButtons();
 	}
 
 	private function onItemPress(a_event: Object): Void
@@ -465,6 +483,7 @@ class FavoritesMenu extends MovieClip
 			
 		_groupButtonFocus = false;
 		_groupButtonGroup.setSelectedButton(null);
+		itemList.listState.activeGroupIndex = -1;
 		
 		headerText.SetText(btn.text);
 		_typeFilter.changeFilterFlag(btn.filterFlag);
@@ -482,6 +501,7 @@ class FavoritesMenu extends MovieClip
 		_categoryButtonGroup.setSelectedButton(null);
 		
 		headerText.SetText(btn.text);
+		itemList.listState.activeGroupIndex = index;
 		
 		_typeFilter.changeFilterFlag(btn.filterFlag);
 		
@@ -500,6 +520,7 @@ class FavoritesMenu extends MovieClip
 	private function startFadeOut(): Void
 	{
 		_state = CLOSING;
+		updateNavButtons();
 		_parent.gotoAndPlay("startFadeOut");
 	}
 	
@@ -555,6 +576,8 @@ class FavoritesMenu extends MovieClip
 		btnGear.visible = false;
 		btnAid.visible = false;
 		btnMagic.visible = false;
+		
+		updateNavButtons();
 	}
 	
 	private function applyGroupAssignment(): Void
@@ -609,6 +632,20 @@ class FavoritesMenu extends MovieClip
 		enableGroupButtons(true);
 	}
 	
+	private function startGroupRemoval(): Void
+	{
+		var formId: Number = itemList.selectedEntry.formId;
+		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
+			_state = GROUP_REMOVE_SYNC;
+			skse.SendModEvent("SKIFM_groupRemoved", "", _groupIndex, formId);
+		}
+	}
+	
+	private function endGroupRemoval(): Void
+	{
+		_state = ITEM_SELECT;
+	}
+	
 	private function requestGroupUse(): Void
 	{
 		if (_groupButtonFocus && _groupIndex >= 0) {
@@ -619,10 +656,13 @@ class FavoritesMenu extends MovieClip
 	
 	private function startSetMainHand(): Void
 	{
-		var formId: Number = itemList.selectedEntry.formId;
-		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
-			_state = SET_MAIN_HAND_SYNC;
-			skse.SendModEvent("SKIFM_setMainHand", "", _groupIndex, formId);
+		var selectedEntry = itemList.selectedEntry;
+		if (_groupButtonFocus && _groupIndex >= 0 && selectedEntry.formId) {
+			var equipSlot = selectedEntry.equipSlot;
+			if (allowAsMainHand(selectedEntry)) {
+				_state = SET_MAIN_HAND_SYNC;
+				skse.SendModEvent("SKIFM_setMainHand", "", _groupIndex, selectedEntry.formId);
+			}
 		}
 	}
 	
@@ -715,8 +755,16 @@ class FavoritesMenu extends MovieClip
 	
 	private function updateNavButtons(): Void
 	{
+		if (_state != ITEM_SELECT || !_navPanelEnabled) {
+			navPanel._visible = false;
+			return;
+		}
+		
+		navPanel._visible = true;
+		
 		var row1: ButtonPanel = navPanel.row1;
 		var row2: ButtonPanel = navPanel.row2;
+		var twoRows = false;
 		
 		row1.clearButtons();
 		row1.addButton({text: "$Toggle Focus", controls: Input.Jump});
@@ -729,15 +777,29 @@ class FavoritesMenu extends MovieClip
 		
 		row2.clearButtons();
 		if (_groupButtonFocus) {
+			var selectedEntry = itemList.selectedEntry;
+			twoRows = true;
 			row2.addButton({text: "$Group Use", controls: Input.ReadyWeapon});
-			if (itemList.selectedEntry != null) {
+			if (selectedEntry != null) {
 				row2.addButton({text: "$Set Group Icon", controls: Input.Sprint});
-				row2.addButton({text: "$Set Main Hand", controls: Input.Wait});
+				if (allowAsMainHand(selectedEntry))
+					row2.addButton({text: "$Set Main Hand", controls: Input.Wait});
 			}
 		}
 		row2.updateButtons(true);
 		
 		row1._x = -(row1._width / 2);
+		row1._y = twoRows ? 10 : 35;
 		row2._x = -(row2._width / 2);
+		row2._y = 65;
+	}
+	
+	private static function allowAsMainHand(a_entry: Object): Boolean
+	{
+		var equipSlot = a_entry.equipSlot;
+		if (equipSlot)
+			return (equipSlot == Form.EQUIP_RIGHT_HAND || equipSlot == Form.EQUIP_BOTH_HANDS || equipSlot == Form.EQUIP_EITHER_HAND);
+		else
+			return false;
 	}
 }
