@@ -5,12 +5,11 @@ scriptname SKI_FavoritesManager extends SKI_QuestBase
 string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
 string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 
-int property		FAV_FLAG_LISTONLY	= 	0	autoReadonly
-int property		FAV_FLAG_ALLOWUSE	= 	1	autoReadonly
-int property		FAV_FLAG_EQUIPSET	= 	2	autoReadonly
-int property		FAV_FLAG_NOWEAPON	= 	4	autoReadonly
-int property		FAV_FLAG_NOARMOR	= 	8	autoReadonly
-int property		FAV_FLAG_NOAMMO		= 	16 	autoReadonly
+int property		FAV_FLAG_UNEQARMOR	= 	1	autoReadonly
+int property		FAV_FLAG_UNEQHANDS	= 	2	autoReadonly
+int property		FAV_FLAG_UNEQAMMO	= 	4	autoReadonly
+int property		FAV_FLAG_NONGREEDY	= 	8	autoReadonly
+int property		FAV_FLAG_LEFTFIRST	= 	16 	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -96,6 +95,11 @@ event OnGameReload()
 	
 	RegisterForMenu(FAVORITES_MENU)
 
+	If PlayerREF == None
+		DebugT("WARNING - PlayerREF not set, setting with Game.GetPlayer()!")
+		PlayerREF = Game.GetPlayer() ; Sanity check in case PlayerREF property isn't set
+	EndIf
+
 	CleanUp()
 endEvent
 
@@ -162,17 +166,17 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	DebugT("  a_numArg: " + a_numArg)
 	DebugT("  a_sender: " + a_sender)
 
-	; This index treats the arrays as one big 256 length array
-	int itemIndex = a_numArg as int
-	int groupIndex = (itemIndex / 32) as int
+	Form	item = a_sender
+	int		groupIndex = a_numArg as int
 
-	; Select the target set of arrays, adjust index
+	int offset = 32 * groupIndex
+
+	; Select the target set of arrays, adjust offset
 	Form[] items
-	string[] typeDescriptors
 	int[] formIds
 
-	if (itemIndex >= 128)
-		itemIndex -= 128
+	if (offset >= 128)
+		offset -= 128
 		items = _items2
 		formIds = _itemFormIds2
 	else
@@ -180,9 +184,18 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 		formIds = _itemFormIds1
 	endIf
 
-	items[itemIndex] = none
-	formIds[itemIndex] = 0
-	_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+	int i=offset
+	int n=offset+32
+	while (i < n)
+		if (items[i] == item)
+			items[i] = none
+			formIds[i] = 0
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1			
+			i = n
+		else
+			i += 1
+		endIf
+	endWhile
 
 	UpdateMenuGroupData(groupIndex)
 
@@ -224,7 +237,8 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	Form rHandItem
 	Form lHandItem
 	Form voiceItem
-	
+
+	int outFitSlot
 	int itemType
 	int itemCount
 	;int handSlot = 1
@@ -235,6 +249,18 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	itemMH = _groupMainHandItems[groupIndex]
 	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
+
+	;int h = 0x00000001
+	;Form aRemove
+	;While h < 0x80000000
+		;DebugT("Unequipping armor at " + h)
+		;aRemove = PlayerRef.GetWornForm(h) ;as Armor
+		;if aRemove
+			;DebugT("Found " + aRemove.GetName() + ", removing it!")
+			;PlayerREF.UnEquipItemEX(aRemove)
+		;EndIf
+		;h = Math.LeftShift(h,1)
+	;EndWhile
 
 	while (i < offset+32)
 		item = items[i]
@@ -294,9 +320,11 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 					Else ; Player only has one, or only has one free hand
 						If !rHandItem
 							PlayerREF.EquipItemEX(itemW, 1, equipSound = _silenceEquipSounds)
+							rHandItem = itemW
 							DebugT("Equipped " + itemW.GetName() + " in Rhand!")
 						ElseIf !lHandItem
 							PlayerREF.EquipItemEX(itemW, 2, equipSound = _silenceEquipSounds)
+							lHandItem = itemW
 							DebugT("Equipped " + itemW.GetName() + " in Lhand!")
 						EndIf
 					EndIf
@@ -311,11 +339,13 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 						PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 						lHandItem = item
 						DebugT("Equipped " + item.GetName() + " in Lhand!")
+						outfitSlot += SlotMask
 					Else ; ... player's left hand is already full, too bad :(
 						DebugT("Player tried to equip shield " + item.GetName() + " but doesn't have a free left hand!")
 					EndIf
 				else ; It's not a shield, just equip it
 					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
+					outfitSlot += SlotMask
 					DebugT("Equipped " + item.GetName() + "!")
 				endIf
 			elseIf (itemType == 42) ;kAmmo
@@ -401,10 +431,6 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	
 	i = 0
 
-	;if (!PlayerREF.IsOnMount() ; Do not use this when mounted, as per instructions)
-	;	PlayerREF.QueueNiNodeUpdate()
-	;endIf
-
 	DebugT("Checking for deferred items...")
 
 	while (i < deferredIdx)
@@ -412,6 +438,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		itemType = item.GetType()
 
 		if (itemType == 46) ; kPotion which, since it was deferred, should be hostile, aka poison.
+			; This will fail if a poisonable weapon is only equipped in the offhand. That's a Skyrim bug, not my bug.
 			DebugT("Consuming deferred item " + i + ", " + item.GetName())
 			PlayerREF.EquipItem(deferredItems[i], abSilent = True)
 		elseIf (itemType == 31) ; kLight, probably a torch, which needs the left hand free
@@ -437,14 +464,33 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			DebugT("Equipped " + rHandItem.GetName() + " in left hand for dual-wielding!")
 		EndIf
 	EndIf
+	
+	int h = 0x00000001
+	Form aRemove
+	While h < 0x80000000
+		DebugT("Unequipping armor at " + h)
+		aRemove = PlayerRef.GetWornForm(h) ;as Armor
+		if aRemove
+			DebugT("Found " + aRemove.GetName() + "!")
+			If !Math.LogicalAND(h,outfitSlot)
+				DebugT("Doesn't fit outfitSlot, removing it!")
+				PlayerREF.UnEquipItemEX(aRemove)
+			EndIf
+		EndIf
+		h = Math.LeftShift(h,1)
+	EndWhile
+	
 	_audioCategoryUI.Mute() ; Turn UI sounds back on
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
+	DebugT("outfitSlot: " + outfitSlot)
 	DebugT("OnGroupUse end!")
 endEvent
 
 event OnMenuOpen(string a_menuName)
 	DebugT("OnMenuOpen!")
 	InitMenuGroupData()
+	;Switch on button helpers:
+	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
 endEvent
 
 event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -636,6 +682,37 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
+; utility function to see if form is in the specified group. expensive, use sparingly
+int function IsFormInGroup(int groupIndex, form item)
+	DebugT("IsFormInGroup!")
+	DebugT("  groupIndex: " + groupIndex)
+	DebugT("  item: " + item)
+
+	int offset = 32 * groupIndex
+
+	; Select the target set of arrays, adjust offset
+	Form[] items
+	string[] typeDescriptors
+	int[] formIds
+
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+		formIds = _itemFormIds2
+	else
+		items = _items1
+		formIds = _itemFormIds1
+	endIf
+	
+	int i
+	while (i < offset+32)
+		if items[i] == item
+			return i
+		endIf
+	endWhile
+	return 0
+endFunction
+
 ; DEBUG ---------------------------------------------------------------------------------------
 
 function DebugT(string DebugString)
@@ -650,19 +727,19 @@ endFunction
 
 function ParseGroupFlags(int a_flags)
 	DebugT("Flags: " + a_flags)
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_ALLOWUSE))
-		DebugT(" FAV_FLAG_ALLOWUSE")
+	if (Math.LogicalAnd(a_flags, FAV_FLAG_UNEQARMOR))
+		DebugT(" FAV_FLAG_UNEQARMOR")
 	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_EQUIPSET))
-		DebugT(" FAV_FLAG_EQUIPSET")
+	if (Math.LogicalAnd(a_flags, FAV_FLAG_UNEQHANDS))
+		DebugT(" FAV_FLAG_UNEQHANDS")
 	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOWEAPON))
-		DebugT(" FAV_FLAG_NOWEAPON")
+	if (Math.LogicalAnd(a_flags, FAV_FLAG_UNEQAMMO))
+		DebugT(" FAV_FLAG_UNEQAMMO")
 	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOARMOR))
-		DebugT(" FAV_FLAG_NOARMOR")
+	if (Math.LogicalAnd(a_flags, FAV_FLAG_NONGREEDY))
+		DebugT(" FAV_FLAG_NONGREEDY")
 	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOAMMO))
-		DebugT(" FAV_FLAG_NOAMMO")
+	if (Math.LogicalAnd(a_flags, FAV_FLAG_LEFTFIRST))
+		DebugT(" FAV_FLAG_LEFTFIRST")
 	endIf
 endFunction
