@@ -42,6 +42,9 @@ int[]				_groupFlags
 Form[]				_groupMainHandItems
 int[]				_groupMainHandFormIds
 
+Form[]				_groupOffHandItems
+int[]				_groupOffHandFormIds
+
 Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
@@ -74,6 +77,9 @@ event OnInit()
 	_groupMainHandItems		= new Form[8]
 	_groupMainHandFormIds	= new int[8]
 
+	_groupOffHandItems		= new Form[8]
+	_groupOffHandFormIds	= new int[8]
+	
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
@@ -100,10 +106,10 @@ endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
-	RegisterForModEvent("SKIFM_groupAdded", "OnGroupAdd")
-	RegisterForModEvent("SKIFM_groupRemoved", "OnGroupRemove")
-	RegisterForModEvent("SKIFM_groupUsed", "OnGroupUse")
-	RegisterForModEvent("SKIFM_setMainHand", "OnSetMainHand")
+	RegisterForModEvent("SKIFM_groupAdd", "OnGroupAdd")
+	RegisterForModEvent("SKIFM_groupRemove", "OnGroupRemove")
+	RegisterForModEvent("SKIFM_groupUse", "OnGroupUse")
+	RegisterForModEvent("SKIFM_saveEquipState", "OnSaveEquipState")
 	RegisterForModEvent("SKIFM_setGroupIcon", "OnSetGroupIcon")
 	
 	RegisterForMenu(FAVORITES_MENU)
@@ -253,39 +259,45 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	Form[] deferredItems = new Form[32]
 	int deferredIdx
 	
-	
 	Form item
 	Form itemMH
+	Form itemOH
 	
 	Form rHandItem
 	Form lHandItem
 	Form voiceItem
-	
+
+	int outFitSlot
 	int itemType
 	int itemCount
 	;int handSlot = 1
 	int ringSlot
 	int i = offset
+	int j
 	
 	bool mhProcessed = false
 	itemMH = _groupMainHandItems[groupIndex]
+	itemOH = _groupOffHandItems[groupIndex]
+	
+	Form[] sortedItems = new Form[32]
+	sortedItems[0] = itemMH
+	sortedItems[1] = itemOH
+	j = 2
+	while (i < offset+32)
+		if (items[i] != itemMH) && (items[i] != itemOH)
+			sortedItems[j] = items[i]
+			j += 1
+		endIf
+		i += 1
+	endWhile
 	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
-
-	while (i < offset+32)
-		item = items[i]
-		If itemMH && !mhProcessed; player has a mainhand item set for this group, so do some trickery to make sure it gets in first
-			i -= 1 ; Dec the counter so this run doesn't progress the count
-			item = itemMH
-			mhProcessed = true
-		ElseIf item == itemMH && mhProcessed
-			DebugT("items[" + i + "] is MH item and should already be equipped, skipping it...")
-			item = none ; Avoid double-processing the MH item 
-		EndIf 
-		
+	i = 0
+	while (i < sortedItems.Length)
+		item = sortedItems[i]
 		itemCount = 0
 		if (item) ;prevent logspam if item is none
-			DebugT("items[" + i + "] is " + item)
+			DebugT("sortedItems[" + i + "] is " + item)
 			itemType = item.GetType()
 			DebugT(item.GetName() + " is Type " + itemType)
 			
@@ -330,9 +342,11 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 					Else ; Player only has one, or only has one free hand
 						If !rHandItem
 							PlayerREF.EquipItemEX(itemW, 1, equipSound = _silenceEquipSounds)
+							rHandItem = itemW
 							DebugT("Equipped " + itemW.GetName() + " in Rhand!")
 						ElseIf !lHandItem
 							PlayerREF.EquipItemEX(itemW, 2, equipSound = _silenceEquipSounds)
+							lHandItem = itemW
 							DebugT("Equipped " + itemW.GetName() + " in Lhand!")
 						EndIf
 					EndIf
@@ -347,11 +361,13 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 						PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
 						lHandItem = item
 						DebugT("Equipped " + item.GetName() + " in Lhand!")
+						outfitSlot += SlotMask
 					Else ; ... player's left hand is already full, too bad :(
 						DebugT("Player tried to equip shield " + item.GetName() + " but doesn't have a free left hand!")
 					EndIf
 				else ; It's not a shield, just equip it
 					PlayerREF.EquipItemEX(item, equipSlot = 0, equipSound = _silenceEquipSounds)
+					outfitSlot += SlotMask
 					DebugT("Equipped " + item.GetName() + "!")
 				endIf
 			elseIf (itemType == 42) ;kAmmo
@@ -437,10 +453,6 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	
 	i = 0
 
-	;if (!PlayerREF.IsOnMount() ; Do not use this when mounted, as per instructions)
-	;	PlayerREF.QueueNiNodeUpdate()
-	;endIf
-
 	DebugT("Checking for deferred items...")
 
 	while (i < deferredIdx)
@@ -448,6 +460,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		itemType = item.GetType()
 
 		if (itemType == 46) ; kPotion which, since it was deferred, should be hostile, aka poison.
+			; This will fail if a poisonable weapon is only equipped in the offhand. That's a Skyrim bug, not my bug.
 			DebugT("Consuming deferred item " + i + ", " + item.GetName())
 			PlayerREF.EquipItem(deferredItems[i], abSilent = True)
 		elseIf (itemType == 31) ; kLight, probably a torch, which needs the left hand free
@@ -473,14 +486,35 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 			DebugT("Equipped " + rHandItem.GetName() + " in left hand for dual-wielding!")
 		EndIf
 	EndIf
+
+	If GetGroupFlag(groupIndex,GROUP_FLAG_UNEQUIP_ARMOR)
+		int h = 0x00000001
+		Form aRemove
+		While h < 0x80000000
+			DebugT("Checking slot " + h)
+			aRemove = PlayerRef.GetWornForm(h) ;as Armor
+			if aRemove
+				DebugT(" Found " + aRemove.GetName() + "!")
+				If !Math.LogicalAND(h,outfitSlot)
+					DebugT("  Doesn't fit outfitSlot, removing it!")
+					PlayerREF.UnEquipItemEX(aRemove)
+				EndIf
+			EndIf
+			h = Math.LeftShift(h,1)
+		EndWhile
+	EndIf
+	
 	_audioCategoryUI.Mute() ; Turn UI sounds back on
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
+	DebugT("outfitSlot: " + outfitSlot)
 	DebugT("OnGroupUse end!")
 endEvent
 
 event OnMenuOpen(string a_menuName)
 	DebugT("OnMenuOpen!")
 	InitMenuGroupData()
+	;Switch on button helpers:
+	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
 endEvent
 
 event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -501,18 +535,58 @@ event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_se
 	DebugT("OnGroupFlag end!")
 endEvent
 
-; This will set a form as the PrimaryHand form for a group
-event OnSetMainHand(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	DebugT("OnSetMainHand!")
-	DebugT("  groupIndex: " + groupIndex)
-	DebugT("  a_Sender: " + a_sender)
+; Read the player's current equipment and save it to the target group
+event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	DebugT("OnSaveEquipState!")
+	DebugT("  a_numArg: " + a_numArg)
+	
+	int groupIndex = a_numArg as int
+	form[] handItems
+	
+	handItems = new form[2]
+	
+	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
+	; Lame!
+	Int aiHand 
+	
+	while aiHand < 2
+		int itemType = PlayerREF.GetEquippedItemType(aiHand)
+		if (aiHand == 0) ; Shields are left-handed only
+			handItems[aiHand] = PlayerREF.GetEquippedShield()
+		endIf
+		if (!handItems[aiHand]) ;No shield found, check for a weapon
+			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
+		endIf
+		if (!handItems[aiHand]) ;No weapon found, check for a spell
+			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
+		endIf
+		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
 
-	Form	item = a_sender
-	int		groupIndex = a_numArg as int
+		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+		
+		if (handItems[aiHand]) ; check for none to avoid logspam
+			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
+				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
+				handItems[aiHand] = None
+			endIf
+		endIf
+		aiHand += 1
+	endWhile
 
-	_groupMainHandItems[groupIndex] = item
-	_groupMainHandFormIds[groupIndex] = item.GetFormID()
-
+	_groupMainHandItems[groupIndex] = handItems[1]
+	if handItems[1] 
+		_groupMainHandFormIDs[groupIndex] = handItems[1].GetFormID()
+	else ; set formid to 0 if none
+		_groupMainHandFormIDs[groupIndex] = 0
+	endIf
+	
+	_groupOffHandItems[groupIndex] = handItems[0]
+	if handItems[0] 
+		_groupOffHandFormIDs[groupIndex] = handItems[0].GetFormID()
+	else ; set formid to 0 if none
+		_groupOffHandFormIDs[groupIndex] = 0
+	endIf
+	
 	UpdateMenuGroupData(groupIndex)
 endEvent
 
@@ -566,8 +640,8 @@ endFunction
 function InitMenuGroupData()
 	DebugT("InitMenuGroupData called!")
 
-	; groupCount, mainHandFormId[8], iconFormId[8]
-	int[] args = new int[17]
+	; groupCount, mainHandFormId[8], offHandFormId[8], iconFormId[8]
+	int[] args = new int[25]
 	args[0] = 8
 
 	int c=1
@@ -581,11 +655,18 @@ function InitMenuGroupData()
 
 	i=0
 	while (i<8)
+		args[c] = _groupOffHandFormIds[i]
+		i += 1
+		c += 1
+	endWhile
+	
+	i=0
+	while (i<8)
 		args[c] = _groupIconFormIds[i]
 		i += 1
 		c += 1
 	endWhile
-
+	
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
@@ -607,17 +688,18 @@ function UpdateMenuGroupData(int a_groupIndex)
 		itemFormIds = _itemFormIds1
 	endIf
 
-	; groupIndex, mainHandFormId, iconFormId, itemFormIds[32]
-	int[] args = new int[35]
+	; groupIndex, mainHandFormId, offHandFormID, iconFormId, itemFormIds[32]
+	int[] args = new int[36]
 
 	args[0] = a_groupIndex
 	args[1] = _groupMainHandFormIds[a_groupIndex]
-	args[2] = _groupIconFormIds[a_groupIndex]
+	args[2] = _groupOffHandFormIds[a_groupIndex]
+	args[3] = _groupIconFormIds[a_groupIndex]
 
-	int i=3
+	int i=4
 	int j=offset
 
-	while (i<35)
+	while (i<36)
 		args[i] = itemFormIds[j]
 
 		i += 1
@@ -700,6 +782,30 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
+; utility function to see if form is in the specified group. 
+bool function IsFormInGroup(int a_groupIndex, form a_item)
+	int offset = 32 * a_groupIndex
+
+	; Select the target set of arrays, adjust offset
+	Form[] items
+
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+	else
+		items = _items1
+	endIf
+	
+	int i
+	while (i < offset+32)
+		if (items[i] == a_item)
+			return true
+		endIf
+		i += 1
+	endWhile
+
+	return false
+endFunction
 
 ; DEBUG ---------------------------------------------------------------------------------------
 
