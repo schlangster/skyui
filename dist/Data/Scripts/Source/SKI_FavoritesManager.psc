@@ -231,7 +231,9 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 
 	if (item == _groupIconItems[groupIndex])
 		_groupIconItems[groupIndex] = iconReplacement
-		_groupIconFormIds[groupIndex] = iconReplacement.GetFormID()
+		if (iconReplacement) ; prevent logspam if iconReplacement is none (happens when group is empty)
+			_groupIconFormIds[groupIndex] = iconReplacement.GetFormID()
+		endIf
 	endIf
 
 	if (item == _groupMainHandItems[groupIndex])
@@ -239,6 +241,11 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 		_groupMainHandFormIds[groupIndex] = 0
 	endIf
 
+	if (item == _groupOffHandItems[groupIndex])
+		_groupOffHandItems[groupIndex] = none
+		_groupOffHandFormIds[groupIndex] = 0
+	endIf
+	
 	UpdateMenuGroupData(groupIndex)
 
 	DebugT("OnGroupRemove end!")
