@@ -17,9 +17,11 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ;		- Added active effects widget configuration
 ;
 ; 5:	- Fixed 3DItemDisablePositioning
+;
+; 6:	- Added favorites menu options
 
 int function GetVersion()
-	return 5
+	return 6
 endFunction
 
 
@@ -122,6 +124,14 @@ float		_fMagic3DItemPosScaleWide
 float		_fInventory3DItemPosScale
 float		_fMagic3DItemPosScale
 
+; -- Version 6 --
+
+; Lists
+string[]	_favGroupNames
+
+; State
+int			_favCurGroupIdx				= 0
+
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -132,7 +142,11 @@ SKI_Main property					SKI_MainInstance auto
 
 ; -- Version 4 --
 
-SKI_ActiveEffectsWidget property		SKI_ActiveEffectsWidgetInstance auto
+SKI_ActiveEffectsWidget property	SKI_ActiveEffectsWidgetInstance auto
+
+; -- Version 6 --
+
+SKI_FavoritesManager property		SKI_FavoritesManagerInstance auto
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -265,6 +279,25 @@ event OnVersionUpdate(int a_version)
 	if (a_version >= 5 && CurrentVersion < 5)
 		Debug.Trace(self + ": Updating to script version 5")
 	endIf
+
+	if (a_version >= 6 && CurrentVersion < 6)
+		Debug.Trace(self + ": Updating to script version 6")
+
+		Pages = new string[3]
+		Pages[0] = "$General"
+		Pages[1] = "$Favorite Groups"
+		Pages[2] = "$Advanced"
+
+		_favGroupNames = new string[8]
+		_favGroupNames[0] = "Group 1"
+		_favGroupNames[1] = "Group 2"
+		_favGroupNames[2] = "Group 3"
+		_favGroupNames[3] = "Group 4"
+		_favGroupNames[4] = "Group 5"
+		_favGroupNames[5] = "Group 6"
+		_favGroupNames[6] = "Group 7"
+		_favGroupNames[7] = "Group 8"
+	endIf
 endEvent
 
 
@@ -297,6 +330,11 @@ event OnPageReset(string a_page)
 		AddToggleOptionST("EFFECT_WIDGET_ENABLED", "$Enabled", SKI_ActiveEffectsWidgetInstance.Enabled)
 		AddTextOptionST("EFFECT_WIDGET_ICON_SIZE","$Icon Size", _sizes[_effectWidgetIconSizeIdx], _effectWidgetFlags)
 
+		AddEmptyOption()
+
+		AddHeaderOption("$Favorites Menu")
+		AddToggleOptionST("FAV_MENU_HELP_ENABLED", "$Enable Button Help", SKI_FavoritesManagerInstance.ButtonHelpEnabled)
+
 		SetCursorPosition(1)
 
 		AddHeaderOption("$Controls")
@@ -311,6 +349,22 @@ event OnPageReset(string a_page)
 			AddKeyMapOptionST("NEXT_COLUMN_BUTTON", "$Next Column", _nextColumnButton)
 			AddKeyMapOptionST("SORT_ORDER_BUTTON", "$Order", _sortOrderButton)
 		endIf
+
+	; -------------------------------------------------------
+	elseIf (a_page == "$Favorite Groups")
+		SetCursorFillMode(TOP_TO_BOTTOM)
+
+		AddMenuOptionST("FAV_GROUP_SELECT", "$Current Group", _favCurGroupIdx+1)
+		AddEmptyOption()
+
+		int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+		int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_HANDS
+		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
+
+		AddHeaderOption("$Group Use Settings")
+		AddToggleOptionST("FAV_GROUP_UNEQUIP_ARMOR", "$Unequip Armor", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG))
+		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))
+		AddToggleOptionST("FAV_GROUP_UNEQUIP_AMMO", "$Unequip Ammo", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG))
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
@@ -354,6 +408,134 @@ endEvent
 
 
 ; STATE OPTIONS -----------------------------------------------------------------------------------
+
+state FAV_MENU_HELP_ENABLED ; TOGGLE
+
+	event OnSelectST()
+		bool newVal = !SKI_FavoritesManagerInstance.ButtonHelpEnabled
+		SKI_FavoritesManagerInstance.ButtonHelpEnabled = newVal
+
+		SetToggleOptionValueST(newVal)
+	endEvent
+
+	event OnDefaultST()
+		SKI_FavoritesManagerInstance.ButtonHelpEnabled = true
+
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO1{$On}")
+	endEvent
+	
+endState
+
+state FAV_GROUP_SELECT ; MENU
+
+	event OnMenuOpenST()
+		SetMenuDialogStartIndex(_favCurGroupIdx)
+		SetMenuDialogDefaultIndex(0)
+		SetMenuDialogOptions(_favGroupNames)
+	endEvent
+
+	event OnMenuAcceptST(int a_index)
+		_favCurGroupIdx = a_index
+
+		SetCurrentFavoriteGroup(_favCurGroupIdx)
+
+		SetMenuOptionValueST(_favCurGroupIdx+1)
+	endEvent
+
+	event OnDefaultST()
+		_favCurGroupIdx = 0
+
+		SetCurrentFavoriteGroup(_favCurGroupIdx)
+
+		SetTextOptionValueST(_favCurGroupIdx+1)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO6")
+	endEvent
+	
+endState
+
+state FAV_GROUP_UNEQUIP_ARMOR ; TOGGLE
+
+	event OnSelectST()
+		int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+
+		bool newVal = !SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG)
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, ARMOR_FLAG, newVal)
+
+		SetToggleOptionValueST(newVal)
+	endEvent
+
+	event OnDefaultST()
+		int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, ARMOR_FLAG, false)
+
+		SetToggleOptionValueST(false)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO7{$Off}")
+	endEvent
+	
+endState
+
+state FAV_GROUP_UNEQUIP_HANDS ; TOGGLE
+
+	event OnSelectST()
+		int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_HANDS
+
+		bool newVal = !SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG)
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, HANDS_FLAG, newVal)
+
+		SetToggleOptionValueST(newVal)
+	endEvent
+
+	event OnDefaultST()
+		int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, HANDS_FLAG, false)
+
+		SetToggleOptionValueST(false)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO8{$Off}")
+	endEvent
+	
+endState
+
+state FAV_GROUP_UNEQUIP_AMMO ; TOGGLE
+
+	event OnSelectST()
+		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
+
+		bool newVal = !SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG)
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, AMMO_FLAG, newVal)
+
+		SetToggleOptionValueST(newVal)
+	endEvent
+
+	event OnDefaultST()
+		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
+
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, AMMO_FLAG, false)
+
+		SetToggleOptionValueST(false)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO9{$Off}")
+	endEvent
+	
+endState
+
+; -------------------------------------------------------
 
 state ITEMLIST_FONT_SIZE ; TEXT
 
@@ -1345,6 +1527,16 @@ function SwapKeys(int a_newKey, int a_curKey)
 		SetKeyMapOptionValueST(_sortOrderButton, true, "SORT_ORDER_BUTTON")
 		SKI_SettingsManagerInstance.SetOverride("Input$controls$gamepad$sortOrder", _sortOrderButton)
 	endIf
+endFunction
+
+function SetCurrentFavoriteGroup(int a_index)
+	int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+	int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_HANDS
+	int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
+
+	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG), true, "FAV_GROUP_UNEQUIP_ARMOR")
+	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG), true, "FAV_GROUP_UNEQUIP_AMMO")
+	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG), true, "FAV_GROUP_UNEQUIP_HANDS")
 endFunction
 
 
