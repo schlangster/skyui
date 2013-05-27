@@ -230,7 +230,7 @@ class skyui.components.list.ScrollingList extends BasicList
 			
 			var entryClip = getClipByIndex(_curClipIndex);
 			
-			doSetSelectedIndex(entryClip.itemIndex, SELECT_KEYBOARD);
+			doSetSelectedIndex(entryClip.itemIndex, SELECT_MOUSE);
 		}
 		
 		if (onInvalidate)
