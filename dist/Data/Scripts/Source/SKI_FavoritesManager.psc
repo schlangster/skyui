@@ -117,11 +117,20 @@ event OnGameReload()
 	
 	RegisterForMenu(FAVORITES_MENU)
 
+	RegisterHotkeys()
+
 	CleanUp()
 endEvent
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
+
+event OnMenuOpen(string a_menuName)
+	DebugT("OnMenuOpen!")
+	InitMenuGroupData()
+	;Switch on button helpers:
+	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
+endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	DebugT("OnGroupAdd!")
@@ -241,9 +250,304 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	DebugT("  a_numArg: " + a_numArg)
 	DebugT("  a_sender: " + a_sender)
 
-	int groupIndex = a_numArg as int
+	GroupUse(a_numArg as int)
+endEvent
 
-	int offset = 32 * groupIndex
+event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	; Just remembered that the mod event only supports a single numeric argument as per Schlangster
+	; Fortunately strings be coerced into ints. 
+	DebugT("OnGroupFlag!")
+	DebugT("  a_eventName: " + a_eventName)
+	DebugT("  a_strArg: " + a_strArg)
+	DebugT("  a_numArg: " + a_numArg)
+	DebugT("  a_sender: " + a_sender)
+	
+	Form	item = a_sender
+	int		flags = a_strArg as int
+	int		groupIndex = a_numArg as int
+
+	_groupFlags[groupIndex] = flags
+	
+	DebugT("OnGroupFlag end!")
+endEvent
+
+; Read the player's current equipment and save it to the target group
+event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	DebugT("OnSaveEquipState!")
+	DebugT("  a_numArg: " + a_numArg)
+	
+	int groupIndex = a_numArg as int
+	form[] handItems
+	
+	handItems = new form[2]
+	
+	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
+	; Lame!
+	Int aiHand 
+	
+	while aiHand < 2
+		int itemType = PlayerREF.GetEquippedItemType(aiHand)
+		if (aiHand == 0) ; Shields are left-handed only
+			handItems[aiHand] = PlayerREF.GetEquippedShield()
+		endIf
+		if (!handItems[aiHand]) ;No shield found, check for a weapon
+			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
+		endIf
+		if (!handItems[aiHand]) ;No weapon found, check for a spell
+			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
+		endIf
+		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
+
+		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+		
+		if (handItems[aiHand]) ; check for none to avoid logspam
+			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
+				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
+				handItems[aiHand] = None
+			endIf
+		endIf
+		aiHand += 1
+	endWhile
+
+	_groupMainHandItems[groupIndex] = handItems[1]
+	if handItems[1] 
+		_groupMainHandFormIDs[groupIndex] = handItems[1].GetFormID()
+	else ; set formid to 0 if none
+		_groupMainHandFormIDs[groupIndex] = 0
+	endIf
+	
+	_groupOffHandItems[groupIndex] = handItems[0]
+	if handItems[0] 
+		_groupOffHandFormIDs[groupIndex] = handItems[0].GetFormID()
+	else ; set formid to 0 if none
+		_groupOffHandFormIDs[groupIndex] = 0
+	endIf
+	
+	UpdateMenuGroupData(groupIndex)
+endEvent
+
+; This will set a form as the icon form for a group
+event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	DebugT("OnSetGroupIcon!")
+	DebugT("  groupIndex: " + groupIndex)
+	DebugT("  a_Sender: " + a_sender)
+
+	Form	item = a_sender
+	int		groupIndex = a_numArg as int
+
+	_groupIconItems[groupIndex] = item
+	_groupIconFormIds[groupIndex] = item.GetFormID()
+
+	UpdateMenuGroupData(groupIndex)
+endEvent
+
+event OnKeyDown(int a_keyCode)
+	gotoState("PROCESSING_INPUT")
+
+	int groupIndex = _groupHotkeys.Find(a_keyCode)
+	if (groupIndex != -1)
+		GroupUse(groupIndex)
+	endIf
+
+	gotoState("")
+endEvent
+
+state PROCESSING_INPUT
+
+	event OnKeyDown(int a_keyCode)
+	endEvent
+
+endState
+
+
+; FUNCTIONS ---------------------------------------------------------------------------------------
+
+;get whether a flag is set for the specified group
+bool function GetGroupFlag(int a_groupIndex, int a_flag)
+        return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
+endFunction
+ 
+;set a flag for the specified group
+function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
+	if (a_value)
+		_groupFlags[a_groupIndex] = LogicalOr(_groupFlags[a_groupIndex], a_flag)
+	else
+		_groupFlags[a_groupIndex] = LogicalAnd(_groupFlags[a_groupIndex], LogicalNot(a_flag))
+	endIf
+endFunction
+
+int[] function GetGroupHotkeys()
+	int[] result = new int[8]
+	int i=0
+	while (i<8)
+		result[i] = _groupHotkeys[i]
+		i += 1
+	endWhile
+	return result
+endFunction
+
+bool function SetGroupHotkey(int a_groupIndex, int a_keycode)
+
+	; Old group index this keycode was bound to
+	int oldIndex = _groupHotkeys.Find(a_keycode)
+	; Old keycode at the target position
+	int oldKeycode = _groupHotkeys[a_groupIndex]
+
+	; Already assigned, no need to do anything
+	if (oldIndex == a_groupIndex)
+		return false
+	endIf
+
+	; Swap
+	if (oldIndex != -1 && oldKeycode != -1)
+		_groupHotkeys[oldIndex] = oldKeycode
+	else
+		; Unset previous group this key was assigned to
+		if (oldIndex != -1)
+			_groupHotkeys[oldIndex] = -1
+		endIf
+
+		; If we replaced a key, unregister it
+		if (oldKeycode != -1)
+			UnregisterForKey(oldKeycode)
+		endIf
+	endIf
+
+	_groupHotkeys[a_groupIndex] = a_keycode
+
+	return true
+endFunction
+
+; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
+function InitMenuGroupData()
+	DebugT("InitMenuGroupData called!")
+
+	; groupCount, mainHandFormId[8], offHandFormId[8], iconFormId[8]
+	int[] args = new int[25]
+	args[0] = 8
+
+	int c=1
+
+	int i=0
+	while (i<8)
+		args[c] = _groupMainHandFormIds[i]
+		i += 1
+		c += 1
+	endWhile
+
+	i=0
+	while (i<8)
+		args[c] = _groupOffHandFormIds[i]
+		i += 1
+		c += 1
+	endWhile
+	
+	i=0
+	while (i<8)
+		args[c] = _groupIconFormIds[i]
+		i += 1
+		c += 1
+	endWhile
+	
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
+
+	DebugT("InitMenuGroupData end!")
+endFunction
+
+function UpdateMenuGroupData(int a_groupIndex)
+	DebugT("UpdateMenuGroupData called!")
+
+	int offset = 32 * a_groupIndex
+
+	int[] itemFormIds
+
+	if (offset >= 128)
+		offset -= 128
+		itemFormIds = _itemFormIds2
+	else
+		itemFormIds = _itemFormIds1
+	endIf
+
+	; groupIndex, mainHandFormId, offHandFormID, iconFormId, itemFormIds[32]
+	int[] args = new int[36]
+
+	args[0] = a_groupIndex
+	args[1] = _groupMainHandFormIds[a_groupIndex]
+	args[2] = _groupOffHandFormIds[a_groupIndex]
+	args[3] = _groupIconFormIds[a_groupIndex]
+
+	int i=4
+	int j=offset
+
+	while (i<36)
+		args[i] = itemFormIds[j]
+
+		i += 1
+		j += 1
+	endWhile
+	
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".updateGroupData", args)
+
+	DebugT("UpdateMenuGroupData end!")
+endFunction
+
+; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
+function CleanUp()
+	DebugT("Cleanup called!")
+	; Re-count items while checking in the next step
+	int i = 0
+	while (i < 8)
+		_groupCounts[i] = 0
+		i += 1
+	endWhile
+
+	int groupIndex = 0
+
+	i = 0
+	while (i < _items1.length)
+
+		if (_items1[i] == none || _items1[i].GetFormID() == 0)
+			_items1[i] = none
+			_itemFormIds1[i] = 0
+		else
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+		endIf
+
+		if (i % 32 == 31)
+			groupIndex += 1
+		endIf
+
+		i += 1
+	endWhile
+
+	i = 0
+	while (i < _items2.length)
+
+		if (_items2[i] == none || _items2[i].GetFormID() == 0)
+			_items2[i] = none
+			_itemFormIds2[i] = 0
+		else
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+		endIf
+
+		if (i % 32 == 31)
+			groupIndex += 1
+		endIf
+
+		i += 1
+	endWhile
+
+	; TODO - what to do with items that are no longer in the player inventory?
+	; We have to find an efficient method to detect and remove them.
+	DebugT("Cleanup end!")
+endFunction
+
+function GroupUse(int a_groupIndex)
+	DebugT("GroupUse!")
+
+	int offset = 32 * a_groupIndex
 
 	; Select the target set of arrays, adjust offset
 	Form[] items
@@ -279,8 +583,8 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	int j
 	
 	bool mhProcessed = false
-	itemMH = _groupMainHandItems[groupIndex]
-	itemOH = _groupOffHandItems[groupIndex]
+	itemMH = _groupMainHandItems[a_groupIndex]
+	itemOH = _groupOffHandItems[a_groupIndex]
 	
 	Form[] sortedItems = new Form[32]
 	sortedItems[0] = itemMH
@@ -490,7 +794,7 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		EndIf
 	EndIf
 
-	If GetGroupFlag(groupIndex,GROUP_FLAG_UNEQUIP_ARMOR)
+	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_ARMOR)
 		int h = 0x00000001
 		Form aRemove
 		While h < 0x80000000
@@ -511,259 +815,6 @@ event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
 	DebugT("outfitSlot: " + outfitSlot)
 	DebugT("OnGroupUse end!")
-endEvent
-
-event OnMenuOpen(string a_menuName)
-	DebugT("OnMenuOpen!")
-	InitMenuGroupData()
-	;Switch on button helpers:
-	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
-endEvent
-
-event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	; Just remembered that the mod event only supports a single numeric argument as per Schlangster
-	; Fortunately strings be coerced into ints. 
-	DebugT("OnGroupFlag!")
-	DebugT("  a_eventName: " + a_eventName)
-	DebugT("  a_strArg: " + a_strArg)
-	DebugT("  a_numArg: " + a_numArg)
-	DebugT("  a_sender: " + a_sender)
-	
-	Form	item = a_sender
-	int		flags = a_strArg as int
-	int		groupIndex = a_numArg as int
-
-	_groupFlags[groupIndex] = flags
-	
-	DebugT("OnGroupFlag end!")
-endEvent
-
-; Read the player's current equipment and save it to the target group
-event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	DebugT("OnSaveEquipState!")
-	DebugT("  a_numArg: " + a_numArg)
-	
-	int groupIndex = a_numArg as int
-	form[] handItems
-	
-	handItems = new form[2]
-	
-	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
-	; Lame!
-	Int aiHand 
-	
-	while aiHand < 2
-		int itemType = PlayerREF.GetEquippedItemType(aiHand)
-		if (aiHand == 0) ; Shields are left-handed only
-			handItems[aiHand] = PlayerREF.GetEquippedShield()
-		endIf
-		if (!handItems[aiHand]) ;No shield found, check for a weapon
-			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
-		endIf
-		if (!handItems[aiHand]) ;No weapon found, check for a spell
-			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
-		endIf
-		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
-
-		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
-		
-		if (handItems[aiHand]) ; check for none to avoid logspam
-			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
-				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
-				handItems[aiHand] = None
-			endIf
-		endIf
-		aiHand += 1
-	endWhile
-
-	_groupMainHandItems[groupIndex] = handItems[1]
-	if handItems[1] 
-		_groupMainHandFormIDs[groupIndex] = handItems[1].GetFormID()
-	else ; set formid to 0 if none
-		_groupMainHandFormIDs[groupIndex] = 0
-	endIf
-	
-	_groupOffHandItems[groupIndex] = handItems[0]
-	if handItems[0] 
-		_groupOffHandFormIDs[groupIndex] = handItems[0].GetFormID()
-	else ; set formid to 0 if none
-		_groupOffHandFormIDs[groupIndex] = 0
-	endIf
-	
-	UpdateMenuGroupData(groupIndex)
-endEvent
-
-; This will set a form as the icon form for a group
-event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	DebugT("OnSetGroupIcon!")
-	DebugT("  groupIndex: " + groupIndex)
-	DebugT("  a_Sender: " + a_sender)
-
-	Form	item = a_sender
-	int		groupIndex = a_numArg as int
-
-	_groupIconItems[groupIndex] = item
-	_groupIconFormIds[groupIndex] = item.GetFormID()
-
-	UpdateMenuGroupData(groupIndex)
-endEvent
-
-
-; FUNCTIONS ---------------------------------------------------------------------------------------
-
-;get whether a flag is set for the specified group
-bool function GetGroupFlag(int a_groupIndex, int a_flag)
-        return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
-endFunction
- 
-;set a flag for the specified group
-function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
-	if (a_value)
-		_groupFlags[a_groupIndex] = LogicalOr(_groupFlags[a_groupIndex], a_flag)
-	else
-		_groupFlags[a_groupIndex] = LogicalAnd(_groupFlags[a_groupIndex], LogicalNot(a_flag))
-	endIf
-endFunction
-
-int[] function GetGroupHotkeys()
-	int[] result = new int[8]
-	int i=0
-	while (i<8)
-		result[i] = _groupHotkeys[i]
-		i += 1
-	endWhile
-	return result
-endFunction
-
-bool function SetGroupHotkey(int a_groupIndex, int a_keycode)
-	_groupHotkeys[a_groupIndex] = a_keycode
-	return true
-endFunction
-
-; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
-function InitMenuGroupData()
-	DebugT("InitMenuGroupData called!")
-
-	; groupCount, mainHandFormId[8], offHandFormId[8], iconFormId[8]
-	int[] args = new int[25]
-	args[0] = 8
-
-	int c=1
-
-	int i=0
-	while (i<8)
-		args[c] = _groupMainHandFormIds[i]
-		i += 1
-		c += 1
-	endWhile
-
-	i=0
-	while (i<8)
-		args[c] = _groupOffHandFormIds[i]
-		i += 1
-		c += 1
-	endWhile
-	
-	i=0
-	while (i<8)
-		args[c] = _groupIconFormIds[i]
-		i += 1
-		c += 1
-	endWhile
-	
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
-
-	DebugT("InitMenuGroupData end!")
-endFunction
-
-function UpdateMenuGroupData(int a_groupIndex)
-	DebugT("UpdateMenuGroupData called!")
-
-	int offset = 32 * a_groupIndex
-
-	int[] itemFormIds
-
-	if (offset >= 128)
-		offset -= 128
-		itemFormIds = _itemFormIds2
-	else
-		itemFormIds = _itemFormIds1
-	endIf
-
-	; groupIndex, mainHandFormId, offHandFormID, iconFormId, itemFormIds[32]
-	int[] args = new int[36]
-
-	args[0] = a_groupIndex
-	args[1] = _groupMainHandFormIds[a_groupIndex]
-	args[2] = _groupOffHandFormIds[a_groupIndex]
-	args[3] = _groupIconFormIds[a_groupIndex]
-
-	int i=4
-	int j=offset
-
-	while (i<36)
-		args[i] = itemFormIds[j]
-
-		i += 1
-		j += 1
-	endWhile
-	
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".updateGroupData", args)
-
-	DebugT("UpdateMenuGroupData end!")
-endFunction
-
-; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
-function CleanUp()
-	DebugT("Cleanup called!")
-	; Re-count items while checking in the next step
-	int i = 0
-	while (i < 8)
-		_groupCounts[i] = 0
-		i += 1
-	endWhile
-
-	int groupIndex = 0
-
-	i = 0
-	while (i < _items1.length)
-
-		if (_items1[i] == none || _items1[i].GetFormID() == 0)
-			_items1[i] = none
-			_itemFormIds1[i] = 0
-		else
-			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
-		endIf
-
-		if (i % 32 == 31)
-			groupIndex += 1
-		endIf
-
-		i += 1
-	endWhile
-
-	i = 0
-	while (i < _items2.length)
-
-		if (_items2[i] == none || _items2[i].GetFormID() == 0)
-			_items2[i] = none
-			_itemFormIds2[i] = 0
-		else
-			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
-		endIf
-
-		if (i % 32 == 31)
-			groupIndex += 1
-		endIf
-
-		i += 1
-	endWhile
-
-	; TODO - what to do with items that are no longer in the player inventory?
-	; We have to find an efficient method to detect and remove them.
-	DebugT("Cleanup end!")
 endFunction
 
 int function FindFreeIndex(Form[] a_items, int offset)
@@ -809,6 +860,19 @@ bool function IsFormInGroup(int a_groupIndex, form a_item)
 	endWhile
 
 	return false
+endFunction
+
+function RegisterHotkeys()
+	int i = 0
+	
+	while (i < _groupHotkeys.Length)
+		
+		if (_groupHotkeys[i] != -1)
+			RegisterForKey(_groupHotkeys[i])
+		endIf
+
+		i += 1
+	endWhile
 endFunction
 
 ; DEBUG ---------------------------------------------------------------------------------------
