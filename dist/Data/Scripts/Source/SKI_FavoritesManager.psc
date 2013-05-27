@@ -1,21 +1,24 @@
 scriptname SKI_FavoritesManager extends SKI_QuestBase
 
+import Math
+
+
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
 string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
 string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 
-int property		FAV_FLAG_LISTONLY	= 	0	autoReadonly
-int property		FAV_FLAG_ALLOWUSE	= 	1	autoReadonly
-int property		FAV_FLAG_EQUIPSET	= 	2	autoReadonly
-int property		FAV_FLAG_NOWEAPON	= 	4	autoReadonly
-int property		FAV_FLAG_NOARMOR	= 	8	autoReadonly
-int property		FAV_FLAG_NOAMMO		= 	16 	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	1	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_HANDS	= 	2	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_AMMO		= 	4	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 Actor Property		PlayerREF Auto ; Needed for GetItemCount and EquipItem
+
+bool property		ButtonHelpEnabled	= 	true	auto
+
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
@@ -42,6 +45,8 @@ int[]				_groupMainHandFormIds
 Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
+int[]				_groupUseHotkeys
+
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
 
@@ -53,6 +58,7 @@ EquipSlot 			_eitherHandSlot
 EquipSlot 			_leftHandSlot
 EquipSlot 			_bothHandsSlot
 EquipSlot 			_voiceSlot
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -70,6 +76,13 @@ event OnInit()
 
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
+
+	_groupUseHotkeys	= new int[8]
+	int i=0
+	while (i<8)
+		_groupUseHotkeys[i] = -1
+		i += 1
+	endWhile
 
 	_audioCategoryUI	= Game.GetFormFromFile(0x00064451, "Skyrim.esm") as SoundCategory
 
@@ -179,6 +192,8 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 		formIds = _itemFormIds1
 	endIf
 
+	Form iconReplacement = none
+
 	int i=offset
 	int n=offset+32
 	while (i < n)
@@ -188,9 +203,22 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 			_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1			
 			i = n
 		else
+			if (items[i] != none)
+				iconReplacement = items[i]
+			endIf
 			i += 1
 		endIf
 	endWhile
+
+	if (item == _groupIconItems[groupIndex])
+		_groupIconItems[groupIndex] = iconReplacement
+		_groupIconFormIds[groupIndex] = iconReplacement.GetFormID()
+	endIf
+
+	if (item == _groupMainHandItems[groupIndex])
+		_groupMainHandItems[groupIndex] = none
+		_groupMainHandFormIds[groupIndex] = 0
+	endIf
 
 	UpdateMenuGroupData(groupIndex)
 
@@ -506,6 +534,34 @@ endEvent
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
+;get whether a flag is set for the specified group
+bool function GetGroupFlag(int a_groupIndex, int a_flag)
+        return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
+endFunction
+ 
+;set a flag for the specified group
+function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
+	if (a_value)
+		_groupFlags[a_groupIndex] = LogicalOr(_groupFlags[a_groupIndex], a_flag)
+	else
+		_groupFlags[a_groupIndex] = LogicalAnd(_groupFlags[a_groupIndex], LogicalNot(a_flag))
+	endIf
+endFunction
+
+int[] function GetGroupUseHotkeys()
+	int[] result = new int[8]
+	int i=0
+	while (i<8)
+		result[i] = _groupUseHotkeys[i]
+		i += 1
+	endWhile
+	return result
+endFunction
+
+function SetGroupUseHotkey(int a_groupIndex, int a_keycode)
+	_groupUseHotkeys[a_groupIndex] = a_keycode
+endFunction
+
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
 function InitMenuGroupData()
 	DebugT("InitMenuGroupData called!")
@@ -644,45 +700,11 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	DebugT("FindFreeIndex end!")
 endFunction
 
-int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	4	autoReadonly
-int property		GROUP_FLAG_UNEQUIP_HANDS	= 	4	autoReadonly
-int property		GROUP_FLAG_UNEQUIP_AMMO	= 	4	autoReadonly
-
-bool property		ButtonHelpEnabled	= 	true	auto
-
-bool function GetGroupFlag(int a_groupIndex, int a_flag)
-endFunction
-
-function SetGroupFlag(int a_groupIndex, int a_flag, bool a_value)
-endFunction
 
 ; DEBUG ---------------------------------------------------------------------------------------
 
 function DebugT(string DebugString)
 	if (_useDebug)
 		Debug.Trace("SKI_Favs: " + DebugString)
-	endIf
-endFunction
-
-bool function CheckGroupFlag(int a_group, int a_flag)
-	Return Math.LogicalAnd(_groupFlags[a_group], a_flag) as bool
-endFunction
-
-function ParseGroupFlags(int a_flags)
-	DebugT("Flags: " + a_flags)
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_ALLOWUSE))
-		DebugT(" FAV_FLAG_ALLOWUSE")
-	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_EQUIPSET))
-		DebugT(" FAV_FLAG_EQUIPSET")
-	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOWEAPON))
-		DebugT(" FAV_FLAG_NOWEAPON")
-	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOARMOR))
-		DebugT(" FAV_FLAG_NOARMOR")
-	endIf
-	if (Math.LogicalAnd(a_flags, FAV_FLAG_NOAMMO))
-		DebugT(" FAV_FLAG_NOAMMO")
 	endIf
 endFunction
