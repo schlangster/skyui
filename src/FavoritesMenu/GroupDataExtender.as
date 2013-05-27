@@ -20,6 +20,7 @@ class GroupDataExtender implements IListProcessor
   
 	public var groupData: Array;
 	public var mainHandData: Array;
+	public var offHandData: Array;
 	public var iconData: Array;
 	
 	
@@ -29,7 +30,9 @@ class GroupDataExtender implements IListProcessor
 	{
 		groupData = [];
 		mainHandData = [];
+		offHandData = [];
 		iconData = [];
+		
 		_formIdMap = {};
 		
 		_groupButtons = a_groupButtons;
@@ -47,20 +50,22 @@ class GroupDataExtender implements IListProcessor
 		for (var c=0; c<groupCount; c++)
 			clearFlag |= FilterDataExtender.FILTERFLAG_GROUP_0 << c;
 		
-		skse.Log("ClearFlag is " + clearFlag);
-		
 		var entryList = a_list.entryList;
 		
 		// Create map for formid->entry, clear group filter flags
 		for (var i = 0; i < entryList.length; i++) {
 			var e = entryList[i];
 			e.filterFlag &= ~clearFlag;
+			e.mainHandFlag = 0;
+			e.offHandFlag = 0;
+			
 			if (e.formId != null)
 				_formIdMap[e.formId] = e;
 		}
 		
 		processGroupData();
 		processMainHandData();
+		processOffHandData();
 		processIconData();
 	}
 	
@@ -82,10 +87,8 @@ class GroupDataExtender implements IListProcessor
 			var formId: Number = groupData[i];
 			if (formId) {
 				var t = _formIdMap[formId];
-				if (t != null) {
-					t.mainHandFlag = 0;
+				if (t != null)
 					t.filterFlag |= curFilterFlag;
-				}
 			}
 		}
 	}
@@ -99,6 +102,19 @@ class GroupDataExtender implements IListProcessor
 				var t = _formIdMap[formId];
 				if (t != null)
 					t.mainHandFlag |= 1 << i;
+			}
+		}
+	}
+	
+	private function processOffHandData(): Void
+	{
+		// Set filterFlags for group membership
+		for (var i=0; i<offHandData.length; i++) {
+			var formId: Number = offHandData[i];
+			if (formId) {
+				var t = _formIdMap[formId];
+				if (t != null)
+					t.offHandFlag |= 1 << i;
 			}
 		}
 	}

@@ -33,7 +33,7 @@ class FavoritesMenu extends MovieClip
 	private static var GROUP_ASSIGN_SYNC = 2;
 	private static var GROUP_REMOVE_SYNC = 3;
 	private static var CLOSING = 4;
-	private static var SET_MAIN_HAND_SYNC = 5;
+	private static var SAVE_EQUIP_STATE_SYNC = 5;
 	private static var SET_ICON_SYNC = 6;
 	
 	
@@ -54,7 +54,7 @@ class FavoritesMenu extends MovieClip
 	private var _groupAddKey: Number = -1;
 	private var _groupUseKey: Number = -1;
 	private var _setIconKey: Number = -1;
-	private var _setMainHandKey: Number = -1;
+	private var _saveEquipStateKey: Number = -1;
 	private var _toggleFocusKey: Number = -1;
 	
 	private var _state: Number;
@@ -138,13 +138,15 @@ class FavoritesMenu extends MovieClip
 			_groupDataExtender.groupData.push(arguments[i]);
 	}
 	
-	public function finishGroupData(a_groupCount: Number /*, mainHandFormIds[], groupIconFormIds[] */): Void
+	public function finishGroupData(a_groupCount: Number /*, mainHandFormIds[], offHandFormIds[], groupIconFormIds[] */): Void
 	{
 		var offset = 1;
 		var i: Number;
 		
 		for (i=0; i<a_groupCount; i++, offset++)
 			_groupDataExtender.mainHandData.push(arguments[offset]);
+		for (i=0; i<a_groupCount; i++, offset++)
+			_groupDataExtender.offHandData.push(arguments[offset]);
 		for (i=0; i<a_groupCount; i++, offset++)
 			_groupDataExtender.iconData.push(arguments[offset]);
 		
@@ -155,11 +157,13 @@ class FavoritesMenu extends MovieClip
 		enableGroupButtons(true);
 	}
 	
-	public function updateGroupData(a_groupIndex: Number, a_mainHandFormId: Number, a_iconFormId: Number /*, formId[] */): Void
+	public function updateGroupData(a_groupIndex: Number, a_mainHandFormId: Number, a_offHandFormId: Number, a_iconFormId: Number /*, formId[] */): Void
 	{
 		var startIndex = a_groupIndex * GroupDataExtender.GROUP_SIZE;
 		
 		_groupDataExtender.mainHandData[a_groupIndex] = a_mainHandFormId;
+		_groupDataExtender.offHandData[a_groupIndex] = a_offHandFormId;
+		
 		_groupDataExtender.iconData[a_groupIndex] = a_iconFormId;
 		
 		for (var i=3, j=startIndex ; i<arguments.length; i++, j++)
@@ -175,8 +179,8 @@ class FavoritesMenu extends MovieClip
 			endGroupRemoval();
 		else if (_state == SET_ICON_SYNC)
 			endSetGroupIcon();
-		else if (_state == SET_MAIN_HAND_SYNC)
-			endSetMainHand();
+		else if (_state == SAVE_EQUIP_STATE_SYNC)
+			endSaveEquipState();
 	}
 	
 	
@@ -381,9 +385,9 @@ class FavoritesMenu extends MovieClip
 				if (_state == ITEM_SELECT)
 					startSetGroupIcon();
 					
-			} else if (details.skseKeycode == _setMainHandKey || details.code == 18) {
+			} else if (details.skseKeycode == _saveEquipStateKey || details.code == 18) {
 				if (_state == ITEM_SELECT)
-					startSetMainHand();
+					startSaveEquipState();
 				
 			} else if (details.skseKeycode == _toggleFocusKey || details.code == 32) {
 				if (_state == ITEM_SELECT)
@@ -430,7 +434,7 @@ class FavoritesMenu extends MovieClip
 		_groupUseKey = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, isGamepad);
 		
 		_setIconKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, isGamepad);
-		_setMainHandKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, isGamepad);
+		_saveEquipStateKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, isGamepad);
 		
 		_toggleFocusKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, isGamepad);
 		
@@ -591,7 +595,7 @@ class FavoritesMenu extends MovieClip
 			itemList.suspended = true
 			enableGroupButtons(false);
 			_state = GROUP_ASSIGN_SYNC;
-			skse.SendModEvent("SKIFM_groupAdded", "", _groupAssignIndex, formId);
+			skse.SendModEvent("SKIFM_groupAdd", "", _groupAssignIndex, formId);
 		}
 	}
 	
@@ -637,7 +641,7 @@ class FavoritesMenu extends MovieClip
 		var formId: Number = itemList.selectedEntry.formId;
 		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
 			_state = GROUP_REMOVE_SYNC;
-			skse.SendModEvent("SKIFM_groupRemoved", "", _groupIndex, formId);
+			skse.SendModEvent("SKIFM_groupRemove", "", _groupIndex, formId);
 		}
 	}
 	
@@ -648,25 +652,22 @@ class FavoritesMenu extends MovieClip
 	
 	private function requestGroupUse(): Void
 	{
-		if (_groupButtonFocus && _groupIndex >= 0) {
-			skse.SendModEvent("SKIFM_groupUsed", "", _groupIndex);
+		if (_groupButtonFocus && _groupIndex >= 0 && itemList.listEnumeration.size() > 0) {
+			skse.SendModEvent("SKIFM_groupUse", "", _groupIndex);
 			startFadeOut();
 		}
 	}
 	
-	private function startSetMainHand(): Void
+	private function startSaveEquipState(): Void
 	{
 		var selectedEntry = itemList.selectedEntry;
-		if (_groupButtonFocus && _groupIndex >= 0 && selectedEntry.formId) {
-			var equipSlot = selectedEntry.equipSlot;
-			if (allowAsMainHand(selectedEntry)) {
-				_state = SET_MAIN_HAND_SYNC;
-				skse.SendModEvent("SKIFM_setMainHand", "", _groupIndex, selectedEntry.formId);
-			}
+		if (_groupButtonFocus && _groupIndex >= 0) {
+			_state = SAVE_EQUIP_STATE_SYNC;
+			skse.SendModEvent("SKIFM_saveEquipState", "", _groupIndex);
 		}
 	}
 	
-	private function endSetMainHand(): Void
+	private function endSaveEquipState(): Void
 	{
 		_state = ITEM_SELECT;
 	}

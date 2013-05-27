@@ -21,6 +21,7 @@ class FavoritesListEntry extends BasicListEntry
   	public var selectIndicator: MovieClip;
 	public var hotkeyIcon: MovieClip;
 	public var mainHandIcon: MovieClip;
+	public var offHandIcon: MovieClip;
 	
 	
   /* INITIALIZATION */
@@ -41,8 +42,8 @@ class FavoritesListEntry extends BasicListEntry
 		var isSelected = a_entryObject == a_state.list.selectedEntry || isAssigned;
 		
 		var groupIndex = a_state.activeGroupIndex;
-		skse.Log("group index " + groupIndex);
 		var isMainHand: Boolean = groupIndex != -1 && (a_entryObject.mainHandFlag & (1 << groupIndex)) != 0;
+		var isOffHand: Boolean = groupIndex != -1 && (a_entryObject.offHandFlag & (1 << groupIndex)) != 0;
 		
 		enabled = a_state.assignedEntry == null || isAssigned;
 		_alpha = enabled ? 100 : 25;
@@ -86,12 +87,18 @@ class FavoritesListEntry extends BasicListEntry
 		else
 			equipIcon.gotoAndStop(STATES[a_entryObject.equipState]);
 
+		var iconOffset = textField._x + textField.textWidth + 10;
+
 		if (isMainHand) {
-			mainHandIcon._x = textField._x + textField.textWidth + 10;
-			mainHandIcon.gotoAndStop("show");
-		} else {
-			mainHandIcon.gotoAndStop("hide");
+			mainHandIcon._x = iconOffset;
+			iconOffset += 15;
 		}
+		mainHandIcon._visible = isMainHand;
+		
+		if (isOffHand) {
+			offHandIcon._x = iconOffset;
+		}
+		offHandIcon._visible = isOffHand;
 	}
 	
 	
