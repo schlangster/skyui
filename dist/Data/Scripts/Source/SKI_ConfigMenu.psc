@@ -352,19 +352,35 @@ event OnPageReset(string a_page)
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Favorite Groups")
-		SetCursorFillMode(TOP_TO_BOTTOM)
-
-		AddMenuOptionST("FAV_GROUP_SELECT", "$Current Group", _favCurGroupIdx+1)
-		AddEmptyOption()
-
 		int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
 		int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_HANDS
 		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
 
-		AddHeaderOption("$Group Use Settings")
+		SetCursorFillMode(TOP_TO_BOTTOM)
+
+		AddHeaderOption("$Group Preferences")
+		AddMenuOptionST("FAV_GROUP_SELECT", "$Current Group", _favCurGroupIdx+1)
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_ARMOR", "$Unequip Armor", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG))
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_AMMO", "$Unequip Ammo", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG))
+
+		
+		
+		if (! Game.UsingGamepad())
+			int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupUseHotkeys()
+
+			SetCursorPosition(1)
+
+			AddHeaderOption("$Hotkeys")
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY1", "Group 1", groupHotkeys[0])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY2", "Group 2", groupHotkeys[1])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY3", "Group 3", groupHotkeys[2])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY4", "Group 4", groupHotkeys[3])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY5", "Group 5", groupHotkeys[4])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY6", "Group 6", groupHotkeys[5])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY7", "Group 7", groupHotkeys[6])
+			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY8", "Group 8", groupHotkeys[7])
+		endIf
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
