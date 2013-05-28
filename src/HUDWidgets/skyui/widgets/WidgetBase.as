@@ -7,14 +7,14 @@ class skyui.widgets.WidgetBase extends MovieClip
 {
   /* CONSTANTS */
 	
-	private static var MODES: Array = ["All", "Favor", "MovementDisabled", "Swimming", "WarhorseMode", "HorseMode", "InventoryMode", "BookMode", "DialogueMode", "StealthMode", "SleepWaitMode", "BarterMode", "TweenMode", "WorldMapMode", "JournalMode", "CartMode", "VATSPlayback"];
+	private static var MODES: Array = ["All", "Favor", "MovementDisabled", "Swimming", "WarHorseMode", "HorseMode", "InventoryMode", "BookMode", "DialogueMode", "StealthMode", "SleepWaitMode", "BarterMode", "TweenMode", "WorldMapMode", "JournalMode", "CartMode", "VATSPlayback"];
 
 	private static var MODEMAP: Object = {
 		all: "All",
 		favor: "Favor",
 		movementdisabled: "MovementDisabled",
 		swimming: "Swimming",
-		warhorsemode: "WarhorseMode",
+		warhorsemode: "WarHorseMode",
 		horsemode: "HorseMode",
 		inventorymode: "InventoryMode",
 		bookmode: "BookMode",

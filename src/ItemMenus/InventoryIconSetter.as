@@ -462,12 +462,12 @@ class InventoryIconSetter implements IListProcessor
 				processSoulGemStatusIcon(a_entryObject);
 				break;
 
-			case Item.SOULGEM_GRAND:
+			case Item.SOULGEM_GREATER:
 				a_entryObject.iconColor = 0x948BFC;
 				processGrandSoulGemIcon(a_entryObject);
 				break;
 
-			case Item.SOULGEM_GREATER:
+			case Item.SOULGEM_GRAND:
 				a_entryObject.iconColor = 0x7569FF;
 				processGrandSoulGemIcon(a_entryObject);
 				break;
