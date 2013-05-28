@@ -296,8 +296,6 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	DebugT("OnGroupRemove end!")
 endEvent
 
-
-
 event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	; Just remembered that the mod event only supports a single numeric argument as per Schlangster
 	; Fortunately strings be coerced into ints. 
@@ -716,6 +714,37 @@ function GroupUse(int a_groupIndex)
 	i = 0
 	;DEBUG
 	StartTime = Utility.GetCurrentRealTime()
+	
+	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_HANDS)
+		int aiHand = 0
+		form[] handItems = new form[2]
+		while aiHand < 2
+			itemType = PlayerREF.GetEquippedItemType(aiHand)
+			if (aiHand == 0) ; Shields are left-handed only
+				handItems[aiHand] = PlayerREF.GetEquippedShield()
+			endIf
+			if (!handItems[aiHand]) ;No shield found, check for a weapon
+				handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
+			endIf
+			if (!handItems[aiHand]) ;No weapon found, check for a spell
+				handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
+			endIf
+			debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
+
+			;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+			
+			if (handItems[aiHand]) ; check for none to avoid logspam
+				PlayerREF.UnequipItem(handItems[aiHand])
+			endIf
+			aiHand += 1
+		endWhile
+	EndIf
+	
+	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_AMMO)
+		;TODO - there doesn't seem to be a way to do this without polling for every single possible ammo type with IsEquipped
+		;I'll look at it some more tomorrow, gotta be a way
+	EndIf
+	
 	while (i < sortedItems.Length)
 		item = sortedItems[i]
 		itemCount = 0
@@ -754,6 +783,7 @@ function GroupUse(int a_groupIndex)
 					lHandItem = rHandItem
 				elseIf (WeaponType <= 4) && (!rHandItem || !lHandItem) ; It's one-handed and the player has a free hand
 					If PlayerREF.GetItemCount(itemW) > 1 && !rHandItem && !lHandItem ; Player has at least two of these and two free hands, so dual-wield them
+						; TODO - the new r/l functionality in the UI makes this obsolete, it should be removed
 						; For some reason if we don't call EquipItemEX sequentially, the second one fails sometimes
 						; Equipping the left hand first seems to prevent this
 						PlayerREF.EquipItemEX(itemW, equipSlot = 2, equipSound = _silenceEquipSounds)
@@ -908,14 +938,6 @@ function GroupUse(int a_groupIndex)
 
 		i += 1
 	endWhile
-
-	DebugT("Checking for one handed spell that should be dual-wielded...")
-	If rHandItem ; check for none first to avoid logspam
-		If rHandItem.GetType() == 22 && !lHandItem && !PlayerREF.GetEquippedSpell(0); Player has a spell equipped in the right hand, left is empty
-			PlayerREF.EquipSpell(rHandItem as Spell,0) ; Equip empty left hand with a copy of right hand spell
-			DebugT("Equipped " + rHandItem.GetName() + " in left hand for dual-wielding!")
-		EndIf
-	EndIf
 
 	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_ARMOR)
 		int h = 0x00000001
