@@ -11,6 +11,7 @@ string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	1	autoReadonly
 int property		GROUP_FLAG_UNEQUIP_HANDS	= 	2	autoReadonly
 int property		GROUP_FLAG_UNEQUIP_AMMO		= 	4	autoReadonly
+int property		GROUP_FLAG_NEEDS_CLEANUP	= 	8	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -29,14 +30,6 @@ int[]				_itemFormIds2
 
 int[]				_groupCounts
 
-; index is 0-7 for groups
-; Flags: 
-;   0 = Standard list, Disallow group use
-;   1 = Allow group use
-;   2 = Act like equipment set (unequip any gear not in the group)
-;   4 = Don't remove equipped Weapons or Spells
-;   8 = Don't remove equipped Armor
-;  16 = Don't remove equipped Ammo
 int[]				_groupFlags
 
 Form[]				_groupMainHandItems
@@ -49,8 +42,6 @@ Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
-
-bool[]				_groupNeedsCheck
 
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
@@ -86,8 +77,6 @@ event OnInit()
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
-	_groupNeedsCheck	= new bool[8]
-	
 	_groupHotkeys = new int[8]
 	_groupHotkeys[0] = 59
 	_groupHotkeys[1] = 60
@@ -121,7 +110,7 @@ event OnGameReload()
 	RegisterForModEvent("SKIFM_setGroupIcon", "OnSetGroupIcon")
 	
 	RegisterForMenu(FAVORITES_MENU)
-
+	
 	RegisterHotkeys()
 
 	CleanUp()
@@ -137,33 +126,35 @@ event OnMenuOpen(string a_menuName)
 	endWhile
 	InitMenuGroupData()
 	;Switch on button helpers:
-	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
-endEvent
-
-event OnMenuClose(string a_menuName)
-	DebugT("OnMenuClose!")
+	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
+	
 	int i = 0
 	int cleanedCount = 0
-
 	; The following takes between 0.3s and 0.5s per group
 	; Worst case scenario, 8 groups with 32 items each, ~4 seconds
-	;DEBUG
+	;DEBUG	
+	If _inCleanUp
+		DebugT("Already performing a cleanup, skipping it this time!")
+		Return
+	EndIf
 	Float StartTime = Utility.GetCurrentRealTime()
 	_inCleanUp = True ; variable to use for spinlocking, if needed
-	gotoState("PROCESSING") ; keep player from doing GroupUse while cleaning is happening
-	while (i < _groupNeedsCheck.Length)
-		if _groupNeedsCheck[i]
+	while (i < _groupFlags.Length)
+		if GetGroupFlag(i,GROUP_FLAG_NEEDS_CLEANUP)
 			CleanUpGroup(i)
-			_groupNeedsCheck[i] = false
+			SetGroupFlag(i,GROUP_FLAG_NEEDS_CLEANUP,false)
 			cleanedCount += 1
 		endIf
 		i += 1
 	endWhile
 	_inCleanUp = false
-	gotoState("")
 	;DEBUG
 	Float EndTime = Utility.GetCurrentRealTime()
 	DebugT("Cleaned up " + cleanedCount + " groups in " + (EndTime - StartTime))
+endEvent
+
+event OnMenuClose(string a_menuName)
+	DebugT("OnMenuClose!")
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -186,10 +177,6 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		endIf
 	endIf
 
-	if (_groupCounts[groupIndex] > 28)
-		_groupNeedsCheck[groupIndex] = true
-	endIf
-	
 	int offset = 32 * groupIndex
 
 	; Select the target set of arrays, adjust offset
@@ -224,7 +211,7 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	endIf
 
 	UpdateMenuGroupData(groupIndex)
-
+	SetGroupFlag(groupIndex,GROUP_FLAG_NEEDS_CLEANUP,true)
 	DebugT("OnGroupAdd end!")
 endEvent
 
@@ -323,26 +310,11 @@ event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form
 	form[] handItems
 	
 	handItems = new form[2]
-	
-	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
-	; Lame!
 	Int aiHand 
 	
 	while aiHand < 2
-		int itemType = PlayerREF.GetEquippedItemType(aiHand)
-		if (aiHand == 0) ; Shields are left-handed only
-			handItems[aiHand] = PlayerREF.GetEquippedShield()
-		endIf
-		if (!handItems[aiHand]) ;No shield found, check for a weapon
-			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
-		endIf
-		if (!handItems[aiHand]) ;No weapon found, check for a spell
-			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
-		endIf
+		handItems[aiHand] = PlayerREF.GetEquippedObject(aiHand)
 		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
-
-		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
-		
 		if (handItems[aiHand]) ; check for none to avoid logspam
 			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
 				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
@@ -552,14 +524,14 @@ endFunction
 
 ; Check for unfavorited items in the group and clean them from the itemlists
 function CleanUpGroup(int groupIndex, bool cleanMissing = false)
-	DebugT("CleanUpGroup called!")
-
+	DebugT("CleanUpGroup called on group " + groupIndex + ", cleanMissing = " + cleanMissing)
+	Float StartTime = Utility.GetCurrentRealTime()
+	
 	Form[] items
 	int[] itemFormIDs
 	int i
 	int offset = 32 * groupIndex
-	int n=offset+32
-	
+		
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
@@ -571,6 +543,7 @@ function CleanUpGroup(int groupIndex, bool cleanMissing = false)
 	
 	Form[] invalidItems = new Form[32]
 	int invalidIdx 
+	int n=offset+32
 	while (i < n)
 		if (items[i]) ; prevent errors about none
 			if (!Game.IsObjectFavorited(items[i])) ; find unfaved items
@@ -586,6 +559,8 @@ function CleanUpGroup(int groupIndex, bool cleanMissing = false)
 		i += 1
 	endWhile
 	RemoveFormsInArray(invalidItems)
+	Float EndTime = Utility.GetCurrentRealTime()
+	DebugT("Cleaned up " + InvalidIdx + " items in " + (EndTime - StartTime))
 endFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
@@ -719,31 +694,27 @@ function GroupUse(int a_groupIndex)
 		int aiHand = 0
 		form[] handItems = new form[2]
 		while aiHand < 2
-			itemType = PlayerREF.GetEquippedItemType(aiHand)
-			if (aiHand == 0) ; Shields are left-handed only
-				handItems[aiHand] = PlayerREF.GetEquippedShield()
-			endIf
-			if (!handItems[aiHand]) ;No shield found, check for a weapon
-				handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
-			endIf
-			if (!handItems[aiHand]) ;No weapon found, check for a spell
-				handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
-			endIf
-			debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
-
-			;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+			handItems[aiHand] = PlayerREF.GetEquippedObject(aiHand)
 			
 			if (handItems[aiHand]) ; check for none to avoid logspam
-				PlayerREF.UnequipItem(handItems[aiHand])
+				PlayerREF.UnequipItem(handItems[aiHand],abSilent = true)
 			endIf
 			aiHand += 1
 		endWhile
 	EndIf
 	
+	float ammofindstart = utility.GetCurrentRealTime()
 	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_AMMO)
-		;TODO - there doesn't seem to be a way to do this without polling for every single possible ammo type with IsEquipped
-		;I'll look at it some more tomorrow, gotta be a way
+		;TODO - there doesn't seem to be a way to save the current ammo without either the entire inventory
+		; for every single possible ammo type with IsEquipped
+		;use FXDustDropAmmoTiny because it has no quiver art
+		ammo dummyArrow = Game.GetFormFromFile(0x00052E99, "skyrim.esm") as Ammo
+		PlayerRef.EquipItem(dummyArrow,abSilent = true)
+		;PlayerRef.UnEquipItem(dummyArrow,abSilent = true)
+		PlayerRef.RemoveItem(dummyArrow,abSilent = true)
 	EndIf
+	float ammofindend = utility.GetCurrentRealTime()
+	debugT("Ammo find took " + (ammofindend - ammofindstart))
 	
 	while (i < sortedItems.Length)
 		item = sortedItems[i]
