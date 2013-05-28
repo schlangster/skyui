@@ -29,14 +29,6 @@ int[]				_itemFormIds2
 
 int[]				_groupCounts
 
-; index is 0-7 for groups
-; Flags: 
-;   0 = Standard list, Disallow group use
-;   1 = Allow group use
-;   2 = Act like equipment set (unequip any gear not in the group)
-;   4 = Don't remove equipped Weapons or Spells
-;   8 = Don't remove equipped Armor
-;  16 = Don't remove equipped Ammo
 int[]				_groupFlags
 
 Form[]				_groupMainHandItems
@@ -121,7 +113,7 @@ event OnGameReload()
 	RegisterForModEvent("SKIFM_setGroupIcon", "OnSetGroupIcon")
 	
 	RegisterForMenu(FAVORITES_MENU)
-
+	
 	RegisterHotkeys()
 
 	CleanUp()
@@ -137,7 +129,7 @@ event OnMenuOpen(string a_menuName)
 	endWhile
 	InitMenuGroupData()
 	;Switch on button helpers:
-	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
+	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
 endEvent
 
 event OnMenuClose(string a_menuName)
@@ -323,26 +315,11 @@ event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form
 	form[] handItems
 	
 	handItems = new form[2]
-	
-	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
-	; Lame!
 	Int aiHand 
 	
 	while aiHand < 2
-		int itemType = PlayerREF.GetEquippedItemType(aiHand)
-		if (aiHand == 0) ; Shields are left-handed only
-			handItems[aiHand] = PlayerREF.GetEquippedShield()
-		endIf
-		if (!handItems[aiHand]) ;No shield found, check for a weapon
-			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
-		endIf
-		if (!handItems[aiHand]) ;No weapon found, check for a spell
-			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
-		endIf
+		handItems[aiHand] = PlayerREF.GetEquippedObject(aiHand)
 		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
-
-		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
-		
 		if (handItems[aiHand]) ; check for none to avoid logspam
 			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
 				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
@@ -719,31 +696,27 @@ function GroupUse(int a_groupIndex)
 		int aiHand = 0
 		form[] handItems = new form[2]
 		while aiHand < 2
-			itemType = PlayerREF.GetEquippedItemType(aiHand)
-			if (aiHand == 0) ; Shields are left-handed only
-				handItems[aiHand] = PlayerREF.GetEquippedShield()
-			endIf
-			if (!handItems[aiHand]) ;No shield found, check for a weapon
-				handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
-			endIf
-			if (!handItems[aiHand]) ;No weapon found, check for a spell
-				handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
-			endIf
-			debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
-
-			;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+			handItems[aiHand] = PlayerREF.GetEquippedObject(aiHand)
 			
 			if (handItems[aiHand]) ; check for none to avoid logspam
-				PlayerREF.UnequipItem(handItems[aiHand])
+				PlayerREF.UnequipItem(handItems[aiHand],abSilent = true)
 			endIf
 			aiHand += 1
 		endWhile
 	EndIf
 	
+	float ammofindstart = utility.GetCurrentRealTime()
 	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_AMMO)
-		;TODO - there doesn't seem to be a way to do this without polling for every single possible ammo type with IsEquipped
-		;I'll look at it some more tomorrow, gotta be a way
+		;TODO - there doesn't seem to be a way to save the current ammo without either the entire inventory
+		; for every single possible ammo type with IsEquipped
+		;use FXDustDropAmmoTiny because it has no quiver art
+		ammo dummyArrow = Game.GetFormFromFile(0x00052E99, "skyrim.esm") as Ammo
+		PlayerRef.EquipItem(dummyArrow,abSilent = true)
+		;PlayerRef.UnEquipItem(dummyArrow,abSilent = true)
+		PlayerRef.RemoveItem(dummyArrow,abSilent = true)
 	EndIf
+	float ammofindend = utility.GetCurrentRealTime()
+	debugT("Ammo find took " + (ammofindend - ammofindstart))
 	
 	while (i < sortedItems.Length)
 		item = sortedItems[i]
