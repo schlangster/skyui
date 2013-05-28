@@ -132,6 +132,11 @@ event OnMenuOpen(string a_menuName)
 	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
 endEvent
 
+event OnMenuClose(string a_menuName)
+	DebugT("OnMenuClose!")
+	
+endEvent
+
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	DebugT("OnGroupAdd!")
 	DebugT("  a_eventName: " + a_eventName)
@@ -144,7 +149,12 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 
 	; Group already full - play some error sound?
 	if (_groupCounts[groupIndex] >= 32)
-		return
+		CleanUpGroup(groupIndex,true)
+		if (_groupCounts[groupIndex] >= 32) ; Nothing could be removed, group is full of valid, favorited items
+			;FIXME: return just sort of locks up the UI
+			;       instead we should probably make an error noise and let the player pick another group
+			return
+		endIf
 	endIf
 
 	int offset = 32 * groupIndex
@@ -163,8 +173,13 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	endIf
 
 	; Pick next free slot
+	;DEBUG
+	Float StartTime = Utility.GetCurrentRealTime()
 	int index = FindFreeIndex(items, offset)
-
+	;DEBUG
+	Float EndTime = Utility.GetCurrentRealTime()
+	DebugT("FindFreeIndex took " + (EndTime - StartTime))
+	
 	; Store received data
 	if (index != -1)
 		int formId = item.GetFormID()
@@ -233,6 +248,8 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 		_groupIconItems[groupIndex] = iconReplacement
 		if (iconReplacement) ; prevent logspam if iconReplacement is none (happens when group is empty)
 			_groupIconFormIds[groupIndex] = iconReplacement.GetFormID()
+		else
+			_groupIconFormIds[groupIndex] = 0
 		endIf
 	endIf
 
@@ -375,7 +392,7 @@ endState
 
 ;get whether a flag is set for the specified group
 bool function GetGroupFlag(int a_groupIndex, int a_flag)
-        return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
+    return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
 endFunction
  
 ;set a flag for the specified group
@@ -504,6 +521,44 @@ function UpdateMenuGroupData(int a_groupIndex)
 	DebugT("UpdateMenuGroupData end!")
 endFunction
 
+; Check for unfavorited items in the group and clean them from the itemlists
+function CleanUpGroup(int groupIndex, bool cleanMissing = false)
+	DebugT("CleanUpGroup called!")
+
+	Form[] items
+	int[] itemFormIDs
+	int i
+	int offset = 32 * groupIndex
+	int n=offset+32
+	
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+		itemFormIDs = _itemFormIds2
+	else
+		items = _items1
+		itemFormIDs = _itemFormIds1
+	endIf
+	
+	Form[] invalidItems = new Form[32]
+	int invalidIdx 
+	while (i < n)
+		if (items[i]) ; prevent errors about none
+			if (!Game.IsObjectFavorited(items[i])) ; find unfaved items
+				invalidItems[invalidIdx] = items[i]
+				invalidIdx += 1
+			elseIf cleanMissing ;GetItemCount is slow, only do it if we're supposed to
+				 if (PlayerRef.GetItemCount(items[i]) == 0)
+					invalidItems[invalidIdx] = items[i]
+					invalidIdx += 1
+				 endif
+			endIf
+		endIf
+		i += 1
+	endWhile
+	RemoveFormsInArray(invalidItems)
+endFunction
+
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
 function CleanUp()
 	DebugT("Cleanup called!")
@@ -576,6 +631,9 @@ function GroupUse(int a_groupIndex)
 
 	Form[] deferredItems = new Form[32]
 	int deferredIdx
+
+	Form[] invalidItems = new Form[32]
+	int invalidIdx
 	
 	Form item
 	Form itemMH
@@ -598,19 +656,35 @@ function GroupUse(int a_groupIndex)
 	itemOH = _groupOffHandItems[a_groupIndex]
 	
 	Form[] sortedItems = new Form[32]
-	sortedItems[0] = itemMH
-	sortedItems[1] = itemOH
-	j = 2
+	
+	if (itemMH)
+		sortedItems[0] = itemMH
+		j += 1
+	endIf
+	if (itemOH)
+		sortedItems[1] = itemOH
+		j += 1
+	endIf
+		
+	;DEBUG
+	Float StartTime = Utility.GetCurrentRealTime()
+	
 	while (i < offset+32)
 		if (items[i] != itemMH) && (items[i] != itemOH)
+			DebugT("Adding " + items[i] + " to sortedItems[" + j + "]")
 			sortedItems[j] = items[i]
 			j += 1
 		endIf
 		i += 1
 	endWhile
+	;DEBUG
+	Float EndTime = Utility.GetCurrentRealTime()
+	Debug.Notification("Sort time: " + (EndTime - StartTime))
 	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
 	i = 0
+	;DEBUG
+	StartTime = Utility.GetCurrentRealTime()
 	while (i < sortedItems.Length)
 		item = sortedItems[i]
 		itemCount = 0
@@ -625,6 +699,13 @@ function GroupUse(int a_groupIndex)
 				endIf
 			else ; This is an inventory item
 				itemCount = PlayerREF.GetItemCount(item) 
+			endIf
+			
+			if !(Game.IsObjectFavorited(item)) ; Player has removed this item from Favorites, so don't use it and queue it for removal
+				DebugT(item + " is no longer favorited, queueing it for removal!")
+				invalidItems[invalidIdx] = item
+				invalidIdx += 1
+				item = none ; don't do any further work with this item
 			endIf
 		endIf
 
@@ -823,9 +904,56 @@ function GroupUse(int a_groupIndex)
 	EndIf
 	
 	_audioCategoryUI.UnMute() ; Turn UI sounds back on
+	;DEBUG
+	EndTime = Utility.GetCurrentRealTime()
+	Debug.Notification("Equip time: " + (EndTime - StartTime))
+	
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
 	DebugT("outfitSlot: " + outfitSlot)
+	
+	
+	StartTime = Utility.GetCurrentRealTime()
+	i = 0
+	DebugT("Checking for invalid items...")
+	RemoveFormsInArray(invalidItems)
+	EndTime = Utility.GetCurrentRealTime()
+	Debug.Trace("Cleanup time: " + (EndTime - StartTime))
+	
 	DebugT("OnGroupUse end!")
+endFunction
+
+function RemoveFormsInArray(form[] invalidItems)
+	int i = 0
+	int groupIndex = 0
+	form item
+	
+	while (i < invalidItems.Length)
+		item = invalidItems[i]
+		If (item)
+			DebugT("Cleaning item " + item)
+			int itemIdx = _items1.find(item)
+			while (itemIdx >= 0)
+				DebugT(" Found " + item + " in _items1[" + itemIdx + "], removing it!")
+				_items1[itemIdx] = None
+				_itemFormIDs1[itemIdx] = 0
+				groupIndex = itemIDX / 32
+				_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+				DebugT(" _groupCounts[" + groupIndex + "] is now " + _groupCounts[groupIndex])
+				itemIdx = _items1.find(item)
+			endWhile
+			itemIdx = _items2.find(item)
+			while (itemIdx >= 0)
+				DebugT(" Found " + item + " in _items2[" + itemIdx + "], removing it!")
+				_items2[itemIdx] = None
+				_itemFormIDs2[itemIdx] = 0
+				groupIndex = (128 + itemIDX) / 32
+				_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+				DebugT(" _groupCounts[" + groupIndex + "] is now " + _groupCounts[groupIndex])
+				itemIdx = _items2.find(item)
+			endWhile
+		endIf
+		i += 1
+	endWhile
 endFunction
 
 int function FindFreeIndex(Form[] a_items, int offset)
