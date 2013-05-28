@@ -333,7 +333,7 @@ event OnPageReset(string a_page)
 		AddEmptyOption()
 
 		AddHeaderOption("$Favorites Menu")
-		AddToggleOptionST("FAV_MENU_HELP_ENABLED", "$Enable Button Help", SKI_FavoritesManagerInstance.ButtonHelpEnabled)
+		AddToggleOptionST("FAV_MENU_HELP_ENABLED", "$Show Button Help", SKI_FavoritesManagerInstance.ButtonHelpEnabled)
 
 		SetCursorPosition(1)
 
