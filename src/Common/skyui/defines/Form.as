@@ -235,5 +235,11 @@
 	// Form Ids
 	// Sound Descriptors
 	public static var FORMID_ITMPotionUse: Number 						= 0x000B6435;
-
+	
+	// EquipType
+	public static var EQUIP_RIGHT_HAND: Number 							= 0x00013f42;
+	public static var EQUIP_LEFT_HAND: Number 							= 0x00013f43;
+	public static var EQUIP_EITHER_HAND: Number 						= 0x00013f44;
+	public static var EQUIP_BOTH_HANDS: Number 							= 0x00013f45;
+	public static var EQUIP_VOICE: Number 								= 0x00025bee;
 }

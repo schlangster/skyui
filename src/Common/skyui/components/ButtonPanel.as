@@ -73,6 +73,7 @@
 			var btn = buttons[i];
 			btn._visible = false;
 			btn.label = "";
+			btn._x = 0;
 		}
 	}
 	

@@ -21,7 +21,7 @@ class skyui.filter.ItemTypeFilter implements IFilter
 	}
 
 
-  /* CONSTRUCTORS */
+  /* INITIALIZATION */
 
 	public function ItemTypeFilter()
 	{

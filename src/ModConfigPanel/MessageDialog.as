@@ -58,7 +58,7 @@ class MessageDialog extends OptionDialog
 		initButtons();
 
 		textField.wordWrap = true;
-		messageText = Translator.translate(messageText);
+		messageText = Translator.translateNested(messageText);
 		textField.SetText(GlobalFunctions.unescape(messageText));
 		textField.verticalAutoSize = "top";
 		

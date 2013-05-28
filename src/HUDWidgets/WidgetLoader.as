@@ -92,11 +92,14 @@ class WidgetLoader extends MovieClip
 	public function loadWidgets(/* widgetSources (128) */): Void
 	{
 		if (_widgetContainer != undefined) {
-			for(var s: String in _widgetContainer) {
-				if (_widgetContainer[s] instanceof MovieClip) {
-					_mcLoader.unloadClip(_widgetContainer[s]);
-					if (_root.HUDMovieBaseInstance.HudElements.hasOwnProperty(s))
-						delete(_root.HUDMovieBaseInstance.HudElements[s]); 
+			for (var s: String in _widgetContainer) {
+				var widget = _widgetContainer[s];
+				if (widget != null && widget instanceof MovieClip) {
+					_mcLoader.unloadClip(widget);
+					
+					var index = _root.HUDMovieBaseInstance.HudElements.indexOf(widget);
+					if (index != undefined)
+						_root.HUDMovieBaseInstance.HudElements.splice(index,1); 
 				}
 			}
 		}

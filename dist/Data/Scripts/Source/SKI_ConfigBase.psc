@@ -22,6 +22,8 @@ int property		OPTION_TYPE_KEYMAP	= 0x07 autoReadonly
 
 int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
 int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
+int property		OPTION_FLAG_HIDDEN		= 0x02 autoReadonly
+int property		OPTION_FLAG_WITH_UNMAP	= 0x04 autoReadonly
 
 int property		LEFT_TO_RIGHT	= 1	autoReadonly
 int property		TOP_TO_BOTTOM	= 2 autoReadonly
@@ -82,10 +84,6 @@ endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
-	; We need those when resetting the config manager
-	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
-	RegisterForModEvent("SKICP_configManagerReset", "OnConfigManagerReset")
-
 	if (!_initialized)
 		_initialized = true
 
@@ -115,10 +113,10 @@ event OnGameReload()
 		Debug.Trace(self + " INITIALIZED")
 	endIf
 
-	CheckVersion()
+	RegisterForModEvent("SKICP_configManagerReady", "OnConfigManagerReady")
+	RegisterForModEvent("SKICP_configManagerReset", "OnConfigManagerReset")
 
-	SKI_ConfigManager newManager = Game.GetFormFromFile(0x00000802, "SkyUI.esp") As SKI_ConfigManager
-	SetConfigManager(newManager)
+	CheckVersion()
 endEvent
 
 
@@ -259,8 +257,19 @@ event OnConfigManagerReset(string a_eventName, string a_strArg, float a_numArg, 
 endEvent
 
 event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	SetConfigManager(a_sender as SKI_ConfigManager)
-endEvent
+	SKI_ConfigManager newManager = a_sender as SKI_ConfigManager
+	; Already registered?
+	if (_configManager == newManager)
+		return
+	endIf
+
+	_configManager = newManager
+
+	_configID = _configManager.RegisterMod(self, ModName)
+	if (_configID != -1)
+		OnConfigRegister()
+	endIf
+ endEvent
 
 event OnMessageDialogClose(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	_messageResult = a_numArg as bool
@@ -736,19 +745,6 @@ endFunction
 
 function Error(string a_msg)
 	Debug.Trace(self + " ERROR: " +  a_msg)
-endFunction
-
-function SetConfigManager(SKI_ConfigManager newManager)
-	; Already registered?
-	if (_configManager == newManager)
-		return
-	endIf
-	
-	_configID = newManager.RegisterMod(self, ModName)
-	if (_configID != -1)
-		_configManager = newManager
-		OnConfigRegister()
-	endIf
 endFunction
 
 function OpenConfig()

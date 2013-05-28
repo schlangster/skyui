@@ -7,9 +7,9 @@
 
 Team:			snakster, Mardoxx, T3T
 
-Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Gopher, Indie
+Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Verteiron, Gopher, Indie
 
-Version:		3.2
+Version:		4.0
 
 Download:		http://skyrim.nexusmods.com/mods/3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -81,6 +81,35 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ========================================================================================================================================
  2. Changelog
 ========================================================================================================================================
+
+------------------------------------------------------------
+4.0:
+
+[ModConfigurationMenu]
+- Fixed issue that could prevent certain MCM mods from registering correctly (i.e. Wet and Cold).
+
+[FavoritesMenu]
+- Initial release
+
+------------------------------------------------------------
+3.4:
+
+[ModConfigurationMenu]
+- Fixed issue that could prevent certain MCM mods from registering correctly (i.e. Wet and Cold).
+
+------------------------------------------------------------
+3.3:
+
+[General]
+- Reverted batch load size to default to avoid delays with lots of saves.
+- Fixed map.swf filename in conflict warning message.
+- Fixed "Disable positioning" option.
+
+[ModConfigurationMenu]
+- Reverted menu registration code back to 3.1 until I have more time to resolve all issues with the new method.
+
+[HUDWidgetLoader]
+- Fixed bug that kept health bar permanently visible (or hidden).
 
 ------------------------------------------------------------
 3.2:

@@ -1,7 +1,7 @@
 scriptname SKI_ConfigBase extends SKI_QuestBase
 
 ;##################################################################################################
-; API Version:		2
+; API Version:		3
 ;##################################################################################################
 ;
 ; Base script for custom config menus.
@@ -14,10 +14,12 @@ scriptname SKI_ConfigBase extends SKI_QuestBase
 ;
 ;##################################################################################################
 
-; CONSTANTS -------------------------------------------------------------------------- Version 1 --
+; CONSTANTS ---------------------------------------------------------------------------------------
 
 int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
 int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
+int property		OPTION_FLAG_HIDDEN		= 0x02 autoReadonly ; Version 3
+int property		OPTION_FLAG_WITH_UNMAP	= 0x04 autoReadonly ; Version 3
 
 int property		LEFT_TO_RIGHT			= 1	autoReadonly
 int property		TOP_TO_BOTTOM			= 2 autoReadonly
@@ -378,7 +380,6 @@ function AddKeyMapOptionST(string a_stateName, string a_text, int a_keyCode, int
 	Guard()
 endFunction
 
-; @interface
 function SetOptionFlagsST(int a_flags, bool a_noUpdate = false, string a_stateName = "")
 	{Sets the state option flags}
 	Guard()
