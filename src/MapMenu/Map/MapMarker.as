@@ -5,7 +5,7 @@ class Map.MapMarker extends gfx.controls.Button
 {
   /* CONSTANTS */
 
-	private static var ICON_MAP: Array = [
+	public static var ICON_TYPES: Array = [
 		"EmptyMarker", "CityMarker", "TownMarker", "SettlementMarker", "CaveMarker",
 		"CampMarker", "FortMarker", "NordicRuinMarker", "DwemerMarker", "ShipwreckMarker",
 		"GroveMarker", "LandmarkMarker", "DragonlairMarker", "FarmMarker", "WoodMillMarker",
@@ -22,13 +22,12 @@ class Map.MapMarker extends gfx.controls.Button
 		"PlayerSetMarker", "YouAreHereMarker"
 	];
 	
-	private static var MARKER_BASE_SIZE: Number = 35;
-	private static var UNDISCOVERED_OFFSET: Number = 80;
-	
 	
   /* STAGE ELEMENTS */
+	
+	public var HitAreaClip: MovieClip;
+	public var TextClip: MovieClip;
 	public var IconClip: MovieClip;
-	public var HitArea: MovieClip;
 
 
   /* STATIC VARIABLES */
@@ -74,21 +73,8 @@ class Map.MapMarker extends gfx.controls.Button
 			}
 		}
 	}
-
-	public var iconFrame: Number = 1;
 	
-	// initObject
-	public var markerType: Number;
-	public var isUndiscovered: Boolean;
-
-
-  /* PRIVATE VARIABLES */
-
-	private var _iconWidth = 1;
-	private var _iconHeight = 1;
-	private var _iconName: String = "";
-
-	private var _markerSize: Number;
+	public var iconType: Number = 0;
 
 
   /* INITIALIZATION */
@@ -96,132 +82,37 @@ class Map.MapMarker extends gfx.controls.Button
 	public function MapMarker()
 	{
 		super();
-
-		hitArea = HitArea;
+		
+		hitArea = HitAreaClip;
+		
+		textField = TextClip.MarkerNameField;
+		textField.autoSize = "left";
 		
 		disableFocus = true;
-		_markerSize = MARKER_BASE_SIZE;
-		_iconName = ICON_MAP[markerType];
-		iconFrame = (_iconName == null) ? 0 : markerType;
-		iconFrame += ((isUndiscovered == true) ? UNDISCOVERED_OFFSET : 0) + 1; // Frame numbers start at 1
+		
+		stateMap.release = ["up"];
 	}
 
 	public function configUI(): Void
 	{
 		super.configUI();
-
-		onRollOver = function () {};
-		onRollOut = function () {};
-
-		var iconHolder: MovieClip = IconClip.iconHolder;
-		var icon: MovieClip = iconHolder.icon;
-
-		iconHolder.background._visible = false;
-		icon.gotoAndStop(iconFrame);
-
-		switch (_iconName) {
-			case "MineMarker":
-			case "SmelterMarker":
-			case "StableMarker":
-			case "CampMarker":
-			case "CaveMarker":
-			case "GiantCampMarker":
-			case "GroveMarker":
-			case "SettlementMarker":
-			case "ShackMarker":
-			case "AltarMarker":
-			case "ClearingMarker":
-			case "FarmMarker":
-			case "NordicDwellingMarker":
-			case "WheatMillMarker":
-			case "WoodMillMarker":
-				_markerSize -= _markerSize/3;
-				break;
-
-			case "DoorMarker":
-				iconHolder._alpha = 100;
-				break;
-
-			case "YouAreHereMarker":
-			case "QuestTargetMarker":
-			case "MultipleQuestTargetMarker":
-				IconClip.gotoAndPlay("StartBlink");
-			case "CityMarker":
-			case "TownMarker":
-			case "RiftenCapitolMarker":
-			case "WindhelmCapitolMarker":
-			case "WhiterunCapitolMarker":
-			case "SolitudeCapitolMarker":
-			case "MarkarthCapitolMarker":
-			case "WinterholdCapitolMarker":
-			case "MorthalCapitolMarker":
-			case "FalkreathCapitolMarker":
-			case "DawnstarCapitolMarker":
-			case "PlayerSetMarker":
-				_markerSize += _markerSize/3;
-				break;
-
-			case "QuestTargetDoorMarker":
-				IconClip.gotoAndPlay("StartBlink");
-				_markerSize += 2*_markerSize/3;
-				break;
-
-			case "EmptyMarker":
-				IconClip._alpha = 0;
-				break;
-		}
-
-		// Scale the icons to fit _markerSize square without overflow
-		if (icon._width > icon._height) {
-			icon._height *= _markerSize / icon._width;
-			icon._width = _markerSize;
-		} else {
-			icon._width *= _markerSize / icon._height;
-			icon._height = _markerSize;
-		}
-
-		// Store height and width of iconHolder for scaling
-		_iconWidth = iconHolder._width;
-		_iconHeight = iconHolder._height;
+		
+		onRollOver = function ()
+		{
+		};
+		onRollOut = function ()
+		{
+		};
 	}
+
 
   /* PUBLIC FUNCTIONS */
   
   	// @override gfx.controls.Button
 	public function setState(a_state: String): Void
 	{
-		if (_fadingOut || _fadingIn)
-			return;
-
-		super.setState(a_state);
-
-		switch (_iconName) {
-			case "DoorMarker":
-				if (a_state == "over")
-					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth * 1.5, _height: _iconHeight * 1.5, useFrames: true});
-				else
-					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth, _height: _iconHeight, useFrames: true});
-				break;
-
-			case "QuestTargetMarker":
-			case "QuestTargetDoorMarker":
-			case "MultipleQuestTargetMarker":
-			case "YouAreHereMarker":
-				break;
-
-			case "PlayerSetMarker":
-				if (a_state == "over")
-					TweenNano.to(IconClip.iconHolder, 10, {_alpha: 100, useFrames: true});
-				else
-					TweenNano.to(IconClip.iconHolder, 10, {_alpha: 60, useFrames: true});
-				break;
-
-			default:
-				if (a_state == "over")
-					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth * 1.5, _height: _iconHeight * 1.5, _alpha: 100, useFrames: true});
-				else
-					TweenNano.to(IconClip.iconHolder, 10, {_width: _iconWidth, _height: _iconHeight, _alpha: 60, useFrames: true});
-		}
+		if (!_fadingOut && !_fadingIn)
+			super.setState(a_state);
 	}
 
 	public function MarkerRollOver(): Boolean
