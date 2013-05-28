@@ -11,6 +11,7 @@ string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	1	autoReadonly
 int property		GROUP_FLAG_UNEQUIP_HANDS	= 	2	autoReadonly
 int property		GROUP_FLAG_UNEQUIP_AMMO		= 	4	autoReadonly
+int property		GROUP_FLAG_NEEDS_CLEANUP	= 	8	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -41,8 +42,6 @@ Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
-
-bool[]				_groupNeedsCheck
 
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
@@ -78,8 +77,6 @@ event OnInit()
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
-	_groupNeedsCheck	= new bool[8]
-	
 	_groupHotkeys = new int[8]
 	_groupHotkeys[0] = 59
 	_groupHotkeys[1] = 60
@@ -130,32 +127,34 @@ event OnMenuOpen(string a_menuName)
 	InitMenuGroupData()
 	;Switch on button helpers:
 	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
-endEvent
-
-event OnMenuClose(string a_menuName)
-	DebugT("OnMenuClose!")
+	
 	int i = 0
 	int cleanedCount = 0
-
 	; The following takes between 0.3s and 0.5s per group
 	; Worst case scenario, 8 groups with 32 items each, ~4 seconds
-	;DEBUG
+	;DEBUG	
+	If _inCleanUp
+		DebugT("Already performing a cleanup, skipping it this time!")
+		Return
+	EndIf
 	Float StartTime = Utility.GetCurrentRealTime()
 	_inCleanUp = True ; variable to use for spinlocking, if needed
-	gotoState("PROCESSING") ; keep player from doing GroupUse while cleaning is happening
-	while (i < _groupNeedsCheck.Length)
-		if _groupNeedsCheck[i]
+	while (i < _groupFlags.Length)
+		if GetGroupFlag(i,GROUP_FLAG_NEEDS_CLEANUP)
 			CleanUpGroup(i)
-			_groupNeedsCheck[i] = false
+			SetGroupFlag(i,GROUP_FLAG_NEEDS_CLEANUP,false)
 			cleanedCount += 1
 		endIf
 		i += 1
 	endWhile
 	_inCleanUp = false
-	gotoState("")
 	;DEBUG
 	Float EndTime = Utility.GetCurrentRealTime()
 	DebugT("Cleaned up " + cleanedCount + " groups in " + (EndTime - StartTime))
+endEvent
+
+event OnMenuClose(string a_menuName)
+	DebugT("OnMenuClose!")
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -178,10 +177,6 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		endIf
 	endIf
 
-	if (_groupCounts[groupIndex] > 28)
-		_groupNeedsCheck[groupIndex] = true
-	endIf
-	
 	int offset = 32 * groupIndex
 
 	; Select the target set of arrays, adjust offset
@@ -216,7 +211,7 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	endIf
 
 	UpdateMenuGroupData(groupIndex)
-
+	SetGroupFlag(groupIndex,GROUP_FLAG_NEEDS_CLEANUP,true)
 	DebugT("OnGroupAdd end!")
 endEvent
 
@@ -529,14 +524,14 @@ endFunction
 
 ; Check for unfavorited items in the group and clean them from the itemlists
 function CleanUpGroup(int groupIndex, bool cleanMissing = false)
-	DebugT("CleanUpGroup called!")
-
+	DebugT("CleanUpGroup called on group " + groupIndex + ", cleanMissing = " + cleanMissing)
+	Float StartTime = Utility.GetCurrentRealTime()
+	
 	Form[] items
 	int[] itemFormIDs
 	int i
 	int offset = 32 * groupIndex
-	int n=offset+32
-	
+		
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
@@ -548,6 +543,7 @@ function CleanUpGroup(int groupIndex, bool cleanMissing = false)
 	
 	Form[] invalidItems = new Form[32]
 	int invalidIdx 
+	int n=offset+32
 	while (i < n)
 		if (items[i]) ; prevent errors about none
 			if (!Game.IsObjectFavorited(items[i])) ; find unfaved items
@@ -563,6 +559,8 @@ function CleanUpGroup(int groupIndex, bool cleanMissing = false)
 		i += 1
 	endWhile
 	RemoveFormsInArray(invalidItems)
+	Float EndTime = Utility.GetCurrentRealTime()
+	DebugT("Cleaned up " + InvalidIdx + " items in " + (EndTime - StartTime))
 endFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
