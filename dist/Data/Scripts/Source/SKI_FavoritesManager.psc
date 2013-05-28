@@ -15,10 +15,9 @@ int property		GROUP_FLAG_UNEQUIP_AMMO		= 	4	autoReadonly
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-bool property		ButtonHelpEnabled	= 	true	auto
+Actor Property		PlayerREF Auto ; Needed for GetItemCount and EquipItem
 
-Actor Property		PlayerREF auto
-Message property	SKI_GroupFullMsg auto
+bool property		ButtonHelpEnabled	= 	true	auto
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -51,8 +50,11 @@ int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
 
+bool[]				_groupNeedsCheck
+
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
+Bool				_inCleanup = False
 
 SoundCategory		_audioCategoryUI
 
@@ -84,6 +86,8 @@ event OnInit()
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
+	_groupNeedsCheck	= new bool[8]
+	
 	_groupHotkeys = new int[8]
 	_groupHotkeys[0] = 59
 	_groupHotkeys[1] = 60
@@ -103,6 +107,9 @@ event OnInit()
 	_voiceSlot	 		= Game.GetFormFromFile(0x00025bee, "Skyrim.esm") as EquipSlot
 	
 	OnGameReload()
+
+	; DEBUG
+	;RegisterForSingleUpdate(5)
 endEvent
 
 ; @implements SKI_QuestBase
@@ -124,41 +131,250 @@ endEvent
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnMenuOpen(string a_menuName)
+	DebugT("OnMenuOpen!")
+	while _inCleanUp ; FIXME: This is probably not the best place to put the spinlock, do I need it in every event?
+		Utility.WaitMenuMode(0.1)
+	endWhile
 	InitMenuGroupData()
-
 	;Switch on button helpers:
 	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
 endEvent
 
+event OnMenuClose(string a_menuName)
+	DebugT("OnMenuClose!")
+	int i = 0
+	int cleanedCount = 0
+
+	; The following takes between 0.3s and 0.5s per group
+	; Worst case scenario, 8 groups with 32 items each, ~4 seconds
+	;DEBUG
+	Float StartTime = Utility.GetCurrentRealTime()
+	_inCleanUp = True ; variable to use for spinlocking, if needed
+	gotoState("PROCESSING") ; keep player from doing GroupUse while cleaning is happening
+	while (i < _groupNeedsCheck.Length)
+		if _groupNeedsCheck[i]
+			CleanUpGroup(i)
+			_groupNeedsCheck[i] = false
+			cleanedCount += 1
+		endIf
+		i += 1
+	endWhile
+	_inCleanUp = false
+	gotoState("")
+	;DEBUG
+	Float EndTime = Utility.GetCurrentRealTime()
+	DebugT("Cleaned up " + cleanedCount + " groups in " + (EndTime - StartTime))
+endEvent
+
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	DebugT("OnGroupAdd!")
+	DebugT("  a_eventName: " + a_eventName)
+	DebugT("  a_strArg: " + a_strArg)
+	DebugT("  a_numArg: " + a_numArg)
+	DebugT("  a_sender: " + a_sender)
+	
 	Form	item = a_sender
 	int		groupIndex = a_numArg as int
 
-	GroupAdd(groupIndex, item)
+	; Group already full - play some error sound?
+	if (_groupCounts[groupIndex] >= 32)
+		CleanUpGroup(groupIndex,true)
+		if (_groupCounts[groupIndex] >= 32) ; Nothing could be removed, group is full of valid, favorited items
+			;FIXME: return just sort of locks up the UI
+			;       instead we should probably make an error noise and let the player pick another group
+			return
+		endIf
+	endIf
+
+	if (_groupCounts[groupIndex] > 28)
+		_groupNeedsCheck[groupIndex] = true
+	endIf
+	
+	int offset = 32 * groupIndex
+
+	; Select the target set of arrays, adjust offset
+	Form[] items
+	int[] formIds
+
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+		formIds = _itemFormIds2
+	else
+		items = _items1
+		formIds = _itemFormIds1
+	endIf
+
+	; Pick next free slot
+	int index = FindFreeIndex(items, offset)
+	
+	; Store received data
+	if (index != -1)
+		int formId = item.GetFormID()
+		items[index] = item
+		formIds[index] = formId
+
+		_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+
+		; If there's no icon item set yet, use this one
+		if (_groupIconItems[groupIndex] == none)
+			_groupIconItems[groupIndex] = item
+			_groupIconFormIds[groupIndex] = formId
+		endIf
+	endIf
 
 	UpdateMenuGroupData(groupIndex)
+
+	DebugT("OnGroupAdd end!")
 endEvent
 
 event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	DebugT("OnGroupRemove!")
+	DebugT("  a_eventName: " + a_eventName)
+	DebugT("  a_strArg: " + a_strArg)
+	DebugT("  a_numArg: " + a_numArg)
+	DebugT("  a_sender: " + a_sender)
+
 	Form	item = a_sender
 	int		groupIndex = a_numArg as int
 
-	GroupRemove(groupIndex, item)
+	int offset = 32 * groupIndex
 
+	; Select the target set of arrays, adjust offset
+	Form[] items
+	int[] formIds
+
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+		formIds = _itemFormIds2
+	else
+		items = _items1
+		formIds = _itemFormIds1
+	endIf
+
+	Form iconReplacement = none
+
+	int i=offset
+	int n=offset+32
+	while (i < n)
+		if (items[i] == item)
+			items[i] = none
+			formIds[i] = 0
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1			
+			i = n
+		else
+			if (items[i] != none && iconReplacement == none)
+				; Pick any != none form as potential icon replacement
+				iconReplacement = items[i]
+			endIf
+			i += 1
+		endIf
+	endWhile
+
+	if (item == _groupIconItems[groupIndex])
+		_groupIconItems[groupIndex] = iconReplacement
+		if (iconReplacement) ; prevent logspam if iconReplacement is none (happens when group is empty)
+			_groupIconFormIds[groupIndex] = iconReplacement.GetFormID()
+		else
+			_groupIconFormIds[groupIndex] = 0
+		endIf
+	endIf
+
+	if (item == _groupMainHandItems[groupIndex])
+		_groupMainHandItems[groupIndex] = none
+		_groupMainHandFormIds[groupIndex] = 0
+	endIf
+
+	if (item == _groupOffHandItems[groupIndex])
+		_groupOffHandItems[groupIndex] = none
+		_groupOffHandFormIds[groupIndex] = 0
+	endIf
+	
 	UpdateMenuGroupData(groupIndex)
+
+	DebugT("OnGroupRemove end!")
+endEvent
+
+event OnGroupFlag(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	; Just remembered that the mod event only supports a single numeric argument as per Schlangster
+	; Fortunately strings be coerced into ints. 
+	DebugT("OnGroupFlag!")
+	DebugT("  a_eventName: " + a_eventName)
+	DebugT("  a_strArg: " + a_strArg)
+	DebugT("  a_numArg: " + a_numArg)
+	DebugT("  a_sender: " + a_sender)
+	
+	Form	item = a_sender
+	int		flags = a_strArg as int
+	int		groupIndex = a_numArg as int
+
+	_groupFlags[groupIndex] = flags
+	
+	DebugT("OnGroupFlag end!")
 endEvent
 
 ; Read the player's current equipment and save it to the target group
 event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	int		groupIndex = a_numArg as int
+	DebugT("OnSaveEquipState!")
+	DebugT("  a_numArg: " + a_numArg)
+	
+	int groupIndex = a_numArg as int
+	form[] handItems
+	
+	handItems = new form[2]
+	
+	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
+	; Lame!
+	Int aiHand 
+	
+	while aiHand < 2
+		int itemType = PlayerREF.GetEquippedItemType(aiHand)
+		if (aiHand == 0) ; Shields are left-handed only
+			handItems[aiHand] = PlayerREF.GetEquippedShield()
+		endIf
+		if (!handItems[aiHand]) ;No shield found, check for a weapon
+			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
+		endIf
+		if (!handItems[aiHand]) ;No weapon found, check for a spell
+			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
+		endIf
+		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
 
-	SaveEquipState(groupIndex)
+		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+		
+		if (handItems[aiHand]) ; check for none to avoid logspam
+			if !IsFormInGroup(groupIndex, handItems[aiHand]) ; see if equipped item is in the group
+				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
+				handItems[aiHand] = None
+			endIf
+		endIf
+		aiHand += 1
+	endWhile
 
+	_groupMainHandItems[groupIndex] = handItems[1]
+	if handItems[1] 
+		_groupMainHandFormIDs[groupIndex] = handItems[1].GetFormID()
+	else ; set formid to 0 if none
+		_groupMainHandFormIDs[groupIndex] = 0
+	endIf
+	
+	_groupOffHandItems[groupIndex] = handItems[0]
+	if handItems[0] 
+		_groupOffHandFormIDs[groupIndex] = handItems[0].GetFormID()
+	else ; set formid to 0 if none
+		_groupOffHandFormIDs[groupIndex] = 0
+	endIf
+	
 	UpdateMenuGroupData(groupIndex)
 endEvent
 
 ; This will set a form as the icon form for a group
 event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	DebugT("OnSetGroupIcon!")
+	DebugT("  groupIndex: " + groupIndex)
+	DebugT("  a_Sender: " + a_sender)
+
 	Form	item = a_sender
 	int		groupIndex = a_numArg as int
 
@@ -189,6 +405,9 @@ endEvent
 
 state PROCESSING
 
+	event OnMenuClose(string a_menuName)
+	endEvent
+	
 	event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	endEvent
 
@@ -202,7 +421,7 @@ endState
 
 ;get whether a flag is set for the specified group
 bool function GetGroupFlag(int a_groupIndex, int a_flag)
-        return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
+    return LogicalAnd(_groupFlags[a_groupIndex], a_flag) as bool
 endFunction
  
 ;set a flag for the specified group
@@ -331,98 +550,93 @@ function UpdateMenuGroupData(int a_groupIndex)
 	DebugT("UpdateMenuGroupData end!")
 endFunction
 
-function GroupAdd(int a_groupIndex, Form a_item)
-	; Group already full - play some error sound?
-	if (_groupCounts[a_groupIndex] >= 32)
-		SKI_GroupFullMsg.Show()
-		UpdateMenuGroupData(a_groupIndex)
-		return
-	endIf
+; Check for unfavorited items in the group and clean them from the itemlists
+function CleanUpGroup(int groupIndex, bool cleanMissing = false)
+	DebugT("CleanUpGroup called!")
 
-	; Don't have to add twice
-	if (IsFormInGroup(a_groupIndex, a_item))
-		UpdateMenuGroupData(a_groupIndex)
-		return
-	endIf
-
-	int offset = 32 * a_groupIndex
-
-	; Select the target set of arrays, adjust offset
 	Form[] items
-	int[] formIds
-
+	int[] itemFormIDs
+	int i
+	int offset = 32 * groupIndex
+	int n=offset+32
+	
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _itemFormIds2
+		itemFormIDs = _itemFormIds2
 	else
 		items = _items1
-		formIds = _itemFormIds1
+		itemFormIDs = _itemFormIds1
 	endIf
-
-	; Pick next free slot
-	int index = FindFreeIndex(items, offset)
-
-	; Store received data
-	if (index != -1)
-		int formId = a_item.GetFormID()
-		items[index] = a_item
-		formIds[index] = formId
-
-		_groupCounts[a_groupIndex] = _groupCounts[a_groupIndex] + 1
-
-		; If there's no icon item set yet, use this one
-		if (_groupIconItems[a_groupIndex] == none)
-			_groupIconItems[a_groupIndex] = a_item
-			_groupIconFormIds[a_groupIndex] = formId
+	
+	Form[] invalidItems = new Form[32]
+	int invalidIdx 
+	while (i < n)
+		if (items[i]) ; prevent errors about none
+			if (!Game.IsObjectFavorited(items[i])) ; find unfaved items
+				invalidItems[invalidIdx] = items[i]
+				invalidIdx += 1
+			elseIf cleanMissing ;GetItemCount is slow, only do it if we're supposed to
+				 if (PlayerRef.GetItemCount(items[i]) == 0)
+					invalidItems[invalidIdx] = items[i]
+					invalidIdx += 1
+				 endif
+			endIf
 		endIf
-	endIf
+		i += 1
+	endWhile
+	RemoveFormsInArray(invalidItems)
 endFunction
 
-function GroupRemove(int a_groupIndex, Form a_item)
-	int offset = 32 * a_groupIndex
-
-	; Select the target set of arrays, adjust offset
-	Form[] items
-	int[] formIds
-
-	if (offset >= 128)
-		offset -= 128
-		items = _items2
-		formIds = _itemFormIds2
-	else
-		items = _items1
-		formIds = _itemFormIds1
-	endIf
-
-	Form iconReplacement = none
-
-	int i=offset
-	int n=offset+32
-	while (i < n)
-		if (items[i] == a_item)
-			items[i] = none
-			formIds[i] = 0
-			_groupCounts[a_groupIndex] = _groupCounts[a_groupIndex] - 1			
-			i = n
-		else
-			if (items[i] != none && iconReplacement == none)
-				; Pick any != none form as potential icon replacement
-				iconReplacement = items[i]
-			endIf
-			i += 1
-		endIf
+; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
+function CleanUp()
+	DebugT("Cleanup called!")
+	; Re-count items while checking in the next step
+	int i = 0
+	while (i < 8)
+		_groupCounts[i] = 0
+		i += 1
 	endWhile
 
-	if (a_item == _groupIconItems[a_groupIndex])
-		_groupIconItems[a_groupIndex] = iconReplacement
-		_groupIconFormIds[a_groupIndex] = iconReplacement.GetFormID()
-	endIf
+	int groupIndex = 0
 
-	if (a_item == _groupMainHandItems[a_groupIndex])
-		_groupMainHandItems[a_groupIndex] = none
-		_groupMainHandFormIds[a_groupIndex] = 0
-	endIf
+	i = 0
+	while (i < _items1.length)
+
+		if (_items1[i] == none || _items1[i].GetFormID() == 0)
+			_items1[i] = none
+			_itemFormIds1[i] = 0
+		else
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+		endIf
+
+		if (i % 32 == 31)
+			groupIndex += 1
+		endIf
+
+		i += 1
+	endWhile
+
+	i = 0
+	while (i < _items2.length)
+
+		if (_items2[i] == none || _items2[i].GetFormID() == 0)
+			_items2[i] = none
+			_itemFormIds2[i] = 0
+		else
+			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+		endIf
+
+		if (i % 32 == 31)
+			groupIndex += 1
+		endIf
+
+		i += 1
+	endWhile
+
+	; TODO - what to do with items that are no longer in the player inventory?
+	; We have to find an efficient method to detect and remove them.
+	DebugT("Cleanup end!")
 endFunction
 
 function GroupUse(int a_groupIndex)
@@ -446,6 +660,9 @@ function GroupUse(int a_groupIndex)
 
 	Form[] deferredItems = new Form[32]
 	int deferredIdx
+
+	Form[] invalidItems = new Form[32]
+	int invalidIdx
 	
 	Form item
 	Form itemMH
@@ -468,19 +685,66 @@ function GroupUse(int a_groupIndex)
 	itemOH = _groupOffHandItems[a_groupIndex]
 	
 	Form[] sortedItems = new Form[32]
-	sortedItems[0] = itemMH
-	sortedItems[1] = itemOH
-	j = 2
+	
+	if (itemMH)
+		sortedItems[0] = itemMH
+		j += 1
+	endIf
+	if (itemOH)
+		sortedItems[1] = itemOH
+		j += 1
+	endIf
+		
+	;DEBUG
+	Float StartTime = Utility.GetCurrentRealTime()
+	
 	while (i < offset+32)
 		if (items[i] != itemMH) && (items[i] != itemOH)
+			DebugT("Adding " + items[i] + " to sortedItems[" + j + "]")
 			sortedItems[j] = items[i]
 			j += 1
 		endIf
 		i += 1
 	endWhile
+	;DEBUG
+	Float EndTime = Utility.GetCurrentRealTime()
+	Debug.Notification("Sort time: " + (EndTime - StartTime))
 	
 	_audioCategoryUI.Mute() ; Turn off UI sounds to avoid annoying clicking noise while swapping spells
 	i = 0
+	;DEBUG
+	StartTime = Utility.GetCurrentRealTime()
+	
+	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_HANDS)
+		int aiHand = 0
+		form[] handItems = new form[2]
+		while aiHand < 2
+			itemType = PlayerREF.GetEquippedItemType(aiHand)
+			if (aiHand == 0) ; Shields are left-handed only
+				handItems[aiHand] = PlayerREF.GetEquippedShield()
+			endIf
+			if (!handItems[aiHand]) ;No shield found, check for a weapon
+				handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
+			endIf
+			if (!handItems[aiHand]) ;No weapon found, check for a spell
+				handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
+			endIf
+			debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
+
+			;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
+			
+			if (handItems[aiHand]) ; check for none to avoid logspam
+				PlayerREF.UnequipItem(handItems[aiHand])
+			endIf
+			aiHand += 1
+		endWhile
+	EndIf
+	
+	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_AMMO)
+		;TODO - there doesn't seem to be a way to do this without polling for every single possible ammo type with IsEquipped
+		;I'll look at it some more tomorrow, gotta be a way
+	EndIf
+	
 	while (i < sortedItems.Length)
 		item = sortedItems[i]
 		itemCount = 0
@@ -495,6 +759,13 @@ function GroupUse(int a_groupIndex)
 				endIf
 			else ; This is an inventory item
 				itemCount = PlayerREF.GetItemCount(item) 
+			endIf
+			
+			if !(Game.IsObjectFavorited(item)) ; Player has removed this item from Favorites, so don't use it and queue it for removal
+				DebugT(item + " is no longer favorited, queueing it for removal!")
+				invalidItems[invalidIdx] = item
+				invalidIdx += 1
+				item = none ; don't do any further work with this item
 			endIf
 		endIf
 
@@ -512,6 +783,7 @@ function GroupUse(int a_groupIndex)
 					lHandItem = rHandItem
 				elseIf (WeaponType <= 4) && (!rHandItem || !lHandItem) ; It's one-handed and the player has a free hand
 					If PlayerREF.GetItemCount(itemW) > 1 && !rHandItem && !lHandItem ; Player has at least two of these and two free hands, so dual-wield them
+						; TODO - the new r/l functionality in the UI makes this obsolete, it should be removed
 						; For some reason if we don't call EquipItemEX sequentially, the second one fails sometimes
 						; Equipping the left hand first seems to prevent this
 						PlayerREF.EquipItemEX(itemW, equipSlot = 2, equipSound = _silenceEquipSounds)
@@ -667,14 +939,6 @@ function GroupUse(int a_groupIndex)
 		i += 1
 	endWhile
 
-	DebugT("Checking for one handed spell that should be dual-wielded...")
-	If rHandItem ; check for none first to avoid logspam
-		If rHandItem.GetType() == 22 && !lHandItem && !PlayerREF.GetEquippedSpell(0); Player has a spell equipped in the right hand, left is empty
-			PlayerREF.EquipSpell(rHandItem as Spell,0) ; Equip empty left hand with a copy of right hand spell
-			DebugT("Equipped " + rHandItem.GetName() + " in left hand for dual-wielding!")
-		EndIf
-	EndIf
-
 	If GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_ARMOR)
 		int h = 0x00000001
 		Form aRemove
@@ -693,100 +957,54 @@ function GroupUse(int a_groupIndex)
 	EndIf
 	
 	_audioCategoryUI.UnMute() ; Turn UI sounds back on
+	;DEBUG
+	EndTime = Utility.GetCurrentRealTime()
+	Debug.Notification("Equip time: " + (EndTime - StartTime))
+	
 	DebugT("rHandItem: " + rHandItem + ", lHandItem: " + lHandItem + ", voiceItem: " + voiceItem)
 	DebugT("outfitSlot: " + outfitSlot)
+	
+	
+	StartTime = Utility.GetCurrentRealTime()
+	i = 0
+	DebugT("Checking for invalid items...")
+	RemoveFormsInArray(invalidItems)
+	EndTime = Utility.GetCurrentRealTime()
+	Debug.Trace("Cleanup time: " + (EndTime - StartTime))
+	
 	DebugT("OnGroupUse end!")
 endFunction
 
-function SaveEquipState(int a_groupIndex)
-	form[] handItems = new Form[2]
-	
-	;Apparently there's no GetEquippedForm(aiHand), so we have to get the type first then use the right function
-	; Lame!
-	Int aiHand = 0
-	
-	while aiHand < 2
-		int itemType = PlayerREF.GetEquippedItemType(aiHand)
-		if (aiHand == 0) ; Shields are left-handed only
-			handItems[aiHand] = PlayerREF.GetEquippedShield()
-		endIf
-		if (!handItems[aiHand]) ;No shield found, check for a weapon
-			handItems[aiHand] = PlayerREF.GetEquippedWeapon(!(aiHand as bool)) ; abLeftHand is a bool. Dumb.
-		endIf
-		if (!handItems[aiHand]) ;No weapon found, check for a spell
-			handItems[aiHand] = PlayerREF.GetEquippedSpell(aiHand)
-		endIf
-		debugt("Found " + handItems[aiHand] + " in hand " + aiHand)
-
-		;Sadly, there doesn't seem to be able to be a method to detect what light/torch form is equipped, only whether there IS one equipped
-		
-		if (handItems[aiHand]) ; check for none to avoid logspam
-			if !IsFormInGroup(a_groupIndex, handItems[aiHand]) ; see if equipped item is in the group
-				DebugT(handItems[aiHand].GetName() + " is equipped but is not in the current group!")
-				handItems[aiHand] = None
-			endIf
-		endIf
-		aiHand += 1
-	endWhile
-
-	_groupMainHandItems[a_groupIndex] = handItems[1]
-	if handItems[1] 
-		_groupMainHandFormIDs[a_groupIndex] = handItems[1].GetFormID()
-	else ; set formid to 0 if none
-		_groupMainHandFormIDs[a_groupIndex] = 0
-	endIf
-	
-	_groupOffHandItems[a_groupIndex] = handItems[0]
-	if handItems[0] 
-		_groupOffHandFormIDs[a_groupIndex] = handItems[0].GetFormID()
-	else ; set formid to 0 if none
-		_groupOffHandFormIDs[a_groupIndex] = 0
-	endIf
-endFunction
-
-; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
-function CleanUp()
-	DebugT("Cleanup called!")
-	; Re-count items while checking in the next step
+function RemoveFormsInArray(form[] invalidItems)
 	int i = 0
-	while (i < 8)
-		_groupCounts[i] = 0
-		i += 1
-	endWhile
-
 	int groupIndex = 0
-
-	i = 0
-	while (i < _items1.length)
-
-		if (_items1[i] == none || _items1[i].GetFormID() == 0)
-			_items1[i] = none
-			_itemFormIds1[i] = 0
-		else
-			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
+	form item
+	
+	while (i < invalidItems.Length)
+		item = invalidItems[i]
+		If (item)
+			DebugT("Cleaning item " + item)
+			int itemIdx = _items1.find(item)
+			while (itemIdx >= 0)
+				DebugT(" Found " + item + " in _items1[" + itemIdx + "], removing it!")
+				_items1[itemIdx] = None
+				_itemFormIDs1[itemIdx] = 0
+				groupIndex = itemIDX / 32
+				_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+				DebugT(" _groupCounts[" + groupIndex + "] is now " + _groupCounts[groupIndex])
+				itemIdx = _items1.find(item)
+			endWhile
+			itemIdx = _items2.find(item)
+			while (itemIdx >= 0)
+				DebugT(" Found " + item + " in _items2[" + itemIdx + "], removing it!")
+				_items2[itemIdx] = None
+				_itemFormIDs2[itemIdx] = 0
+				groupIndex = (128 + itemIDX) / 32
+				_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
+				DebugT(" _groupCounts[" + groupIndex + "] is now " + _groupCounts[groupIndex])
+				itemIdx = _items2.find(item)
+			endWhile
 		endIf
-
-		if (i % 32 == 31)
-			groupIndex += 1
-		endIf
-
-		i += 1
-	endWhile
-
-	i = 0
-	while (i < _items2.length)
-
-		if (_items2[i] == none || _items2[i].GetFormID() == 0)
-			_items2[i] = none
-			_itemFormIds2[i] = 0
-		else
-			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
-		endIf
-
-		if (i % 32 == 31)
-			groupIndex += 1
-		endIf
-
 		i += 1
 	endWhile
 endFunction
@@ -798,9 +1016,11 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	int i = offset
 	
 	while (i < offset + 32)
+		
 		if (a_items[i] == none)
 			return i
 		endIf
+
 		i += 1
 	endWhile
 	
