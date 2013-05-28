@@ -50,8 +50,11 @@ int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
 
+bool[]				_groupNeedsCheck
+
 bool 				_useDebug = True
 bool				_silenceEquipSounds = False
+Bool				_inCleanup = False
 
 SoundCategory		_audioCategoryUI
 
@@ -83,6 +86,8 @@ event OnInit()
 	_groupIconItems		= new Form[8]
 	_groupIconFormIds	= new int[8]
 
+	_groupNeedsCheck	= new bool[8]
+	
 	_groupHotkeys = new int[8]
 	_groupHotkeys[0] = 59
 	_groupHotkeys[1] = 60
@@ -127,6 +132,9 @@ endEvent
 
 event OnMenuOpen(string a_menuName)
 	DebugT("OnMenuOpen!")
+	while _inCleanUp ; FIXME: This is probably not the best place to put the spinlock, do I need it in every event?
+		Utility.WaitMenuMode(0.1)
+	endWhile
 	InitMenuGroupData()
 	;Switch on button helpers:
 	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true) 
@@ -134,7 +142,28 @@ endEvent
 
 event OnMenuClose(string a_menuName)
 	DebugT("OnMenuClose!")
-	
+	int i = 0
+	int cleanedCount = 0
+
+	; The following takes between 0.3s and 0.5s per group
+	; Worst case scenario, 8 groups with 32 items each, ~4 seconds
+	;DEBUG
+	Float StartTime = Utility.GetCurrentRealTime()
+	_inCleanUp = True ; variable to use for spinlocking, if needed
+	gotoState("PROCESSING") ; keep player from doing GroupUse while cleaning is happening
+	while (i < _groupNeedsCheck.Length)
+		if _groupNeedsCheck[i]
+			CleanUpGroup(i)
+			_groupNeedsCheck[i] = false
+			cleanedCount += 1
+		endIf
+		i += 1
+	endWhile
+	_inCleanUp = false
+	gotoState("")
+	;DEBUG
+	Float EndTime = Utility.GetCurrentRealTime()
+	DebugT("Cleaned up " + cleanedCount + " groups in " + (EndTime - StartTime))
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -157,6 +186,10 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		endIf
 	endIf
 
+	if (_groupCounts[groupIndex] > 28)
+		_groupNeedsCheck[groupIndex] = true
+	endIf
+	
 	int offset = 32 * groupIndex
 
 	; Select the target set of arrays, adjust offset
@@ -173,12 +206,7 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	endIf
 
 	; Pick next free slot
-	;DEBUG
-	Float StartTime = Utility.GetCurrentRealTime()
 	int index = FindFreeIndex(items, offset)
-	;DEBUG
-	Float EndTime = Utility.GetCurrentRealTime()
-	DebugT("FindFreeIndex took " + (EndTime - StartTime))
 	
 	; Store received data
 	if (index != -1)
@@ -379,6 +407,9 @@ endEvent
 
 state PROCESSING
 
+	event OnMenuClose(string a_menuName)
+	endEvent
+	
 	event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	endEvent
 
