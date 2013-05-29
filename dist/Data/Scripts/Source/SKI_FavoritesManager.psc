@@ -141,10 +141,9 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 		UpdateMenuGroupData(groupIndex)
 	else
 		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
+		Debug.Notification("Group full!")
 	endIf
 endEvent
-
-
 
 event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	Form	item = a_sender
@@ -403,6 +402,11 @@ bool function GroupAdd(int a_groupIndex, Form a_item)
 		formIds = _itemFormIds1
 	endIf
 
+	; Prevent the same form being added to a group twice
+	if (IsFormInGroup(a_groupIndex,a_item))
+		return true
+	endIf
+	
 	; Pick next free slot
 	int index = FindFreeIndex(items, offset)
 	
@@ -804,16 +808,12 @@ function RemoveInvalidItem(Form a_item)
 endFunction
 
 int function FindFreeIndex(Form[] a_items, int offset)
-	int i = offset
+	int i
 	
-	while (i < offset + 32)
-		
-		if (a_items[i] == none)
-			return i
-		endIf
-
-		i += 1
-	endWhile
+	i = a_items.find(none,offset)
+	if (i >= 0 && i < offset + 32)
+		return i
+	endIf
 	
 	return -1
 endFunction
@@ -866,14 +866,11 @@ bool function IsFormInGroup(int a_groupIndex, form a_item)
 		items = _items1
 	endIf
 	
-	int i
-	while (i < offset+32)
-		if (items[i] == a_item)
-			return true
-		endIf
-		i += 1
-	endWhile
-
+	int i = items.Find(a_item,offset)
+	if (i >= offset && i < offset+32)
+		return true
+	endIf
+	
 	return false
 endFunction
 
