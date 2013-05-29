@@ -6,7 +6,6 @@ import Math
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
 string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
-string property		INVENTORY_MENU	= "InventoryMenu" autoReadonly
 string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 
 int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	1	autoReadonly
@@ -53,8 +52,6 @@ EquipSlot 			_leftHandSlot
 EquipSlot 			_bothHandsSlot
 EquipSlot 			_voiceSlot
 
-Ammo				_dummyArrow
-
 ; State variables for Group Use
 bool				_usedRightHand		= false
 bool				_usedLeftHand		= false
@@ -98,12 +95,8 @@ event OnInit()
 	_eitherHandSlot		= Game.GetFormFromFile(0x00013f44, "Skyrim.esm") as EquipSlot
 	_bothHandsSlot 		= Game.GetFormFromFile(0x00013f45, "Skyrim.esm") as EquipSlot
 	_voiceSlot	 		= Game.GetFormFromFile(0x00025bee, "Skyrim.esm") as EquipSlot
-	_dummyArrow			= Game.GetFormFromFile(0x00052E99, "Skyrim.esm") as Ammo
 	
 	OnGameReload()
-
-	; DEBUG
-	;RegisterForSingleUpdate(5)
 endEvent
 
 ; @implements SKI_QuestBase
@@ -129,48 +122,15 @@ event OnMenuOpen(string a_menuName)
 	DebugT("OnMenuOpen!")
 
 	InitMenuGroupData()
+
 	;Switch on button helpers
-	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
+	if (ButtonHelpEnabled)
+		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
+	endIf
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	Form	item = a_sender
-	
-	int index
-	int groupIndex
-
-	; GroupData
-	index = _items1.Find(item)
-	if (index != -1)
-		_items1[index] = none
-		_itemFormIds1[index] = 0
-	endIf
-
-	index = _items2.Find(item)
-	if (index != -1)
-		_items2[index] = none
-		_itemFormIds2[index] = 0
-	endIf
-
-	; Main hand
-	index = _groupMainHandItems.Find(item)
-	if (index != -1)
-		_groupMainHandItems[index] = none
-		_groupMainHandFormIds[index] = 0
-	endIf
-
-	; Off hand
-	index = _groupOffHandItems.Find(item)
-	if (index != -1)
-		_groupOffHandItems[index] = none
-		_groupOffHandFormIds[index] = 0
-	endIf
-
-	; Icon
-	index = _groupIconItems.Find(item)
-	if (index != -1)
-		ReplaceGroupIcon(index)
-	endIf
+	RemoveInvalidItem(a_sender)
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -258,9 +218,6 @@ event OnKeyDown(int a_keyCode)
 endEvent
 
 state PROCESSING
-
-	event OnMenuClose(string a_menuName)
-	endEvent
 	
 	event OnGroupUse(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	endEvent
@@ -632,7 +589,11 @@ function GroupUse(int a_groupIndex)
 	
 	StartTime = Utility.GetCurrentRealTime()
 	DebugT("Checking for invalid items...")
-	RemoveFormsInArray(invalidItems)
+	i = 0
+	while (i<invalidIdx)
+		RemoveInvalidItem(invalidItems[i])
+		i += 1
+	endWhile
 	EndTime = Utility.GetCurrentRealTime()
 	Debug.Trace("Cleanup time: " + (EndTime - StartTime))
 	
@@ -805,34 +766,41 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 	return true
 endFunction
 
-function RemoveFormsInArray(form[] invalidItems)
-	int i = 0
-	int groupIndex = 0
-	form item
-	
-	while (i < invalidItems.Length)
-		item = invalidItems[i]
-		If (item)
-			DebugT("Cleaning item " + item)
-			int itemIdx = _items1.find(item)
-			while (itemIdx >= 0)
-				DebugT(" Found " + item + " in _items1[" + itemIdx + "], removing it!")
-				_items1[itemIdx] = none
-				_itemFormIDs1[itemIdx] = 0
-				groupIndex = itemIDX / 32
-				itemIdx = _items1.find(item)
-			endWhile
-			itemIdx = _items2.find(item)
-			while (itemIdx >= 0)
-				DebugT(" Found " + item + " in _items2[" + itemIdx + "], removing it!")
-				_items2[itemIdx] = none
-				_itemFormIDs2[itemIdx] = 0
-				groupIndex = (128 + itemIDX) / 32
-				itemIdx = _items2.find(item)
-			endWhile
-		endIf
-		i += 1
-	endWhile
+function RemoveInvalidItem(Form a_item)
+	int index
+
+	; GroupData
+	index = _items1.Find(a_item)
+	if (index != -1)
+		_items1[index] = none
+		_itemFormIds1[index] = 0
+	endIf
+
+	index = _items2.Find(a_item)
+	if (index != -1)
+		_items2[index] = none
+		_itemFormIds2[index] = 0
+	endIf
+
+	; Main hand
+	index = _groupMainHandItems.Find(a_item)
+	if (index != -1)
+		_groupMainHandItems[index] = none
+		_groupMainHandFormIds[index] = 0
+	endIf
+
+	; Off hand
+	index = _groupOffHandItems.Find(a_item)
+	if (index != -1)
+		_groupOffHandItems[index] = none
+		_groupOffHandFormIds[index] = 0
+	endIf
+
+	; Icon
+	index = _groupIconItems.Find(a_item)
+	if (index != -1)
+		ReplaceGroupIcon(index)
+	endIf
 endFunction
 
 int function FindFreeIndex(Form[] a_items, int offset)
