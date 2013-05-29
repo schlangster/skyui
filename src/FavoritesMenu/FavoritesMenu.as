@@ -24,8 +24,6 @@ import skyui.filter.SortFilter;
 
 class FavoritesMenu extends MovieClip
 {
-	var dbgIntvl;
-	
   /* CONSTANTS */
 	
   	private static var ITEM_SELECT = 0;
@@ -78,6 +76,7 @@ class FavoritesMenu extends MovieClip
 	private var _isInitialized: Boolean = false;
 	
 	private var _navPanelEnabled: Boolean = false;
+	private var _fadedIn: Boolean = false;
 	
 	
   /* STAGE ELEMENTS */
@@ -172,6 +171,12 @@ class FavoritesMenu extends MovieClip
 		if (_isInitialized)
 			itemList.InvalidateData();
 		
+		// Automatically unlock after receiving an update
+		unlock();
+	}
+	
+	public function unlock(): Void
+	{
 		// Received group data as result of group assignment?
 		if (_state == GROUP_ASSIGN_SYNC)
 			endGroupAssignment();
@@ -242,6 +247,7 @@ class FavoritesMenu extends MovieClip
 		// Wait for initial group data
 		_waitingForGroupData = true;
 		
+		navPanel._visible = false;
 		navButton.visible = false;
 		
 		restoreIndices();
@@ -261,19 +267,6 @@ class FavoritesMenu extends MovieClip
 	{
 		return itemList;
 	}
-	
-	function TestMenu(): Void
-	{
-		clearInterval(dbgIntvl);
-		
-		InitExtensions();
-		SetPlatform(0);
-
-		itemList.clearList();
-		for (var i=0; i<100; i++) {
-			itemList.entryList.push({text: "test " + i, equipState: 0, filterFlag: 1, disabled: false, formId: i+100});
-		}
-	}
 
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -284,8 +277,6 @@ class FavoritesMenu extends MovieClip
 		var nextClip = pathToFocus.shift();
 		if (nextClip && nextClip.handleInput(details, pathToFocus))
 			return true;
-			
-			trace(details.code);
 		
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
@@ -524,6 +515,12 @@ class FavoritesMenu extends MovieClip
 		}
 		
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+	}
+	
+	private function onFadeInCompletion(): Void
+	{
+		_fadedIn = true;
+		updateNavButtons();
 	}
 
 	private function startFadeOut(): Void
@@ -767,7 +764,7 @@ class FavoritesMenu extends MovieClip
 	
 	private function updateNavButtons(): Void
 	{
-		if (_state != ITEM_SELECT || !_navPanelEnabled) {
+		if (_state != ITEM_SELECT || !_navPanelEnabled || !_fadedIn) {
 			navPanel._visible = false;
 			return;
 		}
