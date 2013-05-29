@@ -42,6 +42,8 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 	private var _enabled: Boolean;
 	
+	private var _minTimeLeft: Number = 180;
+	
 
   /* PUBLIC VARIABLES */
 	
@@ -84,11 +86,12 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 	}
 	
 	// @Papyrus
-	public function initNumbers(a_enabled: Boolean, a_effectSize: Number, a_groupEffectCount: Number): Void
+	public function initNumbers(a_enabled: Boolean, a_effectSize: Number, a_groupEffectCount: Number, a_minTimeLeft: Number): Void
 	{
 		_enabled = a_enabled;
 		_effectBaseSize = a_effectSize;
 		_groupEffectCount = a_groupEffectCount;
+		_minTimeLeft = a_minTimeLeft;
 	}
 
 	// @Papyrus
@@ -143,6 +146,12 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		invalidateEffects();
 	}
+	
+	// @Papyrus
+	public function setMinTimeLeft(a_seconds: Number): Void
+	{
+		_minTimeLeft = a_seconds;
+	}
 
   /* PRIVATE FUNCTIONS */
 	
@@ -166,8 +175,9 @@ class skyui.widgets.activeeffects.ActiveEffectsWidget extends WidgetBase
 
 		for (var i=0; i < effectDataArray.length; i++) {
 			var effectData = effectDataArray[i];
-
-			if ((effectData.effectFlags & Magic.MGEFFLAG_HIDEINUI) != 0)
+			
+			// Ignore if time left is > minimum, i.e. for blessings that last several hours
+			if (_minTimeLeft != 0 && _minTimeLeft < (effectData.duration - effectData.elapsed))
 				continue;
 				
 			var effectClip: ActiveEffect = _effectsHash[effectData.id];

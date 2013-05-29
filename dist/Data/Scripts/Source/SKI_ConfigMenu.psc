@@ -385,6 +385,7 @@ event OnPageReset(string a_page)
 		AddEmptyOption()
 
 		AddHeaderOption("$Active Effects HUD")
+		AddSliderOptionST("EFFECT_WIDGET_MIN_TIME_LEFT", "$Minimum Time Left", SKI_ActiveEffectsWidgetInstance.MinimumTimeLeft, "{0}s", _effectWidgetFlags)
 		AddTextOptionST("EFFECT_WIDGET_ORIENTATION", "$Orientation", _orientations[_effectWidgetOrientationIdx], _effectWidgetFlags)
 		AddTextOptionST("EFFECT_WIDGET_HORIZONTAL_ANCHOR", "$Horizontal Anchor", _alignments[_effectWidgetHAnchorIdx], _effectWidgetFlags)
 		AddTextOptionST("EFFECT_WIDGET_VERTICAL_ANCHOR", "$Vertical Anchor", _vertAlignments[_effectWidgetVAnchorIdx], _effectWidgetFlags)
@@ -874,6 +875,31 @@ state EFFECT_WIDGET_VERTICAL_ANCHOR ; TEXT
 
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _vertAlignments[0] + "}")
+	endEvent
+
+endState
+
+state EFFECT_WIDGET_MIN_TIME_LEFT ; SLIDER
+
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(SKI_ActiveEffectsWidgetInstance.MinimumTimeLeft)
+		SetSliderDialogDefaultValue(180)
+		SetSliderDialogRange(0, 600)
+		SetSliderDialogInterval(10)
+	endEvent
+
+	event OnSliderAcceptST(float a_value)
+		SKI_ActiveEffectsWidgetInstance.MinimumTimeLeft = a_value as int
+		SetSliderOptionValueST(a_value as int, "{0}s")
+	endEvent
+
+	event OnDefaultST()
+		SKI_ActiveEffectsWidgetInstance.MinimumTimeLeft = 180
+		SetSliderOptionValueST(180)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO5{180}")
 	endEvent
 
 endState

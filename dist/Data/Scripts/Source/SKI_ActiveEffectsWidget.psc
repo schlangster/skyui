@@ -7,9 +7,11 @@ scriptname SKI_ActiveEffectsWidget extends SKI_WidgetBase
 ; 1:	- Initial version
 ;
 ; 2:	- Updated hudModes
+;
+; 3:	- Added MinimumTimeLeft
 
 int function GetVersion()
-	return 2
+	return 3
 endFunction
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -22,6 +24,9 @@ float	_effectSize			= 48.0
 int		_groupEffectCount	= 8
 string	_orientation		= "vertical"
 
+; -- Version 3 --
+
+int		_minimumTimeLeft	= 180
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
@@ -81,6 +86,20 @@ string property Orientation
 	endFunction
 endProperty
 
+int property MinimumTimeLeft
+	{The minimum time left for an effect to be displayed}
+	int function get()
+		return _minimumTimeLeft
+	endFunction
+
+	function set(int a_val)
+		_minimumTimeLeft = a_val
+		if (Ready)
+			UI.InvokeInt(HUD_MENU, WidgetRoot + ".setMinTimeLeft", _minimumTimeLeft) 
+		endIf
+	endFunction
+endProperty
+
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 ; @implements SKI_QuestBase
@@ -109,10 +128,11 @@ event OnWidgetReset()
 	parent.OnWidgetReset()
 
 	; Init numbers
-	float[] numberArgs = new float[3]
+	float[] numberArgs = new float[4]
 	numberArgs[0] = _enabled as float
 	numberArgs[1] = _effectSize
 	numberArgs[2] = _groupEffectCount as float
+	numberArgs[3] = _minimumTimeLeft as float
 	UI.InvokeFloatA(HUD_MENU, WidgetRoot + ".initNumbers", numberArgs)
 
 	; Init strings
