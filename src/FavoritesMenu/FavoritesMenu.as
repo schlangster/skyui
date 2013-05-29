@@ -24,6 +24,8 @@ import skyui.filter.SortFilter;
 
 class FavoritesMenu extends MovieClip
 {
+	#include "../version.as"
+	
   /* CONSTANTS */
 	
   	private static var ITEM_SELECT = 0;
