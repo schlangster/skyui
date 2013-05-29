@@ -10,6 +10,7 @@ string property		BARTER_MENU		= "BarterMenu" autoReadonly
 string property		GIFT_MENU		= "GiftMenu" autoReadonly
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MAP_MENU		= "MapMenu" autoReadonly
+string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
 
 int property		ERR_SKSE_MISSING		= 1 autoReadonly
 int property		ERR_SKSE_VERSION_RT		= 2 autoReadonly
@@ -27,6 +28,7 @@ bool _barterMenuCheckEnabled		= true
 bool _containerMenuCheckEnabled		= true
 bool _giftMenuCheckEnabled			= true
 bool _mapMenuCheckEnabled			= true
+bool _favoritesMenuCheckEnabled		= true
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -34,8 +36,8 @@ bool _mapMenuCheckEnabled			= true
 int property		MinSKSERelease	= 37		autoReadonly
 string property		MinSKSEVersion	= "1.6.9"	autoReadonly
 
-int property		ReqSWFRelease	= 12		autoReadonly
-string property		ReqSWFVersion	= "4.0-beta1"		autoReadonly
+int property		ReqSWFRelease	= 12			autoReadonly
+string property		ReqSWFVersion	= "4.0-beta1"	autoReadonly
 
 bool property		ErrorDetected				= false auto
 
@@ -130,6 +132,22 @@ bool property MapMenuCheckEnabled
 	endFunction
 endProperty
 
+bool property FavoritesMenuCheckEnabled
+	bool function get()
+		return _favoritesMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_favoritesMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(FAVORITES_MENU)
+		else
+			UnregisterForMenu(FAVORITES_MENU)
+		endIf
+	endFunction
+endProperty
+
+
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
 event OnInit()
@@ -187,6 +205,10 @@ event OnGameReload()
 		RegisterForMenu(MAP_MENU)
 	endIf
 
+	if (FavoritesMenuCheckEnabled)
+		RegisterForMenu(FAVORITES_MENU)
+	endIf
+
 	RegisterForMenu(JOURNAL_MENU)
 endEvent
 
@@ -233,6 +255,11 @@ event OnMenuOpen(string a_menuName)
 
 	elseIf (a_menuName == MAP_MENU)
 		if (CheckMenuVersion("map.swf", a_menuName, "_global.Map.MapMenu"))
+			UnregisterForMenu(a_menuName)
+		endIf
+
+	elseIf (a_menuName == FAVORITES_MENU)
+		if (CheckMenuVersion("favoritesmenu.swf", a_menuName, "_global.FavoritesMenu"))
 			UnregisterForMenu(a_menuName)
 		endIf
 	endIf
