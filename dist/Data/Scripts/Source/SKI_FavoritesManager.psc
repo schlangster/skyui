@@ -11,7 +11,6 @@ string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 
 int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	1	autoReadonly
 int property		GROUP_FLAG_UNEQUIP_HANDS	= 	2	autoReadonly
-int property		GROUP_FLAG_NEEDS_CLEANUP	= 	8	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -29,8 +28,6 @@ Form[]				_items2
 int[]				_itemFormIds1
 int[]				_itemFormIds2
 
-int[]				_groupCounts
-
 int[]				_groupFlags
 
 Form[]				_groupMainHandItems
@@ -44,9 +41,8 @@ int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
 
-bool 				_useDebug = True
-bool				_silenceEquipSounds = False
-Bool				_inCleanup = False
+bool 				_useDebug = true
+bool				_silenceEquipSounds = false
 
 SoundCategory		_audioCategoryUI
 
@@ -74,7 +70,6 @@ event OnInit()
 	_itemFormIds1	= new int[128]
 	_itemFormIds2	= new int[128]
 
-	_groupCounts	= new int[8]
 	_groupFlags		= new int[8]
 
 	_groupMainHandItems		= new Form[8]
@@ -118,9 +113,9 @@ event OnGameReload()
 	RegisterForModEvent("SKIFM_groupUse", "OnGroupUse")
 	RegisterForModEvent("SKIFM_saveEquipState", "OnSaveEquipState")
 	RegisterForModEvent("SKIFM_setGroupIcon", "OnSetGroupIcon")
+	RegisterForModEvent("SKIFM_foundInvalidItem", "OnFoundInvalidItem")
 	
 	RegisterForMenu(FAVORITES_MENU)
-	RegisterForMenu(INVENTORY_MENU)
 	
 	RegisterHotkeys()
 
@@ -133,46 +128,49 @@ endEvent
 event OnMenuOpen(string a_menuName)
 	DebugT("OnMenuOpen!")
 
-	if (a_menuName != FAVORITES_MENU)
-		return
-	endIf
-
-	while (_inCleanUp) ; FIXME: This is probably not the best place to put the spinlock, do I need it in every event?
-		Utility.WaitMenuMode(0.1)
-	endWhile
-
 	InitMenuGroupData()
 	;Switch on button helpers
 	UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
-	
-	int i = 0
-	int cleanedCount = 0
-	; The following takes between 0.3s and 0.5s per group
-	; Worst case scenario, 8 groups with 32 items each, ~4 seconds
-	;DEBUG	
-	If _inCleanUp
-		DebugT("Already performing a cleanup, skipping it this time!")
-		Return
-	endIf
-	float StartTime = Utility.GetCurrentRealTime()
-	_inCleanUp = True ; variable to use for spinlocking, if needed
-	while (i < _groupFlags.Length)
-		if GetGroupFlag(i,GROUP_FLAG_NEEDS_CLEANUP)
-			CleanUpGroup(i)
-			SetGroupFlag(i,GROUP_FLAG_NEEDS_CLEANUP,false)
-			cleanedCount += 1
-		endIf
-		i += 1
-	endWhile
-	_inCleanUp = false
-	;DEBUG
-	float EndTime = Utility.GetCurrentRealTime()
-	DebugT("Cleaned up " + cleanedCount + " groups in " + (EndTime - StartTime))
 endEvent
 
-event OnMenuClose(string a_menuName)
-	if (a_menuName == INVENTORY_MENU)
+event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	Form	item = a_sender
+	int		lookupType = a_numArg as int
 
+	int index
+	int groupIndex
+
+	; GroupData
+	index = _items1.Find(item)
+	if (index != -1)
+		_items1[index] = none
+		_itemFormIds1[index] = 0
+	endIf
+
+	index = _items2.Find(item)
+	if (index != -1)
+		_items2[index] = none
+		_itemFormIds2[index] = 0
+	endIf
+
+	; Main hand
+	index = _groupMainHandItems.Find(item)
+	if (index != -1)
+		_groupMainHandItems[index] = none
+		_groupMainHandFormIds[index] = 0
+	endIf
+
+	; Off hand
+	index = _groupOffHandItems.Find(item)
+	if (index != -1)
+		_groupOffHandItems[index] = none
+		_groupOffHandFormIds[index] = 0
+	endIf
+
+	; Icon
+	index = _groupIconItems.Find(item)
+	if (index != -1)
+		ReplaceGroupIcon(index)
 	endIf
 endEvent
 
@@ -180,9 +178,11 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 	Form	item = a_sender
 	int		groupIndex = a_numArg as int
 
-	GroupAdd(groupIndex, item)
-
-	UpdateMenuGroupData(groupIndex)
+	if (GroupAdd(groupIndex, item))
+		UpdateMenuGroupData(groupIndex)
+	else
+		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
+	endIf
 endEvent
 
 
@@ -191,9 +191,11 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 	Form	item = a_sender
 	int		groupIndex = a_numArg as int
 
-	GroupRemove(groupIndex, item)
-
-	UpdateMenuGroupData(groupIndex)
+	if (GroupRemove(groupIndex, item))
+		UpdateMenuGroupData(groupIndex)
+	else
+		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
+	endIf
 endEvent
 
 ; Read the player's current equipment and save it to the target group
@@ -367,8 +369,6 @@ function InitMenuGroupData()
 endFunction
 
 function UpdateMenuGroupData(int a_groupIndex)
-	DebugT("UpdateMenuGroupData called!")
-
 	int offset = 32 * a_groupIndex
 
 	int[] itemFormIds
@@ -398,75 +398,19 @@ function UpdateMenuGroupData(int a_groupIndex)
 		j += 1
 	endWhile
 	
+	; This also unlocks the menu, so no need to call unlock
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".updateGroupData", args)
-
-	DebugT("UpdateMenuGroupData end!")
-endFunction
-
-; Check for unfavorited items in the group and clean them from the itemlists
-function CleanUpGroup(int groupIndex, bool cleanMissing = false)
-	DebugT("CleanUpGroup called on group " + groupIndex + ", cleanMissing = " + cleanMissing)
-	float StartTime = Utility.GetCurrentRealTime()
-	
-	Form[] items
-	int[] itemFormIDs
-	int i
-	int offset = 32 * groupIndex
-		
-	if (offset >= 128)
-		offset -= 128
-		items = _items2
-		itemFormIDs = _itemFormIds2
-	else
-		items = _items1
-		itemFormIDs = _itemFormIds1
-	endIf
-	
-	Form[] invalidItems = new Form[32]
-	int invalidIdx 
-	int n=offset+32
-	while (i < n)
-		if (items[i]) ; prevent errors about none
-			if (!Game.IsObjectFavorited(items[i])) ; find unfaved items
-				invalidItems[invalidIdx] = items[i]
-				invalidIdx += 1
-			elseIf cleanMissing ;GetItemCount is slow, only do it if we're supposed to
-				 if (PlayerRef.GetItemCount(items[i]) == 0)
-					invalidItems[invalidIdx] = items[i]
-					invalidIdx += 1
-				 endif
-			endIf
-		endIf
-		i += 1
-	endWhile
-	RemoveFormsInArray(invalidItems)
-	float EndTime = Utility.GetCurrentRealTime()
-	DebugT("Cleaned up " + InvalidIdx + " items in " + (EndTime - StartTime))
 endFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
 function CleanUp()
 	; Re-count items while checking in the next step
 	int i = 0
-	while (i < 8)
-		_groupCounts[i] = 0
-		i += 1
-	endWhile
-
-	int groupIndex = 0
-
-	i = 0
 	while (i < _items1.length)
 
 		if (_items1[i] == none || _items1[i].GetFormID() == 0)
 			_items1[i] = none
 			_itemFormIds1[i] = 0
-		else
-			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
-		endIf
-
-		if (i % 32 == 31)
-			groupIndex += 1
 		endIf
 
 		i += 1
@@ -478,27 +422,13 @@ function CleanUp()
 		if (_items2[i] == none || _items2[i].GetFormID() == 0)
 			_items2[i] = none
 			_itemFormIds2[i] = 0
-		else
-			_groupCounts[groupIndex] = _groupCounts[groupIndex] + 1
-		endIf
-
-		if (i % 32 == 31)
-			groupIndex += 1
 		endIf
 
 		i += 1
 	endWhile
 endFunction
 
-function GroupAdd(int a_groupIndex, Form a_item)
-	; Group already full - play some error sound?
-	if (_groupCounts[a_groupIndex] >= 32)
-		CleanUpGroup(a_groupIndex, true)
-		if (_groupCounts[a_groupIndex] >= 32) ; Nothing could be removed, group is full of valid, favorited items
-			return
-		endIf
-	endIf
-
+bool function GroupAdd(int a_groupIndex, Form a_item)
 	int offset = 32 * a_groupIndex
 
 	; Select the target set of arrays, adjust offset
@@ -517,23 +447,26 @@ function GroupAdd(int a_groupIndex, Form a_item)
 	; Pick next free slot
 	int index = FindFreeIndex(items, offset)
 	
-	; Store received data
-	if (index != -1)
-		int formId = a_item.GetFormID()
-		items[index] = a_item
-		formIds[index] = formId
-
-		_groupCounts[a_groupIndex] = _groupCounts[a_groupIndex] + 1
-
-		; If there's no icon item set yet, use this one
-		if (_groupIconItems[a_groupIndex] == none)
-			_groupIconItems[a_groupIndex] = a_item
-			_groupIconFormIds[a_groupIndex] = formId
-		endIf
+	; No more space in group?
+	if (index == -1)
+		return false
 	endIf
+
+	; Store received data
+	int formId = a_item.GetFormID()
+	items[index] = a_item
+	formIds[index] = formId
+
+	; If there's no icon item set yet, use this one
+	if (_groupIconItems[a_groupIndex] == none)
+		_groupIconItems[a_groupIndex] = a_item
+		_groupIconFormIds[a_groupIndex] = formId
+	endIf
+
+	return true
 endFunction
 
-function GroupRemove(int a_groupIndex, Form a_item)
+bool function GroupRemove(int a_groupIndex, Form a_item)
 	int offset = 32 * a_groupIndex
 
 	; Select the target set of arrays, adjust offset
@@ -549,32 +482,20 @@ function GroupRemove(int a_groupIndex, Form a_item)
 		formIds = _itemFormIds1
 	endIf
 
-	Form iconReplacement = none
-
 	int i=offset
 	int n=offset+32
 	while (i < n)
 		if (items[i] == a_item)
 			items[i] = none
 			formIds[i] = 0
-			_groupCounts[a_groupIndex] = _groupCounts[a_groupIndex] - 1			
 			i = n
 		else
-			if (items[i] != none && iconReplacement == none)
-				; Pick any != none form as potential icon replacement
-				iconReplacement = items[i]
-			endIf
 			i += 1
 		endIf
 	endWhile
 
 	if (a_item == _groupIconItems[a_groupIndex])
-		_groupIconItems[a_groupIndex] = iconReplacement
-		if (iconReplacement)
-			_groupIconFormIds[a_groupIndex] = iconReplacement.GetFormID()
-		else
-			_groupIconFormIds[a_groupIndex] = 0
-		endIf
+		ReplaceGroupIcon(a_groupIndex)
 	endIf
 
 	if (a_item == _groupMainHandItems[a_groupIndex])
@@ -586,6 +507,8 @@ function GroupRemove(int a_groupIndex, Form a_item)
 		_groupOffHandItems[a_groupIndex] = none
 		_groupOffHandFormIds[a_groupIndex] = 0
 	endIf
+
+	return true
 endFunction
 
 function GroupUse(int a_groupIndex)
@@ -895,8 +818,6 @@ function RemoveFormsInArray(form[] invalidItems)
 				_items1[itemIdx] = none
 				_itemFormIDs1[itemIdx] = 0
 				groupIndex = itemIDX / 32
-				_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
-				DebugT(" _groupCounts[" + groupIndex + "] is now " + _groupCounts[groupIndex])
 				itemIdx = _items1.find(item)
 			endWhile
 			itemIdx = _items2.find(item)
@@ -905,8 +826,6 @@ function RemoveFormsInArray(form[] invalidItems)
 				_items2[itemIdx] = none
 				_itemFormIDs2[itemIdx] = 0
 				groupIndex = (128 + itemIDX) / 32
-				_groupCounts[groupIndex] = _groupCounts[groupIndex] - 1
-				DebugT(" _groupCounts[" + groupIndex + "] is now " + _groupCounts[groupIndex])
 				itemIdx = _items2.find(item)
 			endWhile
 		endIf
@@ -927,6 +846,40 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	endWhile
 	
 	return -1
+endFunction
+
+function ReplaceGroupIcon(int a_groupIndex)
+
+	int offset = a_groupIndex * 32
+
+	; Select the target set of arrays, adjust offset
+	Form[] items
+	int[] formIds
+
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+		formIds = _itemFormIds2
+	else
+		items = _items1
+		formIds = _itemFormIds1
+	endIf
+
+	int i= offset
+	int n= offset+32
+
+	while (i < n)
+		if (items[i] != none)
+			_groupIconItems[a_groupIndex] = items[i]
+			_groupIconFormIds[a_groupIndex] = items[i].GetFormID()
+			return
+		else
+			i += 1
+		endIf
+	endWhile
+
+	_groupIconItems[a_groupIndex] = none
+	_groupIconFormIds[a_groupIndex] = 0
 endFunction
 
 ; utility function to see if form is in the specified group. 

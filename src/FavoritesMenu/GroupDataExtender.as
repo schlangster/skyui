@@ -14,6 +14,8 @@ class GroupDataExtender implements IListProcessor
 	private var _formIdMap: Object;
 	
 	private var _groupButtons: Array;
+	
+	private var _invalidForms: Array;
 
 
   /* PROPERTIES */
@@ -34,6 +36,8 @@ class GroupDataExtender implements IListProcessor
 		iconData = [];
 		
 		_formIdMap = {};
+		
+		_invalidForms = [];
 		
 		_groupButtons = a_groupButtons;
 	}
@@ -89,6 +93,9 @@ class GroupDataExtender implements IListProcessor
 				var t = _formIdMap[formId];
 				if (t != null)
 					t.filterFlag |= curFilterFlag;
+				// Lookup failed? We help Papyrus with the cleanup by notifying it about the invalid item
+				else
+					reportInvalidItem(formId);
 			}
 		}
 	}
@@ -102,6 +109,8 @@ class GroupDataExtender implements IListProcessor
 				var t = _formIdMap[formId];
 				if (t != null)
 					t.mainHandFlag |= 1 << i;
+				else
+					reportInvalidItem(formId);
 			}
 		}
 	}
@@ -115,6 +124,8 @@ class GroupDataExtender implements IListProcessor
 				var t = _formIdMap[formId];
 				if (t != null)
 					t.offHandFlag |= 1 << i;
+				else
+					reportInvalidItem(formId);
 			}
 		}
 	}
@@ -127,11 +138,26 @@ class GroupDataExtender implements IListProcessor
 			var formId: Number = iconData[i];
 			if (formId) {
 				var t = _formIdMap[formId];
-				iconLabel = t.iconLabel ? t.iconLabel : "none";
+				if (t != null) {
+					iconLabel = t.iconLabel ? t.iconLabel : "misc_default";
+				} else {
+					iconLabel = "misc_default";
+					reportInvalidItem(formId);
+				}
 			} else {
 				iconLabel = "none";
 			}
 			_groupButtons[i].itemIcon.gotoAndStop(iconLabel);
 		}
+	}
+	
+	private function reportInvalidItem(a_formId: Number): Void
+	{
+		for (var i=0; i<_invalidForms.length; i++)
+			if (_invalidForms[i] == a_formId)
+					return;
+		
+		_invalidForms.push(a_formId);
+		skse.SendModEvent("SKIFM_foundInvalidItem", "", 0, a_formId);
 	}
 }
