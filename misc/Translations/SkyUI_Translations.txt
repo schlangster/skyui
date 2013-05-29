@@ -169,11 +169,11 @@ $Open Menu	Open Menu	Ouvrir le menu	Menü Öffnen	Apri Menu	Abrir Menu	Otevřít
 $Toggle	Toggle	Activer/Désactiver	Umschalten	Seleziona	Seleccionar	Zaškrtnout	Przełącz	Переключить	トグル
 $Pick Color	Pick Color	Choisir la couleur	Farbauswahl	Seleziona Colore	Seleccionar Color	Vybrat barvu	Wybierz Kolor	Выбор Цвета	色を選択
 $Remap	Remap	Ré-affecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Перераспределение	再割り当て
-$Unmap	Unmap		Zuordnung Aufheben						
+$Unmap	Unmap		Zuordnung Aufheben					Не Перераспределять	
 $Find Location	Find Location	Chercher un lieu	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
 									
 $General	General	Général	Allgemein	Generale	General	Základní	Ogólne	Общие	一般
-$Favorite Groups	Favorite Groups		Favoritengruppen						
+$Favorite Groups	Favorite Groups		Favoritengruppen					Группа Избранного	
 $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawansowane	Дополнительно	高度
 									
 $Item List	Item List	Liste des objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
@@ -193,6 +193,7 @@ $Vertical Anchor	Vertical Anchor	Alignement vertical	Vertikale Ausrichtung	Orien
 $Orientation	Orientation	Orientation	Orientierung	Orientamento	Alineamiento	Orientace	Orientacja	Ориентация	
 $Icon Size	Icon Size	Taille d'icône	Symbolgröße	Dimensione Icona	Dimensión del icono	Velikost ikon	Rozmiar Ikon	Размер Иконок	
 $Icon Group Count	Icon Group Count	Nombre de groupes d'icônes	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Груп Иконок	
+$Minimum Time Left	Minimum Time Left		Mindestrestdauer						
 $Scale	Scale	Échelle	Größe	Scala	Escala	Měřítko	Skala	Масштаб	スケール
 $Disable Positioning	Disable Positioning	Désactiver le positionnement	Keine Positionsanpassung	Disabilita Posizionamento	Desactivar el posicionamiento	Zakázat polohování	Wyłącz Pozycjonowanie	Запретить Позиционирование	
 $SWF Version Checking	SWF Version Checking	Vérification des versions	SWF Versions-Check	Controllo Versione SWF	Comprobar Versión SWF	Kontrola Verze SWF	Sprawdzanie Wersji SWF	Проверка Версии SWF	SWF のバージョンの確認
@@ -213,6 +214,7 @@ $SKI_INFO1{}	Default: {}	Défaut: {}	Voreinstellung: {}	Predefinito: {}	Predefin
 $SKI_INFO2{}	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: {}	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut: {}	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: {}	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: {}	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: {}	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: {}	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: {}	Количество элементов необходимое для инициализации меню, число или 0 чтобы отключить.\nПо умолчанию: {}	
 $SKI_INFO3{}	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: {}	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut: {}	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: {}	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: {}	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: {}	 Nekonpatibilní nebo zastaralé SWF může narušit funkčnost SkyUI. Zaškrtnutím vypnete zobrazování varovných zpráv!\nVýchozí nastavení: {}	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: {}	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: {}	
 $SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDéfaut: {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}	Desactiva el posicionamiento del objeto 3D.\nPredefinido: {}	Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Запретить Позиционирование 3D объекта в окне просмотра.\nПо умолчанию: {}	
+$SKI_INFO5{}	Hide effects with a remaining time higher than this. 0 to show all.\nDefault: {}		Mindestrestdauer ab der Effekte angezeigt werden. 0 zeigt alles an.\nVoreinstellung: {}						
 $SKI_INFO6	Each group can be configured individually.		Jede Gruppe kann einzeln konfiguriert werden.					Каждая группа может иметь индивидуальные настройки	
 $SKI_INFO7{}	Unequip all armor before Group Use?\nDefault: {}		Rüstung vorm Benutzen der Gruppe ausziehen?					Снять всю броню перед Использованием Группы?\nПо умолчанию: {}	
 $SKI_INFO8{}	Unequip both hands before Group Use?\nDefault: {}		Beide Hände vorm Benutzen der Gruppe freimachen?					Разоружить обе руки перед Использованием Группы?\nПо умолчанию: {}	
@@ -220,28 +222,30 @@ $SKI_INFO9{}	Unequip any ammo before Group Use?\nDefault: {}		Munition vorm Benu
 									
 									
 $SKI_MSG1	This control requires a keyboard mapping.	Cette fonction doit être affectée à une touche.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Для этой функции необходимо назначить клавишу.	このコントロールは、キーボードのマッピングを必要とします。
-$SKI_MSG2{}	This key is already mapped to:\n{}\n\nAre you sure you want to continue?		Diese Taste wird bereits benutzt:\n{}\n\nSoll sie dennoch verwendet werden?						
+$SKI_MSG2{}	This key is already mapped to:\n{}\n\nAre you sure you want to continue?		Diese Taste wird bereits verwendet:\n{}\n\nTrotzdem fortfahren?					Эта клавиша уже используется:\n{}\n\nВы уверены, что хотите продолжить?	
 									
 $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATREZZATURA	EQUIPO			Экипировать	
-$AID	AID	AIDE	HILFSMITTEL	AIUTO	AYUDA			Помощь	
-$GROUP	GROUP	GROUPE 	GRUPPE	GRUPPO	GRUPO			Группа	
-$Group {}	Group {}	Groupe {}	Gruppe {}	Gruppo {}	Grupo {}				
-$Preferences	Preferences		Einstellungen						
+$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATREZZATURA	EQUIPO			СНАРЯЖЕНИЕ	
+$AID	AID	AIDE	HILFSMITTEL	AIUTO	AYUDA			ПОМОЩ	
+$GROUP	GROUP	GROUPE 	GRUPPE	GRUPPO	GRUPO			ГРУППА	
+$Group {}	Group {}	Groupe {}	Gruppe {}	Gruppo {}	Grupo {}			Группа {}	
+$Show Button Help	Show Button Help		Tastenhilfe Anzeigen					Показать Кнопку Помощи	
+$Favorites Menu	Favorites Menu		Favoritenmenü					Меню Избранного	
+$Preferences	Preferences		Einstellungen					Настройки	
 $Confirm Group	Confirm Group	Confirmer groupe	Gruppe Bestätigen	Confirmare gruppo	Confirmar grupo			Подтвердить Группу	
 $Select Group	Select Group	Choisir groupe	Gruppe Auswählen	Selezionare gruppo	Seleccionar grupo			Выбрать Группу	
 $Group	Group	Grouper 	Gruppieren	Raggruppare	Agrupar			Добавить в Группу	
 $Ungroup	Ungroup	Dégrouper	Gruppierung Aufheben	Anullamento gruppo	Desagrupar			Убрать из Группы	
 $Set Group Icon	Set Group Icon	Choisir icône groupe	Symbol Setzen	Scegliere icona gruppo	Elegir icono de grupo			Выбрать Иконки Группы	
 $Set Main Hand	Set Main Hand	Choisir main principale	Primärhand Setzen	Scegliere mano principale	Elegir mano principal			Выбрать Основную Руку	
-$Save Equip State	Save Equip State		Ausrüstung Speichern						
+$Save Equip State	Save Equip State		Ausrüstung Speichern					Сохранить Состояние Экипировки	
 $Group Use	Group Use	Utiliser groupe	Gruppe Benutzen	Usare gruppo	Usar grupo			Использовать Группу	
 $Toggle Focus	Toggle Focus	Changer Focus	Fokus Wechseln	Cambiare Focus	Cambiar enfoque			Переместить Фокус	
 $Unequip Armor	Unequip Armor	Déséquiper armure	Rüstung Freimachen	Disattrezzare corazza	Desequipar Armadura			Снять Броню	
 $Unequip Hands	Unequip Hands	Déséquiper mains	Hände Freimachen	Disattrezzare mani	Desequipar manos			Разоружить Руки	
 $Unequip Ammo	Unequip Ammo	Déséquiper munitions	Munition Freimachen	Disattrezzare munizione	Desequipar munición			Снять Боеприпасы	
 									
-% Completion	100.00%	96.00%	100.00%	96.00%	96.00%	89.33%	89.33%	97.33%	85.58%
+% Completion	100.00%	94.32%	100.00%	94.32%	94.32%	87.77%	87.77%	99.13%	84.76%
