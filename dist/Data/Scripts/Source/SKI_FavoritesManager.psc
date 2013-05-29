@@ -742,14 +742,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		Weapon itemWeapon = a_item as Weapon
 		int weaponType = itemWeapon.GetweaponType()
 
-		; It's two-handed and both hands are free
-		if (weaponType > 4 && !_usedRightHand && !_usedLeftHand)
-			PlayerREF.EquipItemEX(itemWeapon, equipSlot = 0, equipSound = _silenceEquipSounds)
-			_usedRightHand = true
-			_usedLeftHand = true
-
 		; It's one-handed and the player has a free hand
-		elseIf (weaponType <= 4)
+		if (weaponType <= 4 || weaponType == 8) ; Fists(0), Swords(1), Daggers(2), War Axes(3), Maces(4), Staffs(8)
 			if (!_usedRightHand)
 				PlayerREF.EquipItemEX(itemWeapon, 1, equipSound = _silenceEquipSounds)
 				_usedRightHand = true
@@ -757,6 +751,12 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 				PlayerREF.EquipItemEX(itemWeapon, 2, equipSound = _silenceEquipSounds)
 				_usedLeftHand = true
 			endIf
+
+		; It's two-handed and both hands are free
+		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand) ; 
+			PlayerREF.EquipItemEX(itemWeapon, equipSlot = 0, equipSound = _silenceEquipSounds)
+			_usedRightHand = true
+			_usedLeftHand = true
 		endIf
 
 		return true
