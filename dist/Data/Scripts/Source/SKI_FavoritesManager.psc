@@ -135,8 +135,7 @@ endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	Form	item = a_sender
-	int		lookupType = a_numArg as int
-
+	
 	int index
 	int groupIndex
 
@@ -404,7 +403,10 @@ endFunction
 
 ; Ensure that our data is still valid. Might not be the case if a mod was uninstalled
 function CleanUp()
-	; Re-count items while checking in the next step
+	
+	; Note on thread safety:
+	; Since we don't manage an explicit group count, items can just be set or unset from multiple threads
+
 	int i = 0
 	while (i < _items1.length)
 
