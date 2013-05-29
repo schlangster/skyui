@@ -347,7 +347,6 @@ event OnPageReset(string a_page)
 	elseIf (a_page == "$Favorite Groups")
 		int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
 		int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_HANDS
-		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
 
 		SetCursorFillMode(TOP_TO_BOTTOM)
 
@@ -355,8 +354,6 @@ event OnPageReset(string a_page)
 		AddMenuOptionST("FAV_GROUP_SELECT", "", "$Group {" + (_favCurGroupIdx+1) + "}")
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_ARMOR", "$Unequip Armor", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG))
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))
-		AddToggleOptionST("FAV_GROUP_UNEQUIP_AMMO", "$Unequip Ammo", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG))
-
 		
 		
 		if (! Game.UsingGamepad())
@@ -643,31 +640,6 @@ state FAV_GROUP_UNEQUIP_HANDS ; TOGGLE
 
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO8{$Off}")
-	endEvent
-	
-endState
-
-state FAV_GROUP_UNEQUIP_AMMO ; TOGGLE
-
-	event OnSelectST()
-		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
-
-		bool newVal = !SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG)
-		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, AMMO_FLAG, newVal)
-
-		SetToggleOptionValueST(newVal)
-	endEvent
-
-	event OnDefaultST()
-		int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
-
-		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, AMMO_FLAG, false)
-
-		SetToggleOptionValueST(false)
-	endEvent
-
-	event OnHighlightST()
-		SetInfoText("$SKI_INFO9{$Off}")
 	endEvent
 	
 endState
@@ -1681,11 +1653,9 @@ endFunction
 function SetCurrentFavoriteGroup(int a_index)
 	int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
 	int HANDS_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_HANDS
-	int AMMO_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_AMMO
 
 	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG), true, "FAV_GROUP_UNEQUIP_ARMOR")
 	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG), true, "FAV_GROUP_UNEQUIP_AMMO")
-	SetToggleOptionValueST(SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, AMMO_FLAG), true, "FAV_GROUP_UNEQUIP_HANDS")
 endFunction
 
 function SetGroupHotkey(int a_groupIndex, int a_keyCode, string a_conflictControl = "", string a_conflictName = "")
