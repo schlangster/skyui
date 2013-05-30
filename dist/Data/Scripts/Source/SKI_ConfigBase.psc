@@ -269,7 +269,7 @@ event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	if (_configID >= 0)
 		_configManager = newManager
 		OnConfigRegister()
-		Debug.Notification("MCM: " + ModName + " +++")
+		Debug.Trace(self + ": Registered " + ModName + " at MCM.")
 	endIf
  endEvent
 
