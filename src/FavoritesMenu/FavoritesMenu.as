@@ -50,11 +50,18 @@ class FavoritesMenu extends MovieClip
 	
 	private var _leftKeycode: Number = -1;
 	private var _rightKeycode: Number = -1;
+	
 	private var _groupAddKey: Number = -1;
 	private var _groupUseKey: Number = -1;
 	private var _setIconKey: Number = -1;
 	private var _saveEquipStateKey: Number = -1;
 	private var _toggleFocusKey: Number = -1;
+	
+	private var _groupAddControls: Object;
+	private var _groupUseControls: Object;
+	private var _setIconControls: Object;
+	private var _saveEquipStateControls: Object;
+	private var _toggleFocusControls: Object;
 	
 	private var _state: Number;
 	
@@ -125,9 +132,23 @@ class FavoritesMenu extends MovieClip
 	
   /* PAPYRUS INTERFACE */
   
-	public function enableNavigationHelp(a_enabled: Boolean): Void
+	public function initControls(a_navPanelEnabled: Boolean, a_groupAddKey: Number, a_groupUseKey: Number,
+								 a_setIconKey: Number, a_saveEquipStateKey: Number, a_toggleFocusKey: Number): Void
 	{
-		_navPanelEnabled = a_enabled;
+		_navPanelEnabled = a_navPanelEnabled;
+
+		// On PC, we need overrides from Papyrus to make sure no mouse buttons are used (handleInput doesnt catch those).
+		// On gamepad, we can get the keys via SKSE so no need to let the user rebind it.
+		if (_platform == 0) {
+			_groupAddKey = a_groupAddKey;
+			_groupUseKey = a_groupUseKey;
+			_setIconKey = a_setIconKey;
+			_saveEquipStateKey = a_saveEquipStateKey;
+			_toggleFocusKey = a_toggleFocusKey;
+			
+			createControls();
+		}
+		
 		updateNavButtons();
 	}
 	
@@ -279,6 +300,9 @@ class FavoritesMenu extends MovieClip
 		var nextClip = pathToFocus.shift();
 		if (nextClip && nextClip.handleInput(details, pathToFocus))
 			return true;
+			
+			
+		skse.Log("pressed skse keycode " + details.skseKeycode);
 		
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
@@ -423,13 +447,20 @@ class FavoritesMenu extends MovieClip
 		
 		_leftKeycode = GlobalFunctions.getMappedKey("Left", Input.CONTEXT_MENUMODE, isGamepad);
 		_rightKeycode = GlobalFunctions.getMappedKey("Right", Input.CONTEXT_MENUMODE, isGamepad);
-		_groupAddKey = GlobalFunctions.getMappedKey("Toggle POV", Input.CONTEXT_GAMEPLAY, isGamepad);
-		_groupUseKey = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, isGamepad);
 		
-		_setIconKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, isGamepad);
-		_saveEquipStateKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, isGamepad);
-		
-		_toggleFocusKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, isGamepad);
+		// Set keys via SKSE for gamepad, wait for initControls for PC
+		if (_platform != 0) {
+
+			_groupAddKey = GlobalFunctions.getMappedKey("Toggle POV", Input.CONTEXT_GAMEPLAY, true);
+			_groupUseKey = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, true);
+			
+			_setIconKey = GlobalFunctions.getMappedKey("Sprint", Input.CONTEXT_GAMEPLAY, true);
+			_saveEquipStateKey = GlobalFunctions.getMappedKey("Wait", Input.CONTEXT_GAMEPLAY, true);
+			
+			_toggleFocusKey = GlobalFunctions.getMappedKey("Jump", Input.CONTEXT_GAMEPLAY, true);
+			
+			createControls();
+		}
 		
 		navButton.setPlatform(a_platform);
 		
@@ -786,18 +817,18 @@ class FavoritesMenu extends MovieClip
 		var twoRows = false;
 		
 		row1.clearButtons();
-		row1.addButton({text: "$Toggle Focus", controls: Input.Jump});
+		row1.addButton({text: "$Toggle Focus", controls: _toggleFocusControls});
 		if (isEntrySelected)
-			row1.addButton({text: _groupButtonFocused ? "$Ungroup" : "$Group", controls: Input.TogglePOV});
+			row1.addButton({text: _groupButtonFocused ? "$Ungroup" : "$Group", controls: _groupAddControls});
 		row1.updateButtons(true);
 		
 		row2.clearButtons();
 		if (_groupButtonFocused && isListFilled) {
 			twoRows = true;
-			row2.addButton({text: "$Group Use", controls: Input.ReadyWeapon});
-			row2.addButton({text: "$Save Equip State", controls: Input.Wait});
+			row2.addButton({text: "$Group Use", controls: _groupUseControls});
+			row2.addButton({text: "$Save Equip State", controls: _saveEquipStateControls});
 			if (isEntrySelected)
-				row2.addButton({text: "$Set Group Icon", controls: Input.Sprint});
+				row2.addButton({text: "$Set Group Icon", controls: _setIconControls});
 		}
 		row2.updateButtons(true);
 		
@@ -805,5 +836,14 @@ class FavoritesMenu extends MovieClip
 		row1._y = twoRows ? 10 : 35;
 		row2._x = -(row2._width / 2);
 		row2._y = 65;
+	}
+	
+	private function createControls(): Void
+	{
+		_groupAddControls = {keyCode: _groupAddKey};
+		_groupUseControls = {keyCode: _groupUseKey};
+		_setIconControls = {keyCode: _setIconKey};
+		_saveEquipStateControls = {keyCode: _saveEquipStateKey};
+		_toggleFocusControls = {keyCode: _toggleFocusKey};
 	}
 }
