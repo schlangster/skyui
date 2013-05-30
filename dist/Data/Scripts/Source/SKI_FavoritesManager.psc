@@ -40,7 +40,7 @@ int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
 
-bool 				_useDebug = true
+bool 				_useDebug = false
 bool				_silenceEquipSounds = false
 
 SoundCategory		_audioCategoryUI
@@ -246,7 +246,7 @@ endFunction
 int[] function GetGroupHotkeys()
 	; Return a copy
 	int[] result = new int[8]
-	int i=0
+	int i = 0
 	while (i<8)
 		result[i] = _groupHotkeys[i]
 		i += 1
@@ -293,23 +293,23 @@ function InitMenuGroupData()
 	int[] args = new int[25]
 	args[0] = 8
 
-	int c=1
+	int c = 1
 
-	int i=0
+	int i = 0
 	while (i<8)
 		args[c] = _groupMainHandFormIds[i]
 		i += 1
 		c += 1
 	endWhile
 
-	i=0
+	i = 0
 	while (i<8)
 		args[c] = _groupOffHandFormIds[i]
 		i += 1
 		c += 1
 	endWhile
 	
-	i=0
+	i = 0
 	while (i<8)
 		args[c] = _groupIconFormIds[i]
 		i += 1
@@ -343,8 +343,8 @@ function UpdateMenuGroupData(int a_groupIndex)
 	args[2] = _groupOffHandFormIds[a_groupIndex]
 	args[3] = _groupIconFormIds[a_groupIndex]
 
-	int i=4
-	int j=offset
+	int i = 4
+	int j = offset
 
 	while (i<36)
 		args[i] = itemFormIds[j]
@@ -445,8 +445,8 @@ bool function GroupRemove(int a_groupIndex, Form a_item)
 		formIds = _itemFormIds1
 	endIf
 
-	int i=offset
-	int n=offset+32
+	int i = offset
+	int n = offset+32
 	while (i < n)
 		if (items[i] == a_item)
 			items[i] = none
@@ -575,7 +575,7 @@ function GroupUse(int a_groupIndex)
 	if (GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_ARMOR))
 		int h = 0x00000001
 		while (h < 0x80000000)
-			Form wornForm = PlayerRef.GetWornForm(h)
+			Form wornForm = PlayerREF.GetWornForm(h)
 			if (wornForm)
 				if (!LogicalAND(h, _usedOutfitMask))
 					PlayerREF.UnEquipItemEX(wornForm)
@@ -589,7 +589,7 @@ function GroupUse(int a_groupIndex)
 
 	;DEBUG
 	EndTime = Utility.GetCurrentRealTime()
-	Debug.Notification("Equip time: " + (EndTime - StartTime))
+	DebugT("Equip time: " + (EndTime - StartTime))
 	
 	StartTime = Utility.GetCurrentRealTime()
 	DebugT("Checking for invalid items...")
@@ -599,7 +599,7 @@ function GroupUse(int a_groupIndex)
 		i += 1
 	endWhile
 	EndTime = Utility.GetCurrentRealTime()
-	Debug.Trace("Cleanup time: " + (EndTime - StartTime))
+	DebugT("Cleanup time: " + (EndTime - StartTime))
 	
 	DebugT("OnGroupUse end!")
 endFunction
@@ -811,9 +811,8 @@ function RemoveInvalidItem(Form a_item, bool redrawIcon = false)
 endFunction
 
 int function FindFreeIndex(Form[] a_items, int offset)
-	int i
+	int i = a_items.Find(none,offset)
 	
-	i = a_items.find(none,offset)
 	if (i >= offset && i < offset + 32)
 		return i
 	endIf
@@ -849,8 +848,8 @@ function ReplaceGroupIcon(int a_groupIndex)
 		formIds = _itemFormIds1
 	endIf
 
-	int i= offset
-	int n= offset+32
+	int i = offset
+	int n = offset+32
 
 	while (i < n)
 		if (items[i] != none)
