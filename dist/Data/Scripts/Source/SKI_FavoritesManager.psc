@@ -15,7 +15,6 @@ int property		GROUP_FLAG_UNEQUIP_HANDS	= 	2	autoReadonly
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 Actor Property		PlayerREF auto
-Message property 	SKI_GroupFullMsg auto
 
 bool property		ButtonHelpEnabled	= 	true	auto
 
@@ -40,7 +39,6 @@ int[]				_groupIconFormIds
 
 int[]				_groupHotkeys
 
-bool 				_useDebug = false
 bool				_silenceEquipSounds = false
 
 SoundCategory		_audioCategoryUI
@@ -119,8 +117,6 @@ endEvent
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnMenuOpen(string a_menuName)
-	DebugT("OnMenuOpen!")
-
 	InitMenuGroupData()
 
 	;Switch on button helpers
@@ -287,8 +283,6 @@ endFunction
 
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
 function InitMenuGroupData()
-	DebugT("InitMenuGroupData called!")
-
 	; groupCount, mainHandFormId[8], offHandFormId[8], iconFormId[8]
 	int[] args = new int[25]
 	args[0] = 8
@@ -319,8 +313,6 @@ function InitMenuGroupData()
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
-
-	DebugT("InitMenuGroupData end!")
 endFunction
 
 function UpdateMenuGroupData(int a_groupIndex)
@@ -475,11 +467,6 @@ bool function GroupRemove(int a_groupIndex, Form a_item)
 endFunction
 
 function GroupUse(int a_groupIndex)
-	DebugT("GroupUse!")
-
-	float StartTime
-	float EndTime
-
 	int offset = 32 * a_groupIndex
 
 	; Select the target set of arrays, adjust offset
@@ -535,9 +522,6 @@ function GroupUse(int a_groupIndex)
 	if (offHandItem)
 		ProcessItem(offHandItem, offHandItem.GetType(),false)
 	endIf
-	
-	;DEBUG
-	StartTime = Utility.GetCurrentRealTime()
 
 	; Validate & process items
 	int i = offset
@@ -587,21 +571,11 @@ function GroupUse(int a_groupIndex)
 	
 	_audioCategoryUI.UnMute() ; Turn UI sounds back on
 
-	;DEBUG
-	EndTime = Utility.GetCurrentRealTime()
-	DebugT("Equip time: " + (EndTime - StartTime))
-	
-	StartTime = Utility.GetCurrentRealTime()
-	DebugT("Checking for invalid items...")
 	i = 0
 	while (i<invalidIdx)
 		RemoveInvalidItem(invalidItems[i])
 		i += 1
 	endWhile
-	EndTime = Utility.GetCurrentRealTime()
-	DebugT("Cleanup time: " + (EndTime - StartTime))
-	
-	DebugT("OnGroupUse end!")
 endFunction
 
 bool function ValidateItem(Form a_item, int a_itemType)
@@ -732,11 +706,11 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 			return true
 		endIf
 		;FIXME - GetEquipType seems to be broken for scrolls
-		If (itemScroll.GetEquipType() == _bothHandsSlot && !_usedLeftHand && !_usedRightHand)
-			PlayerREF.EquipItemEX(itemScroll, equipSlot = 0, equipSound = _silenceEquipSounds)
-			_usedLeftHand = true
-			_usedRightHand = true
-		elseIf (!_usedRightHand)
+		;If (itemScroll.GetEquipType() == _bothHandsSlot && !_usedLeftHand && !_usedRightHand)
+		;	PlayerREF.EquipItemEX(itemScroll, equipSlot = 0, equipSound = _silenceEquipSounds)
+		;	_usedLeftHand = true
+		;	_usedRightHand = true
+		if (!_usedRightHand)
 			PlayerREF.EquipItemEX(itemScroll, equipSlot = 1, equipSound = _silenceEquipSounds)
 			_usedRightHand = true			
 		elseIf (!_usedLeftHand)
@@ -921,12 +895,4 @@ function RegisterHotkeys()
 
 		i += 1
 	endWhile
-endFunction
-
-; DEBUG ---------------------------------------------------------------------------------------
-
-function DebugT(string DebugString)
-	if (_useDebug)
-		Debug.Trace("SKI_Favs: " + DebugString)
-	endIf
 endFunction
