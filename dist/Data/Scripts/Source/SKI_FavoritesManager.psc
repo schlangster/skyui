@@ -130,7 +130,7 @@ event OnMenuOpen(string a_menuName)
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	RemoveInvalidItem(a_sender)
+	RemoveInvalidItem(a_sender,true)
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -770,7 +770,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 	return true
 endFunction
 
-function RemoveInvalidItem(Form a_item)
+function RemoveInvalidItem(Form a_item, bool redrawIcon = false)
 	int index
 
 	; GroupData
@@ -804,6 +804,9 @@ function RemoveInvalidItem(Form a_item)
 	index = _groupIconItems.Find(a_item)
 	if (index != -1)
 		ReplaceGroupIcon(index)
+		if (redrawIcon)
+			UpdateMenuGroupData(index)
+		endIf
 	endIf
 endFunction
 
