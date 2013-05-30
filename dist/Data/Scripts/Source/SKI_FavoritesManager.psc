@@ -675,8 +675,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
 		return true
 
-	; SPELL OR SCROLL ------------
-	elseIf (a_itemType == 22 || a_itemType == 23) 
+	; SPELL ------------
+	elseIf (a_itemType == 22) 
 
 		Spell itemSpell = a_item as Spell
 		EquipSlot spellEquipSlot = itemSpell.GetEquipType()
@@ -723,6 +723,29 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 		return true
 
+	; SCROLL ------------
+	elseIf (a_itemType == 23)
+		Scroll itemScroll = a_item as Scroll
+		
+		; Any scroll needs at least one free hand
+		if (_usedRightHand && _usedLeftHand)
+			return true
+		endIf
+		;FIXME - GetEquipType seems to be broken for scrolls
+		If (itemScroll.GetEquipType() == _bothHandsSlot && !_usedLeftHand && !_usedRightHand)
+			PlayerREF.EquipItemEX(itemScroll, equipSlot = 0, equipSound = _silenceEquipSounds)
+			_usedLeftHand = true
+			_usedRightHand = true
+		elseIf (!_usedRightHand)
+			PlayerREF.EquipItemEX(itemScroll, equipSlot = 1, equipSound = _silenceEquipSounds)
+			_usedRightHand = true			
+		elseIf (!_usedLeftHand)
+			PlayerREF.EquipItemEX(itemScroll, equipSlot = 2, equipSound = _silenceEquipSounds)
+			_usedLeftHand = true
+		endIf
+		
+		return true
+		
 	; SHOUT ------------
 	elseIf (a_itemType == 119)
 		if (!_usedVoice)
