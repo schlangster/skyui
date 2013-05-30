@@ -814,7 +814,7 @@ int function FindFreeIndex(Form[] a_items, int offset)
 	int i
 	
 	i = a_items.find(none,offset)
-	if (i >= 0 && i < offset + 32)
+	if (i >= offset && i < offset + 32)
 		return i
 	endIf
 	
