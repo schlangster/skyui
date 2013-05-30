@@ -8,16 +8,70 @@ import Math
 string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
 string property		MENU_ROOT		= "_root.MenuHolder.Menu_mc" autoReadonly
 
-int property		GROUP_FLAG_UNEQUIP_ARMOR	= 	1	autoReadonly
-int property		GROUP_FLAG_UNEQUIP_HANDS	= 	2	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_ARMOR	= 1	autoReadonly
+int property		GROUP_FLAG_UNEQUIP_HANDS	= 2	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
 Actor Property		PlayerREF auto
 
-bool property		ButtonHelpEnabled	= 	true	auto
+bool property		ButtonHelpEnabled	= true auto
 
+int property GroupAddKey
+	int function get()
+		return _groupAddKey
+	endFunction
+
+	function set(int a_val)
+		SwapControlKey(a_val, _groupAddKey)
+		_groupAddKey = a_val
+	endFunction
+endProperty
+
+int property GroupUseKey
+	int function get()
+		return _groupUseKey
+	endFunction
+
+	function set(int a_val)
+		SwapControlKey(a_val, _groupUseKey)
+		_groupUseKey = a_val
+	endFunction
+endProperty
+
+int property SetIconKey
+	int function get()
+		return _setIconKey
+	endFunction
+
+	function set(int a_val)
+		SwapControlKey(a_val, _setIconKey)
+		_setIconKey = a_val
+	endFunction
+endProperty
+
+int property SaveEquipStateKey
+	int function get()
+		return _saveEquipStateKey
+	endFunction
+
+	function set(int a_val)
+		SwapControlKey(a_val, _saveEquipStateKey)
+		_saveEquipStateKey = a_val
+	endFunction
+endProperty
+
+int property ToggleFocusKey
+	int function get()
+		return _toggleFocusKey
+	endFunction
+
+	function set(int a_val)
+		SwapControlKey(a_val, _toggleFocusKey)
+		_toggleFocusKey = a_val
+	endFunction
+endProperty
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
@@ -37,8 +91,6 @@ int[]				_groupOffHandFormIds
 Form[]				_groupIconItems
 int[]				_groupIconFormIds
 
-int[]				_groupHotkeys
-
 bool				_silenceEquipSounds = false
 
 SoundCategory		_audioCategoryUI
@@ -55,6 +107,17 @@ bool				_usedRightHand		= false
 bool				_usedLeftHand		= false
 bool				_usedVoice			= false
 int					_usedOutfitMask		= 0
+
+; Keys
+int					_groupAddKey		= 33 ; F
+int					_groupUseKey		= 19 ; R
+int					_setIconKey			= 56 ; LAlt
+int					_saveEquipStateKey	= 20 ; T
+int					_toggleFocusKey		= 57 ; Space
+
+int[]				_groupHotkeys
+
+
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -77,10 +140,10 @@ event OnInit()
 	_groupIconFormIds	= new int[8]
 
 	_groupHotkeys = new int[8]
-	_groupHotkeys[0] = 59
-	_groupHotkeys[1] = 60
-	_groupHotkeys[2] = 61
-	_groupHotkeys[3] = 62
+	_groupHotkeys[0] = 59	; F1
+	_groupHotkeys[1] = 60	; F2
+	_groupHotkeys[2] = 61	; F3
+	_groupHotkeys[3] = 62	; F4
 	_groupHotkeys[4] = -1
 	_groupHotkeys[5] = -1
 	_groupHotkeys[6] = -1
@@ -117,12 +180,8 @@ endEvent
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnMenuOpen(string a_menuName)
+	InitControls()
 	InitMenuGroupData()
-
-	;Switch on button helpers
-	if (ButtonHelpEnabled)
-		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".enableNavigationHelp", true)
-	endIf
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -279,6 +338,19 @@ bool function SetGroupHotkey(int a_groupIndex, int a_keycode)
 	_groupHotkeys[a_groupIndex] = a_keycode
 
 	return true
+endFunction
+
+; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
+function InitControls()
+	int[] args = new int[6]
+	args[0] = ButtonHelpEnabled as int
+	args[1] = _groupAddKey
+	args[2] = _groupUseKey
+	args[3] = _setIconKey
+	args[4] = _saveEquipStateKey
+	args[5] = _toggleFocusKey
+
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".initControls", args)
 endFunction
 
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
@@ -895,4 +967,18 @@ function RegisterHotkeys()
 
 		i += 1
 	endWhile
+endFunction
+
+function SwapControlKey(int a_newKey, int a_curKey)
+	if (a_newKey == _groupAddKey)
+		_groupAddKey = a_curKey
+	elseIf (a_newKey == _groupUseKey)
+		_groupUseKey = a_curKey
+	elseIf (a_newKey == _setIconKey)
+		_setIconKey = a_curKey
+	elseIf (a_newKey == _saveEquipStateKey)
+		_saveEquipStateKey = a_curKey
+	elseIf (a_newKey == _toggleFocusKey)
+		_toggleFocusKey = a_curKey
+	endIf
 endFunction
