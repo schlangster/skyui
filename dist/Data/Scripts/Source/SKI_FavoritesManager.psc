@@ -525,12 +525,12 @@ function GroupUse(int a_groupIndex)
 	; Process main and offhand items first
 	Form mainHandItem = _groupMainHandItems[a_groupIndex]
 	if (mainHandItem)
-		ProcessItem(mainHandItem, mainHandItem.GetType())
+		ProcessItem(mainHandItem, mainHandItem.GetType(),false)
 	endIf
 
 	Form offHandItem = _groupOffHandItems[a_groupIndex]
 	if (offHandItem)
-		ProcessItem(offHandItem, offHandItem.GetType())
+		ProcessItem(offHandItem, offHandItem.GetType(),false)
 	endIf
 	
 	; Turn off UI sounds to avoid annoying clicking noise while swapping spells
