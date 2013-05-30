@@ -264,11 +264,12 @@ event OnConfigManagerReady(string a_eventName, string a_strArg, float a_numArg, 
 	endIf
 
 	_configID = newManager.RegisterMod(self, ModName)
-	if (_configID != -1)
+
+	; Success
+	if (_configID >= 0)
 		_configManager = newManager
 		OnConfigRegister()
-	else
-		Debug.Notification("MCM: Failed to register " + ModName + ". All menu slots are in use (maximum 128).")
+		Debug.Notification("MCM: " + ModName + " +++")
 	endIf
  endEvent
 
