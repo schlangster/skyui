@@ -20,7 +20,7 @@ Source code:	https://github.com/schlangster/skyui
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.9 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.14 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################
