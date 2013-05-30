@@ -300,9 +300,6 @@ class FavoritesMenu extends MovieClip
 		var nextClip = pathToFocus.shift();
 		if (nextClip && nextClip.handleInput(details, pathToFocus))
 			return true;
-			
-			
-		skse.Log("pressed skse keycode " + details.skseKeycode);
 		
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.TAB) {
