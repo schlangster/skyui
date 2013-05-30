@@ -823,6 +823,17 @@ endFunction
 
 function ReplaceGroupIcon(int a_groupIndex)
 
+	; If player has MH or OH set for the group, use it first
+	if (_groupMainHandItems[a_groupIndex])
+		_groupIconItems[a_groupIndex] = _groupMainHandItems[a_groupIndex]
+		_groupIconFormIds[a_groupIndex] = _groupMainHandItems[a_groupIndex].GetFormID()
+		return
+	elseIf (_groupOffHandItems[a_groupIndex])
+		_groupIconItems[a_groupIndex] = _groupOffHandItems[a_groupIndex]
+		_groupIconFormIds[a_groupIndex] = _groupOffHandItems[a_groupIndex].GetFormID()
+		return
+	endIf
+
 	int offset = a_groupIndex * 32
 
 	; Select the target set of arrays, adjust offset
