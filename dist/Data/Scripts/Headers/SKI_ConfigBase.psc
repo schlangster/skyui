@@ -18,8 +18,8 @@ scriptname SKI_ConfigBase extends SKI_QuestBase
 
 int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
 int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
-int property		OPTION_FLAG_HIDDEN		= 0x02 autoReadonly ; Version 3
-int property		OPTION_FLAG_WITH_UNMAP	= 0x04 autoReadonly ; Version 3
+int property		OPTION_FLAG_HIDDEN		= 0x02 autoReadonly			; Version 3
+int property		OPTION_FLAG_WITH_UNMAP	= 0x04 autoReadonly			; Version 3
 
 int property		LEFT_TO_RIGHT			= 1	autoReadonly
 int property		TOP_TO_BOTTOM			= 2 autoReadonly
