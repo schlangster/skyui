@@ -508,6 +508,9 @@ function GroupUse(int a_groupIndex)
 	; Encountered invalid items are removed at the end when speed is no longer an issue
 	Form[] invalidItems = new Form[32]
 	int invalidIdx = 0
+
+	; Turn off UI sounds to avoid annoying clicking noise while swapping spells
+	_audioCategoryUI.Mute()
 	
 	; Unequip hands first?
 	if (GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_HANDS))
@@ -533,9 +536,6 @@ function GroupUse(int a_groupIndex)
 		ProcessItem(offHandItem, offHandItem.GetType(),false)
 	endIf
 	
-	; Turn off UI sounds to avoid annoying clicking noise while swapping spells
-	_audioCategoryUI.Mute()
-
 	;DEBUG
 	StartTime = Utility.GetCurrentRealTime()
 
