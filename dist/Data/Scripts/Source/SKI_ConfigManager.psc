@@ -46,7 +46,7 @@ event OnInit()
 	_modNames	= new string[128]
 
 	; Wait a few ticks until any initial menus have registered for events
-	Utility.Wait(0.5)
+	Utility.Wait(1)
 
 	OnGameReload()
 endEvent
@@ -232,6 +232,11 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 
 	; New registration
 	int configID = NextID()
+	
+	if (configID == -1)
+		return -1
+	endIf
+
 	_modConfigs[configID] = a_menu
 	_modNames[configID] = a_modName
 	
