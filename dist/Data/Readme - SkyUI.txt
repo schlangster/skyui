@@ -73,7 +73,7 @@ Further general objectives and design concepts are:
 
 Since improving the whole UI is a big undertaking, we only release single menus at a time as progress is made.
 The first menu we addressed was the Inventory. In version 2.0, we included new Barter, Container and Magic menus.
-Version 3.0 introduced an in-game configuration menu for mods.
+Version 3.0 introduced an in-game configuration menu for mods. The most recent addition was the Favorites menu in version 4.0.
 
 For a more detailed description, please see our mod description on Skyrim Nexus.
 
@@ -85,8 +85,20 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ------------------------------------------------------------
 4.0:
 
+[General]
+- Updated SKSE version requirement to 1.6.14.
+
 [ModConfigurationMenu]
-- Fixed issue that could prevent certain MCM mods from registering correctly (i.e. Wet and Cold).
+- Enabled nested translations for option and value text (uses the same format as SetInfoText).
+- Added OPTION_FLAG_HIDDEN to hide an option.
+- Added OPTION_FLAG_WITH_UNMAP. When set for keymap options, it enables an unmap button that'll send keycode -1.
+
+[MapMenu]
+- Fixed issue where search widget wasn't being completely disabled when hidden.
+
+[ActiveEffectsWidget]
+- With SKSE 1.6.14, inactive effects are now filtered out.
+- Added a configurable minimum time left to hide long lasting effects like blessings until they are about to expire.
 
 [FavoritesMenu]
 - Initial release
