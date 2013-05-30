@@ -15,7 +15,6 @@ import skyui.defines.Form;
 import skyui.components.ButtonPanel;
 import skyui.components.MappedButton;
 import skyui.components.list.ScrollingList;
-import skyui.components.list.BasicEnumeration;
 import skyui.components.list.FilteredEnumeration;
 
 import skyui.filter.ItemTypeFilter;
@@ -65,7 +64,7 @@ class FavoritesMenu extends MovieClip
 	private var _categoryIndex: Number = 0;
 	private var _groupIndex: Number = 0;
 	
-	private var _groupButtonFocus: Boolean = false;
+	private var _groupButtonFocused: Boolean = false;
 	
 	private var _groupAssignIndex: Number = -1;
 	
@@ -98,7 +97,6 @@ class FavoritesMenu extends MovieClip
 	public var headerText: TextField;
 
 	public var navPanel: MovieClip;
-//	public var navPanels: ButtonPanel;
 	
 	
   /* PROPERTIES */
@@ -167,7 +165,7 @@ class FavoritesMenu extends MovieClip
 		
 		_groupDataExtender.iconData[a_groupIndex] = a_iconFormId;
 		
-		for (var i=3, j=startIndex ; i<arguments.length; i++, j++)
+		for (var i=4, j=startIndex ; i<arguments.length; i++, j++)
 			_groupDataExtender.groupData[j] = arguments[i];
 		
 		if (_isInitialized)
@@ -188,6 +186,8 @@ class FavoritesMenu extends MovieClip
 			endSetGroupIcon();
 		else if (_state == SAVE_EQUIP_STATE_SYNC)
 			endSaveEquipState();
+			
+		updateNavButtons();
 	}
 	
 	
@@ -306,7 +306,7 @@ class FavoritesMenu extends MovieClip
 					
 				} else if (_state == ITEM_SELECT) {
 				
-					if (_groupButtonFocus) {
+					if (_groupButtonFocused) {
 						_groupIndex--;
 						if (_groupIndex < 0)
 							_groupIndex = _groupButtonGroup.length - 1;
@@ -336,7 +336,7 @@ class FavoritesMenu extends MovieClip
 					_groupButtonGroup.setSelectedButton(_groupButtonGroup.getButtonAt(idx));
 					
 				} else if (_state == ITEM_SELECT) {
-					if (_groupButtonFocus) {
+					if (_groupButtonFocused) {
 						_groupIndex++;
 						if (_groupIndex >= _groupButtonGroup.length)
 							_groupIndex = 0;
@@ -351,10 +351,10 @@ class FavoritesMenu extends MovieClip
 
 				return true;
 				
-			} else if (details.skseKeycode == _groupAddKey || details.code == 70) {
+			} else if (details.skseKeycode == _groupAddKey) {
 				
 				if (_state == ITEM_SELECT) {
-					if (!_groupButtonFocus)
+					if (!_groupButtonFocused)
 						startGroupAssignment();
 					else
 						startGroupRemoval();
@@ -369,22 +369,22 @@ class FavoritesMenu extends MovieClip
 					applyGroupAssignment();
 				return true;
 				
-			} else if (details.skseKeycode == _groupUseKey || details.code == 82) {
+			} else if (details.skseKeycode == _groupUseKey) {
 				if (_state == ITEM_SELECT)
 					requestGroupUse();
 				return true;
 				
-			} else if (details.skseKeycode == _setIconKey || details.code == 18) {
+			} else if (details.skseKeycode == _setIconKey) {
 				if (_state == ITEM_SELECT)
 					startSetGroupIcon();
 					
-			} else if (details.skseKeycode == _saveEquipStateKey || details.code == 18) {
+			} else if (details.skseKeycode == _saveEquipStateKey) {
 				if (_state == ITEM_SELECT)
 					startSaveEquipState();
 				
-			} else if (details.skseKeycode == _toggleFocusKey || details.code == 32) {
+			} else if (details.skseKeycode == _toggleFocusKey) {
 				if (_state == ITEM_SELECT)
-					setGroupFocus(!_groupButtonFocus); // toggle
+					setGroupFocus(!_groupButtonFocused); // toggle
 				return true;
 			}
 		}
@@ -446,8 +446,6 @@ class FavoritesMenu extends MovieClip
 	{
 		if (_isInitialized)
 			itemList.InvalidateData();
-			
-		updateNavButtons();
 	}
 
 	private function onItemPress(a_event: Object): Void
@@ -479,7 +477,7 @@ class FavoritesMenu extends MovieClip
 			
 		_categoryIndex = _categoryButtonGroup.indexOf(btn);
 			
-		_groupButtonFocus = false;
+		_groupButtonFocused = false;
 		_groupButtonGroup.setSelectedButton(null);
 		itemList.listState.activeGroupIndex = -1;
 		
@@ -487,6 +485,7 @@ class FavoritesMenu extends MovieClip
 		_typeFilter.changeFilterFlag(btn.filterFlag);
 		
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+		updateNavButtons();
 	}
 	
 	private function onGroupSelect(a_event: Object): Void
@@ -496,7 +495,7 @@ class FavoritesMenu extends MovieClip
 			return;
 
 		var index = _groupButtonGroup.indexOf(btn);
-		_groupButtonFocus = true;
+		_groupButtonFocused = true;
 		
 		_categoryButtonGroup.setSelectedButton(null);
 		
@@ -517,6 +516,7 @@ class FavoritesMenu extends MovieClip
 		}
 		
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
+		updateNavButtons();
 	}
 	
 	private function onFadeInCompletion(): Void
@@ -551,6 +551,9 @@ class FavoritesMenu extends MovieClip
 	
 	private function startGroupAssignment(): Void
 	{
+		if (_waitingForGroupData)
+			return;
+		
 		var selectedEntry = itemList.selectedEntry;
 		if (selectedEntry == null)
 			return;
@@ -641,12 +644,14 @@ class FavoritesMenu extends MovieClip
 		
 		setGroupFocus(false);
 		enableGroupButtons(true);
+		
+		updateNavButtons();
 	}
 	
 	private function startGroupRemoval(): Void
 	{
 		var formId: Number = itemList.selectedEntry.formId;
-		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
+		if (_groupButtonFocused && _groupIndex >= 0 && formId) {
 			_state = GROUP_REMOVE_SYNC;
 			skse.SendModEvent("SKIFM_groupRemove", "", _groupIndex, formId);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
@@ -660,7 +665,7 @@ class FavoritesMenu extends MovieClip
 	
 	private function requestGroupUse(): Void
 	{
-		if (_groupButtonFocus && _groupIndex >= 0 && itemList.listEnumeration.size() > 0) {
+		if (_groupButtonFocused && _groupIndex >= 0 && itemList.listEnumeration.size() > 0) {
 			skse.SendModEvent("SKIFM_groupUse", "", _groupIndex);
 			startFadeOut();
 		}
@@ -669,7 +674,7 @@ class FavoritesMenu extends MovieClip
 	private function startSaveEquipState(): Void
 	{
 		var selectedEntry = itemList.selectedEntry;
-		if (_groupButtonFocus && _groupIndex >= 0) {
+		if (_groupButtonFocused && _groupIndex >= 0) {
 			_state = SAVE_EQUIP_STATE_SYNC;
 			skse.SendModEvent("SKIFM_saveEquipState", "", _groupIndex);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
@@ -684,7 +689,7 @@ class FavoritesMenu extends MovieClip
 	private function startSetGroupIcon(): Void
 	{
 		var formId: Number = itemList.selectedEntry.formId;
-		if (_groupButtonFocus && _groupIndex >= 0 && formId) {
+		if (_groupButtonFocused && _groupIndex >= 0 && formId) {
 			_state = SET_ICON_SYNC;
 			skse.SendModEvent("SKIFM_setGroupIcon", "", _groupIndex, formId);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
@@ -771,6 +776,9 @@ class FavoritesMenu extends MovieClip
 			return;
 		}
 		
+		var isListFilled = itemList.listEnumeration.size() > 0;
+		var isEntrySelected = itemList.selectedEntry != null;
+		
 		navPanel._visible = true;
 		
 		var row1: ButtonPanel = navPanel.row1;
@@ -779,20 +787,16 @@ class FavoritesMenu extends MovieClip
 		
 		row1.clearButtons();
 		row1.addButton({text: "$Toggle Focus", controls: Input.Jump});
-		if (_groupButtonFocus) {
-			row1.addButton({text: "$Ungroup", controls: Input.TogglePOV});
-		} else {
-			row1.addButton({text: "$Group", controls: Input.TogglePOV});
-		}
+		if (isEntrySelected)
+			row1.addButton({text: _groupButtonFocused ? "$Ungroup" : "$Group", controls: Input.TogglePOV});
 		row1.updateButtons(true);
 		
 		row2.clearButtons();
-		if (_groupButtonFocus) {
-			var selectedEntry = itemList.selectedEntry;
+		if (_groupButtonFocused && isListFilled) {
 			twoRows = true;
 			row2.addButton({text: "$Group Use", controls: Input.ReadyWeapon});
 			row2.addButton({text: "$Save Equip State", controls: Input.Wait});
-			if (selectedEntry != null)
+			if (isEntrySelected)
 				row2.addButton({text: "$Set Group Icon", controls: Input.Sprint});
 		}
 		row2.updateButtons(true);
