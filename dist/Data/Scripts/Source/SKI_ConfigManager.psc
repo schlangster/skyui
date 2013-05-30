@@ -13,7 +13,7 @@ scriptname SKI_ConfigManager extends SKI_QuestBase hidden
 ; 4:	- Added redundancy for registration process
 
 int function GetVersion()
-	return 3
+	return 4
 endFunction
 
 
@@ -43,6 +43,8 @@ bool				_locked			= false
 ; -- Version 4 --
 
 bool				_cleanupFlag	= false
+int					_addCounter		= 0
+int					_updateCounter	= 0
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -80,7 +82,8 @@ event OnGameReload()
 	CleanUp()
 	SendModEvent("SKICP_configManagerReady")
 
-	RegisterForSingleUpdate(10)
+	_updateCounter = 0
+	RegisterForSingleUpdate(5)
 endEvent
 
 
@@ -92,9 +95,19 @@ event OnUpdate()
 		CleanUp()
 	endIf
 
+	if (_addCounter > 0)
+		Debug.Notification("MCM: Registered " + _addCounter + " new menu(s).")
+		_addCounter = 0
+	endIf
+
 	SendModEvent("SKICP_configManagerReady")
 
-	RegisterForSingleUpdate(10)
+	if (_updateCounter < 6)
+		_updateCounter += 1
+		RegisterForSingleUpdate(5)
+	else
+		RegisterForSingleUpdate(30)
+	endIf
 endEvent
 
 event OnMenuOpen(string a_menuName)
@@ -250,6 +263,9 @@ int function RegisterMod(SKI_ConfigBase a_menu, string a_modName)
 	
 	_configCount += 1
 
+	; Track mods added in the current cycle so we don't have to display one message per mod
+	_addCounter += 1
+
 	GotoState("")
 
 	return configID
@@ -284,6 +300,7 @@ function ForceReset()
 	SendModEvent("SKICP_configManagerReset")
 
 	GotoState("BUSY")
+
 	int i = 0
 	while (i < _modConfigs.length)
 		_modConfigs[i] = none
@@ -358,5 +375,3 @@ state BUSY
 	function CleanUp()
 	endFunction
 endState
-
-
