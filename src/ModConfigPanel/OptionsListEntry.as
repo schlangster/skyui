@@ -91,7 +91,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("header");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = 100;
 
 				headerDecor._x = labelTextField.getLineMetrics(0).width + 10;
@@ -104,7 +104,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("text");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
@@ -117,7 +117,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("toggle");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				toggleIcon._x = entryWidth - toggleIcon._width;
@@ -130,7 +130,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("slider");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
@@ -145,7 +145,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("menu");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
@@ -160,7 +160,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("color");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				colorIcon._x = entryWidth - colorIcon._width;
@@ -175,7 +175,7 @@ class OptionsListEntry extends BasicListEntry
 				gotoAndStop("keymap");
 				
 				labelTextField._width = entryWidth;
-				labelTextField.SetText(a_entryObject.text);
+				labelTextField.SetText(a_entryObject.text, true);
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				var keyCode = a_entryObject.numValue;
