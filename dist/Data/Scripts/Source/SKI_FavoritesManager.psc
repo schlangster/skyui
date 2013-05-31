@@ -585,16 +585,26 @@ function GroupUse(int a_groupIndex)
 	if (GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_HANDS))
 		Form rightHand = PlayerREF.GetEquippedObject(1)
 		if (rightHand)
-			PlayerREF.UnequipItemEx(rightHand, 1)
+			int itemType = rightHand.GetType()
+			if (itemType == 22)
+				PlayerREF.UnequipSpell(rightHand as Spell, 0)
+			else
+				PlayerREF.UnequipItemEx(rightHand, 1)
+			endif
 		endIf
 
 		Form leftHand = PlayerREF.GetEquippedObject(0)
 		if (leftHand)
-			PlayerREF.UnequipItemEx(leftHand, 2)
+			int itemType = leftHand.GetType()
+			if (itemType == 22)
+				PlayerREF.UnequipSpell(leftHand as Spell, 1)
+			else
+				PlayerREF.UnequipItemEx(leftHand, 2)
+			endif
 		endIf
 	endIf
 	
-	; Process main and offhand items first
+	; Process main and offhand items
 
 	; Left first, to avoid problems when equipping the same weapon twice
 	Form offHandItem = _groupOffHandItems[a_groupIndex]
