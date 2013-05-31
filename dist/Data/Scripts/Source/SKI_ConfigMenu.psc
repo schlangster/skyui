@@ -380,7 +380,7 @@ event OnPageReset(string a_page)
 
 		if (! isGamepad)
 			AddHeaderOption("$Favorites Menu")
-			AddKeyMapOptionST("FAV_GROUP_ADD_KEY", "$Group", SKI_FavoritesManagerInstance.GroupAddKey)
+			AddKeyMapOptionST("FAV_GROUP_ADD_KEY", "{$Group}/{$Ungroup}", SKI_FavoritesManagerInstance.GroupAddKey)
 			AddKeyMapOptionST("FAV_GROUP_USE_KEY", "$Group Use", SKI_FavoritesManagerInstance.GroupUseKey)
 			AddKeyMapOptionST("FAV_SET_ICON_KEY", "$Set Group Icon", SKI_FavoritesManagerInstance.SetIconKey)
 			AddKeyMapOptionST("FAV_EQUIP_STATE_KEY", "$Save Equip State", SKI_FavoritesManagerInstance.SaveEquipStateKey)
