@@ -310,6 +310,14 @@ int[] function GetGroupHotkeys()
 endFunction
 
 bool function SetGroupHotkey(int a_groupIndex, int a_keycode)
+
+	; Special case for unmap
+	if (a_keycode == -1)
+		_groupHotkeys[a_groupIndex] = -1
+		UnregisterForKey(oldKeycode)
+		return true
+	endIf
+
 	; Old group index this keycode was bound to
 	int oldIndex = _groupHotkeys.Find(a_keycode)
 	; Old keycode at the target position
@@ -333,6 +341,8 @@ bool function SetGroupHotkey(int a_groupIndex, int a_keycode)
 		if (oldKeycode != -1)
 			UnregisterForKey(oldKeycode)
 		endIf
+
+		RegisterForKey(a_keycode)
 	endIf
 
 	_groupHotkeys[a_groupIndex] = a_keycode
