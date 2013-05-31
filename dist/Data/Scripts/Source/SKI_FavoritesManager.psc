@@ -595,14 +595,16 @@ function GroupUse(int a_groupIndex)
 	endIf
 	
 	; Process main and offhand items first
-	Form mainHandItem = _groupMainHandItems[a_groupIndex]
-	if (mainHandItem)
-		ProcessItem(mainHandItem, mainHandItem.GetType(),false)
-	endIf
 
+	; Left first, to avoid problems when equipping the same weapon twice
 	Form offHandItem = _groupOffHandItems[a_groupIndex]
 	if (offHandItem)
-		ProcessItem(offHandItem, offHandItem.GetType(),false)
+		ProcessItem(offHandItem, offHandItem.GetType(), false, true)
+	endIf
+
+	Form mainHandItem = _groupMainHandItems[a_groupIndex]
+	if (mainHandItem)
+		ProcessItem(mainHandItem, mainHandItem.GetType(), false, false)
 	endIf
 
 	; Validate & process items
@@ -675,7 +677,7 @@ bool function ValidateItem(Form a_item, int a_itemType)
 	endIf
 endFunction
 
-bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = true)
+bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = true, bool a_offHandOnly = false)
 
 	; WEAPON ------------
 	if (a_itemType == 41)
@@ -690,7 +692,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 		; It's one-handed and the player has a free hand
 		if (weaponType <= 4 || weaponType == 8) ; Fists(0), Swords(1), Daggers(2), War Axes(3), Maces(4), Staffs(8)
-			if (!_usedRightHand)
+			if (!_usedRightHand && !a_offHandOnly)
 				PlayerREF.EquipItemEX(itemWeapon, 1, equipSound = _silenceEquipSounds)
 				_usedRightHand = true
 			elseIf (!_usedLeftHand)
@@ -746,7 +748,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 			; spell is eitherhanded
 			if (spellEquipSlot == _eitherHandSlot)
-				if (!_usedRightHand)
+				if (!_usedRightHand && !a_offHandOnly)
 					PlayerREF.EquipSpell(itemSpell, 1)
 					_usedRightHand = true
 				elseIf (!_usedLeftHand)
@@ -792,7 +794,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		;	PlayerREF.EquipItemEX(itemScroll, equipSlot = 0, equipSound = _silenceEquipSounds)
 		;	_usedLeftHand = true
 		;	_usedRightHand = true
-		if (!_usedRightHand)
+		if (!_usedRightHand && !a_offHandOnly)
 			PlayerREF.EquipItemEX(itemScroll, equipSlot = 1, equipSound = _silenceEquipSounds)
 			_usedRightHand = true			
 		elseIf (!_usedLeftHand)
