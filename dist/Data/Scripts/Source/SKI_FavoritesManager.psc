@@ -585,12 +585,12 @@ function GroupUse(int a_groupIndex)
 	if (GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_HANDS))
 		Form rightHand = PlayerREF.GetEquippedObject(1)
 		if (rightHand)
-			PlayerREF.UnequipItem(rightHand, abSilent = true)
+			PlayerREF.UnequipItemEx(rightHand, 1)
 		endIf
 
 		Form leftHand = PlayerREF.GetEquippedObject(0)
 		if (leftHand)
-			PlayerREF.UnequipItem(leftHand, abSilent = true)
+			PlayerREF.UnequipItemEx(leftHand, 2)
 		endIf
 	endIf
 	
