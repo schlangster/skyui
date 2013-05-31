@@ -531,10 +531,6 @@ bool function GroupRemove(int a_groupIndex, Form a_item)
 		endIf
 	endWhile
 
-	if (a_item == _groupIconItems[a_groupIndex])
-		ReplaceGroupIcon(a_groupIndex)
-	endIf
-
 	if (a_item == _groupMainHandItems[a_groupIndex])
 		_groupMainHandItems[a_groupIndex] = none
 		_groupMainHandFormIds[a_groupIndex] = 0
@@ -543,6 +539,10 @@ bool function GroupRemove(int a_groupIndex, Form a_item)
 	if (a_item == _groupOffHandItems[a_groupIndex])
 		_groupOffHandItems[a_groupIndex] = none
 		_groupOffHandFormIds[a_groupIndex] = 0
+	endIf
+
+	if (a_item == _groupIconItems[a_groupIndex])
+		ReplaceGroupIcon(a_groupIndex)
 	endIf
 
 	return true
