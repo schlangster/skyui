@@ -312,8 +312,9 @@ class skyui.util.ConfigManager
 			loc[a[a.length-1]] = val;
 		}
 		
-		_loadPhase = 1;
-		_timeoutID = setInterval(onTimeout, TIMEOUT);
+		_loadPhase = LOAD_FILE;
+
+		_timeoutID = setInterval(onTimeout, ((_global.skse) ? TIMEOUT : 1));
 		
 //		_eventDummy.dispatchEvent({type: "configLoad", config: _config});
 	}
