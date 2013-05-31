@@ -376,7 +376,7 @@ event OnPageReset(string a_page)
 			AddKeyMapOptionST("SORT_ORDER_BUTTON", "$Order", _sortOrderButton)
 		endIf
 
-		
+		AddEmptyOption()
 
 		if (! isGamepad)
 			AddHeaderOption("$Favorites Menu")
