@@ -77,19 +77,19 @@ endProperty
 
 Form[]				_items1
 Form[]				_items2
-int[]				_itemFormIds1
-int[]				_itemFormIds2
+int[]				_itemIds1
+int[]				_itemIds2
 
 int[]				_groupFlags
 
 Form[]				_groupMainHandItems
-int[]				_groupMainHandFormIds
+int[]				_groupMainHandItemIds
 
 Form[]				_groupOffHandItems
-int[]				_groupOffHandFormIds
+int[]				_groupOffHandItemIds
 
 Form[]				_groupIconItems
-int[]				_groupIconFormIds
+int[]				_groupIconItemIds
 
 bool				_silenceEquipSounds = false
 
@@ -125,19 +125,19 @@ int[]				_groupHotkeys
 event OnInit()
 	_items1			= new Form[128]
 	_items2			= new Form[128]
-	_itemFormIds1	= new int[128]
-	_itemFormIds2	= new int[128]
+	_itemIds1		= new int[128]
+	_itemIds2		= new int[128]
 
 	_groupFlags		= new int[8]
 
 	_groupMainHandItems		= new Form[8]
-	_groupMainHandFormIds	= new int[8]
+	_groupMainHandItemIds	= new int[8]
 
 	_groupOffHandItems		= new Form[8]
-	_groupOffHandFormIds	= new int[8]
+	_groupOffHandItemIds	= new int[8]
 	
 	_groupIconItems		= new Form[8]
-	_groupIconFormIds	= new int[8]
+	_groupIconItemIds	= new int[8]
 
 	_groupHotkeys = new int[8]
 	_groupHotkeys[0] = 59	; F1
@@ -185,13 +185,17 @@ event OnMenuOpen(string a_menuName)
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+
+	; FIXME
 	RemoveInvalidItem(a_sender,true)
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int		groupIndex = a_strArg as int
+	int		itemId = a_numArg as int
 	Form	item = a_sender
-	int		groupIndex = a_numArg as int
 
+	; FIXME
 	if (GroupAdd(groupIndex, item))
 		UpdateMenuGroupData(groupIndex)
 	else
@@ -201,9 +205,11 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 endEvent
 
 event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int		groupIndex = a_strArg as int
+	int		itemId = a_numArg as int
 	Form	item = a_sender
-	int		groupIndex = a_numArg as int
 
+	; FIXME
 	if (GroupRemove(groupIndex, item))
 		UpdateMenuGroupData(groupIndex)
 	else
@@ -214,7 +220,6 @@ endEvent
 ; Read the player's current equipment and save it to the target group
 event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)	
 	int groupIndex = a_numArg as int
-	Form[] handItems = new Form[2]
 
 	int handIndex = 0
 	
@@ -222,20 +227,20 @@ event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form
 	Form rightHand = PlayerREF.GetEquippedObject(1)
 	if (rightHand && IsFormInGroup(groupIndex, rightHand))
 		_groupMainHandItems[groupIndex] = rightHand
-		_groupMainHandFormIDs[groupIndex] = rightHand.GetFormID()
+		_groupMainHandItemIds[groupIndex] = rightHand.GetFormID()
 	else
 		_groupMainHandItems[groupIndex] = none
-		_groupMainHandFormIDs[groupIndex] = 0
+		_groupMainHandItemIds[groupIndex] = 0
 	endIf
 
 	; Left
 	Form leftHand = PlayerREF.GetEquippedObject(0)
 	if (leftHand && IsFormInGroup(groupIndex, leftHand))
 		_groupOffHandItems[groupIndex] = leftHand
-		_groupOffHandFormIDs[groupIndex] = leftHand.GetFormID()
+		_groupOffHandItemIds[groupIndex] = leftHand.GetFormID()
 	else
 		_groupOffHandItems[groupIndex] = none
-		_groupOffHandFormIDs[groupIndex] = 0
+		_groupOffHandItemIds[groupIndex] = 0
 	endIf
 	
 	UpdateMenuGroupData(groupIndex)
@@ -243,11 +248,13 @@ endEvent
 
 ; This will set a form as the icon form for a group
 event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
+	int		groupIndex = a_strArg as int
+	int		itemId = a_numArg as int
 	Form	item = a_sender
-	int		groupIndex = a_numArg as int
 
+	; FIXME
 	_groupIconItems[groupIndex] = item
-	_groupIconFormIds[groupIndex] = item.GetFormID()
+	_groupIconItemIds[groupIndex] = item.GetFormID()
 
 	UpdateMenuGroupData(groupIndex)
 endEvent
@@ -373,55 +380,55 @@ function InitMenuGroupData()
 
 	int i = 0
 	while (i<8)
-		args[c] = _groupMainHandFormIds[i]
+		args[c] = _groupMainHandItemIds[i]
 		i += 1
 		c += 1
 	endWhile
 
 	i = 0
 	while (i<8)
-		args[c] = _groupOffHandFormIds[i]
+		args[c] = _groupOffHandItemIds[i]
 		i += 1
 		c += 1
 	endWhile
 	
 	i = 0
 	while (i<8)
-		args[c] = _groupIconFormIds[i]
+		args[c] = _groupIconItemIds[i]
 		i += 1
 		c += 1
 	endWhile
 	
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds1)
-	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupForms", _itemFormIds2)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupItems", _itemIds1)
+	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupItems", _itemIds2)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
 endFunction
 
 function UpdateMenuGroupData(int a_groupIndex)
 	int offset = 32 * a_groupIndex
 
-	int[] itemFormIds
+	int[] itemIds
 
 	if (offset >= 128)
 		offset -= 128
-		itemFormIds = _itemFormIds2
+		itemIds = _itemIds2
 	else
-		itemFormIds = _itemFormIds1
+		itemIds = _itemIds1
 	endIf
 
-	; groupIndex, mainHandFormId, offHandFormID, iconFormId, itemFormIds[32]
+	; groupIndex, mainHandItemId, offHandItemID, iconItemId, itemIds[32]
 	int[] args = new int[36]
 
 	args[0] = a_groupIndex
-	args[1] = _groupMainHandFormIds[a_groupIndex]
-	args[2] = _groupOffHandFormIds[a_groupIndex]
-	args[3] = _groupIconFormIds[a_groupIndex]
+	args[1] = _groupMainHandItemIds[a_groupIndex]
+	args[2] = _groupOffHandItemIds[a_groupIndex]
+	args[3] = _groupIconItemIds[a_groupIndex]
 
 	int i = 4
 	int j = offset
 
 	while (i<36)
-		args[i] = itemFormIds[j]
+		args[i] = itemIds[j]
 
 		i += 1
 		j += 1
@@ -442,7 +449,7 @@ function CleanUp()
 
 		if (_items1[i] == none || _items1[i].GetFormID() == 0)
 			_items1[i] = none
-			_itemFormIds1[i] = 0
+			_itemIds1[i] = 0
 		endIf
 
 		i += 1
@@ -453,7 +460,7 @@ function CleanUp()
 
 		if (_items2[i] == none || _items2[i].GetFormID() == 0)
 			_items2[i] = none
-			_itemFormIds2[i] = 0
+			_itemIds2[i] = 0
 		endIf
 
 		i += 1
@@ -470,10 +477,10 @@ bool function GroupAdd(int a_groupIndex, Form a_item)
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _itemFormIds2
+		formIds = _itemIds2
 	else
 		items = _items1
-		formIds = _itemFormIds1
+		formIds = _itemIds1
 	endIf
 
 	; Prevent the same form being added to a group twice
@@ -497,7 +504,7 @@ bool function GroupAdd(int a_groupIndex, Form a_item)
 	; If there's no icon item set yet, use this one
 	if (_groupIconItems[a_groupIndex] == none)
 		_groupIconItems[a_groupIndex] = a_item
-		_groupIconFormIds[a_groupIndex] = formId
+		_groupIconItemIds[a_groupIndex] = formId
 	endIf
 
 	return true
@@ -513,10 +520,10 @@ bool function GroupRemove(int a_groupIndex, Form a_item)
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _itemFormIds2
+		formIds = _itemIds2
 	else
 		items = _items1
-		formIds = _itemFormIds1
+		formIds = _itemIds1
 	endIf
 
 	int i = offset
@@ -533,12 +540,12 @@ bool function GroupRemove(int a_groupIndex, Form a_item)
 
 	if (a_item == _groupMainHandItems[a_groupIndex])
 		_groupMainHandItems[a_groupIndex] = none
-		_groupMainHandFormIds[a_groupIndex] = 0
+		_groupMainHandItemIds[a_groupIndex] = 0
 	endIf
 
 	if (a_item == _groupOffHandItems[a_groupIndex])
 		_groupOffHandItems[a_groupIndex] = none
-		_groupOffHandFormIds[a_groupIndex] = 0
+		_groupOffHandItemIds[a_groupIndex] = 0
 	endIf
 
 	if (a_item == _groupIconItems[a_groupIndex])
@@ -558,10 +565,10 @@ function GroupUse(int a_groupIndex)
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _itemFormIds2
+		formIds = _itemIds2
 	else
 		items = _items1
-		formIds = _itemFormIds1
+		formIds = _itemIds1
 	endIf
 
 	; Reset state
@@ -609,12 +616,18 @@ function GroupUse(int a_groupIndex)
 	; Left first, to avoid problems when equipping the same weapon twice
 	Form offHandItem = _groupOffHandItems[a_groupIndex]
 	if (offHandItem)
-		ProcessItem(offHandItem, offHandItem.GetType(), false, true)
+		int itemType = offHandItem.GetType()
+		if (ValidateItem(offHandItem, itemType))
+			ProcessItem(offHandItem, itemType, false, true)
+		endIf
 	endIf
 
 	Form mainHandItem = _groupMainHandItems[a_groupIndex]
 	if (mainHandItem)
-		ProcessItem(mainHandItem, mainHandItem.GetType(), false, false)
+		int itemType = mainHandItem.GetType()
+		if (ValidateItem(mainHandItem, itemType))
+			ProcessItem(mainHandItem, itemType, false, false)
+		endIf
 	endIf
 
 	; Validate & process items
@@ -711,7 +724,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 			endIf
 
 		; It's two-handed and both hands are free
-		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand) ; 
+		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand)
 			PlayerREF.EquipItemEX(itemWeapon, equipSlot = 0, equipSound = _silenceEquipSounds)
 			_usedRightHand = true
 			_usedLeftHand = true
@@ -868,27 +881,27 @@ function RemoveInvalidItem(Form a_item, bool redrawIcon = false)
 	index = _items1.Find(a_item)
 	if (index != -1)
 		_items1[index] = none
-		_itemFormIds1[index] = 0
+		_itemIds1[index] = 0
 	endIf
 
 	index = _items2.Find(a_item)
 	if (index != -1)
 		_items2[index] = none
-		_itemFormIds2[index] = 0
+		_itemIds2[index] = 0
 	endIf
 
 	; Main hand
 	index = _groupMainHandItems.Find(a_item)
 	if (index != -1)
 		_groupMainHandItems[index] = none
-		_groupMainHandFormIds[index] = 0
+		_groupMainHandItemIds[index] = 0
 	endIf
 
 	; Off hand
 	index = _groupOffHandItems.Find(a_item)
 	if (index != -1)
 		_groupOffHandItems[index] = none
-		_groupOffHandFormIds[index] = 0
+		_groupOffHandItemIds[index] = 0
 	endIf
 
 	; Icon
@@ -916,11 +929,11 @@ function ReplaceGroupIcon(int a_groupIndex)
 	; If player has MH or OH set for the group, use it first
 	if (_groupMainHandItems[a_groupIndex])
 		_groupIconItems[a_groupIndex] = _groupMainHandItems[a_groupIndex]
-		_groupIconFormIds[a_groupIndex] = _groupMainHandItems[a_groupIndex].GetFormID()
+		_groupIconItemIds[a_groupIndex] = _groupMainHandItems[a_groupIndex].GetFormID()
 		return
 	elseIf (_groupOffHandItems[a_groupIndex])
 		_groupIconItems[a_groupIndex] = _groupOffHandItems[a_groupIndex]
-		_groupIconFormIds[a_groupIndex] = _groupOffHandItems[a_groupIndex].GetFormID()
+		_groupIconItemIds[a_groupIndex] = _groupOffHandItems[a_groupIndex].GetFormID()
 		return
 	endIf
 
@@ -933,10 +946,10 @@ function ReplaceGroupIcon(int a_groupIndex)
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
-		formIds = _itemFormIds2
+		formIds = _itemIds2
 	else
 		items = _items1
-		formIds = _itemFormIds1
+		formIds = _itemIds1
 	endIf
 
 	int i = offset
@@ -945,7 +958,7 @@ function ReplaceGroupIcon(int a_groupIndex)
 	while (i < n)
 		if (items[i] != none)
 			_groupIconItems[a_groupIndex] = items[i]
-			_groupIconFormIds[a_groupIndex] = items[i].GetFormID()
+			_groupIconItemIds[a_groupIndex] = items[i].GetFormID()
 			return
 		else
 			i += 1
@@ -953,7 +966,7 @@ function ReplaceGroupIcon(int a_groupIndex)
 	endWhile
 
 	_groupIconItems[a_groupIndex] = none
-	_groupIconFormIds[a_groupIndex] = 0
+	_groupIconItemIds[a_groupIndex] = 0
 endFunction
 
 ; utility function to see if form is in the specified group. 
