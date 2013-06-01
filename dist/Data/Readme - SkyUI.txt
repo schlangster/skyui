@@ -93,6 +93,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Added OPTION_FLAG_HIDDEN to hide an option.
 - Added OPTION_FLAG_WITH_UNMAP. When set for keymap options, it enables an unmap button that'll send keycode -1.
 - Improved menu registration process to avoid missing menus on the first save load. For real this time.
+- Enabled basic HTML formatting for option label text. Example: "<font color='#FF0000'>$Hello</font>".
 
 [MapMenu]
 - Fixed issue where search widget wasn't being completely disabled when hidden.
