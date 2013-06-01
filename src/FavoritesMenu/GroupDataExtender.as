@@ -63,8 +63,8 @@ class GroupDataExtender implements IListProcessor
 			e.mainHandFlag = 0;
 			e.offHandFlag = 0;
 			
-			if (e.crc32 != null)
-				_itemIdMap[e.crc32] = e;
+			if (e.itemId != undefined)
+				_itemIdMap[e.itemId] = e;
 		}
 		
 		processGroupData();

@@ -623,7 +623,7 @@ class FavoritesMenu extends MovieClip
 	private function applyGroupAssignment(): Void
 	{
 		var formId: Number = itemList.listState.assignedEntry.formId;
-		var itemId: Number = itemList.selectedEntry.itemId;
+		var itemId: Number = itemList.listState.assignedEntry.itemId;
 		
 		if (formId == null || formId == 0 || _groupAssignIndex == -1) {
 			endGroupAssignment();
@@ -633,7 +633,7 @@ class FavoritesMenu extends MovieClip
 			itemList.suspended = true
 			enableGroupButtons(false);
 			_state = GROUP_ASSIGN_SYNC;
-			skse.SendModEvent("SKIFM_groupAdd", String(_groupAssignIndex), itemId, formId);
+			skse.SendModEvent("SKIFM_groupAdd", String(itemId), _groupAssignIndex, formId);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
@@ -680,11 +680,10 @@ class FavoritesMenu extends MovieClip
 	private function startGroupRemoval(): Void
 	{
 		var itemId: Number = itemList.selectedEntry.itemId;
-		var formId: Number = itemList.selectedEntry.formId;
 		
-		if (_groupButtonFocused && _groupIndex >= 0 && formId) {
+		if (_groupButtonFocused && _groupIndex >= 0) {
 			_state = GROUP_REMOVE_SYNC;
-			skse.SendModEvent("SKIFM_groupRemove", String(_groupIndex), itemId, formId);
+			skse.SendModEvent("SKIFM_groupRemove", String(itemId), _groupIndex);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
@@ -724,7 +723,7 @@ class FavoritesMenu extends MovieClip
 		
 		if (_groupButtonFocused && _groupIndex >= 0 && formId) {
 			_state = SET_ICON_SYNC;
-			skse.SendModEvent("SKIFM_setGroupIcon", String(_groupIndex), itemId, formId);
+			skse.SendModEvent("SKIFM_setGroupIcon", String(itemId), _groupIndex, formId);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}

@@ -190,8 +190,8 @@ event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Fo
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	int		groupIndex = a_strArg as int
-	int		itemId = a_numArg as int
+	int		groupIndex = a_numArg as int
+	int		itemId = a_strArg as int
 	Form	item = a_sender
 
 	if (GroupAdd(groupIndex, itemId, item))
@@ -203,9 +203,8 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 endEvent
 
 event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	int		groupIndex = a_strArg as int
-	int		itemId = a_numArg as int
-	Form	item = a_sender
+	int		groupIndex = a_numArg as int
+	int		itemId = a_strArg as int
 
 	if (GroupRemove(groupIndex, itemId))
 		UpdateMenuGroupData(groupIndex)
@@ -259,8 +258,8 @@ endEvent
 
 ; This will set a form as the icon form for a group
 event OnSetGroupIcon(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	int		groupIndex = a_strArg as int
-	int		itemId = a_numArg as int
+	int		groupIndex = a_numArg as int
+	int		itemId = a_strArg as int
 	Form	item = a_sender
 
 	_groupIconItems[groupIndex] = item
@@ -408,7 +407,7 @@ function InitMenuGroupData()
 		i += 1
 		c += 1
 	endWhile
-	
+
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupItems", _itemIds1)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".pushGroupItems", _itemIds2)
 	UI.InvokeIntA(FAVORITES_MENU, MENU_ROOT + ".finishGroupData", args)
