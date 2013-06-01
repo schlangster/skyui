@@ -172,8 +172,7 @@ event OnGameReload()
 	RegisterForMenu(FAVORITES_MENU)
 	
 	RegisterHotkeys()
-	;Debug
-	RegisterForSingleUpdate(5)
+
 	CleanUp()
 endEvent
 
@@ -183,45 +182,6 @@ endEvent
 event OnMenuOpen(string a_menuName)
 	InitControls()
 	InitMenuGroupData()
-endEvent
-
-;Debug
-event OnUpdate()
-	Form ancestorswrath 	= Game.GetFormFromFile(0x000e40d4, "Skyrim.esm")
-	Form aurawhisper 		= Game.GetFormFromFile(0x0007097b, "Skyrim.esm")
-	Form becomeethereal		= Game.GetFormFromFile(0x00032920, "Skyrim.esm")
-	Form clairvoyance		= Game.GetFormFromFile(0x00021143, "Skyrim.esm")
-	Form silveramring		= Game.GetFormFromFile(0x000877a7, "Skyrim.esm")
-	Form ringofawesome		= silveramring
-	
-	Form elvendagger1		= Game.GetFormFromFile(0x0001399e, "Skyrim.esm")
-	Form elvendagger2		= elvendagger1
-	
-	OnGroupAdd("SKIFM_groupAdd",0,1460501376,ancestorswrath)
-	OnGroupAdd("SKIFM_groupAdd",0,-557622016,aurawhisper)
-	OnGroupAdd("SKIFM_groupAdd",0,-338850208,becomeethereal)
-	OnGroupAdd("SKIFM_groupAdd",0,494887808,clairvoyance)
-	OnGroupAdd("SKIFM_groupAdd",0,-1598069888,silveramring)
-	OnGroupAdd("SKIFM_groupAdd",0,1441104256,ringofawesome) ; simulate duplicate form with different name
-	PrintGroupItems(0)
-	OnGroupRemove("SKIFM_groupRemove",0,1460501376,ancestorswrath)
-	PrintGroupItems(0)
-	OnGroupAdd("SKIFM_groupAdd",0,-1967124736,elvendagger1)
-	OnGroupAdd("SKIFM_groupAdd",0,3141592653,elvendagger2) ; simulate duplicate form with different name
-	PrintGroupItems(0)
-	OnSetGroupIcon("SKIFM_setGroupIcon",0,3141592653,elvendagger2)
-	PrintGroupItems(0)
-	OnSetGroupIcon("SKIFM_setGroupIcon",0,494887808,clairvoyance)
-	OnFoundInvalidItem("SKIFM_foundInvalidItem",0,494887808,clairvoyance)
-	PrintGroupItems(0)
-	;PlayerREF.AddItem(elvendagger1) commented because my test char already has these in favorites
-	;PlayerREF.AddItem(elvendagger2)
-	Debug.Trace("1st dagger is " + GetNthItemIdInGroup(0,elvendagger1,1))
-	Debug.Trace("2nd dagger is " + GetNthItemIdInGroup(0,elvendagger1,2))
-	PlayerREF.EquipItemEX(elvendagger2, 2, equipSound = _silenceEquipSounds)
-	PlayerREF.EquipItemEX(elvendagger1, 1, equipSound = _silenceEquipSounds)
-	OnSaveEquipState("SKIFM_saveEquipState",0,0,None)
-	PrintGroupItems(0)
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
