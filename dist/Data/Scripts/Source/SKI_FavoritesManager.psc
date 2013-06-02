@@ -185,8 +185,7 @@ event OnMenuOpen(string a_menuName)
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-
-	RemoveInvalidItem(a_numArg as int,true)
+	RemoveInvalidItem(a_strArg as int,true)
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -209,6 +208,7 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 
 	if (GroupRemove(groupIndex, itemId))
 		UpdateMenuGroupData(groupIndex)
+		PrintGroupItems(groupIndex)
 	else
 		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
 	endIf
