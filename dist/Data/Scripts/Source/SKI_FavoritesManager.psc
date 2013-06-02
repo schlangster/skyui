@@ -215,19 +215,29 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 endEvent
 
 ; Read the player's current equipment and save it to the target group
-event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)	
+event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
 	int groupIndex = a_numArg as int
 	
-	bool dupeForm = false
-	
-	int handIndex = 0
-
 	int mainHandItemId = UI.GetInt(FAVORITES_MENU, MENU_ROOT + ".rightHandItemId")
 	int offHandItemId = UI.GetInt(FAVORITES_MENU, MENU_ROOT + ".leftHandItemId")
 
-	; TODO
-	Debug.Trace(mainHandItemId)
-	Debug.Trace(offHandItemId)
+	form mainHandForm = GetFormFromItemId(groupIndex,mainHandItemId) ; will return none if not in group
+	if (mainHandForm)
+		_groupMainHandItemIds[groupIndex] = mainHandItemId
+		_groupMainHandItems[groupIndex] = mainHandForm
+	else
+		_groupMainHandItemIds[groupIndex] = 0
+		_groupMainHandItems[groupIndex] = none
+	endIf
+
+	form offHandForm = GetFormFromItemId(groupIndex,offHandItemId)
+	if (offHandForm)
+		_groupOffHandItemIds[groupIndex] = offHandItemId
+		_groupOffHandItems[groupIndex] = offHandForm
+	else
+		_groupOffHandItemIds[groupIndex] = 0
+		_groupOffHandItems[groupIndex] = none
+	endIf
 	
 	UpdateMenuGroupData(groupIndex)
 endEvent
@@ -1001,6 +1011,29 @@ int function GetNumFormsInGroup(int a_groupIndex,form a_item)
 	endWhile
 	
 	return count
+endFunction
+
+form function GetFormFromItemId(int a_groupIndex,int itemId)
+	int offset = 32 * a_groupIndex
+	; Select the target set of arrays, adjust offset
+	form[] items
+	int[] itemIds
+	
+	if (offset >= 128)
+		offset -= 128
+		items = _items2
+		itemIds = _itemIds2
+	else
+		items = _items1
+		itemIds = _itemIds1
+	endIf
+
+	int i = itemIds.Find(itemId,offset)
+	if (i >= offset && i < offset + 32)
+		return items[i]
+	else
+		return none
+	endIf
 endFunction
 
 ; return the Nth itemId
