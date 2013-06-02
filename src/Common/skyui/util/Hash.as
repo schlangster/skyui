@@ -43,9 +43,9 @@
 	
 		for (var i=0; i<n; i++) {
 			c = a_str.charCodeAt(i);
-			result = (result >> 8) ^ _crc32Lookup[(result & 0xFF) ^ c];
+			result = (result >>> 8) ^ _crc32Lookup[(result & 0xFF) ^ c];
 		}
 		
-		return ~result;
+		return ~result & 0xFFFFFFFF;
 	}
 }

@@ -54,9 +54,8 @@ class FilterDataExtender implements IListProcessor
 	private function processEntry(a_entryObject: Object): Void
 	{
 		// ItemID
-		if (a_entryObject.itemId == undefined)
-			a_entryObject.itemId = Hash.crc32(a_entryObject.text, a_entryObject.formId);
-		
+		a_entryObject.itemId &= 0xFFFFFFFF; // better safe than sorry
+	
 		var formType = a_entryObject.formType;
 
 		switch(formType) {

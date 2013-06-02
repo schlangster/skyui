@@ -196,6 +196,7 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 
 	if (GroupAdd(groupIndex, itemId, item))
 		UpdateMenuGroupData(groupIndex)
+		PrintGroupItems(groupIndex)
 	else
 		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
 		Debug.Notification("Group full!")
@@ -221,37 +222,12 @@ event OnSaveEquipState(string a_eventName, string a_strArg, float a_numArg, Form
 	
 	int handIndex = 0
 
-	; FIXME: This allows us to get the itemId of the form the player has equipped
-	;	it needs considerable work though. We need some way to generate the hash
-	;	from the papyrus side. It should be possible to create a crc32 hash Function
-	;	in Papyrus. I've started on it but it's late and I've got to get to bed.
-	;	
-	; Right
-	Form rightHand = PlayerREF.GetEquippedObject(1)
-	if (GetNumFormsInGroup(groupIndex,rightHand) > 1)
-		dupeForm = true
-	endIf
-	if (rightHand && IsFormInGroup(groupIndex, rightHand))
-		_groupMainHandItems[groupIndex] = rightHand
-		_groupMainHandItemIds[groupIndex] = GetNthItemIdInGroup(groupIndex,rightHand,1)
-	else
-		_groupMainHandItems[groupIndex] = none
-		_groupMainHandItemIds[groupIndex] = 0
-	endIf
+	int mainHandItemId = UI.GetInt(FAVORITES_MENU, MENU_ROOT + ".rightHandItemId")
+	int offHandItemId = UI.GetInt(FAVORITES_MENU, MENU_ROOT + ".leftHandItemId")
 
-	; Left
-	Form leftHand = PlayerREF.GetEquippedObject(0)
-	if (leftHand && IsFormInGroup(groupIndex, leftHand))
-		_groupOffHandItems[groupIndex] = leftHand
-		if (leftHand == rightHand && dupeForm) ; this will mess up if there are multiple identical two-handed forms in the fav group
-			_groupOffHandItemIds[groupIndex] = GetNthItemIdInGroup(groupIndex,leftHand,2)	
-		else
-			_groupOffHandItemIds[groupIndex] = GetNthItemIdInGroup(groupIndex,leftHand,1)	
-		endIf
-	else
-		_groupOffHandItems[groupIndex] = none
-		_groupOffHandItemIds[groupIndex] = 0
-	endIf
+	; TODO
+	Debug.Trace(mainHandItemId)
+	Debug.Trace(offHandItemId)
 	
 	UpdateMenuGroupData(groupIndex)
 endEvent
