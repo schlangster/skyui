@@ -73,6 +73,7 @@ int property ToggleFocusKey
 	endFunction
 endProperty
 
+
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
 Form[]				_items1
@@ -116,8 +117,6 @@ int					_saveEquipStateKey	= 20 ; T
 int					_toggleFocusKey		= 57 ; Space
 
 int[]				_groupHotkeys
-
-
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -713,37 +712,27 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		; It's one-handed and the player has a free hand
 		if (weaponType <= 4 || weaponType == 8) ; Fists(0), Swords(1), Daggers(2), War Axes(3), Maces(4), Staffs(8)
 			if (!_usedRightHand && !a_offHandOnly)
-				if (a_itemId != 0)
-					if (itemWeapon == PlayerREF.GetEquippedObject(1))
-						UnequipHand(1) ; avoid damage-related bug when swapping for enhanced item
-					endIf
-					PlayerREF.EquipItemById(itemWeapon, a_itemId, 1, equipSound = _silenceEquipSounds)
-				else
-					PlayerREF.EquipItemEX(itemWeapon, 1, equipSound = _silenceEquipSounds)
+
+				if (a_item == PlayerREF.GetEquippedObject(1) && a_itemId != PlayerREF.GetEquippedItemId(1))
+					UnequipHand(1) ; avoid damage-related bug when swapping for enhanced item
 				endIf
+				PlayerREF.EquipItemById(itemWeapon, a_itemId, 1, equipSound = _silenceEquipSounds)
 				_usedRightHand = true
 			elseIf (!_usedLeftHand)
-				if (a_itemId != 0)
-					if (itemWeapon == PlayerREF.GetEquippedObject(0))
-						UnequipHand(0)
-					endIf
-					PlayerREF.EquipItemById(itemWeapon, a_itemId, 2, equipSound = _silenceEquipSounds)
-				else
-					PlayerREF.EquipItemEX(itemWeapon, 2, equipSound = _silenceEquipSounds)
+				if (a_item == PlayerREF.GetEquippedObject(0) && a_itemId != PlayerREF.GetEquippedItemId(0))
+					UnequipHand(0)
 				endIf
+				PlayerREF.EquipItemById(itemWeapon, a_itemId, 2, equipSound = _silenceEquipSounds)
 				_usedLeftHand = true
 			endIf
 
 		; It's two-handed and both hands are free
 		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand)
-			if (a_itemId != 0)
-				if (itemWeapon == PlayerREF.GetEquippedObject(1))
-					UnequipHand(0)
-				endIf
-				PlayerREF.EquipItemById(itemWeapon, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
-			else
-				PlayerREF.EquipItemEX(itemWeapon, equipSlot = 0, equipSound = _silenceEquipSounds)
+			if (a_item == PlayerREF.GetEquippedObject(0) && a_itemId != PlayerREF.GetEquippedItemId(0))
+				UnequipHand(0)
 			endIf
+			PlayerREF.EquipItemById(itemWeapon, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
+
 			_usedRightHand = true
 			_usedLeftHand = true
 		endIf
@@ -757,21 +746,13 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		; It's a shield... 
 		if (slotMask == 512)
 			if (!_usedLeftHand)
-				if (a_itemId != 0)
-					PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
-				else
-					PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
-				endIf
+				PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
 				_usedLeftHand = true
 				_usedOutfitMask += slotMask
 			endIf
 		; It's not a shield, just equip it
 		else 
-			if (a_itemId != 0)
-				PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
-			else
-				PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
-			endIf
+			PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
 			_usedOutfitMask += slotMask
 		endIf
 
@@ -860,6 +841,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 			_usedVoice = true
 		endIf
 
+		return true
+
 	; POTION ------------
 	elseIf (a_itemType == 46)
 		if ((a_item as Potion).IsHostile()) ; This is a poison and should only be applied after new weapons have been equipped.
@@ -875,6 +858,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 		; This is a non-hostile potion, food, or... something? and can be used immediately
 		PlayerREF.EquipItem(a_item as Potion, abSilent = True)
+
 		return true
 
 	; INGREDIENT ------------
@@ -884,11 +868,6 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 	; LIGHT (TORCH) ------------
 	elseIf (a_itemType == 31)
-		;Should be equipped last, as it depends on having the left hand free
-		if (a_allowDeferring)
-			return false
-		endIf
-
 		if (!_usedLeftHand)
 			PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
 			_usedLeftHand = true
