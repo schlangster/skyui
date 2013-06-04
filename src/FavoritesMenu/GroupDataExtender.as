@@ -158,6 +158,6 @@ class GroupDataExtender implements IListProcessor
 					return;
 		
 		_invalidItems.push(a_itemId);
-		skse.SendModEvent("SKIFM_foundInvalidItem", "", a_itemId);
+		skse.SendModEvent("SKIFM_foundInvalidItem", String(a_itemId));
 	}
 }
