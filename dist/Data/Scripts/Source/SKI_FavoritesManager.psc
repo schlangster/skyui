@@ -584,43 +584,28 @@ function GroupUse(int a_groupIndex)
 	
 	; Unequip hands first?
 	if (GetGroupFlag(a_groupIndex,GROUP_FLAG_UNEQUIP_HANDS))
-		Form rightHand = PlayerREF.GetEquippedObject(1)
-		if (rightHand)
-			int itemType = rightHand.GetType()
-			if (itemType == 22)
-				PlayerREF.UnequipSpell(rightHand as Spell, 0)
-			else
-				PlayerREF.UnequipItemEx(rightHand, 1)
-			endif
-		endIf
-
-		Form leftHand = PlayerREF.GetEquippedObject(0)
-		if (leftHand)
-			int itemType = leftHand.GetType()
-			if (itemType == 22)
-				PlayerREF.UnequipSpell(leftHand as Spell, 1)
-			else
-				PlayerREF.UnequipItemEx(leftHand, 2)
-			endif
-		endIf
+		UnequipHand(0)
+		UnequipHand(1)
 	endIf
 	
 	; Process main and offhand items
 
 	; Left first, to avoid problems when equipping the same weapon twice
 	Form offHandItem = _groupOffHandItems[a_groupIndex]
+	int offHandItemId = _groupOffHandItemIds[a_groupIndex]
 	if (offHandItem)
 		int itemType = offHandItem.GetType()
 		if (ValidateItem(offHandItem, itemType))
-			ProcessItem(offHandItem, itemType, false, true)
+			ProcessItem(offHandItem, itemType, false, true, offHandItemId)
 		endIf
 	endIf
 
 	Form mainHandItem = _groupMainHandItems[a_groupIndex]
+	int mainHandItemId = _groupMainHandItemIds[a_groupIndex]
 	if (mainHandItem)
 		int itemType = mainHandItem.GetType()
 		if (ValidateItem(mainHandItem, itemType))
-			ProcessItem(mainHandItem, itemType, false, false)
+			ProcessItem(mainHandItem, itemType, false, false, mainHandItemId)
 		endIf
 	endIf
 
@@ -637,7 +622,7 @@ function GroupUse(int a_groupIndex)
 			if (! ValidateItem(item, itemType))
 				invalidItemIds[invalidIdx] = itemId
 				invalidIdx += 1
-			elseIf (! ProcessItem(item, itemType))
+			elseIf (! ProcessItem(item, itemType, a_itemId = itemId))
 				deferredItems[deferredIdx] = item
 				deferredIdx += 1
 			endIf
@@ -680,6 +665,23 @@ function GroupUse(int a_groupIndex)
 	endWhile
 endFunction
 
+function UnequipHand(int a_hand)
+	int a_handEx = 1
+	if (a_hand == 0)
+		a_handEx = 2 ; unequipspell and *ItemEx need different hand args
+	endIf
+
+	Form handItem = PlayerREF.GetEquippedObject(a_hand)
+	if (handItem)
+		int itemType = handItem.GetType()
+		if (itemType == 22)
+			PlayerREF.UnequipSpell(handItem as Spell, a_hand)
+		else
+			PlayerREF.UnequipItemEx(handItem, a_handEx)
+		endif
+	endIf
+endFunction
+
 bool function ValidateItem(Form a_item, int a_itemType)
 	; Player has removed this item from Favorites, so don't use it and queue it for removal
 	if (! Game.IsObjectFavorited(a_item))
@@ -695,7 +697,7 @@ bool function ValidateItem(Form a_item, int a_itemType)
 	endIf
 endFunction
 
-bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = true, bool a_offHandOnly = false)
+bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = true, bool a_offHandOnly = false, int a_itemId = 0)
 
 	; WEAPON ------------
 	if (a_itemType == 41)
@@ -711,16 +713,37 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		; It's one-handed and the player has a free hand
 		if (weaponType <= 4 || weaponType == 8) ; Fists(0), Swords(1), Daggers(2), War Axes(3), Maces(4), Staffs(8)
 			if (!_usedRightHand && !a_offHandOnly)
-				PlayerREF.EquipItemEX(itemWeapon, 1, equipSound = _silenceEquipSounds)
+				if (a_itemId != 0)
+					if (itemWeapon == PlayerREF.GetEquippedObject(1))
+						UnequipHand(1) ; avoid damage-related bug when swapping for enhanced item
+					endIf
+					PlayerREF.EquipItemById(itemWeapon, a_itemId, 1, equipSound = _silenceEquipSounds)
+				else
+					PlayerREF.EquipItemEX(itemWeapon, 1, equipSound = _silenceEquipSounds)
+				endIf
 				_usedRightHand = true
 			elseIf (!_usedLeftHand)
-				PlayerREF.EquipItemEX(itemWeapon, 2, equipSound = _silenceEquipSounds)
+				if (a_itemId != 0)
+					if (itemWeapon == PlayerREF.GetEquippedObject(0))
+						UnequipHand(0)
+					endIf
+					PlayerREF.EquipItemById(itemWeapon, a_itemId, 2, equipSound = _silenceEquipSounds)
+				else
+					PlayerREF.EquipItemEX(itemWeapon, 2, equipSound = _silenceEquipSounds)
+				endIf
 				_usedLeftHand = true
 			endIf
 
 		; It's two-handed and both hands are free
 		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand)
-			PlayerREF.EquipItemEX(itemWeapon, equipSlot = 0, equipSound = _silenceEquipSounds)
+			if (a_itemId != 0)
+				if (itemWeapon == PlayerREF.GetEquippedObject(1))
+					UnequipHand(0)
+				endIf
+				PlayerREF.EquipItemById(itemWeapon, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
+			else
+				PlayerREF.EquipItemEX(itemWeapon, equipSlot = 0, equipSound = _silenceEquipSounds)
+			endIf
 			_usedRightHand = true
 			_usedLeftHand = true
 		endIf
@@ -734,13 +757,21 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		; It's a shield... 
 		if (slotMask == 512)
 			if (!_usedLeftHand)
-				PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
+				if (a_itemId != 0)
+					PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
+				else
+					PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
+				endIf
 				_usedLeftHand = true
 				_usedOutfitMask += slotMask
 			endIf
 		; It's not a shield, just equip it
 		else 
-			PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
+			if (a_itemId != 0)
+				PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
+			else
+				PlayerREF.EquipItemEX(a_item, equipSlot = 0, equipSound = _silenceEquipSounds)
+			endIf
 			_usedOutfitMask += slotMask
 		endIf
 
