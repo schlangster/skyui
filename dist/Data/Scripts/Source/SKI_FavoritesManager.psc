@@ -678,7 +678,7 @@ function UnequipHand(int a_hand)
 			PlayerREF.UnequipSpell(handItem as Spell, a_hand)
 		else
 			PlayerREF.UnequipItemEx(handItem, a_handEx)
-		endif
+		endIf
 	endIf
 endFunction
 
