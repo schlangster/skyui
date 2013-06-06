@@ -20,7 +20,7 @@ Source code:	https://github.com/schlangster/skyui
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.14 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.15 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################
@@ -86,7 +86,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 4.0:
 
 [General]
-- Updated SKSE version requirement to 1.6.14.
+- Updated SKSE version requirement to 1.6.15.
 
 [ModConfigurationMenu]
 - Enabled nested translations for option and value text (uses the same format as SetInfoText).
@@ -99,7 +99,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Fixed issue where search widget wasn't being completely disabled when hidden.
 
 [ActiveEffectsWidget]
-- With SKSE 1.6.14, inactive effects are now filtered out.
+- With SKSE 1.6.15, inactive effects are now filtered out.
 - Added a configurable minimum time left to hide long lasting effects like blessings until they are about to expire.
 
 [FavoritesMenu]

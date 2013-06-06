@@ -743,6 +743,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 	elseIf (a_itemType == 26)
 		int slotMask = (a_item as Armor).GetslotMask()
 
+		Debug.Trace("equipping " + PlayerREF.GetWornItemId(slotMask))
+
 		; It's a shield... 
 		if (slotMask == 512)
 			if (!_usedLeftHand)
