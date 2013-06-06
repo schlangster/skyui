@@ -194,7 +194,6 @@ event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sen
 
 	if (GroupAdd(groupIndex, itemId, item))
 		UpdateMenuGroupData(groupIndex)
-		PrintGroupItems(groupIndex)
 	else
 		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
 		Debug.Notification("Group full!")
@@ -742,8 +741,6 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 	; ARMOR ------------
 	elseIf (a_itemType == 26)
 		int slotMask = (a_item as Armor).GetslotMask()
-
-		Debug.Trace("equipping " + PlayerREF.GetWornItemId(slotMask))
 
 		; It's a shield... 
 		if (slotMask == 512)
