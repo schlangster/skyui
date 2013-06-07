@@ -13,6 +13,7 @@ class FavoritesListEntry extends BasicListEntry
 
   /* PRIVATE VARIABLES */
 	
+	
   /* STAGE ELMENTS */
   
   	public var itemIcon: MovieClip;

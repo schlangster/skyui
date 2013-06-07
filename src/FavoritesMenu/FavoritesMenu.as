@@ -132,6 +132,10 @@ class FavoritesMenu extends MovieClip
 	
   /* PAPYRUS INTERFACE */
   
+  
+ 	public var leftHandItemId: Number;
+	public var rightHandItemId: Number;
+  
 	public function initControls(a_navPanelEnabled: Boolean, a_groupAddKey: Number, a_groupUseKey: Number,
 								 a_setIconKey: Number, a_saveEquipStateKey: Number, a_toggleFocusKey: Number): Void
 	{
@@ -152,23 +156,23 @@ class FavoritesMenu extends MovieClip
 		updateNavButtons();
 	}
 	
-	public function pushGroupForms(/* formIds[] */): Void
-	{
+	public function pushGroupItems(/* itemIds[] */): Void
+	{		
 		for (var i=0; i<arguments.length; i++)
-			_groupDataExtender.groupData.push(arguments[i]);
+			_groupDataExtender.groupData.push(arguments[i] & 0xFFFFFFFF);
 	}
 	
-	public function finishGroupData(a_groupCount: Number /*, mainHandFormIds[], offHandFormIds[], groupIconFormIds[] */): Void
+	public function finishGroupData(a_groupCount: Number /*, mainHandItemIds[], offHandItemIds[], groupIconItemIds[] */): Void
 	{
 		var offset = 1;
 		var i: Number;
 		
 		for (i=0; i<a_groupCount; i++, offset++)
-			_groupDataExtender.mainHandData.push(arguments[offset]);
+			_groupDataExtender.mainHandData.push(arguments[offset] & 0xFFFFFFFF);
 		for (i=0; i<a_groupCount; i++, offset++)
-			_groupDataExtender.offHandData.push(arguments[offset]);
+			_groupDataExtender.offHandData.push(arguments[offset] & 0xFFFFFFFF);
 		for (i=0; i<a_groupCount; i++, offset++)
-			_groupDataExtender.iconData.push(arguments[offset]);
+			_groupDataExtender.iconData.push(arguments[offset] & 0xFFFFFFFF);
 		
 		if (_isInitialized)
 			itemList.InvalidateData();
@@ -177,17 +181,17 @@ class FavoritesMenu extends MovieClip
 		enableGroupButtons(true);
 	}
 	
-	public function updateGroupData(a_groupIndex: Number, a_mainHandFormId: Number, a_offHandFormId: Number, a_iconFormId: Number /*, formId[] */): Void
+	public function updateGroupData(a_groupIndex: Number, a_mainHandItemId: Number, a_offHandItemId: Number, a_iconItemId: Number /*, itemIds[] */): Void
 	{
 		var startIndex = a_groupIndex * GroupDataExtender.GROUP_SIZE;
 		
-		_groupDataExtender.mainHandData[a_groupIndex] = a_mainHandFormId;
-		_groupDataExtender.offHandData[a_groupIndex] = a_offHandFormId;
+		_groupDataExtender.mainHandData[a_groupIndex] = a_mainHandItemId & 0xFFFFFFFF;
+		_groupDataExtender.offHandData[a_groupIndex] = a_offHandItemId & 0xFFFFFFFF;
 		
-		_groupDataExtender.iconData[a_groupIndex] = a_iconFormId;
+		_groupDataExtender.iconData[a_groupIndex] = a_iconItemId & 0xFFFFFFFF;
 		
 		for (var i=4, j=startIndex ; i<arguments.length; i++, j++)
-			_groupDataExtender.groupData[j] = arguments[i];
+			_groupDataExtender.groupData[j] = arguments[i] & 0xFFFFFFFF;
 		
 		if (_isInitialized)
 			itemList.InvalidateData();
@@ -623,6 +627,7 @@ class FavoritesMenu extends MovieClip
 	private function applyGroupAssignment(): Void
 	{
 		var formId: Number = itemList.listState.assignedEntry.formId;
+		var itemId: Number = itemList.listState.assignedEntry.itemId;
 		
 		if (formId == null || formId == 0 || _groupAssignIndex == -1) {
 			endGroupAssignment();
@@ -632,7 +637,7 @@ class FavoritesMenu extends MovieClip
 			itemList.suspended = true
 			enableGroupButtons(false);
 			_state = GROUP_ASSIGN_SYNC;
-			skse.SendModEvent("SKIFM_groupAdd", "", _groupAssignIndex, formId);
+			skse.SendModEvent("SKIFM_groupAdd", String(itemId), _groupAssignIndex, formId);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
@@ -678,10 +683,11 @@ class FavoritesMenu extends MovieClip
 	
 	private function startGroupRemoval(): Void
 	{
-		var formId: Number = itemList.selectedEntry.formId;
-		if (_groupButtonFocused && _groupIndex >= 0 && formId) {
+		var itemId: Number = itemList.selectedEntry.itemId;
+		
+		if (_groupButtonFocused && _groupIndex >= 0) {
 			_state = GROUP_REMOVE_SYNC;
-			skse.SendModEvent("SKIFM_groupRemove", "", _groupIndex, formId);
+			skse.SendModEvent("SKIFM_groupRemove", String(itemId), _groupIndex);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
@@ -701,6 +707,23 @@ class FavoritesMenu extends MovieClip
 	
 	private function startSaveEquipState(): Void
 	{
+		leftHandItemId = 0;
+		rightHandItemId = 0;
+		
+		var n = itemList.entryList.length;
+		
+		for (var i=0; i<n; i++) {
+			var e = itemList.entryList[i];
+			if (e.equipState == 2) {
+				leftHandItemId = e.itemId;
+			} else if (e.equipState == 3) {
+				rightHandItemId = e.itemId;
+			} else if (e.equipState == 4) {
+				leftHandItemId = e.itemId;
+				rightHandItemId = e.itemId;
+			}
+		}
+		
 		var selectedEntry = itemList.selectedEntry;
 		if (_groupButtonFocused && _groupIndex >= 0) {
 			_state = SAVE_EQUIP_STATE_SYNC;
@@ -716,10 +739,12 @@ class FavoritesMenu extends MovieClip
 	
 	private function startSetGroupIcon(): Void
 	{
+		var itemId: Number = itemList.selectedEntry.itemId;
 		var formId: Number = itemList.selectedEntry.formId;
+		
 		if (_groupButtonFocused && _groupIndex >= 0 && formId) {
 			_state = SET_ICON_SYNC;
-			skse.SendModEvent("SKIFM_setGroupIcon", "", _groupIndex, formId);
+			skse.SendModEvent("SKIFM_setGroupIcon", String(itemId), _groupIndex, formId);
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		}
 	}
