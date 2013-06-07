@@ -346,7 +346,7 @@ class skyui.components.list.ScrollingList extends BasicList
 				
 			// New entry below visible portion, move scroll window down
 			} else if (enumIndex >= _scrollPosition + _listIndex) {
-				scrollPosition = Math.min(enumIndex - _listIndex + 1, _maxScrollPosition);
+				scrollPosition = Math.min(enumIndex - _listIndex + scrollDelta, _maxScrollPosition);
 				
 			// No need to change the scroll window, just select new entry
 			} else {

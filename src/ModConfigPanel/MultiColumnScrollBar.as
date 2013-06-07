@@ -26,10 +26,8 @@ class MultiColumnScrollBar extends ScrollBar
 	public function get position(): Number	{ return _position; }
 	public function set position(a_val: Number): Void
 	{
-		a_val = Math.floor((a_val / _scrollDelta) + 0.5) * _scrollDelta;
-		if (a_val == _position) { return; }
+		a_val -= (a_val % _scrollDelta);
 		super.position = a_val;
-		updateScrollTarget();
 	}
 
 	private function scrollWheel(a_delta: Number): Void
