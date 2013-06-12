@@ -206,7 +206,6 @@ event OnGroupRemove(string a_eventName, string a_strArg, float a_numArg, Form a_
 
 	if (GroupRemove(groupIndex, itemId))
 		UpdateMenuGroupData(groupIndex)
-		PrintGroupItems(groupIndex)
 	else
 		UI.InvokeBool(FAVORITES_MENU, MENU_ROOT + ".unlock", true)
 	endIf
