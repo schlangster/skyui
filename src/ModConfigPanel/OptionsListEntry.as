@@ -108,7 +108,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(Translator.translateNested(a_entryObject.strValue).toUpperCase());
+				valueTextField.SetText(Translator.translateNested(a_entryObject.strValue).toUpperCase(), true);
 				
 				break;
 				
@@ -134,7 +134,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(GlobalFunctions.formatString(Translator.translate(a_entryObject.strValue), a_entryObject.numValue).toUpperCase());
+				valueTextField.SetText(GlobalFunctions.formatString(Translator.translate(a_entryObject.strValue), a_entryObject.numValue).toUpperCase(), true);
 			
 				sliderIcon._x = valueTextField.getLineMetrics(0).x - sliderIcon._width;
 				
@@ -149,7 +149,7 @@ class OptionsListEntry extends BasicListEntry
 				labelTextField._alpha = isSelected ? ALPHA_SELECTED : ALPHA_ACTIVE;
 				
 				valueTextField._width = entryWidth;
-				valueTextField.SetText(Translator.translateNested(a_entryObject.strValue).toUpperCase());
+				valueTextField.SetText(Translator.translateNested(a_entryObject.strValue).toUpperCase(), true);
 				
 				menuIcon._x = valueTextField.getLineMetrics(0).x - menuIcon._width;
 				
