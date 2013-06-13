@@ -750,8 +750,12 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 			endIf
 		; It's not a shield, just equip it if slot is free
 		elseIf (! LogicalAnd(_usedOutfitMask,slotMask))
-			PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
-			_usedOutfitMask += slotMask
+
+			; Extra check is a temp fix until SKSE 1.6.16
+			if (PlayerREF.GetWornItemId(slotMask) != a_itemId)
+				PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
+				_usedOutfitMask += slotMask
+			endIf
 		endIf
 
 		return true
