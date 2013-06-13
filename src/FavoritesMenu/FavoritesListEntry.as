@@ -72,12 +72,12 @@ class FavoritesListEntry extends BasicListEntry
 				textField.SetText(a_entryObject.text);
 				hotkeyIcon._visible = false;
 			}
-			var maxTextLength: Number = 35;
+			var maxTextLength: Number = 32;
 			if (textField.text.length > maxTextLength) {
 				textField.SetText(textField.text.substr(0, maxTextLength - 3) + "...");
 			}
 		}
-		textField.textAutoSize = "shrink";
+//		textField.textAutoSize = "shrink";
 
 		var iconLabel = a_entryObject.iconLabel != undefined ? a_entryObject.iconLabel : "default_misc";
 		itemIcon.gotoAndStop(iconLabel);
@@ -88,11 +88,11 @@ class FavoritesListEntry extends BasicListEntry
 		else
 			equipIcon.gotoAndStop(STATES[a_entryObject.equipState]);
 
-		var iconOffset = textField._x + textField.textWidth + 10;
+		var iconOffset = textField._x + textField.textWidth + 8;
 
 		if (isMainHand) {
 			mainHandIcon._x = iconOffset;
-			iconOffset += 15;
+			iconOffset += 12;
 		}
 		mainHandIcon._visible = isMainHand;
 		
