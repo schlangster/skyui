@@ -60,6 +60,7 @@ class FilterDataExtender implements IListProcessor
 
 		switch(formType) {
 			case Form.TYPE_ARMOR:
+			case Form.TYPE_AMMO:
 			case Form.TYPE_WEAPON:
 			case Form.TYPE_LIGHT:
 				a_entryObject.filterFlag = FILTERFLAG_GEAR;
