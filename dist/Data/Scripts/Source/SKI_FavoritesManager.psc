@@ -2,6 +2,18 @@ scriptname SKI_FavoritesManager extends SKI_QuestBase
 
 import Math
 
+; SCRIPT VERSION ----------------------------------------------------------------------------------
+;
+; History
+;
+; 1:	- Initial version
+;
+; 2:	- Added check for vampire lord
+
+int function GetVersion()
+	return 2
+endFunction
+
 
 ; CONSTANTS ---------------------------------------------------------------------------------------
 
@@ -13,6 +25,8 @@ int property		GROUP_FLAG_UNEQUIP_HANDS	= 2	autoReadonly
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
+
+; -- Version 1 --
 
 Actor Property		PlayerREF auto
 
@@ -76,6 +90,8 @@ endProperty
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
 
+; -- Version 1 --
+
 Form[]				_items1
 Form[]				_items2
 int[]				_itemIds1
@@ -117,6 +133,10 @@ int					_saveEquipStateKey	= 20 ; T
 int					_toggleFocusKey		= 57 ; Space
 
 int[]				_groupHotkeys
+
+; -- Version 2 --
+
+Race				_vampireLordRace
 
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
@@ -161,6 +181,8 @@ endEvent
 
 ; @implements SKI_QuestBase
 event OnGameReload()
+	CheckVersion()
+
 	RegisterForModEvent("SKIFM_groupAdd", "OnGroupAdd")
 	RegisterForModEvent("SKIFM_groupRemove", "OnGroupRemove")
 	RegisterForModEvent("SKIFM_groupUse", "OnGroupUse")
@@ -173,6 +195,17 @@ event OnGameReload()
 	RegisterHotkeys()
 
 	CleanUp()
+endEvent
+
+; @implements SKI_QuestBase
+event OnVersionUpdate(int a_version)
+
+	; Version 2
+	if (a_version >= 2 && CurrentVersion < 2)
+		Debug.Trace(self + ": Updating to script version 2")
+
+		_vampireLordRace	= Game.GetFormFromFile(0x0000283A, "Dawnguard.esm") as Race
+	endIf
 endEvent
 
 
@@ -364,6 +397,11 @@ endFunction
 
 ; Send the group data to the UI, so that when the user selects a group, it can filter its entries.
 function InitMenuGroupData()
+	; Don't send group data if vampire lord
+	if (_vampireLordRace == PlayerRef.GetRace())
+		return
+	endIf
+
 	; groupCount, mainHandFormId[8], offHandFormId[8], iconFormId[8]
 	int[] args = new int[25]
 	args[0] = 8
@@ -750,12 +788,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 			endIf
 		; It's not a shield, just equip it if slot is free
 		elseIf (! LogicalAnd(_usedOutfitMask,slotMask))
-
-			; Extra check is a temp fix until SKSE 1.6.16
-			if (PlayerREF.GetWornItemId(slotMask) != a_itemId)
-				PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
-				_usedOutfitMask += slotMask
-			endIf
+			PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
+			_usedOutfitMask += slotMask
 		endIf
 
 		return true

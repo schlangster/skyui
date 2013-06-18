@@ -179,6 +179,8 @@ class FavoritesMenu extends MovieClip
 		
 		_waitingForGroupData = false;
 		enableGroupButtons(true);
+		
+		updateNavButtons();
 	}
 	
 	public function updateGroupData(a_groupIndex: Number, a_mainHandItemId: Number, a_offHandItemId: Number, a_iconItemId: Number /*, itemIds[] */): Void
@@ -824,7 +826,7 @@ class FavoritesMenu extends MovieClip
 	
 	private function updateNavButtons(): Void
 	{
-		if (_state != ITEM_SELECT || !_navPanelEnabled || !_fadedIn) {
+		if (_state != ITEM_SELECT || !_navPanelEnabled || !_fadedIn || _waitingForGroupData) {
 			navPanel._visible = false;
 			return;
 		}
