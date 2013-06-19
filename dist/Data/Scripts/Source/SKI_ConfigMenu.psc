@@ -376,30 +376,30 @@ event OnPageReset(string a_page)
 			AddKeyMapOptionST("SORT_ORDER_BUTTON", "$Order", _sortOrderButton)
 		endIf
 
-		AddEmptyOption()
-
 		if (! isGamepad)
+			AddEmptyOption()
+
 			AddHeaderOption("$Favorites Menu")
 			AddKeyMapOptionST("FAV_GROUP_ADD_KEY", "{$Group}/{$Ungroup}", SKI_FavoritesManagerInstance.GroupAddKey)
 			AddKeyMapOptionST("FAV_GROUP_USE_KEY", "$Group Use", SKI_FavoritesManagerInstance.GroupUseKey)
 			AddKeyMapOptionST("FAV_SET_ICON_KEY", "$Set Group Icon", SKI_FavoritesManagerInstance.SetIconKey)
 			AddKeyMapOptionST("FAV_EQUIP_STATE_KEY", "$Save Equip State", SKI_FavoritesManagerInstance.SaveEquipStateKey)
 			AddKeyMapOptionST("FAV_TOGGLE_FOCUS", "$Toggle Focus", SKI_FavoritesManagerInstance.ToggleFocusKey)
-
-			SetCursorPosition(1)
-
-			int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupHotkeys()
-
-			AddHeaderOption("$Favorite Groups")
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY1", "$Group {1}", groupHotkeys[0], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY2", "$Group {2}", groupHotkeys[1], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY3", "$Group {3}", groupHotkeys[2], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY4", "$Group {4}", groupHotkeys[3], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY5", "$Group {5}", groupHotkeys[4], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY6", "$Group {6}", groupHotkeys[5], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY7", "$Group {7}", groupHotkeys[6], OPTION_FLAG_WITH_UNMAP)
-			AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY8", "$Group {8}", groupHotkeys[7], OPTION_FLAG_WITH_UNMAP)
 		endIf
+
+		SetCursorPosition(1)
+
+		int[] groupHotkeys = SKI_FavoritesManagerInstance.GetGroupHotkeys()
+
+		AddHeaderOption("$Favorite Groups")
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY1", "$Group {1}", groupHotkeys[0], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY2", "$Group {2}", groupHotkeys[1], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY3", "$Group {3}", groupHotkeys[2], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY4", "$Group {4}", groupHotkeys[3], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY5", "$Group {5}", groupHotkeys[4], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY6", "$Group {6}", groupHotkeys[5], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY7", "$Group {7}", groupHotkeys[6], OPTION_FLAG_WITH_UNMAP)
+		AddKeyMapOptionST("FAV_GROUP_USE_HOTKEY8", "$Group {8}", groupHotkeys[7], OPTION_FLAG_WITH_UNMAP)
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
