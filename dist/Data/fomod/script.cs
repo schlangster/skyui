@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 class Script : SkyrimBaseScript {
 
-	static Version SKSE_MIN_VERSION = new Version("0.1.6.15");
+	static Version SKSE_MIN_VERSION = new Version("0.1.6.16");
 
 	// Main dialog
 	static Form mainInstallForm;

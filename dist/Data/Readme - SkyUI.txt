@@ -9,7 +9,7 @@ Team:			snakster, Mardoxx, T3T
 
 Contributors:	ianpatt, behippo, Kratos, psychosteve, MisterPete, GreatClone, gibbed, PurpleLunchBox, Verteiron, Gopher, Indie
 
-Version:		4.0
+Version:		4.1
 
 Download:		http://skyrim.nexusmods.com/mods/3863
 				http://steamcommunity.com/sharedfiles/filedetails/?id=8122
@@ -20,7 +20,7 @@ Source code:	https://github.com/schlangster/skyui
 
 The following mods/utilities are required for SkyUI:
 
-* The Skyrim Script Extender (SKSE), version 1.6.15 or newer
+* The Skyrim Script Extender (SKSE), version 1.6.16 or newer
 	http://skse.silverlock.org/
 
 ########################################################################################################################################
@@ -81,6 +81,20 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 ========================================================================================================================================
  2. Changelog
 ========================================================================================================================================
+
+------------------------------------------------------------
+4.1:
+
+[General]
+- Updated SKSE version requirement to 1.6.16.
+
+[FavoritesMenu]
+- Included ammo in Gear category.
+- Transforming into a Vampire Lord no longer resets group data.
+- Changing the load order index of a mod no longer removes its items from any groups.
+- Fixed issues when equipping a two-handed that's already equipped via Group Uses.
+- Fixed issue with 'Unequip Armor' flag, which would incorrectly unequip an armor piece if it's already worn.
+- Fixed Group Use crashes with 2 identical weapons.
 
 ------------------------------------------------------------
 4.0:
