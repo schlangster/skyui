@@ -16,11 +16,12 @@
 //	4.0-beta2		13
 //	4.0-beta3		14
 //	4.0				15
+//	4.1				16
 
-public static var SKYUI_RELEASE_IDX: Number		= 15;
+public static var SKYUI_RELEASE_IDX: Number		= 16;
 
 public static var SKYUI_VERSION_MAJOR: Number	= 4;
-public static var SKYUI_VERSION_MINOR: Number	= 0;
+public static var SKYUI_VERSION_MINOR: Number	= 1;
 
 public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR);
 

@@ -33,11 +33,11 @@ bool _favoritesMenuCheckEnabled		= true
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-int property		MinSKSERelease	= 43		autoReadonly
-string property		MinSKSEVersion	= "1.6.15"	autoReadonly
+int property		MinSKSERelease	= 44		autoReadonly
+string property		MinSKSEVersion	= "1.6.16"	autoReadonly
 
-int property		ReqSWFRelease	= 15		autoReadonly
-string property		ReqSWFVersion	= "4.0"		autoReadonly
+int property		ReqSWFRelease	= 16		autoReadonly
+string property		ReqSWFVersion	= "4.1"		autoReadonly
 
 bool property		ErrorDetected	= false auto
 
