@@ -95,6 +95,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Fixed issues when equipping a two-handed that's already equipped via Group Uses.
 - Fixed issue with 'Unequip Armor' flag, which would incorrectly unequip an armor piece if it's already worn.
 - Fixed Group Use crashes with 2 identical weapons.
+- Enabled group hotkey rebinding for gamepads.
 
 ------------------------------------------------------------
 4.0:
