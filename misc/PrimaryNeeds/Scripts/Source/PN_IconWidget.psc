@@ -53,7 +53,6 @@ PN_NeedsManager property		NeedsManagerInstance	auto
 event OnGameReload()
 	parent.OnGameReload()
 	RegisterForModEvent("PNX_statusUpdated", "OnStatusUpdate")
-	UpdateStatus()
 endEvent
 
 ; @override SKI_WidgetBase
@@ -73,6 +72,8 @@ event OnWidgetReset()
 
 	; Init commit
 	UI.Invoke(HUD_MENU, WidgetRoot + ".initCommit")
+
+	UpdateStatus()
 endEvent
 
 event OnStatusUpdate(string a_eventName, string a_strArg, float a_numArg, Form a_sender)

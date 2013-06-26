@@ -123,6 +123,9 @@ Spell[] property	HungerPenalties auto
 Spell[] property	ThirstPenalties auto
 Spell[] property	FatiguePenalties auto
 
+GlobalVariable property	PlayerIsVampire auto
+GLobalVariable property	PlayerIsWerewolf auto
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -204,15 +207,18 @@ endFunction
 ; PRIVATE FUNCTIONS -------------------------------------------------------------------------------
 
 function CheckValueIncrease()
-	if (!HungerEnabled)
+
+	bool isVampire = PlayerIsVampire.GetValueInt() > 0
+
+	if (!HungerEnabled || isVampire)
 		_hunger = 0
 	endIf
 
-	if (!ThirstEnabled)
+	if (!ThirstEnabled || isVampire)
 		_thirst = 0
 	endIf
 
-	if (!FatigueEnabled)
+	if (!FatigueEnabled || isVampire)
 		_fatigue = 0
 	endIf
 
@@ -233,7 +239,7 @@ function CheckValueIncrease()
 	; Sleep duration is 0 if not slept at all
 	int awakeDuration = d - _sleepDuration
 
-	if (HungerEnabled && _hunger < HungerMax)
+	if (HungerEnabled && _hunger < HungerMax && !isVampire)
 		_hunger += awakeDuration * HungerPerHour
 		_hunger += _sleepDuration * HungerPerSleepHour
 		if (_hunger > HungerMax)
@@ -243,7 +249,7 @@ function CheckValueIncrease()
 		endIf
 	endIf
 
-	if (ThirstEnabled && _thirst < ThirstMax)
+	if (ThirstEnabled && _thirst < ThirstMax && !isVampire)
 		_thirst += awakeDuration * ThirstPerHour
 		_thirst += _sleepDuration * ThirstPerSleepHour
 		if (_thirst > ThirstMax)
@@ -253,7 +259,7 @@ function CheckValueIncrease()
 		endIf
 	endIf
 
-	if (FatigueEnabled && _fatigue < FatigueMax)
+	if (FatigueEnabled && _fatigue < FatigueMax && !isVampire)
 		_fatigue += awakeDuration * FatiguePerHour
 		_fatigue += _sleepDuration * FatiguePerSleepHour
 		if (_fatigue > FatigueMax)
