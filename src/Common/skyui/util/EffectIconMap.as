@@ -264,7 +264,7 @@ class skyui.util.EffectIconMap
 					baseLabel = "magic_fire";
 					break;
 				case Actor.AV_FROSTRESIST:
-					baseLabel = "magic_fire";
+					baseLabel = "magic_frost";
 					break;
 				case Actor.AV_ELECTRICRESIST:
 					baseLabel = "magic_shock";
