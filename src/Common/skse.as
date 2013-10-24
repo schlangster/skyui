@@ -12,7 +12,7 @@
 	static function CloseMenu(a_menu:String):Void;
 	static function ExtendData(enable:Boolean):Void;
 	static function ForceContainerCategorization(enable:Boolean):Void;	
-	static function SendModEvent(a_eventName:String, a_strArg:String, a_numArg:Number):Void;
+	static function SendModEvent(a_eventName:String, a_strArg:String, a_numArg:Number, a_formId:Number):Void;
 	static function RequestActivePlayerEffects(a_list:Array):Void;
 	static function ExtendForm(a_formid:Number, a_object:Object, a_extraData:Boolean, a_recursive:Boolean):Void;
 	static function EnableMapMenuMouseWheel(a_enable:Boolean):Void;
