@@ -183,7 +183,7 @@ class skyui.components.list.ScrollingList extends BasicList
 		// Clear clipIndex for everything after the selected list portion
 		for (var i = _scrollPosition + _listIndex; i < getListEnumSize(); i++)
 			getListEnumEntry(i).clipIndex = undefined;
-		
+			
 		// Select entry under the cursor for mouse-driven navigation
 		if (isMouseDrivenNav)
 			for (var e = Mouse.getTopMostEntity(); e != undefined; e = e._parent)

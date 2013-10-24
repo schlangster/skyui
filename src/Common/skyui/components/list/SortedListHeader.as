@@ -83,13 +83,13 @@ class skyui.components.list.SortedListHeader extends MovieClip
 		columnButton.onPress = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			if (!this.columnIndex != undefined)
-				_parent.columnPress(this.columnIndex);
+				this._parent.columnPress(this.columnIndex);
 		};
 
 		columnButton.onPressAux = function(a_mouseIndex, a_keyboardOrMouse, a_buttonIndex)
 		{
 			if (!this.columnIndex != undefined)
-				_parent.columnPress(this.columnIndex);
+				this._parent.columnPress(this.columnIndex);
 		};
 
 		_columns[a_index] = columnButton;

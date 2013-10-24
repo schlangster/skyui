@@ -161,7 +161,7 @@ class skyui.util.ConfigManager
 
 		var varContainer = null;
 		if (a[0] == "vars")
-			var varContainer = loc.vars[a[1]];
+			varContainer = loc.vars[a[1]];
 		
 		for (var j=0; j<a.length-1; j++) {
 			if (loc[a[j]] == undefined)
@@ -229,7 +229,7 @@ class skyui.util.ConfigManager
 		
 		var varContainer = null;
 		if (a[0] == "vars")
-			var varContainer = loc.vars[a[1]];
+			varContainer = loc.vars[a[1]];
 		
 		for (var j=0; j<a.length-1; j++) {
 			if (loc[a[j]] == undefined)
@@ -393,7 +393,7 @@ class skyui.util.ConfigManager
 			var values = GlobalFunctions.extract(a_str, "{", "}").split("|");
 			var flags = 0;
 			for (var i=0; i<values.length; i++) {
-				var t = parseValueString(GlobalFunctions.clean(values[i]), a_root, a_loc, a_key);
+				t = parseValueString(GlobalFunctions.clean(values[i]), a_root, a_loc, a_key);
 				if (isNaN(t))
 					return undefined;
 					
