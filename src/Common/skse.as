@@ -17,7 +17,7 @@
 	static function ExtendForm(a_formid:Number, a_object:Object, a_extraData:Boolean, a_recursive:Boolean):Void;
 	static function EnableMapMenuMouseWheel(a_enable:Boolean):Void;
 	static function ShowOnMap(a_markerIndex:Number):Void;
-	static function StoreIndices(a_key:String, a_indicesIn):Void;
-	static function LoadIndices(a_key:String, a_indicesOut):Void;
+	static function StoreIndices(a_key:String, a_indicesIn:Array):Void;
+	static function LoadIndices(a_key:String, a_indicesOut:Array):Void;
 
 }
