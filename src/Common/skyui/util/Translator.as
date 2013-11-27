@@ -1,7 +1,4 @@
-﻿import gfx.events.EventDispatcher;
-
-
-class skyui.util.Translator
+﻿class skyui.util.Translator
 {
   /* PRIVATE VARIABLES */
 	
@@ -34,6 +31,9 @@ class skyui.util.Translator
 	{
 		if (a_str == "")
 			return "";
+			
+		if (a_str.charAt(0) != "$")
+			return a_str;
 		
 		// Quick test to decide if we can skip
 		if (a_str.indexOf("{") == -1)
