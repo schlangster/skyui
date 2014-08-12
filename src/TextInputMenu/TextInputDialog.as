@@ -50,7 +50,7 @@ class TextInputDialog extends MovieClip
 		clearInterval(requestDataId_);
 		
 		skse.AllowTextInput(true);
-		skse.SendModEvent("UILIB_textInputOpen");		
+		skse.SendModEvent("UILIB_1_textInputOpen");		
 	}
 
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -112,7 +112,7 @@ class TextInputDialog extends MovieClip
 	private function exitMenu(canceled: Boolean): Void
 	{
 		skse.AllowTextInput(false);
-		skse.SendModEvent("UILIB_textInputClose", textInput.text, canceled ? 1 : 0);
+		skse.SendModEvent("UILIB_1_textInputClose", textInput.text, canceled ? 1 : 0);
 		skse.CloseMenu("CustomMenu");
 	}
 	
