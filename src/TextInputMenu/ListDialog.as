@@ -8,6 +8,7 @@ import skyui.components.list.ScrollingList;
 import skyui.components.ButtonPanel;
 import skyui.defines.Input;
 
+import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 
 
@@ -20,6 +21,8 @@ class ListDialog extends MovieClip
 	
 	private var closeControls_: Object;
 	private var defaultControls_: Object;
+	
+	private var defaultKey_: Number = -1;
 
   /* STAGE ELEMENTS */
 	
@@ -61,7 +64,7 @@ class ListDialog extends MovieClip
 			if(details.navEquivalent == NavigationCode.TAB) {
 				exitMenu();
 				bHandledInput = true;
-			} else if (details.control == defaultControls_.name) {
+			} else if (details.skseKeycode == defaultKey_) {
 				onDefaultPress();
 				bHandledInput = true;
 			}
@@ -85,7 +88,7 @@ class ListDialog extends MovieClip
 	{
 		clearInterval(requestDataId_);
 		
-		skse.SendModEvent("UILIB_listMenuOpen");		
+		skse.SendModEvent("UILIB_1_listMenuOpen");		
 	}
 
 	private function setupButtons(platform: Number): Void
@@ -116,7 +119,7 @@ class ListDialog extends MovieClip
 
 	private function exitMenu(): Void
 	{
-		skse.SendModEvent("UILIB_listMenuClose", null, getActiveMenuIndex());
+		skse.SendModEvent("UILIB_1_listMenuClose", null, getActiveMenuIndex());
 		skse.CloseMenu("CustomMenu");
 	}
   
@@ -153,6 +156,10 @@ class ListDialog extends MovieClip
   
 	public function setPlatform(platform: Number): Void
 	{
+		var isGamepad = platform != 0;
+		
+		defaultKey_ = GlobalFunctions.getMappedKey("Ready Weapon", Input.CONTEXT_GAMEPLAY, isGamepad);
+		
 		leftButtonPanel.setPlatform(platform, false);
 		rightButtonPanel.setPlatform(platform, false);
 		setupButtons(platform);
