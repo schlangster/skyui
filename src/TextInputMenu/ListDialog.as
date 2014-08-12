@@ -93,11 +93,11 @@ class ListDialog extends MovieClip
 
 	private function setupButtons(platform: Number): Void
 	{		
+		defaultControls_ = Input.ReadyWeapon;
+	
 		if (platform == 0) {
-			defaultControls_ = Input.ReadyWeapon;
 			closeControls_ = Input.Tab;
 		} else {
-			defaultControls_ = Input.YButton;
 			closeControls_ = Input.Cancel;
 		}
 		
