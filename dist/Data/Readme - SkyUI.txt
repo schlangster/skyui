@@ -92,7 +92,7 @@ For a more detailed description, please see our mod description on Skyrim Nexus.
 - Included ammo in Gear category.
 - Transforming into a Vampire Lord no longer resets group data.
 - Changing the load order index of a mod no longer removes its items from any groups.
-- Fixed issues when equipping a two-handed that's already equipped via Group Uses.
+- Fixed issues when equipping a two-handed weapon that's already equipped via Group Use.
 - Fixed issue with 'Unequip Armor' flag, which would incorrectly unequip an armor piece if it's already worn.
 - Fixed Group Use crashes with 2 identical weapons.
 - Enabled group hotkey rebinding for gamepads.
