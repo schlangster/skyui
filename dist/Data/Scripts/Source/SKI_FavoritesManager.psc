@@ -788,6 +788,10 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 			endIf
 		; It's not a shield, just equip it if slot is free
 		elseIf (! LogicalAnd(_usedOutfitMask,slotMask))
+			if (a_item == PlayerREF.GetWornForm(slotMask) && a_itemId != PlayerREF.GetWornItemId(slotMask))
+				PlayerREF.UnequipItemEx(a_item)
+			endIf
+			
 			PlayerREF.EquipItemById(a_item, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
 			_usedOutfitMask += slotMask
 		endIf
