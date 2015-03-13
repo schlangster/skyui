@@ -35,6 +35,18 @@ class CraftingLists extends MovieClip
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
 	
+	// Menu subtypes
+	static var MENU_ALCHEMY         = 0;
+	static var MENU_ENCHANTING      = 1;
+	static var MENU_FORGING         = 2;
+	
+	static var MENU_ARMOR_SMITHING  = 3; // WEAPON
+	static var MENU_WEAPON_SMITHING = 4; // ARMOR
+	
+	static var MENU_COOKING    = 5; // FOOD
+	static var MENU_SMELTING   = 6; // MISC
+	static var MENU_TANNING    = 7; // MISC
+	
 	
   /* STAGE ELEMENTS */
   
@@ -111,6 +123,11 @@ class CraftingLists extends MovieClip
 	{
 		return _tabBarIconArt;
 	}
+	
+	public function setSubtype(a_name: String): Void
+	{
+		panelContainer.gotoAndStop(a_name);
+	}
 
 
   /* INITIALIZATION */
@@ -126,7 +143,6 @@ class CraftingLists extends MovieClip
 		EventDispatcher.initialize(this);
 
 		gotoAndStop("NoPanels");
-		trace("CraftingLists " + this);
 
 		GameDelegate.addCallBack("SetCategoriesList", this, "SetCategoriesList");
 		GameDelegate.addCallBack("InvalidateListData", this, "InvalidateListData");
@@ -208,7 +224,6 @@ class CraftingLists extends MovieClip
 		itemList.suspended = false;
 		
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
-		trace("SHOWING 2");
 		gotoAndPlay("PanelShow");
 
 //		dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
@@ -335,12 +350,21 @@ class CraftingLists extends MovieClip
 
 		itemList.disableInput = false;
 	}
+	
+	private function detectMenuSubtype(): Void
+	{
+//		if (menuType = "alchemy") {
+//		}
+	}
 
 	// Called to initially set the category list.
 	// @API 
 	public function SetCategoriesList(): Void
 	{
+		detectMenuSubtype();
 		skse.Log("SetCategoriesList");
+
+		skse.Log("Category count: " + arguments.length);
 		
 		var textOffset = 0;
 		var flagOffset = 1;

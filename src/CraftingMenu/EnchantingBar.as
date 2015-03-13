@@ -33,8 +33,6 @@ class EnchantingBar extends MovieClip
 	
   /* PRIVATE VARIABLES */
 	
-	private var _xOffset: Number;
-	private var _contentWidth: Number;
 	private var _totalWidth: Number;
 	
 	private var _selectorPos: Number;
@@ -46,13 +44,9 @@ class EnchantingBar extends MovieClip
 
   /* PROPERTIES */
 	
-	// Distance from border to start icon.
-	public var iconIndent: Number;
-	
 	public var selectedIndex: Number = 0;
 	
 	public var disableInput: Boolean = false;
-	public var disableSelection: Boolean = false;
 	
 	
   /* INITIALIZATION */
@@ -78,10 +72,14 @@ class EnchantingBar extends MovieClip
 		_buttonGroup.addEventListener("change", this, "onButtonSelect");
 		
 		positionButtons();
+		
+		_buttonGroup.setSelectedButton(btnDisenchant);
 	}
 	
 	private function positionButtons()
 	{
+		_totalWidth = background._width;
+		
 		formatTextButton(btnItem);
 		formatTextButton(btnEnchantment);
 		formatTextButton(btnSoul);
@@ -93,7 +91,7 @@ class EnchantingBar extends MovieClip
 		btnDisenchant._x = borderOffset;
 		
 		var leftStart = vertSeparator._x + 3;
-		var leftEnd   = background._width;
+		var leftEnd   = _totalWidth;
 		var leftWidth = leftEnd - leftStart;
 		
 		var totalBtnWidth = btnItem._width + btnEnchantment._width + btnSoul._width;
@@ -125,61 +123,23 @@ class EnchantingBar extends MovieClip
 	
   /* PUBLIC FUNCTIONS */
 	
-	// @override BasicList
-/*	public function UpdateList(): Void
-	{		
-		setClipCount(_segmentLength);
-
-		var cw = 0;
-
-		for (var i = 0; i < _segmentLength; i++) {
-			var entryClip = getClipByIndex(i);
-
-			entryClip.setEntry(listEnumeration.at(i + _segmentOffset), listState);
-
-			entryClip.background._width = entryClip.background._height = iconSize;
-
-			listEnumeration.at(i + _segmentOffset).clipIndex = i;
-			entryClip.itemIndex = i + _segmentOffset;
-
-			cw = cw + iconSize;
-		}
-
-		_contentWidth = cw;
-		_totalWidth = background._width;
-
-		var spacing = (_totalWidth - _contentWidth) / (_segmentLength + 1);
-
-		var xPos = background._x + spacing;
-
-		for (var i = 0; i < _segmentLength; i++) {
-			var entryClip = getClipByIndex(i);
-			entryClip._x = xPos;
-
-			xPos = xPos + iconSize + spacing;
-			entryClip._visible = true;
-		}
-		
-		updateSelector();
-	}*/
-	
 	// Moves the selection left to the next element. Wraps around.
 	public function moveSelectionLeft(): Void
 	{
-		selectedIndex--;
+		var newIndex = selectedIndex - 1;
 		
-		if (selectedIndex < 0) {
+		if (newIndex < 0) {
 			_bFastSwitch = true;
-			selectedIndex = _buttonGroup.length - 1;
+			newIndex = _buttonGroup.length - 1;
 		}
 			
-		_buttonGroup.setSelectedButton(_buttonGroup.getButtonAt(selectedIndex));
+		_buttonGroup.setSelectedButton(_buttonGroup.getButtonAt(newIndex));
 	}
 
 	// Moves the selection right to the next element. Wraps around.
 	public function moveSelectionRight(): Void
 	{			
-		var newIndex = selectedIndex;
+		var newIndex = selectedIndex + 1;
 		
 		if (newIndex >= _buttonGroup.length) {
 			_bFastSwitch = true;
@@ -207,7 +167,7 @@ class EnchantingBar extends MovieClip
 		return false;
 	}
 	
-	// @override BasicList
+	// @override MovieClip
 	public function onEnterFrame(): Void
 	{
 		super.onEnterFrame();
@@ -235,8 +195,11 @@ class EnchantingBar extends MovieClip
 		}
 	}
 	
+
+  /* PRIVATE FUNCTIONS */
+  
 	private function onButtonSelect(a_event: Object): Void
-	{		
+	{
 		var btn = a_event.item;
 		if (btn == null)
 			return;
@@ -244,12 +207,14 @@ class EnchantingBar extends MovieClip
 
 			
 		selectedIndex = _buttonGroup.indexOf(btn);
+		
+		updateSelector();
 	}
-
-
-  /* PRIVATE FUNCTIONS */
 	
-/*	private function updateSelector(): Void
+	// Note: Copy&paste from categorymenu. Could use some refactoring, but as long as it works
+	// identically to the item menus its fine for now.
+	
+	private function updateSelector(): Void
 	{
 		if (selectedIndex == -1) {
 			selectorCenter._visible = false;
@@ -263,12 +228,12 @@ class EnchantingBar extends MovieClip
 			return;
 		}
 
-//		var selectedClip = _entryClipManager.getClip(_selectedIndex - _segmentOffset);
+		var selectedButton = _buttonGroup.getButtonAt(selectedIndex)
 
-		_targetSelectorPos = selectedClip._x + (selectedClip.background._width - selectorCenter._width) / 2;
+		_targetSelectorPos = selectedButton._x + (selectedButton.icon._width - selectorCenter._width) / 2;
 		
 		selectorCenter._visible = true;
-		selectorCenter._y = selectedClip._y + selectedClip.background._height;
+		selectorCenter._y = selectedButton._y + selectedButton.background._height;
 		
 		if (selectorLeft != undefined) {
 			selectorLeft._visible = true;
@@ -281,13 +246,10 @@ class EnchantingBar extends MovieClip
 			selectorRight._y = selectorCenter._y;
 			selectorRight._width = _totalWidth - selectorRight._x;
 		}
-	}*/
+	}
 
 	private function refreshSelector(): Void
 	{
-		selectorCenter._visible = true;
-//		var selectedClip = _entryClipManager.getClip(_selectedIndex - _segmentOffset);
-
 		selectorCenter._x = _selectorPos;
 
 		if (selectorLeft != undefined)

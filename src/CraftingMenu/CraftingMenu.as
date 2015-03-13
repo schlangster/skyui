@@ -2,6 +2,11 @@
 import gfx.io.GameDelegate;
 import Shared.GlobalFunc;
 
+import skyui.components.list.ListLayoutManager;
+import skyui.components.list.TabularList;
+import skyui.components.list.ListLayout;
+import skyui.util.ConfigManager;
+
 class CraftingMenu extends MovieClip
 {
 	#include "../version.as"
@@ -13,6 +18,8 @@ class CraftingMenu extends MovieClip
 	static var EXIT_BUTTON: Number = 1;
 	static var AUX_BUTTON: Number = 2;
 	static var CRAFT_BUTTON: Number = 3;
+	
+	static var SUBTYPE_NAMES = [ "ConstructibleObject", "Smithing", "EnchantConstruct", "EnchantDestruct", "Alchemy" ];
 	
 	
   /* STAGE ELEMENTS */
@@ -26,7 +33,10 @@ class CraftingMenu extends MovieClip
 	public var RestoreCategoryRect: MovieClip;
 
 	public var ItemsListInputCatcher: MovieClip;
+
+	// Not API, but keeping the original name for compatiblity with vanilla.
 	public var InventoryLists: CraftingLists;
+	
 	public var MouseRotationRect: MovieClip;
 	public var ExitMenuRect: MovieClip;
 	
@@ -56,7 +66,7 @@ class CraftingMenu extends MovieClip
 	public var ItemInfo: MovieClip;
 
 	// @API
-	public var ItemList: MovieClip;
+	public var ItemList: TabularList;
 
 	// @API
 	public var MenuDescription: TextField;
@@ -112,6 +122,8 @@ class CraftingMenu extends MovieClip
 	// @API
 	var bHideAdditionalDescription: Boolean;
 	
+	public var currentMenuType: String = "";
+	
 	
   /* INITIALIZATION */
 
@@ -126,11 +138,36 @@ class CraftingMenu extends MovieClip
 		CategoryList = InventoryLists;
 		ItemInfo = ItemInfoHolder.ItemInfo;
 		Mouse.addListener(this);
+		
+		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 	}
 	
 	public function onLoad()
 	{
-		Initialize();		
+		//Initialize();		
+	}
+	
+	private function onConfigLoad(event: Object): Void
+	{
+		setConfig(event.config);
+		
+		CategoryList.showPanel();
+	}
+	
+	// @override ItemMenu
+	public function setConfig(a_config: Object): Void
+	{
+		var itemList: TabularList = InventoryLists.itemList;		
+//		itemList.addDataProcessor(new BarterDataSetter(_buyMult, _sellMult));
+//		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
+//		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
+		
+		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
+		itemList.layout = layout;
+
+		// Not 100% happy with doing this here, but has to do for now.
+//		if (InventoryLists.categoryList.selectedEntry)
+			layout.changeFilterFlag(0);
 	}
 	
 	
@@ -151,7 +188,7 @@ class CraftingMenu extends MovieClip
 		AdditionalDescription.textAutoSize = "shrink";
 		
 		// Naming FTW - gotta respect the API though.
-//		MenuName = CategoryList.categoryList._parent.CategoryLabel;
+		MenuName = MenuNameHolder.MenuName;
 		MenuName.autoSize = "left";
 		MenuNameHolder._visible = false;
 		
@@ -200,16 +237,15 @@ class CraftingMenu extends MovieClip
 		
 		SetPlatform(_platform);
 		
-				trace("SHOWING" + CategoryList);
-		CategoryList.showPanel();
+		CategoryList.setSubtype(SUBTYPE_NAMES[_currentFrame-1]);
 	}
 	
 	// @API
-	public function SetPartitionedFilterMode(abPartitioned: Boolean): Void
+	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
 		// True for alchemy, false otherwise
-		skse.Log("Set partitioned filter mode " + abPartitioned);
-//		CategoryList.itemList.filterer.SetPartitionedFilterMode(abPartitioned);
+		skse.Log("Set partitioned filter mode " + a_bPartitioned);
+//		CategoryList.itemList.filterer.SetPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @API

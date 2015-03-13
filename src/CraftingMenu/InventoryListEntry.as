@@ -7,7 +7,7 @@ import skyui.components.list.ListState;
 import skyui.util.ConfigManager;
 
 
-class CraftingListEntry extends TabularListEntry
+class InventoryListEntry extends TabularListEntry
 {
   /* CONSTANTS */
   
@@ -40,7 +40,7 @@ class CraftingListEntry extends TabularListEntry
 		
 		var iconLoader = new MovieClipLoader();
 		iconLoader.addListener(this);
-		//iconLoader.loadClip(a_state.iconSource, itemIcon);
+		iconLoader.loadClip(a_state.iconSource, itemIcon);
 		
 		itemIcon._visible = false;
 		equipIcon._visible = false;
