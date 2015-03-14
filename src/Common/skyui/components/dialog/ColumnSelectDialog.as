@@ -13,7 +13,7 @@ import skyui.util.DialogManager;
 import skyui.util.ConfigManager;
 
 
-class ColumnSelectDialog extends BasicDialog
+class skyui.components.dialog.ColumnSelectDialog extends BasicDialog
 {	
   /* STAGE ELEMENTS */
   
