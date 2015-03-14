@@ -120,7 +120,7 @@ class CraftingListEntry extends TabularListEntry
 		a_entryField.autoSize = "left";
 		a_entryField.SetText(text);
 		
-		formatColor(a_entryField, a_entryObject, a_state);
+		//formatColor(a_entryField, a_entryObject, a_state);
 
 		// BestInClass icon
 		var iconPos = a_entryField._x + a_entryField._width + 5;

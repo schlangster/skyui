@@ -34,19 +34,7 @@ class CraftingLists extends MovieClip
 	static var SHOW_PANEL = 1;
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
-	
-	// Menu subtypes
-	static var MENU_ALCHEMY         = 0;
-	static var MENU_ENCHANTING      = 1;
-	static var MENU_FORGING         = 2;
-	
-	static var MENU_ARMOR_SMITHING  = 3; // WEAPON
-	static var MENU_WEAPON_SMITHING = 4; // ARMOR
-	
-	static var MENU_COOKING    = 5; // FOOD
-	static var MENU_SMELTING   = 6; // MISC
-	static var MENU_TANNING    = 7; // MISC
-	
+
 	
   /* STAGE ELEMENTS */
   
@@ -77,14 +65,14 @@ class CraftingLists extends MovieClip
 	private var _columnSelectDialog: MovieClip;
 	private var _columnSelectInterval: Number;
 	
-	private var _categoryData: Array;
+	private var _categoriesData: Array;
 	
 
   /* PROPERTIES */
 
 	public var itemList: TabularList;
 
-//	public var filterList: FilterList;
+	public var categoriesList: CategoriesList;
 	
 	public var tabBar: TabBar;
 	
@@ -136,7 +124,7 @@ class CraftingLists extends MovieClip
 	{
 		super();
 		
-		_categoryData = [];
+		_categoriesData = [];
 
 		GlobalFunctions.addArrayFunctions();
 
@@ -151,8 +139,8 @@ class CraftingLists extends MovieClip
 		_nameFilter = new NameFilter();
 		_sortFilter = new SortFilter();
 		
-//		categoryList = panelContainer.categoryList;
 		categoryLabel = panelContainer.categoryLabel;
+		categoriesList = panelContainer.categoriesList;
 		itemList = panelContainer.itemList;
 		searchWidget = panelContainer.searchWidget;
 		columnSelectButton = panelContainer.columnSelectButton;
@@ -163,7 +151,7 @@ class CraftingLists extends MovieClip
 	
 	private function onLoad(): Void
 	{
-//		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
+		categoriesList.listEnumeration = new BasicEnumeration(categoriesList.entryList);
 
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
@@ -178,9 +166,9 @@ class CraftingLists extends MovieClip
 		_nameFilter.addEventListener("filterChange", this, "onFilterChange");
 		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
 
-//		categoryList.addEventListener("itemPress", this, "onCategoriesItemPress");
-//		categoryList.addEventListener("itemPressAux", this, "onCategoriesItemPress");
-//		categoryList.addEventListener("selectionChange", this, "onCategoriesListSelectionChange");
+		categoriesList.addEventListener("itemPress", this, "onCategoriesItemPress");
+		categoriesList.addEventListener("itemPressAux", this, "onCategoriesItemPress");
+		categoriesList.addEventListener("selectionChange", this, "onCategoriesListSelectionChange");
 
 		itemList.disableInput = false;
 
@@ -211,22 +199,21 @@ class CraftingLists extends MovieClip
 	
 	public function InitExtensions(): Void
 	{
-		skse.Log("Called init extensions");
 		// Delay updates until config is ready
-//		categoryList.suspended = true;
+		categoriesList.suspended = true;
 		itemList.suspended = true;
 	}
 	
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
 		// Release itemlist for updating
-//		categoryList.suspended = false;
+		categoriesList.suspended = false;
 		itemList.suspended = false;
 		
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
-//		dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
+		dispatchEvent({type:"categoryChange", index: categoriesList.selectedIndex});
 
 		if (a_bPlayBladeSound != false)
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
@@ -250,7 +237,7 @@ class CraftingLists extends MovieClip
 	{
 		_platform = a_platform;
 
-//		categoryList.setPlatform(a_platform,a_bPS3Switch);
+		categoriesList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);
 	}
 
@@ -313,8 +300,8 @@ class CraftingLists extends MovieClip
 			}
 		}
 		
-//		if (categoryList.handleInput(details, pathToFocus))
-//			return true;
+		if (categoriesList.handleInput(details, pathToFocus))
+			return true;
 		
 		var nextClip = pathToFocus.shift();
 		return nextClip.handleInput(details, pathToFocus);
@@ -328,21 +315,21 @@ class CraftingLists extends MovieClip
 	
 	public function showItemsList(): Void
 	{
-//		_currCategoryIndex = categoryList.selectedIndex;
+		_currCategoryIndex = categoriesList.selectedIndex;
 		
-//		categoryLabel.textField.SetText(categoryList.selectedEntry.text);
+		categoryLabel.textField.SetText(categoriesList.selectedEntry.text);
 
 		// Start with no selection
 		itemList.selectedIndex = -1;
 		itemList.scrollPosition = 0;
 
-//		if (categoryList.selectedEntry != undefined) {
+		if (categoriesList.selectedEntry != undefined) {
 			// Set filter type
-//			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
+			_typeFilter.changeFilterFlag(categoriesList.selectedEntry.flag);
 			
 			// Not set yet before the config is loaded
-//			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
-//		}
+			itemList.layout.changeFilterFlag(categoriesList.selectedEntry.flag);
+		}
 		
 		itemList.requestUpdate();
 		
@@ -350,18 +337,11 @@ class CraftingLists extends MovieClip
 
 		itemList.disableInput = false;
 	}
-	
-	private function detectMenuSubtype(): Void
-	{
-//		if (menuType = "alchemy") {
-//		}
-	}
 
 	// Called to initially set the category list.
 	// @API 
 	public function SetCategoriesList(): Void
 	{
-		detectMenuSubtype();
 		skse.Log("SetCategoriesList");
 
 		skse.Log("Category count: " + arguments.length);
@@ -371,31 +351,19 @@ class CraftingLists extends MovieClip
 		var bDontHideOffset = 2;
 		var len = 3;
 
-//		categoryList.clearList();
+		categoriesList.clearList();
 
 		for (var i=0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
-			//categoryList.entryList.push(entry);
-			skse.Log(entry.text + " " + entry.flag.toString(16));
-			_categoryData.push(entry);
-		}
-		
-/*		var textOffset = 0;
-		var flagOffset = 1;
-		var bDontHideOffset = 2;
-		var len = 3;
+			_categoriesData.push(entry);
+			
+			categoriesList.entryList.push(entry);
+			Debug.log(entry.text);
 
-//		categoryList.clearList();
-
-		for (var i = 0, index = 0; i < arguments.length; i = i + len, index++) {
-			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
-			categoryList.entryList.push(entry);
-
-			if (entry.flag == 0)
-				categoryList.dividerIndex = index;
 		}
 
-		categoryList.InvalidateData();*/
+		categoriesList.selectedIndex = 0;
+		categoriesList.InvalidateData();
 	}
 	
 	function EntryMatchesFilter(a_entry: Object, a_flag: Boolean): Boolean
@@ -424,56 +392,38 @@ class CraftingLists extends MovieClip
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	// @API
 	public function InvalidateListData(): Void
-	{
-		skse.Log("InvalidateListData");
-		
-		for (var i=0; i < _categoryData.length; i++) {
-			var catEntry = _categoryData[i];
-			
-			skse.Log(catEntry.text + ": ");
-			
-			for (var j=0; j < itemList.entryList.length; j++) {
-				var itemEntry = itemList.entryList[j];
-				if (EntryMatchesPartitionedFilter(itemEntry, catEntry.flag))
-					skse.Log("      " + itemEntry.text + " ");
-			}
-		}
-		
-//		for (var i = 0; i < itemList.entryList.length; i++) {
-//			skse.Log(itemList.entryList[i].text + " " + itemList.entryList[i].filterFlag.toString(16));
-//		}
-		
-//		var flag = categoryList.selectedEntry.flag;
+	{		
+		var flag = categoriesList.selectedEntry.flag;
 
-//		for (var i = 0; i < categoryList.entryList.length; i++)
-//			categoryList.entryList[i].filterFlag = categoryList.entryList[i].bDontHide ? 1 : 0;
+		for (var i = 0; i < categoriesList.entryList.length; i++)
+			categoriesList.entryList[i].filterFlag = categoriesList.entryList[i].bDontHide ? 1 : 0;
 
-/*		itemList.InvalidateData();
+		itemList.InvalidateData();
 
 		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
 		for (var i = 0; i < itemList.entryList.length; i++) {
-			for (var j = 0; j < categoryList.entryList.length; ++j) {
-				if (categoryList.entryList[j].filterFlag != 0)
+			for (var j = 0; j < categoriesList.entryList.length; ++j) {
+				if (categoriesList.entryList[j].filterFlag != 0)
 					continue;
 
-				if (itemList.entryList[i].filterFlag & categoryList.entryList[j].flag)
-					categoryList.entryList[j].filterFlag = 1;
+				if (itemList.entryList[i].filterFlag & categoriesList.entryList[j].flag)
+					categoriesList.entryList[j].filterFlag = 1;
 			}
 		}
 
-		categoryList.UpdateList();
+		categoriesList.UpdateList();
 
-		if (flag != categoryList.selectedEntry.flag) {
+		if (flag != categoriesList.selectedEntry.flag) {
 			// Triggers an update if filter flag changed
-			_typeFilter.itemFilter = categoryList.selectedEntry.flag;
-			dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
+			_typeFilter.itemFilter = categoriesList.selectedEntry.flag;
+			dispatchEvent({type:"categoryChange", index:categoriesList.selectedIndex});
 		}
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
 		if (itemList.selectedIndex == -1)
 			dispatchEvent({type:"showItemsList", index: -1});
 		else
-			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});*/
+			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 	}
 	
 	
@@ -512,7 +462,7 @@ class CraftingLists extends MovieClip
 		_savedSelectionIndex = itemList.selectedIndex;
 		itemList.selectedIndex = -1;
 		
-//		categoryList.disableSelection = categoryList.disableInput = true;
+		categoriesList.disableSelection = categoriesList.disableInput = true;
 		itemList.disableSelection = itemList.disableInput = true;
 		searchWidget.isDisabled = true;
 			
@@ -522,7 +472,7 @@ class CraftingLists extends MovieClip
 	
 	private function onColumnSelectDialogClosed(event: Object): Void
 	{
-//		categoryList.disableSelection = categoryList.disableInput = false;
+		categoriesList.disableSelection = categoriesList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
 		searchWidget.isDisabled = false;
 		
@@ -562,7 +512,7 @@ class CraftingLists extends MovieClip
 
 	private function onSearchInputStart(event: Object): Void
 	{
-//		categoryList.disableSelection = categoryList.disableInput = true;
+		categoriesList.disableSelection = categoriesList.disableInput = true;
 		itemList.disableSelection = itemList.disableInput = true
 		_nameFilter.filterText = "";
 	}
@@ -574,7 +524,7 @@ class CraftingLists extends MovieClip
 
 	private function onSearchInputEnd(event: Object)
 	{
-//		categoryList.disableSelection = categoryList.disableInput = false;
+		categoriesList.disableSelection = categoriesList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
 		_nameFilter.filterText = event.data;
 	}

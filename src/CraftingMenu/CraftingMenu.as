@@ -6,6 +6,7 @@ import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
 import skyui.util.ConfigManager;
+import skyui.util.Debug;
 
 class CraftingMenu extends MovieClip
 {
@@ -125,6 +126,9 @@ class CraftingMenu extends MovieClip
 	public var currentMenuType: String = "";
 	
 	
+	var dbgIntvl = 0;
+	
+	
   /* INITIALIZATION */
 
 	public function CraftingMenu()
@@ -140,34 +144,43 @@ class CraftingMenu extends MovieClip
 		Mouse.addListener(this);
 		
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
-	}
-	
-	public function onLoad()
-	{
-		//Initialize();		
-	}
-	
-	private function onConfigLoad(event: Object): Void
-	{
-		setConfig(event.config);
 		
-		CategoryList.showPanel();
+		//dbgIntvl = setInterval(this, "testMenu", 1000);
 	}
 	
-	// @override ItemMenu
+	public function testMenu()
+	{
+		trace("TESTING MENU");
+		clearInterval(dbgIntvl);
+		
+		gotoAndStop("EnchantConstruct");
+		Initialize();
+		
+		Debug.log("Setting data");
+		CategoryList.SetCategoriesList
+		(
+			"Disenchant", 0xa, 1,
+			"", 0x0, 0,
+			"Item", 0x5, 1,
+			"Enchantment", 0x30, 1,
+			"Soul Gem", 0x40, 1
+		);
+		Debug.log("Setting data - done");
+		
+	}
+	
 	public function setConfig(a_config: Object): Void
 	{
 		var itemList: TabularList = InventoryLists.itemList;		
-//		itemList.addDataProcessor(new BarterDataSetter(_buyMult, _sellMult));
 //		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
 //		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
 		
-		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
+		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "CraftingListLayout");
 		itemList.layout = layout;
 
 		// Not 100% happy with doing this here, but has to do for now.
-//		if (InventoryLists.categoryList.selectedEntry)
-			layout.changeFilterFlag(0);
+		if (CategoryList.categoriesList.selectedEntry)
+			layout.changeFilterFlag(CategoryList.categoriesList.selectedEntry.flag);
 	}
 	
 	
@@ -198,7 +211,7 @@ class CraftingMenu extends MovieClip
 		BottomBarInfo.SetButtonsArt([{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}]);
 
 		FocusHandler.instance.setFocus(CategoryList, 0);
-//		CategoryList.ShowCategoriesList();
+		
 		CategoryList.addEventListener("itemHighlightChange", this, "onItemHighlightChange");
 		CategoryList.addEventListener("showItemsList", this, "onShowItemsList");
 		CategoryList.addEventListener("hideItemsList", this, "onHideItemsList");
@@ -213,20 +226,6 @@ class CraftingMenu extends MovieClip
 		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
 		
-		ItemsListInputCatcher.onMouseDown = function ()
-		{
-			if (Mouse.getTopMostEntity() == this) {
-				_parent.onItemsListInputCatcherClick();
-			}
-		};
-		
-		RestoreCategoryRect.onRollOver = function ()
-		{
-			if (_parent.CategoryList.currentState == InventoryLists.TWO_PANELS) {
-				_parent.CategoryList.RestoreCategoryIndex();
-			}
-		};
-		
 		ExitMenuRect.onPress = function ()
 		{
 			GameDelegate.call("CloseMenu", []);
@@ -237,22 +236,33 @@ class CraftingMenu extends MovieClip
 		
 		SetPlatform(_platform);
 		
-		CategoryList.setSubtype(SUBTYPE_NAMES[_currentFrame-1]);
+		var subtypeName = SUBTYPE_NAMES[_currentFrame-1];
+		
+		CategoryList.setSubtype(subtypeName);
+		
+		initCategoryIconArt(subtypeName);
+	}
+	
+	private function initCategoryIconArt(a_subtypeName: String): Void
+	{
+		if (a_subtypeName == "EnchantConstruct") {
+			CategoryList.categoriesList.iconArt =
+				[ "ench_disentchant", "", "ench_item", "ench_effect", "ench_soul" ];
+		}
+
+		
 	}
 	
 	// @API
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
-		// True for alchemy, false otherwise
-		skse.Log("Set partitioned filter mode " + a_bPartitioned);
 //		CategoryList.itemList.filterer.SetPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @API
 	public function GetNumCategories(): Number
 	{
-//		return CategoryList != undefined && CategoryList.CategoriesList != undefined ? CategoryList.CategoriesList.entryList.length : 0;
-		return 0;
+		return CategoryList.categoriesList.entryList.length;
 	}
 
 	// @API
@@ -448,6 +458,13 @@ class CraftingMenu extends MovieClip
 		MouseRotationRect._width = ItemInfo._parent._width;
 		MouseRotationRect._height = 0.55 * Stage.visibleRect.height;
 	}
+	
+	private function onConfigLoad(event: Object): Void
+	{
+		setConfig(event.config);
+		
+		CategoryList.showPanel();
+	}
 
 	private function onItemListPressed(event: Object): Void
 	{
@@ -473,7 +490,7 @@ class CraftingMenu extends MovieClip
 	private function onShowItemsList(event: Object): Void
 	{
 		if (_platform == 0) {
-//			GameDelegate.call("SetSelectedCategory", [CategoryList.CategoriesList.selectedIndex]);
+			GameDelegate.call("SetSelectedCategory", [CategoryList.categoriesList.selectedIndex]);
 		}
 		
 		onItemHighlightChange(event);
@@ -505,13 +522,13 @@ class CraftingMenu extends MovieClip
 		if (event.opening == true) {
 			ItemList.disableSelection = true;
 			ItemList.disableInput = true;
-//			CategoryList.CategoriesList.disableSelection = true;
-//			CategoryList.CategoriesList.disableInput = true;
+			CategoryList.categoriesList.disableSelection = true;
+			CategoryList.categoriesList.disableInput = true;
 		} else if (event.opening == false) {
 			ItemList.disableSelection = false;
 			ItemList.disableInput = false;
-//			CategoryList.CategoriesList.disableSelection = false;
-//			CategoryList.CategoriesList.disableInput = false;
+			CategoryList.categoriesList.disableSelection = false;
+			CategoryList.categoriesList.disableInput = false;
 		}
 		if (event.menu == "quantity") {
 			if (event.opening) {
@@ -546,8 +563,7 @@ class CraftingMenu extends MovieClip
 
 	private function getItemShown(): Boolean
 	{
-//		return ItemList.selectedIndex >= 0 && (CategoryList == undefined || CategoryList.currentState == InventoryLists.TWO_PANELS || CategoryList.currentState == InventoryLists.TRANSITIONING_TO_TWO_PANELS);
-		return false;
+		return ItemList.selectedIndex >= 0;
 	}
 
 	private function onMouseUp(): Void
@@ -575,14 +591,14 @@ class CraftingMenu extends MovieClip
 	private function onMouseRotationStart(): Void
 	{
 		GameDelegate.call("StartMouseRotation", []);
-//		CategoryList.CategoriesList.disableSelection = true;
+		CategoryList.categoriesList.disableSelection = true;
 		ItemList.disableSelection = true;
 	}
 
 	private function onMouseRotationStop(): Void
 	{
 		GameDelegate.call("StopMouseRotation", []);
-//		CategoryList.CategoriesList.disableSelection = false;
+		CategoryList.categoriesList.disableSelection = false;
 		ItemList.disableSelection = false;
 	}
 

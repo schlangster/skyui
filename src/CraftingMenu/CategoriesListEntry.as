@@ -2,7 +2,7 @@
 import skyui.components.list.BasicListEntry;
 
 
-class CategoryListEntry extends BasicListEntry
+class CategoriesListEntry extends BasicListEntry
 {
   /* PRIVATE VARIABLES */
 
@@ -21,13 +21,11 @@ class CategoryListEntry extends BasicListEntry
 	{
 		super.initialize();
 
-		var iconLoader = new MovieClipLoader();
-		iconLoader.addListener(this);
-
-		_iconLabel = CategoryList(a_state.list).iconArt[a_index];
-		_iconSize = CategoryList(a_state.list).iconSize;
-
-		iconLoader.loadClip(a_state.iconSource, icon);
+		_iconLabel = CategoriesList(a_state.list).iconArt[a_index];
+		_iconSize = CategoriesList(a_state.list).iconSize;
+		
+		trace("GOTO " + _iconLabel);
+		icon.gotoAndStop(_iconLabel);
 	}
 	
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
@@ -44,18 +42,6 @@ class CategoryListEntry extends BasicListEntry
 		}
 	}
 
-  /* PRIVATE FUNCTIONS */
 
-	// @implements MovieClipLoader
-	private function onLoadInit(a_mc: MovieClip): Void
-	{
-		if (a_mc.background != undefined) {
-			// If the icon set has a background, scale the icon until background size would = icon size
-			a_mc._xscale = a_mc._yscale = (_iconSize/a_mc.background._width)*100;
-		} else {
-			a_mc._width = a_mc._height = _iconSize;
-		}
-		
-		a_mc.gotoAndStop(_iconLabel);
-	}
+  /* PRIVATE FUNCTIONS */
 }
