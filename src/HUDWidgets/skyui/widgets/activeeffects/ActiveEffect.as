@@ -3,8 +3,8 @@
 import skyui.util.EffectIconMap;
 import Shared.GlobalFunc;
 
-import com.greensock.TweenLite;
-import com.greensock.easing.Linear;
+import mx.utils.Delegate;
+import skyui.util.Tween;
 
 
 class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
@@ -85,7 +85,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 		updateEffect(effectData);
 
-		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: 0, easing: Linear.easeNone});
+		this._alpha = 0;
+		Tween.LinearTween(this, "_alpha", 0, 100, effectFadeInDuration, null);
 	}
 
 
@@ -111,7 +112,9 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	{
 		index = a_newIndex;
 		var p = determinePosition(index);
-		TweenLite.to(this, effectMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
+
+		Tween.LinearTween(this, "_x", this._x, p[0], effectMoveDuration, null);
+		Tween.LinearTween(this, "_y", this._y, p[1], effectMoveDuration, null);
 	}
 
 	public function remove(a_immediate: Boolean): Void
@@ -122,7 +125,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 			return;
 		}
 
-		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: this, onComplete: dispatchEvent, onCompleteParams: [{type: "effectRemoved"}], overwrite: 0, easing: Linear.easeNone});
+		Tween.LinearTween(this, "_alpha", 100, 0, effectFadeOutDuration, Delegate.create(this, function() {dispatchEvent({type: "effectRemoved"})}));
 	}
 
 

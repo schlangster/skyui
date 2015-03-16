@@ -3,9 +3,6 @@ import skyui.widgets.activeeffects.ActiveEffectsGroup;
 import skyui.widgets.activeeffects.ActiveEffect;
 import skyui.defines.Magic;
 
-import com.greensock.TweenLite;
-import com.greensock.easing.Linear;
-
 import gfx.events.EventDispatcher;
 
 

@@ -3,7 +3,7 @@
 
 class skyui.util.Tween
 {
-	public static function LinearTween(a_obj: MovieClip, a_prop: String, a_start: Number, a_end: Number, a_duration: Number, a_onFinish: Function, a_overwrite: Boolean): mx.transitions.Tween
+	public static function LinearTween(a_obj: MovieClip, a_prop: String, a_start: Number, a_end: Number, a_duration: Number, a_onFinish: Function): mx.transitions.Tween
 	{
 		var tweenPropName: String = "__tween_" + a_prop + "__";
 
@@ -12,13 +12,8 @@ class skyui.util.Tween
 			var tween: mx.transitions.Tween = a_obj[tweenPropName];
 			if (tween.isPlaying)
 			{
-				if (a_overwrite)
-				{
-					tween.stop();
-					delete tween;
-				} else {
-					return;
-				}
+				tween.stop();
+				delete tween;
 			}
 		}
 
@@ -30,6 +25,11 @@ class skyui.util.Tween
 		if (a_onFinish)
 		{
 			a_obj[tweenPropName].onMotionFinished = a_onFinish;
+
+			if (duration <= 0)
+			{
+				a_onFinish();
+			}
 		}
 
 		return a_obj[tweenPropName];

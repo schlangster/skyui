@@ -1,5 +1,4 @@
-﻿import com.greensock.TweenLite;
-import com.greensock.easing.Linear;
+﻿import skyui.util.Tween;
 
 import Shared.GlobalFunc;
 
@@ -177,7 +176,8 @@ class skyui.widgets.WidgetBase extends MovieClip
 		var newY: Number = GlobalFunc.Lerp(-_hudMetrics.vMin, _hudMetrics.vMax, 0, 720, a_newY);
 		var duration: Number = Math.max(0, a_duration || 0);
 
-		TweenLite.to(this, duration, {_x: newX, _y: newY, overwrite: 0, easing: Linear.easeNone});
+		Tween.LinearTween(this, "_x", this._x, newX, duration, null);
+		Tween.LinearTween(this, "_y", this._y, newY, duration, null);
 	}
 
 	// @Papyrus
@@ -185,7 +185,7 @@ class skyui.widgets.WidgetBase extends MovieClip
 	{
 		var duration: Number = Math.max(0, a_duration || 0);
 
-		TweenLite.to(this, duration, {_alpha: a_alpha, overwrite: 0, easing: Linear.easeNone});
+		Tween.LinearTween(this, "_alpha", this._alpha, a_alpha, duration, null);
 	}
 
   /* PRIVATE FUNCTIONS */

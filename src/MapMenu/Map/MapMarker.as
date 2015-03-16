@@ -210,11 +210,11 @@ class Map.MapMarker extends gfx.controls.Button
 				{
 					if (a_state == "over")
 					{
-						Tween.LinearTween(IconClip, "_xscale", 100, MARKER_SCALE_MAX, TWEEN_TIME, null, true);
-						Tween.LinearTween(IconClip, "_yscale", 100, MARKER_SCALE_MAX, TWEEN_TIME, null, true);
+						Tween.LinearTween(IconClip, "_xscale", 100, MARKER_SCALE_MAX, TWEEN_TIME, null);
+						Tween.LinearTween(IconClip, "_yscale", 100, MARKER_SCALE_MAX, TWEEN_TIME, null);
 					} else {
-						Tween.LinearTween(IconClip, "_xscale", MARKER_SCALE_MAX, 100, TWEEN_TIME, null, true);
-						Tween.LinearTween(IconClip, "_yscale", MARKER_SCALE_MAX, 100, TWEEN_TIME, null, true);
+						Tween.LinearTween(IconClip, "_xscale", MARKER_SCALE_MAX, 100, TWEEN_TIME, null);
+						Tween.LinearTween(IconClip, "_yscale", MARKER_SCALE_MAX, 100, TWEEN_TIME, null);
 					}
 				}
 
@@ -223,9 +223,9 @@ class Map.MapMarker extends gfx.controls.Button
 				{
 					if (a_state == "over")
 					{
-						Tween.LinearTween(IconClip, "_alpha", MARKER_ALPHA_MIN, 100, TWEEN_TIME, null, true);
+						Tween.LinearTween(IconClip, "_alpha", MARKER_ALPHA_MIN, 100, TWEEN_TIME, null);
 					} else {
-						Tween.LinearTween(IconClip, "_alpha", 100, MARKER_ALPHA_MIN, TWEEN_TIME, null, true);
+						Tween.LinearTween(IconClip, "_alpha", 100, MARKER_ALPHA_MIN, TWEEN_TIME, null);
 					}
 				}
 		}
@@ -235,7 +235,7 @@ class Map.MapMarker extends gfx.controls.Button
 	{
 		if (IconClip.foundIcon)
 		{
-			Tween.LinearTween(IconClip.foundIcon, "_alpha", 100, 0, TWEEN_TIME, Delegate.create(IconClip.foundIcon, removeMovieClip), true);
+			Tween.LinearTween(IconClip.foundIcon, "_alpha", 100, 0, TWEEN_TIME, Delegate.create(IconClip.foundIcon, removeMovieClip));
 		}
 		
 		var overState: Boolean = false;

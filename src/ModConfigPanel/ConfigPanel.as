@@ -831,10 +831,10 @@ class ConfigPanel extends MovieClip
 		_optionsList.disableSelection = _optionsList.disableInput = true;
 		_modListPanel.isDisabled = true;
 
-		Tween.LinearTween(bottomBar, "_alpha", 100, 0, 0.5, null, true);
-		Tween.LinearTween(bottomBar, "_y", _bottomBarStartY, _bottomBarStartY+50, 0.5, null, true);
+		Tween.LinearTween(bottomBar, "_alpha", 100, 0, 0.5, null);
+		Tween.LinearTween(bottomBar, "_y", _bottomBarStartY, _bottomBarStartY+50, 0.5, null);
 
-		Tween.LinearTween(contentHolder, "_alpha", 100, 75, 0.5, null, true);
+		Tween.LinearTween(contentHolder, "_alpha", 100, 75, 0.5, null);
 	}
 	
 	private function dimIn(): Void
@@ -844,10 +844,10 @@ class ConfigPanel extends MovieClip
 		_modListPanel.isDisabled = false;
 
 
-		Tween.LinearTween(bottomBar, "_alpha", 0, 100, 0.5, null, true);
-		Tween.LinearTween(bottomBar, "_y", _bottomBarStartY+50, _bottomBarStartY, 0.5, null, true);
+		Tween.LinearTween(bottomBar, "_alpha", 0, 100, 0.5, null);
+		Tween.LinearTween(bottomBar, "_y", _bottomBarStartY+50, _bottomBarStartY, 0.5, null);
 
-		Tween.LinearTween(contentHolder, "_alpha", 75, 100, 0.5, null, true);
+		Tween.LinearTween(contentHolder, "_alpha", 75, 100, 0.5, null);
 	}
 	
 	private function showWelcomeScreen(): Void
