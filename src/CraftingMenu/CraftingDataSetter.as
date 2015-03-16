@@ -8,31 +8,53 @@ import skyui.defines.Material;
 import skyui.defines.Weapon;
 import skyui.defines.Inventory;
 
-class InventoryDataSetter extends ItemcardDataExtender
+import skyui.components.list.BasicList;
+import skyui.components.list.IListProcessor;
+
+
+// @abstract
+class CraftingDataSetter implements IListProcessor
 {
   /* INITIALIZATION */
   
-	public function InventoryDataSetter()
+	public function CraftingDataSetter()
 	{
 		super();
+	}
+	
+  	// @override IListProcessor
+	public function processList(a_list: BasicList): Void
+	{
+		var entryList = a_list.entryList;
+		
+		for (var i = 0; i < entryList.length; i++) {
+			var e = entryList[i];
+			if (e.skyui_itemDataProcessed || e.filterFlag == 0)
+				continue;
+				
+			e.skyui_itemDataProcessed = true;
+			
+			// Fix wrong property names
+			fixSKSEExtendedObject(e);
+
+			processEntry(e);
+		}
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
 
 	// @override ItemcardDataExtender
-	public function processEntry(a_entryObject: Object, a_itemInfo: Object): Void
+	public function processEntry(a_entryObject: Object): Void
 	{
 		a_entryObject.baseId = a_entryObject.formId & 0x00FFFFFF;
-		a_entryObject.type = a_itemInfo.type;
 
 		a_entryObject.isEquipped = (a_entryObject.equipState > 0);
-		a_entryObject.isStolen = (a_itemInfo.stolen == true);
 
-		a_entryObject.infoValue = (a_itemInfo.value > 0) ? (Math.round(a_itemInfo.value * 100) / 100) : null;
-		a_entryObject.infoWeight =(a_itemInfo.weight > 0) ? (Math.round(a_itemInfo.weight * 100) / 100) : null;
+		a_entryObject.infoValue = (a_entryObject.value > 0) ? (Math.round(a_entryObject.value * 100) / 100) : null;
+		a_entryObject.infoWeight =(a_entryObject.weight > 0) ? (Math.round(a_entryObject.weight * 100) / 100) : null;
 		
-		a_entryObject.infoValueWeight = (a_itemInfo.weight > 0 && a_itemInfo.value > 0) ? (Math.round((a_itemInfo.value / a_itemInfo.weight) * 100) / 100) : null;
+		a_entryObject.infoValueWeight = (a_entryObject.weight > 0 && a_entryObject.value > 0) ? (Math.round((a_entryObject.value / a_entryObject.weight) * 100) / 100) : null;
 
 		switch (a_entryObject.formType) {
 			case Form.TYPE_SCROLLITEM:
@@ -44,8 +66,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 
 			case Form.TYPE_ARMOR:
-				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
-				a_entryObject.infoArmor = (a_itemInfo.armor > 0) ? (Math.round(a_itemInfo.armor * 100) / 100) : null;
+				a_entryObject.infoArmor = (a_entryObject.armor > 0) ? (Math.round(a_entryObject.armor * 100) / 100) : null;
 				
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
@@ -72,9 +93,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 
 			case Form.TYPE_WEAPON:
-				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
-				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
-				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 100) / 100) : null;
+				a_entryObject.infoDamage = (a_entryObject.damage > 0) ? (Math.round(a_entryObject.damage * 100) / 100) : null;
 				
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
@@ -82,8 +101,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 				break;
 
 			case Form.TYPE_AMMO:
-				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
-				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 100) / 100) : null;
+				a_entryObject.infoDamage = (a_entryObject.damage > 0) ? (Math.round(a_entryObject.damage * 100) / 100) : null;
 				
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
@@ -759,6 +777,32 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.status = Item.SOULGEMSTATUS_FULL;
 		else
 			a_entryObject.status = Item.SOULGEMSTATUS_PARTIAL;
+			
+		if (a_entryObject.soulSize != undefined)
+		{
+			switch (a_entryObject.soulSize)
+			{
+			case Item.SOULGEM_NONE:
+				a_entryObject.soulSizeDisplay = "$Empty";
+				break;
+			case Item.SOULGEM_PETTY:
+				a_entryObject.soulSizeDisplay = "$Petty";
+				break;
+			case Item.SOULGEM_LESSER:
+				a_entryObject.soulSizeDisplay = "$Lesser";
+				break;
+			case Item.SOULGEM_COMMON:
+				a_entryObject.soulSizeDisplay = "$Common";
+				break;
+			case Item.SOULGEM_GREATER:
+				a_entryObject.soulSizeDisplay = "$Greater";
+				break;
+			case Item.SOULGEM_GRAND:
+			case Item.SOULGEM_AZURA:
+				a_entryObject.soulSizeDisplay = "$Grand";
+				break;
+			}
+		}
 	}
 
 	private function processSoulGemBaseId(a_entryObject: Object): Void
@@ -875,5 +919,61 @@ class InventoryDataSetter extends ItemcardDataExtender
 				a_entryObject.subType = Item.MISC_LEATHERSTRIPS;
 				break;
 		}
+	}
+	
+	private function fixSKSEExtendedObject(a_extendedObject: Object): Void
+	{
+		if (a_extendedObject.formType == undefined)
+			return;
+
+		switch(a_extendedObject.formType) {
+			case Form.TYPE_SPELL:
+			case Form.TYPE_SCROLLITEM:
+			case Form.TYPE_INGREDIENT:
+			case Form.TYPE_POTION:
+			case Form.TYPE_EFFECTSETTING:
+
+				// school is sent as subType
+				if (a_extendedObject.school == undefined && a_extendedObject.subType != undefined) {
+					a_extendedObject.school = a_extendedObject.subType;
+					delete(a_extendedObject.subType);
+				}
+
+				// resistance is sent as magicType
+				if (a_extendedObject.resistance == undefined && a_extendedObject.magicType != undefined) {
+					a_extendedObject.resistance = a_extendedObject.magicType;
+					delete(a_extendedObject.magicType);
+				}
+
+				// primaryValue is sent as actorValue
+				/* // Ignore
+				if (a_extendedObject.primaryValue == undefined && a_extendedObject.actorValue != undefined) {
+					a_extendedObject.primaryValue = a_extendedObject.actorValue;
+					delete(a_extendedObject.actorValue);
+				}
+				*/
+				break;
+
+			case Form.TYPE_WEAPON:
+				// weaponType is sent as subType
+				if (a_extendedObject.weaponType == undefined && a_extendedObject.subType != undefined) {
+					a_extendedObject.weaponType = a_extendedObject.subType;
+					delete(a_extendedObject.subType);
+				}
+				break;
+
+			case Form.TYPE_BOOK:
+				// (SKSE < 1.6.6) flags and bookType (and some padding) are sent as one UInt32 bookType
+				if (a_extendedObject.flags == undefined && a_extendedObject.bookType != undefined) {
+					var oldBookType: Number = a_extendedObject.bookType;
+					a_extendedObject.bookType	= (oldBookType & 0xFF00) >>> 8;
+					a_extendedObject.flags		= (oldBookType & 0x00FF);
+				}
+				break;
+
+			default:
+				break;
+		}
+
 	}
 }

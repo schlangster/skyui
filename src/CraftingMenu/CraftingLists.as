@@ -317,7 +317,7 @@ class CraftingLists extends MovieClip
 	{
 		_currCategoryIndex = categoriesList.selectedIndex;
 		
-		categoryLabel.textField.SetText(categoriesList.selectedEntry.text);
+		categoryLabel.textField.SetText(categoriesList.selectedEntry.text.toUpperCase());
 
 		// Start with no selection
 		itemList.selectedIndex = -1;
@@ -333,7 +333,9 @@ class CraftingLists extends MovieClip
 		
 		itemList.requestUpdate();
 		
-		dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
+		dispatchEvent({type: "showItemsList", index: itemList.selectedIndex});
+		
+//		dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 
 		itemList.disableInput = false;
 	}
@@ -358,7 +360,7 @@ class CraftingLists extends MovieClip
 			_categoriesData.push(entry);
 			
 			categoriesList.entryList.push(entry);
-			Debug.log(entry.text);
+			Debug.log(entry.text + " : " + entry.flag);
 
 		}
 
@@ -402,6 +404,10 @@ class CraftingLists extends MovieClip
 
 		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
 		for (var i = 0; i < itemList.entryList.length; i++) {
+			
+			
+			Debug.dump("entry " + i, itemList.entryList[i]);
+			
 			for (var j = 0; j < categoriesList.entryList.length; ++j) {
 				if (categoriesList.entryList[j].filterFlag != 0)
 					continue;

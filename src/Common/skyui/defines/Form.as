@@ -4,6 +4,7 @@
 
 	public static var TYPE_EFFECTSETTING: Number	= 18;
 
+	public static var TYPE_ENCHANTMENT: Number		= 21;
 	public static var TYPE_SPELL: Number			= 22;
 	public static var TYPE_SCROLLITEM: Number		= 23;
 

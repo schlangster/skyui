@@ -23,12 +23,8 @@ class CraftingListEntry extends TabularListEntry
   	public var itemIcon: MovieClip;
   	public var equipIcon: MovieClip;
 	
-	public var bestIcon: MovieClip;
-	public var favoriteIcon: MovieClip;
 	public var poisonIcon: MovieClip;
 	public var stolenIcon: MovieClip;
-	public var enchIcon: MovieClip;
-	public var readIcon: MovieClip;
 	
 	
   /* INITIALIZATION */
@@ -40,7 +36,7 @@ class CraftingListEntry extends TabularListEntry
 		
 		var iconLoader = new MovieClipLoader();
 		iconLoader.addListener(this);
-		//iconLoader.loadClip(a_state.iconSource, itemIcon);
+		iconLoader.loadClip(a_state.iconSource, itemIcon);
 		
 		itemIcon._visible = false;
 		equipIcon._visible = false;
@@ -58,19 +54,11 @@ class CraftingListEntry extends TabularListEntry
 		var iconY = TabularList(a_state.list).layout.entryHeight * 0.25;
 		var iconSize = TabularList(a_state.list).layout.entryHeight * 0.5;
 			
-		bestIcon._height = bestIcon._width = iconSize;
-		favoriteIcon._height = favoriteIcon._width = iconSize;
 		poisonIcon._height = poisonIcon._width = iconSize;
 		stolenIcon._height = stolenIcon._width = iconSize;
-		enchIcon._height = enchIcon._width = iconSize;
-		readIcon._height = readIcon._width = iconSize;
 			
-		bestIcon._y = iconY;
-		favoriteIcon._y = iconY;
 		poisonIcon._y = iconY;
 		stolenIcon._y = iconY;
-		enchIcon._y = iconY;
-		readIcon._y = iconY;
 	}
 
   	// @override TabularListEntry
@@ -120,31 +108,12 @@ class CraftingListEntry extends TabularListEntry
 		a_entryField.autoSize = "left";
 		a_entryField.SetText(text);
 		
-		//formatColor(a_entryField, a_entryObject, a_state);
+		formatColor(a_entryField, a_entryObject, a_state);
 
-		// BestInClass icon
 		var iconPos = a_entryField._x + a_entryField._width + 5;
 
 		// All icons have the same size
-		var iconSpace = bestIcon._width * 1.25;
-
-		if (a_entryObject.bestInClass == true) {
-			bestIcon._x = iconPos;
-			iconPos = iconPos + iconSpace;
-
-			bestIcon.gotoAndStop("show");
-		} else {
-			bestIcon.gotoAndStop("hide");
-		}
-
-		// Fav icon
-		if (a_entryObject.favorite == true) {
-			favoriteIcon._x = iconPos;
-			iconPos = iconPos + iconSpace;
-			favoriteIcon.gotoAndStop("show");
-		} else {
-			favoriteIcon.gotoAndStop("hide");
-		}
+		var iconSpace = stolenIcon._width * 1.25;
 
 		// Poisoned Icon
 		if (a_entryObject.isPoisoned == true) {
@@ -163,24 +132,6 @@ class CraftingListEntry extends TabularListEntry
 		} else {
 			stolenIcon.gotoAndStop("hide");
 		}
-
-		// Enchanted Icon
-		if (a_entryObject.isEnchanted == true) {
-			enchIcon._x = iconPos;
-			iconPos = iconPos + iconSpace;
-			enchIcon.gotoAndStop("show");
-		} else {
-			enchIcon.gotoAndStop("hide");
-		}
-
-		// Enchanted Icon
-		if (a_entryObject.isRead == true) {
-			readIcon._x = iconPos;
-			iconPos = iconPos + iconSpace;
-			readIcon.gotoAndStop("show");
-		} else {
-			readIcon.gotoAndStop("hide");
-		}
 	}
 	
   	// @override TabularEntry
@@ -196,6 +147,7 @@ class CraftingListEntry extends TabularListEntry
 	private function onLoadInit(a_icon: MovieClip): Void
 	{
 		a_icon.gotoAndStop(_iconLabel);
+		skyui.util.Debug.log("Label : " + _iconLabel);
 		changeIconColor(a_icon, _iconColor);
 	}
 	

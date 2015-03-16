@@ -8,7 +8,7 @@ import skyui.defines.Item;
 import skyui.defines.Material;
 import skyui.defines.Weapon;
 
-class InventoryIconSetter implements IListProcessor
+class CraftingIconSetter implements IListProcessor
 {
   /* PRIVATE VARIABLES */
 
@@ -17,7 +17,7 @@ class InventoryIconSetter implements IListProcessor
 
   /* INITIALIZATION */
 
- 	public function InventoryIconSetter(a_configAppearance: Object)
+ 	public function CraftingIconSetter(a_configAppearance: Object)
  	{
  		_noIconColors = a_configAppearance.icons.item.noColor;
  	}
@@ -38,7 +38,7 @@ class InventoryIconSetter implements IListProcessor
   /* PRIVATE FUNCTIONS */
   
 	private function processEntry(a_entryObject: Object): Void
-	{
+	{		
 		switch (a_entryObject.formType) {
 			case Form.TYPE_SCROLLITEM:
 				a_entryObject.iconLabel = "default_scroll";
@@ -83,6 +83,10 @@ class InventoryIconSetter implements IListProcessor
 
 			case Form.TYPE_SOULGEM:
 				processSoulGemIcon(a_entryObject);
+				break;
+				
+			case Form.TYPE_ENCHANTMENT:
+				a_entryObject.iconLabel = "default_effect";
 				break;
 		}
 
@@ -224,7 +228,6 @@ class InventoryIconSetter implements IListProcessor
 			case Armor.EQUIP_EARS:
 				processJewelryArmorIcon(a_entryObject);
 				break;
-
 		}
 	}
 

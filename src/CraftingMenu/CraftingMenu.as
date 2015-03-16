@@ -5,8 +5,14 @@ import Shared.GlobalFunc;
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
 import skyui.components.list.ListLayout;
+import skyui.components.ButtonPanel;
 import skyui.util.ConfigManager;
 import skyui.util.Debug;
+import skyui.util.GlobalFunctions;
+
+import skyui.defines.Input;
+
+
 
 class CraftingMenu extends MovieClip
 {
@@ -31,9 +37,6 @@ class CraftingMenu extends MovieClip
 	public var ItemInfoHolder: MovieClip;
 	public var MenuDescriptionHolder: MovieClip;
 	public var MenuNameHolder: MovieClip;
-	public var RestoreCategoryRect: MovieClip;
-
-	public var ItemsListInputCatcher: MovieClip;
 
 	// Not API, but keeping the original name for compatiblity with vanilla.
 	public var InventoryLists: CraftingLists;
@@ -48,6 +51,16 @@ class CraftingMenu extends MovieClip
 	private var _bCanFadeItemInfo: Boolean = true;
 	private var _bItemCardAdditionalDescription: Boolean = false;
 	private var _platform: Number = 0;
+	
+	private var _searchKey: Number;
+	
+	private var _acceptControls: Object;
+	private var _cancelControls: Object;
+	private var _searchControls: Object;
+	private var _sortColumnControls: Array;
+	private var _sortOrderControls: Object;
+	
+	private var _config: Object;
 	
 	
   /* PROPERTIES */
@@ -125,6 +138,8 @@ class CraftingMenu extends MovieClip
 	
 	public var currentMenuType: String = "";
 	
+	public var navPanel: ButtonPanel;
+	
 	
 	var dbgIntvl = 0;
 	
@@ -144,6 +159,8 @@ class CraftingMenu extends MovieClip
 		Mouse.addListener(this);
 		
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
+		
+		navPanel = BottomBarInfo.buttonPanel;
 		
 		//dbgIntvl = setInterval(this, "testMenu", 1000);
 	}
@@ -171,12 +188,38 @@ class CraftingMenu extends MovieClip
 	
 	public function setConfig(a_config: Object): Void
 	{
-		var itemList: TabularList = InventoryLists.itemList;		
-//		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
-//		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
+		_config = a_config;
+		ItemList.addDataProcessor(new CraftingDataSetter());
+		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
+
+		positionFloatingElements();
+		
+		var itemListState = CategoryList.itemList.listState;
+		var appearance = a_config["Appearance"];
+		
+		itemListState.iconSource = appearance.icons.item.source;
+		itemListState.showStolenIcon = appearance.icons.item.showStolen;
+		
+		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
+		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
+		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
+		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
+		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
+		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
+		
 		
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "CraftingListLayout");
-		itemList.layout = layout;
+		ItemList.layout = layout;
+		
+		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
+		var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
+		var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
+		_sortColumnControls = [{keyCode: previousColumnKey},
+							   {keyCode: nextColumnKey}];
+		_sortOrderControls = {keyCode: sortOrderKey};
+		
+		_searchKey = a_config["Input"].controls.pc.search;
+		_searchControls = {keyCode: _searchKey};
 
 		// Not 100% happy with doing this here, but has to do for now.
 		if (CategoryList.categoriesList.selectedEntry)
@@ -189,6 +232,7 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function Initialize(): Void
 	{
+		skse.ExtendData(true);
 		skse.Log("Initialize");
 		
 		ItemInfoHolder = ItemInfoHolder;
@@ -208,7 +252,9 @@ class CraftingMenu extends MovieClip
 		MenuDescription = MenuDescriptionHolder.MenuDescription;
 		MenuDescription.autoSize = "center";
 		
-		BottomBarInfo.SetButtonsArt([{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}]);
+//		BottomBarInfo.SetButtonsArt([{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}]);
+
+		CategoryList.InitExtensions();
 
 		FocusHandler.instance.setFocus(CategoryList, 0);
 		
@@ -232,7 +278,7 @@ class CraftingMenu extends MovieClip
 		};
 		
 		bCanCraft = false;
-		positionElements();
+		positionFixedElements();
 		
 		SetPlatform(_platform);
 		
@@ -268,14 +314,31 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function UpdateButtonText(): Void
 	{
-		var buttonText: Array = ButtonText.concat();
-		if (!bCanCraft) {
-			buttonText[CraftingMenu.CRAFT_BUTTON] = "";
+		navPanel.clearButtons();
+		
+		if (getItemShown()/* && CategoryList.currentState == CraftingLists.SHOW_PANEL*/) {
+			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: Input.Activate});
+		} else {
+			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Search", controls: _searchControls});
+			if (_platform != 0) {
+				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
+				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+			}
 		}
-		if (!getItemShown()) {
-			buttonText[CraftingMenu.SELECT_BUTTON] = "";
+		
+		if (bCanCraft && ButtonText[CraftingMenu.CRAFT_BUTTON] != "") {
+			navPanel.addButton({text: ButtonText[CraftingMenu.CRAFT_BUTTON], controls: Input.XButton});
 		}
-		BottomBarInfo.SetButtonsText.apply(BottomBarInfo, buttonText);
+		
+		if (bCanCraft && ButtonText[CraftingMenu.AUX_BUTTON] != "") {
+			navPanel.addButton({text: ButtonText[CraftingMenu.AUX_BUTTON], controls: Input.YButton});
+		}
+		
+		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
+		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
+		
+		navPanel.updateButtons(true);
 	}
 
 	// @API
@@ -368,8 +431,24 @@ class CraftingMenu extends MovieClip
 	{
 		_platform = a_platform;
 		
-		BottomBarInfo.SetPlatform(a_platform, a_bPS3Switch);
+		if (a_platform == 0) {
+			_acceptControls = Input.Enter;
+			_cancelControls = Input.Tab;
+		} else {
+			_acceptControls = Input.Accept;
+			_cancelControls = Input.Cancel;
+			
+			// Defaults
+			_sortColumnControls = Input.SortColumn;
+			_sortOrderControls = Input.SortOrder;
+		}
+		
+		// Defaults
+		_searchControls = Input.Space;
+		
 		ItemInfo.SetPlatform(a_platform, a_bPS3Switch);
+		
+		BottomBarInfo.setPlatform(a_platform, a_bPS3Switch);
 		CategoryList.setPlatform(a_platform, a_bPS3Switch);
 	}
 
@@ -431,10 +510,9 @@ class CraftingMenu extends MovieClip
 		return true;
 	}
 	
-	
   /* PRIVATE FUNCTIONS */
 
-	private function positionElements(): Void
+	private function positionFixedElements(): Void
 	{
 		GlobalFunc.SetLockFunction();
 		
@@ -446,17 +524,62 @@ class CraftingMenu extends MovieClip
 		MenuDescriptionHolder.Lock("TR");
 		var leftOffset: Number = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightOffset: Number = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-		BottomBarInfo.PositionElements(leftOffset, rightOffset);
+
+		BottomBarInfo.positionElements(leftOffset, rightOffset);
+	
 		MovieClip(ExitMenuRect).Lock("TL");
 		ExitMenuRect._x = ExitMenuRect._x - (Stage.safeRect.x + 10);
 		ExitMenuRect._y = ExitMenuRect._y - Stage.safeRect.y;
-//		RestoreCategoryRect._x = ExitMenuRect._x + CategoryList.CategoriesList._parent._width + 25;
-		ItemsListInputCatcher._x = RestoreCategoryRect._x + RestoreCategoryRect._width;
-		ItemsListInputCatcher._width = _root._width - ItemsListInputCatcher._x;
+	}
+	
+	private function positionFloatingElements(): Void
+	{
+		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
+		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
+		
+		var a = CategoryList.getContentBounds();
+		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
+		var panelEdge = CategoryList._x + a[0] + a[2] + 25;
+		
+
+		var itemCardContainer = ItemInfo._parent;
+		var itemcardPosition = _config.ItemInfo.itemcard;
+		
+		var itemCardWidth = ItemInfo._width;
+		
+		// For some reason the container is larger than the card
+		// Card x is at 0 so we can use the inner width without adjustment
+		var scaleMult = (rightEdge - panelEdge) / itemCardContainer._width;
+		
+		// Scale down if necessary
+		if (scaleMult < 1.0) {
+			itemCardContainer._width *= scaleMult;
+			itemCardContainer._height *= scaleMult;
+			itemCardWidth *= scaleMult;
+		}
+		
+		if (itemcardPosition.align == "left") {
+			itemCardContainer._x = panelEdge + itemcardPosition.xOffset;
+		} else if (itemcardPosition.align == "right") {
+			itemCardContainer._x = rightEdge - itemCardWidth + itemcardPosition.xOffset;
+		} else {
+			itemCardContainer._x = panelEdge + itemcardPosition.xOffset + (Stage.visibleRect.x + Stage.visibleRect.width - panelEdge - itemCardWidth) / 2;
+		}
+
+		itemCardContainer._y += itemcardPosition.yOffset;
+
 		MovieClip(MouseRotationRect).Lock("T");
 		MouseRotationRect._x = ItemInfo._parent._x;
 		MouseRotationRect._width = ItemInfo._parent._width;
 		MouseRotationRect._height = 0.55 * Stage.visibleRect.height;
+			
+//		_bItemCardPositioned = true;
+		
+		// Delayed fade in if positioned wasn't set
+/*		if (_bItemCardFadedIn) {
+			GameDelegate.call("UpdateItem3D",[true]);
+			itemCard.FadeInCard();
+		}*/
 	}
 	
 	private function onConfigLoad(event: Object): Void
