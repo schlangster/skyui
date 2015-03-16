@@ -1,8 +1,7 @@
 ﻿import gfx.io.GameDelegate;
 
-import mx.transitions.Tween;
-import mx.transitions.easing.None;
 import mx.utils.Delegate;
+import skyui.util.Tween;
 
 class Map.MapMarker extends gfx.controls.Button
 {
@@ -93,12 +92,6 @@ class Map.MapMarker extends gfx.controls.Button
 	private var _iconName: String = "";
 
 	private var _markerSize: Number;
-
-	private var _iconTween_alpha: Tween;
-	private var _iconTween_xscale: Tween;
-	private var _iconTween_yscale: Tween;
-
-	private var _foundIconTween_alpha: Tween;
 
 
   /* INITIALIZATION */
@@ -215,47 +208,24 @@ class Map.MapMarker extends gfx.controls.Button
 			default:
 				if (_iconName != "PlayerSetMarker")
 				{
-					if (_iconTween_xscale) {
-						_iconTween_xscale.stop();
-						delete _iconTween_xscale;
-					}
-
-					if (_iconTween_yscale) {
-						_iconTween_yscale.stop();
-						delete _iconTween_yscale;
-					}
-
 					if (a_state == "over")
 					{
-						var duration: Number = ((MARKER_SCALE_MAX - IconClip._xscale)/(MARKER_SCALE_MAX - 100)) * TWEEN_TIME;
-						_iconTween_xscale = new Tween(IconClip, "_xscale", None.easeNone, IconClip._xscale, 150, duration, true);
-
-						duration = ((MARKER_SCALE_MAX - IconClip._yscale)/(MARKER_SCALE_MAX - 100)) * TWEEN_TIME;
-						_iconTween_yscale = new Tween(IconClip, "_yscale", None.easeNone, IconClip._yscale, 150, duration, true);
+						Tween.LinearTween(IconClip, "_xscale", 100, MARKER_SCALE_MAX, TWEEN_TIME, null, true);
+						Tween.LinearTween(IconClip, "_yscale", 100, MARKER_SCALE_MAX, TWEEN_TIME, null, true);
 					} else {
-						var duration: Number = ((IconClip._xscale - 100)/(MARKER_SCALE_MAX - 100)) * TWEEN_TIME;
-						_iconTween_xscale = new Tween(IconClip, "_xscale", None.easeNone, IconClip._xscale, 100, duration, true);
-
-						var duration = ((IconClip._yscale - 100)/(MARKER_SCALE_MAX - 100)) * TWEEN_TIME;
-						_iconTween_yscale = new Tween(IconClip, "_yscale", None.easeNone, IconClip._yscale, 100, duration, true);
+						Tween.LinearTween(IconClip, "_xscale", MARKER_SCALE_MAX, 100, TWEEN_TIME, null, true);
+						Tween.LinearTween(IconClip, "_yscale", MARKER_SCALE_MAX, 100, TWEEN_TIME, null, true);
 					}
 				}
 
 
 				if (_iconName != "DoorMarker")
 				{
-					if (_iconTween_alpha) {
-						_iconTween_alpha.stop();
-						delete _iconTween_alpha;
-					}
-
 					if (a_state == "over")
 					{
-						var duration: Number = ((100 - IconClip._alpha)/(100 - MARKER_ALPHA_MIN)) * TWEEN_TIME;
-						_iconTween_alpha = new Tween(IconClip, "_alpha", None.easeNone, IconClip._alpha, 100, duration, true);
+						Tween.LinearTween(IconClip, "_alpha", MARKER_ALPHA_MIN, 100, TWEEN_TIME, null, true);
 					} else {
-						var duration: Number = ((IconClip._alpha - MARKER_ALPHA_MIN)/(100 - MARKER_ALPHA_MIN)) * TWEEN_TIME;
-						_iconTween_alpha = new Tween(IconClip, "_alpha", None.easeNone, IconClip._alpha, MARKER_ALPHA_MIN, duration, true);
+						Tween.LinearTween(IconClip, "_alpha", 100, MARKER_ALPHA_MIN, TWEEN_TIME, null, true);
 					}
 				}
 		}
@@ -265,14 +235,7 @@ class Map.MapMarker extends gfx.controls.Button
 	{
 		if (IconClip.foundIcon)
 		{
-			if (_foundIconTween_alpha) {
-				_foundIconTween_alpha.stop();
-				delete _foundIconTween_alpha;
-			}
-			
-			var duration: Number = (IconClip.foundIcon._alpha/100) * TWEEN_TIME;
-			_foundIconTween_alpha = new Tween(IconClip.foundIcon, "_alpha", None.easeNone, IconClip.foundIcon._alpha, 0, duration, true);
-			_foundIconTween_alpha.onMotionFinished = Delegate.create(IconClip.foundIcon, removeMovieClip);
+			Tween.LinearTween(IconClip.foundIcon, "_alpha", 100, 0, TWEEN_TIME, Delegate.create(IconClip.foundIcon, removeMovieClip), true);
 		}
 		
 		var overState: Boolean = false;
