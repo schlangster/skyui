@@ -63,7 +63,8 @@ class BottomBar extends MovieClip
 		playerInfoCard._alpha = 0;
 	}
 
-	public function updatePlayerInfo(a_playerUpdateObj: Object, a_itemUpdateObj: Object): Void
+	// @API
+	public function UpdatePlayerInfo(a_playerUpdateObj: Object, a_itemUpdateObj: Object): Void
 	{
 		_playerInfoObj = a_playerUpdateObj;
 		updatePerItemInfo(a_itemUpdateObj);
@@ -176,7 +177,8 @@ class BottomBar extends MovieClip
 		}
 	}
 
-	public function updateCraftingInfo(a_skillName: String, a_levelStart: Number, a_levelPercent: Number): Void
+	// @API
+	public function UpdateCraftingInfo(a_skillName: String, a_levelStart: Number, a_levelPercent: Number): Void
 	{
 		playerInfoCard.gotoAndStop("Crafting");
 		updateSkillBar(a_skillName, a_levelStart, a_levelPercent);

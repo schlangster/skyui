@@ -30,6 +30,7 @@ class CategoriesListEntry extends BasicListEntry
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{
 		enabled = a_entryObject.enabled;
+		skse.Log("Enabled " + enabled);
 		
 		if (a_entryObject.divider == true) {
 			_alpha = 100;

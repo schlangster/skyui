@@ -191,7 +191,7 @@ columns.materialColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING 
 
 columns.materialColumn.state2.label.text = '$MAT'
 columns.materialColumn.state2.entry.text = @materialDisplay
-columns.materialColumn.state2.entry.arrowDown = true
+columns.materialColumn.state2.label.arrowDown = true
 columns.materialColumn.state2.sortAttributes = <enabled, materialDisplay, text>
 columns.materialColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -210,7 +210,7 @@ columns.classColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | C
 
 columns.classColumn.state2.label.text = '$CLASS'
 columns.classColumn.state2.entry.text = @weightClassDisplay
-columns.classColumn.state2.entry.arrowDown = true
+columns.classColumn.state2.label.arrowDown = true
 columns.classColumn.state2.sortAttributes = <enabled, weightClassDisplay, text>
 columns.classColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -671,6 +671,14 @@ views.enchantSoulView.primaryColumn = craftNameColumn
 views.enchantSoulView.columns = <equipColumn, iconColumn, craftNameColumn, soulSizeColumn, weightColumn, valueColumn, valueWeightColumn>
 views.enchantSoulView.category = Inventory.FILTERFLAG_ENCHANTING_SOULGEM
 
+views.craftWeaponView.primaryColumn = craftNameColumn
+views.craftWeaponView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, materialColumn, damageColumn, weightColumn, valueColumn, valueWeightColumn>
+views.craftWeaponView.category = <Inventory.FILTERFLAG_CUST_CRAFT_WEAPONS, Inventory.FILTERFLAG_CUST_CRAFT_AMMO>
+
+views.craftArmorView.primaryColumn = craftNameColumn
+views.craftArmorView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, classColumn, materialColumn, arColumn, weightColumn, valueColumn, valueWeightColumn>
+views.craftArmorView.category = Inventory.FILTERFLAG_CUST_CRAFT_ARMOR
+
 
 ; LAYOUTS -------------------------------------------------------
 layouts.itemListLayout.name = 'ItemListLayout'
@@ -679,5 +687,14 @@ layouts.itemListLayout.views = <weaponView, armorView, magicItemView, keysView, 
 layouts.magicListLayout.name = 'MagicListLayout'
 layouts.magicListLayout.views = <shoutsView, powersView, activeEffectView, allMagicView, defaultMagicView>
 
-layouts.craftingListLayout.name = 'CraftingListLayout'
-layouts.craftingListLayout.views = <disenchantView, enchantItemView, enchantEnchantmentView, enchantSoulView, defaultCraftingView>
+layouts.enchantListLayout.name = 'EnchantListLayout'
+layouts.enchantListLayout.views = <disenchantView, enchantItemView, enchantEnchantmentView, enchantSoulView, defaultCraftingView>
+
+layouts.constructListLayout.name = 'ConstructListLayout'
+layouts.constructListLayout.views = <craftWeaponView, craftArmorView, defaultCraftingView>
+
+layouts.smithingListLayout.name = 'SmithingListLayout'
+layouts.smithingListLayout.views = <defaultCraftingView>
+
+layouts.alchemyListLayout.name = 'AlchemyListLayout'
+layouts.alchemyListLayout.views = <defaultCraftingView>

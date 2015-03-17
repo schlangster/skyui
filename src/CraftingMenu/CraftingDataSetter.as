@@ -44,7 +44,6 @@ class CraftingDataSetter implements IListProcessor
 	
   /* PUBLIC FUNCTIONS */
 
-	// @override ItemcardDataExtender
 	public function processEntry(a_entryObject: Object): Void
 	{
 		a_entryObject.baseId = a_entryObject.formId & 0x00FFFFFF;

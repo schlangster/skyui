@@ -193,6 +193,8 @@ class CraftingMenu extends MovieClip
 		ItemList.addDataProcessor(new CraftingDataSetter());
 		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
 
+
+
 		positionFloatingElements();
 		
 		var itemListState = CategoryList.itemList.listState;
@@ -208,8 +210,22 @@ class CraftingMenu extends MovieClip
 		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
 		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
 		
+		var layout: ListLayout;
 		
-		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "CraftingListLayout");
+		if (_subtypeName == "EnchantConstruct") {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "EnchantListLayout");
+			
+		} else if (_subtypeName == "Smithing") {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "SmithingListLayout");
+			
+		} else if (_subtypeName == "ConstructibleObject") {			
+			ItemList.addDataProcessor(new CustomConstructDataSetter());
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "ConstructListLayout");
+			
+		} else {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
+		}
+		
 		ItemList.layout = layout;
 		
 		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
@@ -252,8 +268,6 @@ class CraftingMenu extends MovieClip
 		
 		MenuDescription = MenuDescriptionHolder.MenuDescription;
 		MenuDescription.autoSize = "center";
-		
-//		BottomBarInfo.SetButtonsArt([{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}]);
 
 		CategoryList.InitExtensions();
 
@@ -683,21 +697,6 @@ class CraftingMenu extends MovieClip
 		if (ItemInfo.bEditNameMode && !ItemInfo.hitTest(_root._xmouse, _root._ymouse)) {
 			OnEndEditItemName({useNewName: false, newName: ""});
 		}
-	}
-
-	private function onMouseWheel(delta: Number): Void
-	{
-/*		if (CategoryList.currentState == InventoryLists.TWO_PANELS && !ItemList.disableSelection && !ItemList.disableInput) {
-			for (var target: Object = Mouse.getTopMostEntity(); !(target && target != undefined); target = target._parent) {
-				if (target == ItemsListInputCatcher || target == MouseRotationRect) {
-					if (delta == 1) {
-						ItemList.moveSelectionUp();
-					} else if (delta == -1) {
-						ItemList.moveSelectionDown();
-					}
-				}
-			}
-		}*/
 	}
 
 	private function onMouseRotationStart(): Void

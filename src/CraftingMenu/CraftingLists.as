@@ -5,6 +5,7 @@ import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
 import gfx.controls.Button;
 import Shared.GlobalFunc;
+import mx.utils.Delegate;
 
 import skyui.components.SearchWidget;
 import skyui.components.TabBar;
@@ -22,6 +23,7 @@ import skyui.util.DialogManager;
 import skyui.util.Debug;
 
 import skyui.defines.Input;
+import skyui.defines.Inventory;
 
 
 class CraftingLists extends MovieClip
@@ -182,6 +184,8 @@ class CraftingLists extends MovieClip
 		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
 		
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
+		
+		itemList.onInvalidate = Delegate.create(this, onItemListInvalidate);
 	}
 	
 	
@@ -359,7 +363,6 @@ class CraftingLists extends MovieClip
 
 		for (var i=0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
-			_categoriesData.push(entry);
 			
 			if (entry.flag == 0) {
 				entry.divider = true;
@@ -375,69 +378,17 @@ class CraftingLists extends MovieClip
 		
 		// We have enough information to init the art now.
 		// But the list has not been invalidated, so no clips have been loaded yet.
-		initCategoryIconArt();
+		preprocessCategoriesList();
 
 		categoriesList.selectedIndex = 0;
 		categoriesList.InvalidateData();
-	}
-	
-	function EntryMatchesFilter(a_entry: Object, a_flag: Boolean): Boolean
-	{
-		return a_entry != undefined &&
-			(a_entry.filterFlag == undefined || (a_entry.filterFlag & a_flag) != 0);
-	}
-
-	function EntryMatchesPartitionedFilter(a_entry: Object, a_flag: Boolean): Boolean
-	{
-		if (a_entry == undefined)
-			return false;
-			
-		if (a_flag == 0xFFFFFFFF)
-			return true;
-			
-		var flag: Number = a_entry.filterFlag;
-		var byte0: Number = (flag & 0x000000FF);
-		var byte1: Number = (flag & 0x0000FF00) >>> 8;
-		var byte2: Number = (flag & 0x00FF0000) >>> 16;
-		var byte3: Number = (flag & 0xFF000000) >>> 24;
-		
-		return byte0 == a_flag || byte1 == a_flag || byte2 == a_flag || byte3 == a_flag;
 	}
 
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	// @API
 	public function InvalidateListData(): Void
 	{		
-		var flag = categoriesList.selectedEntry.flag;
-
-//		for (var i = 0; i < categoriesList.entryList.length; i++)
-//			categoriesList.entryList[i].filterFlag = categoriesList.entryList[i].bDontHide ? 1 : 0;
-
 		itemList.InvalidateData();
-		
-		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
-		for (var i=0; i<categoriesList.entryList.length; i++) {
-			for (var j=0; j<itemList.entryList.length; j++) {
-				if (categoriesList.entryList[i].flag & itemList.entryList[j].filterFlag) {
-					categoriesList.entryList[i].enabled = true;
-					break;
-				}
-			}
-		}
-
-		categoriesList.UpdateList();
-
-		if (flag != categoriesList.selectedEntry.flag) {
-			// Triggers an update if filter flag changed
-			_typeFilter.itemFilter = categoriesList.selectedEntry.flag;
-			dispatchEvent({type:"categoryChange", index:categoriesList.selectedIndex});
-		}
-		
-		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
-		if (itemList.selectedIndex == -1)
-			dispatchEvent({type:"showItemsList", index: -1});
-		else
-			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 	}
 	
 	
@@ -456,17 +407,71 @@ class CraftingLists extends MovieClip
 		}
 	}
 	
-	private function initCategoryIconArt(): Void
+ 	private function onItemListInvalidate(): Void
 	{
-		skse.Log("init cat arg " + _subtypeName);
-		if (_subtypeName == "EnchantConstruct") {
-			categoriesList.iconArt = [ "ench_disentchant", "separator", "ench_item", "ench_effect", "ench_soul" ];
-			
-		} else if (_subtypeName == "Smithing") {
-			categoriesList.iconArt = [ "smithing" ];
+		// Set enabled == false for empty categories
+		for (var i=0; i<categoriesList.entryList.length; i++) {
+			for (var j=0; j<itemList.entryList.length; j++) {
+				if (categoriesList.entryList[i].flag & itemList.entryList[j].filterFlag) {
+					categoriesList.entryList[i].enabled = true;
+					break;
+				}
+			}
 		}
 
+		var flag = categoriesList.selectedEntry.flag;
+
+		categoriesList.UpdateList();
+
+		if (flag != categoriesList.selectedEntry.flag) {
+			// Triggers an update if filter flag changed
+			_typeFilter.itemFilter = categoriesList.selectedEntry.flag;
+			dispatchEvent({type:"categoryChange", index:categoriesList.selectedIndex});
+		}
 		
+		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
+		if (itemList.selectedIndex == -1)
+			dispatchEvent({type:"showItemsList", index: -1});
+		else
+			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
+	}
+	
+	private function preprocessCategoriesList(): Void
+	{		
+		// Set icon art, but leave default categories as they are.
+		if (_subtypeName == "EnchantConstruct") {
+			categoriesList.iconArt = [ "ench_disentchant", "separator", "ench_item", "ench_effect", "ench_soul" ];
+
+		// Set icon art, but leave default categories as they are.
+		} else if (_subtypeName == "Smithing") {
+			categoriesList.iconArt = [ "smithing" ];
+			
+		// Use a different categorization scheme.
+		} else if (_subtypeName == "ConstructibleObject") {
+			categoriesList.iconArt = [ "construct_all", "weapon", "ammo", "armor", "jewelry", "food", "misc" ];
+			
+			replaceConstructObjectCategories();
+		}
+	}	
+	
+	private function replaceConstructObjectCategories()
+	{
+		categoriesList.clearList();
+		
+		categoriesList.entryList.push(
+			{text: "$ALL", flag: Inventory.FILTERFLAG_CUST_CRAFT_ALL, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		categoriesList.entryList.push(
+			{text: "$WEAPONS", flag: Inventory.FILTERFLAG_CUST_CRAFT_WEAPONS, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		categoriesList.entryList.push(
+			{text: "$AMMO", flag: Inventory.FILTERFLAG_CUST_CRAFT_AMMO, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		categoriesList.entryList.push(
+			{text: Translator.translate("$Armor"), flag: Inventory.FILTERFLAG_CUST_CRAFT_ARMOR, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		categoriesList.entryList.push(
+			{text: Translator.translate("$Jewelry"), flag: Inventory.FILTERFLAG_CUST_CRAFT_JEWELRY, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		categoriesList.entryList.push(
+			{text: Translator.translate("$Food"), flag: Inventory.FILTERFLAG_CUST_CRAFT_FOOD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		categoriesList.entryList.push(
+			{text: Translator.translate("$Misc"), flag: Inventory.FILTERFLAG_CUST_CRAFT_MISC, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
 	}
   
 	private function onFilterChange(): Void

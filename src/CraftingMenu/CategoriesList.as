@@ -95,6 +95,7 @@ class CategoriesList extends BasicList
 	public function UpdateList(): Void
 	{
 		if (_bSuspended) {
+			skse.Log("Suspended");
 			_bRequestUpdate = true;
 			return;
 		}
