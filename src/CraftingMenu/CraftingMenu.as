@@ -61,6 +61,7 @@ class CraftingMenu extends MovieClip
 	private var _sortOrderControls: Object;
 	
 	private var _config: Object;
+	private var _subtypeName: String;
 	
 	
   /* PROPERTIES */
@@ -282,21 +283,9 @@ class CraftingMenu extends MovieClip
 		
 		SetPlatform(_platform);
 		
-		var subtypeName = SUBTYPE_NAMES[_currentFrame-1];
+		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
 		
-		CategoryList.setSubtype(subtypeName);
-		
-		initCategoryIconArt(subtypeName);
-	}
-	
-	private function initCategoryIconArt(a_subtypeName: String): Void
-	{
-		if (a_subtypeName == "EnchantConstruct") {
-			CategoryList.categoriesList.iconArt =
-				[ "ench_disentchant", "", "ench_item", "ench_effect", "ench_soul" ];
-		}
-
-		
+		CategoryList.setSubtype(_subtypeName);
 	}
 	
 	// @API

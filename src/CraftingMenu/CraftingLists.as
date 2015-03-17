@@ -112,9 +112,11 @@ class CraftingLists extends MovieClip
 		return _tabBarIconArt;
 	}
 	
+	private var _subtypeName: String;
+	
 	public function setSubtype(a_name: String): Void
 	{
-		panelContainer.gotoAndStop(a_name);
+		_subtypeName = a_name;
 	}
 
 
@@ -359,10 +361,21 @@ class CraftingLists extends MovieClip
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
 			_categoriesData.push(entry);
 			
+			if (entry.flag == 0) {
+				entry.divider = true;
+			}
+			
+			entry.enabled = false;
+			
+			Debug.dump("category" + i, entry);
+			
 			categoriesList.entryList.push(entry);
-			Debug.log(entry.text + " : " + entry.flag);
 
 		}
+		
+		// We have enough information to init the art now.
+		// But the list has not been invalidated, so no clips have been loaded yet.
+		initCategoryIconArt();
 
 		categoriesList.selectedIndex = 0;
 		categoriesList.InvalidateData();
@@ -397,23 +410,18 @@ class CraftingLists extends MovieClip
 	{		
 		var flag = categoriesList.selectedEntry.flag;
 
-		for (var i = 0; i < categoriesList.entryList.length; i++)
-			categoriesList.entryList[i].filterFlag = categoriesList.entryList[i].bDontHide ? 1 : 0;
+//		for (var i = 0; i < categoriesList.entryList.length; i++)
+//			categoriesList.entryList[i].filterFlag = categoriesList.entryList[i].bDontHide ? 1 : 0;
 
 		itemList.InvalidateData();
-
+		
 		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
-		for (var i = 0; i < itemList.entryList.length; i++) {
-			
-			
-			Debug.dump("entry " + i, itemList.entryList[i]);
-			
-			for (var j = 0; j < categoriesList.entryList.length; ++j) {
-				if (categoriesList.entryList[j].filterFlag != 0)
-					continue;
-
-				if (itemList.entryList[i].filterFlag & categoriesList.entryList[j].flag)
-					categoriesList.entryList[j].filterFlag = 1;
+		for (var i=0; i<categoriesList.entryList.length; i++) {
+			for (var j=0; j<itemList.entryList.length; j++) {
+				if (categoriesList.entryList[i].flag & itemList.entryList[j].filterFlag) {
+					categoriesList.entryList[i].enabled = true;
+					break;
+				}
 			}
 		}
 
@@ -446,6 +454,19 @@ class CraftingLists extends MovieClip
 			_switchTabKey = config["Input"].controls.gamepad.switchTab;
 			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
 		}
+	}
+	
+	private function initCategoryIconArt(): Void
+	{
+		skse.Log("init cat arg " + _subtypeName);
+		if (_subtypeName == "EnchantConstruct") {
+			categoriesList.iconArt = [ "ench_disentchant", "separator", "ench_item", "ench_effect", "ench_soul" ];
+			
+		} else if (_subtypeName == "Smithing") {
+			categoriesList.iconArt = [ "smithing" ];
+		}
+
+		
 	}
   
 	private function onFilterChange(): Void

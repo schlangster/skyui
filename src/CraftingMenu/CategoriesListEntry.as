@@ -24,21 +24,21 @@ class CategoriesListEntry extends BasicListEntry
 		_iconLabel = CategoriesList(a_state.list).iconArt[a_index];
 		_iconSize = CategoriesList(a_state.list).iconSize;
 		
-		trace("GOTO " + _iconLabel);
 		icon.gotoAndStop(_iconLabel);
 	}
 	
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{
-		if (a_entryObject.filterFlag == 0 && !a_entryObject.bDontHide) {
+		enabled = a_entryObject.enabled;
+		
+		if (a_entryObject.divider == true) {
+			_alpha = 100;
+		} else if (!enabled) {
 			_alpha = 15;
-			enabled = false;
 		} else if (a_entryObject == a_state.list.selectedEntry) {
 			_alpha = 100;
-			enabled = true;
 		} else {
 			_alpha = 50;
-			enabled = true;
 		}
 	}
 

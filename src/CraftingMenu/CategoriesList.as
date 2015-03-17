@@ -150,7 +150,7 @@ class CategoriesList extends BasicList
 				_bFastSwitch = true;
 				curIndex = listEnumeration.size() - 1;					
 			}
-		} while (curIndex != startIndex && listEnumeration.at(curIndex).filterFlag == 0 && !listEnumeration.at(curIndex).bDontHide);
+		} while (curIndex != startIndex && listEnumeration.at(curIndex).enabled == false);
 			
 		onItemPress(curIndex, 0);
 	}
@@ -171,7 +171,7 @@ class CategoriesList extends BasicList
 				_bFastSwitch = true;
 				curIndex = 0;
 			}
-		} while (curIndex != startIndex && listEnumeration.at(curIndex).filterFlag == 0 && !listEnumeration.at(curIndex).bDontHide);
+		} while (curIndex != startIndex && listEnumeration.at(curIndex).enabled == false);
 			
 		onItemPress(curIndex, 0);
 	}
