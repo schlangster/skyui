@@ -121,7 +121,7 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	{
 		if (a_immediate == true) {
 			_alpha = 0;
-			dispatchEvent({type: "effectRemoved"})
+			dispatchEvent({type: "effectRemoved"});
 			return;
 		}
 
@@ -138,9 +138,9 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_iconEmblemLabel = iconData.emblemLabel;
  
 		if (_iconBaseLabel == "default_effect" || _iconBaseLabel == undefined || _iconBaseLabel == "") {
-			skyui.util.Debug.log("[SkyUI Active Effects]: Missing icon")
+			skyui.util.Debug.log("[SkyUI Active Effects]: Missing icon");
 			for (var s: String in effectData)
-				skyui.util.Debug.log("\t\t" + s + ": " + effectData[s])
+				skyui.util.Debug.log("\t\t" + s + ": " + effectData[s]);
 		}
 		
 		_iconHolder._width = _iconHolder._height = (background._width - METER_PADDING - METER_WIDTH);
