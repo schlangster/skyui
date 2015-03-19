@@ -13,7 +13,6 @@ import skyui.util.GlobalFunctions;
 import skyui.defines.Input;
 
 
-
 class CraftingMenu extends MovieClip
 {
 	#include "../version.as"
@@ -300,7 +299,8 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
-		CategoryList.setPartitionedFilterMode(a_bPartitioned);
+		// Not required. Used by alchemy menu, but our alchemy menu works differently.
+		//CategoryList.setPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @API

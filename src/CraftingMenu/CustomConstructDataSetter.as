@@ -54,10 +54,6 @@ class CustomConstructDataSetter implements IListProcessor
 				a_entryObject.filterFlag = Inventory.FILTERFLAG_CUST_CRAFT_FOOD;
 				bDone = true;
 				break;
-			case Inventory.FILTERFLAG_CRAFT_MISC:
-				a_entryObject.filterFlag = Inventory.FILTERFLAG_CUST_CRAFT_MISC;
-				bDone = true;
-				break;
 		}
 		
 		if (bDone)
