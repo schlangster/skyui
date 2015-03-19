@@ -81,4 +81,10 @@
 	public static var FILTERFLAG_CUST_CRAFT_JEWELRY: Number		= 0x00000008;
 	public static var FILTERFLAG_CUST_CRAFT_FOOD: Number		= 0x00000010;
 	public static var FILTERFLAG_CUST_CRAFT_MISC: Number		= 0x00000020;
+	
+	// Filter flags for custom categories in ConstructObject alchemy
+	public static var FILTERFLAG_CUST_ALCH_INGREDIENTS: Number	= 0x00000001;
+	public static var FILTERFLAG_CUST_ALCH_GOOD: Number			= 0x00000002;
+	public static var FILTERFLAG_CUST_ALCH_BAD: Number			= 0x00000004;
+	public static var FILTERFLAG_CUST_ALCH_OTHER: Number		= 0x00000008;
 }

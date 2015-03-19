@@ -29,7 +29,7 @@ class CraftingDataSetter implements IListProcessor
 		
 		for (var i = 0; i < entryList.length; i++) {
 			var e = entryList[i];
-			if (e.skyui_itemDataProcessed || e.filterFlag == 0)
+			if (e.skyui_itemDataProcessed)
 				continue;
 				
 			e.skyui_itemDataProcessed = true;

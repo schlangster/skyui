@@ -193,8 +193,6 @@ class CraftingMenu extends MovieClip
 		ItemList.addDataProcessor(new CraftingDataSetter());
 		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
 
-
-
 		positionFloatingElements();
 		
 		var itemListState = CategoryList.itemList.listState;
@@ -219,10 +217,9 @@ class CraftingMenu extends MovieClip
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "SmithingListLayout");
 			
 		} else if (_subtypeName == "ConstructibleObject") {			
-			ItemList.addDataProcessor(new CustomConstructDataSetter());
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "ConstructListLayout");
 			
-		} else {
+		} else /*if (_subtypeName == "Alchemy")*/ {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
 		}
 		
@@ -250,7 +247,9 @@ class CraftingMenu extends MovieClip
 	public function Initialize(): Void
 	{
 		skse.ExtendData(true);
-		skse.Log("Initialize");
+		skse.ExtendAlchemyCategories(true);
+		
+		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
 		
 		ItemInfoHolder = ItemInfoHolder;
 		ItemInfoHolder.gotoAndStop("default");
@@ -269,7 +268,7 @@ class CraftingMenu extends MovieClip
 		MenuDescription = MenuDescriptionHolder.MenuDescription;
 		MenuDescription.autoSize = "center";
 
-		CategoryList.InitExtensions();
+		CategoryList.InitExtensions(_subtypeName);
 
 		FocusHandler.instance.setFocus(CategoryList, 0);
 		
@@ -296,16 +295,12 @@ class CraftingMenu extends MovieClip
 		positionFixedElements();
 		
 		SetPlatform(_platform);
-		
-		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
-		
-		CategoryList.setSubtype(_subtypeName);
 	}
 	
 	// @API
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
-//		CategoryList.itemList.filterer.SetPartitionedFilterMode(a_bPartitioned);
+		CategoryList.setPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @API

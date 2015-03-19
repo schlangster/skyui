@@ -7,7 +7,6 @@ class skyui.filter.ItemTypeFilter implements IFilter
 {
   /* PRIVATE VARIABLES */
 
-	private var _filterArray:Array;
 	private var _matcherFunc:Function;
 	
 	

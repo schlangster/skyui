@@ -50,6 +50,9 @@ class CraftingLists extends MovieClip
 	private var _nameFilter: NameFilter;
 	private var _sortFilter: SortFilter;
 	
+	// Used only for alchemy mode
+	private var _alchemyDataSetter: CustomAlchemyDataSetter;
+	
 	private var _platform: Number;
 	
 	private var _currCategoryIndex: Number;
@@ -67,7 +70,7 @@ class CraftingLists extends MovieClip
 	private var _columnSelectDialog: MovieClip;
 	private var _columnSelectInterval: Number;
 	
-	private var _categoriesData: Array;
+	private var _subtypeName: String;
 	
 
   /* PROPERTIES */
@@ -113,13 +116,6 @@ class CraftingLists extends MovieClip
 	{
 		return _tabBarIconArt;
 	}
-	
-	private var _subtypeName: String;
-	
-	public function setSubtype(a_name: String): Void
-	{
-		_subtypeName = a_name;
-	}
 
 
   /* INITIALIZATION */
@@ -128,8 +124,6 @@ class CraftingLists extends MovieClip
 	{
 		super();
 		
-		_categoriesData = [];
-
 		GlobalFunctions.addArrayFunctions();
 
 		EventDispatcher.initialize(this);
@@ -143,6 +137,8 @@ class CraftingLists extends MovieClip
 		_nameFilter = new NameFilter();
 		_sortFilter = new SortFilter();
 		
+		_alchemyDataSetter = null;
+		
 		categoryLabel = panelContainer.categoryLabel;
 		categoriesList = panelContainer.categoriesList;
 		itemList = panelContainer.itemList;
@@ -151,18 +147,42 @@ class CraftingLists extends MovieClip
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
-	}
+	}	
 	
-	private function onLoad(): Void
-	{
-		categoriesList.listEnumeration = new BasicEnumeration(categoriesList.entryList);
+  /* PUBLIC FUNCTIONS */
 
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
+	
+	// @mixin by Shared.GlobalFunc
+	public var Lock: Function;
+	
+	public function InitExtensions(a_subtypeName: String): Void
+	{
+		_subtypeName = a_subtypeName;
+		
+		// Support for custom categorization
+		if (_subtypeName == "ConstructibleObject") {			
+			itemList.addDataProcessor(new CustomConstructDataSetter());
+			
+		} else if (_subtypeName == "Alchemy") {
+			_alchemyDataSetter = new CustomAlchemyDataSetter();
+			itemList.addDataProcessor(_alchemyDataSetter);
+		}
+		
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
 		listEnumeration.addFilter(_typeFilter);
 		listEnumeration.addFilter(_nameFilter);
 		listEnumeration.addFilter(_sortFilter);
 		itemList.listEnumeration = listEnumeration;
-		// data processors are initialized by the top-level menu since they differ in each case
+		
+		categoriesList.listEnumeration = new BasicEnumeration(categoriesList.entryList);
 		
 		itemList.listState.maxTextLength = 80;
 
@@ -186,25 +206,7 @@ class CraftingLists extends MovieClip
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 		
 		itemList.onInvalidate = Delegate.create(this, onItemListInvalidate);
-	}
-	
-	
-  /* PUBLIC FUNCTIONS */
-
-	// @mixin by gfx.events.EventDispatcher
-	public var dispatchEvent: Function;
-	public var dispatchQueue: Function;
-	public var hasEventListener: Function;
-	public var addEventListener: Function;
-	public var removeEventListener: Function;
-	public var removeAllEventListeners: Function;
-	public var cleanUpEvents: Function;
-	
-	// @mixin by Shared.GlobalFunc
-	public var Lock: Function;
-	
-	public function InitExtensions(): Void
-	{
+		
 		// Delay updates until config is ready
 		categoriesList.suspended = true;
 		itemList.suspended = true;
@@ -245,6 +247,11 @@ class CraftingLists extends MovieClip
 
 		categoriesList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);
+	}
+	
+	public function setPartitionedFilterMode(a_bPartitioned: Boolean): Void
+	{
+		//_typeFilter.setPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @GFx
@@ -330,11 +337,13 @@ class CraftingLists extends MovieClip
 		itemList.scrollPosition = 0;
 
 		if (categoriesList.selectedEntry != undefined) {
+			var catFlag = categoriesList.selectedEntry.flag;
+			
 			// Set filter type
-			_typeFilter.changeFilterFlag(categoriesList.selectedEntry.flag);
+			_typeFilter.changeFilterFlag(catFlag);
 			
 			// Not set yet before the config is loaded
-			itemList.layout.changeFilterFlag(categoriesList.selectedEntry.flag);
+			itemList.layout.changeFilterFlag(catFlag);
 		}
 		
 		itemList.requestUpdate();
@@ -370,7 +379,7 @@ class CraftingLists extends MovieClip
 			
 			entry.enabled = false;
 			
-			Debug.dump("category" + i, entry);
+//			Debug.dump("category" + i, entry);
 			
 			categoriesList.entryList.push(entry);
 
@@ -410,13 +419,22 @@ class CraftingLists extends MovieClip
  	private function onItemListInvalidate(): Void
 	{
 		// Set enabled == false for empty categories
-		for (var i=0; i<categoriesList.entryList.length; i++) {
-			for (var j=0; j<itemList.entryList.length; j++) {
-				if (categoriesList.entryList[i].flag & itemList.entryList[j].filterFlag) {
-					categoriesList.entryList[i].enabled = true;
-					break;
+		// For alchemy we can do this before the invalidate by checking to which group partitions belong
+		if (_subtypeName != "Alchemy") {
+			for (var i=0; i<categoriesList.entryList.length; i++) {
+				for (var j=0; j<itemList.entryList.length; j++) {
+					if (categoriesList.entryList[i].flag & itemList.entryList[j].filterFlag) {
+						categoriesList.entryList[i].enabled = true;
+						break;
+					}
 				}
 			}
+		}
+		
+		for (var j=0; j<itemList.entryList.length; j++) {
+			var e = itemList.entryList[j];
+			
+//			Debug.dump("item" + j, e);
 		}
 
 		var flag = categoriesList.selectedEntry.flag;
@@ -438,23 +456,29 @@ class CraftingLists extends MovieClip
 	
 	private function preprocessCategoriesList(): Void
 	{		
-		// Set icon art, but leave default categories as they are.
+		// EnchantConstruct - Set icon art, but leave default categories as they are.
 		if (_subtypeName == "EnchantConstruct") {
 			categoriesList.iconArt = [ "ench_disentchant", "separator", "ench_item", "ench_effect", "ench_soul" ];
 
-		// Set icon art, but leave default categories as they are.
+		// Smithing - Set icon art, but leave default categories as they are.
 		} else if (_subtypeName == "Smithing") {
 			categoriesList.iconArt = [ "smithing" ];
 			
-		// Use a different categorization scheme.
+		// ConstructibleObject - Use a custom categorization scheme.
 		} else if (_subtypeName == "ConstructibleObject") {
 			categoriesList.iconArt = [ "construct_all", "weapon", "ammo", "armor", "jewelry", "food", "misc" ];
 			
 			replaceConstructObjectCategories();
+
+		// Alchemy - Use a custom categorization scheme.
+		} else /*if (_subtypeName == "Alchemy")*/ {
+			categoriesList.iconArt = [ "alch_all", "alch_good", "alch_bad", "alch_other" ];
+			
+			replaceAlchemyCategories();
 		}
 	}	
 	
-	private function replaceConstructObjectCategories()
+	private function replaceConstructObjectCategories(): Void
 	{
 		categoriesList.clearList();
 		
@@ -472,6 +496,42 @@ class CraftingLists extends MovieClip
 			{text: Translator.translate("$Food"), flag: Inventory.FILTERFLAG_CUST_CRAFT_FOOD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
 		categoriesList.entryList.push(
 			{text: Translator.translate("$Misc"), flag: Inventory.FILTERFLAG_CUST_CRAFT_MISC, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+	}
+	
+	private function replaceAlchemyCategories(): Void
+	{
+		var bHasGoodEffects = false;
+		var bHasBadEffects = false;
+		var bHasOtherEffects = false;
+
+		// Use old effect categories as partitions of a list that groups several of them
+		for (var i=1; i<categoriesList.entryList.length; i++) {
+			var cat = categoriesList.entryList[i];
+			
+			// Thats the index that was previously used as flag and sent by the game (without SKSE).
+			cat.index = i;
+			
+			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_GOOD)
+				bHasGoodEffects = true;
+			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_BAD)
+				bHasBadEffects = true;
+			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_OTHER)
+				bHasOtherEffects = true;
+			
+			_alchemyDataSetter.partitionData.push(cat);
+		}
+		
+		// Keep only the first category (INGREDIENTS)
+		categoriesList.entryList.splice(1);
+		
+		categoriesList.entryList[0].enabled = true;
+		
+		categoriesList.entryList.push(
+			{text: "$GOOD_EFFECTS", flag: Inventory.FILTERFLAG_CUST_ALCH_GOOD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: bHasGoodEffects});
+		categoriesList.entryList.push(
+			{text: "$BAD_EFFECTS", flag: Inventory.FILTERFLAG_CUST_ALCH_BAD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: bHasBadEffects});
+		categoriesList.entryList.push(
+			{text: "$OTHER EFFECTS", flag: Inventory.FILTERFLAG_CUST_ALCH_OTHER, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: bHasOtherEffects});
 	}
   
 	private function onFilterChange(): Void

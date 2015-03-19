@@ -12,7 +12,6 @@ import skyui.components.list.BasicList;
 import skyui.components.list.IListProcessor;
 
 
-// @abstract
 class CustomConstructDataSetter implements IListProcessor
 {
   /* INITIALIZATION */
