@@ -54,11 +54,17 @@ class skyui.filter.SortFilter implements skyui.filter.IFilter
 			else
 				a_filteredList[i]._sortFlag = 0;
 		}
-		
+
+		_sortAttributes.unshift("enabled");
+		_sortOptions.unshift(Array.NUMERIC | Array.DESCENDING);
+
 		_sortAttributes.unshift("_sortFlag");
 		_sortOptions.unshift(Array.NUMERIC);
 		
 		a_filteredList.sortOn(_sortAttributes, _sortOptions);
+		
+		_sortAttributes.shift();
+		_sortOptions.shift();
 		
 		_sortAttributes.shift();
 		_sortOptions.shift();

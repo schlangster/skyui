@@ -191,7 +191,7 @@ columns.materialColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASC
 
 columns.materialColumn.state2.label.text = '$MAT'
 columns.materialColumn.state2.entry.text = @materialDisplay
-columns.materialColumn.state2.entry.arrowDown = true
+columns.materialColumn.state2.label.arrowDown = true
 columns.materialColumn.state2.sortAttributes = <materialDisplay, text>
 columns.materialColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -210,7 +210,7 @@ columns.classColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCEND
 
 columns.classColumn.state2.label.text = '$CLASS'
 columns.classColumn.state2.entry.text = @weightClassDisplay
-columns.classColumn.state2.entry.arrowDown = true
+columns.classColumn.state2.label.arrowDown = true
 columns.classColumn.state2.sortAttributes = <weightClassDisplay, text>
 columns.classColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -555,6 +555,100 @@ columns.effectItemColumn.state2.sortAttributes = <cardName, text>
 columns.effectItemColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
 
+; CRAFT NAME COLUMN -------------------------------------------------------
+columns.craftNameColumn.type = NAME
+columns.craftNameColumn.name = '$NAME'
+columns.craftNameColumn.states = 1
+columns.craftNameColumn.weight = 1.0
+columns.craftNameColumn.border = a_textBorder
+columns.craftNameColumn.label.textFormat.align = left
+
+columns.craftNameColumn.state1.label.text = '$NAME'
+columns.craftNameColumn.state1.entry.text = @text
+columns.craftNameColumn.state1.sortAttributes = <text>
+columns.craftNameColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}>
+
+; DISENCHANT EFFECT COLUMN -------------------------------------------------------
+columns.disenchantEffectColumn.type = TEXT
+columns.disenchantEffectColumn.name = '$EFFECT'
+columns.disenchantEffectColumn.states = 2
+columns.disenchantEffectColumn.width = 0.4
+columns.disenchantEffectColumn.label.textFormat.align = right
+columns.disenchantEffectColumn.entry.textFormat.align = right
+
+columns.disenchantEffectColumn.state1.label.text = '$EFFECT'
+columns.disenchantEffectColumn.state1.label.arrowDown = false
+columns.disenchantEffectColumn.state1.entry.text = @effectName
+columns.disenchantEffectColumn.state1.sortAttributes = <effectName, value, text>
+columns.disenchantEffectColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.disenchantEffectColumn.state2.label.text = '$EFFECT'
+columns.disenchantEffectColumn.state2.label.arrowDown = true
+columns.disenchantEffectColumn.state2.entry.text = @effectName
+columns.disenchantEffectColumn.state2.sortAttributes = <effectName, value, text>
+columns.disenchantEffectColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+; SOUL SIZE COLUMN -------------------------------------------------------
+columns.soulSizeColumn.type = TEXT
+columns.soulSizeColumn.name = '$SOUL SIZE'
+columns.soulSizeColumn.states = 2
+columns.soulSizeColumn.width = 0.15
+columns.soulSizeColumn.label.textFormat.align = right
+columns.soulSizeColumn.entry.textFormat.align = right
+
+columns.soulSizeColumn.state1.label.text = '$SOUL SIZE'
+columns.soulSizeColumn.state1.label.arrowDown = false
+columns.soulSizeColumn.state1.entry.text = @soulSizeDisplay
+columns.soulSizeColumn.state1.sortAttributes = <soulSize, text>
+columns.soulSizeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.soulSizeColumn.state2.label.text = '$SOUL SIZE'
+columns.soulSizeColumn.state2.label.arrowDown = true
+columns.soulSizeColumn.state2.entry.text = @soulSizeDisplay
+columns.soulSizeColumn.state2.sortAttributes = <soulSize, text>
+columns.soulSizeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+; ALCHEMY GOOD EFFECTS COLUMN -------------------------------------------------------
+columns.alchemyGoodEffectsColumn.type = TEXT
+columns.alchemyGoodEffectsColumn.name = '$EFFECTS'
+columns.alchemyGoodEffectsColumn.states = 2
+columns.alchemyGoodEffectsColumn.width = 0.4
+columns.alchemyGoodEffectsColumn.label.textFormat.align = right
+columns.alchemyGoodEffectsColumn.entry.textFormat.align = right
+
+columns.alchemyGoodEffectsColumn.state1.label.text = '$EFFECTS'
+columns.alchemyGoodEffectsColumn.state1.label.arrowDown = false
+columns.alchemyGoodEffectsColumn.state1.entry.text = @goodEffects
+columns.alchemyGoodEffectsColumn.state1.sortAttributes = <goodEffects, value, text>
+columns.alchemyGoodEffectsColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.alchemyGoodEffectsColumn.state2.label.text = '$EFFECTS'
+columns.alchemyGoodEffectsColumn.state2.label.arrowDown = true
+columns.alchemyGoodEffectsColumn.state2.entry.text = @goodEffects
+columns.alchemyGoodEffectsColumn.state2.sortAttributes = <goodEffects, value, text>
+columns.alchemyGoodEffectsColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+; ALCHEMY BAD EFFECTS COLUMN -------------------------------------------------------
+columns.alchemyBadEffectsColumn.type = TEXT
+columns.alchemyBadEffectsColumn.name = '$EFFECTS'
+columns.alchemyBadEffectsColumn.states = 2
+columns.alchemyBadEffectsColumn.width = 0.4
+columns.alchemyBadEffectsColumn.label.textFormat.align = right
+columns.alchemyBadEffectsColumn.entry.textFormat.align = right
+
+columns.alchemyBadEffectsColumn.state1.label.text = '$EFFECTS'
+columns.alchemyBadEffectsColumn.state1.label.arrowDown = false
+columns.alchemyBadEffectsColumn.state1.entry.text = @badEffects
+columns.alchemyBadEffectsColumn.state1.sortAttributes = <badEffects, value, text>
+columns.alchemyBadEffectsColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.alchemyBadEffectsColumn.state2.label.text = '$EFFECTS'
+columns.alchemyBadEffectsColumn.state2.label.arrowDown = true
+columns.alchemyBadEffectsColumn.state2.entry.text = @badEffects
+columns.alchemyBadEffectsColumn.state2.sortAttributes = <badEffects, value, text>
+columns.alchemyBadEffectsColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+
 ; ITEM VIEWS -------------------------------------------------------
 views.defaultItemView.primaryColumn = itemNameColumn
 views.defaultItemView.columns = <equipColumn, iconColumn, itemNameColumn, subTypeColumn, weightColumn, valueColumn, valueWeightColumn>
@@ -597,9 +691,54 @@ views.activeEffectView.columns = <equipColumn, iconColumn, magicNameColumn, time
 views.activeEffectView.category = Inventory.FILTERFLAG_MAGIC_ACTIVEEFFECTS
 
 
+; CRAFTING VIEWS -------------------------------------------------------
+views.defaultCraftingView.primaryColumn = craftNameColumn
+views.defaultCraftingView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, weightColumn, valueColumn, valueWeightColumn>
+
+views.disenchantView.primaryColumn = craftNameColumn
+views.disenchantView.columns = <equipColumn, iconColumn, craftNameColumn, disenchantEffectColumn, subTypeColumn, weightColumn, valueColumn, valueWeightColumn>
+views.disenchantView.category = Inventory.FILTERFLAG_ENCHANTING_DISENCHANT
+
+views.enchantItemView.primaryColumn = craftNameColumn
+views.enchantItemView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, materialColumn, weightColumn, valueColumn, valueWeightColumn>
+views.enchantItemView.category = Inventory.FILTERFLAG_ENCHANTING_ITEM
+
+views.enchantEnchantmentView.primaryColumn = craftNameColumn
+views.enchantEnchantmentView.columns = <equipColumn, iconColumn, craftNameColumn>
+views.enchantEnchantmentView.category = Inventory.FILTERFLAG_ENCHANTING_ENCHANTMENT
+
+views.enchantSoulView.primaryColumn = craftNameColumn
+views.enchantSoulView.columns = <equipColumn, iconColumn, craftNameColumn, soulSizeColumn, weightColumn, valueColumn, valueWeightColumn>
+views.enchantSoulView.category = Inventory.FILTERFLAG_ENCHANTING_SOULGEM
+
+views.craftWeaponView.primaryColumn = craftNameColumn
+views.craftWeaponView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, materialColumn, damageColumn, weightColumn, valueColumn, valueWeightColumn>
+views.craftWeaponView.category = <Inventory.FILTERFLAG_CUST_CRAFT_WEAPONS, Inventory.FILTERFLAG_CUST_CRAFT_AMMO>
+
+views.craftArmorView.primaryColumn = craftNameColumn
+views.craftArmorView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, classColumn, materialColumn, arColumn, weightColumn, valueColumn, valueWeightColumn>
+views.craftArmorView.category = Inventory.FILTERFLAG_CUST_CRAFT_ARMOR
+
+views.alchemyGoodEffectsView.primaryColumn = craftNameColumn
+views.alchemyGoodEffectsView.columns = <equipColumn, iconColumn, craftNameColumn, alchemyGoodEffectsColumn, weightColumn, valueColumn, valueWeightColumn>
+views.alchemyGoodEffectsView.category = Inventory.FILTERFLAG_CUST_ALCH_GOOD
+
+
 ; LAYOUTS -------------------------------------------------------
 layouts.itemListLayout.name = 'ItemListLayout'
 layouts.itemListLayout.views = <weaponView, armorView, magicItemView, keysView, defaultItemView>
 
 layouts.magicListLayout.name = 'MagicListLayout'
 layouts.magicListLayout.views = <shoutsView, powersView, activeEffectView, allMagicView, defaultMagicView>
+
+layouts.enchantListLayout.name = 'EnchantListLayout'
+layouts.enchantListLayout.views = <disenchantView, enchantItemView, enchantEnchantmentView, enchantSoulView, defaultCraftingView>
+
+layouts.constructListLayout.name = 'ConstructListLayout'
+layouts.constructListLayout.views = <craftWeaponView, craftArmorView, defaultCraftingView>
+
+layouts.smithingListLayout.name = 'SmithingListLayout'
+layouts.smithingListLayout.views = <defaultCraftingView>
+
+layouts.alchemyListLayout.name = 'AlchemyListLayout'
+layouts.alchemyListLayout.views = <alchemyGoodEffectsView, defaultCraftingView>
