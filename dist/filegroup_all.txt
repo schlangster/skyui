@@ -11,6 +11,7 @@ Interface\skyui\inventorylists.swf
 Interface\skyui\bottombar.swf
 Interface\skyui\itemcard.swf
 Interface\skyui\buttonart.swf
+Interface\skyui\mapmarkerart.swf
 Interface\skyui\configpanel.swf
 Interface\skyui\icons_category_psychosteve.swf
 Interface\skyui\icons_category_celtic.swf
