@@ -165,88 +165,11 @@ class CraftingMenu extends MovieClip
 		//dbgIntvl = setInterval(this, "testMenu", 1000);
 	}
 	
-	public function testMenu()
-	{
-		trace("TESTING MENU");
-		clearInterval(dbgIntvl);
-		
-		gotoAndStop("EnchantConstruct");
-		Initialize();
-		
-		Debug.log("Setting data");
-		CategoryList.SetCategoriesList
-		(
-			"Disenchant", 0xa, 1,
-			"", 0x0, 0,
-			"Item", 0x5, 1,
-			"Enchantment", 0x30, 1,
-			"Soul Gem", 0x40, 1
-		);
-		Debug.log("Setting data - done");
-		
-	}
-	
-	public function setConfig(a_config: Object): Void
-	{
-		_config = a_config;
-		ItemList.addDataProcessor(new CraftingDataSetter());
-		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
-
-		positionFloatingElements();
-		
-		var itemListState = CategoryList.itemList.listState;
-		var appearance = a_config["Appearance"];
-		
-		itemListState.iconSource = appearance.icons.item.source;
-		itemListState.showStolenIcon = appearance.icons.item.showStolen;
-		
-		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
-		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
-		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
-		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
-		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
-		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
-		
-		var layout: ListLayout;
-		
-		if (_subtypeName == "EnchantConstruct") {
-			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "EnchantListLayout");
-			
-		} else if (_subtypeName == "Smithing") {
-			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "SmithingListLayout");
-			
-		} else if (_subtypeName == "ConstructibleObject") {			
-			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "ConstructListLayout");
-			
-		} else /*if (_subtypeName == "Alchemy")*/ {
-			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
-		}
-		
-		ItemList.layout = layout;
-		
-		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
-		var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
-		var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
-		_sortColumnControls = [{keyCode: previousColumnKey},
-							   {keyCode: nextColumnKey}];
-		_sortOrderControls = {keyCode: sortOrderKey};
-		
-		_searchKey = a_config["Input"].controls.pc.search;
-		_searchControls = {keyCode: _searchKey};
-
-		// Not 100% happy with doing this here, but has to do for now.
-		if (CategoryList.categoriesList.selectedEntry)
-			layout.changeFilterFlag(CategoryList.categoriesList.selectedEntry.flag);
-	}
-	
-	
-  /* PUBLIC FUNCTIONS */
-
 	// @API
 	public function Initialize(): Void
 	{
 		skse.ExtendData(true);
-		skse.ExtendAlchemyCategories(true);
+//		skse.ExtendAlchemyCategories(true);
 		
 		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
 		
@@ -292,18 +215,40 @@ class CraftingMenu extends MovieClip
 		
 		bCanCraft = false;
 		positionFixedElements();
-		
-		SetPlatform(_platform);
 	}
 	
-	// @API
+	public function testMenu()
+	{
+		trace("TESTING MENU");
+		clearInterval(dbgIntvl);
+		
+		gotoAndStop("EnchantConstruct");
+		Initialize();
+		
+		Debug.log("Setting data");
+		CategoryList.SetCategoriesList
+		(
+			"Disenchant", 0xa, 1,
+			"", 0x0, 0,
+			"Item", 0x5, 1,
+			"Enchantment", 0x30, 1,
+			"Soul Gem", 0x40, 1
+		);
+		Debug.log("Setting data - done");
+		
+	}
+	
+	
+  /* PUBLIC FUNCTIONS */
+	
+	// @API - Alchemy
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
 		// Not required. Used by alchemy menu, but our alchemy menu works differently.
 		//CategoryList.setPartitionedFilterMode(a_bPartitioned);
 	}
 
-	// @API
+	// @API - Alchemy
 	public function GetNumCategories(): Number
 	{
 		return CategoryList.categoriesList.entryList.length;
@@ -342,11 +287,26 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function UpdateItemList(abFullRebuild: Boolean): Void
 	{
+		skse.Log("============== ENTER UpdateItemList " + abFullRebuild);
+		
+		
+		if (_subtypeName == "ConstructibleObject") {
+			// After constructing an item, the native control flow is:
+			//    (1) Call InvalidateListData directly and set some basic data
+			//	  (2) Call UpdateItemList(false) to set more stuff
+			//
+			// The problem is that enabled is only set in (2), so we always do a full rebuild not to screw up our sorting.
+			// For this menu, this is not a problem. For others it would be (recursive calls to UpdateItemList).
+			abFullRebuild = true;
+		}
+		
 		if (abFullRebuild == true) {
 			CategoryList.InvalidateListData();
 		} else {
 			ItemList.UpdateList();
 		}
+		
+		skse.Log("============== EXIT UpdateItemList");
 	}
 
 	// @API
@@ -380,10 +340,12 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function SetSelectedItem(aSelection: Number): Void
 	{
+		skse.Log("SetSELECTEDItem enter");
 		GameDelegate.call("SetSelectedItem", [aSelection]);
+		skse.Log("SetSELECTEDItem exdit");
 	}
 	
-	// @API
+	// @API - Alchemy
 	public function PreRebuildList(): Void
 	{
 		skse.Log("PreRebuildList");
@@ -393,7 +355,7 @@ class CraftingMenu extends MovieClip
 //		SavedCategoryScrollRatio = CategoryList.CategoriesList.maxScrollPosition <= 0 ? 0 : CategoryList.CategoriesList.scrollPosition / CategoryList.CategoriesList.maxScrollPosition;
 	}
 
-	// @API
+	// @API - Alchemy
 	public function PostRebuildList(abRestoreSelection: Boolean): Void
 	{
 		skse.Log("PostRebuildList");
@@ -586,6 +548,59 @@ class CraftingMenu extends MovieClip
 		
 		CategoryList.showPanel();
 	}
+	
+	private function setConfig(a_config: Object): Void
+	{
+		_config = a_config;
+		ItemList.addDataProcessor(new CraftingDataSetter());
+		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
+
+		positionFloatingElements();
+		
+		var itemListState = CategoryList.itemList.listState;
+		var appearance = a_config["Appearance"];
+		
+		itemListState.iconSource = appearance.icons.item.source;
+		itemListState.showStolenIcon = appearance.icons.item.showStolen;
+		
+		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
+		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
+		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
+		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
+		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
+		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
+		
+		var layout: ListLayout;
+		
+		if (_subtypeName == "EnchantConstruct") {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "EnchantListLayout");
+			
+		} else if (_subtypeName == "Smithing") {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "SmithingListLayout");
+			
+		} else if (_subtypeName == "ConstructibleObject") {			
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "ConstructListLayout");
+			
+		} else /*if (_subtypeName == "Alchemy")*/ {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
+		}
+		
+		ItemList.layout = layout;
+		
+		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
+		var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
+		var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
+		_sortColumnControls = [{keyCode: previousColumnKey},
+							   {keyCode: nextColumnKey}];
+		_sortOrderControls = {keyCode: sortOrderKey};
+		
+		_searchKey = a_config["Input"].controls.pc.search;
+		_searchControls = {keyCode: _searchKey};
+
+		// Not 100% happy with doing this here, but has to do for now.
+//		if (CategoryList.categoriesList.selectedEntry)
+//			layout.changeFilterFlag(CategoryList.categoriesList.selectedEntry.flag);
+	}
 
 	private function onItemListPressed(event: Object): Void
 	{
@@ -602,6 +617,7 @@ class CraftingMenu extends MovieClip
 
 	private function onItemHighlightChange(event: Object): Void
 	{
+		skse.Log("SELECT0R " + event.index);
 		SetSelectedItem(event.index);
 		FadeInfoCard(event.index == -1);
 		UpdateButtonText();
@@ -676,7 +692,7 @@ class CraftingMenu extends MovieClip
 		GameDelegate.call("AuxButtonPress", []);
 	}
 	
-	private function OnEndEditItemName(event: Object): Void
+	private function onEndEditItemName(event: Object): Void
 	{
 		ItemInfo.EndEditName();
 		GameDelegate.call("EndItemRename", [event.useNewName, event.newName]);
@@ -690,7 +706,7 @@ class CraftingMenu extends MovieClip
 	private function onMouseUp(): Void
 	{
 		if (ItemInfo.bEditNameMode && !ItemInfo.hitTest(_root._xmouse, _root._ymouse)) {
-			OnEndEditItemName({useNewName: false, newName: ""});
+			onEndEditItemName({useNewName: false, newName: ""});
 		}
 	}
 

@@ -171,6 +171,11 @@ class CraftingLists extends MovieClip
 		if (_subtypeName == "ConstructibleObject") {			
 			itemList.addDataProcessor(new CustomConstructDataSetter());
 			
+		} else if (_subtypeName == "Smithing") {			
+			panelContainer.gotoAndStop("no_categories");
+			categoriesList._visible = false;
+			itemList.listHeight = 579;
+			
 		} else if (_subtypeName == "Alchemy") {
 			_alchemyDataSetter = new CustomAlchemyDataSetter();
 			itemList.addDataProcessor(_alchemyDataSetter);
@@ -207,6 +212,19 @@ class CraftingLists extends MovieClip
 		
 		itemList.onInvalidate = Delegate.create(this, onItemListInvalidate);
 		
+
+		categoriesList.onUnsuspend = function()
+		{
+			
+			skse.Log("==============-------------- ENTER onUnsuspend");
+			
+			// this == categoriesList
+			this.onItemPress(0, 0); // Select first category
+			delete this.onUnsuspend;
+			
+			skse.Log("==============-------------- EXIT onUnsuspend");
+		};
+		
 		// Delay updates until config is ready
 		categoriesList.suspended = true;
 		itemList.suspended = true;
@@ -223,6 +241,8 @@ class CraftingLists extends MovieClip
 
 		dispatchEvent({type:"categoryChange", index: categoriesList.selectedIndex});
 
+		skse.Log("SHOWPANEL");
+
 		if (a_bPlayBladeSound != false)
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 	}
@@ -231,6 +251,9 @@ class CraftingLists extends MovieClip
 	{
 		_currentState = TRANSITIONING_TO_HIDE_PANEL;
 		gotoAndPlay("PanelHide");
+		
+		skse.Log("hidePanel");
+		
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
 	
@@ -359,7 +382,7 @@ class CraftingLists extends MovieClip
 	// @API 
 	public function SetCategoriesList(): Void
 	{
-		skse.Log("SetCategoriesList");
+		skse.Log("ENTER SetCategoriesList");
 
 		skse.Log("Category count: " + arguments.length);
 		
@@ -379,7 +402,7 @@ class CraftingLists extends MovieClip
 			
 			entry.enabled = false;
 			
-//			Debug.dump("category" + i, entry);
+			Debug.dump("category" + i, entry);
 			
 			categoriesList.entryList.push(entry);
 
@@ -391,17 +414,26 @@ class CraftingLists extends MovieClip
 
 		categoriesList.selectedIndex = 0;
 		categoriesList.InvalidateData();
+		
+		skse.Log("EXIT SetCategoriesList");
 	}
 
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	// @API
 	public function InvalidateListData(): Void
-	{		
+	{
+		skse.Log("============== ENTER InvalidateListData");
 		itemList.InvalidateData();
+		skse.Log("============== EXIT InvalidateListData");
 	}
 	
 	
   /* PRIVATE FUNCTIONS */
+  
+  	private function onHideCategoriesList(event: Object): Void
+	{
+		itemList.listHeight = 579;
+	}
   
   	private function onConfigLoad(event: Object): Void
 	{
@@ -430,22 +462,9 @@ class CraftingLists extends MovieClip
 				}
 			}
 		}
-		
-		for (var j=0; j<itemList.entryList.length; j++) {
-			var e = itemList.entryList[j];
-			
-//			Debug.dump("item" + j, e);
-		}
 
-		var flag = categoriesList.selectedEntry.flag;
-
+		// Grey out any categories that are not enabled
 		categoriesList.UpdateList();
-
-		if (flag != categoriesList.selectedEntry.flag) {
-			// Triggers an update if filter flag changed
-			_typeFilter.itemFilter = categoriesList.selectedEntry.flag;
-			dispatchEvent({type:"categoryChange", index:categoriesList.selectedIndex});
-		}
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
 		if (itemList.selectedIndex == -1)
@@ -585,6 +604,8 @@ class CraftingLists extends MovieClip
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
+		skse.Log("HELLOOOO");
+		
 		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
@@ -592,6 +613,8 @@ class CraftingLists extends MovieClip
 	private function onItemsListSelectionChange(event: Object): Void
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
+		
+		skse.Log("HELLOOOO 222");
 
 		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
