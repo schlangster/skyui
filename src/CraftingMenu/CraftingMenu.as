@@ -462,11 +462,8 @@ class CraftingMenu extends MovieClip
 	// @GFx
 	public function handleInput(aInputEvent: Object, aPathToFocus: Array): Boolean
 	{
-		if (bCanExpandPanel && aPathToFocus.length > 0) {
-			aPathToFocus[0].handleInput(aInputEvent, aPathToFocus.slice(1));
-		} else if (aPathToFocus.length > 1) {
-			aPathToFocus[1].handleInput(aInputEvent, aPathToFocus.slice(2));
-		}
+		aPathToFocus[0].handleInput(aInputEvent, aPathToFocus.slice(1));
+		
 		return true;
 	}
 	
@@ -596,10 +593,6 @@ class CraftingMenu extends MovieClip
 		
 		_searchKey = a_config["Input"].controls.pc.search;
 		_searchControls = {keyCode: _searchKey};
-
-		// Not 100% happy with doing this here, but has to do for now.
-//		if (CategoryList.categoriesList.selectedEntry)
-//			layout.changeFilterFlag(CategoryList.categoriesList.selectedEntry.flag);
 	}
 
 	private function onItemListPressed(event: Object): Void

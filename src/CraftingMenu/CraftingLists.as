@@ -422,9 +422,7 @@ class CraftingLists extends MovieClip
 	// @API
 	public function InvalidateListData(): Void
 	{
-		skse.Log("============== ENTER InvalidateListData");
 		itemList.InvalidateData();
-		skse.Log("============== EXIT InvalidateListData");
 	}
 	
 	
@@ -604,8 +602,6 @@ class CraftingLists extends MovieClip
 	{
 		dispatchEvent({type:"categoryChange", index:event.index});
 		
-		skse.Log("HELLOOOO");
-		
 		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
@@ -613,8 +609,6 @@ class CraftingLists extends MovieClip
 	private function onItemsListSelectionChange(event: Object): Void
 	{
 		dispatchEvent({type:"itemHighlightChange", index:event.index});
-		
-		skse.Log("HELLOOOO 222");
 
 		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
