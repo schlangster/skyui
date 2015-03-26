@@ -68,10 +68,15 @@ class skyui.filter.ItemTypeFilter implements IFilter
 		}
 	}
 	
+	public function isMatch(a_entry: Object, a_flag): Boolean
+	{
+		return _matcherFunc(a_entry, a_flag);
+	}
+	
 	
   /* PRIVATE FUNCTIONS */
 	
-	private static function entryMatchesFilter(a_entry: Object, a_flag: Boolean): Boolean
+	public static function entryMatchesFilter(a_entry: Object, a_flag: Boolean): Boolean
 	{
 		return a_entry != undefined &&
 			(a_entry.filterFlag == undefined || (a_entry.filterFlag & a_flag) != 0);

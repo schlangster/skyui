@@ -9,7 +9,7 @@ import skyui.components.list.AlphaEntryFormatter;
 import skyui.components.list.BasicList;
 
 
-class CategoriesList extends BasicList
+class IconTabList extends BasicList
 {
   /* CONSTANTS */
 	
@@ -50,7 +50,7 @@ class CategoriesList extends BasicList
 	
   /* INITIALIZATION */
 	
-	public function CategoriesList()
+	public function IconTabList()
 	{
 		super();
 		

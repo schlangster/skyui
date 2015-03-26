@@ -2,7 +2,7 @@
 import skyui.components.list.BasicListEntry;
 
 
-class CategoriesListEntry extends BasicListEntry
+class IconTabListEntry extends BasicListEntry
 {
   /* PRIVATE VARIABLES */
 
@@ -21,8 +21,8 @@ class CategoriesListEntry extends BasicListEntry
 	{
 		super.initialize();
 
-		_iconLabel = CategoriesList(a_state.list).iconArt[a_index];
-		_iconSize = CategoriesList(a_state.list).iconSize;
+		_iconLabel = IconTabList(a_state.list).iconArt[a_index];
+		_iconSize = IconTabList(a_state.list).iconSize;
 		
 		icon.gotoAndStop(_iconLabel);
 	}

@@ -131,10 +131,10 @@ class CraftingMenu extends MovieClip
 	var SavedCategorySelectedText: String;
 
 	// @API
-	var bCanExpandPanel: Boolean;
+	public var bCanExpandPanel: Boolean;
 	
 	// @API
-	var bHideAdditionalDescription: Boolean;
+	public var bHideAdditionalDescription: Boolean;
 	
 	public var currentMenuType: String = "";
 	
@@ -235,7 +235,6 @@ class CraftingMenu extends MovieClip
 			"Soul Gem", 0x40, 1
 		);
 		Debug.log("Setting data - done");
-		
 	}
 	
 	
@@ -245,13 +244,13 @@ class CraftingMenu extends MovieClip
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
 		// Not required. Used by alchemy menu, but our alchemy menu works differently.
-		//CategoryList.setPartitionedFilterMode(a_bPartitioned);
+		CategoryList.setPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @API - Alchemy
 	public function GetNumCategories(): Number
 	{
-		return CategoryList.categoriesList.entryList.length;
+		return CategoryList.CategoriesList.entryList.length;
 	}
 
 	// @API
@@ -580,6 +579,7 @@ class CraftingMenu extends MovieClip
 			
 		} else /*if (_subtypeName == "Alchemy")*/ {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
+			layout.entryWidth = 330;
 		}
 		
 		ItemList.layout = layout;
@@ -620,7 +620,7 @@ class CraftingMenu extends MovieClip
 	private function onShowItemsList(event: Object): Void
 	{
 		if (_platform == 0) {
-			GameDelegate.call("SetSelectedCategory", [CategoryList.categoriesList.selectedIndex]);
+			GameDelegate.call("SetSelectedCategory", [CategoryList.CategoriesList.selectedIndex]);
 		}
 		
 		onItemHighlightChange(event);
@@ -652,13 +652,13 @@ class CraftingMenu extends MovieClip
 		if (event.opening == true) {
 			ItemList.disableSelection = true;
 			ItemList.disableInput = true;
-			CategoryList.categoriesList.disableSelection = true;
-			CategoryList.categoriesList.disableInput = true;
+			CategoryList.CategoriesList.disableSelection = true;
+			CategoryList.CategoriesList.disableInput = true;
 		} else if (event.opening == false) {
 			ItemList.disableSelection = false;
 			ItemList.disableInput = false;
-			CategoryList.categoriesList.disableSelection = false;
-			CategoryList.categoriesList.disableInput = false;
+			CategoryList.CategoriesList.disableSelection = false;
+			CategoryList.CategoriesList.disableInput = false;
 		}
 		if (event.menu == "quantity") {
 			if (event.opening) {
@@ -706,14 +706,14 @@ class CraftingMenu extends MovieClip
 	private function onMouseRotationStart(): Void
 	{
 		GameDelegate.call("StartMouseRotation", []);
-		CategoryList.categoriesList.disableSelection = true;
+		CategoryList.CategoriesList.disableSelection = true;
 		ItemList.disableSelection = true;
 	}
 
 	private function onMouseRotationStop(): Void
 	{
 		GameDelegate.call("StopMouseRotation", []);
-		CategoryList.categoriesList.disableSelection = false;
+		CategoryList.CategoriesList.disableSelection = false;
 		ItemList.disableSelection = false;
 	}
 

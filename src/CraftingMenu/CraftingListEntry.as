@@ -147,7 +147,6 @@ class CraftingListEntry extends TabularListEntry
 	private function onLoadInit(a_icon: MovieClip): Void
 	{
 		a_icon.gotoAndStop(_iconLabel);
-		skyui.util.Debug.log("Label : " + _iconLabel);
 		changeIconColor(a_icon, _iconColor);
 	}
 	
