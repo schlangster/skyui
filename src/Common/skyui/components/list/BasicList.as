@@ -93,6 +93,8 @@ class skyui.components.list.BasicList extends BSList
 	public var disableSelection: Boolean = false;
 	
 	public var isAutoUnselect: Boolean = false;
+	
+	public var canSelectDisabled: Boolean = false;
 
 	// @override BSList
 	public function get selectedIndex(): Number

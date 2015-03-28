@@ -34,6 +34,8 @@ class skyui.components.list.ScrollingList extends BasicList
 	public var entryHeight: Number = 28;
 	
 	public var scrollDelta: Number = 1;
+	
+	public var isPressOnMove: Boolean = false;
 
 	private var _scrollPosition: Number = 0;
 	
@@ -244,6 +246,9 @@ class skyui.components.list.ScrollingList extends BasicList
 			} else if (getSelectedListEnumIndex() >= scrollDelta) {
 				doSetSelectedIndex(getListEnumRelativeIndex(-scrollDelta), SELECT_KEYBOARD);
 				isMouseDrivenNav = false;
+				
+				if (isPressOnMove)
+					onItemPress();
 			}
 		} else if (a_bScrollPage) {
 			var t = scrollPosition - _listIndex;
@@ -262,6 +267,9 @@ class skyui.components.list.ScrollingList extends BasicList
 			} else if (getSelectedListEnumIndex() < getListEnumSize() - scrollDelta) {
 				doSetSelectedIndex(getListEnumRelativeIndex(scrollDelta), SELECT_KEYBOARD);
 				isMouseDrivenNav = false;
+				
+				if (isPressOnMove)
+					onItemPress();
 			}
 		} else if (a_bScrollPage) {
 			var t = scrollPosition + _listIndex;
