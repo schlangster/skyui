@@ -590,63 +590,80 @@ columns.disenchantEffectColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITI
 
 ; SOUL SIZE COLUMN -------------------------------------------------------
 columns.soulSizeColumn.type = TEXT
-columns.soulSizeColumn.name = '$SOUL SIZE'
+columns.soulSizeColumn.name = '$HK19'
 columns.soulSizeColumn.states = 2
 columns.soulSizeColumn.width = 0.15
 columns.soulSizeColumn.label.textFormat.align = right
 columns.soulSizeColumn.entry.textFormat.align = right
 
-columns.soulSizeColumn.state1.label.text = '$SOUL SIZE'
+columns.soulSizeColumn.state1.label.text = '$HK19'
 columns.soulSizeColumn.state1.label.arrowDown = false
 columns.soulSizeColumn.state1.entry.text = @soulSizeDisplay
 columns.soulSizeColumn.state1.sortAttributes = <soulSize, text>
 columns.soulSizeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-columns.soulSizeColumn.state2.label.text = '$SOUL SIZE'
+columns.soulSizeColumn.state2.label.text = '$HK19'
 columns.soulSizeColumn.state2.label.arrowDown = true
 columns.soulSizeColumn.state2.entry.text = @soulSizeDisplay
 columns.soulSizeColumn.state2.sortAttributes = <soulSize, text>
 columns.soulSizeColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-; ALCHEMY GOOD EFFECTS COLUMN -------------------------------------------------------
-columns.alchemyGoodEffectsColumn.type = TEXT
-columns.alchemyGoodEffectsColumn.name = '$EFFECTS'
-columns.alchemyGoodEffectsColumn.states = 2
-columns.alchemyGoodEffectsColumn.width = 0.4
-columns.alchemyGoodEffectsColumn.label.textFormat.align = right
-columns.alchemyGoodEffectsColumn.entry.textFormat.align = right
+; ALCHEMY WEIGHT COLUMN -------------------------------------------------------
+columns.alchWeightColumn.type = TEXT
+columns.alchWeightColumn.name = '$WEIGHT'
+columns.alchWeightColumn.states = 2
+columns.alchWeightColumn.width = 0.14
+columns.alchWeightColumn.border = a_textBorder
 
-columns.alchemyGoodEffectsColumn.state1.label.text = '$EFFECTS'
-columns.alchemyGoodEffectsColumn.state1.label.arrowDown = false
-columns.alchemyGoodEffectsColumn.state1.entry.text = @goodEffects
-columns.alchemyGoodEffectsColumn.state1.sortAttributes = <goodEffects, value, text>
-columns.alchemyGoodEffectsColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.alchWeightColumn.state1.label.text = '$WGT'
+columns.alchWeightColumn.state1.label.arrowDown = true
+columns.alchWeightColumn.state1.entry.text = @infoWeight
+columns.alchWeightColumn.state1.sortAttributes = <infoWeight, text>
+columns.alchWeightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-columns.alchemyGoodEffectsColumn.state2.label.text = '$EFFECTS'
-columns.alchemyGoodEffectsColumn.state2.label.arrowDown = true
-columns.alchemyGoodEffectsColumn.state2.entry.text = @goodEffects
-columns.alchemyGoodEffectsColumn.state2.sortAttributes = <goodEffects, value, text>
-columns.alchemyGoodEffectsColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.alchWeightColumn.state2.label.text = '$WGT'
+columns.alchWeightColumn.state2.entry.text = @infoWeight
+columns.alchWeightColumn.state2.sortAttributes = <infoWeight, text>
+columns.alchWeightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-; ALCHEMY BAD EFFECTS COLUMN -------------------------------------------------------
-columns.alchemyBadEffectsColumn.type = TEXT
-columns.alchemyBadEffectsColumn.name = '$EFFECTS'
-columns.alchemyBadEffectsColumn.states = 2
-columns.alchemyBadEffectsColumn.width = 0.4
-columns.alchemyBadEffectsColumn.label.textFormat.align = right
-columns.alchemyBadEffectsColumn.entry.textFormat.align = right
 
-columns.alchemyBadEffectsColumn.state1.label.text = '$EFFECTS'
-columns.alchemyBadEffectsColumn.state1.label.arrowDown = false
-columns.alchemyBadEffectsColumn.state1.entry.text = @badEffects
-columns.alchemyBadEffectsColumn.state1.sortAttributes = <badEffects, value, text>
-columns.alchemyBadEffectsColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+; ALCHEMY VALUE COLUMN -------------------------------------------------------
+columns.alchValueColumn.type = TEXT
+columns.alchValueColumn.name = '$VALUE'
+columns.alchValueColumn.states = 2
+columns.alchValueColumn.width = 0.14
+columns.alchValueColumn.border = a_textBorder
 
-columns.alchemyBadEffectsColumn.state2.label.text = '$EFFECTS'
-columns.alchemyBadEffectsColumn.state2.label.arrowDown = true
-columns.alchemyBadEffectsColumn.state2.entry.text = @badEffects
-columns.alchemyBadEffectsColumn.state2.sortAttributes = <badEffects, value, text>
-columns.alchemyBadEffectsColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.alchValueColumn.state1.label.text = '$VAL'
+columns.alchValueColumn.state1.label.arrowDown = true
+columns.alchValueColumn.state1.entry.text = @infoValue
+columns.alchValueColumn.state1.sortAttributes = <infoValue, text>
+columns.alchValueColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.alchValueColumn.state2.label.text = '$VAL'
+columns.alchValueColumn.state2.entry.text = @infoValue
+columns.alchValueColumn.state2.sortAttributes = <infoValue, text>
+columns.alchValueColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+
+; ALCHEMY VALUE/WEIGHT COLUMN -------------------------------------------------------
+columns.alchValueWeightColumn.type = TEXT
+columns.alchValueWeightColumn.name = '$VALUE/WEIGHT'
+columns.alchValueWeightColumn.states = 2
+columns.alchValueWeightColumn.width = 0.14
+columns.alchValueWeightColumn.border = a_textBorder
+columns.alchValueWeightColumn.hidden = true
+
+columns.alchValueWeightColumn.state1.label.text = '$V/W'
+columns.alchValueWeightColumn.state1.label.arrowDown = true
+columns.alchValueWeightColumn.state1.entry.text = @infoValueWeight
+columns.alchValueWeightColumn.state1.sortAttributes = <infoValueWeight, text>
+columns.alchValueWeightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+
+columns.alchValueWeightColumn.state2.label.text = '$V/W'
+columns.alchValueWeightColumn.state2.entry.text = @infoValueWeight
+columns.alchValueWeightColumn.state2.sortAttributes = <infoValueWeight, text>
+columns.alchValueWeightColumn.state2.sortOptions = <{ASCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 
 ; ITEM VIEWS -------------------------------------------------------
@@ -719,9 +736,8 @@ views.craftArmorView.primaryColumn = craftNameColumn
 views.craftArmorView.columns = <equipColumn, iconColumn, craftNameColumn, subTypeColumn, classColumn, materialColumn, arColumn, weightColumn, valueColumn, valueWeightColumn>
 views.craftArmorView.category = Inventory.FILTERFLAG_CUST_CRAFT_ARMOR
 
-views.alchemyGoodEffectsView.primaryColumn = craftNameColumn
-views.alchemyGoodEffectsView.columns = <equipColumn, iconColumn, craftNameColumn, alchemyGoodEffectsColumn, weightColumn, valueColumn, valueWeightColumn>
-views.alchemyGoodEffectsView.category = Inventory.FILTERFLAG_CUST_ALCH_GOOD
+views.alchemyView.primaryColumn = craftNameColumn
+views.alchemyView.columns = <equipColumn, iconColumn, craftNameColumn, alchWeightColumn, alchValueColumn, alchValueWeightColumn>
 
 
 ; LAYOUTS -------------------------------------------------------
@@ -741,4 +757,4 @@ layouts.smithingListLayout.name = 'SmithingListLayout'
 layouts.smithingListLayout.views = <defaultCraftingView>
 
 layouts.alchemyListLayout.name = 'AlchemyListLayout'
-layouts.alchemyListLayout.views = <alchemyGoodEffectsView, defaultCraftingView>
+layouts.alchemyListLayout.views = <alchemyView>

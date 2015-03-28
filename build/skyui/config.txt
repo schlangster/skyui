@@ -590,19 +590,19 @@ columns.disenchantEffectColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITI
 
 ; SOUL SIZE COLUMN -------------------------------------------------------
 columns.soulSizeColumn.type = TEXT
-columns.soulSizeColumn.name = '$SOUL SIZE'
+columns.soulSizeColumn.name = '$HK19'
 columns.soulSizeColumn.states = 2
 columns.soulSizeColumn.width = 0.15
 columns.soulSizeColumn.label.textFormat.align = right
 columns.soulSizeColumn.entry.textFormat.align = right
 
-columns.soulSizeColumn.state1.label.text = '$SOUL SIZE'
+columns.soulSizeColumn.state1.label.text = '$HK19'
 columns.soulSizeColumn.state1.label.arrowDown = false
 columns.soulSizeColumn.state1.entry.text = @soulSizeDisplay
 columns.soulSizeColumn.state1.sortAttributes = <soulSize, text>
 columns.soulSizeColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
-columns.soulSizeColumn.state2.label.text = '$SOUL SIZE'
+columns.soulSizeColumn.state2.label.text = '$HK19'
 columns.soulSizeColumn.state2.label.arrowDown = true
 columns.soulSizeColumn.state2.entry.text = @soulSizeDisplay
 columns.soulSizeColumn.state2.sortAttributes = <soulSize, text>
