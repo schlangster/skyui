@@ -36,6 +36,8 @@ class CraftingLists extends MovieClip
 	static var SHOW_PANEL = 1;
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
+	
+	static var SHORT_LIST_OFFSET = 210;
 
 	
   /* STAGE ELEMENTS */
@@ -50,27 +52,21 @@ class CraftingLists extends MovieClip
 	private var _nameFilter: NameFilter;
 	private var _sortFilter: SortFilter;
 	
-	// Used only for alchemy mode
-//	private var _alchemyDataSetter: CustomAlchemyDataSetter;
-	
 	private var _platform: Number;
 	
 	private var _currCategoryIndex: Number;
 	private var _savedSelectionIndex: Number = -1;
 	
 	private var _searchKey: Number = -1;
-	private var _switchTabKey: Number = -1;
 	private var _sortOrderKey: Number = -1;
 	private var _sortOrderKeyHeld: Boolean = false;
-	
-	private var _bTabbed = false;
-	private var _leftTabText: String;
-	private var _rightTabText: String;
 
 	private var _columnSelectDialog: MovieClip;
 	private var _columnSelectInterval: Number;
 	
 	private var _subtypeName: String;
+	
+	private var _bFocusItemList: Boolean = true;
 	
 
   /* PROPERTIES */
@@ -79,8 +75,6 @@ class CraftingLists extends MovieClip
 
 	// @API
 	public var CategoriesList: IconTabList;
-	
-	public var tabBar: TabBar;
 	
 	public var searchWidget: SearchWidget;
 	
@@ -101,21 +95,6 @@ class CraftingLists extends MovieClip
 			FocusHandler.instance.setFocus(itemList,0);
 
 		_currentState = a_newState;
-	}
-	
-	private var _tabBarIconArt: Array;
-	
-	public function set tabBarIconArt(a_iconArt: Array)
-	{
-		_tabBarIconArt = a_iconArt;
-		
-		if (tabBar)
-			tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
-	}
-	
-	public function get tabBarIconArt(): Array
-	{
-		return _tabBarIconArt;
 	}
 
 
@@ -146,6 +125,9 @@ class CraftingLists extends MovieClip
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
+
+		// Hide by default, maybe show later
+		panelContainer.effectsList._visible = false;
 	}	
 	
   /* PUBLIC FUNCTIONS */
@@ -162,22 +144,23 @@ class CraftingLists extends MovieClip
 	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
 	
-	var _alchemyEnumeration: PartitionedEnumeration;
-	
 	public function InitExtensions(a_subtypeName: String): Void
 	{
 		_subtypeName = a_subtypeName;
 		
 		// Alchemy uses a different layout
 		if (_subtypeName == "Alchemy") {
+			panelContainer.gotoAndStop("no_categories");
+			
 			// Hide top icon category bar, use effects list instead
 			CategoriesList._visible = false;
 			CategoriesList = panelContainer.effectsList;
+			CategoriesList._visible = true;
 			
-			panelContainer.gotoAndStop("no_categories");
+
 			itemList.gotoAndStop("short");
-			itemList.leftBorder = 200;
-			itemList.listHeight = 565;
+			itemList.leftBorder = SHORT_LIST_OFFSET;
+			itemList.listHeight = 560;
 
 		// Support for custom categorization
 		} else if (_subtypeName == "ConstructibleObject") {			
@@ -187,7 +170,7 @@ class CraftingLists extends MovieClip
 		} else if (_subtypeName == "Smithing") {			
 			panelContainer.gotoAndStop("no_categories");
 			CategoriesList._visible = false;
-			itemList.listHeight = 579;
+			itemList.listHeight = 560;
 		}
 		
 		var listEnumeration = new FilteredEnumeration(itemList.entryList);
@@ -216,6 +199,7 @@ class CraftingLists extends MovieClip
 
 		itemList.addEventListener("selectionChange", this, "onItemsListSelectionChange");
 		itemList.addEventListener("sortChange", this, "onSortChange");
+		itemList.addEventListener("itemPress", this, "onItemPress");
 
 		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
 		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
@@ -223,19 +207,13 @@ class CraftingLists extends MovieClip
 		
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 		
-		itemList.onInvalidate = Delegate.create(this, onItemListInvalidate);
-		
+		itemList.onInvalidate = Delegate.create(this, onItemListInvalidate);		
 
 		CategoriesList.onUnsuspend = function()
 		{
-			
-			skse.Log("==============-------------- ENTER onUnsuspend");
-			
 			// this == CategoriesList
 			this.onItemPress(0, 0); // Select first category
 			delete this.onUnsuspend;
-			
-			skse.Log("==============-------------- EXIT onUnsuspend");
 		};
 		
 		// Delay updates until config is ready
@@ -254,8 +232,6 @@ class CraftingLists extends MovieClip
 
 		dispatchEvent({type:"categoryChange", index: CategoriesList.selectedIndex});
 
-		skse.Log("SHOWPANEL");
-
 		if (a_bPlayBladeSound != false)
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 	}
@@ -265,16 +241,7 @@ class CraftingLists extends MovieClip
 		_currentState = TRANSITIONING_TO_HIDE_PANEL;
 		gotoAndPlay("PanelHide");
 		
-		skse.Log("hidePanel");
-		
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-	}
-	
-	public function enableTabBar(): Void
-	{
-		_bTabbed = true;
-		panelContainer.gotoAndPlay("tabbed");
-		itemList.listHeight = 480;
 	}
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
@@ -341,19 +308,41 @@ class CraftingLists extends MovieClip
 				searchWidget.startInput();
 				return true;
 			}
-			
-			// Toggle tab (default ALT)
-			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {
-				tabBar.tabToggle();
-				return true;
-			}
 		}
 		
-		if (CategoriesList.handleInput(details, pathToFocus))
-			return true;
+		if (_subtypeName == "Alchemy") {
+			if (handleAlchemyNavigation(details, pathToFocus))
+				return true;
+		} else {
+			if (CategoriesList.handleInput(details, pathToFocus))
+				return true;
+		}
 		
 		var nextClip = pathToFocus.shift();
 		return nextClip.handleInput(details, pathToFocus);
+	}
+
+	private function handleAlchemyNavigation(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.LEFT) {
+				_bFocusItemList = false;
+				return true;
+				
+			} else if (details.navEquivalent == NavigationCode.RIGHT) {
+				_bFocusItemList = true;
+				return true;
+			}
+			
+			// Ok thats a bit weird but whatever...:
+			// Itemlist always has focus, but if this flag is false, categories list gets to run first.
+			// Since both use the same nav scheme, category list wins.
+			if (!_bFocusItemList)
+				if (CategoriesList.handleInput(details, pathToFocus))
+					return true;
+		}
+		
+		return false;
 	}
 
 	public function getContentBounds():Array
@@ -376,9 +365,7 @@ class CraftingLists extends MovieClip
 			var catFlag = CategoriesList.selectedEntry.flag;
 			
 			// Set filter type
-			if (_subtypeName == "Alchemy") {
-				_typeFilter.changeFilterFlag(catFlag);
-			}
+			_typeFilter.changeFilterFlag(catFlag);
 			
 			// Not set yet before the config is loaded
 			itemList.layout.changeFilterFlag(catFlag);
@@ -396,11 +383,7 @@ class CraftingLists extends MovieClip
 	// Called to initially set the category list.
 	// @API 
 	public function SetCategoriesList(): Void
-	{
-		skse.Log("ENTER SetCategoriesList");
-
-		skse.Log("Category count: " + arguments.length);
-		
+	{		
 		var textOffset = 0;
 		var flagOffset = 1;
 		var bDontHideOffset = 2;
@@ -417,7 +400,7 @@ class CraftingLists extends MovieClip
 			
 			entry.enabled = false;
 			
-			Debug.dump("category" + i, entry);
+//			Debug.dump("category" + i, entry);
 			
 			CategoriesList.entryList.push(entry);
 		}
@@ -428,8 +411,6 @@ class CraftingLists extends MovieClip
 
 		CategoriesList.selectedIndex = 0;
 		CategoriesList.InvalidateData();
-		
-		skse.Log("EXIT SetCategoriesList");
 	}
 
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
@@ -452,10 +433,7 @@ class CraftingLists extends MovieClip
 		var config = event.config;
 		_searchKey = config["Input"].controls.pc.search;
 		
-		if (_platform == 0)
-			_switchTabKey = config["Input"].controls.pc.switchTab;
-		else {
-			_switchTabKey = config["Input"].controls.gamepad.switchTab;
+		if (_platform != 0) {
 			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
 		}
 	}
@@ -463,11 +441,13 @@ class CraftingLists extends MovieClip
  	private function onItemListInvalidate(): Void
 	{
 		// Set enabled == false for empty categories
-		for (var i=0; i<CategoriesList.entryList.length; i++) {
-			for (var j=0; j<itemList.entryList.length; j++) {
-				if (_typeFilter.isMatch(itemList.entryList[j], CategoriesList.entryList[i].flag)) {
-					CategoriesList.entryList[i].enabled = true;
-					break;
+		if (_subtypeName != "Alchemy") {
+			for (var i=0; i<CategoriesList.entryList.length; i++) {
+				for (var j=0; j<itemList.entryList.length; j++) {
+					if (_typeFilter.isMatch(itemList.entryList[j], CategoriesList.entryList[i].flag)) {
+						CategoriesList.entryList[i].enabled = true;
+						break;
+					}
 				}
 			}
 		}
@@ -499,10 +479,8 @@ class CraftingLists extends MovieClip
 			replaceConstructObjectCategories();
 
 		// Alchemy - Use a custom categorization scheme.
-		} else /*if (_subtypeName == "Alchemy")*/ {
-//			CategoriesList.iconArt = [ "alch_all", "alch_good", "alch_bad", "alch_other" ];
-			
-//			replaceAlchemyCategories();
+		} else if (_subtypeName == "Alchemy") {			
+			fixupAlchemyCategories();
 		}
 	}	
 	
@@ -526,41 +504,26 @@ class CraftingLists extends MovieClip
 			{text: Translator.translate("$Misc"), flag: Inventory.FILTERFLAG_CUST_CRAFT_MISC, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
 	}
 	
-	private function replaceAlchemyCategories(): Void
+	private function fixupAlchemyCategories(): Void
 	{
-		var bHasGoodEffects = false;
-		var bHasBadEffects = false;
-		var bHasOtherEffects = false;
-
-		// Use old effect categories as partitions of a list that groups several of them
+		// Ingredients category is always enabled
+		CategoriesList.entryList[0].enabled = true;
+		CategoriesList.entryList[0].iconLabel = "ingredients";
+		
+		// Old flag is type. New flag is index (was flag before skse ext.)
 		for (var i=1; i<CategoriesList.entryList.length; i++) {
 			var cat = CategoriesList.entryList[i];
 			
-			// Thats the index that was previously used as flag and sent by the game (without SKSE).
-			cat.index = i;
-			
 			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_GOOD)
-				bHasGoodEffects = true;
-			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_BAD)
-				bHasBadEffects = true;
-			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_OTHER)
-				bHasOtherEffects = true;
-			
-//			_alchemyDataSetter.partitionData.push(cat);
-//			_alchemyEnumeration.partitionData.push(cat);
+				cat.iconLabel = "beneficial";
+			else if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_BAD)
+				cat.iconLabel = "harmful";
+			else if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_OTHER)
+				cat.iconLabel = "other";
+
+			// Thats the index that was previously used as flag and sent by the game (without SKSE).
+			cat.flag = i;
 		}
-		
-		// Keep only the first category (INGREDIENTS)
-		CategoriesList.entryList.splice(1);
-		
-		CategoriesList.entryList[0].enabled = true;
-		
-		CategoriesList.entryList.push(
-			{text: "$GOOD_EFFECTS", flag: Inventory.FILTERFLAG_CUST_ALCH_GOOD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: bHasGoodEffects});
-		CategoriesList.entryList.push(
-			{text: "$BAD_EFFECTS", flag: Inventory.FILTERFLAG_CUST_ALCH_BAD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: bHasBadEffects});
-		CategoriesList.entryList.push(
-			{text: "$OTHER EFFECTS", flag: Inventory.FILTERFLAG_CUST_ALCH_OTHER, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: bHasOtherEffects});
 	}
   
 	private function onFilterChange(): Void
@@ -604,9 +567,17 @@ class CraftingLists extends MovieClip
 	{
 		itemList.layout.refresh();
 	}
+	
+	private function onItemPress(): Void
+	{
+		_bFocusItemList = true;
+		// CraftingMenu has a handler that does the actual work.
+		// This is just for focus.
+	}
 
 	private function onCategoriesItemPress(): Void
 	{
+		_bFocusItemList = false;
 		showItemsList();
 	}
 

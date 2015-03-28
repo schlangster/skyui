@@ -161,15 +161,13 @@ class CraftingMenu extends MovieClip
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		
 		navPanel = BottomBarInfo.buttonPanel;
-		
-		//dbgIntvl = setInterval(this, "testMenu", 1000);
 	}
 	
 	// @API
 	public function Initialize(): Void
 	{
 		skse.ExtendData(true);
-//		skse.ExtendAlchemyCategories(true);
+		skse.ExtendAlchemyCategories(true);
 		
 		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
 		
@@ -202,11 +200,11 @@ class CraftingMenu extends MovieClip
 		ItemList = CategoryList.itemList;
 		ItemList.addEventListener("itemPress", this, "onItemSelect");
 				
-		BottomBarInfo["Button" + CraftingMenu.CRAFT_BUTTON].addEventListener("press", this, "onCraftButtonPress");
+/*		BottomBarInfo["Button" + CraftingMenu.CRAFT_BUTTON].addEventListener("press", this, "onCraftButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.EXIT_BUTTON].addEventListener("click", this, "onExitButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.EXIT_BUTTON].disabled = false;
 		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
-		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
+		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;*/
 		
 		ExitMenuRect.onPress = function ()
 		{
@@ -217,33 +215,11 @@ class CraftingMenu extends MovieClip
 		positionFixedElements();
 	}
 	
-	public function testMenu()
-	{
-		trace("TESTING MENU");
-		clearInterval(dbgIntvl);
-		
-		gotoAndStop("EnchantConstruct");
-		Initialize();
-		
-		Debug.log("Setting data");
-		CategoryList.SetCategoriesList
-		(
-			"Disenchant", 0xa, 1,
-			"", 0x0, 0,
-			"Item", 0x5, 1,
-			"Enchantment", 0x30, 1,
-			"Soul Gem", 0x40, 1
-		);
-		Debug.log("Setting data - done");
-	}
-	
-	
   /* PUBLIC FUNCTIONS */
 	
 	// @API - Alchemy
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
-		// Not required. Used by alchemy menu, but our alchemy menu works differently.
 		CategoryList.setPartitionedFilterMode(a_bPartitioned);
 	}
 
@@ -258,7 +234,7 @@ class CraftingMenu extends MovieClip
 	{
 		navPanel.clearButtons();
 		
-		if (getItemShown()/* && CategoryList.currentState == CraftingLists.SHOW_PANEL*/) {
+		if (getItemShown()) {
 			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: Input.Activate});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
@@ -285,10 +261,7 @@ class CraftingMenu extends MovieClip
 
 	// @API
 	public function UpdateItemList(abFullRebuild: Boolean): Void
-	{
-		skse.Log("============== ENTER UpdateItemList " + abFullRebuild);
-		
-		
+	{		
 		if (_subtypeName == "ConstructibleObject") {
 			// After constructing an item, the native control flow is:
 			//    (1) Call InvalidateListData directly and set some basic data
@@ -304,8 +277,6 @@ class CraftingMenu extends MovieClip
 		} else {
 			ItemList.UpdateList();
 		}
-		
-		skse.Log("============== EXIT UpdateItemList");
 	}
 
 	// @API
@@ -339,16 +310,12 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function SetSelectedItem(aSelection: Number): Void
 	{
-		skse.Log("SetSELECTEDItem enter");
 		GameDelegate.call("SetSelectedItem", [aSelection]);
-		skse.Log("SetSELECTEDItem exdit");
 	}
 	
 	// @API - Alchemy
 	public function PreRebuildList(): Void
 	{
-		skse.Log("PreRebuildList");
-		
 //		SavedCategoryCenterText = CategoryList.CategoriesList.centeredEntry.text;
 //		SavedCategorySelectedText = CategoryList.CategoriesList.selectedEntry.text;
 //		SavedCategoryScrollRatio = CategoryList.CategoriesList.maxScrollPosition <= 0 ? 0 : CategoryList.CategoriesList.scrollPosition / CategoryList.CategoriesList.maxScrollPosition;
@@ -356,9 +323,7 @@ class CraftingMenu extends MovieClip
 
 	// @API - Alchemy
 	public function PostRebuildList(abRestoreSelection: Boolean): Void
-	{
-		skse.Log("PostRebuildList");
-		
+	{		
 		/*if (abRestoreSelection) {
 			var entryList: Array = CategoryList.CategoriesList.entryList;
 			var centerIndex: Number = -1;
@@ -501,7 +466,14 @@ class CraftingMenu extends MovieClip
 		var itemCardContainer = ItemInfo._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
 		
-		var itemCardWidth = ItemInfo._width;
+		
+		var itemCardWidth: Number;
+		
+		// For some reason 
+		if (ItemInfo.background != undefined)
+			itemCardWidth = ItemInfo.background._width;
+		else
+			itemCardWidth = ItemInfo._width;
 		
 		// For some reason the container is larger than the card
 		// Card x is at 0 so we can use the inner width without adjustment
@@ -579,7 +551,7 @@ class CraftingMenu extends MovieClip
 			
 		} else /*if (_subtypeName == "Alchemy")*/ {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
-			layout.entryWidth = 330;
+			layout.entryWidth -= CraftingLists.SHORT_LIST_OFFSET;
 		}
 		
 		ItemList.layout = layout;
@@ -610,7 +582,6 @@ class CraftingMenu extends MovieClip
 
 	private function onItemHighlightChange(event: Object): Void
 	{
-		skse.Log("SELECT0R " + event.index);
 		SetSelectedItem(event.index);
 		FadeInfoCard(event.index == -1);
 		UpdateButtonText();

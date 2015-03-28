@@ -151,13 +151,9 @@ class CraftingListEntry extends TabularListEntry
 	}
 	
 	private function formatColor(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
-	{
-		// Negative Effect
-		if (a_entryObject.negativeEffect == true)
-			a_entryField.textColor = a_entryObject.enabled == false ? a_state.negativeDisabledColor : a_state.negativeEnabledColor;
-			
+	{			
 		// Stolen
-		else if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true)
+		if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true)
 			a_entryField.textColor = a_entryObject.enabled == false ? a_state.stolenDisabledColor : a_state.stolenEnabledColor;
 			
 		// Default
