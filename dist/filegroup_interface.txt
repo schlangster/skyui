@@ -6,6 +6,7 @@ Interface\quest_journal.swf
 Interface\giftmenu.swf
 Interface\map.swf
 Interface\favoritesmenu.swf
+Interface\craftingmenu.swf
 Interface\skyui\config.txt
 Interface\skyui\inventorylists.swf
 Interface\skyui\bottombar.swf

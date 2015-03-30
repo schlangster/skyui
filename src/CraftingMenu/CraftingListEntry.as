@@ -147,18 +147,13 @@ class CraftingListEntry extends TabularListEntry
 	private function onLoadInit(a_icon: MovieClip): Void
 	{
 		a_icon.gotoAndStop(_iconLabel);
-		skyui.util.Debug.log("Label : " + _iconLabel);
 		changeIconColor(a_icon, _iconColor);
 	}
 	
 	private function formatColor(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
-	{
-		// Negative Effect
-		if (a_entryObject.negativeEffect == true)
-			a_entryField.textColor = a_entryObject.enabled == false ? a_state.negativeDisabledColor : a_state.negativeEnabledColor;
-			
+	{			
 		// Stolen
-		else if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true)
+		if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true)
 			a_entryField.textColor = a_entryObject.enabled == false ? a_state.stolenDisabledColor : a_state.stolenEnabledColor;
 			
 		// Default

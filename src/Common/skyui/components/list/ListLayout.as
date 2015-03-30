@@ -99,6 +99,11 @@ class skyui.components.list.ListLayout
 	{
 		return _entryWidth;
 	}
+	
+	public function set entryWidth(a_width: Number): Void
+	{
+		_entryWidth = a_width;
+	}
 
 	private var _entryHeight: Number;
 
@@ -156,7 +161,8 @@ class skyui.components.list.ListLayout
 		_columnData = a_columnData;
 		_defaultsData = a_defaultsData;
 
-		_entryWidth = _defaultsData.entryWidth;
+		if (_entryWidth == undefined)
+			_entryWidth = _defaultsData.entryWidth;
 		
 		updateViewList();
 		updateColumnList();

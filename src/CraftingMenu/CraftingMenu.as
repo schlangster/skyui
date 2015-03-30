@@ -13,7 +13,6 @@ import skyui.util.GlobalFunctions;
 import skyui.defines.Input;
 
 
-
 class CraftingMenu extends MovieClip
 {
 	#include "../version.as"
@@ -61,6 +60,7 @@ class CraftingMenu extends MovieClip
 	private var _sortOrderControls: Object;
 	
 	private var _config: Object;
+	private var _subtypeName: String;
 	
 	
   /* PROPERTIES */
@@ -131,10 +131,10 @@ class CraftingMenu extends MovieClip
 	var SavedCategorySelectedText: String;
 
 	// @API
-	var bCanExpandPanel: Boolean;
+	public var bCanExpandPanel: Boolean;
 	
 	// @API
-	var bHideAdditionalDescription: Boolean;
+	public var bHideAdditionalDescription: Boolean;
 	
 	public var currentMenuType: String = "";
 	
@@ -161,79 +161,15 @@ class CraftingMenu extends MovieClip
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		
 		navPanel = BottomBarInfo.buttonPanel;
-		
-		//dbgIntvl = setInterval(this, "testMenu", 1000);
 	}
 	
-	public function testMenu()
-	{
-		trace("TESTING MENU");
-		clearInterval(dbgIntvl);
-		
-		gotoAndStop("EnchantConstruct");
-		Initialize();
-		
-		Debug.log("Setting data");
-		CategoryList.SetCategoriesList
-		(
-			"Disenchant", 0xa, 1,
-			"", 0x0, 0,
-			"Item", 0x5, 1,
-			"Enchantment", 0x30, 1,
-			"Soul Gem", 0x40, 1
-		);
-		Debug.log("Setting data - done");
-		
-	}
-	
-	public function setConfig(a_config: Object): Void
-	{
-		_config = a_config;
-		ItemList.addDataProcessor(new CraftingDataSetter());
-		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
-
-		positionFloatingElements();
-		
-		var itemListState = CategoryList.itemList.listState;
-		var appearance = a_config["Appearance"];
-		
-		itemListState.iconSource = appearance.icons.item.source;
-		itemListState.showStolenIcon = appearance.icons.item.showStolen;
-		
-		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
-		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
-		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
-		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
-		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
-		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
-		
-		
-		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "CraftingListLayout");
-		ItemList.layout = layout;
-		
-		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
-		var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
-		var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
-		_sortColumnControls = [{keyCode: previousColumnKey},
-							   {keyCode: nextColumnKey}];
-		_sortOrderControls = {keyCode: sortOrderKey};
-		
-		_searchKey = a_config["Input"].controls.pc.search;
-		_searchControls = {keyCode: _searchKey};
-
-		// Not 100% happy with doing this here, but has to do for now.
-		if (CategoryList.categoriesList.selectedEntry)
-			layout.changeFilterFlag(CategoryList.categoriesList.selectedEntry.flag);
-	}
-	
-	
-  /* PUBLIC FUNCTIONS */
-
 	// @API
 	public function Initialize(): Void
 	{
 		skse.ExtendData(true);
-		skse.Log("Initialize");
+		skse.ExtendAlchemyCategories(true);
+		
+		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
 		
 		ItemInfoHolder = ItemInfoHolder;
 		ItemInfoHolder.gotoAndStop("default");
@@ -251,10 +187,8 @@ class CraftingMenu extends MovieClip
 		
 		MenuDescription = MenuDescriptionHolder.MenuDescription;
 		MenuDescription.autoSize = "center";
-		
-//		BottomBarInfo.SetButtonsArt([{PCArt: "E", XBoxArt: "360_A", PS3Art: "PS3_A"}, {PCArt: "Tab", XBoxArt: "360_B", PS3Art: "PS3_B"}, {PCArt: "F", XBoxArt: "360_Y", PS3Art: "PS3_Y"}, {PCArt: "R", XBoxArt: "360_X", PS3Art: "PS3_X"}]);
 
-		CategoryList.InitExtensions();
+		CategoryList.InitExtensions(_subtypeName);
 
 		FocusHandler.instance.setFocus(CategoryList, 0);
 		
@@ -266,11 +200,11 @@ class CraftingMenu extends MovieClip
 		ItemList = CategoryList.itemList;
 		ItemList.addEventListener("itemPress", this, "onItemSelect");
 				
-		BottomBarInfo["Button" + CraftingMenu.CRAFT_BUTTON].addEventListener("press", this, "onCraftButtonPress");
+/*		BottomBarInfo["Button" + CraftingMenu.CRAFT_BUTTON].addEventListener("press", this, "onCraftButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.EXIT_BUTTON].addEventListener("click", this, "onExitButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.EXIT_BUTTON].disabled = false;
 		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
-		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
+		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;*/
 		
 		ExitMenuRect.onPress = function ()
 		{
@@ -279,36 +213,20 @@ class CraftingMenu extends MovieClip
 		
 		bCanCraft = false;
 		positionFixedElements();
-		
-		SetPlatform(_platform);
-		
-		var subtypeName = SUBTYPE_NAMES[_currentFrame-1];
-		
-		CategoryList.setSubtype(subtypeName);
-		
-		initCategoryIconArt(subtypeName);
 	}
 	
-	private function initCategoryIconArt(a_subtypeName: String): Void
-	{
-		if (a_subtypeName == "EnchantConstruct") {
-			CategoryList.categoriesList.iconArt =
-				[ "ench_disentchant", "", "ench_item", "ench_effect", "ench_soul" ];
-		}
-
-		
-	}
+  /* PUBLIC FUNCTIONS */
 	
-	// @API
+	// @API - Alchemy
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
-//		CategoryList.itemList.filterer.SetPartitionedFilterMode(a_bPartitioned);
+		CategoryList.setPartitionedFilterMode(a_bPartitioned);
 	}
 
-	// @API
+	// @API - Alchemy
 	public function GetNumCategories(): Number
 	{
-		return CategoryList.categoriesList.entryList.length;
+		return CategoryList.CategoriesList.entryList.length;
 	}
 
 	// @API
@@ -316,7 +234,7 @@ class CraftingMenu extends MovieClip
 	{
 		navPanel.clearButtons();
 		
-		if (getItemShown()/* && CategoryList.currentState == CraftingLists.SHOW_PANEL*/) {
+		if (getItemShown()) {
 			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: Input.Activate});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
@@ -343,7 +261,17 @@ class CraftingMenu extends MovieClip
 
 	// @API
 	public function UpdateItemList(abFullRebuild: Boolean): Void
-	{
+	{		
+		if (_subtypeName == "ConstructibleObject") {
+			// After constructing an item, the native control flow is:
+			//    (1) Call InvalidateListData directly and set some basic data
+			//	  (2) Call UpdateItemList(false) to set more stuff
+			//
+			// The problem is that enabled is only set in (2), so we always do a full rebuild not to screw up our sorting.
+			// For this menu, this is not a problem. For others it would be (recursive calls to UpdateItemList).
+			abFullRebuild = true;
+		}
+		
 		if (abFullRebuild == true) {
 			CategoryList.InvalidateListData();
 		} else {
@@ -385,21 +313,17 @@ class CraftingMenu extends MovieClip
 		GameDelegate.call("SetSelectedItem", [aSelection]);
 	}
 	
-	// @API
+	// @API - Alchemy
 	public function PreRebuildList(): Void
 	{
-		skse.Log("PreRebuildList");
-		
 //		SavedCategoryCenterText = CategoryList.CategoriesList.centeredEntry.text;
 //		SavedCategorySelectedText = CategoryList.CategoriesList.selectedEntry.text;
 //		SavedCategoryScrollRatio = CategoryList.CategoriesList.maxScrollPosition <= 0 ? 0 : CategoryList.CategoriesList.scrollPosition / CategoryList.CategoriesList.maxScrollPosition;
 	}
 
-	// @API
+	// @API - Alchemy
 	public function PostRebuildList(abRestoreSelection: Boolean): Void
-	{
-		skse.Log("PostRebuildList");
-		
+	{		
 		/*if (abRestoreSelection) {
 			var entryList: Array = CategoryList.CategoriesList.entryList;
 			var centerIndex: Number = -1;
@@ -502,11 +426,8 @@ class CraftingMenu extends MovieClip
 	// @GFx
 	public function handleInput(aInputEvent: Object, aPathToFocus: Array): Boolean
 	{
-		if (bCanExpandPanel && aPathToFocus.length > 0) {
-			aPathToFocus[0].handleInput(aInputEvent, aPathToFocus.slice(1));
-		} else if (aPathToFocus.length > 1) {
-			aPathToFocus[1].handleInput(aInputEvent, aPathToFocus.slice(2));
-		}
+		aPathToFocus[0].handleInput(aInputEvent, aPathToFocus.slice(1));
+		
 		return true;
 	}
 	
@@ -545,7 +466,14 @@ class CraftingMenu extends MovieClip
 		var itemCardContainer = ItemInfo._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
 		
-		var itemCardWidth = ItemInfo._width;
+		
+		var itemCardWidth: Number;
+		
+		// For some reason 
+		if (ItemInfo.background != undefined)
+			itemCardWidth = ItemInfo.background._width;
+		else
+			itemCardWidth = ItemInfo._width;
 		
 		// For some reason the container is larger than the card
 		// Card x is at 0 so we can use the inner width without adjustment
@@ -588,6 +516,56 @@ class CraftingMenu extends MovieClip
 		
 		CategoryList.showPanel();
 	}
+	
+	private function setConfig(a_config: Object): Void
+	{
+		_config = a_config;
+		ItemList.addDataProcessor(new CraftingDataSetter());
+		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
+
+		positionFloatingElements();
+		
+		var itemListState = CategoryList.itemList.listState;
+		var appearance = a_config["Appearance"];
+		
+		itemListState.iconSource = appearance.icons.item.source;
+		itemListState.showStolenIcon = appearance.icons.item.showStolen;
+		
+		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
+		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
+		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
+		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
+		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
+		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
+		
+		var layout: ListLayout;
+		
+		if (_subtypeName == "EnchantConstruct") {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "EnchantListLayout");
+			
+		} else if (_subtypeName == "Smithing") {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "SmithingListLayout");
+			
+		} else if (_subtypeName == "ConstructibleObject") {			
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "ConstructListLayout");
+			
+		} else /*if (_subtypeName == "Alchemy")*/ {
+			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
+			layout.entryWidth -= CraftingLists.SHORT_LIST_OFFSET;
+		}
+		
+		ItemList.layout = layout;
+		
+		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
+		var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
+		var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
+		_sortColumnControls = [{keyCode: previousColumnKey},
+							   {keyCode: nextColumnKey}];
+		_sortOrderControls = {keyCode: sortOrderKey};
+		
+		_searchKey = a_config["Input"].controls.pc.search;
+		_searchControls = {keyCode: _searchKey};
+	}
 
 	private function onItemListPressed(event: Object): Void
 	{
@@ -613,7 +591,7 @@ class CraftingMenu extends MovieClip
 	private function onShowItemsList(event: Object): Void
 	{
 		if (_platform == 0) {
-			GameDelegate.call("SetSelectedCategory", [CategoryList.categoriesList.selectedIndex]);
+			GameDelegate.call("SetSelectedCategory", [CategoryList.CategoriesList.selectedIndex]);
 		}
 		
 		onItemHighlightChange(event);
@@ -645,13 +623,13 @@ class CraftingMenu extends MovieClip
 		if (event.opening == true) {
 			ItemList.disableSelection = true;
 			ItemList.disableInput = true;
-			CategoryList.categoriesList.disableSelection = true;
-			CategoryList.categoriesList.disableInput = true;
+			CategoryList.CategoriesList.disableSelection = true;
+			CategoryList.CategoriesList.disableInput = true;
 		} else if (event.opening == false) {
 			ItemList.disableSelection = false;
 			ItemList.disableInput = false;
-			CategoryList.categoriesList.disableSelection = false;
-			CategoryList.categoriesList.disableInput = false;
+			CategoryList.CategoriesList.disableSelection = false;
+			CategoryList.CategoriesList.disableInput = false;
 		}
 		if (event.menu == "quantity") {
 			if (event.opening) {
@@ -678,7 +656,7 @@ class CraftingMenu extends MovieClip
 		GameDelegate.call("AuxButtonPress", []);
 	}
 	
-	private function OnEndEditItemName(event: Object): Void
+	private function onEndEditItemName(event: Object): Void
 	{
 		ItemInfo.EndEditName();
 		GameDelegate.call("EndItemRename", [event.useNewName, event.newName]);
@@ -692,36 +670,21 @@ class CraftingMenu extends MovieClip
 	private function onMouseUp(): Void
 	{
 		if (ItemInfo.bEditNameMode && !ItemInfo.hitTest(_root._xmouse, _root._ymouse)) {
-			OnEndEditItemName({useNewName: false, newName: ""});
+			onEndEditItemName({useNewName: false, newName: ""});
 		}
-	}
-
-	private function onMouseWheel(delta: Number): Void
-	{
-/*		if (CategoryList.currentState == InventoryLists.TWO_PANELS && !ItemList.disableSelection && !ItemList.disableInput) {
-			for (var target: Object = Mouse.getTopMostEntity(); !(target && target != undefined); target = target._parent) {
-				if (target == ItemsListInputCatcher || target == MouseRotationRect) {
-					if (delta == 1) {
-						ItemList.moveSelectionUp();
-					} else if (delta == -1) {
-						ItemList.moveSelectionDown();
-					}
-				}
-			}
-		}*/
 	}
 
 	private function onMouseRotationStart(): Void
 	{
 		GameDelegate.call("StartMouseRotation", []);
-		CategoryList.categoriesList.disableSelection = true;
+		CategoryList.CategoriesList.disableSelection = true;
 		ItemList.disableSelection = true;
 	}
 
 	private function onMouseRotationStop(): Void
 	{
 		GameDelegate.call("StopMouseRotation", []);
-		CategoryList.categoriesList.disableSelection = false;
+		CategoryList.CategoriesList.disableSelection = false;
 		ItemList.disableSelection = false;
 	}
 

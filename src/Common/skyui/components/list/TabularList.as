@@ -60,7 +60,7 @@ class skyui.components.list.TabularList extends ScrollingList
 	
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{
+	{		
 		if (super.handleInput(details, pathToFocus))
 			return true;
 
@@ -98,6 +98,8 @@ class skyui.components.list.TabularList extends ScrollingList
 	private function onLayoutChange(event: Object): Void
 	{
 		entryHeight = _layout.entryHeight;
+
+		header._x = leftBorder;
 		
 		_maxListIndex = Math.floor((_listHeight / entryHeight) + 0.05);
 		

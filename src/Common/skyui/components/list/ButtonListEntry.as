@@ -19,6 +19,7 @@ class skyui.components.list.ButtonListEntry extends BasicListEntry
 	public var activeIndicator: MovieClip;
 	public var selectIndicator: MovieClip;
 	public var textField: TextField;
+	public var icon: MovieClip;
 	
 	
   /* PROPERTIES */
@@ -26,14 +27,16 @@ class skyui.components.list.ButtonListEntry extends BasicListEntry
 	public static var defaultTextColor: Number = 0xffffff;
 	public static var activeTextColor: Number = 0xffffff;
 	public static var selectedTextColor: Number = 0xffffff;
-	public static var disabledTextColor: Number = 0x4c4c4c;
+	public static var disabledTextColor: Number = 0x505050;
 	
 	
   /* PUBLIC FUNCTIONS */
 	
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void
 	{
-		enabled = a_entryObject.enabled;
+		// Not using "enabled" directly, because we still want to be able to receive onMouseX events,
+		// even if we chose not to process them.
+		isEnabled = a_entryObject.enabled;
 		
 		var isSelected = a_entryObject == a_state.list.selectedEntry;
 		var isActive = (a_state.activeEntry != undefined && a_entryObject == a_state.activeEntry);
@@ -62,6 +65,10 @@ class skyui.components.list.ButtonListEntry extends BasicListEntry
 		if (activeIndicator != undefined) {
 			activeIndicator._visible = isActive;
 			activeIndicator._x = textField._x - activeIndicator._width - 5;
+		}
+		
+		if (icon != undefined && a_entryObject.iconLabel != undefined) {
+			icon.gotoAndStop(a_entryObject.iconLabel);
 		}
 	}
 }

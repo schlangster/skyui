@@ -5,6 +5,7 @@ import gfx.events.EventDispatcher;
 import gfx.managers.FocusHandler;
 import gfx.controls.Button;
 import Shared.GlobalFunc;
+import mx.utils.Delegate;
 
 import skyui.components.SearchWidget;
 import skyui.components.TabBar;
@@ -22,6 +23,7 @@ import skyui.util.DialogManager;
 import skyui.util.Debug;
 
 import skyui.defines.Input;
+import skyui.defines.Inventory;
 
 
 class CraftingLists extends MovieClip
@@ -34,6 +36,8 @@ class CraftingLists extends MovieClip
 	static var SHOW_PANEL = 1;
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
+	
+	static var SHORT_LIST_OFFSET = 210;
 
 	
   /* STAGE ELEMENTS */
@@ -54,27 +58,23 @@ class CraftingLists extends MovieClip
 	private var _savedSelectionIndex: Number = -1;
 	
 	private var _searchKey: Number = -1;
-	private var _switchTabKey: Number = -1;
 	private var _sortOrderKey: Number = -1;
 	private var _sortOrderKeyHeld: Boolean = false;
-	
-	private var _bTabbed = false;
-	private var _leftTabText: String;
-	private var _rightTabText: String;
 
 	private var _columnSelectDialog: MovieClip;
 	private var _columnSelectInterval: Number;
 	
-	private var _categoriesData: Array;
+	private var _subtypeName: String;
+	
+	private var _bFocusItemList: Boolean = true;
 	
 
   /* PROPERTIES */
 
 	public var itemList: TabularList;
 
-	public var categoriesList: CategoriesList;
-	
-	public var tabBar: TabBar;
+	// @API
+	public var CategoriesList: IconTabList;
 	
 	public var searchWidget: SearchWidget;
 	
@@ -96,26 +96,6 @@ class CraftingLists extends MovieClip
 
 		_currentState = a_newState;
 	}
-	
-	private var _tabBarIconArt: Array;
-	
-	public function set tabBarIconArt(a_iconArt: Array)
-	{
-		_tabBarIconArt = a_iconArt;
-		
-		if (tabBar)
-			tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
-	}
-	
-	public function get tabBarIconArt(): Array
-	{
-		return _tabBarIconArt;
-	}
-	
-	public function setSubtype(a_name: String): Void
-	{
-		panelContainer.gotoAndStop(a_name);
-	}
 
 
   /* INITIALIZATION */
@@ -124,8 +104,6 @@ class CraftingLists extends MovieClip
 	{
 		super();
 		
-		_categoriesData = [];
-
 		GlobalFunctions.addArrayFunctions();
 
 		EventDispatcher.initialize(this);
@@ -140,48 +118,17 @@ class CraftingLists extends MovieClip
 		_sortFilter = new SortFilter();
 		
 		categoryLabel = panelContainer.categoryLabel;
-		categoriesList = panelContainer.categoriesList;
+		CategoriesList = panelContainer.categoriesList; // Note: Re-assigned later if alchemy
 		itemList = panelContainer.itemList;
 		searchWidget = panelContainer.searchWidget;
 		columnSelectButton = panelContainer.columnSelectButton;
 
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
-	}
-	
-	private function onLoad(): Void
-	{
-		categoriesList.listEnumeration = new BasicEnumeration(categoriesList.entryList);
 
-		var listEnumeration = new FilteredEnumeration(itemList.entryList);
-		listEnumeration.addFilter(_typeFilter);
-		listEnumeration.addFilter(_nameFilter);
-		listEnumeration.addFilter(_sortFilter);
-		itemList.listEnumeration = listEnumeration;
-		// data processors are initialized by the top-level menu since they differ in each case
-		
-		itemList.listState.maxTextLength = 80;
-
-		_typeFilter.addEventListener("filterChange", this, "onFilterChange");
-		_nameFilter.addEventListener("filterChange", this, "onFilterChange");
-		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
-
-		categoriesList.addEventListener("itemPress", this, "onCategoriesItemPress");
-		categoriesList.addEventListener("itemPressAux", this, "onCategoriesItemPress");
-		categoriesList.addEventListener("selectionChange", this, "onCategoriesListSelectionChange");
-
-		itemList.disableInput = false;
-
-		itemList.addEventListener("selectionChange", this, "onItemsListSelectionChange");
-		itemList.addEventListener("sortChange", this, "onSortChange");
-
-		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
-		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
-		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
-		
-		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
-	}
-	
+		// Hide by default, maybe show later
+		panelContainer.effectsList._visible = false;
+	}	
 	
   /* PUBLIC FUNCTIONS */
 
@@ -197,23 +144,93 @@ class CraftingLists extends MovieClip
 	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
 	
-	public function InitExtensions(): Void
+	public function InitExtensions(a_subtypeName: String): Void
 	{
+		_subtypeName = a_subtypeName;
+		
+		// Alchemy uses a different layout
+		if (_subtypeName == "Alchemy") {
+			panelContainer.gotoAndStop("no_categories");
+			
+			// Hide top icon category bar, use effects list instead
+			CategoriesList._visible = false;
+			CategoriesList = panelContainer.effectsList;
+			CategoriesList._visible = true;
+			
+
+			itemList.gotoAndStop("short");
+			itemList.leftBorder = SHORT_LIST_OFFSET;
+			itemList.listHeight = 560;
+
+		// Support for custom categorization
+		} else if (_subtypeName == "ConstructibleObject") {			
+			itemList.addDataProcessor(new CustomConstructDataSetter());
+			
+		// Smithing doesn't need top icon categories
+		} else if (_subtypeName == "Smithing") {			
+			panelContainer.gotoAndStop("no_categories");
+			CategoriesList._visible = false;
+			itemList.listHeight = 560;
+		}
+		
+		var listEnumeration = new FilteredEnumeration(itemList.entryList);
+		listEnumeration.addFilter(_typeFilter);
+		listEnumeration.addFilter(_nameFilter);
+		listEnumeration.addFilter(_sortFilter);
+		itemList.listEnumeration = listEnumeration;
+		
+		_typeFilter.addEventListener("filterChange", this, "onFilterChange");		
+		_nameFilter.addEventListener("filterChange", this, "onFilterChange");
+		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
+		
+		CategoriesList.listEnumeration = new BasicEnumeration(CategoriesList.entryList);
+		
+		itemList.listState.maxTextLength = 80;
+
+		_typeFilter.addEventListener("filterChange", this, "onFilterChange");
+		_nameFilter.addEventListener("filterChange", this, "onFilterChange");
+		_sortFilter.addEventListener("filterChange", this, "onFilterChange");
+
+		CategoriesList.addEventListener("itemPress", this, "onCategoriesItemPress");
+		CategoriesList.addEventListener("itemPressAux", this, "onCategoriesItemPress");
+		CategoriesList.addEventListener("selectionChange", this, "onCategoriesListSelectionChange");
+
+		itemList.disableInput = false;
+
+		itemList.addEventListener("selectionChange", this, "onItemsListSelectionChange");
+		itemList.addEventListener("sortChange", this, "onSortChange");
+		itemList.addEventListener("itemPress", this, "onItemPress");
+
+		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
+		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
+		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
+		
+		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
+		
+		itemList.onInvalidate = Delegate.create(this, onItemListInvalidate);		
+
+		CategoriesList.onUnsuspend = function()
+		{
+			// this == CategoriesList
+			this.onItemPress(0, 0); // Select first category
+			delete this.onUnsuspend;
+		};
+		
 		// Delay updates until config is ready
-		categoriesList.suspended = true;
+		CategoriesList.suspended = true;
 		itemList.suspended = true;
 	}
 	
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
 		// Release itemlist for updating
-		categoriesList.suspended = false;
+		CategoriesList.suspended = false;
 		itemList.suspended = false;
 		
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
-		dispatchEvent({type:"categoryChange", index: categoriesList.selectedIndex});
+		dispatchEvent({type:"categoryChange", index: CategoriesList.selectedIndex});
 
 		if (a_bPlayBladeSound != false)
 			GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
@@ -223,22 +240,21 @@ class CraftingLists extends MovieClip
 	{
 		_currentState = TRANSITIONING_TO_HIDE_PANEL;
 		gotoAndPlay("PanelHide");
+		
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
-	}
-	
-	public function enableTabBar(): Void
-	{
-		_bTabbed = true;
-		panelContainer.gotoAndPlay("tabbed");
-		itemList.listHeight = 480;
 	}
 
 	public function setPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		_platform = a_platform;
 
-		categoriesList.setPlatform(a_platform,a_bPS3Switch);
+		CategoriesList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);
+	}
+	
+	public function setPartitionedFilterMode(a_bPartitioned: Boolean): Void
+	{
+		_typeFilter.setPartitionedFilterMode(a_bPartitioned);
 	}
 
 	// @GFx
@@ -292,19 +308,41 @@ class CraftingLists extends MovieClip
 				searchWidget.startInput();
 				return true;
 			}
-			
-			// Toggle tab (default ALT)
-			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {
-				tabBar.tabToggle();
-				return true;
-			}
 		}
 		
-		if (categoriesList.handleInput(details, pathToFocus))
-			return true;
+		if (_subtypeName == "Alchemy") {
+			if (handleAlchemyNavigation(details, pathToFocus))
+				return true;
+		} else {
+			if (CategoriesList.handleInput(details, pathToFocus))
+				return true;
+		}
 		
 		var nextClip = pathToFocus.shift();
 		return nextClip.handleInput(details, pathToFocus);
+	}
+
+	private function handleAlchemyNavigation(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (details.navEquivalent == NavigationCode.LEFT) {
+				_bFocusItemList = false;
+				return true;
+				
+			} else if (details.navEquivalent == NavigationCode.RIGHT) {
+				_bFocusItemList = true;
+				return true;
+			}
+			
+			// Ok thats a bit weird but whatever...:
+			// Itemlist always has focus, but if this flag is false, categories list gets to run first.
+			// Since both use the same nav scheme, category list wins.
+			if (!_bFocusItemList)
+				if (CategoriesList.handleInput(details, pathToFocus))
+					return true;
+		}
+		
+		return false;
 	}
 
 	public function getContentBounds():Array
@@ -315,20 +353,22 @@ class CraftingLists extends MovieClip
 	
 	public function showItemsList(): Void
 	{
-		_currCategoryIndex = categoriesList.selectedIndex;
+		_currCategoryIndex = CategoriesList.selectedIndex;
 		
-		categoryLabel.textField.SetText(categoriesList.selectedEntry.text.toUpperCase());
+		categoryLabel.textField.SetText(CategoriesList.selectedEntry.text.toUpperCase());
 
 		// Start with no selection
 		itemList.selectedIndex = -1;
 		itemList.scrollPosition = 0;
 
-		if (categoriesList.selectedEntry != undefined) {
+		if (CategoriesList.selectedEntry != undefined) {
+			var catFlag = CategoriesList.selectedEntry.flag;
+			
 			// Set filter type
-			_typeFilter.changeFilterFlag(categoriesList.selectedEntry.flag);
+			_typeFilter.changeFilterFlag(catFlag);
 			
 			// Not set yet before the config is loaded
-			itemList.layout.changeFilterFlag(categoriesList.selectedEntry.flag);
+			itemList.layout.changeFilterFlag(catFlag);
 		}
 		
 		itemList.requestUpdate();
@@ -343,87 +383,77 @@ class CraftingLists extends MovieClip
 	// Called to initially set the category list.
 	// @API 
 	public function SetCategoriesList(): Void
-	{
-		skse.Log("SetCategoriesList");
-
-		skse.Log("Category count: " + arguments.length);
-		
+	{		
 		var textOffset = 0;
 		var flagOffset = 1;
 		var bDontHideOffset = 2;
 		var len = 3;
 
-		categoriesList.clearList();
+		CategoriesList.clearList();
 
 		for (var i=0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
-			_categoriesData.push(entry);
 			
-			categoriesList.entryList.push(entry);
-			Debug.log(entry.text + " : " + entry.flag);
-
+			if (entry.flag == 0) {
+				entry.divider = true;
+			}
+			
+			entry.enabled = false;
+			
+//			Debug.dump("category" + i, entry);
+			
+			CategoriesList.entryList.push(entry);
 		}
-
-		categoriesList.selectedIndex = 0;
-		categoriesList.InvalidateData();
-	}
-	
-	function EntryMatchesFilter(a_entry: Object, a_flag: Boolean): Boolean
-	{
-		return a_entry != undefined &&
-			(a_entry.filterFlag == undefined || (a_entry.filterFlag & a_flag) != 0);
-	}
-
-	function EntryMatchesPartitionedFilter(a_entry: Object, a_flag: Boolean): Boolean
-	{
-		if (a_entry == undefined)
-			return false;
-			
-		if (a_flag == 0xFFFFFFFF)
-			return true;
-			
-		var flag: Number = a_entry.filterFlag;
-		var byte0: Number = (flag & 0x000000FF);
-		var byte1: Number = (flag & 0x0000FF00) >>> 8;
-		var byte2: Number = (flag & 0x00FF0000) >>> 16;
-		var byte3: Number = (flag & 0xFF000000) >>> 24;
 		
-		return byte0 == a_flag || byte1 == a_flag || byte2 == a_flag || byte3 == a_flag;
+		// We have enough information to init the art now.
+		// But the list has not been invalidated, so no clips have been loaded yet.
+		preprocessCategoriesList();
+
+		CategoriesList.selectedIndex = 0;
+		CategoriesList.InvalidateData();
 	}
 
 	// Called whenever the underlying entryList data is updated (using an item, equipping etc.)
 	// @API
 	public function InvalidateListData(): Void
-	{		
-		var flag = categoriesList.selectedEntry.flag;
-
-		for (var i = 0; i < categoriesList.entryList.length; i++)
-			categoriesList.entryList[i].filterFlag = categoriesList.entryList[i].bDontHide ? 1 : 0;
-
+	{
 		itemList.InvalidateData();
-
-		// Set filter flag = 1 for non-empty categories with bDontHideOffset=false
-		for (var i = 0; i < itemList.entryList.length; i++) {
-			
-			
-			Debug.dump("entry " + i, itemList.entryList[i]);
-			
-			for (var j = 0; j < categoriesList.entryList.length; ++j) {
-				if (categoriesList.entryList[j].filterFlag != 0)
-					continue;
-
-				if (itemList.entryList[i].filterFlag & categoriesList.entryList[j].flag)
-					categoriesList.entryList[j].filterFlag = 1;
+	}
+	
+	
+  /* PRIVATE FUNCTIONS */
+  
+  	private function onHideCategoriesList(event: Object): Void
+	{
+		itemList.listHeight = 579;
+	}
+  
+  	private function onConfigLoad(event: Object): Void
+	{
+		var config = event.config;
+		_searchKey = config["Input"].controls.pc.search;
+		
+		if (_platform != 0) {
+			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
+		}
+	}
+	
+ 	private function onItemListInvalidate(): Void
+	{
+		// Set enabled == false for empty categories
+		if (_subtypeName != "Alchemy") {
+			for (var i=0; i<CategoriesList.entryList.length; i++) {
+				for (var j=0; j<itemList.entryList.length; j++) {
+					if (_typeFilter.isMatch(itemList.entryList[j], CategoriesList.entryList[i].flag)) {
+						CategoriesList.entryList[i].enabled = true;
+						break;
+					}
+				}
 			}
 		}
 
-		categoriesList.UpdateList();
-
-		if (flag != categoriesList.selectedEntry.flag) {
-			// Triggers an update if filter flag changed
-			_typeFilter.itemFilter = categoriesList.selectedEntry.flag;
-			dispatchEvent({type:"categoryChange", index:categoriesList.selectedIndex});
-		}
+		// Grey out any categories that are not enabled
+		CategoriesList.UpdateList();
 		
 		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
 		if (itemList.selectedIndex == -1)
@@ -432,19 +462,67 @@ class CraftingLists extends MovieClip
 			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 	}
 	
+	private function preprocessCategoriesList(): Void
+	{		
+		// EnchantConstruct - Set icon art, but leave default categories as they are.
+		if (_subtypeName == "EnchantConstruct") {
+			CategoriesList.iconArt = [ "ench_disentchant", "separator", "ench_item", "ench_effect", "ench_soul" ];
+
+		// Smithing - Set icon art, but leave default categories as they are.
+		} else if (_subtypeName == "Smithing") {
+			CategoriesList.iconArt = [ "smithing" ];
+			
+		// ConstructibleObject - Use a custom categorization scheme.
+		} else if (_subtypeName == "ConstructibleObject") {
+			CategoriesList.iconArt = [ "construct_all", "weapon", "ammo", "armor", "jewelry", "food", "misc" ];
+			
+			replaceConstructObjectCategories();
+
+		// Alchemy - Use a custom categorization scheme.
+		} else if (_subtypeName == "Alchemy") {			
+			fixupAlchemyCategories();
+		}
+	}	
 	
-  /* PRIVATE FUNCTIONS */
-  
-  	private function onConfigLoad(event: Object): Void
+	private function replaceConstructObjectCategories(): Void
 	{
-		var config = event.config;
-		_searchKey = config["Input"].controls.pc.search;
+		CategoriesList.clearList();
 		
-		if (_platform == 0)
-			_switchTabKey = config["Input"].controls.pc.switchTab;
-		else {
-			_switchTabKey = config["Input"].controls.gamepad.switchTab;
-			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
+		CategoriesList.entryList.push(
+			{text: "$ALL", flag: Inventory.FILTERFLAG_CUST_CRAFT_ALL, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		CategoriesList.entryList.push(
+			{text: "$WEAPONS", flag: Inventory.FILTERFLAG_CUST_CRAFT_WEAPONS, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		CategoriesList.entryList.push(
+			{text: "$AMMO", flag: Inventory.FILTERFLAG_CUST_CRAFT_AMMO, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		CategoriesList.entryList.push(
+			{text: Translator.translate("$Armor"), flag: Inventory.FILTERFLAG_CUST_CRAFT_ARMOR, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		CategoriesList.entryList.push(
+			{text: Translator.translate("$Jewelry"), flag: Inventory.FILTERFLAG_CUST_CRAFT_JEWELRY, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		CategoriesList.entryList.push(
+			{text: Translator.translate("$Food"), flag: Inventory.FILTERFLAG_CUST_CRAFT_FOOD, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+		CategoriesList.entryList.push(
+			{text: Translator.translate("$Misc"), flag: Inventory.FILTERFLAG_CUST_CRAFT_MISC, bDontHide: 1, savedItemIndex: 0, filterFlag: 1, enabled: false});
+	}
+	
+	private function fixupAlchemyCategories(): Void
+	{
+		// Ingredients category is always enabled
+		CategoriesList.entryList[0].enabled = true;
+		CategoriesList.entryList[0].iconLabel = "ingredients";
+		
+		// Old flag is type. New flag is index (was flag before skse ext.)
+		for (var i=1; i<CategoriesList.entryList.length; i++) {
+			var cat = CategoriesList.entryList[i];
+			
+			if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_GOOD)
+				cat.iconLabel = "beneficial";
+			else if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_BAD)
+				cat.iconLabel = "harmful";
+			else if (cat.flag & Inventory.FILTERFLAG_CUST_ALCH_OTHER)
+				cat.iconLabel = "other";
+
+			// Thats the index that was previously used as flag and sent by the game (without SKSE).
+			cat.flag = i;
 		}
 	}
   
@@ -468,7 +546,7 @@ class CraftingLists extends MovieClip
 		_savedSelectionIndex = itemList.selectedIndex;
 		itemList.selectedIndex = -1;
 		
-		categoriesList.disableSelection = categoriesList.disableInput = true;
+		CategoriesList.disableSelection = CategoriesList.disableInput = true;
 		itemList.disableSelection = itemList.disableInput = true;
 		searchWidget.isDisabled = true;
 			
@@ -478,7 +556,7 @@ class CraftingLists extends MovieClip
 	
 	private function onColumnSelectDialogClosed(event: Object): Void
 	{
-		categoriesList.disableSelection = categoriesList.disableInput = false;
+		CategoriesList.disableSelection = CategoriesList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
 		searchWidget.isDisabled = false;
 		
@@ -489,9 +567,17 @@ class CraftingLists extends MovieClip
 	{
 		itemList.layout.refresh();
 	}
+	
+	private function onItemPress(): Void
+	{
+		_bFocusItemList = true;
+		// CraftingMenu has a handler that does the actual work.
+		// This is just for focus.
+	}
 
 	private function onCategoriesItemPress(): Void
 	{
+		_bFocusItemList = false;
 		showItemsList();
 	}
 
@@ -518,7 +604,7 @@ class CraftingLists extends MovieClip
 
 	private function onSearchInputStart(event: Object): Void
 	{
-		categoriesList.disableSelection = categoriesList.disableInput = true;
+		CategoriesList.disableSelection = CategoriesList.disableInput = true;
 		itemList.disableSelection = itemList.disableInput = true
 		_nameFilter.filterText = "";
 	}
@@ -530,7 +616,7 @@ class CraftingLists extends MovieClip
 
 	private function onSearchInputEnd(event: Object)
 	{
-		categoriesList.disableSelection = categoriesList.disableInput = false;
+		CategoriesList.disableSelection = CategoriesList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
 		_nameFilter.filterText = event.data;
 	}

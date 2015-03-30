@@ -12,6 +12,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
   /* PROPERTIES */
 	
 	public var itemIndex: Number;
+	public var isEnabled: Boolean = true;
 	
 	
   /* PUBLIC FUNCTIONS */
@@ -21,7 +22,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 	{
 		var list = this._parent;
 		
-		if (itemIndex != undefined && enabled)
+		if (itemIndex != undefined && (isEnabled || list.canSelectDisabled))
 			list.onItemRollOver(itemIndex);
 	}
 		
@@ -30,7 +31,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 	{
 		var list = this._parent;
 		
-		if (itemIndex != undefined && enabled)
+		if (itemIndex != undefined && (isEnabled || list.canSelectDisabled))
 			list.onItemRollOut(itemIndex);
 	}
 		
@@ -39,7 +40,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 	{
 		var list = this._parent;
 			
-		if (itemIndex != undefined && enabled)
+		if (itemIndex != undefined && (isEnabled || list.canSelectDisabled))
 			list.onItemPress(itemIndex, a_keyboardOrMouse);
 	}
 		
@@ -48,7 +49,7 @@ class skyui.components.list.BasicListEntry extends MovieClip
 	{
 		var list = this._parent;
 			
-		if (itemIndex != undefined && enabled)
+		if (itemIndex != undefined && (isEnabled || list.canSelectDisabled))
 			list.onItemPressAux(itemIndex, a_keyboardOrMouse, a_buttonIndex);
 	}
 	

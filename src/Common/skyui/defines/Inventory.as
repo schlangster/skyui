@@ -67,4 +67,24 @@
 	public static var FILTERFLAG_ENCHANTING_DISENCHANT: Number	= 0x0000000A; //10;
 	public static var FILTERFLAG_ENCHANTING_ENCHANTMENT: Number	= 0x00000030; //48;
 	public static var FILTERFLAG_ENCHANTING_SOULGEM: Number		= 0x00000040; //64;
+	
+	// incomplete, but others are irrelevant for now
+	public static var FILTERFLAG_CRAFT_JEWELRY: Number		 	= 0x00010000;
+	public static var FILTERFLAG_CRAFT_FOOD: Number				= 0x00020000;
+	public static var FILTERFLAG_CRAFT_MISC: Number				= 0x40000000;
+	
+	// Filter flags for custom categories in ConstructObject crafting
+	public static var FILTERFLAG_CUST_CRAFT_ALL: Number			= 0x0000003F;
+	public static var FILTERFLAG_CUST_CRAFT_WEAPONS: Number		= 0x00000001;
+	public static var FILTERFLAG_CUST_CRAFT_AMMO: Number		= 0x00000002;
+	public static var FILTERFLAG_CUST_CRAFT_ARMOR: Number		= 0x00000004;
+	public static var FILTERFLAG_CUST_CRAFT_JEWELRY: Number		= 0x00000008;
+	public static var FILTERFLAG_CUST_CRAFT_FOOD: Number		= 0x00000010;
+	public static var FILTERFLAG_CUST_CRAFT_MISC: Number		= 0x00000020;
+	
+	// Filter flags for custom categories in ConstructObject alchemy
+	public static var FILTERFLAG_CUST_ALCH_INGREDIENTS: Number	= 0x00000001;
+	public static var FILTERFLAG_CUST_ALCH_GOOD: Number			= 0x00000002;
+	public static var FILTERFLAG_CUST_ALCH_BAD: Number			= 0x00000004;
+	public static var FILTERFLAG_CUST_ALCH_OTHER: Number		= 0x00000008;
 }
