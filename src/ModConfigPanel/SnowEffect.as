@@ -50,7 +50,7 @@ class SnowEffect extends ParticleEmitter
 				return;
 			}
 			if (_particles.length % 100 == 0 && _particles.length < maxParticles)
-				particleScaleFactor += 0.33; // Increase size
+				particleScaleFactor += 0.15; // Increase size
 			if (_particles.length % 20 == 0 && _framesPerSpawn > 1)
 				_framesPerSpawn--; // Speed up
 			_nextSpawn += _framesPerSpawn;
@@ -85,7 +85,7 @@ class SnowEffect extends ParticleEmitter
 
 		// Quad.easeInOut
 		Tween.LinearTween(a_particle, "_x", a_particle._x, a_particle._x+(Math.random()*80-40+_windSpeed)*(a_particle._xscale/100), duration, onCompleteFn);
-		Tween.LinearTween(a_particle, "_rotation", a_particle._rotation, Math.random()*particleRotationFactor*900, duration, null);
+		Tween.LinearTween(a_particle, "_rotation", a_particle._rotation, Math.random()*particleRotationFactor*600, duration, null);
 	}
 
 	private function yLoop(a_particle: MovieClip): Void {
@@ -103,6 +103,6 @@ class SnowEffect extends ParticleEmitter
 		var duration: Number = Math.random()*2+1;
 
 		// Linear.easeInOut
-		Tween.LinearTween(a_particle, "_y", a_particle._y, a_particle._y+(Math.random()*60+70)*(a_particle._xscale/100)*3, duration, onCompleteFn);
+		Tween.LinearTween(a_particle, "_y", a_particle._y, a_particle._y+(Math.random()*7+30)*(a_particle._xscale/100)*3, duration, onCompleteFn);
 	}
 }
