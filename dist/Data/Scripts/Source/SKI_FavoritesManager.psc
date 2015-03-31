@@ -9,9 +9,11 @@ import Math
 ; 1:	- Initial version
 ;
 ; 2:	- Added check for vampire lord
+;
+; 3:	- Less eagerly clearing of invalid entries
 
 int function GetVersion()
-	return 2
+	return 3
 endFunction
 
 
@@ -138,6 +140,11 @@ int[]				_groupHotkeys
 
 Race				_vampireLordRace
 
+; -- Version 3 --
+
+bool[]				_itemInvalidFlags1
+bool[]				_itemInvalidFlags2
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -206,18 +213,40 @@ event OnVersionUpdate(int a_version)
 
 		_vampireLordRace	= Game.GetFormFromFile(0x0000283A, "Dawnguard.esm") as Race
 	endIf
+
+	; Version 3
+	if (a_version >= 3 && CurrentVersion < 3)
+		Debug.Trace(self + ": Updating to script version 3")
+
+		_itemInvalidFlags1 = new bool[128]
+		_itemInvalidFlags2 = new bool[128]
+	endIf
+
 endEvent
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
 
 event OnMenuOpen(string a_menuName)
+
+	int i = 0
+	while (i < 128)
+		_itemInvalidFlags1[i] = false
+		i += 1
+	endWhile
+
+	i = 0
+	while (i < 128)
+		_itemInvalidFlags2[i] = false
+		i += 1
+	endWhile
+
 	InitControls()
 	InitMenuGroupData()
 endEvent
 
 event OnFoundInvalidItem(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
-	RemoveInvalidItem(a_strArg as int,true)
+	InvalidateItem(a_strArg as int,true)
 endEvent
 
 event OnGroupAdd(string a_eventName, string a_strArg, float a_numArg, Form a_sender)
@@ -503,14 +532,17 @@ bool function GroupAdd(int a_groupIndex, int a_itemId, Form a_item)
 	; Select the target set of arrays, adjust offset
 	Form[] items
 	int[] itemIds
+	bool[] itemInvalidFlags
 
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
 		itemIds = _itemIds2
+		itemInvalidFlags = _itemInvalidFlags2
 	else
 		items = _items1
 		itemIds = _itemIds1
+		itemInvalidFlags = _itemInvalidFlags1
 	endIf
 
 	; Prevent the same itemId being added to a group twice
@@ -519,7 +551,7 @@ bool function GroupAdd(int a_groupIndex, int a_itemId, Form a_item)
 	endIf
 	
 	; Pick next free slot
-	int index = FindFreeIndex(itemIds, offset)
+	int index = FindFreeIndex(itemIds, itemInvalidFlags, offset)
 	
 	; No more space in group?
 	if (index == -1)
@@ -529,6 +561,7 @@ bool function GroupAdd(int a_groupIndex, int a_itemId, Form a_item)
 	; Store received data
 	items[index] = a_item
 	itemIds[index] = a_itemId
+	itemInvalidFlags[index] = false
 
 	; If there's no icon item set yet, use this one
 	if (_groupIconItems[a_groupIndex] == none)
@@ -545,14 +578,17 @@ bool function GroupRemove(int a_groupIndex, int a_itemId)
 	; Select the target set of arrays, adjust offset
 	Form[] items
 	int[] itemIds
+	bool[] itemInvalidFlags
 
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
 		itemIds = _itemIds2
+		itemInvalidFlags = _itemInvalidFlags2
 	else
 		items = _items1
 		itemIds = _itemIds1
+		itemInvalidFlags = _itemInvalidFlags1
 	endIf
 
 	int i = offset
@@ -561,6 +597,7 @@ bool function GroupRemove(int a_groupIndex, int a_itemId)
 		if (itemIds[i] == a_itemId)
 			items[i] = none
 			itemIds[i] = 0
+			itemInvalidFlags[i] = false
 			i = n
 		else
 			i += 1
@@ -590,14 +627,17 @@ function GroupUse(int a_groupIndex)
 	; Select the target set of arrays, adjust offset
 	Form[] items
 	int[] itemIds
+	bool[] itemInvalidFlags
 
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
 		itemIds = _itemIds2
+		itemInvalidFlags = _itemInvalidFlags2
 	else
 		items = _items1
 		itemIds = _itemIds1
+		itemInvalidFlags = _itemInvalidFlags1
 	endIf
 
 	; Reset state
@@ -630,7 +670,7 @@ function GroupUse(int a_groupIndex)
 	int offHandItemId = _groupOffHandItemIds[a_groupIndex]
 	if (offHandItem)
 		int itemType = offHandItem.GetType()
-		if (ValidateItem(offHandItem, itemType))
+		if (IsItemValid(offHandItem, itemType))
 			ProcessItem(offHandItem, itemType, false, true, offHandItemId)
 		endIf
 	endIf
@@ -639,7 +679,7 @@ function GroupUse(int a_groupIndex)
 	int mainHandItemId = _groupMainHandItemIds[a_groupIndex]
 	if (mainHandItem)
 		int itemType = mainHandItem.GetType()
-		if (ValidateItem(mainHandItem, itemType))
+		if (IsItemValid(mainHandItem, itemType))
 			ProcessItem(mainHandItem, itemType, false, false, mainHandItemId)
 		endIf
 	endIf
@@ -654,7 +694,7 @@ function GroupUse(int a_groupIndex)
 		if (item && item != mainHandItem && item != offHandItem)
 			int itemType = item.GetType()
 
-			if (! ValidateItem(item, itemType))
+			if (! IsItemValid(item, itemType))
 				invalidItemIds[invalidIdx] = itemId
 				invalidIdx += 1
 			elseIf (! ProcessItem(item, itemType, a_itemId = itemId))
@@ -695,7 +735,7 @@ function GroupUse(int a_groupIndex)
 
 	i = 0
 	while (i<invalidIdx)
-		RemoveInvalidItem(invalidItemIds[i])
+		InvalidateItem(invalidItemIds[i])
 		i += 1
 	endWhile
 endFunction
@@ -717,7 +757,7 @@ function UnequipHand(int a_hand)
 	endIf
 endFunction
 
-bool function ValidateItem(Form a_item, int a_itemType)
+bool function IsItemValid(Form a_item, int a_itemType)
 	; Player has removed this item from Favorites, so don't use it and queue it for removal
 	if (! Game.IsObjectFavorited(a_item))
 		return false
@@ -919,20 +959,18 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 	return true
 endFunction
 
-function RemoveInvalidItem(int a_itemId, bool redrawIcon = false)
+function InvalidateItem(int a_itemId, bool redrawIcon = false)
 	int index
 
 	; GroupData
 	index = _itemIds1.Find(a_itemId)
 	if (index != -1)
-		_items1[index] = none
-		_itemIds1[index] = 0
+		_itemInvalidFlags1[index] = true
 	endIf
 
 	index = _itemIds2.Find(a_itemId)
 	if (index != -1)
-		_items2[index] = none
-		_itemIds2[index] = 0
+		_itemInvalidFlags2[index] = true
 	endIf
 
 	; Main hand
@@ -959,12 +997,24 @@ function RemoveInvalidItem(int a_itemId, bool redrawIcon = false)
 	endIf
 endFunction
 
-int function FindFreeIndex(int[] a_itemIds, int offset)
+int function FindFreeIndex(int[] a_itemIds, bool[] a_itemInvalidFlags, int offset)
 	int i = a_itemIds.Find(0,offset)
 	
+	; First try to find an entry that is 0
 	if (i >= offset && i < offset + 32)
 		return i
 	endIf
+
+	; Failed. Now try to claim an entry flagged as invalid.
+	i = offset
+	int n = offset + 32
+	while (i < n)
+		if (a_itemInvalidFlags[i])
+			return i
+		endIf
+
+		i += 1
+	endWhile
 	
 	return -1
 endFunction
@@ -987,21 +1037,25 @@ function ReplaceGroupIcon(int a_groupIndex)
 	; Select the target set of arrays, adjust offset
 	Form[] items
 	int[] itemIds
+	bool[] itemInvalidFlags
 
 	if (offset >= 128)
 		offset -= 128
 		items = _items2
 		itemIds = _itemIds2
+		itemInvalidFlags = _itemInvalidFlags2
 	else
 		items = _items1
 		itemIds = _itemIds1
+		itemInvalidFlags = _itemInvalidFlags1
 	endIf
 
 	int i = offset
 	int n = offset+32
 
+	; Use icon of first found item
 	while (i < n)
-		if (items[i] != none)
+		if (items[i] != none && !itemInvalidFlags[i])
 			_groupIconItems[a_groupIndex] = items[i]
 			_groupIconItemIds[a_groupIndex] = itemIds[i]
 			return
