@@ -1,0 +1,3 @@
+﻿class CraftingMenu extends MovieClip
+{
+}
