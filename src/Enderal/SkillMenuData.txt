@@ -1,0 +1,42 @@
+; MAIN -------------------------------------------------------
+
+skillMenu.columnCount = 3
+skillMenu.classes = <myClass1, myClass2, myClass3, myClass4>
+
+; CLASSES -------------------------------------------------------
+
+classes.myClass1.name = '$My Class 1'
+classes.myClass1.description = '$My Class 1 Description'
+classes.myClass1.iconLabel = 'my_class_1'
+classes.myClass1.rootSkill = mySkill1
+
+classes.myClass2.name = '$My Class 2'
+classes.myClass2.description = '$My Class 2 Description'
+classes.myClass2.iconLabel = 'my_class_2'
+classes.myClass2.rootSkill = mySkill1
+
+classes.myClass3.name = '$My Class 3'
+classes.myClass3.description = '$My Class 3 Description'
+classes.myClass3.iconLabel = 'my_class_1'
+classes.myClass3.rootSkill = mySkill1
+
+classes.myClass4.name = '$My Class 4'
+classes.myClass4.description = '$My Class 4 Description'
+classes.myClass4.iconLabel = 'my_class_2'
+classes.myClass4.rootSkill = mySkill1
+
+; SKILLS -------------------------------------------------------
+
+skills.mySkill1.name = '$My Skill 1'
+skills.mySkill1.description = '$My Skill 1 Description'
+skills.mySkill1.iconLabel = 'my_skill_1'
+skills.mySkill1.children = <mySkill2>
+
+skills.mySkill2.name = '$My Skill 2'
+skills.mySkill2.description = '$My Skill 2 Description'
+skills.mySkill2.iconLabel = 'my_skill_2'
+skills.mySkill1.children = <mySkill3>
+
+skills.mySkill3.name = '$My Skill 3'
+skills.mySkill3.description = '$My Skill 3 Description'
+skills.mySkill3.iconLabel = 'my_skill_3'
