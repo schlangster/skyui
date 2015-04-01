@@ -7,12 +7,7 @@ import skyui.util.GlobalFunctions;
 
 
 class DataLoader
-{	
-  /* PRIVATE VARIABLES */
-	
-	private var _config: Object;
-	
-	
+{		
   /* INITIALIATZION */
   
 	public function DataLoader()
