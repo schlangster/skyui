@@ -9,6 +9,7 @@ string property		MAGIC_MENU		= "MagicMenu" autoReadonly
 string property		CONTAINER_MENU	= "ContainerMenu" autoReadonly
 string property		BARTER_MENU		= "BarterMenu" autoReadonly
 string property		GIFT_MENU		= "GiftMenu" autoReadonly
+string property		CRAFTING_MENU	= "Crafting Menu" autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -43,6 +44,7 @@ event OnGameReload()
 	RegisterForMenu(CONTAINER_MENU)
 	RegisterForMenu(BARTER_MENU)
 	RegisterForMenu(GIFT_MENU)
+	RegisterForMenu(CRAFTING_MENU)
 	RegisterForModEvent("SKICO_setConfigOverride", "OnSetConfigOverride")
 endEvent
 

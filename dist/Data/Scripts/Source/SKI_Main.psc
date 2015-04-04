@@ -11,6 +11,7 @@ string property		GIFT_MENU		= "GiftMenu" autoReadonly
 string property		JOURNAL_MENU	= "Journal Menu" autoReadonly
 string property		MAP_MENU		= "MapMenu" autoReadonly
 string property		FAVORITES_MENU	= "FavoritesMenu" autoReadonly
+string property		CRAFTING_MENU	= "Crafting Menu" autoReadonly
 
 int property		ERR_SKSE_MISSING		= 1 autoReadonly
 int property		ERR_SKSE_VERSION_RT		= 2 autoReadonly
@@ -18,6 +19,7 @@ int property		ERR_SKSE_VERSION_SCPT	= 3 autoReadonly
 int property		ERR_INI_PAPYRUS			= 4 autoReadonly
 int property		ERR_SWF_INVALID			= 5 autoReadonly
 int property		ERR_SWF_VERSION			= 6 autoReadonly
+int property		ERR_SKSE_BROKEN			= 7 autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -29,6 +31,7 @@ bool _containerMenuCheckEnabled		= true
 bool _giftMenuCheckEnabled			= true
 bool _mapMenuCheckEnabled			= true
 bool _favoritesMenuCheckEnabled		= true
+bool _craftingMenuCheckEnabled		= true
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
@@ -36,8 +39,8 @@ bool _favoritesMenuCheckEnabled		= true
 int property		MinSKSERelease	= 44		autoReadonly
 string property		MinSKSEVersion	= "1.6.16"	autoReadonly
 
-int property		ReqSWFRelease	= 16		autoReadonly
-string property		ReqSWFVersion	= "4.1"		autoReadonly
+int property		ReqSWFRelease	= 17		autoReadonly
+string property		ReqSWFVersion	= "5.0"		autoReadonly
 
 bool property		ErrorDetected	= false auto
 
@@ -147,6 +150,21 @@ bool property FavoritesMenuCheckEnabled
 	endFunction
 endProperty
 
+bool property CraftingMenuCheckEnabled
+	bool function get()
+		return _craftingMenuCheckEnabled
+	endFunction
+
+	function set(bool a_val)
+		_craftingMenuCheckEnabled = a_val
+		if (a_val)
+			RegisterForMenu(CRAFTING_MENU)
+		else
+			UnregisterForMenu(CRAFTING_MENU)
+		endIf
+	endFunction
+endProperty
+
 
 ; INITIALIZATION ----------------------------------------------------------------------------------
 
@@ -163,13 +181,16 @@ event OnGameReload()
 			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSE has been updated, then install the new version.")
 		return
 
+	elseIf (GetType() == 0)
+		Error(ERR_SKSE_BROKEN, "The SKSE scripts have been overwritten or are not properly loaded.\nReinstalling SKSE might fix this.")
+		return
+
 	elseIf (SKSE.GetVersionRelease() < MinSKSERelease)
 		Error(ERR_SKSE_VERSION_RT, "SKSE is outdated.\nSkyUI will not work correctly!\n" \
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
 
-	; Could also check for != SKSE.GetVersionRelease(), but this should be strict enough
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
 		Error(ERR_SKSE_VERSION_SCPT, "SKSE scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
 		return
@@ -207,6 +228,10 @@ event OnGameReload()
 
 	if (FavoritesMenuCheckEnabled)
 		RegisterForMenu(FAVORITES_MENU)
+	endIf
+
+	if (CraftingMenuCheckEnabled)
+		RegisterForMenu(CRAFTING_MENU)
 	endIf
 
 	RegisterForMenu(JOURNAL_MENU)
@@ -262,6 +287,11 @@ event OnMenuOpen(string a_menuName)
 		if (CheckMenuVersion("favoritesmenu.swf", a_menuName, "_global.FavoritesMenu"))
 			UnregisterForMenu(a_menuName)
 		endIf
+
+	elseIf (a_menuName == CRAFTING_MENU)
+		if (CheckMenuVersion("craftingmenu.swf", a_menuName, "_global.CraftingMenu"))
+			UnregisterForMenu(a_menuName)
+		endIf
 	endIf
 endEvent
 
@@ -269,7 +299,7 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 function Error(int a_errId, string a_msg)
-	Debug.MessageBox("SKYUI ERROR CODE " + a_errId + "\n\n" + a_msg + "\n\nFor help, see the SkyUI mod description.")
+	Debug.MessageBox("SKYUI ERROR CODE " + a_errId + "\n\n" + a_msg + "\n\nFor more help, visit the SkyUI download site.")
 	ErrorDetected = true
 endFunction
 
