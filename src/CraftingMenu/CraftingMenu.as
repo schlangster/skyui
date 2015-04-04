@@ -253,8 +253,8 @@ class CraftingMenu extends MovieClip
 			navPanel.addButton({text: ButtonText[CraftingMenu.AUX_BUTTON], controls: Input.YButton});
 		}
 		
-		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
-		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
+//		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
+//		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
 		
 		navPanel.updateButtons(true);
 	}
