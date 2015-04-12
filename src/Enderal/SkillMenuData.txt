@@ -30,13 +30,21 @@ classes.myClass4.rootSkill = mySkill1
 skills.mySkill1.name = '$My Skill 1'
 skills.mySkill1.description = '$My Skill 1 Description'
 skills.mySkill1.iconLabel = 'my_skill_1'
-skills.mySkill1.children = <mySkill2>
+skills.mySkill1.treeLevel = 0
+skills.mySkill1.children = <mySkill2, mySkill3>
 
 skills.mySkill2.name = '$My Skill 2'
 skills.mySkill2.description = '$My Skill 2 Description'
 skills.mySkill2.iconLabel = 'my_skill_2'
-skills.mySkill1.children = <mySkill3>
+skills.mySkill2.treeLevel = 1
+skills.mySkill2.children = <mySkill4>
 
 skills.mySkill3.name = '$My Skill 3'
 skills.mySkill3.description = '$My Skill 3 Description'
-skills.mySkill3.iconLabel = 'my_skill_3'
+skills.mySkill3.iconLabel = 'my_skill_4'
+skills.mySkill3.treeLevel = 1
+
+skills.mySkill4.name = '$My Skill 4'
+skills.mySkill4.description = '$My Skill 3 Description'
+skills.mySkill4.iconLabel = 'my_skill_1'
+skills.mySkill4.treeLevel = 2

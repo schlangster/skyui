@@ -107,8 +107,8 @@ class DataLoader
 		} else if (a_str.toLowerCase() == "false") {
 			return false;
 
-		// Undefined?
-		} else if (a_str.toLowerCase() == "undefined") {
+		// Null?
+		} else if (a_str.toLowerCase() == "null") {
 			return undefined;
 			
 		// Explicit String?

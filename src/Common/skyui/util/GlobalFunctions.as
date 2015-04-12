@@ -233,4 +233,18 @@ class skyui.util.GlobalFunctions
 		a_scope[a_memberFn] = function () {memberFn.apply(a_scope, arguments); a_hookScope[a_hookFn].apply(a_hookScope, arguments);}
 		return true;
 	}
+	
+	public static function getDistance(a: MovieClip, b: MovieClip): Number
+	{
+		var dx = b._x - a._x;
+		var dy = b._y - a._y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+	
+	public static function getAngle(a: MovieClip, b: MovieClip): Number
+	{
+		var dx = b._x - a._x;
+		var dy = b._y - a._y;		
+		return Math.atan2(dy, dx) * (180 / Math.PI);
+	}
 }

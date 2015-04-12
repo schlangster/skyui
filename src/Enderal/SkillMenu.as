@@ -1,5 +1,20 @@
-﻿class SkillMenu extends MovieClip
+﻿import skyui.components.list.BasicEnumeration;
+
+class SkillMenu extends MovieClip
 {
+  /* PROPERTIES */
+	
+	public var classGridList: ButtonGrid;
+	public var skillTree: SkillTreeView;
+	
+	
+  /* PRIVATE VARIABLES */
+	
+	private var _skillData: Object;
+	
+	
+  /* INITIALIZATION */
+	
 	public function SkillMenu()
 	{
 		super();
@@ -11,7 +26,10 @@
 		loader.loadFile("SkillMenuData.txt");
 	}
 	
-	public function onDataLoaded(event: Object)
+	
+  /* PRIVATE FUNCTIONS */
+	
+	private function onDataLoaded(event: Object)
 	{
 		trace("Loaded");
 		
@@ -21,18 +39,18 @@
 		
 		var classNames: Array = data.skillMenu.classes;
 		var columnCount = data.skillMenu.columnCount;
-		var rowIndex = 0;
+
+		classGridList.listEnumeration = new BasicEnumeration(classGridList.entryList);
+		classGridList.columnCount = data.skillMenu.columnCount;
 		
 		for (var i=0; i<classNames.length; i++) {
 			var classData = data.classes[classNames[i]];
-
-			var t = this.attachMovie("ClassGridEntry", "entry" + i, this.getNextHighestDepth(), {_x: (i%columnCount)*200, _y: rowIndex*200});
-			t.icon.gotoAndStop(classData.iconLabel);
-			t.textField.text = classData.name;
-
-			if (i % columnCount == (columnCount-1))
-				++rowIndex
+			classGridList.entryList.push(classData);
 		}
-
+		
+		classGridList.InvalidateData();
+		
+		skillTree.skillData = data.skills;
+		skillTree.setRootSkill("mySkill1");
 	}
 }
