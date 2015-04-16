@@ -691,7 +691,7 @@ function GroupUse(int a_groupIndex)
 		Form item = items[i]
 		int itemId = itemIds[i]
 		
-		if (item && item != mainHandItem && item != offHandItem)
+		if (item && item != mainHandItem && item != offHandItem && !itemInvalidFlags[i])
 			int itemType = item.GetType()
 
 			if (! IsItemValid(item, itemType))
