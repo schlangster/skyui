@@ -15,9 +15,6 @@ Interface\skyui\buttonart.swf
 Interface\skyui\mapmarkerart.swf
 Interface\skyui\configpanel.swf
 Interface\skyui\icons_category_psychosteve.swf
-Interface\skyui\icons_category_celtic.swf
-Interface\skyui\icons_category_straight.swf
-Interface\skyui\icons_category_curved.swf
 Interface\skyui\icons_item_psychosteve.swf
 Interface\skyui\skyui_splash.swf
 Interface\skyui\mcm_splash.swf
