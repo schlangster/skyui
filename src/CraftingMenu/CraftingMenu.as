@@ -445,6 +445,12 @@ class CraftingMenu extends MovieClip
 		MenuDescriptionHolder.Lock("TR");
 		var leftOffset: Number = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightOffset: Number = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
+		
+		var a = CategoryList.getContentBounds();
+		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
+		var panelEdge = CategoryList._x + a[0] + a[2] + 25;
+		
+		MenuDescriptionHolder._x = 10 + panelEdge + ((rightOffset - panelEdge) / 2) + (MenuDescriptionHolder._width / 2);
 
 		BottomBarInfo.positionElements(leftOffset, rightOffset);
 	
@@ -461,7 +467,6 @@ class CraftingMenu extends MovieClip
 		var a = CategoryList.getContentBounds();
 		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
 		var panelEdge = CategoryList._x + a[0] + a[2] + 25;
-		
 
 		var itemCardContainer = ItemInfo._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
