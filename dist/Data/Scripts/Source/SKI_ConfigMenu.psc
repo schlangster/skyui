@@ -21,9 +21,11 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; 6:	- Added favorites menu options
 ;
 ; 7:	- Changed page layout
+;
+; 8:	- Removed unsupported icon themes
 
 int function GetVersion()
-	return 7
+	return 8
 endFunction
 
 
@@ -308,6 +310,26 @@ event OnVersionUpdate(int a_version)
 		Pages[1] = "$Controls"
 		Pages[2] = "$Advanced"
 	endIf
+
+	if (a_version >= 8 && CurrentVersion < 8)
+		Debug.Trace(self + ": Updating to script version 8")
+
+		_categoryIconThemeShortNames = new string[1]
+		_categoryIconThemeShortNames[0] = "SKYUI V3"
+
+		_categoryIconThemeLongNames = new string[1]
+		_categoryIconThemeLongNames[0] = "SkyUI V3, by PsychoSteve"
+
+		_categoryIconThemeValues = new string[1]
+		_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
+
+		_categoryIconThemeIdx = 0
+
+		SKI_SettingsManagerInstance.ClearOverride("Appearance$icons$category$source")
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+	endIf
+
+
 endEvent
 
 
@@ -331,7 +353,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Item List")
 		AddTextOptionST("ITEMLIST_FONT_SIZE", "$Font Size", _sizes[_itemlistFontSizeIdx])
 		AddSliderOptionST("ITEMLIST_QUANTITY_MIN_COUNT", "$Quantity Menu Min. Count", _itemlistQuantityMinCount)
-		AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		;AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
 		AddToggleOptionST("ITEMLIST_NO_ICON_COLORS", "$Disable Icon Colors", _itemlistNoIconColors)
 
 		AddEmptyOption()
@@ -437,6 +459,7 @@ event OnPageReset(string a_page)
 		AddToggleOptionST("CHECK_MAGIC_MENU", "Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
 		AddToggleOptionST("CHECK_BARTER_MENU", "Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
 		AddToggleOptionST("CHECK_CONTAINER_MENU", "Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
+		AddToggleOptionST("CHECK_CRAFTING_MENU", "Crafting Menu", SKI_MainInstance.CraftingMenuCheckEnabled)
 		AddToggleOptionST("CHECK_GIFT_MENU", "Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
 		
 	endIf
@@ -1633,6 +1656,25 @@ state CHECK_FAVORITES_MENU ; SLIDER
 
 	event OnDefaultST()
 		SKI_MainInstance.FavoritesMenuCheckEnabled = true
+		SetToggleOptionValueST(true)
+	endEvent
+
+	event OnHighlightST()
+		SetInfoText("$SKI_INFO3{$On}")
+	endEvent
+	
+endState
+
+state CHECK_CRAFTING_MENU ; SLIDER
+
+	event OnSelectST()
+		bool newVal = !SKI_MainInstance.CraftingMenuCheckEnabled
+		SKI_MainInstance.CraftingMenuCheckEnabled = newVal
+		SetToggleOptionValueST(newVal)
+	endEvent
+
+	event OnDefaultST()
+		SKI_MainInstance.CraftingMenuCheckEnabled = true
 		SetToggleOptionValueST(true)
 	endEvent
 
