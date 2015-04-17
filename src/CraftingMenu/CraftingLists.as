@@ -326,10 +326,27 @@ class CraftingLists extends MovieClip
 	{
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.LEFT) {
+				if (!_bFocusItemList)
+					return true;
+
+				_savedSelectionIndex = itemList.selectedIndex;
+				itemList.selectedIndex = -1;
+
+				// Moving from Item list to Category List
 				_bFocusItemList = false;
 				return true;
 				
 			} else if (details.navEquivalent == NavigationCode.RIGHT) {
+				if (_bFocusItemList)
+					return true;
+
+				if (_savedSelectionIndex == -1) {
+					itemList.selectDefaultIndex(true)
+				} else {
+					itemList.selectedIndex = _savedSelectionIndex;
+				}
+
+				// Moving from Category list to Item List
 				_bFocusItemList = true;
 				return true;
 			}
@@ -337,9 +354,14 @@ class CraftingLists extends MovieClip
 			// Ok thats a bit weird but whatever...:
 			// Itemlist always has focus, but if this flag is false, categories list gets to run first.
 			// Since both use the same nav scheme, category list wins.
-			if (!_bFocusItemList)
-				if (CategoriesList.handleInput(details, pathToFocus))
+			if (!_bFocusItemList) {
+				if (CategoriesList.handleInput(details, pathToFocus)) {
+					// Clear saved index
+					_savedSelectionIndex = -1;
+					
 					return true;
+				}
+			}
 		}
 		
 		return false;
