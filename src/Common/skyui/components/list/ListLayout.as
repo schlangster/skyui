@@ -531,10 +531,10 @@ class skyui.components.list.ListLayout
 		}
 		
 		// Wrap single attribute in array
-		if (! sortAttributes instanceof Array)
+		if (!(sortAttributes instanceof Array))
 			sortAttributes = [sortAttributes];
 			
-		if (! sortOptions instanceof Array)
+		if (!(sortOptions instanceof Array))
 			sortOptions = [sortOptions];
 			
 		_sortOptions = sortOptions;
