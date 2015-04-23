@@ -921,6 +921,8 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 		endIf
 
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_MIN_TIME_LEFT")
+
 		SetToggleOptionValueST(newVal)
 	endEvent
 
@@ -928,7 +930,10 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 		SKI_ActiveEffectsWidgetInstance.Enabled = true
 
 		_effectWidgetFlags = OPTION_FLAG_NONE
+
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_MIN_TIME_LEFT")
+		
 		SetToggleOptionValueST(true)
 	endEvent
 
