@@ -315,10 +315,10 @@ event OnVersionUpdate(int a_version)
 		Debug.Trace(self + ": Updating to script version 8")
 
 		_categoryIconThemeShortNames = new string[1]
-		_categoryIconThemeShortNames[0] = "SKYUI V3"
+		_categoryIconThemeShortNames[0] = "SKYUI V5"
 
 		_categoryIconThemeLongNames = new string[1]
-		_categoryIconThemeLongNames[0] = "SkyUI V3, by PsychoSteve"
+		_categoryIconThemeLongNames[0] = "SkyUI V5, by PsychoSteve"
 
 		_categoryIconThemeValues = new string[1]
 		_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
