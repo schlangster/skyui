@@ -99,6 +99,8 @@ class skyui.components.list.TabularList extends ScrollingList
 	{
 		entryHeight = _layout.entryHeight;
 		
+		header._x = leftBorder;
+		
 		_maxListIndex = Math.floor((_listHeight / entryHeight) + 0.05);
 		
 		if (_layout.sortAttributes && _layout.sortOptions)

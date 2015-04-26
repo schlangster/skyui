@@ -29,6 +29,9 @@ $DAM	DAM	DOMM	SCHA	DANNI	DAÑO	POŠK	OBR	УРОН	ダメージ
 $WGT	WGT	PDS	GEW	PESO	PESO	HMOT	WAG	ВЕС	重量
 $VAL	VAL	VAL	WERT	VAL	VAL	CENA	CEN	ЦЕНА	金額
 $ARM	ARM	ARM	RÜST	ARM	ARM	ZBR	ZBR	БРОНЯ	防御
+$WEAPONS	WEAPONS	ARMES	WAFFEN	ARMI	ARMAS	ZBRANĚ	BROŃ	ОРУЖИЕ	武器
+$AMMO	AMMO	AMMO	MUNITION	MUNIZIONI	MUNICIONES	MUNICE	AMUNICJA	БОЕПРИПАСЫ	弾薬
+$EFFECT	EFFECT	EFFET	EFFEKT	EFFETTO	EFECTO	ÚČINEK	EFEKT	ВЛИЯНИЕ	影響
 									
 $Armor	Armor	Armure	Rüstung	Armatura	Armadura	Zbroj	Zbroja	Защита	防具
 $None	None	Aucun	Kein	Nessuno	Ninguno	Nic	Nic	Нет	なし
@@ -50,6 +53,12 @@ $Mask	Mask	Masque	Maske	Maschera	Máscara	Maska	Maska	Маска	仮面
 $Circlet	Circlet	Couronne	Diadem	Tiara	Aro	Čelenka	Diadem	Обруч	サークレット
 $Ears	Ears	Oreilles	Ohren	Orecchie	Orejas	Uši	Uszy	Уши	耳
 $Tail	Tail	Queue	Schwanz	Coda	Capa	Ocas	Ogon	Хвост	尻尾
+									
+$Grand	Grand	Puissant	Mächtig						
+$Greater	Greater	Grand	Groß						
+$Common	Common	Ordinaire	Gewöhnlich						
+$Lesser	Lesser	Petit	Klein						
+$Petty	Petty	Minuscule	Winzig						
 									
 $Weapon	Weapon	Arme	Waffe	Arma	Arma	Zbraň	Broń	Оружие	武器
 $Melee	Melee	Corps à corps	Nahkampf	Corpo a Corpo	Cuerpo a Cuerpo	Pěsti	Pięści	Ближ. бой	挌闘
@@ -77,7 +86,7 @@ $Drink	Drink	Boisson	Getränk	Bevanda	Bebida	Pití	Napój	Напиток	飲料
 									
 $Scroll	Scroll	Parchemin	Schriftrolle	Pergamena	Pergamino	Svitek	Zwój	Свиток	巻物
 $Book	Book	Livre	Buch	Libro	Libro	Kniha	Książka	Книга	書物
-$Spell Tome	Spell Tome	Livre de sort	Zauberbuch	Libro di Incantesimi	Grimorio	Kniha Kouzel	Księga Czaru	Том Заклинаний	呪文の書
+$Spell Tome	Spell Tome	Livre de sort	Zauberbuch	Libro di Incantesimi	Grimorio	Kniha Kouzel	Księga Czaru	Том заклинаний	呪文の書
 $Recipe	Recipe	Recette	Rezept	Ricetta	Receta	Recept	Przepis	Рецепт	レシピ
 $Note	Note	Note	Notiz	Nota	Nota	Poznámka	Notatka	Записка	ノート
 $Map	Map	Carte	Karte	Mappa	Mapa	Mapa	Mapa	Карта	地図
@@ -86,11 +95,11 @@ $Ingredient	Ingredient	Ingrédient	Zutat	Ingrediente	Ingrediente	Přísada	Skła
 									
 $Misc	Misc	Divers	Diverses	Varie	Varios	Různé	Pozostałe	Разное	その他
 $Lockpick	Lockpick	Crochet	Dietrich	Grimaldello	Ganzúa	Šperhák	Wytrych	Отмычка	ロックピック
-$Gem	Gem	Gemme	Edelstein	Gemma	Gema	Drahokam	Klejnot	Драг. Камень	宝石
+$Gem	Gem	Gemme	Edelstein	Gemma	Gema	Drahokam	Klejnot	Драг. камень	宝石
 $Tool	Tool	Outil	Werkzeug	Utensile	Herramienta	Nástroj	Narzędzie	Инструмент	道具
 $Remains	Remains	Restes	Überreste	Resti	Restos	Pozůstatky	Szczątki	Останки	遺骨
 $Leather	Leather	Cuir	Leder	Pelle	Cuero	Kůže	Skórzany	Кожа	革
-$Strips	Strips	Bandes	Streifen	Strisce	Tiras	Odřezky	Paski	Полоски Кожи	ひも
+$Strips	Strips	Bandes	Streifen	Strisce	Tiras	Odřezky	Paski	Полоски кожи	ひも
 $Hide	Hide	Peau	Haut	Pelle	Piel	Useň	Skóra	Шкура	皮
 $Ore	Ore	Minerai	Erz	Minerale	Mineral	Ruda	Ruda	Руда	鉱石
 $Ingot	Ingot	Lingot	Barren	Lingotto	Lingote	Ingot	Sztaba	Слиток	インゴット
@@ -170,10 +179,10 @@ $Toggle	Toggle	Activer/Désactiver	Umschalten	Seleziona	Seleccionar	Zaškrtnout	
 $Pick Color	Pick Color	Choisir la couleur	Farbauswahl	Seleziona Colore	Seleccionar Color	Vybrat barvu	Wybierz Kolor	Выбор Цвета	色を選択
 $Remap	Remap	Ré-affecter	Neuzuweisen	Riassegna	Reasignar	Přenastavit	Ponowne Przypisywanie	Назначить клавишу	再割り当て
 $Unmap	Unmap	Désaffecter	Zuordnung Aufheben	Dealloca	Desasignar	Odebrat klávesu	Odznacz klawisz	Сбросить значение	
-$Find Location	Find Location	Chercher un lieu	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск локации	
+$Find Location	Find Location	Chercher un lieu	Ort Finden	Cerca Locazione	Descubrir lugar	Najít místo	Znajdź Miejsce	Поиск Локации	
 									
 $General	General	Général	Allgemein	Generale	General	Základní	Ogólne	Общие	一般
-$Favorite Groups	Favorite Groups	Groupes favoris	Favoritengruppen	Gruppi Favoriti	Grupos Favoritos	Oblíbené skupiny 	Ulubione grupy	Группы Избранного	
+$Favorite Groups	Favorite Groups	Groupes favoris	Favoritengruppen	Gruppi Favoriti	Grupos Favoritos	Oblíbené skupiny 	Aktywne	Группы Избранного	
 $Advanced	Advanced	Avancé	Fortgeschritten	Avanzato	Avanzado	Pokročilé	Zaawansowane	Дополнительно	高度
 									
 $Item List	Item List	Liste des objets	Gegenstandsliste	Lista degli Oggetti	Lista de Objetos	Seznam předmětů	Lista Przedmiotów	Список Элементов	アイテムリスト
@@ -192,12 +201,12 @@ $Horizontal Anchor	Horizontal Anchor	Alignement horizontal	Horizontale Ausrichtu
 $Vertical Anchor	Vertical Anchor	Alignement vertical	Vertikale Ausrichtung	Orientamento Verticale	Alineamiento vertical	Vertikální ukotvení	Wyrównanie Pionowe	Фиксация по Вертикали	
 $Orientation	Orientation	Orientation	Orientierung	Orientamento	Alineamiento	Orientace	Orientacja	Ориентация	
 $Icon Size	Icon Size	Taille d'icône	Symbolgröße	Dimensione Icona	Dimensión del icono	Velikost ikon	Rozmiar Ikon	Размер Иконок	
-$Icon Group Count	Icon Group Count	Nombre de groupes d'icônes	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Груп Иконок	
+$Icon Group Count	Icon Group Count	Nombre de groupes d'icônes	Symbolgruppengröße	Numero d'icone raggruppate	Icono de Grupo Conde	Počet ikon ve skupině	Liczba Ikon Grupy	Кол-во Групп Иконок	
 $Minimum Time Left	Minimum Time Left	Temps minimum restant	Mindestrestdauer	Tempo minimo rimasto	Mínimo Tiempo Restante	Minimální zbývající čas	Minimalny pozostały czas	Минимальный Период Задержки	
 $Scale	Scale	Échelle	Größe	Scala	Escala	Měřítko	Skala	Масштаб	スケール
 $Disable Positioning	Disable Positioning	Désactiver le positionnement	Keine Positionsanpassung	Disabilita Posizionamento	Desactivar el posicionamiento	Zakázat polohování	Wyłącz Pozycjonowanie	Запретить Позиционирование	
 $SWF Version Checking	SWF Version Checking	Vérification des versions	SWF Versions-Check	Controllo Versione SWF	Comprobar Versión SWF	Kontrola Verze SWF	Sprawdzanie Wersji SWF	Проверка Версии SWF	SWF のバージョンの確認
-$Active Effects HUD	Active Effects HUD	Interface des effets actifs	Anzeige für Aktive Effekte	HUD degli Effetti Attivi	HUD de Effectos Activos	Aktivovat HUD Efektů	Aktywne Efekty HUD	Активные эффекты HUD	
+$Active Effects HUD	Active Effects HUD	Interface des effets actifs	Anzeige für Aktive Effekte	HUD degli Effetti Attivi	HUD de Effectos Activos	Aktivovat HUD Efektů	Aktywne Efekty HUD	Активные Эффекты HUD	
 									
 $Left	Left	Gauche	Links	Sinistra	Izquierda	Vlevo	Lewo	Лево	左
 $Right	Right	Droite	Rechts	Destra	Derecha	Vpravo	Prawo	Право	右
@@ -213,12 +222,12 @@ $Horizontal	Horizontal	Horizontal	Horizontal	Orizzontale	Horizontal	Horizontáln
 $SKI_INFO1{}	Default: {}	Défaut: {}	Voreinstellung: {}	Predefinito: {}	Predefinido: {}	Výchozí nastavení: {}	Domyślnie: {}	По умолчанию: {}	デフォルト: {}
 $SKI_INFO2{}	Number of items required to trigger quantity menu, or 0 to disable it.\nDefault: {}	Nombre d'objets requis pour activer le menu de quantité, ou 0 pour le désactiver.\nDéfaut : {}	Mindestgröße eines Stapels zum Anzeigen des Mengendialogs.\nVoreinstellung: {}	Numero di oggetti richiesti per avviare il menù di quantità, o 0 per disabilitarlo.\nPredefinito: {}	Número de objetos requeridos para activar el Menú de Cantidad (0 para deshabilitar).\nPredefinido: {}	Počet objektů potřebných k otevření menu s posuvníkem, nebo 0 pro vypnutí.\nVýchozí hodnota: {}	Liczba elementów wymagana do aktywacji menu ilości lub 0, aby je wyłączyć.\nDomyślnie: {}	Количество элементов необходимое для инициализации меню, число или 0 чтобы отключить.\nПо умолчанию: {}	
 $SKI_INFO3{}	Incompatible or outdated SWFs may break SkyUI functionality. This only disables the warning message!\nDefault: {}	Des SWF incompatibles ou obsolètes peuvent empêcher le fonctionnement de SkyUI. Cela désactive uniquement le message d'avertissement!\nDéfaut : {}	Inkompatible oder veraltete SWF Dateien beeinträchtigen möglicherweise die Funktionalität von SkyUI. Mit dieser Option lässt sich lediglich die Warnung unterdrücken!\nVoreinstellung: {}	I file SWF incompatibili o datati potrebbero causare un malfunzionamento nelle funzioni di SkyUI. Questo disabilita solamente i messaggi di avviso!\nPredefinito: {}	Los archivos SWF incompatibles o desactualizados pueden provocar un malfuncionamiento de SkyUI. ¡Esto sólo deshabilita el mensaje de advertencia!\nPredefinido: {}	 Nekonpatibilní nebo zastaralé SWF může narušit funkčnost SkyUI. Zaškrtnutím vypnete zobrazování varovných zpráv!\nVýchozí nastavení: {}	Niekompatybilny lub przestarzały SWF może zepsuć funkcjonalność SkyUI. Ta opcja tylko wyłącza ostrzeżenie!\nDomyślnie: {}	Несовместимый или устаревший SWF файл может нарушить работу SkyUI. Эта функция отключит всплывающее сообщение!\nПо умолчанию: {}	
-$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDéfaut : {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}	Desactiva el posicionamiento del objeto 3D.\nPredefinido: {}	Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Запретить Позиционирование 3D объекта в окне просмотра.\nПо умолчанию: {}	
+$SKI_INFO4{}	Disables Positioning of the 3D Item.\nDefault: {}	Désactive le positionnement de l'objet 3D.\nDéfaut : {}	Deaktiviert Positionsanpassung der 3D Ansicht.\nVoreinstellung: {}	Disabilita il posizionamento dell'oggetto 3D.\nDefault: {}	Desactiva el posicionamiento del objeto 3D.\nPredefinido: {}	Zakáže polohování 3D objektu.\nVýchozí nastavení: {}	Wyłącza pozycjonowanie obiektu 3D.\nDomyślnie: {}	Запретить позиционирование 3D объекта в окне просмотра.\nПо умолчанию: {}	
 $SKI_INFO5{}	Hide effects with a remaining time higher than this. 0 to show all.\nDefault: {}	Cacher effets de durée inférieure à ceci. 0 pour afficher tous.\nDéfaut : {}	Mindestrestdauer ab der Effekte angezeigt werden. 0 zeigt alles an.\nVoreinstellung: {}	Nasconde gli effetticon un tempo rimanente maggiore di questo. 0 per mostrarli tutti.\nPredefinito: {}	Esconder efectos con un tiempo restante superior a éste. 0 para mostrar todos. \nPredefinido: {}	Skryje efekty, se zbývajícím časem vyšším než je tato hodnota. 0 zobrazí vše.\nVýchozí nastavení: {}	Ukryj efekty z pozostałym czasem większym niż. 0 pokaż wszystkie. \nDomyślne: {}	Продолжительность отображения от эффектов на дисплее. 0 показывать всегда \nПо умолчанию: {}	
 $SKI_INFO6	Each group can be configured individually.	Chaque groupe peut être configuré individuellement.	Jede Gruppe kann einzeln konfiguriert werden.	Ogni gruppo può essere configurato individualmente.	Cada grupo puede ser configurado individualmente.	Každá skupina může být nastavena samostatně.	Każda grupa może być skonfigurowana oddzielnie.	Каждая группа может иметь индивидуальные настройки	
-$SKI_INFO7{}	Unequip all armor before Group Use?\nDefault: {}	Déséquiper armure avant Utilisation en Groupe ?\nDéfaut : {}	Rüstung vorm Benutzen der Gruppe ausziehen?	Disequipaggiare tutta l'armatura prima dell'Uso del Gruppo?\nPredefinito: {}	¿Desequipar todas las piezas de armadura antes de Usar Grupo?\nPredefinido: {}	Má být před použitím skupiny vysvléknuta zbroj?\nVýchozí nastavení: {}	Ściągnij całą zbroję przed użyciem Grup?\nDomyślne: {}	Снять всю броню перед Использованием Группы?\nПо умолчанию: {}	
-$SKI_INFO8{}	Unequip both hands before Group Use?\nDefault: {}	Déséquiper mains avant Utilisation en Groupe ?\nDéfaut : {}	Beide Hände vorm Benutzen der Gruppe freimachen?	Disequipaggiare entrambe le mani prima dell'Uso del Gruppo?\nPredefinito: {}	¿Desequipar ambas manos antes de Usar Grupo?\nPredefinido: {}	Mají být před použitím skupiny uprázdněny obě ruce?\nVýchozí nastavení: {}	Ściągnij rękawice przed użyciem Grup?\nDomyślne: {}	Разоружить обе руки перед Использованием Группы?\nПо умолчанию: {}	
-$SKI_INFO9{}	Unequip any ammo before Group Use?\nDefault: {}	Déséquiper munitions avant Utilisation en Groupe ?\nDéfaut : {}	Munition vorm Benutzen der Gruppe freimachen?	Disequipaggiare qualsiasi munizione prima dell'Uso del Gruppo?\nPredefinito: {}	¿Desequipar cualquier munición antes de Usar Grupo?\nPredefinido {}	Má být před použitím skupiny sundána veškerá munice?\nVýchozí nastavení: {}	Ściągnij amunicję przed użyciem Grup?\nDomyślne: {}	Снять любые боеприпасы перед Использованием Группы?\nПо умолчанию: {}	
+$SKI_INFO7{}	Unequip all armor before Group Use?\nDefault: {}	Déséquiper armure avant Utilisation en Groupe ?\nDéfaut : {}	Rüstung vorm Benutzen der Gruppe ausziehen?	Disequipaggiare tutta l'armatura prima dell'Uso del Gruppo?\nPredefinito: {}	¿Desequipar todas las piezas de armadura antes de Usar Grupo?\nPredefinido: {}	Má být před použitím skupiny vysvléknuta zbroj?\nVýchozí nastavení: {}	Ściągnij całą zbroję przed użyciem Grup?\nDomyślne: {}	Снять всю броню перед использованием группы?\nПо умолчанию: {}	
+$SKI_INFO8{}	Unequip both hands before Group Use?\nDefault: {}	Déséquiper mains avant Utilisation en Groupe ?\nDéfaut : {}	Beide Hände vorm Benutzen der Gruppe freimachen?	Disequipaggiare entrambe le mani prima dell'Uso del Gruppo?\nPredefinito: {}	¿Desequipar ambas manos antes de Usar Grupo?\nPredefinido: {}	Mají být před použitím skupiny vyprázdněny obě ruce?\nVýchozí nastavení: {}	Ściągnij rękawice przed użyciem Grup?\nDomyślne: {}	Разоружить обе руки перед использованием группы?\nПо умолчанию: {}	
+$SKI_INFO9{}	Unequip any ammo before Group Use?\nDefault: {}	Déséquiper munitions avant Utilisation en Groupe ?\nDéfaut : {}	Munition vorm Benutzen der Gruppe freimachen?	Disequipaggiare qualsiasi munizione prima dell'Uso del Gruppo?\nPredefinito: {}	¿Desequipar cualquier munición antes de Usar Grupo?\nPredefinido {}	Má být před použitím skupiny sundána veškerá munice?\nVýchozí nastavení: {}	Ściągnij amunicję przed użyciem Grup?\nDomyślne: {}	Снять любые боеприпасы перед использованием группы?\nПо умолчанию: {}	
 									
 									
 $SKI_MSG1	This control requires a keyboard mapping.	Cette fonction doit être affectée à une touche.	Diese Funktion muss einer Tastatureingabe zugewiesen werden.	Questo controllo richiede una mappatura della tastiera.	Este control necesita ser configurado en el teclado	Funkce vyžaduje nastavení klávesy na klávesnici.	Ta funkcja wymaga przypisania klawisza.	Для этой функции необходимо назначить клавишу.	このコントロールは、キーボードのマッピングを必要とします。
@@ -228,7 +237,7 @@ $NAME	$	$	$	$	$	$	NAZWA	$	$
 $ TO PLACE	$	$	$	$	$	$	$	 ПОМЕСТИТЬ	$
 $ TO STEAL	$	$	$	$	$	$	$	 УКРАСТЬ	$
 									
-$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATREZZATURA	EQUIPO	VYBAVENÍ	EKWIPUNEK	СНАРЯЖЕНИЕ	
+$GEAR	GEAR	ÉQUIPEMENT	AUSRÜSTUNG	ATTREZZATURA	EQUIPO	VYBAVENÍ	EKWIPUNEK	СНАРЯЖЕНИЕ	
 $AID	AID	AIDE	HILFSMITTEL	AIUTO	AYUDA	POMOC	POMOC	ЗЕЛЬЯ И ЕДА	
 $GROUP	GROUP	GROUPE 	GRUPPE	GRUPPO	GRUPO	SKUPINA	GRUPA	ГРУППА	
 $Group {}	Group {}	Groupe {}	Gruppe {}	Gruppo {}	Grupo {}	Skupina {}	Grupa{}	Группа {}	
@@ -238,14 +247,14 @@ $Preferences	Preferences	Préférences	Einstellungen	Preferenze	Preferencias	Nas
 $Confirm Group	Confirm Group	Confirmer groupe	Gruppe Bestätigen	Confermare gruppo	Confirmar grupo	Potvrdit skupinu	Potwierdź grupę	Подтвердить Группу	
 $Select Group	Select Group	Choisir groupe	Gruppe Auswählen	Selezionare gruppo	Seleccionar grupo	Vybrat skupinu	Wybierz grupę	Выбрать Группу	
 $Group	Group	Grouper 	Gruppieren	Raggruppare	Agrupar	Zařadit	Grupuj	Добавить в Группу	
-$Ungroup	Ungroup	Dégrouper	Gruppierung Aufheben	Anullamento gruppo	Desagrupar	Odebrat	Zresetuj grupę	Убрать из Группы	
-$Set Group Icon	Set Group Icon	Choisir icône groupe	Symbol Setzen	Scegliere icona gruppo	Elegir icono de grupo	Přiřadit skupině ikonu	Ustaw ikonę grupy	Выбрать Иконку Группы	
-$Set Main Hand	Set Main Hand	Choisir main principale	Primärhand Setzen	Scegliere mano principale	Elegir mano principal	Vybrat hlavní ruku	Ustaw główną rękę	Выбрать Основную Руку	
-$Save Equip State	Save Equip State	Sauvegarder équipement	Ausrüstung Speichern	Salva lo stato dell'Equipaggiamento	Guardar estado del equipo	Uložit stav vybavení	Zapamitaj stan ekwipunku	Сохранить Состояние Экипировки	
-$Group Use	Group Use	Utiliser groupe	Gruppe Benutzen	Usare gruppo	Usar grupo	Použít skupinu	Użyj grupę	Использовать Группу	
-$Toggle Focus	Toggle Focus	Changer Focus	Fokus Wechseln	Cambiare Focus	Cambiar enfoque	Přepnout zaměření	Przełącz Focus	Переместить Фокус	
+$Ungroup	Ungroup	Dégrouper	Gruppierung Aufheben	Anullamento gruppo	Desagrupar	Odebrat	Usuń z grupy	Убрать из Группы	
+$Set Group Icon	Set Group Icon	Choisir icône groupe	Symbol Setzen	Scegliere icona gruppo	Elegir icono de grupo	Přiřadit skupině ikonu	Wybierz ikonę dla grupy	Выбрать Иконку Группы	
+$Set Main Hand	Set Main Hand	Choisir main principale	Primärhand Setzen	Scegliere mano principale	Elegir mano principal	Vybrat hlavní ruku	Wybierz główną rękę	Выбрать Основную Руку	
+$Save Equip State	Save Equip State	Sauvegarder équipement	Ausrüstung Speichern	Salva lo stato dell'Equipaggiamento	Guardar estado del equipo	Uložit stav vybavení	Zapamiętaj stan ekwipunku	Сохранить Состояние Экипировки	
+$Group Use	Group Use	Utiliser groupe	Gruppe Benutzen	Usare gruppo	Usar grupo	Použít skupinu	Ubierz grupę	Использовать Группу	
+$Toggle Focus	Toggle Focus	Changer Focus	Fokus Wechseln	Cambiare Focus	Cambiar enfoque	Přepnout zaměření	Przełącz widok	Переместить Фокус	
 $Unequip Armor	Unequip Armor	Déséquiper armure	Rüstung Freimachen	Disequipaggiare corazza	Desequipar Armadura	Svléknout zbroj	Ściągnij zbroję	Снять Броню	
-$Unequip Hands	Unequip Hands	Déséquiper mains	Hände Freimachen	Disequipaggiare mani	Desequipar manos	Uprázdnit ruce	Ściągnij rękawice	Разоружить Руки	
+$Unequip Hands	Unequip Hands	Déséquiper mains	Hände Freimachen	Disequipaggiare mani	Desequipar manos	Vyprázdnit ruce	Ściągnij rękawice	Разоружить Руки	
 $Unequip Ammo	Unequip Ammo	Déséquiper munitions	Munition Freimachen	Disequipaggiare munizione	Desequipar munición	Sundat munici	Ściągnij amunicję	Снять Боеприпасы	
 									
-% Completion	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	84.76%
+% Completion	100.00%	100.00%	100.00%	97.89%	97.89%	97.89%	97.89%	97.89%	83.03%

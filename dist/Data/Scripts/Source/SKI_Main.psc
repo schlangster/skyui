@@ -18,6 +18,7 @@ int property		ERR_SKSE_VERSION_SCPT	= 3 autoReadonly
 int property		ERR_INI_PAPYRUS			= 4 autoReadonly
 int property		ERR_SWF_INVALID			= 5 autoReadonly
 int property		ERR_SWF_VERSION			= 6 autoReadonly
+int property		ERR_SKSE_BROKEN			= 7 autoReadonly
 
 
 ; PRIVATE VARIABLES -------------------------------------------------------------------------------
@@ -163,13 +164,16 @@ event OnGameReload()
 			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSE has been updated, then install the new version.")
 		return
 
+	elseIf (GetType() == 0)
+		Error(ERR_SKSE_BROKEN, "The SKSE scripts have been overwritten or are not properly loaded.\nReinstalling SKSE might fix this.")
+		return
+
 	elseIf (SKSE.GetVersionRelease() < MinSKSERelease)
 		Error(ERR_SKSE_VERSION_RT, "SKSE is outdated.\nSkyUI will not work correctly!\n" \
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
 
-	; Could also check for != SKSE.GetVersionRelease(), but this should be strict enough
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
 		Error(ERR_SKSE_VERSION_SCPT, "SKSE scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
 		return
@@ -269,7 +273,7 @@ endEvent
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
 function Error(int a_errId, string a_msg)
-	Debug.MessageBox("SKYUI ERROR CODE " + a_errId + "\n\n" + a_msg + "\n\nFor help, see the SkyUI mod description.")
+	Debug.MessageBox("SKYUI ERROR CODE " + a_errId + "\n\n" + a_msg + "\n\nFor more help, visit the SkyUI download site.")
 	ErrorDetected = true
 endFunction
 

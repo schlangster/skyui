@@ -12,9 +12,7 @@ import skyui.util.GlobalFunctions;
 import skyui.util.Translator;
 import skyui.defines.Input;
 
-import com.greensock.TweenLite;
-import com.greensock.easing.Linear;
-
+import skyui.util.Tween;
 
 class ConfigPanel extends MovieClip
 {
@@ -832,8 +830,11 @@ class ConfigPanel extends MovieClip
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		_optionsList.disableSelection = _optionsList.disableInput = true;
 		_modListPanel.isDisabled = true;
-		TweenLite.to(bottomBar, 0.5, {_alpha: 0, _y: _bottomBarStartY+50, overwrite: 1, easing: Linear.easeNone});
-		TweenLite.to(contentHolder, 0.5, {_alpha: 75, overwrite: 1, easing: Linear.easeNone});
+
+		Tween.LinearTween(bottomBar, "_alpha", 100, 0, 0.5, null);
+		Tween.LinearTween(bottomBar, "_y", _bottomBarStartY, _bottomBarStartY+50, 0.5, null);
+
+		Tween.LinearTween(contentHolder, "_alpha", 100, 75, 0.5, null);
 	}
 	
 	private function dimIn(): Void
@@ -841,8 +842,12 @@ class ConfigPanel extends MovieClip
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 		_optionsList.disableSelection = _optionsList.disableInput = false;
 		_modListPanel.isDisabled = false;
-		TweenLite.to(bottomBar, 0.5, {_alpha: 100, _y: _bottomBarStartY, overwrite: 1, easing: Linear.easeNone});
-		TweenLite.to(contentHolder, 0.5, {_alpha: 100, overwrite: 1, easing: Linear.easeNone});
+
+
+		Tween.LinearTween(bottomBar, "_alpha", 0, 100, 0.5, null);
+		Tween.LinearTween(bottomBar, "_y", _bottomBarStartY+50, _bottomBarStartY, 0.5, null);
+
+		Tween.LinearTween(contentHolder, "_alpha", 75, 100, 0.5, null);
 	}
 	
 	private function showWelcomeScreen(): Void

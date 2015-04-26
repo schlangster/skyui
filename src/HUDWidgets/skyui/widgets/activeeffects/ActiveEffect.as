@@ -3,8 +3,8 @@
 import skyui.util.EffectIconMap;
 import Shared.GlobalFunc;
 
-import com.greensock.TweenLite;
-import com.greensock.easing.Linear;
+import mx.utils.Delegate;
+import skyui.util.Tween;
 
 
 class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
@@ -85,7 +85,8 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 
 		updateEffect(effectData);
 
-		TweenLite.from(this, effectFadeInDuration, {_alpha: 0, overwrite: 0, easing: Linear.easeNone});
+		this._alpha = 0;
+		Tween.LinearTween(this, "_alpha", 0, 100, effectFadeInDuration, null);
 	}
 
 
@@ -111,18 +112,20 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 	{
 		index = a_newIndex;
 		var p = determinePosition(index);
-		TweenLite.to(this, effectMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
+
+		Tween.LinearTween(this, "_x", this._x, p[0], effectMoveDuration, null);
+		Tween.LinearTween(this, "_y", this._y, p[1], effectMoveDuration, null);
 	}
 
 	public function remove(a_immediate: Boolean): Void
 	{
 		if (a_immediate == true) {
 			_alpha = 0;
-			dispatchEvent({type: "effectRemoved"})
+			dispatchEvent({type: "effectRemoved"});
 			return;
 		}
 
-		TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: this, onComplete: dispatchEvent, onCompleteParams: [{type: "effectRemoved"}], overwrite: 0, easing: Linear.easeNone});
+		Tween.LinearTween(this, "_alpha", 100, 0, effectFadeOutDuration, Delegate.create(this, function() {dispatchEvent({type: "effectRemoved"})}));
 	}
 
 
@@ -135,9 +138,9 @@ class skyui.widgets.activeeffects.ActiveEffect extends MovieClip
 		_iconEmblemLabel = iconData.emblemLabel;
  
 		if (_iconBaseLabel == "default_effect" || _iconBaseLabel == undefined || _iconBaseLabel == "") {
-			skyui.util.Debug.log("[SkyUI Active Effects]: Missing icon")
+			skyui.util.Debug.log("[SkyUI Active Effects]: Missing icon");
 			for (var s: String in effectData)
-				skyui.util.Debug.log("\t\t" + s + ": " + effectData[s])
+				skyui.util.Debug.log("\t\t" + s + ": " + effectData[s]);
 		}
 		
 		_iconHolder._width = _iconHolder._height = (background._width - METER_PADDING - METER_WIDTH);

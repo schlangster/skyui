@@ -32,9 +32,6 @@
 		if (a_str == "")
 			return "";
 			
-		if (a_str.charAt(0) != "$")
-			return a_str;
-		
 		// Quick test to decide if we can skip
 		if (a_str.indexOf("{") == -1)
 			return translate(a_str);

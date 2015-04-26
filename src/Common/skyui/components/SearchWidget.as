@@ -139,9 +139,9 @@ class skyui.components.SearchWidget extends MovieClip
 
 		refreshInput();
 
-		if (_currentInput != undefined())
+		if (_currentInput != undefined()) {
 			dispatchEvent({type: "inputEnd", data: _currentInput});
-		else {
+		} else {
 			textField.SetText(S_FILTER);
 			dispatchEvent({type: "inputEnd", data: ""});
 		}

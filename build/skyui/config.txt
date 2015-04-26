@@ -191,7 +191,7 @@ columns.materialColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASC
 
 columns.materialColumn.state2.label.text = '$MAT'
 columns.materialColumn.state2.entry.text = @materialDisplay
-columns.materialColumn.state2.entry.arrowDown = true
+columns.materialColumn.state2.label.arrowDown = true
 columns.materialColumn.state2.sortAttributes = <materialDisplay, text>
 columns.materialColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 
@@ -210,7 +210,7 @@ columns.classColumn.state1.sortOptions = <{ASCENDING | CASEINSENSITIVE}, {ASCEND
 
 columns.classColumn.state2.label.text = '$CLASS'
 columns.classColumn.state2.entry.text = @weightClassDisplay
-columns.classColumn.state2.entry.arrowDown = true
+columns.classColumn.state2.label.arrowDown = true
 columns.classColumn.state2.sortAttributes = <weightClassDisplay, text>
 columns.classColumn.state2.sortOptions = <{DESCENDING | CASEINSENSITIVE}, {ASCENDING | CASEINSENSITIVE}>
 

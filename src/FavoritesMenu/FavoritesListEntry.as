@@ -46,8 +46,8 @@ class FavoritesListEntry extends BasicListEntry
 		var isMainHand: Boolean = groupIndex != -1 && (a_entryObject.mainHandFlag & (1 << groupIndex)) != 0;
 		var isOffHand: Boolean = groupIndex != -1 && (a_entryObject.offHandFlag & (1 << groupIndex)) != 0;
 		
-		enabled = a_state.assignedEntry == null || isAssigned;
-		_alpha = enabled ? 100 : 25;
+		isEnabled = a_state.assignedEntry == null || isAssigned;
+		_alpha = isEnabled ? 100 : 25;
 		
 		if (selectIndicator != undefined)
 			selectIndicator._visible = isSelected;

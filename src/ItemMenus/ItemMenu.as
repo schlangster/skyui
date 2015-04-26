@@ -221,7 +221,7 @@ class ItemMenu extends MovieClip
 	// @API
 	public function UpdatePlayerInfo(aUpdateObj: Object): Void
 	{
-		bottomBar.updatePlayerInfo(aUpdateObj,itemCard.itemInfo);
+		bottomBar.UpdatePlayerInfo(aUpdateObj,itemCard.itemInfo);
 	}
 
 	// @API

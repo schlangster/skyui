@@ -1,6 +1,5 @@
-﻿import com.greensock.TweenNano;
-import com.greensock.easing.Quad;
-import com.greensock.easing.Linear;
+﻿import mx.utils.Delegate;
+import skyui.util.Tween;
 
 class SnowEffect extends ParticleEmitter
 {
@@ -11,12 +10,14 @@ class SnowEffect extends ParticleEmitter
 	public var particleRotationFactor:Number = 1;
 	
 	/* Private Variables */
-	private var _framesPerSpawn: Number = 15;
+	private var _framesPerSpawn: Number = 5;
 	
 	private var _windSpeed: Number;
 	
 	private var __currentFrame: Number = 0;
 	private var _nextSpawn: Number = __currentFrame + _framesPerSpawn;
+
+	private var _windInterval: Number;
 	
 	public function SnowEffect()
 	{
@@ -49,7 +50,7 @@ class SnowEffect extends ParticleEmitter
 				return;
 			}
 			if (_particles.length % 100 == 0 && _particles.length < maxParticles)
-				particleScaleFactor += 0.33; // Increase size
+				particleScaleFactor += 0.15; // Increase size
 			if (_particles.length % 20 == 0 && _framesPerSpawn > 1)
 				_framesPerSpawn--; // Speed up
 			_nextSpawn += _framesPerSpawn;
@@ -62,15 +63,29 @@ class SnowEffect extends ParticleEmitter
 		var time: Number = Math.random()*3+1;
 		var nextSpeed: Number = Math.random()*(2*maxWindSpeed-minWindSpeed)-(minWindSpeed+maxWindSpeed);
 		var nextWind: Number = Math.random()*(2)+1;
-		TweenNano.to(this, time, {_windSpeed: nextSpeed, delay: nextWind, onComplete: windLoop, onCompleteScope: this});
+
+		Tween.LinearTween(this, "_windSpeed", this._windSpeed, nextSpeed, time, null);
+
+		if (_windInterval != undefined) {
+			clearInterval(_windInterval);
+			delete(_windInterval);
+		}
+
+		_windInterval = setInterval(this, "windLoop", nextWind);
 	}
 	
 	private function xLoop(a_particle: MovieClip): Void {
 		if (a_particle._x > _effectWidth + effectBuffer)
 			a_particle._x = Math.random() * -effectBuffer;
-		else  if (a_particle._x < -effectBuffer)
+		else if (a_particle._x < -effectBuffer)
 			a_particle._x = _effectWidth + Math.random() * effectBuffer;
-		TweenNano.to(a_particle, Math.random()*2+1, {_x: a_particle._x+(Math.random()*80-40+_windSpeed)*(a_particle._xscale/100), _rotation: Math.random()*particleRotationFactor*900, onComplete: xLoop, onCompleteParams: [a_particle], onCompleteScope: this, ease: Quad.easeInOut, overwrite: 0});
+
+		var onCompleteFn: Function = Delegate.create(this, function() {xLoop(a_particle)});
+		var duration: Number = Math.random()*2+1;
+
+		// Quad.easeInOut
+		Tween.LinearTween(a_particle, "_x", a_particle._x, a_particle._x+(Math.random()*80-40+_windSpeed)*(a_particle._xscale/100), duration, onCompleteFn);
+		Tween.LinearTween(a_particle, "_rotation", a_particle._rotation, Math.random()*particleRotationFactor*600, duration, null);
 	}
 
 	private function yLoop(a_particle: MovieClip): Void {
@@ -83,6 +98,11 @@ class SnowEffect extends ParticleEmitter
 		} else if (a_particle._y < -effectBuffer) {
 			a_particle._y = _effectHeight + Math.random() * effectBuffer;
 		}
-		TweenNano.to(a_particle, Math.random()*2+1, {_y: a_particle._y+(Math.random()*60+70)*(a_particle._xscale/100)*3, onComplete: yLoop, onCompleteParams: [a_particle], onCompleteScope: this, ease: Linear.easeInOut, overwrite: 0});
+
+		var onCompleteFn: Function = Delegate.create(this, function() {yLoop(a_particle)});
+		var duration: Number = Math.random()*2+1;
+
+		// Linear.easeInOut
+		Tween.LinearTween(a_particle, "_y", a_particle._y, a_particle._y+(Math.random()*7+30)*(a_particle._xscale/100)*3, duration, onCompleteFn);
 	}
 }

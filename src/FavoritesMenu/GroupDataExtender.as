@@ -56,7 +56,7 @@ class GroupDataExtender implements IListProcessor
 		
 		var entryList = a_list.entryList;
 		
-		// Create map for formid->entry, clear group filter flags
+		// Create map for itemid->entry, clear group filter flags
 		for (var i = 0; i < entryList.length; i++) {
 			var e = entryList[i];
 			e.filterFlag &= ~clearFlag;

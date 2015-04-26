@@ -55,6 +55,11 @@ class WidgetLoader extends MovieClip
 			skse.SendModEvent("SKIWF_hudModeChanged", a_hudMode);
 		}
 		_root.HUDMovieBaseInstance.HudElements.push(_hudModeDispatcher);
+
+		// Fixes for elements which become visible for large resolutions
+		_root.HUDMovieBaseInstance.WeightTranslated._alpha = 0;
+		_root.HUDMovieBaseInstance.ValueTranslated._alpha = 0;
+		_root.HUDMovieBaseInstance.QuestUpdateBaseInstance.LevelUpTextInstance._alpha = 0;
 	}
 	
 	public function onLoadInit(a_widgetHolder: MovieClip): Void

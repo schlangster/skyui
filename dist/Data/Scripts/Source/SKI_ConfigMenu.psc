@@ -21,9 +21,11 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; 6:	- Added favorites menu options
 ;
 ; 7:	- Changed page layout
+;
+; 8:	- Removed unsupported icon themes
 
 int function GetVersion()
-	return 7
+	return 8
 endFunction
 
 
@@ -308,6 +310,26 @@ event OnVersionUpdate(int a_version)
 		Pages[1] = "$Controls"
 		Pages[2] = "$Advanced"
 	endIf
+
+	if (a_version >= 8 && CurrentVersion < 8)
+		Debug.Trace(self + ": Updating to script version 8")
+
+		_categoryIconThemeShortNames = new string[1]
+		_categoryIconThemeShortNames[0] = "SKYUI V5"
+
+		_categoryIconThemeLongNames = new string[1]
+		_categoryIconThemeLongNames[0] = "SkyUI V5, by PsychoSteve"
+
+		_categoryIconThemeValues = new string[1]
+		_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
+
+		_categoryIconThemeIdx = 0
+
+		SKI_SettingsManagerInstance.ClearOverride("Appearance$icons$category$source")
+		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
+	endIf
+
+
 endEvent
 
 
@@ -331,7 +353,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Item List")
 		AddTextOptionST("ITEMLIST_FONT_SIZE", "$Font Size", _sizes[_itemlistFontSizeIdx])
 		AddSliderOptionST("ITEMLIST_QUANTITY_MIN_COUNT", "$Quantity Menu Min. Count", _itemlistQuantityMinCount)
-		AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		;AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
 		AddToggleOptionST("ITEMLIST_NO_ICON_COLORS", "$Disable Icon Colors", _itemlistNoIconColors)
 
 		AddEmptyOption()
@@ -898,6 +920,8 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 		endIf
 
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_MIN_TIME_LEFT")
+
 		SetToggleOptionValueST(newVal)
 	endEvent
 
@@ -905,7 +929,10 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 		SKI_ActiveEffectsWidgetInstance.Enabled = true
 
 		_effectWidgetFlags = OPTION_FLAG_NONE
+
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
+		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_MIN_TIME_LEFT")
+		
 		SetToggleOptionValueST(true)
 	endEvent
 

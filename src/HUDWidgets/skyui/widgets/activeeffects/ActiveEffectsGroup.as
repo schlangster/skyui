@@ -1,7 +1,7 @@
 ﻿import gfx.events.EventDispatcher;
 
-import com.greensock.TweenLite;
-import com.greensock.easing.Linear;
+import mx.utils.Delegate;
+import skyui.util.Tween;
 
 class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 {
@@ -91,7 +91,9 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 		index = a_newIndex;
 
 		var p = determinePosition(index);
-		TweenLite.to(this, effectMoveDuration, {_x: p[0], _y: p[1], overwrite: 0, easing: Linear.easeNone});
+
+		Tween.LinearTween(this, "_x", this._x, p[0], effectMoveDuration, null);
+		Tween.LinearTween(this, "_y", this._y, p[1], effectMoveDuration, null);
 	}
 
   /* PRIVATE FUNCTIONS */
@@ -149,7 +151,7 @@ class skyui.widgets.activeeffects.ActiveEffectsGroup extends MovieClip
 	/*
 	private function remove(): Void
 	{
-	TweenLite.to(this, effectFadeOutDuration, {_alpha: 0, onCompleteScope: this, onComplete: dispatchEvent, onCompleteParams: [{type: "groupRemoved"}], overwrite: 2, easing: Linear.easeNone});
+		Tween.LinearTween(this, "_alpha", 100, 0, effectFadeOutDuration, Delegate.create(this, function() {dispatchEvent({type: "groupRemoved"})}));
 	}
 	*/
 }

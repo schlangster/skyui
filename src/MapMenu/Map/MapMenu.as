@@ -99,7 +99,7 @@ class Map.MapMenu
 	public var MarkerDescriptionObj: MovieClip;
 	
 	// @API
-	public var PlayerLocationMarkerType: String;
+	public var PlayerLocationMarkerType: Number;
 	
 	// @API
 	public var MarkerData: Array;
@@ -212,43 +212,36 @@ class Map.MapMenu
 			return;
 			
 		var i = 0;
-		var j = _nextCreateIndex * Map.MapMenu.CREATE_STRIDE;
+		var idx = _nextCreateIndex * CREATE_STRIDE;
 		
 		var markersLen = _markerList.length;
 		var dataLen = MarkerData.length;
 			
-		while (_nextCreateIndex < markersLen && j < dataLen && i < Map.MapMenu.MARKER_CREATE_PER_FRAME) {
-			var markerType = MarkerData[j + Map.MapMenu.CREATE_ICONTYPE];
-			var markerName = MarkerData[j + Map.MapMenu.CREATE_NAME];
-			var isUndiscovered = MarkerData[j + Map.MapMenu.CREATE_UNDISCOVERED];
+		while (_nextCreateIndex < markersLen && idx < dataLen && i < MARKER_CREATE_PER_FRAME) {
+			var markerType = MarkerData[idx + CREATE_ICONTYPE];
+			var markerName = MarkerData[idx + CREATE_NAME];
+			var isUndiscovered = MarkerData[idx + CREATE_UNDISCOVERED];
 			
-			var mapMarker: MovieClip = _markerContainer.attachMovie(Map.MapMarker.ICON_TYPES[markerType], "Marker" + _nextCreateIndex, _nextCreateIndex);
+			var mapMarker: MovieClip = _markerContainer.attachMovie("MapMarker", "Marker" + _nextCreateIndex, _nextCreateIndex, {markerType: markerType, isUndiscovered: isUndiscovered});
 			_markerList[_nextCreateIndex] = mapMarker;
 			
 			if (markerType == PlayerLocationMarkerType) {
-				YouAreHereMarker = mapMarker.Icon;
+				YouAreHereMarker = mapMarker.IconClip;
 			}
 			mapMarker.index = _nextCreateIndex;
-			mapMarker.label = markerName;				
-			mapMarker.textField._visible = false;
+			mapMarker.label = markerName;
 			mapMarker.visible = false;
-			mapMarker.iconType = markerType;
 			
-			// Adding the markers directly so we don't have to create data objects.
+			// Adding the markers directly so we don't have to create data obidxects.
 			// NOTE: Make sure internal entry properties (mappedIndex etc) dont conflict with marker properties
 			if (0 < markerType && markerType < Map.LocationFinder.TYPE_RANGE) {
 				_locationFinder.list.entryList.push(mapMarker);
 			}
 			
-			if (isUndiscovered && mapMarker.IconClip != undefined) {
-				var depth: Number = mapMarker.IconClip.getNextHighestDepth();
-				mapMarker.IconClip.attachMovie(Map.MapMarker.ICON_TYPES[markerType] + "Undiscovered", "UndiscoveredIcon", depth);
-			}
-			
-			++i;
-			++_nextCreateIndex;
-			
-			j = j + Map.MapMenu.CREATE_STRIDE;
+			i++;
+			_nextCreateIndex++;
+
+			idx += CREATE_STRIDE;
 		}
 		
 		_locationFinder.list.InvalidateData();
@@ -263,20 +256,20 @@ class Map.MapMenu
 	public function RefreshMarkers(): Void
 	{
 		var i: Number = 0;
-		var j: Number = 0;
+		var idx: Number = 0;
 		var markersLen: Number = _markerList.length;
 		var dataLen: Number = MarkerData.length;
 		
-		while (i < markersLen && j < dataLen) {
+		while (i < markersLen && idx < dataLen) {
 			var marker: MovieClip = _markerList[i];
-			marker._visible = MarkerData[j + Map.MapMenu.REFRESH_SHOW];
+			marker._visible = MarkerData[idx + REFRESH_SHOW];
 			if (marker._visible) {
-				marker._x = MarkerData[j + Map.MapMenu.REFRESH_X] * _mapWidth;
-				marker._y = MarkerData[j + Map.MapMenu.REFRESH_Y] * _mapHeight;
-				marker._rotation = MarkerData[j + Map.MapMenu.REFRESH_ROTATION];
+				marker._x = MarkerData[idx + REFRESH_X] * _mapWidth;
+				marker._y = MarkerData[idx + REFRESH_Y] * _mapHeight;
+				marker._rotation = MarkerData[idx + REFRESH_ROTATION];
 			}
-			++i;
-			j = j + Map.MapMenu.REFRESH_STRIDE;
+			i++;
+			idx += REFRESH_STRIDE;
 		}
 		if (_selectedMarker != undefined) {
 			_markerDescriptionHolder._x = _selectedMarker._x + _markerContainer._x;
@@ -380,7 +373,7 @@ class Map.MapMenu
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
 		
-		// Find Location - L
+		// Find Location - F
 		if (_platform == ButtonChange.PLATFORM_PC) {
 			if (GlobalFunc.IsKeyPressed(details) && (details.skseKeycode == 33)) {
 				LocalMapMenu.showLocationFinder();
