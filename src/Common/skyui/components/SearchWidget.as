@@ -139,7 +139,7 @@ class skyui.components.SearchWidget extends MovieClip
 
 		refreshInput();
 
-		if (_currentInput != undefined()) {
+		if (_currentInput != undefined) {
 			dispatchEvent({type: "inputEnd", data: _currentInput});
 		} else {
 			textField.SetText(S_FILTER);
@@ -193,7 +193,7 @@ class skyui.components.SearchWidget extends MovieClip
 			clearInterval(_updateTimerId);
 			_updateTimerId = undefined;
 			
-			if (_currentInput != undefined()) {
+			if (_currentInput != undefined) {
 				dispatchEvent({type: "inputChange", data: _currentInput});
 			} else {
 				dispatchEvent({type: "inputChange", data: ""});
