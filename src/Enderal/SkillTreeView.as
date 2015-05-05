@@ -2,6 +2,8 @@
 import Shared.GlobalFunc;
 import skyui.util.GlobalFunctions;
 
+import gfx.events.EventDispatcher;
+
 class SkillTreeView extends MovieClip
 {
   /* CONSTANTS */	
@@ -10,6 +12,7 @@ class SkillTreeView extends MovieClip
 
 	public var clipPlane: MovieClip;
 	public var edgePlane: MovieClip;
+	public var background: MovieClip;
 
   /* PROPERTIES */
   
@@ -65,10 +68,21 @@ class SkillTreeView extends MovieClip
 
 		edgePlane = this.createEmptyMovieClip("edgePlane", this.getNextHighestDepth());
 		clipPlane = this.createEmptyMovieClip("clipPlane", this.getNextHighestDepth());
+		
+		EventDispatcher.initialize(this);
 	}
 	
 	
   /* PUBLIC FUNCTIONS */
+  
+	// @mixin by gfx.events.EventDispatcher
+	public var dispatchEvent: Function;
+	public var dispatchQueue: Function;
+	public var hasEventListener: Function;
+	public var addEventListener: Function;
+	public var removeEventListener: Function;
+	public var removeAllEventListeners: Function;
+	public var cleanUpEvents: Function;
   
   	public function setRootSkill(a_name: String): Void 
 	{
@@ -80,8 +94,6 @@ class SkillTreeView extends MovieClip
 	
 	private function prepareClips(a_count: Number): Void
 	{
-
-		
 		var d = a_count - _clipPool.length;
 
 		// Grow pool?
@@ -142,67 +154,21 @@ class SkillTreeView extends MovieClip
 		var rootNode = skillData[_rootName];
 		
 		collectNodes(rootNode, nodes);
-		
-		nodes.sortOn("treeLevel", Array.NUMERIC);
-		
 		prepareClips(nodes.length);
 		
-		var levelBuf  = [];
-		var curLevel  = 1;
 		var clipIndex = 0;
 
 		// Set entries
 		for (var i=0; i<nodes.length; i++) {
 			var node = nodes[i];
+			var clip = _clipPool[clipIndex++];
 			
-			// Draw nodes of previous level
-			if (curLevel != node.treeLevel) {				
-				var levelCount = levelBuf.length;
-				var levelWidth = levelCount * 100 + horizontalSpacing * Math.max(levelCount-1,0);
-				var xOffset = -(levelWidth/2);
-				var yOffset = (100 + verticalSpacing) * -curLevel;
-				
-				for (var j=0; j<levelBuf.length; j++) {
-					var node2 = levelBuf[j];
-					var clip  = _clipPool[clipIndex++];
-					
-					clip._x = xOffset;
-					clip._y = yOffset;
-					clip._visible = true;
-					clip.setData(node2);
-					node2.clip = clip;
-					
-					xOffset += 100 + horizontalSpacing;
-				}
-				
-				levelBuf.splice(0);
-				
-				curLevel = node.treeLevel;
-			}
-			
-
-			levelBuf.push(node);
-		}
-		
-		// Draw remaining nodes
-		var levelCount = levelBuf.length;
-		var levelWidth = levelCount * 100 + horizontalSpacing * Math.max(levelCount-1,0);
-		var xOffset = -(levelWidth/2);
-		var yOffset = (100 + verticalSpacing) * -curLevel;
-				
-		for (var j=0; j<levelBuf.length; j++) {
-			var node2 = levelBuf[j];
-			var clip  = _clipPool[clipIndex++];
-			
-			clip._x = xOffset;
-			clip._y = yOffset;
+			clip._x = node.position[0] / 100 * background._width;
+			clip._y = node.position[1] / 100 * -background._height;
 			clip._visible = true;
-			clip.setData(node2);
-			node2.clip = clip;
-			
-			xOffset += 100 + horizontalSpacing;
+			clip.setData(node);
+			node.clip = clip;
 		}
-		
 
 		var edgeCount = 0;
 
@@ -232,20 +198,20 @@ class SkillTreeView extends MovieClip
 				var e = _edgePool[edgeIndex++];
 				e._visible = true;
 				
-				e._x = nodeClip._x + nodeClip._width/2;
-				e._y = nodeClip._y - nodeClip._height/2;
+				e._x = nodeClip._x;
+				e._y = nodeClip._y;
 				
 				e._width = GlobalFunctions.getDistance(nodeClip, childClip);
 				e._rotation = GlobalFunctions.getAngle(nodeClip, childClip);
 			
 			}
 		}
-
 	}
 	
 	private function onSkillRollOver(a_clip: SkillTreeEntry, a_keyboardOrMouse: Number): Void
 	{
 		selectedClip = a_clip;
+		dispatchEvent({type: "selectionChange", data: a_clip.data});
 	}
 	
 	private function onSkillRollOut(a_clip: SkillTreeEntry, a_keyboardOrMouse: Number): Void
@@ -254,15 +220,13 @@ class SkillTreeView extends MovieClip
 	
 	private function onSkillPress(a_clip: SkillTreeEntry, a_keyboardOrMouse: Number): Void
 	{
-		
+		dispatchEvent({type: "itemPress", data: a_clip.data});
 	}
 	
 	private function onSkillPressAux(a_clip: SkillTreeEntry, a_keyboardOrMouse: Number, a_buttonIndex: Number): Void
 	{
-		
 	}
-
-
+	
 
   /* PRIVATE FUNCTIONS */
 }

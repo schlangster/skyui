@@ -1,7 +1,6 @@
 ; MAIN -------------------------------------------------------
 
-skillMenu.columnCount = 3
-skillMenu.classes = <myClass1, myClass2, myClass3, myClass4>
+skillMenu.classes = <myClass1, myClass2, myClass3, myClass4, myClass5, myClass6, myClass7, myClass8, myClass9>
 
 ; CLASSES -------------------------------------------------------
 
@@ -25,26 +24,59 @@ classes.myClass4.description = '$My Class 4 Description'
 classes.myClass4.iconLabel = 'my_class_2'
 classes.myClass4.rootSkill = mySkill1
 
+classes.myClass5.name = '$My Class 5'
+classes.myClass5.description = '$My Class 5 Description'
+classes.myClass5.iconLabel = 'my_class_1'
+classes.myClass5.rootSkill = mySkill1
+
+classes.myClass6.name = '$My Class 6'
+classes.myClass6.description = '$My Class 6 Description'
+classes.myClass6.iconLabel = 'my_class_2'
+classes.myClass6.rootSkill = mySkill1
+
+classes.myClass7.name = '$My Class 7'
+classes.myClass7.description = '$My Class 7 Description'
+classes.myClass7.iconLabel = 'my_class_1'
+classes.myClass7.rootSkill = mySkill1
+
+classes.myClass8.name = '$My Class 8'
+classes.myClass8.description = '$My Class 8 Description'
+classes.myClass8.iconLabel = 'my_class_2'
+classes.myClass8.rootSkill = mySkill1
+
+classes.myClass9.name = '$My Class 9'
+classes.myClass9.description = '$My Class 9 Description'
+classes.myClass9.iconLabel = 'my_class_1'
+classes.myClass9.rootSkill = mySkill1
+
 ; SKILLS -------------------------------------------------------
 
 skills.mySkill1.name = '$My Skill 1'
 skills.mySkill1.description = '$My Skill 1 Description'
 skills.mySkill1.iconLabel = 'my_skill_1'
-skills.mySkill1.treeLevel = 0
 skills.mySkill1.children = <mySkill2, mySkill3>
+skills.mySkill1.maxRank = 1
+skills.mySkill1.position = <50, 10>
+skills.mySkill1.perkListID = 0x12345678
 
 skills.mySkill2.name = '$My Skill 2'
 skills.mySkill2.description = '$My Skill 2 Description'
 skills.mySkill2.iconLabel = 'my_skill_2'
-skills.mySkill2.treeLevel = 1
 skills.mySkill2.children = <mySkill4>
+skills.mySkill2.maxRank = 1
+skills.mySkill2.position = <30, 30>
+skills.mySkill2.perkListID = 0x12345678
 
 skills.mySkill3.name = '$My Skill 3'
 skills.mySkill3.description = '$My Skill 3 Description'
-skills.mySkill3.iconLabel = 'my_skill_4'
-skills.mySkill3.treeLevel = 1
+skills.mySkill3.iconLabel = 'my_skill_3'
+skills.mySkill3.maxRank = 1
+skills.mySkill3.position = <70, 30>
+skills.mySkill3.perkListID = 0x12345678
 
 skills.mySkill4.name = '$My Skill 4'
 skills.mySkill4.description = '$My Skill 3 Description'
-skills.mySkill4.iconLabel = 'my_skill_1'
-skills.mySkill4.treeLevel = 2
+skills.mySkill4.iconLabel = 'my_skill_4'
+skills.mySkill4.maxRank = 1
+skills.mySkill4.position = <50, 50>
+skills.mySkill4.perkListID = 0x12345678
