@@ -78,7 +78,7 @@ class skyui.util.GlobalFunctions
     	_global.ASSetPropFlags(Array.prototype, ["indexOf", "equals", "contains"], 0x01, 0x00);
 	}
 
-	// Maps Unicode inputted character code to it's CP819/CP1251 character code
+	// Maps Unicode inputted character code to its CP819/CP1251 character code
 	public static function mapUnicodeChar(a_charCode: Number): Number
 	{
 		//NUMERO SIGN
