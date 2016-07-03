@@ -360,7 +360,7 @@ columns.valueWeightColumn.state1.label.text = '$V/W'
 columns.valueWeightColumn.state1.label.arrowDown = true
 columns.valueWeightColumn.state1.entry.text = @infoValueWeight
 columns.valueWeightColumn.state1.sortAttributes = <infoValueWeight, infoWeight, text>
-columns.valueWeightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
+columns.valueWeightColumn.state1.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 columns.valueWeightColumn.state2.label.text = '$V/W'
 columns.valueWeightColumn.state2.entry.text = @infoValueWeight
