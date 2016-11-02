@@ -169,11 +169,13 @@ class MessageBox extends MovieClip
 
 	private function onKeyDown(): Void
 	{
-		if (Key.getCode() == 89 && _buttons[0].ButtonText.text == "Yes") {
+		//Select yes on the key press of 'Y' or 'E' or space key.
+		if (_buttons[0].ButtonText.text == "Yes" && (Key.getCode() == 89 || Key.getCode() == 69 || Key.getCode() == Key.SPACE)) { 
 			GameDelegate.call("buttonPress", [0]);
 			return;
 		}
-		if (Key.getCode() == 78 && _buttons[1].ButtonText.text == "No") {
+		//Select no on the key press of 'N' or escape or tab key.
+		if (_buttons[1].ButtonText.text == "No" && (Key.getCode() == 78 || Key.getCode() == Key.ESCAPE || Key.getCode() == Key.TAB)) {
 			GameDelegate.call("buttonPress", [1]);
 			return;
 		}
