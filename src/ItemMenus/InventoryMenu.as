@@ -46,6 +46,24 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
 
+	function OnShow()
+	{
+		_bMenuClosing = false;
+		// TODO! Cleanup these lines ported from SkyrimVR
+		//this.iLastItemType = InventoryDefines.ICT_NONE;
+		//bottomBar._lastItemType = Inventory.ICT_NONE;
+		//ResetItemCard();
+		//itemCard.bFadedIn = false;
+		//itemCard._visible = false;
+		//inventoryLists.showPanel(false);
+		//inventoryLists.showItemsList();
+		if(!this.bFadedIn)
+		{
+			ToggleMenuFade();
+		}
+		//bottomBar.GoToDefaultFrame();
+		//bottomBar.buttonPanel.hideButtons();
+	}
 
   /* PUBLIC FUNCTIONS */
   
@@ -182,7 +200,10 @@ class InventoryMenu extends ItemMenu
 		super.onShowItemsList(event);
 		
 		if (event.index != -1)
+		{
 			updateBottomBar(true);
+			GameDelegate.call("SetShowingItemsList",[1]);
+		}
 	}
 
 	private function onItemHighlightChange(event: Object): Void
@@ -202,6 +223,7 @@ class InventoryMenu extends ItemMenu
 		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
 		
 		updateBottomBar(false);
+		GameDelegate.call("SetShowingItemsList",[0]);
 	}
 
 	// @override ItemMenu
@@ -268,7 +290,8 @@ class InventoryMenu extends ItemMenu
 	
 	private function startMenuFade(): Void
 	{
-		inventoryLists.hidePanel();
+		//inventoryLists.hidePanel();
+		//onHideItemsList({});
 		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;
