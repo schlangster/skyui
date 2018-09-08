@@ -78,7 +78,7 @@ class QuestsPage extends MovieClip
 		if (bAllowShowOnMap)
 			_showOnMapButton = _bottomBar.buttonPanel.addButton({text: "$Show on Map", controls: _showOnMapControls});
 		_bottomBar.buttonPanel.updateButtons(true);
-		
+
 		switchFocusToTitles();
 	}
 
@@ -106,20 +106,9 @@ class QuestsPage extends MovieClip
 	{
 		var bhandledInput: Boolean = false;
 		if (GlobalFunc.IsKeyPressed(details)) {
-			if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 77) && bAllowShowOnMap) 
+			if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 77) && bAllowShowOnMap)
 			{
-				var quest: Object = undefined;
-				if (ObjectiveList.selectedEntry != undefined && ObjectiveList.selectedEntry.questTargetID != undefined) {
-					quest = ObjectiveList.selectedEntry;
-				} else {
-					quest = ObjectiveList.entryList[0];
-				}
-				if (quest != undefined && quest.questTargetID != undefined) {
-					_parent._parent.CloseMenu();
-					GameDelegate.call("ShowTargetOnMap", [quest.questTargetID]);
-				} else {
-					GameDelegate.call("PlaySound", ["UIMenuCancel"]);
-				}
+				onShowMap();
 				bhandledInput = true;
 			} else if (TitleList.entryList.length > 0) {
 				if (details.navEquivalent == NavigationCode.LEFT && FocusHandler.instance.getFocus(0) != TitleList) {
@@ -135,6 +124,21 @@ class QuestsPage extends MovieClip
 			bhandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}
 		return bhandledInput;
+	}
+
+	function onShowMap() {
+		var quest: Object = undefined;
+		if (ObjectiveList.selectedEntry != undefined && ObjectiveList.selectedEntry.questTargetID != undefined) {
+			quest = ObjectiveList.selectedEntry;
+		} else {
+			quest = ObjectiveList.entryList[0];
+		}
+		if (quest != undefined && quest.questTargetID != undefined) {
+			_parent._parent.CloseMenu();
+			GameDelegate.call("ShowTargetOnMap", [quest.questTargetID]);
+		} else {
+			GameDelegate.call("PlaySound", ["UIMenuCancel"]);
+		}
 	}
 
 	private function isViewingMiscObjectives(): Boolean
@@ -236,7 +240,7 @@ class QuestsPage extends MovieClip
 		var itimeCompleted: Number = undefined;
 		var bCompleted = false;
 		var bUncompleted = false;
-		
+
 		for (var i: Number = 0; i < TitleList.entryList.length; i++) {
 			if (TitleList.entryList[i].formID == 0) {
 				// Is a misc quest
@@ -253,13 +257,13 @@ class QuestsPage extends MovieClip
 				bUncompleted = true;
 			}
 		}
-		
+
 		if (itimeCompleted != undefined && bCompleted && bUncompleted) {
 			// i.e. at least one completed and one uncompleted quest in the list
 			TitleList.entryList.push({divider: true, completed: true, timeIndex: itimeCompleted});
 		}
 		TitleList.entryList.sort(completedQuestSort);
-		
+
 		var isavedIndex: Number = 0;
 
 		for (var i: Number = 0; i < TitleList.entryList.length; i++) {
@@ -279,19 +283,19 @@ class QuestsPage extends MovieClip
 
 	function completedQuestSort(aObj1: Object, aObj2: Object): Number
 	{
-		if (!aObj1.completed && aObj2.completed) 
+		if (!aObj1.completed && aObj2.completed)
 		{
 			return -1;
 		}
-		if (aObj1.completed && !aObj2.completed) 
+		if (aObj1.completed && !aObj2.completed)
 		{
 			return 1;
 		}
-		if (aObj1.timeIndex < aObj2.timeIndex) 
+		if (aObj1.timeIndex < aObj2.timeIndex)
 		{
 			return -1;
 		}
-		if (aObj1.timeIndex > aObj2.timeIndex) 
+		if (aObj1.timeIndex > aObj2.timeIndex)
 		{
 			return 1;
 		}
@@ -317,7 +321,6 @@ class QuestsPage extends MovieClip
 				ObjectiveList.disableSelection = true;
 			}
 
-			_showOnMapButton._visible = true;
 			updateShowOnMapButtonAlpha(0);
 		} else {
 			NoQuestsText.SetText("No Active Quests");
@@ -326,10 +329,16 @@ class QuestsPage extends MovieClip
 			ObjectiveList.ClearList();
 			questTitleEndpieces._visible = false;
 			ObjectivesHeader._visible = false;
-
-			_showOnMapButton._visible = false;
 		}
+		this.UpdateButtonVisiblity();
 		ObjectiveList.InvalidateData();
+	}
+
+	function UpdateButtonVisiblity(): Void
+	{
+		var bActive = TitleList.entryList.length > 0 && TitleList.entryList.selectedEntry != null;
+		_toggleActiveButton._visible = bActive && !TitleList.selectedEntry.completed;
+		_showOnMapButton._visible = bActive && !TitleList.selectedEntry.completed && bAllowShowOnMap;
 	}
 
 	function SetDescriptionText(): Void
