@@ -556,22 +556,15 @@ class SystemPage extends MovieClip
 
 		if (iCurrentState == SystemPage.MAIN_STATE)
 		{
-			var eventIndex = event.index;
-			if(!_showModMenu && eventIndex >= SystemPage.MOD_MANAGER_BUTTON_INDEX) {
-				eventIndex++;
-			}
-			if(!_showControlsMenu && eventIndex >= SystemPage.CONTROLS_BUTTON_INDEX) {
-				eventIndex++;
-			}
-			switch (eventIndex) {
-				case 0: //SystemPage.SAVE_INDEX:
-					/* SaveLoadListHolder.isSaving = true; */
-					/* GameDelegate.call("SAVE", [SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]); */
+			var categoryName = CategoryList.entryList[event.index].text;
+
+			switch (categoryName) {
+				case "$QUICKSAVE":
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					GameDelegate.call("QuickSave", []);
 					break;
 
-				case 1:
+				case "$SAVE":
           GameDelegate.call("UseCurrentCharacterFilter",[]);
           SaveLoadListHolder.isSaving = true;
           if (SystemPage.IsOrbis(iPlatform)) {
@@ -581,32 +574,32 @@ class SystemPage extends MovieClip
           }
           break;
 
-				case 2: //SystemPage.LOAD_INDEX:
+				case "$LOAD":
 					SaveLoadListHolder.isSaving = false;
 					GameDelegate.call("LOAD", [SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]);
 					break;
 
-        case 3:
+        case "$MOD MANAGER":
           gfx.io.GameDelegate.call("ModManager",[]);
           break;
 
-				case 4: //SystemPage.SETTINGS_INDEX:
+				case "$SETTINGS":
 					StartState(SystemPage.SETTINGS_CATEGORY_STATE);
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					break;
 
-				case 5: //SystemPage.MOD_CONFIG_INDEX:
+				case "$MOD CONFIGURATION":
 					_root.QuestJournalFader.Menu_mc.ConfigPanelOpen();
 					break;
 
-				case 6: //SystemPage.CONTROLS_INDEX:
+				case "$CONTROLS":
 					if (MappingList.entryList.length == 0)
 						requestInputMappings();
 					StartState(SystemPage.INPUT_MAPPING_STATE);
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					break;
 
-				case 7: //SystemPage.HELP_INDEX:
+				case "$HELP":
 					if (HelpList.entryList.length == 0) {
 						GameDelegate.call("PopulateHelpTopics", [HelpList.entryList]);
 						HelpList.entryList.sort(doABCSort);
@@ -620,7 +613,7 @@ class SystemPage extends MovieClip
 					}
 					break;
 
-				case 8: //SystemPage.QUIT_INDEX:
+				case "$QUIT":
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 					GameDelegate.call("RequestIsOnPC", [], this, "populateQuitList");
 					break;
@@ -1405,75 +1398,41 @@ class SystemPage extends MovieClip
     }
   }
 
+	// It's not very clear what this function is supposed to do.
+	// This is a refactoring of what ships with SE, VR, and Skyui swfs.
+	// Instead of handling all possible permutations of the various settings that may
+	// affect the menu entry order, this simply puts together the correct list of
+	// items to send at runtime.
   function UpdatePermissions()
   {
-  	/*
-  	// TODO! Make sure this is working right!
   	var itemsList = CategoryList.entryList;
   	var itemsToSend = new Array();
 
-  	var matchList = ["$QUICKSAVE", "$SAVE", "$LOAD", "$MOD MANAGER", "$CONTROLS", "$QUIT"];
-  	for(var itemIdx in itemsList) {
+		// Which entries do we want to send?
+  	var matchList = ["$QUICKSAVE", "$SAVE", "$LOAD", "$SETTINGS", "$MOD MANAGER", "$CONTROLS", "$QUIT"];
+
+  	// Locate all entries specified by the matchList
+  	for(var itemIdx = 0; itemIdx < itemsList.length; itemIdx++) {
   		var item = itemsList[itemIdx];
+
 			for(var matchIdx in matchList) {
-				if(matchList[matchIdx] == item.Text) {
+				if(matchList[matchIdx] == item.text) {
 					itemsToSend.push(item);
 				}
 			}
   	}
 
+		// Send the data to the engine for... something...
+    GameDelegate.call("SetSaveDisabled", itemsToSend);
+
+		// Make sure the help item is not disabled
 		for(var itemIdx in itemsList) {
-			if("$HELP" == itemsList[itemIdx].Text) {
-				item.disabled = false;
+			if("$HELP" == itemsList[itemIdx].text) {
+				item[itemIdx].disabled = false;
 			}
 		}
 
-    GameDelegate.call("SetSaveDisabled", itemsToSend);
     CategoryList.UpdateList();
-    */
-
-    /* if(_showModMenu) */
-    /* { */
-    /* 	if(_ShowControlsMenu == true) { */
-    /*   	GameDelegate.call("SetSaveDisabled",[ */
-    /*   		CategoryList.entryList[0], */
-    /*   		CategoryList.entryList[1], */
-    /*   		CategoryList.entryList[2], */
-    /*   		CategoryList.entryList[4], */
-    /*   		CategoryList.entryList[6], */
-    /*   		CategoryList.entryList[8], */
-    /*   		false]); */
-    /*   	this.CategoryList.entryList[7].disabled = false; */
-    /*   } else { */
-    /*     GameDelegate.call("SetSaveDisabled",[ */
-    /*     	CategoryList.entryList()[0], */
-    /*     	CategoryList.entryList()[1], */
-    /*     	CategoryList.entryList()[2], */
-    /*     	CategoryList.entryList()[4], */
-    /*     	CategoryList.entryList()[6], */
-    /*     	false]); */
-    /*     this.CategoryList.entryList()[5].disabled = false; */
-    /*   } */
-    /* } else if(_ShowControlsMenu == true) { */
-    /*   GameDelegate.call("SetSaveDisabled",[ */
-    /*   	CategoryList.entryList[0], */
-    /*   	CategoryList.entryList[1], */
-    /*   	CategoryList.entryList[2], */
-    /*   	CategoryList.entryList[3], */
-    /*   	CategoryList.entryList[5], */
-    /*   	CategoryList.entryList[7], */
-    /*   	false]); */
-    /*   CategoryList.entryList[6].disabled = false; */
-    /* } else { */
-    /*   GameDelegate.call("SetSaveDisabled",[ */
-    /*   	this.CategoryList.__get__entryList()[0], */
-    /*   	this.CategoryList.__get__entryList()[1], */
-    /*   	this.CategoryList.__get__entryList()[2], */
-    /*   	this.CategoryList.__get__entryList()[3], */
-    /*   	this.CategoryList.__get__entryList()[5], */
-    /*   	false]); */
-    /*   this.CategoryList.entryList()[4].disabled = false; */
-    /* } */
   }
 
 	private function requestInputMappings(a_updateOnly: Boolean): Void
