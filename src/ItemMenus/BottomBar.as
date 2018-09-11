@@ -296,6 +296,11 @@ class BottomBar extends MovieClip
 		buttonPanel.setPlatform(a_platform, a_bPS3Switch);
 	}
 
+  function GoToDefaultFrame()
+  {
+  	// TODO! Check if the MC actually have a "default" defined
+    playerInfoCard.gotoAndStop("Default");
+  }
 
   /* PRIVATE FUNCTIONS */
 	

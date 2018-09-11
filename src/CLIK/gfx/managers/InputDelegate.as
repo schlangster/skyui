@@ -19,8 +19,13 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			
 		return _instance;
 	}
-	
-	
+
+  public function Reset()
+  {
+    _keyRepeatStateLookup = {};
+  }
+
+
   /* PRIVATE VARIABLES */
 	
 	private var _keyRepeatStateLookup: Object;

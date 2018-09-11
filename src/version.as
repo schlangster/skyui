@@ -18,12 +18,12 @@
 //	4.0				15
 //	4.1				16
 
-public static var SKYUI_RELEASE_IDX: Number		= 16;
+public static var SKYUI_RELEASE_IDX: Number		= 2018;
 
-public static var SKYUI_VERSION_MAJOR: Number	= 4;
-public static var SKYUI_VERSION_MINOR: Number	= 1;
+public static var SKYUI_VERSION_MAJOR: Number	= 5;
+public static var SKYUI_VERSION_MINOR: Number	= 2;
 
-public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR);
+public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR + " SE");
 
 //public static var SKYUI_VERSION_ALPHA: Number = 7;
 //public static var SKYUI_VERSION_STRING: String = (SKYUI_VERSION_MAJOR + "." + SKYUI_VERSION_MINOR + "-alpha" + SKYUI_VERSION_ALPHA);

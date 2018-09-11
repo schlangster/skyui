@@ -25,5 +25,5 @@
 	static var PAGE_DOWN: String = "pageDown";
 	static var PAGE_UP: String = "pageUp";
 	static var TAB: String = "tab";
-	static var SHIFT_TAB: String = "shifttab";
+	static var SHIFT_TAB: String = "tab";
 }

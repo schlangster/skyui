@@ -286,4 +286,15 @@
 		invalidateData();
 	}
 
+  function ToggleNextOrAround(evtObj)
+  {
+    if(_selectedIndex < _dataProvider.length - 1)
+    {
+      selectedIndex = selectedIndex + 1;
+    }
+    else
+    {
+      selectedIndex = 0;
+    }
+  }
 }

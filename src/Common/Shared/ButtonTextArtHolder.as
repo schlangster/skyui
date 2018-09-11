@@ -17,9 +17,15 @@ class Shared.ButtonTextArtHolder extends MovieClip
 
 	function CreateButtonArt(aInputText: TextField): String
 	{
+		return CreateButtonArtCustomSize(aInputText, 26);
+	}
+
+	function CreateButtonArtCustomSize(aInputText: TextField, aiSize: Number): String
+	{
 		var iReplacerStart: Number = aInputText.text.indexOf("[");
 		var iReplacerEnd: Number = iReplacerStart == -1 ? -1 : aInputText.text.indexOf("]", iReplacerStart);
 		var strTextWithButtons = undefined;
+		var requestedSize = aiSize;
 		if (iReplacerStart != -1 && iReplacerEnd != -1) {
 			strTextWithButtons = aInputText.text.substr(0, iReplacerStart);
 			while (iReplacerStart != -1 && iReplacerEnd != -1) {
@@ -31,7 +37,7 @@ class Shared.ButtonTextArtHolder extends MovieClip
 				} else {
 					var ButtonImage: BitmapData = BitmapData.loadBitmap(strButtonName + ".png");
 					if (ButtonImage != undefined && ButtonImage.height > 0) {
-						var iMaxHeight: Number = 26;
+						var iMaxHeight: Number = requestedSize;
 						var iScaledWidth: Number = Math.floor(iMaxHeight / ButtonImage.height * ButtonImage.width);
 						strTextWithButtons = strTextWithButtons + ("<img src=\'" + strButtonName + ".png\' vspace=\'-5\' height=\'" + iMaxHeight + "\' width=\'" + iScaledWidth + "\'>");
 					} else 	{

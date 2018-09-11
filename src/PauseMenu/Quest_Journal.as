@@ -11,30 +11,33 @@ import skyui.components.ButtonPanel;
 class Quest_Journal extends MovieClip
 {
 	#include "../version.as"
-	
+
 	var bTabsDisabled: Boolean;
-	
+
 	var iCurrentTab: Number;
-	
+
 	var BottomBar: MovieClip;
 	var BottomBar_mc: MovieClip;
-	
+
 	var PageArray: Array;
-	
+
 	public var previousTabButton: MovieClip;
 	public var nextTabButton: MovieClip;
-	var TopmostPage: MovieClip;	
+	var TopmostPage: MovieClip;
 	var QuestsFader: MovieClip;
 	var StatsFader: MovieClip;
 	var SystemFader: MovieClip;
-	
+
 	var QuestsTab: RadioButton;
 	var StatsTab: RadioButton;
 	var SystemTab: RadioButton;
 	var TabButtonGroup: ButtonGroup;
-	
+
 	var ConfigPanel: MovieClip;
 
+  public static var PAGE_QUEST: Number = 0;
+  public static var PAGE_STATS: Number = 1;
+  public static var PAGE_SYSTEM: Number = 2;
 	public static var QUESTS_TAB: Number = 0;
 	public static var STATS_TAB: Number = 1;
 	public static var SETTINGS_TAB: Number = 2;
@@ -52,26 +55,61 @@ class Quest_Journal extends MovieClip
 	{
 		GlobalFunc.SetLockFunction();
 		MovieClip(BottomBar_mc).Lock("B");
-		
+
 		ConfigPanel = _root.ConfigPanelFader.configPanel;
-		
+
 		QuestsTab.disableFocus = true;
 		StatsTab.disableFocus = true;
 		SystemTab.disableFocus = true;
-		
+
 		TabButtonGroup = ButtonGroup(QuestsTab.group);
 		TabButtonGroup.addEventListener("itemClick", this, "onTabClick");
 		TabButtonGroup.addEventListener("change", this, "onTabChange");
-		
+
 		GameDelegate.addCallBack("RestoreSavedSettings", this, "RestoreSavedSettings");
 		GameDelegate.addCallBack("onRightStickInput", this, "onRightStickInput");
 		GameDelegate.addCallBack("HideMenu", this, "DoHideMenu");
 		GameDelegate.addCallBack("ShowMenu", this, "DoShowMenu");
 		GameDelegate.addCallBack("StartCloseMenu", this, "CloseMenu");
-		
+		GameDelegate.addCallBack("OnShow", this, "OnShow");
+		GameDelegate.call("ShouldShowMod", [], this, "SetShowMod");
+
 		BottomBar_mc.InitBar();
-		
+
 		ConfigPanel.initExtensions();
+	}
+
+	function OnShow(): Void
+	{
+      QuestsTab.disableFocus = true;
+      StatsTab.disableFocus = true;
+      SystemTab.disableFocus = true;
+      QuestsTab.disabled = false;
+      StatsTab.disabled = false;
+      SystemTab.disabled = false;
+      BottomBar_mc.InitBar();
+      var pageCursor = 0;
+      while(pageCursor <= Quest_Journal.PAGE_SYSTEM)
+      {
+         var page = PageArray[pageCursor];
+         Shared.Macros.BSASSERT(page != null && page != undefined,"Unable to open page " + pageCursor);
+         Shared.Macros.BSASSERT(page.OnShow != null && page.OnShow != undefined,"page does not have OnShow function");
+         page.OnShow();
+         if(pageCursor == iCurrentTab)
+         {
+            page.startPage();
+         }
+         pageCursor = pageCursor + 1;
+      }
+      if(TopmostPage != null && TopmostPage != undefined)
+      {
+         TopmostPage.gotoAndPlay("fadeIn");
+      }
+	}
+
+	function SetShowMod(): Void
+	{
+		PageArray[Quest_Journal.PAGE_SYSTEM].SetShowMod(arguments[0]);
 	}
 
 	function RestoreSavedSettings(aiSavedTab: Number, abTabsDisabled: Boolean): Void
@@ -89,7 +127,7 @@ class Quest_Journal extends MovieClip
 
 	function SwitchPageToFront(aiTab: Number, abForceFade: Boolean): Void
 	{
-		if (TopmostPage != PageArray[iCurrentTab]._parent) 
+		if (TopmostPage != PageArray[iCurrentTab]._parent)
 		{
 			TopmostPage.gotoAndStop("hide");
 			PageArray[iCurrentTab]._parent.swapDepths(TopmostPage);
@@ -106,12 +144,18 @@ class Quest_Journal extends MovieClip
 			bHandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		}
 		if (!bHandledInput && GlobalFunc.IsKeyPressed(details, false)) {
+			var triggerLeft = NavigationCode.GAMEPAD_L2;
+			var triggerRight = NavigationCode.GAMEPAD_R2;
+			if(PageArray[Quest_Journal.PAGE_SYSTEM].GetIsRemoteDevice()) {
+				triggerLeft = NavigationCode.GAMEPAD_L1;
+				triggerRight = NavigationCode.GAMEPAD_R1;
+			}
 			if (details.navEquivalent === NavigationCode.TAB) {
 				CloseMenu();
-			} else if (details.navEquivalent === NavigationCode.GAMEPAD_L2) {
+			} else if (details.navEquivalent === triggerLeft) {
 				if (!bTabsDisabled) {
 					PageArray[iCurrentTab].endPage();
-					iCurrentTab = iCurrentTab + (details.navEquivalent == NavigationCode.GAMEPAD_L2 ? -1 : 1);
+					iCurrentTab = iCurrentTab + (details.navEquivalent == triggerLeft ? -1 : 1);
 					if (iCurrentTab == -1) {
 						iCurrentTab = TabButtonGroup.length - 1;
 					}
@@ -121,10 +165,10 @@ class Quest_Journal extends MovieClip
 					SwitchPageToFront(iCurrentTab, false);
 					TabButtonGroup.setSelectedButton(TabButtonGroup.getButtonAt(iCurrentTab));
 				}
-			} else if (details.navEquivalent === NavigationCode.GAMEPAD_R2) {
+			} else if (details.navEquivalent === triggerRight) {
 				if (!bTabsDisabled) {
 					PageArray[iCurrentTab].endPage();
-					iCurrentTab = iCurrentTab + (details.navEquivalent == NavigationCode.GAMEPAD_L2 ? -1 : 1);
+					iCurrentTab = iCurrentTab + (details.navEquivalent == triggerLeft ? -1 : 1);
 					if (iCurrentTab == -1) {
 						iCurrentTab = TabButtonGroup.length - 1;
 					}
@@ -152,9 +196,9 @@ class Quest_Journal extends MovieClip
 		if (bTabsDisabled) {
 			return;
 		}
-		
+
 		var iOldTab: Number = iCurrentTab;
-		
+
 		if (event.item == QuestsTab) {
 			iCurrentTab = 0;
 		} else if (event.item == StatsTab) {
@@ -200,7 +244,7 @@ class Quest_Journal extends MovieClip
 			}
 		}
 		BottomBar_mc.setPlatform(aiPlatform, abPS3Switch);
-			
+
 		ConfigPanel.setPlatform(aiPlatform, abPS3Switch);
 	}
 
@@ -220,7 +264,7 @@ class Quest_Journal extends MovieClip
 		StatsTab.disabled = abEnable;
 		SystemTab.disabled = abEnable;
 	}
-	
+
 	function ConfigPanelOpen(): Void
 	{
 		DisableTabs(true);
@@ -230,7 +274,7 @@ class Quest_Journal extends MovieClip
 		FocusHandler.instance.setFocus(ConfigPanel, 0);
 		ConfigPanel.startPage();
 	}
-	
+
 	function ConfigPanelClose(): Void
 	{
 		ConfigPanel.endPage();

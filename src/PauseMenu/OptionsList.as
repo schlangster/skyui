@@ -34,6 +34,7 @@ class OptionsList extends Shared.BSScrollingList
 				}
 				aEntryClip.ID = aEntryObject.ID;
 				aEntryClip.value = aEntryObject.value;
+				aEntryClip.requiresRestart = aEntryObject.requiresRestart;
 				aEntryClip.text = aEntryObject.text;
 			}
 		}
