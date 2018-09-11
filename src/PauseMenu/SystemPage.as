@@ -4,6 +4,7 @@ import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import gfx.managers.FocusHandler;
+import skyui.util.Debug;
 
 class SystemPage extends MovieClip
 {
@@ -24,14 +25,8 @@ class SystemPage extends MovieClip
 	public static var CHARACTER_LOAD_STATE: Number = 14;
 	public static var CHARACTER_SELECTION_STATE: Number = 15;
 
-	/* public static var SAVE_INDEX: Number = 0; */
-	/* public static var LOAD_INDEX: Number = 1; */
-	/* public static var SETTINGS_INDEX: Number = 2; */
 	public static var MOD_MANAGER_BUTTON_INDEX: Number = 3;
-	/* public static var CONTROLS_INDEX: Number = 4; */
-	/* public static var HELP_INDEX: Number = 5; */
-	/* public static var QUIT_INDEX: Number = 6; */
-	public static var CONTROLLER_ORBIS: Number = 3;
+	public static var CONTROLS_BUTTON_INDEX: Number = 5
 
 	var HelpButtonHolder: ButtonTextArtHolder;
 
@@ -94,9 +89,12 @@ class SystemPage extends MovieClip
 	private var _skyrimVersionBuild: Number;
 
 	private var _showModMenu: Boolean;
+	private var _showControlsMenu: Boolean;
 	private var _deleteButton: Object;
 
-
+	private var pageWasEnded: Boolean = true;
+	private var iTurnModeID: Number = undefined;
+	private var bJustRefreshedSettings: Boolean  = false;
 
 	function SystemPage()
 	{
@@ -121,20 +119,58 @@ class SystemPage extends MovieClip
 		iPlatform = 0;
 		bDefaultButtonVisible = false;
 		_showModMenu = false;
+		_showControlsMenu = false;
 	}
 
 	function GetIsRemoteDevice() {
 		return bIsRemoteDevice;
 	}
 
-	function onLoad(): Void
+	function OnShow(): Void
 	{
+		Debug.log(">> OnShow");
+		if(pageWasEnded == false) {
+			endPage();
+		}
+
+		bMenuClosing = false;
+		bUpdated = false;
+		bRemapMode = false;
+		bSettingsChanged = false;
+		bSavingSettings = false;
+		bShowKinectTunerButton = false;
+		bDefaultButtonVisible = false;
+
+		// Reset all panels and their animations (?)
+		var cursor = SystemPage.SAVE_LOAD_STATE;
+		while(cursor <= SystemPage.CHARACTER_SELECTION_STATE) {
+			GetPanelForState(cursor).gotoAndStop(1);
+			cursor++;
+		}
+
+		SystemDivider.gotoAndStop("Right");
+		HideErrorText();
+		GameDelegate.call("ShouldShowMod", [], this, "SetShowMod");
+		if(Shared.Platforms.IsUsingWands(iPlatform)) {
+			_showControlsMenu = false;
+		} else {
+			_showControlsMenu = true;
+		}
+		Debug.log("iPlatform: " + iPlatform);
+
+		/* CategoryList.clearList(); */
+		CategoryList.entryList = new Array();
 		CategoryList.entryList.push({text: "$QUICKSAVE"});
 		CategoryList.entryList.push({text: "$SAVE"});
 		CategoryList.entryList.push({text: "$LOAD"});
 		CategoryList.entryList.push({text: "$SETTINGS"});
 		CategoryList.entryList.push({text: "$MOD CONFIGURATION"});
-		CategoryList.entryList.push({text: "$CONTROLS"});
+		if(_showModMenu) {
+			CategoryList.entryList.push({text:"$MOD MANAGER"});
+		}
+		if(_showControlsMenu) {
+			CategoryList.entryList.push({text: "$CONTROLS"});
+		}
 		CategoryList.entryList.push({text: "$HELP"});
 		CategoryList.entryList.push({text: "$QUIT"});
 
@@ -144,6 +180,21 @@ class SystemPage extends MovieClip
 			return false;
 		};
 
+		if(HelpList.entryList.length != 0) {
+			HelpList.entryList = new Array();
+		}
+
+		Debug.log("<< OnShow");
+	}
+
+	static function IsOrbis(aiPlatform)
+	{
+		return aiPlatform == Shared.Platforms.CONTROLLER_ORBIS || aiPlatform == Shared.Platforms.CONTROLLER_ORBIS_MOVE;
+	}
+
+	function onLoad()
+	{
+		OnShow();
 		SaveLoadListHolder.addEventListener("saveGameSelected", this, "ConfirmSaveGame");
 		SaveLoadListHolder.addEventListener("loadGameSelected", this, "ConfirmLoadGame");
 		SaveLoadListHolder.addEventListener("saveListCharactersPopulated", this, "OnSaveListCharactersOpenSuccess");
@@ -162,7 +213,7 @@ class SystemPage extends MovieClip
 		CategoryList.addEventListener("listMovedDown", this,"onCategoryListMoveDown");
 		CategoryList.addEventListener("selectionChange", this,"onCategoryListMouseSelectionChange");
 		this.CategoryList.disableInput = true;
-		SettingsList.entryList = [{text: "$Gameplay"}, {text: "$Display"}, {text: "$Audio"}];
+		SettingsList.entryList = [{text: "$Gameplay"}, {text: "$Display"}, {text: "$Audio"}, {text: "$VR"}, {text: "$VR Performance"}];
 		SettingsList.InvalidateData();
 		SettingsList.addEventListener("itemPress", this, "onSettingsCategoryPress");
 		SettingsList.disableInput = true;
@@ -180,19 +231,18 @@ class SystemPage extends MovieClip
 		GameDelegate.addCallBack("BackOutFromLoadGame", this, "BackOutFromLoadGame");
 		GameDelegate.addCallBack("SetRemoteDevice", this, "SetRemoteDevice");
 		GameDelegate.addCallBack("UpdatePermissions", this, "UpdatePermissions");
+		GameDelegate.addCallBack("ConfirmDeleteSave", this, "ConfirmDeleteSave");
+		GameDelegate.addCallBack("StartDefaultSettingsConfirmState", this, "StartDefaultSettingsConfirmState");
+		GameDelegate.addCallBack("UpdateVRPerformanceValues", this, "UpdateVRPerformanceValues");
 	}
 
 	function SetShowMod(bshow) {
 		_showModMenu = bshow;
-    if(_showModMenu && CategoryList.entryList && CategoryList.entryList.length > 0)
-    {
-    	CategoryList.entryList.splice(SystemPage.MOD_MANAGER_BUTTON_INDEX, 0, {text:"$MOD MANAGER"});
-    	CategoryList.InvalidateData();
-    }
 	}
 
 	function startPage(): Void
 	{
+		pageWasEnded = false;
 		CategoryList.disableInput = false; // Bugfix for vanilla
 		if (!bUpdated) {
 			currentState = SystemPage.MAIN_STATE;
@@ -218,6 +268,8 @@ class SystemPage extends MovieClip
 		BottomBar_mc.buttonPanel.clearButtons();
 
 		CategoryList.disableInput = true; // Bugfix for vanilla
+
+		pageWasEnded = true;
 	}
 
 	function get currentState(): Number
@@ -243,11 +295,12 @@ class SystemPage extends MovieClip
 			TopmostPanel = Panel_mc;
 		}
 		UpdateStateFocus(aiNewState);
+		GameDelegate.call("SetJournalMenuState", [aiNewState]);
 	}
 
   function OnSaveDataEventSaveSUCCESS()
   {
-    if(this.iPlatform == SystemPage.CONTROLLER_ORBIS)
+    if(SystemPage.IsOrbis(iPlatform))
     {
       this.bMenuClosing = true;
       this.EndState();
@@ -256,7 +309,7 @@ class SystemPage extends MovieClip
 
   function OnSaveDataEventSaveCANCEL()
   {
-    if(this.iPlatform == SystemPage.CONTROLLER_ORBIS)
+    if(SystemPage.IsOrbis(iPlatform))
     {
       this.HideErrorText();
       this.EndState();
@@ -287,7 +340,7 @@ class SystemPage extends MovieClip
 			if ((details.navEquivalent == NavigationCode.GAMEPAD_L2 || details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_R2) && isConfirming()) {
 				bhandledInput = true;
 			} else if ((details.navEquivalent == NavigationCode.GAMEPAD_X || details.code == 88) && iCurrentState == SystemPage.SAVE_LOAD_STATE) {
-        if(this.iPlatform == SystemPage.CONTROLLER_ORBIS)
+        if(SystemPage.IsOrbis(iPlatform))
         {
           gfx.io.GameDelegate.call("ORBISDeleteSave",[]);
         } else {
@@ -295,7 +348,8 @@ class SystemPage extends MovieClip
 				}
 				bhandledInput = true;
 			} else if ((details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_Y || details.code == 84) && iCurrentState == SystemPage.SAVE_LOAD_STATE && !SaveLoadListHolder.isSaving) {
-            StartState(SystemPage.CHARACTER_LOAD_STATE);
+            //StartState(SystemPage.CHARACTER_LOAD_STATE);
+            StartDefaultSettingsConfirmState();
             bhandledInput = true;
       } else if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 84) && (iCurrentState == SystemPage.OPTIONS_LISTS_STATE || iCurrentState == SystemPage.INPUT_MAPPING_STATE)) {
 				ConfirmTextField.SetText("$Reset settings to default values?");
@@ -317,6 +371,8 @@ class SystemPage extends MovieClip
 
 	function onAcceptPress(): Boolean
 	{
+		Debug.log(">> onAcceptPress");
+		Debug.log("iCurrentState: " + iCurrentState);
 		var bAcceptPressed: Boolean = true;
 
 		switch (iCurrentState) {
@@ -330,7 +386,7 @@ class SystemPage extends MovieClip
 				if (SaveLoadListHolder.List_mc.disableSelection) {
 					GameDelegate.call("PlaySound", ["UIMenuOK"]);
 
-          if(this.iPlatform == SystemPage.CONTROLLER_ORBIS)
+          if(SystemPage.IsOrbis(iPlatform))
           {
             if(this.SaveLoadListHolder.isSaving)
             {
@@ -400,6 +456,8 @@ class SystemPage extends MovieClip
 				bAcceptPressed = false;
 				break;
 		}
+
+		Debug.log("<< onAcceptPress");
 		return bAcceptPressed;
 	}
 
@@ -480,6 +538,15 @@ class SystemPage extends MovieClip
 		}
 	}
 
+	function StartDefaultSettingsConfirmState(): Void
+	{
+		if(iCurrentState == SystemPage.OPTIONS_LISTS_STATE || iCurrentState == SystemPage.INPUT_MAPPING_STATE)
+		{
+			ConfirmTextField.SetText("$Reset settings to default values?");
+			StartState(SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE);
+		}
+	}
+
 	function onCategoryButtonPress(event: Object): Void
 	{
 		if (event.entry.disabled) {
@@ -491,7 +558,10 @@ class SystemPage extends MovieClip
 		{
 			var eventIndex = event.index;
 			if(!_showModMenu && eventIndex >= SystemPage.MOD_MANAGER_BUTTON_INDEX) {
-				eventIndex = eventIndex + 1;
+				eventIndex++;
+			}
+			if(!_showControlsMenu && eventIndex >= SystemPage.CONTROLS_BUTTON_INDEX) {
+				eventIndex++;
 			}
 			switch (eventIndex) {
 				case 0: //SystemPage.SAVE_INDEX:
@@ -504,7 +574,7 @@ class SystemPage extends MovieClip
 				case 1:
           GameDelegate.call("UseCurrentCharacterFilter",[]);
           SaveLoadListHolder.isSaving = true;
-          if(this.iPlatform == 3) {
+          if (SystemPage.IsOrbis(iPlatform)) {
             SaveLoadListHolder.PopulateEmptySaveList();
           } else {
             GameDelegate.call("SAVE",[SaveLoadListHolder.List_mc.entryList, SaveLoadListHolder.batchSize]);
@@ -574,6 +644,22 @@ class SystemPage extends MovieClip
 
 	function doABCSort(aObj1: Object, aObj2: Object): Number
 	{
+		if(aObj1.text.indexOf("VR ") >= 0 && aObj2.text.indexOf("VR ") >= 0)
+		{
+			if(aObj1.text < aObj2.text) {
+				return -1;
+			}
+			if(aObj1.text > aObj2.text) {
+				return 1;
+			}
+		}
+		if(aObj1.text.indexOf("VR ") >= 0) {
+		 	return -1;
+		}
+		if(aObj2.text.indexOf("VR ") >= 0) {
+			return 1;
+		}
+
 		if (aObj1.text < aObj2.text) {
 			return -1;
 		}
@@ -608,29 +694,33 @@ class SystemPage extends MovieClip
 
   function OnCharacterSelected()
   {
-    if(this.iPlatform != 3) {
+    if(!SystemPage.IsOrbis(iPlatform)) {
       StartState(SystemPage.SAVE_LOAD_STATE);
     }
   }
 
   function OnSaveListCharactersOpenSuccess()
   {
+  	Debug.log(">> OnSaveListCharacterOpenSuccess");
     if(this.SaveLoadListHolder.numSaves > 0) {
       GameDelegate.call("PlaySound",["UIMenuOK"]);
       StartState(SystemPage.CHARACTER_SELECTION_STATE);
     } else {
       GameDelegate.call("PlaySound",["UIMenuCancel"]);
     }
+  	Debug.log("<< OnSaveListCharacterOpenSuccess");
   }
 
 	function OnSaveListOpenSuccess(): Void
 	{
+		Debug.log(">> OnSaveListOpenSuccess");
 		if (SaveLoadListHolder.numSaves > 0) {
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 			StartState(SystemPage.SAVE_LOAD_STATE);
 		} else {
 			StartState(SystemPage.CHARACTER_LOAD_STATE);
 		}
+		Debug.log("<< OnSaveListOpenSuccess");
 	}
 
 	function OnSaveListBatchAdded() {
@@ -655,7 +745,7 @@ class SystemPage extends MovieClip
 	{
 		clearInterval(iSaveDelayTimerID);
 		GameDelegate.call("SaveGame", [SaveLoadListHolder.selectedIndex]);
-		if(iPlatform != SystemPage.CONTROLLER_ORBIS) {
+		if(!SystemPage.IsOrbis(iPlatform)) {
 			_parent._parent.CloseMenu();
 		}
 	}
@@ -666,7 +756,7 @@ class SystemPage extends MovieClip
 			if (_deleteButton != null) {
 				_deleteButton._alpha = ((event.index == -1) ? 50 : 100);
 			}
-			if (iPlatform == 0)
+			if (iPlatform == Shared.Platforms.CONTROLLER_PC)
 				GameDelegate.call("PlaySound", ["UIMenuFocus"]);
 		}
 	}
@@ -703,12 +793,36 @@ class SystemPage extends MovieClip
 
 		switch (SettingsList.selectedIndex) {
 			case 0:
-				List_mc.entryList = [{text: "$Invert Y", movieType: 2}, {text: "$Look Sensitivity", movieType: 0}, {text: "$Vibration", movieType: 2}, {text: "$360 Controller", movieType: 2}, {text: "$Difficulty", movieType: 1, options: ["$Very Easy", "$Easy", "$Normal", "$Hard", "$Very Hard", "$Legendary"]}, {text: "$Show Floating Markers", movieType: 2}, {text: "$Save on Rest", movieType: 2}, {text: "$Save on Wait", movieType: 2}, {text: "$Save on Travel", movieType: 2}, {text: "$Save on Pause", movieType: 1, options: ["$5 Mins", "$10 Mins", "$15 Mins", "$30 Mins", "$45 Mins", "$60 Mins", "$Disabled"]}, {text: "$Use Kinect Commands", movieType: 2}];
+				List_mc.entryList = [
+				{text: "$Invert Y", movieType: 2},
+				{text: "$Look Sensitivity", movieType: 0},
+				{text: "$Vibration", movieType: 2},
+				{text: "$360 Controller", movieType: 2},
+				{text: "$Difficulty", movieType: 1, options: ["$Very Easy", "$Easy", "$Normal", "$Hard", "$Very Hard", "$Legendary"]},
+				{text: "$Show Floating Markers", movieType: 2},
+				{text: "$Save on Rest", movieType: 2},
+				{text: "$Save on Wait", movieType: 2},
+				{text: "$Save on Travel", movieType: 2},
+				{text: "$Save on Pause", movieType: 1, options: ["$5 Mins", "$10 Mins", "$15 Mins", "$30 Mins", "$45 Mins", "$60 Mins", "$Disabled"]},
+				{text: "$Use Kinect Commands", movieType: 2}];
 				GameDelegate.call("RequestGameplayOptions", [List_mc.entryList]);
 				break;
 
 			case 1:
-				List_mc.entryList = [{text: "$Brightness", movieType: 0}, {text: "$HUD Opacity", movieType: 0}, {text: "$Actor Fade", movieType: 0}, {text: "$Item Fade", movieType: 0}, {text: "$Object Fade", movieType: 0}, {text: "$Grass Fade", movieType: 0}, {text: "$Shadow Fade", movieType: 0}, {text: "$Light Fade", movieType: 0}, {text: "$Specularity Fade", movieType: 0}, {text: "$Tree LOD Fade", movieType: 0}, {text: "$Crosshair", movieType: 2}, {text: "$Dialogue Subtitles", movieType: 2}, {text: "$General Subtitles", movieType: 2}];
+				List_mc.entryList = [
+				{text: "$Brightness", movieType: 0},
+				{text: "$HUD Opacity", movieType: 0},
+				{text: "$Actor Fade", movieType: 0},
+				{text: "$Item Fade", movieType: 0},
+				{text: "$Object Fade", movieType: 0},
+				{text: "$Grass Fade", movieType: 0},
+				{text: "$Shadow Fade", movieType: 0},
+				{text: "$Light Fade", movieType: 0},
+				{text: "$Specularity Fade", movieType: 0},
+				{text: "$Tree LOD Fade", movieType: 0},
+				{text: "$Crosshair", movieType: 2},
+				{text: "$Dialogue Subtitles", movieType: 2},
+				{text: "$General Subtitles", movieType: 2}];
 				GameDelegate.call("RequestDisplayOptions", [List_mc.entryList]);
 				break;
 
@@ -717,6 +831,34 @@ class SystemPage extends MovieClip
 				GameDelegate.call("RequestAudioOptions", [List_mc.entryList]);
 				for (var i: String in List_mc.entryList)
 					List_mc.entryList[i].movieType = 0;
+				break;
+
+			case 3:
+				List_mc.entryList = [
+				{text:"$Turning Mode",movieType:1,options:["$Snap","$Smooth"]},
+				{text:"$Snap Transition",movieType:1,options:["$Gradual","$Instant"]},
+				{text:"$Angle Snap Amount",movieType:0},
+				{text:"$Rotation Speed",movieType:0},
+				{text:"$Movement Mode",movieType:1,options:["$Teleportation","$Direct Movement"]},
+				{text:"$Direct Movement Mode",movieType:1,options:["$HMD Relative","$Wand Relative"]},
+				{text:"$Compass Position",movieType:1,options:["$Compass Low","$Compass High","$Compass Off"]},
+				{text:"$Main Hand",movieType:1,options:["$Right","$Left"]},
+				{text:"$Show Hands While Sheathed",movieType:2},
+				{text:"$Height",movieType:0},
+				{text:"$Movement Speed",movieType:0},
+				{text:"$Crosshair",movieType:2},
+				{text:"$Physical Sneaking",movieType:2},
+				{text:"$Realistic Swimming",movieType:2},
+				{text:"$Realistic Shield Grip",movieType:2},
+				{text:"$Realistic Bow",movieType:2},
+				{text:"$FOV Filter While Turning",movieType:2},
+				{text:"$FOV Filter While Moving",movieType:2},
+				{text:"$FOV Filter Strength",movieType:0}];
+				GameDelegate.call("RequestVROptions", [List_mc.entryList]);
+				break;
+
+			case 4:
+				GameDelegate.call("RequestVRPerformanceOptions", [List_mc.entryList]);
 				break;
 		}
 
@@ -728,16 +870,103 @@ class SystemPage extends MovieClip
 			}
 		}
 
-		if (iPlatform != 0) {
+		if (iPlatform != Shared.Platforms.CONTROLLER_PC) {
 			List_mc.selectedIndex = 0;
 		}
 
+		List_mc.bAllowValueOverwrite = true;
 		List_mc.InvalidateData();
+		List_mc.bAllowValueOverwrite = false;
 		SettingsPanel.bCloseToMainState = false;
 		EndState();
 		StartState(SystemPage.OPTIONS_LISTS_STATE);
 		GameDelegate.call("PlaySound", ["UIMenuOK"]);
 		bSettingsChanged = true;
+		GameDelegate.call("RequestTurnModeID", [], this, "SetTurningModeID");
+
+		var i = 0;
+		var item = List_mc["Entry" + i];
+		while(item != undefined) {
+			item.SetOnChangedCAllback(this, "OnOptionValueChanged");
+			i++;
+			item = List_mc["Entry" + i];
+		}
+	}
+
+	function SetTurningModeID(afID)
+	{
+		iTurnModeID = afID;
+	}
+
+	function OnOptionValueChanged(aObject)
+	{
+		if(aObject.ID == this.iTurnModeID)
+		{
+			GameDelegate.call("GetGradualSpeedData", [], this, "UpdateGradualSpeed");
+		}
+	}
+
+	function UpdateGradualSpeed(afValue, afDefaultValue, afGradualSpeedID)
+	{
+		if(SettingsList.selectedIndex == 3) {
+
+			var List_mc: MovieClip = OptionsListsPanel.OptionsLists.List_mc;
+			if(List_mc != null && List_mc != undefined) {
+				var i = 0;
+				while(i < List_mc.entryList.length) {
+					if(List_mc.entryList[i].ID == afGradualSpeedID) {
+						List_mc.entryList[i].value = afValue;
+						List_mc.entryList[i].defaultVal = afDefaultValue;
+						if(List_mc.entryList[i].clipIndex != undefined) {
+							List_mc["Entry" + List_mc.entryList[i].clipIndex].value = afValue;
+						}
+						return;
+					}
+					i++;
+				}
+			}
+		}
+	}
+
+	function UpdateVRPerformanceValues()
+	{
+		bJustRefreshedSettings = true;
+		if(SettingsList.selectedIndex == 4)
+		{
+			var List_mc: MovieClip = OptionsListsPanel.OptionsLists.List_mc;
+			if(List_mc != null && List_mc != undefined) {
+
+				// Grab the value of the performance options
+				var optionValues = new Array();
+				GameDelegate.call("RequestVRPerformanceOptions", [optionValues]);
+
+				// Go through each item in the entry list
+				var i = 0;
+				while(i < List_mc.entryList.length) {
+					var optionIdx = -1;
+					var j = 0;
+
+					// Try to find a matching entry in the optionsValues array
+					while(j < optionValues.length) {
+						if(optionValues[j].ID == List_mc.entryList[i].ID) {
+							optionIdx = j;
+							break;
+						}
+						j++
+					}
+
+					// If a matching entry is found, copy the current value into List_mc
+					if(optionIdx >= 0) {
+						List_mc.entryList[i].value = optionValues[optionIdx].value;
+						List_mc.entryList[i].defaultVal = optionValues[optionIdx].defaultVal;
+					}
+					i++;
+				}
+				List_mc.bAllowVAlueOverwrite = true;
+				List_mc.UpdateList();
+				List_mc.bAllowVAlueOverwrite = false;
+			}
+		}
 	}
 
 	function ResetSettingsToDefaults(): Void
@@ -749,6 +978,7 @@ class SystemPage extends MovieClip
 				GameDelegate.call("OptionChange", [List_mc.entryList[i].ID, List_mc.entryList[i].value]);
 			}
 		}
+		GameDelegate.call("OnresetToDefault", []);
 		List_mc.bAllowValueOverwrite = true;
 		List_mc.UpdateList();
 		List_mc.bAllowValueOverwrite = false;
@@ -821,6 +1051,7 @@ class SystemPage extends MovieClip
 	function onHelpItemPress(): Void
 	{
 		GameDelegate.call("RequestHelpText", [HelpList.selectedEntry.index, HelpTitleText, HelpText]);
+		HelpText.text = Shared.ExtractPlatformText.Extract(HelpText.text, iPlatform);
 		ApplyHelpTextButtonArt();
 		HelpListPanel.bCloseToMainState = false;
 		EndState();
@@ -829,7 +1060,7 @@ class SystemPage extends MovieClip
 
 	function ApplyHelpTextButtonArt(): Void
 	{
-		var strTextWithButtons: String = HelpButtonHolder.CreateButtonArt(HelpText.textField);
+		var strTextWithButtons: String = HelpButtonHolder.CreateButtonArtCustomSize(HelpText.textField, 32);
 		if (strTextWithButtons != undefined)
 			HelpText.htmlText = strTextWithButtons;
 	}
@@ -837,7 +1068,7 @@ class SystemPage extends MovieClip
 	function populateQuitList(abOnPC: Boolean): Void
 	{
 		if (abOnPC) {
-			if (iPlatform != 0) {
+			if (iPlatform != Shared.Platforms.CONTROLLER_PC) {
 				PCQuitList.selectedIndex = 0;
 			}
 			StartState(SystemPage.PC_QUIT_LIST_STATE);
@@ -886,12 +1117,17 @@ class SystemPage extends MovieClip
 
 	function RefreshSystemButtons()
 	{
-    if(_showModMenu)
-    {
-      GameDelegate.call("SetSaveDisabled",[CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[4], CategoryList.entryList[6], CategoryList.entryList[8], true]);
-    } else {
-     	GameDelegate.call("SetSaveDisabled",[CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5], CategoryList.entryList[7], true]);
-    }
+		var params = new Array();
+		var i = 0;
+		while(i < CategoryList.entryList.length) {
+			if( i != CategoryList.entryList.length - 2) {
+				params.push(CategoryList.entryList[i]);
+			}
+			i++;
+		}
+    params.push(true);
+
+    GameDelegate.call("SetSaveDisabled", params)
 		CategoryList.UpdateList();
 	}
 
@@ -974,7 +1210,7 @@ class SystemPage extends MovieClip
 			case SystemPage.SAVE_LOAD_STATE:
 			case SystemPage.INPUT_MAPPING_STATE:
       case SystemPage.HELP_TEXT_STATE:
-        if(this.iPlatform != SystemPage.CONTROLLER_ORBIS)
+        if(!SystemPage.IsOrbis(iPlatform))
         {
 					SystemDivider.gotoAndStop("Right");
         }
@@ -1079,6 +1315,7 @@ class SystemPage extends MovieClip
 			case SystemPage.PC_QUIT_CONFIRM_STATE:
 			case SystemPage.DELETE_SAVE_CONFIRM_STATE:
 			case SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE:
+				ConfirmPanel._visible = true;
 				FocusHandler.instance.setFocus(ConfirmPanel, 0);
 				break;
 
@@ -1098,13 +1335,23 @@ class SystemPage extends MovieClip
 		}
 	}
 
+	function Exists(apObject)
+	{
+		return apObject != null && apObject != undefined;
+	}
+
 	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
+		if(bJustRefreshedSettings) {
+			bJustRefreshedSettings = false;
+			return;
+		}
+
 		BottomBar_mc.SetPlatform(a_platform, a_bPS3Switch);
 		CategoryList.SetPlatform(a_platform, a_bPS3Switch);
 
 
-		if (a_platform != 0) {
+		if (a_platform != Shared.Platforms.CONTROLLER_PC) {
 			SettingsList.selectedIndex = 0;
 			PCQuitList.selectedIndex = 0;
 			HelpList.selectedIndex = 0;
@@ -1160,17 +1407,73 @@ class SystemPage extends MovieClip
 
   function UpdatePermissions()
   {
-    if(_showModMenu)
-    {
-      GameDelegate.call("SetSaveDisabled",[CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[4], CategoryList.entryList[6], CategoryList.entryList[8], false]);
-      this.CategoryList.entryList[7].disabled = false;
-    }
-    else
-    {
-      GameDelegate.call("SetSaveDisabled",[CategoryList.entryList[0], CategoryList.entryList[1], CategoryList.entryList[2], CategoryList.entryList[3], CategoryList.entryList[5], CategoryList.entryList[7], false]);
-      CategoryList.entryList[6].disabled = false;
-    }
+  	/*
+  	// TODO! Make sure this is working right!
+  	var itemsList = CategoryList.entryList;
+  	var itemsToSend = new Array();
+
+  	var matchList = ["$QUICKSAVE", "$SAVE", "$LOAD", "$MOD MANAGER", "$CONTROLS", "$QUIT"];
+  	for(var itemIdx in itemsList) {
+  		var item = itemsList[itemIdx];
+			for(var matchIdx in matchList) {
+				if(matchList[matchIdx] == item.Text) {
+					itemsToSend.push(item);
+				}
+			}
+  	}
+
+		for(var itemIdx in itemsList) {
+			if("$HELP" == itemsList[itemIdx].Text) {
+				item.disabled = false;
+			}
+		}
+
+    GameDelegate.call("SetSaveDisabled", itemsToSend);
     CategoryList.UpdateList();
+    */
+
+    /* if(_showModMenu) */
+    /* { */
+    /* 	if(_ShowControlsMenu == true) { */
+    /*   	GameDelegate.call("SetSaveDisabled",[ */
+    /*   		CategoryList.entryList[0], */
+    /*   		CategoryList.entryList[1], */
+    /*   		CategoryList.entryList[2], */
+    /*   		CategoryList.entryList[4], */
+    /*   		CategoryList.entryList[6], */
+    /*   		CategoryList.entryList[8], */
+    /*   		false]); */
+    /*   	this.CategoryList.entryList[7].disabled = false; */
+    /*   } else { */
+    /*     GameDelegate.call("SetSaveDisabled",[ */
+    /*     	CategoryList.entryList()[0], */
+    /*     	CategoryList.entryList()[1], */
+    /*     	CategoryList.entryList()[2], */
+    /*     	CategoryList.entryList()[4], */
+    /*     	CategoryList.entryList()[6], */
+    /*     	false]); */
+    /*     this.CategoryList.entryList()[5].disabled = false; */
+    /*   } */
+    /* } else if(_ShowControlsMenu == true) { */
+    /*   GameDelegate.call("SetSaveDisabled",[ */
+    /*   	CategoryList.entryList[0], */
+    /*   	CategoryList.entryList[1], */
+    /*   	CategoryList.entryList[2], */
+    /*   	CategoryList.entryList[3], */
+    /*   	CategoryList.entryList[5], */
+    /*   	CategoryList.entryList[7], */
+    /*   	false]); */
+    /*   CategoryList.entryList[6].disabled = false; */
+    /* } else { */
+    /*   GameDelegate.call("SetSaveDisabled",[ */
+    /*   	this.CategoryList.__get__entryList()[0], */
+    /*   	this.CategoryList.__get__entryList()[1], */
+    /*   	this.CategoryList.__get__entryList()[2], */
+    /*   	this.CategoryList.__get__entryList()[3], */
+    /*   	this.CategoryList.__get__entryList()[5], */
+    /*   	false]); */
+    /*   this.CategoryList.entryList()[4].disabled = false; */
+    /* } */
   }
 
 	private function requestInputMappings(a_updateOnly: Boolean): Void

@@ -8,6 +8,7 @@ class StatsPage extends MovieClip
 	var StatsList_mc: MovieClip;
 	var _StatsList: MovieClip;
 	var bUpdated: Boolean;
+	var iPlatform: Number;
 
 	function StatsPage()
 	{
@@ -15,6 +16,21 @@ class StatsPage extends MovieClip
 		CategoryList = CategoryList_mc.List_mc;
 		_StatsList = StatsList_mc;
 		bUpdated = false;
+	}
+
+	function OnShow(): Void
+	{
+		bUpdated = false;
+		var STAT_ENTRYLISTINDEX = 2;
+		var STAT_STRIDE = 4;
+		var cursor = 0;
+		while(cursor < arguments.length)
+		{
+			CategoryList.entryList[arguments[cursor + STAT_ENTRYLISTINDEX]].stats.length = 0;
+			cursor = cursor + STAT_STRIDE;
+		}
+		CategoryList.InvalidateData();
+		onLoad();
 	}
 
 	function onLoad(): Void
@@ -115,6 +131,7 @@ class StatsPage extends MovieClip
 	{
 		CategoryList.SetPlatform(aiPlatform, abPS3Switch);
 		_StatsList.SetPlatform(aiPlatform, abPS3Switch);
+		iPlatform = aiPlatform;
 	}
 
 }

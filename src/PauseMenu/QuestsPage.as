@@ -47,6 +47,14 @@ class QuestsPage extends MovieClip
 		_bottomBar = _parent._parent.BottomBar_mc;
 	}
 
+	function OnShow()
+	{
+		bUpdated = false;
+		bHasMiscQuests = false;
+		TitleList.entryList = new Array();
+		TitleList.InvalidateData();
+	}
+
 	function onLoad()
 	{
 		QuestTitleText.SetText(" ");

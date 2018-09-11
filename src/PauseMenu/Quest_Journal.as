@@ -71,11 +71,40 @@ class Quest_Journal extends MovieClip
 		GameDelegate.addCallBack("HideMenu", this, "DoHideMenu");
 		GameDelegate.addCallBack("ShowMenu", this, "DoShowMenu");
 		GameDelegate.addCallBack("StartCloseMenu", this, "CloseMenu");
+		GameDelegate.addCallBack("OnShow", this, "OnShow");
 		GameDelegate.call("ShouldShowMod", [], this, "SetShowMod");
 
 		BottomBar_mc.InitBar();
 
 		ConfigPanel.initExtensions();
+	}
+
+	function OnShow(): Void
+	{
+      QuestsTab.disableFocus = true;
+      StatsTab.disableFocus = true;
+      SystemTab.disableFocus = true;
+      QuestsTab.disabled = false;
+      StatsTab.disabled = false;
+      SystemTab.disabled = false;
+      BottomBar_mc.InitBar();
+      var pageCursor = 0;
+      while(pageCursor <= Quest_Journal.PAGE_SYSTEM)
+      {
+         var page = PageArray[pageCursor];
+         Shared.Macros.BSASSERT(page != null && page != undefined,"Unable to open page " + pageCursor);
+         Shared.Macros.BSASSERT(page.OnShow != null && page.OnShow != undefined,"page does not have OnShow function");
+         page.OnShow();
+         if(pageCursor == iCurrentTab)
+         {
+            page.startPage();
+         }
+         pageCursor = pageCursor + 1;
+      }
+      if(TopmostPage != null && TopmostPage != undefined)
+      {
+         TopmostPage.gotoAndPlay("fadeIn");
+      }
 	}
 
 	function SetShowMod(): Void

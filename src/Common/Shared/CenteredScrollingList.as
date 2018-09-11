@@ -112,9 +112,9 @@ class Shared.CenteredScrollingList extends Shared.BSScrollingList
 		for (var i: Number = 0; i < EntriesA.length; i++)
 			if (IsDivider(EntriesA[i]))
 				iDividerIndex = i;
-		
-		
-		if (bRecenterSelection || iPlatform != 0)
+
+
+		if (bRecenterSelection || iPlatform != Shared.Platforms.CONTROLLER_PC)
 			iSelectedIndex = -1;
 		else
 			iSelectedIndex = filterer.ClampIndex(iSelectedIndex);
@@ -146,8 +146,8 @@ class Shared.CenteredScrollingList extends Shared.BSScrollingList
 			iHeightSum = iHeightSum + item._height;
 			++iListItemsShown;
 		}
-		
-		if (iEntryIndex != undefined && (bRecenterSelection || iPlatform != 0))
+
+		if (iEntryIndex != undefined && (bRecenterSelection || iPlatform != Shared.Platforms.CONTROLLER_PC))
 			iSelectedIndex = iEntryIndex;
 		
 		
@@ -281,8 +281,8 @@ class Shared.CenteredScrollingList extends Shared.BSScrollingList
 				aEntryClip.gotoAndStop("Divider");
 			else
 				aEntryClip.gotoAndStop("Normal");
-				
-			if (iPlatform == 0) {
+
+			if (iPlatform == Shared.Platforms.CONTROLLER_PC) {
 				aEntryClip._alpha = aEntryObject == selectedEntry ? 100 : 60;
 			} else {
 				var iAlphaMulti: Number = 4;
