@@ -2,6 +2,7 @@
 import gfx.controls.Button;
 import skyui.defines.Input;
 import skyui.util.GlobalFunctions;
+import skyui.util.ButtonArtNames;
 
 class skyui.components.MappedButton extends Button
 {
@@ -122,11 +123,7 @@ class skyui.components.MappedButton extends Button
 			if (controlInfo == null)
 				continue;
 
-			// If the caller isn't asking for a specific icon by name,
-			// it may need to have its keyCode resolved so we can
-			// look up the icon later.
-			if(controlInfo.namedIcon == null)
-				resolveControlInfoKeyCode(controlInfo);
+			resolveControlInfoKeyCode(controlInfo);
 
 			_controlInfos.push(controlInfo);
 		}
@@ -136,18 +133,23 @@ class skyui.components.MappedButton extends Button
 
 	private function resolveControlInfoKeyCode(controlInfo: Object): Void
 	{
-		var foundKeyCode = false;
+		var keyCode = null;
 
-		// Setting keycode manually overrides auto-detection
-		if (controlInfo.keyCode != null) {
-			foundKeyCode = true;
+		if (controlInfo.namedKey != null) {
+			keyCode = ButtonArtNames.lookup(namedKey);
+
+		} else if (controlInfo.keyCode != null) {
+			keyCode = controlInfo.keyCode;
+
 		} else {
 			var name: String = String(controlInfo.name);
 			var context: Number = Number(controlInfo.context);
 			keyCode = GlobalFunctions.getMappedKey(name, context, _platform != 0);
 		}
 
-		if (!foundKeyCode)
+		if (keyCode != null)
+			controlInfo.keyCode = keyCode;
+		else
 			controlInfo.keyCode = 282; // ???
 	}
 
