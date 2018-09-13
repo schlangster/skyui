@@ -409,9 +409,9 @@ class QuestsPage extends MovieClip
 			_showOnMapControls = {keyCode: 50}; // M
 			_deleteControls = {keyCode: 45}; // X
 		} else {
-			_toggleActiveControls = {keyCode: 276}; // 360_A
-			_showOnMapControls = {keyCode: 278}; // 360_X
-			_deleteControls = {keyCode: 278}; // 360_X
+			_toggleActiveControls = {namedKey: "360_B"};
+			_showOnMapControls = {namedKey: "360_X"};
+			_deleteControls = {namedKey: "360_X"};
 		}
 
 		iPlatform = a_platform;

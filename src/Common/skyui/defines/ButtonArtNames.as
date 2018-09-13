@@ -1,4 +1,3 @@
-
 // Provides a mapping from keyname => keycode
 // The keyCodes correspond directly to the animation/timeline frames in ButtonArt.
 class skyui.defines.ButtonArtNames
@@ -7,11 +6,16 @@ class skyui.defines.ButtonArtNames
 
 	private static function nameMap(): Object
 	{
-		if(_buttonNameMap != null && _buttonNameMap != undefined) {
-			return _buttonNameMap;
+		if(_buttonNameMap == null || _buttonNameMap == undefined) {
+			_buttonNameMap = constructNameMap();
 		}
 
-		var nameMap = {
+		return _buttonNameMap;
+	}
+
+	public static function constructNameMap(): Object
+	{
+		var aNameMap = {
 			esc:			1,
 			//1:				2,
 			//2:				3,
@@ -152,9 +156,9 @@ class skyui.defines.ButtonArtNames
 			ps3_rt:			281
 		};
 
-		insertAdditionalNames(nameMap);
+		insertAdditionalNames(aNameMap);
 
-		insertNamesStartingAtKeyCode(nameMap, 325, [
+		insertNamesStartingAtKeyCode(aNameMap, 325, [
 	  	// 325 - 329
 			"360_Y", "360_X", "360_Start", "360_RS", "360_RB",
 
@@ -207,53 +211,55 @@ class skyui.defines.ButtonArtNames
 			// 450 - 455
 			"PS3_AB_RIGHT", "PS3_AB_LEFT", "PS3_AB", "PS3_A_RIGHT", "PS3_A_LEFT", "PS3_A"
 		]);
+		return aNameMap;
 	}
 
 	public static function lookup(keyName: String): Number
 	{
-		var nameMap = nameMap();
-		return nameMap[keyName.toLowerCase()];
+		var aNameMap = nameMap();
+		return aNameMap[keyName.toLowerCase()];
 	}
 
 
-	private static function insertAdditionalNames(nameMap: Object): Void
+	private static function insertAdditionalNames(aNameMap: Object): Void
 	{
 		// These Button names can't be set in the object constructor since they're 'invalid' names
-		nameMap["1"]			= 2;
-		nameMap["2"]			= 3;
-		nameMap["3"]			= 4;
-		nameMap["4"]			= 5;
-		nameMap["5"]			= 6;
-		nameMap["6"]			= 7;
-		nameMap["7"]			= 8;
-		nameMap["8"]			= 9;
-		nameMap["9"]			= 10;
-		nameMap["0"]			= 11;
-		nameMap["l-ctrl"]	= 29;
-		nameMap["l-shift"]	= 42;
-		nameMap["r-shift"]	= 54;
-		nameMap["l-alt"]		= 56;
-		nameMap["r-ctrl"]	= 157;
-		nameMap["r-alt"]		= 184;
-		nameMap["delete"]	= 211;
-		nameMap["360_start"]	= 270;
-		nameMap["360_back"]	= 271;
-		nameMap["360_l3"]	= 272;
-		nameMap["360_r3"]	= 273;
-		nameMap["360_lb"]	= 274;
-		nameMap["360_rb"]	= 275;
-		nameMap["360_a"]		= 276;
-		nameMap["360_b"]		= 277;
-		nameMap["360_x"]		= 278;
-		nameMap["360_y"]		= 279;
-		nameMap["360_lt"]	= 280;
-		nameMap["360_rt"]	= 281;
+		aNameMap["1"]			= 2;
+		aNameMap["2"]			= 3;
+		aNameMap["3"]			= 4;
+		aNameMap["4"]			= 5;
+		aNameMap["5"]			= 6;
+		aNameMap["6"]			= 7;
+		aNameMap["7"]			= 8;
+		aNameMap["8"]			= 9;
+		aNameMap["9"]			= 10;
+		aNameMap["0"]			= 11;
+		aNameMap["l-ctrl"]	= 29;
+		aNameMap["l-shift"]	= 42;
+		aNameMap["r-shift"]	= 54;
+		aNameMap["l-alt"]		= 56;
+		aNameMap["r-ctrl"]	= 157;
+		aNameMap["r-alt"]		= 184;
+		aNameMap["delete"]	= 211;
+		aNameMap["360_start"]	= 270;
+		aNameMap["360_back"]	= 271;
+		aNameMap["360_l3"]	= 272;
+		aNameMap["360_r3"]	= 273;
+		aNameMap["360_lb"]	= 274;
+		aNameMap["360_rb"]	= 275;
+		aNameMap["360_a"]		= 276;
+		aNameMap["360_b"]		= 277;
+		aNameMap["360_x"]		= 278;
+		aNameMap["360_y"]		= 279;
+		aNameMap["360_lt"]	= 280;
+		aNameMap["360_rt"]	= 281;
+		aNameMap["???"]			= 282;
 	}
 
-	private static function insertNamesStartingAtKeyCode(nameMap: Object, startKeyCode: Number, namesArr: Array): Void
+	private static function insertNamesStartingAtKeyCode(aNameMap: Object, startKeyCode: Number, namesArr: Array): Void
 	{
 		for(var i = 0; i < namesArr.length; i++) {
-			nameMap[ namesArr[i].toLowerCase() ] = i + startKeyCode;
+			aNameMap[ namesArr[i].toLowerCase() ] = i + startKeyCode;
 		}
 	}
 }

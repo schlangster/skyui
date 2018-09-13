@@ -2,7 +2,7 @@
 import gfx.controls.Button;
 import skyui.defines.Input;
 import skyui.util.GlobalFunctions;
-import skyui.util.ButtonArtNames;
+import skyui.defines.ButtonArtNames;
 
 class skyui.components.MappedButton extends Button
 {
@@ -136,7 +136,7 @@ class skyui.components.MappedButton extends Button
 		var keyCode = null;
 
 		if (controlInfo.namedKey != null) {
-			keyCode = ButtonArtNames.lookup(namedKey);
+			keyCode = ButtonArtNames.lookup(controlInfo.namedKey);
 
 		} else if (controlInfo.keyCode != null) {
 			keyCode = controlInfo.keyCode;
