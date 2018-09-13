@@ -1333,6 +1333,41 @@ class SystemPage extends MovieClip
 		return apObject != null && apObject != undefined;
 	}
 
+	function pickButtonArt(a_platform: Number, buttonNames: Object): String
+	{
+		switch(a_platform) {
+
+   		case Shared.Platforms.CONTROLLER_PC:
+   			return buttonNames["PCArt"];
+
+   		case Shared.Platforms.CONTROLLER_PCGAMEPAD:
+   		case Shared.Platforms.CONTROLLER_DURANGO:
+   		case Shared.Platforms.CONTROLLER_ORBIS:
+   			return buttonNames["XBoxArt"];
+
+   		case Shared.Platforms.CONTROLLER_VIVE:
+   		case Shared.Platforms.CONTROLLER_VIVE_KNUCKLES:
+   			return buttonNames["ViveArt"];
+
+   		case Shared.Platforms.CONTROLLER_ORBIS_MOVE:
+   			return buttonNames["MoveArt"];
+
+   		case Shared.Platforms.CONTROLLER_OCULUS:
+   			return buttonNames["OculusArt"];
+
+   		case Shared.Platforms.CONTROLLER_WINDOWS_MR:
+   			return buttonNames["WindowsMRArt"];
+
+   		default:
+   			return buttonNames["XBoxArt"];
+		}
+	}
+
+	function pickControls(a_platform: Number, buttonNames: Object): Object
+	{
+		return {namedKey: pickButtonArt(a_platform, buttonNames)};
+	}
+
 	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		if(bJustRefreshedSettings) {
@@ -1343,26 +1378,27 @@ class SystemPage extends MovieClip
 		BottomBar_mc.SetPlatform(a_platform, a_bPS3Switch);
 		CategoryList.SetPlatform(a_platform, a_bPS3Switch);
 
+		// Setup the buttons by platform
+		_deleteControls = pickControls(a_platform, {PCArt:"X", XBoxArt:"360_X", PS3Art:"PS3_X", ViveArt:"radial_Either_Right", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Right"});
+		Debug.dump("deleteControls", _deleteControls, false, 1);
+
+		_defaultControls = pickControls(a_platform, {PCArt: "T", XBoxArt: "360_Y"});
+		_kinectControls = pickControls(a_platform, {PCArt:"K", XBoxArt:"360_RB"});
+
+		_acceptControls = pickControls(a_platform, {PCArt:"Enter", XBoxArt:"360_A", ViveArt:"trigger", MoveArt:"trigger",OculusArt: "trigger", WindowsMRArt:"trigger"});
+		Debug.dump("acceptControls", _acceptControls, false, 1);
+
+		_cancelControls = pickControls(a_platform, {PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
+		Debug.dump("cancelControls", _cancelControls, false, 1);
+
+    _characterSelectionControls = pickControls(a_platform, {PCArt:"T", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Left", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Left"});
+		Debug.dump("characterSelectionControls", _characterSelectionControls, false, 1);
 
 		if (a_platform != Shared.Platforms.CONTROLLER_PC) {
 			SettingsList.selectedIndex = 0;
 			PCQuitList.selectedIndex = 0;
 			HelpList.selectedIndex = 0;
 			MappingList.selectedIndex = 0;
-
-			_deleteControls = {keyCode: 278}; // 360_X
-			_defaultControls = {keyCode: 279}; // 360_Y
-			_kinectControls = {keyCode: 275}; // 360_RB
-			_acceptControls = {keyCode: 276}; // 360_A
-			_cancelControls = {keyCode: 277}; // 360_B
-      _characterSelectionControls = {keyCode:279};
-		} else {
-			_deleteControls = {keyCode: 45}; // X
-			_defaultControls = {keyCode: 20}; // T
-			_kinectControls = {keyCode: 37}; // K
-			_acceptControls = {keyCode: 28}; // Enter
-			_cancelControls = {keyCode: 15}; // Tab
-      _characterSelectionControls = {keyCode:20};
 		}
 
 		ConfirmPanel.buttonPanel.clearButtons();

@@ -209,7 +209,8 @@ class skyui.defines.ButtonArtNames
 			"PS3_CON_RIGHT", "PS3_CON_LEFT", "PS3_B_RIGHT", "PS3_B_LEFT", "PS3_B",
 
 			// 450 - 455
-			"PS3_AB_RIGHT", "PS3_AB_LEFT", "PS3_AB", "PS3_A_RIGHT", "PS3_A_LEFT", "PS3_A"
+			"PS3_AB_RIGHT", "PS3_AB_LEFT", "PS3_AB", "PS3_A_RIGHT", "PS3_A_LEFT",
+			"PS3_A", "radial_Either_Right", "radial_Either_Left"
 		]);
 		return aNameMap;
 	}
