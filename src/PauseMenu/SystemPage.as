@@ -4,6 +4,8 @@ import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import gfx.managers.FocusHandler;
+import skyui.defines.Input;
+
 import skyui.util.Debug;
 
 class SystemPage extends MovieClip
@@ -1333,41 +1335,6 @@ class SystemPage extends MovieClip
 		return apObject != null && apObject != undefined;
 	}
 
-	function pickButtonArt(a_platform: Number, buttonNames: Object): String
-	{
-		switch(a_platform) {
-
-   		case Shared.Platforms.CONTROLLER_PC:
-   			return buttonNames["PCArt"];
-
-   		case Shared.Platforms.CONTROLLER_PCGAMEPAD:
-   		case Shared.Platforms.CONTROLLER_DURANGO:
-   		case Shared.Platforms.CONTROLLER_ORBIS:
-   			return buttonNames["XBoxArt"];
-
-   		case Shared.Platforms.CONTROLLER_VIVE:
-   		case Shared.Platforms.CONTROLLER_VIVE_KNUCKLES:
-   			return buttonNames["ViveArt"];
-
-   		case Shared.Platforms.CONTROLLER_ORBIS_MOVE:
-   			return buttonNames["MoveArt"];
-
-   		case Shared.Platforms.CONTROLLER_OCULUS:
-   			return buttonNames["OculusArt"];
-
-   		case Shared.Platforms.CONTROLLER_WINDOWS_MR:
-   			return buttonNames["WindowsMRArt"];
-
-   		default:
-   			return buttonNames["XBoxArt"];
-		}
-	}
-
-	function pickControls(a_platform: Number, buttonNames: Object): Object
-	{
-		return {namedKey: pickButtonArt(a_platform, buttonNames)};
-	}
-
 	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
 		if(bJustRefreshedSettings) {
@@ -1379,20 +1346,12 @@ class SystemPage extends MovieClip
 		CategoryList.SetPlatform(a_platform, a_bPS3Switch);
 
 		// Setup the buttons by platform
-		_deleteControls = pickControls(a_platform, {PCArt:"X", XBoxArt:"360_X", PS3Art:"PS3_X", ViveArt:"radial_Either_Right", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Right"});
-		Debug.dump("deleteControls", _deleteControls, false, 1);
-
-		_defaultControls = pickControls(a_platform, {PCArt: "T", XBoxArt: "360_Y"});
-		_kinectControls = pickControls(a_platform, {PCArt:"K", XBoxArt:"360_RB"});
-
-		_acceptControls = pickControls(a_platform, {PCArt:"Enter", XBoxArt:"360_A", ViveArt:"trigger", MoveArt:"trigger",OculusArt: "trigger", WindowsMRArt:"trigger"});
-		Debug.dump("acceptControls", _acceptControls, false, 1);
-
-		_cancelControls = pickControls(a_platform, {PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
-		Debug.dump("cancelControls", _cancelControls, false, 1);
-
-    _characterSelectionControls = pickControls(a_platform, {PCArt:"T", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Left", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Left"});
-		Debug.dump("characterSelectionControls", _characterSelectionControls, false, 1);
+		_deleteControls = Input.pickControls(a_platform, {PCArt:"X", XBoxArt:"360_X", PS3Art:"PS3_X", ViveArt:"radial_Either_Right", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Right"});
+		_defaultControls = Input.pickControls(a_platform, {PCArt: "T", XBoxArt: "360_Y"});
+		_kinectControls = Input.pickControls(a_platform, {PCArt:"K", XBoxArt:"360_RB"});
+		_acceptControls = Input.pickControls(a_platform, {PCArt:"Enter", XBoxArt:"360_A", ViveArt:"trigger", MoveArt:"trigger",OculusArt: "trigger", WindowsMRArt:"trigger"});
+		_cancelControls = Input.pickControls(a_platform, {PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
+    _characterSelectionControls = Input.pickControls(a_platform, {PCArt:"T", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Left", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Left"});
 
 		if (a_platform != Shared.Platforms.CONTROLLER_PC) {
 			SettingsList.selectedIndex = 0;
