@@ -1,4 +1,5 @@
 ﻿import Shared.Platforms;
+import skyui.util.Debug;
 
 class skyui.defines.Input
 {
@@ -62,50 +63,4 @@ class skyui.defines.Input
 	static var Shift		= {keyCode: 42};
 	static var Space		= {keyCode: 57};
 	static var Alt			= {keyCode: 56};
-
-
-	//----------------------------------------------------------------------
-	// Utility functions
-	//
-	// This is for picking the right ButtonArt given a map and a platform enum.
-	// It expect the same format the vanilla game uses to specify keys.
-	// This makes it relatively straighforward to port changes over.
-	//
-	// It's a bit unfortunate that functions are making it into a "defines"
-	// namespace. I'm not sure if there is a better home for it ATM.
-	//---------------------------------------------------------------------
-	static function pickButtonArt(a_platform: Number, buttonNames: Object): String
-	{
-		switch(a_platform) {
-
-   		case Shared.Platforms.CONTROLLER_PC:
-   			return buttonNames["PCArt"];
-
-   		case Shared.Platforms.CONTROLLER_PCGAMEPAD:
-   		case Shared.Platforms.CONTROLLER_DURANGO:
-   		case Shared.Platforms.CONTROLLER_ORBIS:
-   			return buttonNames["XBoxArt"];
-
-   		case Shared.Platforms.CONTROLLER_VIVE:
-   		case Shared.Platforms.CONTROLLER_VIVE_KNUCKLES:
-   			return buttonNames["ViveArt"];
-
-   		case Shared.Platforms.CONTROLLER_ORBIS_MOVE:
-   			return buttonNames["MoveArt"];
-
-   		case Shared.Platforms.CONTROLLER_OCULUS:
-   			return buttonNames["OculusArt"];
-
-   		case Shared.Platforms.CONTROLLER_WINDOWS_MR:
-   			return buttonNames["WindowsMRArt"];
-
-   		default:
-   			return buttonNames["XBoxArt"];
-		}
-	}
-
-	static function pickControls(a_platform: Number, buttonNames: Object): Object
-	{
-		return {namedKey: pickButtonArt(a_platform, buttonNames)};
-	}
 }

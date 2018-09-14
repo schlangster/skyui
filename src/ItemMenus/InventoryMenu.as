@@ -303,17 +303,35 @@ class InventoryMenu extends ItemMenu
 		navPanel.clearButtons();
 		
 		if (a_bSelected) {
-			navPanel.addButton(getEquipButtonData(itemCard.itemInfo.type));
-			navPanel.addButton({text: "$Drop", controls: Input.XButton});
-			
+			navPanel.addButton({
+				text: "$Equip",
+				controls: skyui.util.Input.pickControls(_platform,
+						{PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LTRT", ViveArt: "trigger_LR",
+						 MoveArt:"PS3_MOVE", OculusArt: "trigger_LR", WindowsMRArt: "trigger_LR"}) });
+
+			navPanel.addButton({
+				text: "$Drop",
+				controls: skyui.util.Input.pickControls(_platform,
+						{PCArt:"R", XBoxArt: "360_X", PS3Art: "PS3_X", ViveArt: "radial_Either_Up",
+						 MoveArt: "PS3_A", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Up"}) });
+
+			// Add the Favorite/Unfavorite button
+			var favoriteControl = skyui.util.Input.pickControls(_platform,
+																													{PCArt:"F", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Right",
+																													 MoveArt:"PS3_Y", OculusArt:"OCC_B", WindowsMRArt:"radial_Either_Right"});
 			if (inventoryLists.itemList.selectedEntry.filterFlag & inventoryLists.categoryList.entryList[0].flag != 0)
-				navPanel.addButton({text: "$Unfavorite", controls: Input.YButton});
+				navPanel.addButton({text: "$Unfavorite", controls: favoriteControl});
 			else
-				navPanel.addButton({text: "$Favorite", controls: Input.YButton});
-	
-			if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
-				navPanel.addButton({text: "$Charge", controls: Input.ChargeItem});
-				
+				navPanel.addButton({text: "$Favorite", controls: favoriteControl});
+
+			if (itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100) {
+				navPanel.addButton({
+					text: "$Charge",
+					controls: skyui.util.Input.pickControls(_platform,
+																									{PCArt: "T", XBoxArt: "360_RB", PS3Art: "PS3_RB", ViveArt: "radial_Either_Left",
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Left"}) });
+			}
+
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
