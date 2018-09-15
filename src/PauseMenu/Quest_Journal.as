@@ -49,6 +49,7 @@ class Quest_Journal extends MovieClip
 		PageArray = new Array(QuestsFader.Page_mc, StatsFader.Page_mc, SystemFader.Page_mc);
 		TopmostPage = QuestsFader;
 		bTabsDisabled = false;
+		iCurrentTab = Quest_Journal.PAGE_QUEST;
 	}
 
 	function InitExtensions()
@@ -114,7 +115,14 @@ class Quest_Journal extends MovieClip
 
 	function RestoreSavedSettings(aiSavedTab: Number, abTabsDisabled: Boolean): Void
 	{
-		iCurrentTab = Math.min(Math.max(aiSavedTab, 0), TabButtonGroup.length - 1);
+		// For some reason, the game will ask for the tab to be set to 0 (PAGE_QUEST)
+		// *every* time after 'OnShow' is called.
+		// This means the player will always be sent to the Quest page when the
+		// quest_journal menu is brought up.
+		// Strangely, the vanilla VR interface does not suffer from this problem.
+		if(aiSavedTab != 0)
+			iCurrentTab = Math.min(Math.max(aiSavedTab, 0), TabButtonGroup.length - 1);
+
 		bTabsDisabled = abTabsDisabled;
 		if (bTabsDisabled) {
 			iCurrentTab = TabButtonGroup.length - 1;
