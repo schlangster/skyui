@@ -180,7 +180,10 @@ class QuestsPage extends MovieClip
 		Divider.gotoAndStop("Right");
 		_toggleActiveButton._alpha = 100;
 		ObjectiveList.selectedIndex = -1;
-		if (iPlatform != 0) {
+		if (iPlatform != Shared.Platforms.CONTROLLER_PC &&
+			iPlatform != Shared.Platforms.CONTROLLER_VIVE &&
+			iPlatform != Shared.Platforms.CONTROLLER_OCULUS &&
+			iPlatform != Shared.Platforms.CONTROLLER_WINDOWS_MR) {
 			ObjectiveList.disableSelection = true;
 		}
 		updateShowOnMapButtonAlpha(0);
@@ -191,7 +194,10 @@ class QuestsPage extends MovieClip
 		FocusHandler.instance.setFocus(ObjectiveList, 0);
 		Divider.gotoAndStop("Left");
 		_toggleActiveButton._alpha = isViewingMiscObjectives() ? 100 : 50;
-		if (iPlatform != 0) {
+		if (iPlatform != Shared.Platforms.CONTROLLER_PC &&
+				iPlatform != Shared.Platforms.CONTROLLER_VIVE &&
+				iPlatform != Shared.Platforms.CONTROLLER_OCULUS &&
+				iPlatform != Shared.Platforms.CONTROLLER_WINDOWS_MR) {
 			ObjectiveList.disableSelection = false;
 		}
 		ObjectiveList.selectedIndex = 0;
@@ -325,7 +331,10 @@ class QuestsPage extends MovieClip
 			ObjectivesHeader._visible = !isViewingMiscObjectives();
 			ObjectiveList.selectedIndex = -1;
 			ObjectiveList.scrollPosition = 0;
-			if (iPlatform != 0) {
+			if (iPlatform != Shared.Platforms.CONTROLLER_PC &&
+				iPlatform != Shared.Platforms.CONTROLLER_VIVE &&
+				iPlatform != Shared.Platforms.CONTROLLER_OCULUS &&
+				iPlatform != Shared.Platforms.CONTROLLER_WINDOWS_MR) {
 				ObjectiveList.disableSelection = true;
 			}
 
@@ -404,14 +413,25 @@ class QuestsPage extends MovieClip
 
 	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		if (a_platform == 0) {
-			_toggleActiveControls = {keyCode: 28}; // Enter
-			_showOnMapControls = {keyCode: 50}; // M
-			_deleteControls = {keyCode: 45}; // X
-		} else {
-			_toggleActiveControls = {keyCode: 276}; // 360_A
-			_showOnMapControls = {keyCode: 278}; // 360_X
-			_deleteControls = {keyCode: 278}; // 360_X
+		// CLEANUP! What is _deleteControls for here? It's not referenced anywhere.
+		switch(a_platform) {
+			case Shared.Platforms.CONTROLLER_PC:
+				_toggleActiveControls = {keyCode: 28}; // Enter
+				_showOnMapControls = {keyCode: 50}; // M
+				_deleteControls = {keyCode: 45}; // X
+				break;
+
+			case Shared.Platforms.CONTROLLER_VIVE:
+				_toggleActiveControls = {namedKey: "trigger"};
+				_showOnMapControls = {namedKey: "radial_either_up"};
+				_deleteControls = {namedKey: "radial_either_up"};
+				break;
+
+			default:
+				_toggleActiveControls = {namedKey: "360_B"};
+				_showOnMapControls = {namedKey: "360_X"};
+				_deleteControls = {namedKey: "360_X"};
+				break;
 		}
 
 		iPlatform = a_platform;

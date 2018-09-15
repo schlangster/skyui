@@ -29,6 +29,7 @@ class StatsPage extends MovieClip
 			CategoryList.entryList[arguments[cursor + STAT_ENTRYLISTINDEX]].stats.length = 0;
 			cursor = cursor + STAT_STRIDE;
 		}
+		CategoryList.entryList.length = 0;
 		CategoryList.InvalidateData();
 		onLoad();
 	}
@@ -72,20 +73,20 @@ class StatsPage extends MovieClip
 		var STAT_ENTRYLISTINDEX = 2;
 		var STAT_UNKNOWN = 3;
 		var STAT_STRIDE = 4;
-		
+
 		for (var i: Number = 0; i < arguments.length; i += STAT_STRIDE) {
 			var stat: Object = {text: "$" + arguments[i + STAT_TEXT], value: arguments[i + STAT_VALUE]};
 			CategoryList.entryList[arguments[i + STAT_ENTRYLISTINDEX]].stats.push(stat);
 		}
 		onCategoryHighlight();
-	} 
+	}
 
 	function onCategoryHighlight(): Void
 	{
 		var stats: Array = CategoryList.selectedEntry.stats;
 		_StatsList.ClearList();
 		_StatsList.scrollPosition = 0;
-		
+
 		for(var i: Number = 0; i < stats.length; i++) {
 			_StatsList.entryList.push(stats[i]);
 		}

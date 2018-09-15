@@ -327,7 +327,7 @@ class SaveLoadPanel extends MovieClip
 		if(isForceStopping)
 			return;
 
-		dispatchEvent({type: "saveListPopulated"});
+		dispatchEvent({type: "saveListOnBatchAdded"});
 	}
 
 	function DeleteSelectedSave(): Void

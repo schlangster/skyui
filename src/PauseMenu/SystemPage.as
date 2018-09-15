@@ -4,6 +4,8 @@ import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import gfx.managers.FocusHandler;
+import skyui.defines.Input;
+
 import skyui.util.Debug;
 
 class SystemPage extends MovieClip
@@ -1343,26 +1345,19 @@ class SystemPage extends MovieClip
 		BottomBar_mc.SetPlatform(a_platform, a_bPS3Switch);
 		CategoryList.SetPlatform(a_platform, a_bPS3Switch);
 
+		// Setup the buttons by platform
+		_deleteControls = Input.pickControls(a_platform, {PCArt:"X", XBoxArt:"360_X", PS3Art:"PS3_X", ViveArt:"radial_Either_Right", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Right"});
+		_defaultControls = Input.pickControls(a_platform, {PCArt: "T", XBoxArt: "360_Y"});
+		_kinectControls = Input.pickControls(a_platform, {PCArt:"K", XBoxArt:"360_RB"});
+		_acceptControls = Input.pickControls(a_platform, {PCArt:"Enter", XBoxArt:"360_A", ViveArt:"trigger", MoveArt:"trigger",OculusArt: "trigger", WindowsMRArt:"trigger"});
+		_cancelControls = Input.pickControls(a_platform, {PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
+    _characterSelectionControls = Input.pickControls(a_platform, {PCArt:"T", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Left", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Left"});
 
 		if (a_platform != Shared.Platforms.CONTROLLER_PC) {
 			SettingsList.selectedIndex = 0;
 			PCQuitList.selectedIndex = 0;
 			HelpList.selectedIndex = 0;
 			MappingList.selectedIndex = 0;
-
-			_deleteControls = {keyCode: 278}; // 360_X
-			_defaultControls = {keyCode: 279}; // 360_Y
-			_kinectControls = {keyCode: 275}; // 360_RB
-			_acceptControls = {keyCode: 276}; // 360_A
-			_cancelControls = {keyCode: 277}; // 360_B
-      _characterSelectionControls = {keyCode:279};
-		} else {
-			_deleteControls = {keyCode: 45}; // X
-			_defaultControls = {keyCode: 20}; // T
-			_kinectControls = {keyCode: 37}; // K
-			_acceptControls = {keyCode: 28}; // Enter
-			_cancelControls = {keyCode: 15}; // Tab
-      _characterSelectionControls = {keyCode:20};
 		}
 
 		ConfirmPanel.buttonPanel.clearButtons();
