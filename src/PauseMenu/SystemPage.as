@@ -350,12 +350,10 @@ class SystemPage extends MovieClip
 				}
 				bhandledInput = true;
 			} else if ((details.navEquivalent == gfx.ui.NavigationCode.GAMEPAD_Y || details.code == 84) && iCurrentState == SystemPage.SAVE_LOAD_STATE && !SaveLoadListHolder.isSaving) {
-            //StartState(SystemPage.CHARACTER_LOAD_STATE);
-            StartDefaultSettingsConfirmState();
+            StartState(SystemPage.CHARACTER_LOAD_STATE);
             bhandledInput = true;
       } else if ((details.navEquivalent == NavigationCode.GAMEPAD_Y || details.code == 84) && (iCurrentState == SystemPage.OPTIONS_LISTS_STATE || iCurrentState == SystemPage.INPUT_MAPPING_STATE)) {
-				ConfirmTextField.SetText("$Reset settings to default values?");
-				StartState(SystemPage.DEFAULT_SETTINGS_CONFIRM_STATE);
+        StartDefaultSettingsConfirmState();
 				bhandledInput = true;
 			} else if (bShowKinectTunerButton && details.navEquivalent == NavigationCode.GAMEPAD_R1 && iCurrentState == SystemPage.OPTIONS_LISTS_STATE) {
 				GameDelegate.call("OpenKinectTuner", []);
@@ -1346,12 +1344,12 @@ class SystemPage extends MovieClip
 		CategoryList.SetPlatform(a_platform, a_bPS3Switch);
 
 		// Setup the buttons by platform
-		_deleteControls = Input.pickControls(a_platform, {PCArt:"X", XBoxArt:"360_X", PS3Art:"PS3_X", ViveArt:"radial_Either_Right", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Right"});
-		_defaultControls = Input.pickControls(a_platform, {PCArt: "T", XBoxArt: "360_Y"});
-		_kinectControls = Input.pickControls(a_platform, {PCArt:"K", XBoxArt:"360_RB"});
-		_acceptControls = Input.pickControls(a_platform, {PCArt:"Enter", XBoxArt:"360_A", ViveArt:"trigger", MoveArt:"trigger",OculusArt: "trigger", WindowsMRArt:"trigger"});
-		_cancelControls = Input.pickControls(a_platform, {PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
-    _characterSelectionControls = Input.pickControls(a_platform, {PCArt:"T", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Left", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Left"});
+		_deleteControls = skyui.util.Input.pickControls(a_platform, {PCArt:"X", XBoxArt:"360_X", PS3Art:"PS3_X", ViveArt:"radial_Either_Right", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Right"});
+		_defaultControls = skyui.util.Input.pickControls(a_platform, {PCArt: "T", XBoxArt: "360_Y"});
+		_kinectControls = skyui.util.Input.pickControls(a_platform, {PCArt:"K", XBoxArt:"360_RB"});
+		_acceptControls = skyui.util.Input.pickControls(a_platform, {PCArt:"Enter", XBoxArt:"360_A", ViveArt:"trigger", MoveArt:"trigger",OculusArt: "trigger", WindowsMRArt:"trigger"});
+		_cancelControls = skyui.util.Input.pickControls(a_platform, {PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
+    _characterSelectionControls = skyui.util.Input.pickControls(a_platform, {PCArt:"T", XBoxArt:"360_Y", PS3Art:"PS3_Y", ViveArt:"radial_Either_Left", MoveArt:"PS3_A", OculusArt:"OCC_A", WindowsMRArt:"radial_Either_Left"});
 
 		if (a_platform != Shared.Platforms.CONTROLLER_PC) {
 			SettingsList.selectedIndex = 0;
