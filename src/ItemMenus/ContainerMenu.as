@@ -33,8 +33,9 @@ class ContainerMenu extends ItemMenu
 	private var _equipModeKey: Number;
 	private var _equipModeControls: Object;
 
-	private var _categoryListIconArt: Array;
 	private var _tabBarIconArt: Array;
+
+	private var _pauseInputHandling: Boolean;
 
 
   /* PROPERTIES */
@@ -52,9 +53,8 @@ class ContainerMenu extends ItemMenu
 	{
 		super();
 
-		_categoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
-
 		_tabBarIconArt = ["take", "give"];
+		_pauseInputHandling = false;
 	}
 
 
@@ -67,8 +67,7 @@ class ContainerMenu extends ItemMenu
 		inventoryLists.tabBarIconArt = _tabBarIconArt;
 
 		// Initialize menu-specific list components
-		var categoryList: CategoryList = inventoryLists.categoryList;
-		categoryList.iconArt = _categoryListIconArt;
+		inventoryLists.categoryList.iconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
     GameDelegate.addCallBack("AttemptTake",this,"AttemptTake");
@@ -112,6 +111,37 @@ class ContainerMenu extends ItemMenu
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
+		// Rate limit input handling
+		// For some reason, VR trackpad swipe events seem to be sent in duplictes?
+		// This means if we're using the trackpad to enable some kind of toggling logic,
+		// the toggle would always cancel itself out. To get around this, we...
+		//
+		// Limit processing of these events to something reasonable.
+		if(_pauseInputHandling)
+			return false;
+
+		var _this = this;
+		_pauseInputHandling = true;
+		setTimeout(function() {
+				_this._pauseInputHandling = false;
+				}, 10);
+
+		// VR specific behavior
+		//
+		// Currently, we're not getting a whole lot of keycodes from the game. We cannot
+		// hookup additional keypresses to UI behavior arbitrarily. However, we can continue
+		// to make use of NavigationCode.LEFT and RIGHT.
+		//
+		// The original SkyUI category list allows the player to wrap around the list. Here,
+		// we alter the behavior so that...
+		//
+		// If we've reached the beginning the category list and the player is still asking to
+		// navigate left, switch active segment instead.
+		if (details.navEquivalent == NavigationCode.LEFT && inventoryLists.categoryList.selectionAtBeginningOfSegment()) {
+			inventoryLists.toggleTab();
+			return true;
+		}
+
 		super.handleInput(details,pathToFocus);
 
 		if (shouldProcessItemsListInput(false)) {
