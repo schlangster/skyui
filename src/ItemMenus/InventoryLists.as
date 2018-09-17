@@ -64,7 +64,9 @@ class InventoryLists extends MovieClip
 
 	private var _columnSelectDialog: MovieClip;
 	private var _columnSelectInterval: Number;
-	
+	private var _categoryChanged: Boolean;
+	private var _categorySelections: Object;
+
 
   /* PROPERTIES */
 
@@ -165,6 +167,7 @@ class InventoryLists extends MovieClip
 
 		itemList.addEventListener("selectionChange", this, "onItemsListSelectionChange");
 		itemList.addEventListener("sortChange", this, "onSortChange");
+		itemList.addEventListener("listUpdated", this, "onItemsListUpdate");
 
 		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
 		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
@@ -306,6 +309,13 @@ class InventoryLists extends MovieClip
 	
 	public function showItemsList(): Void
 	{
+		// Save the previous selection in the category
+		var prevCategory = categoryList.lastSelectedIndex;
+		_categorySelections[prevCategory] = {
+			selectedIndex: itemList.selectedIndex,
+			scrollPosition: itemList.scrollPosition
+		};
+
 		_currCategoryIndex = categoryList.selectedIndex;
 		
 		categoryLabel.textField.SetText(categoryList.selectedEntry.text);
@@ -339,6 +349,7 @@ class InventoryLists extends MovieClip
 		var len = 3;
 
 		categoryList.clearList();
+		_categorySelections = new Array();
 
 		for (var i = 0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
@@ -346,6 +357,8 @@ class InventoryLists extends MovieClip
 
 			if (entry.flag == 0)
 				categoryList.dividerIndex = index;
+
+			_categorySelections.push(undefined);
 		}
 		
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
@@ -467,6 +480,7 @@ class InventoryLists extends MovieClip
 
 	private function onCategoriesItemPress(): Void
 	{
+		_categoryChanged = true;
 		showItemsList();
 	}
 
@@ -517,6 +531,37 @@ class InventoryLists extends MovieClip
 	private function onSortChange(event: Object): Void
 	{
 		_sortFilter.setSortBy(event.attributes, event.options);
+	}
+
+	private function onItemsListUpdate(): Void
+	{
+		if(!_categoryChanged)
+			return;
+
+		// The items list was just updated because the selected
+		// category changed.
+
+		// Restore the selected item and scroll position settings.
+		// This is needed because it's quite easy to accidentally
+		// switch catetory by accdient while using the VR trackpad.
+
+		// In these case, we want to be able to return to the previous
+		// category and retain our position in the list. If the scroll
+		// position always returned to the top of the list, this makes
+		// navigating large inventory lists very difficult.
+
+		// If we can find a previously saved selection setting for this
+		// category, restore it now.
+		var savedSelection = _categorySelections[_currCategoryIndex];
+		if(savedSelection != undefined) {
+			itemList.selectedIndex = savedSelection.selectedIndex;
+			itemList.scrollPosition = savedSelection.scrollPosition;
+		} else {
+			itemList.selectedIndex = -1;
+			itemList.scrollPosition = 0;
+		}
+
+		_categoryChanged = false;
 	}
 
 	private function onSearchInputStart(event: Object): Void
