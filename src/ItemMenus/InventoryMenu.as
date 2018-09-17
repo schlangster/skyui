@@ -15,17 +15,17 @@ import skyui.defines.Input;
 class InventoryMenu extends ItemMenu
 {
 	#include "../version.as"
-	
+
   /* PRIVATE VARIABLES */
-  
+
 	private var _bMenuClosing: Boolean = false;
 	private var _bSwitchMenus: Boolean = false;
 
 	private var _categoryListIconArt: Array;
-	
-	
+
+
   /* PROPERTIES */
-  
+
 	// @GFx
 	public var bPCControlsReady: Boolean = true;
 
@@ -35,11 +35,11 @@ class InventoryMenu extends ItemMenu
 	public function InventoryMenu()
 	{
 		super();
-		
+
 		_categoryListIconArt = ["cat_favorites", "inv_all", "inv_weapons", "inv_armor",
 							   "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients",
 							   "inv_books", "inv_keys", "inv_misc"];
-		
+
 		GameDelegate.addCallBack("AttemptEquip", this, "AttemptEquip");
 		GameDelegate.addCallBack("DropItem", this, "DropItem");
 		GameDelegate.addCallBack("AttemptChargeItem", this, "AttemptChargeItem");
@@ -66,16 +66,16 @@ class InventoryMenu extends ItemMenu
 	}
 
   /* PUBLIC FUNCTIONS */
-  
+
 	// @override ItemMenu
 	public function InitExtensions(): Void
-	{		
+	{
 		super.InitExtensions();
 
 		GlobalFunc.AddReverseFunctions();
-		
+
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
-	
+
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
@@ -87,12 +87,12 @@ class InventoryMenu extends ItemMenu
 	public function setConfig(a_config: Object): Void
 	{
 		super.setConfig(a_config);
-		
+
 		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new InventoryDataSetter());
 		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
-		
+
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
 		itemList.layout = layout;
 
@@ -106,11 +106,11 @@ class InventoryMenu extends ItemMenu
 	{
 		if (!bFadedIn)
 			return true;
-		
+
 		var nextClip = pathToFocus.shift();
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
-			
+
 		if (GlobalFunc.IsKeyPressed(details)) {
 			if (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.SHIFT_TAB ) {
 				startMenuFade();
@@ -121,7 +121,7 @@ class InventoryMenu extends ItemMenu
 					openMagicMenu(true);
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -151,18 +151,18 @@ class InventoryMenu extends ItemMenu
 	{
 		if (inventoryLists.itemList.selectedIndex == -1)
 			return;
-		
+
 		if (shouldProcessItemsListInput(false) && itemCard.itemInfo.charge != undefined && itemCard.itemInfo.charge < 100)
 			GameDelegate.call("ShowSoulGemList", []);
 	}
 
 	// @override ItemMenu
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
-	{		
+	{
 		inventoryLists.zoomButtonHolder.gotoAndStop(1);
 		inventoryLists.zoomButtonHolder.ZoomButton._visible = a_platform != 0;
 		inventoryLists.zoomButtonHolder.ZoomButton.SetPlatform(a_platform, a_bPS3Switch);
-		
+
 		super.SetPlatform(a_platform, a_bPS3Switch);
 	}
 
@@ -171,10 +171,10 @@ class InventoryMenu extends ItemMenu
 	{
 		inventoryLists.zoomButtonHolder.PlayForward(inventoryLists.zoomButtonHolder._currentframe);
 	}
-	
-	
+
+
   /* PRIVATE FUNCTIONS */
-  
+
 	// @override ItemMenu
 	private function onExitMenuRectClick(): Void
 	{
@@ -198,7 +198,7 @@ class InventoryMenu extends ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
 		super.onShowItemsList(event);
-		
+
 		if (event.index != -1)
 		{
 			updateBottomBar(true);
@@ -209,10 +209,10 @@ class InventoryMenu extends ItemMenu
 	private function onItemHighlightChange(event: Object): Void
 	{
 		super.onItemHighlightChange(event);
-		
+
 		if (event.index != -1)
 			updateBottomBar(true);
-			
+
 	}
 
 	// @override ItemMenu
@@ -221,7 +221,7 @@ class InventoryMenu extends ItemMenu
 		super.onHideItemsList(event);
 
 		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
-		
+
 		updateBottomBar(false);
 		GameDelegate.call("SetShowingItemsList",[0]);
 	}
@@ -239,7 +239,7 @@ class InventoryMenu extends ItemMenu
 	private function onQuantityMenuSelect(event: Object): Void
 	{
 		GameDelegate.call("ItemDrop", [event.amount]);
-		
+
 		// Bug Fix: ItemCard does not update when attempting to drop quest items through the quantity menu
 		//   so let's request an update even though it may be redundant.
 		GameDelegate.call("RequestItemCardInfo", [], this, "UpdateItemCardInfo");
@@ -261,7 +261,7 @@ class InventoryMenu extends ItemMenu
 	{
 		super.onItemCardSubMenuAction(event);
 		GameDelegate.call("QuantitySliderOpen", [event.opening]);
-		
+
 		if (event.menu == "list") {
 			if (event.opening == true) {
 				navPanel.clearButtons();
@@ -274,7 +274,7 @@ class InventoryMenu extends ItemMenu
 			}
 		}
 	}
-	
+
 	private function openMagicMenu(a_bFade: Boolean): Void
 	{
 		if (a_bFade) {
@@ -287,7 +287,7 @@ class InventoryMenu extends ItemMenu
 			skse.OpenMenu("MagicMenu");
 		}
 	}
-	
+
 	private function startMenuFade(): Void
 	{
 		//inventoryLists.hidePanel();
@@ -296,18 +296,42 @@ class InventoryMenu extends ItemMenu
 		saveIndices();
 		_bMenuClosing = true;
 	}
-	
+
 	// @override ItemMenu
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
 		navPanel.clearButtons();
-		
+
 		if (a_bSelected) {
-			navPanel.addButton({
-				text: "$Equip",
-				controls: skyui.util.Input.pickControls(_platform,
-						{PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LTRT", ViveArt: "trigger_LR",
-						 MoveArt:"PS3_MOVE", OculusArt: "trigger_LR", WindowsMRArt: "trigger_LR"}) });
+			// Setup the main action button
+			var equipArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LTRT", ViveArt: "trigger_LR",
+				MoveArt:"PS3_MOVE", OculusArt: "trigger_LR", WindowsMRArt: "trigger_LR"};
+
+      var useItemArt = {PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"};
+
+			var actionText;
+			var actionArt;
+      switch(itemCard.itemInfo.type)
+      {
+         case Inventory.ICT_BOOK:
+            actionText = "$Read";
+            actionArt = useItemArt;
+            break;
+         case Inventory.ICT_POTION:
+            actionText = "$Use";
+            actionArt = useItemArt;
+            break;
+         case Inventory.ICT_FOOD:
+         case Inventory.ICT_INGREDIENT:
+            actionText = "$Eat";
+            actionArt = useItemArt;
+            break;
+         default:
+            actionText = "$Equip";
+            actionArt = equipArt;
+      }
+
+			navPanel.addButton({text: actionText, controls: skyui.util.Input.pickControls(_platform, actionArt)});
 
 			navPanel.addButton({
 				text: "$Drop",
@@ -341,7 +365,7 @@ class InventoryMenu extends ItemMenu
 			}
 			navPanel.addButton({text: "$Magic", controls: _switchControls});
 		}
-		
+
 		navPanel.updateButtons(true);
 	}
 }
