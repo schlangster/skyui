@@ -288,7 +288,7 @@ class ItemMenu extends MovieClip
 				delete this.onUnsuspend;
 			};
 		} else {
-			
+
 			categoryList.onUnsuspend = function()
 			{
 				this.onItemPress(1, 0); // ALL
@@ -505,7 +505,7 @@ class ItemMenu extends MovieClip
 	{
 		var process = bFadedIn == true && inventoryLists.currentState == InventoryLists.SHOW_PANEL && inventoryLists.itemList.itemCount > 0 && !inventoryLists.itemList.disableSelection && !inventoryLists.itemList.disableInput;
 
-		if (process && _platform == 0 && abCheckIfOverRect) {
+		if (process && _platform == Shared.Platforms.CONTROLLER_PC && abCheckIfOverRect) {
 			var e = Mouse.getTopMostEntity();
 			var found = false;
 

@@ -76,8 +76,19 @@ class CategoryList extends BasicList
 	{
 		return _activeSegment;
 	}
-	
-	
+
+	public function selectionAtBeginningOfSegment(): Boolean
+	{
+		if(selectedIndex == 0)
+			return true;
+
+		if(dividerIndex != -1 && selectedIndex == dividerIndex + 1)
+			return true;
+
+		return false;
+	}
+
+
   /* INITIALIZATION */
 	
 	public function CategoryList()

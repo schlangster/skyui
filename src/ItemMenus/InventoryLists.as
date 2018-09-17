@@ -469,22 +469,33 @@ class InventoryLists extends MovieClip
 	{
 		showItemsList();
 	}
-	
-	private function onTabPress(event: Object): Void
+
+	public function toggleTab(): Void
+	{
+		var newTab = tabBar.activeTab == TabBar.LEFT_TAB ? TabBar.RIGHT_TAB : TabBar.LEFT_TAB;
+		switchTab(newTab);
+	}
+
+	public function switchTab(newTab: Number): Void
 	{
 		if (categoryList.disableSelection || categoryList.disableInput || itemList.disableSelection || itemList.disableInput)
 			return;
-		
-		if (event.index == TabBar.LEFT_TAB) {
+
+		if (newTab == TabBar.LEFT_TAB) {
 			tabBar.activeTab = TabBar.LEFT_TAB;
 			categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
-		} else if (event.index == TabBar.RIGHT_TAB) {
+		} else if (newTab == TabBar.RIGHT_TAB) {
 			tabBar.activeTab = TabBar.RIGHT_TAB;
 			categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
 		}
-		
+
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		showItemsList();
+	}
+
+	private function onTabPress(event: Object): Void
+	{
+		switchTab(event.index);
 	}
 
 	private function onCategoriesListSelectionChange(event: Object): Void
