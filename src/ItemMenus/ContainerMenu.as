@@ -36,6 +36,7 @@ class ContainerMenu extends ItemMenu
 	private var _tabBarIconArt: Array;
 
 	private var _pauseInputHandling: Boolean;
+	private var _pauseTabSwitch: Boolean;
 
 
   /* PROPERTIES */
@@ -138,7 +139,18 @@ class ContainerMenu extends ItemMenu
 		// If we've reached the beginning the category list and the player is still asking to
 		// navigate left, switch active segment instead.
 		if (details.navEquivalent == NavigationCode.LEFT && inventoryLists.categoryList.selectionAtBeginningOfSegment()) {
-			inventoryLists.toggleTab();
+
+			// Only actually toggle the tab if we're not being rate limited
+			if(!_pauseTabSwitch) {
+				inventoryLists.toggleTab();
+
+				// Rate limit tab switching to 2 times a second
+				_pauseTabSwitch = true;
+				setTimeout(function() {
+						_this._pauseTabSwitch = false;
+						}, 1000/3);
+			}
+
 			return true;
 		}
 
