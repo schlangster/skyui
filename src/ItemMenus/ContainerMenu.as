@@ -13,6 +13,7 @@ import skyui.defines.Input;
 import skyui.defines.Inventory;
 import skyui.defines.Item;
 
+import flash.utils.getTimer;
 
 class ContainerMenu extends ItemMenu
 {
@@ -38,6 +39,8 @@ class ContainerMenu extends ItemMenu
 	private var _pauseInputHandling: Boolean;
 	private var _pauseTabSwitch: Boolean;
 
+	private var _columnOpRequested: Number;
+
 
   /* PROPERTIES */
 
@@ -56,6 +59,7 @@ class ContainerMenu extends ItemMenu
 
 		_tabBarIconArt = ["take", "give"];
 		_pauseInputHandling = false;
+		_columnOpRequested = 0;
 	}
 
 
@@ -121,11 +125,7 @@ class ContainerMenu extends ItemMenu
 		if(_pauseInputHandling)
 			return false;
 
-		var _this = this;
-		_pauseInputHandling = true;
-		setTimeout(function() {
-				_this._pauseInputHandling = false;
-				}, 10);
+		skyui.util.Input.rateLimit(this, "_pauseInputHandling", 10);
 
 		// VR specific behavior
 		//
@@ -144,13 +144,42 @@ class ContainerMenu extends ItemMenu
 			if(!_pauseTabSwitch) {
 				inventoryLists.toggleTab();
 
-				// Rate limit tab switching to 2 times a second
-				_pauseTabSwitch = true;
-				setTimeout(function() {
-						_this._pauseTabSwitch = false;
-						}, 1000/3);
+				// Rate limit tab switching to 3 times a second
+				skyui.util.Input.rateLimit(this, "_pauseTabSwitch", 1000/3);
 			}
 
+			return true;
+		}
+
+		var itemList = inventoryLists.itemList;
+
+		// While look at a specific category, we want to be able to both:
+		// - switch column
+		// - switch column sort direction
+		// We can't use the the right/left swiping motions because they cause changes to the columns.
+		// So, we can only overload the up/down swipes.
+		if ((details.navEquivalent == NavigationCode.UP &&
+					(itemList.selectedIndex == -1 || 								// Nothing is selected (just switched category)
+					 itemList.getSelectedListEnumIndex() == 0)) 		// Selected item is the first item in current view of the list
+			 ){
+
+			// Has no column operation is currently pending...
+			if(_columnOpRequested == 0)	{
+				// Schedule an operation to be performed in the near future.
+				var _this = this;
+				setTimeout(function() {
+						if(_this._columnOpRequested == 1) {
+							itemList.layout.nextColumn();
+						} else {
+							itemList.layout.nextActiveColumnState();
+						}
+						_this._columnOpRequested = 0;
+				}, 250);
+			}
+
+			// While we're waiting for the column operation to be performed in the near future,
+			// record the number of times the operation is requested.
+			_columnOpRequested++;
 			return true;
 		}
 

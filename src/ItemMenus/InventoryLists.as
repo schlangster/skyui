@@ -452,7 +452,18 @@ class InventoryLists extends MovieClip
 			DialogManager.close();
 			return;
 		}
-		
+
+		openColumnSelectDialog();
+	}
+
+	public function openColumnSelectDialog(): Void
+	{
+		// Don't do anything if the dialog is already opened
+		if (_columnSelectDialog) {
+			return;
+		}
+
+		// Setup and open the dialog
 		_savedSelectionIndex = itemList.selectedIndex;
 		itemList.selectedIndex = -1;
 		

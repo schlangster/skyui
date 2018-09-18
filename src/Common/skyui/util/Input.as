@@ -12,8 +12,6 @@ class skyui.util.Input
 	//---------------------------------------------------------------------
 	static function pickButtonArt(a_platform: Number, buttonNames: Object): String
 	{
-		Debug.log(">> util Input pickButtonArt");
-		Debug.dump("a_platform", a_platform, false, 1);
 		switch(a_platform) {
 
    		case Shared.Platforms.CONTROLLER_PC:
@@ -46,5 +44,15 @@ class skyui.util.Input
 	{
 		var val = {namedKey: pickButtonArt(a_platform, buttonNames)};
 		return val;
+	}
+
+	// Helper function to perform rate limiting
+	static function rateLimit(a_obj: Object, a_fieldname: String, delayTime: Number)
+	{
+		a_obj[a_fieldname] = true;
+		setTimeout(function() {
+				a_obj[a_fieldname] = false;
+				},
+				delayTime);
 	}
 }

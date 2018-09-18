@@ -91,6 +91,16 @@ class CategoryList extends BasicList
 		return false;
 	}
 
+	public function selectionAtEndOfSegment(): Boolean
+	{
+		if(selectedIndex == entryList.length)
+			return true;
+
+		if(dividerIndex != -1 && selectedIndex == dividerIndex - 1)
+			return true;
+
+		return false;
+	}
 
   /* INITIALIZATION */
 	

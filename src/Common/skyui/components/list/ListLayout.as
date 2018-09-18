@@ -261,7 +261,27 @@ class skyui.components.list.ListLayout
 			
 		updateLayout();
 	}
-	
+
+	public function nextColumn(): Void
+	{
+		// What's the next column we want to get to?
+		var nextIndex = _activeColumnIndex + 1;
+
+		var listIndex = toColumnListIndex(nextIndex);
+		if(listIndex == -1) {
+			// If we're trying to reach an invalid column by index,
+			// activate the first column instead
+			selectColumn(1);
+		} else {
+			selectColumn(nextIndex);
+		}
+	}
+
+	public function nextActiveColumnState(): Void
+	{
+		selectColumn(activeColumnIndex);
+	}
+
 	public function restoreColumnState(a_activeIndex: Number, a_activeState: Number): Void
 	{
 		var listIndex = toColumnListIndex(a_activeIndex);
