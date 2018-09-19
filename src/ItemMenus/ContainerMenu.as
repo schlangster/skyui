@@ -158,10 +158,16 @@ class ContainerMenu extends ItemMenu
 		// - switch column sort direction
 		// We can't use the the right/left swiping motions because they cause changes to the columns.
 		// So, we can only overload the up/down swipes.
-		if ((details.navEquivalent == NavigationCode.UP &&
+		if (Shared.GlobalFunc.IsKeyPressed(details) &&
+				(details.navEquivalent == NavigationCode.UP &&
 					(itemList.selectedIndex == -1 || 								// Nothing is selected (just switched category)
 					 itemList.getSelectedListEnumIndex() == 0)) 		// Selected item is the first item in current view of the list
 			 ){
+
+			var inputWindow = 250;
+			if(_platform == Shared.Platforms.CONTROLLER_OCULUS) {
+				inputWindow = 400;
+			}
 
 			// Has no column operation is currently pending...
 			if(_columnOpRequested == 0)	{
@@ -174,7 +180,7 @@ class ContainerMenu extends ItemMenu
 							itemList.layout.nextActiveColumnState();
 						}
 						_this._columnOpRequested = 0;
-				}, 250);
+				}, inputWindow);
 			}
 
 			// While we're waiting for the column operation to be performed in the near future,
