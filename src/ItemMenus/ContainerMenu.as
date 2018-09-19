@@ -123,9 +123,10 @@ class ContainerMenu extends ItemMenu
 		//
 		// Limit processing of these events to something reasonable.
 		if(_pauseInputHandling)
-			return false;
+			return true;
 
 		skyui.util.Input.rateLimit(this, "_pauseInputHandling", 10);
+
 
 		// VR specific behavior
 		//
@@ -138,7 +139,10 @@ class ContainerMenu extends ItemMenu
 		//
 		// If we've reached the beginning the category list and the player is still asking to
 		// navigate left, switch active segment instead.
-		if (details.navEquivalent == NavigationCode.LEFT && inventoryLists.categoryList.selectionAtBeginningOfSegment()) {
+		var bShouldCaptureInput = (pathToFocus[0] != itemCard);
+		if (bShouldCaptureInput &&
+				Shared.GlobalFunc.IsKeyPressed(details) &&
+				details.navEquivalent == NavigationCode.LEFT && inventoryLists.categoryList.selectionAtBeginningOfSegment()) {
 
 			// Only actually toggle the tab if we're not being rate limited
 			if(!_pauseTabSwitch) {
