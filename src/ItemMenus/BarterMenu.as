@@ -1,4 +1,6 @@
 ﻿import gfx.io.GameDelegate;
+import gfx.ui.NavigationCode;
+import gfx.ui.InputDetails;
 
 import skyui.components.list.ListLayoutManager;
 import skyui.components.list.TabularList;
@@ -29,6 +31,9 @@ class BarterMenu extends ItemMenu
 	
 	// @override ItemMenu
 	public var bEnableTabs: Boolean = true;
+
+	private var _handleInputRateLimiter: Boolean;
+	private var _tabSwitchRateLimiter: Boolean;
 
 
   /* INITIALIZATION */
@@ -75,6 +80,34 @@ class BarterMenu extends ItemMenu
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)
 			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
+	}
+
+	// @GFx
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		if(_handleInputRateLimiter)
+			return true;
+		skyui.util.Input.rateLimit(this, "_handleInputRateLimiter", 10);
+
+		// If the item card is in focus, don't capture right/left events.
+		// The item card is likely waiting for quantity slider input.
+		var bShouldCaptureInput = (pathToFocus[0] != itemCard);
+
+		// Is the user asking a tab switch?
+		if (bShouldCaptureInput &&
+				Shared.GlobalFunc.IsKeyPressed(details) &&
+				details.navEquivalent == NavigationCode.LEFT && inventoryLists.categoryList.selectionAtBeginningOfSegment()) {
+
+			// Rate limit tab switching so the user won't accidentally tab switch multiple times
+			if(!_tabSwitchRateLimiter) {
+				inventoryLists.toggleTab();
+				skyui.util.Input.rateLimit(this, "_tabSwitchRateLimiter", 1000/3);
+			}
+
+			return true;
+		}
+
+		return super.handleInput(details, pathToFocus);
 	}
 
 	private function onExitButtonPress(): Void
@@ -209,7 +242,8 @@ class BarterMenu extends ItemMenu
 		navPanel.clearButtons();
 		
 		if (a_bSelected) {
-			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: Input.Activate});
+			var activateControls = skyui.util.Input.pickControls(_platform, {PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
+			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: activateControls});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
