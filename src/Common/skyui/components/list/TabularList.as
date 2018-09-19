@@ -20,6 +20,8 @@ class skyui.components.list.TabularList extends ScrollingList
 	private var _nextColumnKey: Number = -1;
 	private var _sortOrderKey: Number = -1;
 
+	private var _columnOpRequested: Number = 0;
+
   /* STAGE ELEMENTS */
   
 	public var header: SortedListHeader;
@@ -61,10 +63,56 @@ class skyui.components.list.TabularList extends ScrollingList
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{		
+
+		if (!disableInput && _platform != 0) {
+			if (GlobalFunc.IsKeyPressed(details)) {
+
+				// VR specific behavior
+				//
+				// While look at a specific category, we want to be able to both:
+				// - switch column
+				// - switch column sort direction
+				// We only have swipe events to work with in VR at the moment.
+				// We can't use the the right/left swiping motions because they cause changes to the columns.
+				// So, we can only overload the up/down swipes.
+				if (Shared.GlobalFunc.IsKeyPressed(details) &&
+						(details.navEquivalent == NavigationCode.UP &&
+							(selectedIndex == -1 || 							// Nothing is selected (just switched category)
+					 	 	 getSelectedListEnumIndex() == 0)) 		// Selected item is the first item in current view of the list
+			 	 	 ){
+
+					var inputWindow = 250;
+					if(_platform == Shared.Platforms.CONTROLLER_OCULUS) {
+						inputWindow = 400;
+					}
+
+					// Has no column operation is currently pending...
+					if(_columnOpRequested == 0)	{
+						// Schedule an operation to be performed in the near future.
+						var _this = this;
+						setTimeout(function() {
+								if(_this._columnOpRequested == 1) {
+									_this.layout.nextColumn();
+								} else {
+									_this.layout.nextActiveColumnState();
+								}
+								_this._columnOpRequested = 0;
+						}, inputWindow);
+					}
+
+					// While we're waiting for the column operation to be performed in the near future,
+					// record the number of times the operation is requested.
+					_columnOpRequested++;
+					return true;
+				}
+			}
+		}
+
 		if (super.handleInput(details, pathToFocus))
 			return true;
 
 		if (!disableInput && _platform != 0) {
+
 			if (GlobalFunc.IsKeyPressed(details)) {
 				if (details.skseKeycode == _previousColumnKey) {
 					_layout.selectColumn(_layout.activeColumnIndex - 1);

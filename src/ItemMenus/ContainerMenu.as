@@ -151,44 +151,6 @@ class ContainerMenu extends ItemMenu
 			return true;
 		}
 
-		var itemList = inventoryLists.itemList;
-
-		// While look at a specific category, we want to be able to both:
-		// - switch column
-		// - switch column sort direction
-		// We can't use the the right/left swiping motions because they cause changes to the columns.
-		// So, we can only overload the up/down swipes.
-		if (Shared.GlobalFunc.IsKeyPressed(details) &&
-				(details.navEquivalent == NavigationCode.UP &&
-					(itemList.selectedIndex == -1 || 								// Nothing is selected (just switched category)
-					 itemList.getSelectedListEnumIndex() == 0)) 		// Selected item is the first item in current view of the list
-			 ){
-
-			var inputWindow = 250;
-			if(_platform == Shared.Platforms.CONTROLLER_OCULUS) {
-				inputWindow = 400;
-			}
-
-			// Has no column operation is currently pending...
-			if(_columnOpRequested == 0)	{
-				// Schedule an operation to be performed in the near future.
-				var _this = this;
-				setTimeout(function() {
-						if(_this._columnOpRequested == 1) {
-							itemList.layout.nextColumn();
-						} else {
-							itemList.layout.nextActiveColumnState();
-						}
-						_this._columnOpRequested = 0;
-				}, inputWindow);
-			}
-
-			// While we're waiting for the column operation to be performed in the near future,
-			// record the number of times the operation is requested.
-			_columnOpRequested++;
-			return true;
-		}
-
 		super.handleInput(details,pathToFocus);
 
 		if (shouldProcessItemsListInput(false)) {
