@@ -1,0 +1,157 @@
+#! env ruby
+
+# This utility copys the newly built files in ../build to the
+# `destination_dir`. It's also possible to watch the directory
+# so built files are copied automatically.
+#
+# This was written for ruby 2.5 and requires WSL and the 'listen'
+# gem for the directory watching capability.
+
+require('optparse')
+require('pathname')
+require('fileutils')
+
+options = {}
+optParser = OptionParser.new do |opts|
+	opts.banner = "Usage: cpBuiltFiles [options] destination_dir"
+
+	opts.on("-w", "--watch", "Watch built directory") do
+		options[:watch] = true
+	end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+  	puts opts
+  	exit
+  end
+end
+
+optParser.parse!
+
+destDir = ARGV.pop
+if not destDir then
+	puts optParser
+	exit
+end
+
+# This is where we'll be trying to copy files from
+srcDirPath = Pathname.new(__FILE__).parent + "../build"
+
+# This is where we'll be trying to copy files to
+destDirPath = Pathname.new(destDir)
+
+puts("Checking: #{destDir}\n\n")
+filesCopied = 0
+
+# For each file in the destination directory...
+Pathname.glob("#{destDir}/**/*").each do |destPath|
+
+	# For all files (not a directory)...
+	next if destPath.directory?
+
+	srcPath = srcDirPath + destPath.relative_path_from(destDirPath)
+
+	# If the a matching file from the build (src) directory exists, and it appears
+	# to be newer...
+	# This should mean that the file was newly built.
+	if srcPath.exist? && srcPath.mtime() > destPath.mtime() then
+
+		# Copy the file over to the destination
+		puts("#{srcPath} => #{destPath}")
+		FileUtils::copy_file(srcPath.realpath, destPath.realpath)
+		filesCopied = filesCopied + 1
+
+	end
+end
+
+if filesCopied != 0 then
+	 puts
+end
+puts("#{filesCopied} files copied")
+
+
+def getDestPath(srcBaseDirPath, srcFilePath, destBaseDirPath)
+	return destBaseDirPath + srcFilePath.relative_path_from(srcBaseDirPath)
+end
+
+if options[:watch] then
+	require('listen')
+	require('thread')
+
+	def waitFileStopsGrowing(filename)
+		oldSize = 0
+		newSize = File.size(filename)
+		while oldSize != newSize do
+			oldSize = newSize
+			sleep(1)
+			newSize = File.size(filename)
+		end
+	end
+
+	puts("Watching #{srcDirPath} for changes...")
+
+	# Create a set that records which files we're waiting for to finish writing
+	semaphore = Mutex.new
+	filesBeingWritten = Set.new
+
+	# Wait for a file to finish being written then copy it to the destination
+	copierThread = Thread.new do
+		while true do
+
+			# Wait until we found a file that has been modified
+			sleep(0.25)
+			files = filesBeingWritten.to_a
+			if files.length == 0 then
+				next
+			end
+
+			# Wait for the file to stop growing
+			modifiedFile = files[0]
+			modifiedPath = Pathname.new(modifiedFile)
+			waitFileStopsGrowing(modifiedPath)
+
+			# Copy the file
+			srcPath = modifiedPath
+			destPath = getDestPath(srcDirPath.realpath, srcPath, destDirPath)
+			time = Time.new
+
+	 		while true do
+	 			begin
+	 				puts("[#{time.strftime("%H:%M")}] #{srcPath} => #{destPath}")
+					FileUtils::copy_file(srcPath, destPath)
+					break
+				rescue
+					puts("File wasn't ready. Retrying.")
+					sleep(1)
+					next
+				end
+			end
+
+			# Make sure we stop waiting for the file the next iteration
+			semaphore.synchronize do
+				filesBeingWritten.delete(modifiedFile)
+			end
+		end
+	end
+
+	listenThread = Thread.new do
+		listener = Listen.to(srcDirPath) do |modified, added, removed|
+			if modified then
+				semaphore.synchronize do
+					modified.each do |f|
+						filesBeingWritten.add(f)
+					end
+				end
+			end
+		end
+		listener.start
+		sleep
+	end
+
+	# notifier = INotify::Notifier.new
+	# notifier.watch(srcDirPath.to_s, :close) do |event|
+	# 	# The #name field of the event object contains the name of the affected file
+	# 	puts "#{event.name} modified"
+	# end
+	# notifier.run
+	sleep
+end

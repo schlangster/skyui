@@ -1,5 +1,6 @@
 ﻿import gfx.managers.FocusHandler;
 import gfx.io.GameDelegate;
+import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 
 import skyui.components.list.ListLayoutManager;
@@ -11,7 +12,7 @@ import skyui.util.Debug;
 import skyui.util.GlobalFunctions;
 
 import skyui.defines.Input;
-
+import flash.utils.getTimer;
 
 class CraftingMenu extends MovieClip
 {
@@ -61,8 +62,10 @@ class CraftingMenu extends MovieClip
 	
 	private var _config: Object;
 	private var _subtypeName: String;
-	
-	
+
+	private var _handleInputRateLimiter: Boolean;
+
+
   /* PROPERTIES */
 
 	public var AdditionalDescriptionHolder: MovieClip;
@@ -233,24 +236,33 @@ class CraftingMenu extends MovieClip
 	public function UpdateButtonText(): Void
 	{
 		navPanel.clearButtons();
-		
+
+		var activateControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
+		var exitControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"Tab",XBoxArt:"360_B",PS3Art:"PS3_B",ViveArt:"grip",MoveArt:"PS3_B",OculusArt:"grab",WindowsMRArt:"grab"});
+		var auxControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"F",XBoxArt:"360_Y",PS3Art:"PS3_Y",ViveArt:"radial_Either_Up",MoveArt:"PS3_Y",OculusArt:"OCC_Y",WindowsMRArt:"radial_Either_Up"});
+		var craftControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"R",XBoxArt:"360_X",PS3Art:"PS3_X",ViveArt:"radial_Either_Down",MoveArt:"PS3_X",OculusArt:"OCC_B",WindowsMRArt:"radial_Either_Down"});
+
 		if (getItemShown()) {
-			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: Input.Activate});
+			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: activateControls});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			navPanel.addButton({text: "$Exit", controls: exitControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
 				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
 			}
 		}
-		
+
 		if (bCanCraft && ButtonText[CraftingMenu.CRAFT_BUTTON] != "") {
-			navPanel.addButton({text: ButtonText[CraftingMenu.CRAFT_BUTTON], controls: Input.XButton});
+			navPanel.addButton({text: ButtonText[CraftingMenu.CRAFT_BUTTON], controls: craftControls});
 		}
-		
+
 		if (bCanCraft && ButtonText[CraftingMenu.AUX_BUTTON] != "") {
-			navPanel.addButton({text: ButtonText[CraftingMenu.AUX_BUTTON], controls: Input.YButton});
+			navPanel.addButton({text: ButtonText[CraftingMenu.AUX_BUTTON], controls: auxControls});
 		}
 		
 //		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
@@ -424,10 +436,19 @@ class CraftingMenu extends MovieClip
 	}
 	
 	// @GFx
-	public function handleInput(aInputEvent: Object, aPathToFocus: Array): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		aPathToFocus[0].handleInput(aInputEvent, aPathToFocus.slice(1));
-		
+		// Don't process input too quickly
+		if(_handleInputRateLimiter) {
+			return;
+		}
+		skyui.util.Input.rateLimit(this, "_handleInputRateLimiter", 10);
+
+		pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+
+		// Always answer `true` or even `undefined`.
+		// Answering false may cause the Scaleform player to locate another
+		// component to focus on.
 		return true;
 	}
 	
@@ -595,7 +616,10 @@ class CraftingMenu extends MovieClip
 
 	private function onShowItemsList(event: Object): Void
 	{
-		if (_platform == 0) {
+		if (_platform == Shared.Platforms.CONTROLLER_PC ||
+				_platform == Shared.Platforms.CONTROLLER_VIVE ||
+				_platform == Shared.Platforms.CONTROLLER_OCULUS ||
+				_platform == Shared.Platforms.CONTROLLER_VIVE_KNUCKLES) {
 			GameDelegate.call("SetSelectedCategory", [CategoryList.CategoriesList.selectedIndex]);
 		}
 		
@@ -612,8 +636,10 @@ class CraftingMenu extends MovieClip
 
 	private function onCategoryListChange(event: Object): Void
 	{
-		if (_platform != 0) 
-		{
+		if (_platform != Shared.Platforms.CONTROLLER_PC ||
+				_platform != Shared.Platforms.CONTROLLER_VIVE ||
+				_platform != Shared.Platforms.CONTROLLER_OCULUS ||
+				_platform != Shared.Platforms.CONTROLLER_VIVE_KNUCKLES) {
 			GameDelegate.call("SetSelectedCategory", [event.index]);
 		}
 	}
