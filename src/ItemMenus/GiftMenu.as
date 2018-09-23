@@ -128,9 +128,12 @@ class GiftMenu extends ItemMenu
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
 		navPanel.clearButtons();
-		
+
+		var activateControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
+
 		if (a_bSelected) {
-			navPanel.addButton({text: (_bGivingGifts ? "$Give" : "$Take"), controls: Input.Activate});
+			navPanel.addButton({text: (_bGivingGifts ? "$Give" : "$Take"), controls: activateControls});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
