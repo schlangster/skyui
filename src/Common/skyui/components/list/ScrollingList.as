@@ -218,9 +218,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		
 		listEnumeration.invalidate();
 
-		if (_selectedIndex >= listEnumeration.size())
-			_selectedIndex = listEnumeration.size() - 1;
-			
 		if (listEnumeration.lookupEnumIndex(_selectedIndex) == null)
 			_selectedIndex = -1;
 		

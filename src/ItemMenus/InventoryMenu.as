@@ -59,6 +59,7 @@ class InventoryMenu extends ItemMenu
 		if(!this.bFadedIn)
 		{
 			inventoryLists.showPanel(false);
+			itemCard.FadeInCard();
 			ToggleMenuFade();
 		}
 		//bottomBar.GoToDefaultFrame();
@@ -291,6 +292,7 @@ class InventoryMenu extends ItemMenu
 	private function startMenuFade(): Void
 	{
 		inventoryLists.hidePanel();
+		itemCard.FadeOutCard();
 		//onHideItemsList({});
 		ToggleMenuFade();
 		saveIndices();
