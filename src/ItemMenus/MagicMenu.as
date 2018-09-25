@@ -49,8 +49,8 @@ class MagicMenu extends ItemMenu
 		/* ResetItemCard({type:Inventory.ICT_SPELL_DEFAULT}); */
 		/* itemCard.bFadedIn = false; */
 		/* itemCard._visible = false; */
-		//inventoryLists.showPanel(false);
 		if(!bFadedIn) {
+			inventoryLists.showPanel(false);
 			this.ToggleMenuFade();
 		}
 		/* bottomBar.GoToDefaultFrame(); */
@@ -250,7 +250,7 @@ class MagicMenu extends ItemMenu
 
 	private function startMenuFade(): Void
 	{
-		//inventoryLists.hidePanel();
+		inventoryLists.hidePanel();
 		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;
