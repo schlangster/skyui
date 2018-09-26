@@ -47,6 +47,7 @@ Pathname.glob("#{destDir}/**/*").each do |destPath|
 
 	# For all files (not a directory)...
 	next if destPath.directory?
+	next if destPath.to_s.include? "/exported/"
 
 	srcPath = srcDirPath + destPath.relative_path_from(destDirPath)
 
@@ -138,6 +139,7 @@ if options[:watch] then
 			if modified then
 				semaphore.synchronize do
 					modified.each do |f|
+						next if f.include? "/exported/"
 						filesBeingWritten.add(f)
 					end
 				end

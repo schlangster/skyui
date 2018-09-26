@@ -381,13 +381,13 @@ class ContainerMenu extends ItemMenu
 			if (!_bEquipMode)
 				navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			// navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
+				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
-			navPanel.addButton({text: "$Switch Tab", controls: _switchControls});
+			navPanel.addButton({text: "$Switch Tab", controls: {namedKey: "Action_Left"}});
 
 			if (isViewingContainer() && !bNPCMode)
 				navPanel.addButton({text: "$Take All", controls: takeAllControl});

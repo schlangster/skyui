@@ -413,26 +413,10 @@ class QuestsPage extends MovieClip
 
 	function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
-		// CLEANUP! What is _deleteControls for here? It's not referenced anywhere.
-		switch(a_platform) {
-			case Shared.Platforms.CONTROLLER_PC:
-				_toggleActiveControls = {keyCode: 28}; // Enter
-				_showOnMapControls = {keyCode: 50}; // M
-				_deleteControls = {keyCode: 45}; // X
-				break;
-
-			case Shared.Platforms.CONTROLLER_VIVE:
-				_toggleActiveControls = {namedKey: "trigger"};
-				_showOnMapControls = {namedKey: "radial_either_up"};
-				_deleteControls = {namedKey: "radial_either_up"};
-				break;
-
-			default:
-				_toggleActiveControls = {namedKey: "360_B"};
-				_showOnMapControls = {namedKey: "360_X"};
-				_deleteControls = {namedKey: "360_X"};
-				break;
-		}
+		_toggleActiveControls = skyui.util.Input.pickControls(a_platform,
+				{PCArt:"Enter",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
+		_showOnMapControls = skyui.util.Input.pickControls(a_platform,
+				{PCArt:"M",XBoxArt:"360_X",PS3Art:"PS3_X",ViveArt:"radial_Either_Up",MoveArt:"PS3_A",OculusArt:"OCC_A",WindowsMRArt:"radial_Either_Up"});
 
 		iPlatform = a_platform;
 		TitleList.SetPlatform(a_platform, a_bPS3Switch);

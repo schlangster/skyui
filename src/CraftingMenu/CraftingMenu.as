@@ -250,10 +250,10 @@ class CraftingMenu extends MovieClip
 			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: activateControls});
 		} else {
 			navPanel.addButton({text: "$Exit", controls: exitControls});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			//navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
+				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
 		}
 
