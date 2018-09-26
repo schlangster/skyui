@@ -156,6 +156,7 @@ class skyui.components.MappedButton extends Button
 	public function update(): Void
 	{
 		var xOffset = 0;
+		var targetHeight = textField._height;
 
 		for (var i=0; i<buttonArt.length; i++) {
 			var icon: MovieClip = buttonArt[i];
@@ -163,6 +164,12 @@ class skyui.components.MappedButton extends Button
 			if (_controlInfos[i].keyCode > 0) {
 				icon._visible = true;
 				icon.gotoAndStop(_controlInfos[i].keyCode);
+
+				// Scale up the icon up to the target height
+				var scaleMult = targetHeight / icon._height;
+				icon._height = targetHeight;
+				icon._width *= scaleMult;
+
 				icon._x = xOffset
 				icon._y = (_height - icon._height) / 2;
 				xOffset += icon._width - 2;
@@ -171,9 +178,18 @@ class skyui.components.MappedButton extends Button
 			}
 		}
 
-		textField._x = xOffset + 1;
-		xOffset += textField._width + 6;
+		textField._x = xOffset + 3;
+		xOffset += textField._width + 8;
 
 		background._width = xOffset;
+
+		// Position this button so it's centered in the bottombar
+		// We're assuming the following display tree:
+		// bottom bar
+		//  |- button panel
+		//      |- Mapped Button
+		// To center the ourselves to the bottom bar, we need to:
+		//   ( center self with respect to the bottombar  ) - (_y offset introduced by button panel)
+		_y = ((_parent._parent._height - targetHeight) / 2) - _parent._y;
 	}
 }
