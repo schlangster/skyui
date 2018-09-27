@@ -351,35 +351,49 @@ class ContainerMenu extends ItemMenu
 		var activateControl = skyui.util.Input.pickControls(_platform, {PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"radial_Either_Center",MoveArt:"PS3_MOVE",OculusArt:"OCC_A",WindowsMRArt:"radial_Either_Center"});
 		var favoriteControl = skyui.util.Input.pickControls(_platform, {PCArt:"F",XBoxArt:"360_Y",PS3Art:"PS3_Y",ViveArt:"radial_Either_Right",MoveArt:"PS3_Y",OculusArt:"OCC_B",WindowsMRArt:"radial_Either_Right"});
 
+		// Setup the main action button
+		var equipArt = {PCArt:"M1M2", XBoxArt:"360_LTRT", PS3Art:"PS3_LTRT", ViveArt: "trigger_LR",
+			MoveArt:"PS3_MOVE", OculusArt: "trigger_LR", WindowsMRArt: "trigger_LR"};
+    var useItemArt = {PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"};
+
+		var actionText = undefined;
+		var actionArt = undefined;
+		switch(itemCard.itemInfo.type)
+		{
+			case Inventory.ICT_BOOK:
+				actionText = "$Read";
+				actionArt = useItemArt;
+				break;
+			case Inventory.ICT_POTION:
+				actionText = "$Use";
+				actionArt = useItemArt;
+				break;
+			case Inventory.ICT_FOOD:
+			case Inventory.ICT_INGREDIENT:
+				actionText = "$Eat";
+				actionArt = useItemArt;
+				break;
+			case Inventory.ICT_ARMOR:
+			case Inventory.ICT_WEAPON:
+				actionText = "$Equip";
+				actionArt = equipArt;
+				break;
+		}
+
+		if (actionArt != undefined)
+			navPanel.addButton({text: actionText, controls: skyui.util.Input.pickControls(_platform, actionArt)});
+
 		if (a_bSelected && inventoryLists.itemList.selectedIndex != -1 && inventoryLists.currentState == InventoryLists.SHOW_PANEL) {
 			if (isViewingContainer()) {
-				if (_platform != 0) {
-					navPanel.addButton({text: "$Take", controls: activateControl});
-					navPanel.addButton({text: "$Equip", controls: equipControl});
-				} else {
-					if (_bEquipMode)
-						navPanel.addButton({text: "$Equip", controls: equipControl});
-					else
-						navPanel.addButton({text: "$Take", controls: activateControl});
-				}
+				navPanel.addButton({text: "$Take", controls: activateControl});
 				if (!bNPCMode)
 					navPanel.addButton({text: "$Take All", controls: takeAllControl});
 			} else {
-				if (_platform != 0) {
-					navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: activateControl});
-					navPanel.addButton({text: "$Equip", controls: equipControl});
-				} else {
-					if (_bEquipMode)
-						navPanel.addButton({text: "$Equip", controls: equipControl});
-					else
-						navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: activateControl});
-				}
-
+				navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: activateControl});
 				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: favoriteControl});
-
 			}
-			if (!_bEquipMode)
-				navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
+			// if (!_bEquipMode)
+			//	 navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			// navPanel.addButton({text: "$Search", controls: _searchControls});
