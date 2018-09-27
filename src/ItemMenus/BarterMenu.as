@@ -245,8 +245,8 @@ class BarterMenu extends ItemMenu
 			var activateControls = skyui.util.Input.pickControls(_platform, {PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
 			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: activateControls});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			// navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
 				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});

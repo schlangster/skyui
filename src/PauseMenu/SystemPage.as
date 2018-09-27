@@ -130,7 +130,6 @@ class SystemPage extends MovieClip
 
 	function OnShow(): Void
 	{
-		Debug.log(">> OnShow");
 		if(pageWasEnded == false) {
 			endPage();
 		}
@@ -158,7 +157,6 @@ class SystemPage extends MovieClip
 		} else {
 			_showControlsMenu = true;
 		}
-		Debug.log("iPlatform: " + iPlatform);
 
 		/* CategoryList.clearList(); */
 		CategoryList.entryList = new Array();
@@ -185,8 +183,6 @@ class SystemPage extends MovieClip
 		if(HelpList.entryList.length != 0) {
 			HelpList.entryList = new Array();
 		}
-
-		Debug.log("<< OnShow");
 	}
 
 	static function IsOrbis(aiPlatform)
