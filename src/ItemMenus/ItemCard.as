@@ -12,7 +12,7 @@ import skyui.defines.Inventory;
 class ItemCard extends MovieClip
 {
 	#include "../version.as"
-	
+
 	var ActiveEffectTimeValue: TextField;
 	var ApparelArmorValue: TextField;
 	var ApparelEnchantedLabel: TextField;
@@ -41,7 +41,7 @@ class ItemCard extends MovieClip
 	var TotalChargesValue: TextField;
 	var WeaponDamageValue: TextField;
 	var WeaponEnchantedLabel: TextField;
-	
+
 	var ButtonRect: MovieClip;
 	var ButtonRect_mc: MovieClip;
 	var CardList_mc: MovieClip;
@@ -58,16 +58,16 @@ class ItemCard extends MovieClip
 	var PrevFocus: MovieClip;
 	var QuantitySlider_mc: MovieClip;
 	var WeaponChargeMeter: MovieClip;
-	
+
 	var InputHandler: Function;
 	var dispatchEvent: Function;
-	
+
 	var ItemCardMeters: Object;
 	var LastUpdateObj: Object;
-	
+
 	var _bEditNameMode: Boolean;
 	var bFadedIn: Boolean;
-	
+
 
 	function ItemCard()
 	{
@@ -115,14 +115,21 @@ class ItemCard extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		ButtonRect_mc.AcceptGamepadButton._visible = aiPlatform != 0;
-		ButtonRect_mc.CancelGamepadButton._visible = aiPlatform != 0;
-		ButtonRect_mc.AcceptMouseButton._visible = aiPlatform == 0;
-		ButtonRect_mc.CancelMouseButton._visible = aiPlatform == 0;
-		if (aiPlatform != 0) {
-			ButtonRect_mc.AcceptGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-			ButtonRect_mc.CancelGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-		}
+		// TODO!!! Clean out both *GamepadButton and *MouseButton
+		// We're now using MappedButton instead of CrossplatformButton
+		ButtonRect_mc.AcceptGamepadButton._visible = false;
+		ButtonRect_mc.CancelGamepadButton._visible = false;
+		ButtonRect_mc.AcceptMouseButton._visible = false;
+		ButtonRect_mc.CancelMouseButton._visible = false;
+
+		var acceptControls = skyui.util.Input.pickControls(aiPlatform,
+				{PCArt:"Enter",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"})
+		var cancelControls = skyui.util.Input.pickControls(aiPlatform,
+				{PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
+
+		ButtonRect_mc.AcceptButton.setButtonData({text: "$Yes", controls: acceptControls});
+		ButtonRect_mc.CancelButton.setButtonData({text: "$No", controls: cancelControls});
+
 		ItemList.SetPlatform(aiPlatform, abPS3Switch);
 	}
 
@@ -179,8 +186,8 @@ class ItemCard extends MovieClip
 		ItemCardMeters = new Array();
 		var strItemNameHtml: String = ItemName == undefined ? "" : ItemName.htmlText;
 		var _iItemType: Number = aUpdateObj.type;
-		
-		
+
+
 		switch (_iItemType) {
 			case Inventory.ICT_ARMOR:
 				if (aUpdateObj.effects.length == 0)
@@ -193,7 +200,7 @@ class ItemCard extends MovieClip
 				ApparelEnchantedLabel.htmlText = aUpdateObj.effects;
 				SkillTextInstance.text = aUpdateObj.skillText;
 				break;
-				
+
 			case Inventory.ICT_WEAPON:
 				if (aUpdateObj.effects.length == 0) {
 					gotoAndStop("Weapons_reg");
@@ -215,8 +222,8 @@ class ItemCard extends MovieClip
 				WeaponEnchantedLabel.textAutoSize = "shrink";
 				WeaponEnchantedLabel.htmlText = aUpdateObj.effects;
 				break;
-				
-			case Inventory.ICT_BOOK: 
+
+			case Inventory.ICT_BOOK:
 				if (aUpdateObj.description != undefined && aUpdateObj.description != "") {
 					gotoAndStop("Books_Description");
 					BookDescriptionLabel.SetText(aUpdateObj.description);
@@ -224,21 +231,21 @@ class ItemCard extends MovieClip
 					gotoAndStop("Books_reg");
 				}
 				break;
-				
-			case Inventory.ICT_POTION: 
+
+			case Inventory.ICT_POTION:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
 				PotionsLabel.htmlText = aUpdateObj.effects;
 				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
 				break;
-				
+
 			case Inventory.ICT_FOOD:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
 				PotionsLabel.htmlText = aUpdateObj.effects;
 				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
 				break;
-				
+
 			case Inventory.ICT_SPELL_DEFAULT:
 				gotoAndStop("Power_reg");
 				MagicEffectsLabel.SetText(aUpdateObj.effects, true);
@@ -255,7 +262,7 @@ class ItemCard extends MovieClip
 					MagicCostValue.text = aUpdateObj.spellCost.toString();
 				}
 				break;
-				
+
 			case Inventory.ICT_SPELL:
 				var bCastTime: Boolean = aUpdateObj.castTime == 0;
 				if (bCastTime)
@@ -272,7 +279,7 @@ class ItemCard extends MovieClip
 				else
 					MagicCostValue.text = aUpdateObj.spellCost.toString();
 				break;
-				
+
 			case Inventory.ICT_INGREDIENT:
 				gotoAndStop("Ingredients_reg");
 				for (var i: Number = 0; i < 4; i++) {
@@ -288,11 +295,11 @@ class ItemCard extends MovieClip
 					}
 				}
 				break;
-				
+
 			case Inventory.ICT_MISC:
 				gotoAndStop("Misc_reg");
 				break;
-				
+
 			case Inventory.ICT_SHOUT:
 				gotoAndStop("Shouts_reg");
 				var iLastWord: Number = 0;
@@ -321,7 +328,7 @@ class ItemCard extends MovieClip
 				ShoutEffectsLabel.htmlText = aUpdateObj.effects;
 				ShoutCostValue.text = aUpdateObj.spellCost.toString();
 				break;
-				
+
 			case Inventory.ICT_ACTIVE_EFFECT:
 				gotoAndStop("ActiveEffects");
 				MagicEffectsLabel.html = true;
@@ -357,12 +364,12 @@ class ItemCard extends MovieClip
 					SecsText._alpha = 0;
 				}
 				break;
-				
+
 			case Inventory.ICT_SOUL_GEMS:
 				gotoAndStop("SoulGem");
 				SoulLevel.text = aUpdateObj.soulLVL;
 				break;
-				
+
 			case Inventory.ICT_LIST:
 				gotoAndStop("Item_list");
 				if (aUpdateObj.listItems != undefined) {
@@ -374,7 +381,7 @@ class ItemCard extends MovieClip
 					OpenListMenu();
 				}
 				break;
-				
+
 			case Inventory.ICT_CRAFT_ENCHANTING:
 			case Inventory.ICT_HOUSE_PART:
 				if (aUpdateObj.type == Inventory.ICT_HOUSE_PART) {
@@ -410,12 +417,12 @@ class ItemCard extends MovieClip
 					ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Weapon.MeterInstance);
 					WeaponDamageValue.SetText(aUpdateObj.damage);
 				}
-				
+
 				if (aUpdateObj.usedCharge == 0 && aUpdateObj.totalCharges == 0)
 					ItemCardMeters[Inventory.ICT_WEAPON].DeltaMeterMovieClip._parent._parent._alpha = 0;
 				else if (aUpdateObj.usedCharge != undefined)
 					ItemCardMeters[Inventory.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
-				
+
 				if (aUpdateObj.effects != undefined && aUpdateObj.effects.length > 0) {
 					if (EnchantmentLabel != undefined)
 						EnchantmentLabel.SetText(aUpdateObj.effects, true);
@@ -431,13 +438,13 @@ class ItemCard extends MovieClip
 					Enchanting_Background._alpha = 0;
 				}
 				break;
-			
+
 			case Inventory.ICT_KEY:
 			case Inventory.ICT_NONE:
 			default:
 				gotoAndStop("Empty");
 		}
-		
+
 		SetupItemName(strItemNameHtml);
 		if (aUpdateObj.name != undefined) {
 			var strItemName: String = aUpdateObj.count != undefined && aUpdateObj.count > 1 ? aUpdateObj.name + " (" + aUpdateObj.count + ")" : aUpdateObj.name;
@@ -467,9 +474,9 @@ class ItemCard extends MovieClip
 		var iEnchantingSlider_yOffset = 147.3;
 		var iButtonRect_iOffset = 130;
 		var iButtonRect_iOffsetEnchanting = 166;
-		
+
 		switch (aActiveClip) {
-			case EnchantingSlider_mc: 
+			case EnchantingSlider_mc:
 				QuantitySlider_mc._y = -100;
 				ButtonRect._y = iButtonRect_iOffsetEnchanting;
 				EnchantingSlider_mc._y = iEnchantingSlider_yOffset;
@@ -479,8 +486,8 @@ class ItemCard extends MovieClip
 				EnchantingSlider_mc._alpha = 100;
 				CardList_mc._alpha = 0;
 				break;
-				
-			case QuantitySlider_mc: 
+
+			case QuantitySlider_mc:
 				QuantitySlider_mc._y = iQuantitySlider_yOffset;
 				ButtonRect._y = iButtonRect_iOffset;
 				EnchantingSlider_mc._y = -100;
@@ -490,8 +497,8 @@ class ItemCard extends MovieClip
 				EnchantingSlider_mc._alpha = 0;
 				CardList_mc._alpha = 0;
 				break;
-				
-			case CardList_mc: 
+
+			case CardList_mc:
 				QuantitySlider_mc._y = -100;
 				ButtonRect._y = -100;
 				EnchantingSlider_mc._y = -100;
@@ -501,8 +508,8 @@ class ItemCard extends MovieClip
 				EnchantingSlider_mc._alpha = 0;
 				CardList_mc._alpha = 100;
 				break;
-				
-			case ButtonRect: 
+
+			case ButtonRect:
 				QuantitySlider_mc._y = -100;
 				ButtonRect._y = iButtonRect_iOffset;
 				EnchantingSlider_mc._y = -100;
@@ -636,7 +643,7 @@ class ItemCard extends MovieClip
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bHandledInput: Boolean = false;
-		if (pathToFocus.length > 0 && pathToFocus[0].handleInput != undefined) 
+		if (pathToFocus.length > 0 && pathToFocus[0].handleInput != undefined)
 			pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		if (InputHandler != undefined)
 			bHandledInput = InputHandler(details);
@@ -722,7 +729,7 @@ class ItemCard extends MovieClip
 
 	function onListMouseSelectionChange(event: Object): Void
 	{
-		if (event.keyboardOrMouse == 0) 
+		if (event.keyboardOrMouse == 0)
 			onListSelectionChange(event);
 	}
 
