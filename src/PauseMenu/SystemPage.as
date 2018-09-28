@@ -367,8 +367,6 @@ class SystemPage extends MovieClip
 
 	function onAcceptPress(): Boolean
 	{
-		Debug.log(">> onAcceptPress");
-		Debug.log("iCurrentState: " + iCurrentState);
 		var bAcceptPressed: Boolean = true;
 
 		switch (iCurrentState) {
@@ -453,7 +451,6 @@ class SystemPage extends MovieClip
 				break;
 		}
 
-		Debug.log("<< onAcceptPress");
 		return bAcceptPressed;
 	}
 
@@ -690,26 +687,22 @@ class SystemPage extends MovieClip
 
   function OnSaveListCharactersOpenSuccess()
   {
-  	Debug.log(">> OnSaveListCharacterOpenSuccess");
     if(this.SaveLoadListHolder.numSaves > 0) {
       GameDelegate.call("PlaySound",["UIMenuOK"]);
       StartState(SystemPage.CHARACTER_SELECTION_STATE);
     } else {
       GameDelegate.call("PlaySound",["UIMenuCancel"]);
     }
-  	Debug.log("<< OnSaveListCharacterOpenSuccess");
   }
 
 	function OnSaveListOpenSuccess(): Void
 	{
-		Debug.log(">> OnSaveListOpenSuccess");
 		if (SaveLoadListHolder.numSaves > 0) {
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 			StartState(SystemPage.SAVE_LOAD_STATE);
 		} else {
 			StartState(SystemPage.CHARACTER_LOAD_STATE);
 		}
-		Debug.log("<< OnSaveListOpenSuccess");
 	}
 
 	function OnSaveListBatchAdded() {
