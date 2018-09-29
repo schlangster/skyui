@@ -94,12 +94,12 @@ class ItemCard extends MovieClip
 		return ItemName;
 	}
 
-	function SetupItemName(aPrevName: String): Void
+	function SetupItemName(aName: String): Void
 	{
 		ItemName = ItemText.ItemTextField;
-		if (ItemName != undefined) {
+		if (aName != undefined) {
 			ItemName.textAutoSize = "shrink";
-			ItemName.htmlText = aPrevName;
+			ItemName.SetText(aName, true);
 			ItemName.selectable = false;
 		}
 	}
@@ -197,8 +197,8 @@ class ItemCard extends MovieClip
 				ApparelArmorValue.textAutoSize = "shrink";
 				ApparelArmorValue.SetText(aUpdateObj.armor);
 				ApparelEnchantedLabel.textAutoSize = "shrink";
-				ApparelEnchantedLabel.htmlText = aUpdateObj.effects;
-				SkillTextInstance.text = aUpdateObj.skillText;
+				ApparelEnchantedLabel.SetText(aUpdateObj.effects, true);
+				SkillTextInstance.SetText(aUpdateObj.skillText);
 				break;
 
 			case Inventory.ICT_WEAPON:
@@ -220,7 +220,7 @@ class ItemCard extends MovieClip
 				PoisonInstance.gotoAndStop(strIsPoisoned);
 				WeaponDamageValue.SetText(aUpdateObj.damage);
 				WeaponEnchantedLabel.textAutoSize = "shrink";
-				WeaponEnchantedLabel.htmlText = aUpdateObj.effects;
+				WeaponEnchantedLabel.SetText(aUpdateObj.effects, true);
 				break;
 
 			case Inventory.ICT_BOOK:
@@ -235,15 +235,15 @@ class ItemCard extends MovieClip
 			case Inventory.ICT_POTION:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
-				PotionsLabel.htmlText = aUpdateObj.effects;
-				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
+				PotionsLabel.SetText(aUpdateObj.effects, true);
+				SkillTextInstance.SetText(aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName);
 				break;
 
 			case Inventory.ICT_FOOD:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
-				PotionsLabel.htmlText = aUpdateObj.effects;
-				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
+				PotionsLabel.SetText(aUpdateObj.effects, true);
+				SkillTextInstance.SetText(aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName);
 				break;
 
 			case Inventory.ICT_SPELL_DEFAULT:
@@ -259,7 +259,7 @@ class ItemCard extends MovieClip
 				} else {
 					MagicCostValue._alpha = 100;
 					MagicCostLabel._alpha = 100;
-					MagicCostValue.text = aUpdateObj.spellCost.toString();
+					MagicCostValue.SetText(aUpdateObj.spellCost.toString());
 				}
 				break;
 
@@ -269,15 +269,15 @@ class ItemCard extends MovieClip
 					gotoAndStop("Magic_time_label");
 				else
 					gotoAndStop("Magic_reg");
-				SkillLevelText.text = aUpdateObj.castLevel.toString();
+				SkillLevelText.SetText(aUpdateObj.castLevel.toString());
 				MagicEffectsLabel.SetText(aUpdateObj.effects, true);
 				MagicEffectsLabel.textAutoSize = "shrink";
 				MagicCostValue.textAutoSize = "shrink";
 				MagicCostTimeValue.textAutoSize = "shrink";
 				if (bCastTime)
-					MagicCostTimeValue.text = aUpdateObj.spellCost.toString();
+					MagicCostTimeValue.SetText(aUpdateObj.spellCost.toString());
 				else
-					MagicCostValue.text = aUpdateObj.spellCost.toString();
+					MagicCostValue.SetText(aUpdateObj.spellCost.toString());
 				break;
 
 			case Inventory.ICT_INGREDIENT:
@@ -325,8 +325,8 @@ class ItemCard extends MovieClip
 						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
 					}
 				}
-				ShoutEffectsLabel.htmlText = aUpdateObj.effects;
-				ShoutCostValue.text = aUpdateObj.spellCost.toString();
+				ShoutEffectsLabel.SetText(aUpdateObj.effects, true);
+				ShoutCostValue.SetText(aUpdateObj.spellCost.toString());
 				break;
 
 			case Inventory.ICT_ACTIVE_EFFECT:
@@ -340,24 +340,24 @@ class ItemCard extends MovieClip
 					SecsText._alpha = 100;
 					if (iEffectTimeRemaining >= 3600) {
 						iEffectTimeRemaining = Math.floor(iEffectTimeRemaining / 3600);
-						ActiveEffectTimeValue.text = iEffectTimeRemaining.toString();
+						ActiveEffectTimeValue.SetText(iEffectTimeRemaining.toString());
 						if (iEffectTimeRemaining == 1)
-							SecsText.text = "$hour";
+							SecsText.SetText("$hour");
 						else
-							SecsText.text = "$hours";
+							SecsText.SetText("$hours");
 					} else if (iEffectTimeRemaining >= 60) {
 						iEffectTimeRemaining = Math.floor(iEffectTimeRemaining / 60);
-						ActiveEffectTimeValue.text = iEffectTimeRemaining.toString();
+						ActiveEffectTimeValue.SetText(iEffectTimeRemaining.toString());
 						if (iEffectTimeRemaining == 1)
-							SecsText.text = "$min";
+							SecsText.SetText("$min");
 						else
-							SecsText.text = "$mins";
+							SecsText.SetText("$mins");
 					} else {
-						ActiveEffectTimeValue.text = iEffectTimeRemaining.toString();
+						ActiveEffectTimeValue.SetText(iEffectTimeRemaining.toString());
 						if (iEffectTimeRemaining == 1)
-							SecsText.text = "$sec";
+							SecsText.SetText("$sec");
 						else
-							SecsText.text = "$secs";
+							SecsText.SetText("$secs");
 					}
 				} else {
 					ActiveEffectTimeValue._alpha = 0;
@@ -367,7 +367,7 @@ class ItemCard extends MovieClip
 
 			case Inventory.ICT_SOUL_GEMS:
 				gotoAndStop("SoulGem");
-				SoulLevel.text = aUpdateObj.soulLVL;
+				SoulLevel.SetText(aUpdateObj.soulLVL);
 				break;
 
 			case Inventory.ICT_LIST:
@@ -394,7 +394,7 @@ class ItemCard extends MovieClip
 					gotoAndStop("Craft_Enchanting");
 					ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Default.MeterInstance);
 					if (aUpdateObj.totalCharges != undefined && aUpdateObj.totalCharges != 0)
-						TotalChargesValue.text = aUpdateObj.totalCharges;
+						TotalChargesValue.SetText(aUpdateObj.totalCharges);
 				} else if (aUpdateObj.damage == undefined) {
 					if (aUpdateObj.armor == undefined) {
 						if (aUpdateObj.soulLVL == undefined) {
@@ -405,12 +405,12 @@ class ItemCard extends MovieClip
 						} else {
 							gotoAndStop("Craft_Enchanting_SoulGem");
 							ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_SoulGem.MeterInstance);
-							SoulLevel.text = aUpdateObj.soulLVL;
+							SoulLevel.SetText(aUpdateObj.soulLVL);
 						}
 					} else {
 						gotoAndStop("Craft_Enchanting_Armor");
 						ApparelArmorValue.SetText(aUpdateObj.armor);
-						SkillTextInstance.text = aUpdateObj.skillText;
+						SkillTextInstance.SetText(aUpdateObj.skillText);
 					}
 				} else {
 					gotoAndStop("Craft_Enchanting_Weapon");
@@ -612,7 +612,7 @@ class ItemCard extends MovieClip
 		if (Selection.getFocus() != ItemName) {
 			PrevFocus = FocusHandler.instance.getFocus(0);
 			if (aInitialText != undefined)
-				ItemName.text = aInitialText;
+				ItemName.SetText(aInitialText);
 			ItemName.type = "input";
 			ItemName.noTranslate = true;
 			ItemName.selectable = true;
