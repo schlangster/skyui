@@ -110,11 +110,15 @@ if options[:watch] then
 			modifiedPath = Pathname.new(modifiedFile)
 			waitFileStopsGrowing(modifiedPath)
 
-			# Copy the file
+			# Figure out where to copy the file from & to
 			srcPath = modifiedPath
 			destPath = getDestPath(srcDirPath.realpath, srcPath, destDirPath)
-			time = Time.new
 
+			# Don't copy the file if it doesn't already exist in the destination
+			next if !destPath.exist?
+
+			# Actually copy the file when ready
+			time = Time.new
 	 		while true do
 	 			begin
 	 				puts("[#{time.strftime("%H:%M")}] #{srcPath} => #{destPath}")
