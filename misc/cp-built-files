@@ -47,6 +47,7 @@ Pathname.glob("#{destDir}/**/*").each do |destPath|
 
 	# For all files (not a directory)...
 	next if destPath.directory?
+	next if destPath.to_s.include? "/exported/"
 
 	srcPath = srcDirPath + destPath.relative_path_from(destDirPath)
 
@@ -109,11 +110,15 @@ if options[:watch] then
 			modifiedPath = Pathname.new(modifiedFile)
 			waitFileStopsGrowing(modifiedPath)
 
-			# Copy the file
+			# Figure out where to copy the file from & to
 			srcPath = modifiedPath
 			destPath = getDestPath(srcDirPath.realpath, srcPath, destDirPath)
-			time = Time.new
 
+			# Don't copy the file if it doesn't already exist in the destination
+			next if !destPath.exist?
+
+			# Actually copy the file when ready
+			time = Time.new
 	 		while true do
 	 			begin
 	 				puts("[#{time.strftime("%H:%M")}] #{srcPath} => #{destPath}")
@@ -138,6 +143,7 @@ if options[:watch] then
 			if modified then
 				semaphore.synchronize do
 					modified.each do |f|
+						next if f.include? "/exported/"
 						filesBeingWritten.add(f)
 					end
 				end

@@ -39,7 +39,6 @@ class Shared.GlobalFunc
 				var letterSpacing: Number = textFormat.letterSpacing;
 				var kerning: Boolean = textFormat.kerning;
 				this.htmlText = aText;
-				textFormat = this.getTextFormat();
 				textFormat.letterSpacing = letterSpacing;
 				textFormat.kerning = kerning;
 				this.setTextFormat(textFormat);

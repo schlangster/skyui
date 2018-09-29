@@ -49,8 +49,8 @@ class MagicMenu extends ItemMenu
 		/* ResetItemCard({type:Inventory.ICT_SPELL_DEFAULT}); */
 		/* itemCard.bFadedIn = false; */
 		/* itemCard._visible = false; */
-		//inventoryLists.showPanel(false);
 		if(!bFadedIn) {
+			inventoryLists.showPanel(false);
 			this.ToggleMenuFade();
 		}
 		/* bottomBar.GoToDefaultFrame(); */
@@ -236,13 +236,13 @@ class MagicMenu extends ItemMenu
 				navPanel.addButton({text: "$Unlock", controls: unlockControls});
 
 		} else {
-			navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
+			// navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
+				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
-			navPanel.addButton({text: "$Inventory", controls: _switchControls});
+			// navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}
 
 		navPanel.updateButtons(true);
@@ -250,7 +250,7 @@ class MagicMenu extends ItemMenu
 
 	private function startMenuFade(): Void
 	{
-		//inventoryLists.hidePanel();
+		inventoryLists.hidePanel();
 		ToggleMenuFade();
 		saveIndices();
 		_bMenuClosing = true;

@@ -39,10 +39,16 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 			setSpecificEntryLayout(a_entryObject, a_state);
 		}
 		
+		// The entire entry should be using the same font & size
+		// We want to fetch the lineMetrics just once (not sure how expensive this call is)
+		var textMetrics = undefined;
+
 		// Format the actual entry contents. Do this with every upate.
 		for (var i = 0; i < layout.columnCount; i++) {
 			var columnLayoutData: ColumnLayoutData = layout.columnLayoutData[i];
 			var e = this[columnLayoutData.stageName];
+			if (textMetrics == undefined)
+				textMetrics = e.getLineMetrics(0);
 
 			// Substitute @variables by entryObject properties
 			var entryValue: String = columnLayoutData.entryValue;
@@ -80,6 +86,20 @@ class skyui.components.list.TabularListEntry extends BasicListEntry
 				if (color != undefined)
 					e.textColor = color;
 			}
+
+			// Center the text vertically, using the selectIndicator as a reference
+			//
+			// For some reason, text alignment is more difficult than it should be.
+			// The idea here is to align the top of the select indicator and the TextField.
+			// Then, we vertically center the TextField using the `ascent` height only.
+			//
+			// There is a small wrinkle here. For some reason, even if selectIndicator._y
+			// and TextField._y is set to 0, they are not perfectly vertically aligned.
+			// There is a small vertical gap which throws off this centering calculation.
+			// By experiementation, it looks like subtracting the `descent` hight gets the
+			// text to mostly align with the top of the indicator selector. It's still off
+			// by a few pixels, but at least it's much better than not accounting for it.
+			e._y = selectIndicator._y - textMetrics.descent + ((selectIndicator._height - textMetrics.ascent)/2);
 		}
 	}
 	

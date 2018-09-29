@@ -208,9 +208,12 @@ class skyui.defines.ButtonArtNames
 			"PS3_LTRT", "PS3_LS", "PS3_LBRB", "PS3_LB", "PS3_L3",
 			"PS3_CON_RIGHT", "PS3_CON_LEFT", "PS3_B_RIGHT", "PS3_B_LEFT", "PS3_B",
 
-			// 450 - 455
+			// 450 - 459
 			"PS3_AB_RIGHT", "PS3_AB_LEFT", "PS3_AB", "PS3_A_RIGHT", "PS3_A_LEFT",
-			"PS3_A", "radial_Either_Right", "radial_Either_Left"
+			"PS3_A", "radial_Either_Right", "radial_Either_Left", "Action_Up", "Action_Double_Up",
+
+			// 460 - 469
+			"Action_Left"
 		]);
 		return aNameMap;
 	}

@@ -27,13 +27,13 @@ itemcard.yOffset = 0
 
 
 ; =====================================================================================================================
-[ItemList] 
+[ItemList]
 ; =====================================================================================================================
 quantityMenu.minCount = 6 ; Number of items required to trigger quantity dialog. 0 is disabled
 
 
 ; =====================================================================================================================
-[Appearance] 
+[Appearance]
 ; =====================================================================================================================
 icons.category.source = 'skyui/icons_category_psychosteve.swf'
 
@@ -50,7 +50,7 @@ colors.negative.disabled = 0x800000
 
 
 ; =====================================================================================================================
-[ListLayout] 
+[ListLayout]
 ; =====================================================================================================================
 vars.a_textBorder.value = <0, 0, 1.1, 0> ; left right top bottom
 vars.n_iconSize.value = 18
@@ -63,7 +63,7 @@ defaults.entry.textFormat.align = right
 defaults.entry.textFormat.bold = false
 defaults.entry.textFormat.italic = false
 defaults.entry.textFormat.underline = false
-defaults.entry.textFormat.size = 14
+defaults.entry.textFormat.size = 18
 defaults.entry.textFormat.letterSpacing = 0.8
 defaults.entry.textFormat.kerning = false
 defaults.entry.textFormat.leftMargin = 0
@@ -76,7 +76,7 @@ defaults.label.textFormat.align = right
 defaults.label.textFormat.bold = false
 defaults.label.textFormat.italic = false
 defaults.label.textFormat.underline = false
-defaults.label.textFormat.size = 12
+defaults.label.textFormat.size = 16
 defaults.label.textFormat.letterSpacing = 0.8
 defaults.label.textFormat.kerning = false
 defaults.label.textFormat.leftMargin = 0

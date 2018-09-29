@@ -130,7 +130,6 @@ class SystemPage extends MovieClip
 
 	function OnShow(): Void
 	{
-		Debug.log(">> OnShow");
 		if(pageWasEnded == false) {
 			endPage();
 		}
@@ -158,7 +157,6 @@ class SystemPage extends MovieClip
 		} else {
 			_showControlsMenu = true;
 		}
-		Debug.log("iPlatform: " + iPlatform);
 
 		/* CategoryList.clearList(); */
 		CategoryList.entryList = new Array();
@@ -185,8 +183,6 @@ class SystemPage extends MovieClip
 		if(HelpList.entryList.length != 0) {
 			HelpList.entryList = new Array();
 		}
-
-		Debug.log("<< OnShow");
 	}
 
 	static function IsOrbis(aiPlatform)
@@ -371,8 +367,6 @@ class SystemPage extends MovieClip
 
 	function onAcceptPress(): Boolean
 	{
-		Debug.log(">> onAcceptPress");
-		Debug.log("iCurrentState: " + iCurrentState);
 		var bAcceptPressed: Boolean = true;
 
 		switch (iCurrentState) {
@@ -457,7 +451,6 @@ class SystemPage extends MovieClip
 				break;
 		}
 
-		Debug.log("<< onAcceptPress");
 		return bAcceptPressed;
 	}
 
@@ -694,26 +687,22 @@ class SystemPage extends MovieClip
 
   function OnSaveListCharactersOpenSuccess()
   {
-  	Debug.log(">> OnSaveListCharacterOpenSuccess");
     if(this.SaveLoadListHolder.numSaves > 0) {
       GameDelegate.call("PlaySound",["UIMenuOK"]);
       StartState(SystemPage.CHARACTER_SELECTION_STATE);
     } else {
       GameDelegate.call("PlaySound",["UIMenuCancel"]);
     }
-  	Debug.log("<< OnSaveListCharacterOpenSuccess");
   }
 
 	function OnSaveListOpenSuccess(): Void
 	{
-		Debug.log(">> OnSaveListOpenSuccess");
 		if (SaveLoadListHolder.numSaves > 0) {
 			GameDelegate.call("PlaySound", ["UIMenuOK"]);
 			StartState(SystemPage.SAVE_LOAD_STATE);
 		} else {
 			StartState(SystemPage.CHARACTER_LOAD_STATE);
 		}
-		Debug.log("<< OnSaveListOpenSuccess");
 	}
 
 	function OnSaveListBatchAdded() {

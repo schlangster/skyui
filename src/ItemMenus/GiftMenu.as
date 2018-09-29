@@ -138,8 +138,8 @@ class GiftMenu extends ItemMenu
 			navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
+				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
 		}
 		
