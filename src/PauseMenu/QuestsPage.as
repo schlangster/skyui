@@ -213,7 +213,9 @@ class QuestsPage extends MovieClip
 	{
 		var alpha: Number = 50;
 
-		if (bAllowShowOnMap && (a_entryIdx >= 0 && ObjectiveList.entryList[a_entryIdx].questTargetID != undefined) || (ObjectiveList.entryList.length > 0 && ObjectiveList.entryList[0].questTargetID != undefined)) {
+		if (bAllowShowOnMap &&
+				(a_entryIdx >= 0 && ObjectiveList.entryList[a_entryIdx].questTargetID != undefined) ||
+				(ObjectiveList.entryList.length > 0 && ObjectiveList.entryList[0].questTargetID != undefined)) {
 			alpha = 100;
 		}
 		_toggleActiveButton._alpha = ((!TitleList.selectedEntry.completed) ? 100 : 50);
@@ -347,13 +349,13 @@ class QuestsPage extends MovieClip
 			questTitleEndpieces._visible = false;
 			ObjectivesHeader._visible = false;
 		}
-		this.UpdateButtonVisiblity();
+		UpdateButtonVisiblity();
 		ObjectiveList.InvalidateData();
 	}
 
 	function UpdateButtonVisiblity(): Void
 	{
-		var bActive = TitleList.entryList.length > 0 && TitleList.entryList.selectedEntry != null;
+		var bActive = TitleList.entryList.length > 0 && TitleList.selectedEntry != null;
 		_toggleActiveButton._visible = bActive && !TitleList.selectedEntry.completed;
 		_showOnMapButton._visible = bActive && !TitleList.selectedEntry.completed && bAllowShowOnMap;
 	}
