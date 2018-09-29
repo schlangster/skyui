@@ -7,6 +7,7 @@ import gfx.ui.NavigationCode;
 import gfx.managers.FocusHandler;
 
 import skyui.components.ButtonPanel;
+import skyui.defines.ButtonArtNames;
 
 class Quest_Journal extends MovieClip
 {
@@ -237,12 +238,22 @@ class Quest_Journal extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
+		// Not sure if these are the correct mapping for next/prev tab
+		var nextTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Right", MoveArt:"PS3_Y",OculusArt:"OCC_B", WindowsMRArt:"radial_Either_Right"}));
+		var prevTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Left", MoveArt:"PS3_X", OculusArt:"OCC_Y", WindowsMRArt:"radial_Either_Left"}));
+
+		// If we can't find the right button art by name, provide some defaults
+		if (nextTabArt == undefined)
+			nextTabArt = 281; 	// RT
+		if (prevTabArt == undefined)
+			prevTabArt = 280; 			// LT
+
 		if (aiPlatform == 0) {
 			previousTabButton._visible = nextTabButton._visible = false;
 		} else {
 			previousTabButton._visible = nextTabButton._visible = true;
-			previousTabButton.gotoAndStop(280); // LT
-			nextTabButton.gotoAndStop(281); // RT
+			previousTabButton.gotoAndStop(prevTabArt);
+			nextTabButton.gotoAndStop(nextTabArt);
 		}
 
 		for (var i: String in PageArray) {
