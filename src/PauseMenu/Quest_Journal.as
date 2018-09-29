@@ -55,7 +55,6 @@ class Quest_Journal extends MovieClip
 	function InitExtensions()
 	{
 		GlobalFunc.SetLockFunction();
-		MovieClip(BottomBar_mc).Lock("B");
 
 		ConfigPanel = _root.ConfigPanelFader.configPanel;
 
