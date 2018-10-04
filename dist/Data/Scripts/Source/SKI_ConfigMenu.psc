@@ -25,7 +25,7 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; 8:	- Removed unsupported icon themes
 
 int function GetVersion()
-	return 8
+	return 9
 endFunction
 
 
@@ -329,8 +329,25 @@ event OnVersionUpdate(int a_version)
 		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
 	endIf
 
-
-endEvent
+	if a_version >= 9 && CurrentVersion < 9
+		debug.Trace(self as String + ": Updating to script version 9")
+		_categoryIconThemeShortNames = new String[4]
+		_categoryIconThemeShortNames[0] = "SKYUI V5"
+		_categoryIconThemeShortNames[1] = "CELTIC"
+		_categoryIconThemeShortNames[2] = "CURVED"
+		_categoryIconThemeShortNames[3] = "STRAIGHT"
+		_categoryIconThemeLongNames = new String[4]
+		_categoryIconThemeLongNames[0] = "SkyUI V5, by PsychoSteve"
+		_categoryIconThemeLongNames[1] = "Celtic, by GreatClone"
+		_categoryIconThemeLongNames[2] = "Curved, by T3T"
+		_categoryIconThemeLongNames[3] = "Straight, by T3T"
+		_categoryIconThemeValues = new String[4]
+		_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
+		_categoryIconThemeValues[1] = "skyui\\icons_category_celtic.swf"
+		_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
+		_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
+	endIf
+endFunction
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
@@ -1689,6 +1706,49 @@ state CHECK_CRAFTING_MENU ; SLIDER
 	
 endState
 
+state EFFECT_WIDGET_HORIZONTAL_ANCHOR
+
+	function OnDefaultST()
+		_effectWidgetVAnchorIdx = 1
+		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		self.SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx], false, "")
+	endFunction
+
+	function OnSelectST()
+		if _effectWidgetHAnchorIdx < _alignments.length - 1
+			_effectWidgetHAnchorIdx += 1
+		else
+			_effectWidgetHAnchorIdx = 0
+		endIf
+		SKI_ActiveEffectsWidgetInstance.HAnchor = _alignmentValues[_effectWidgetHAnchorIdx]
+		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
+		self.SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx], false, "")
+	endFunction
+
+	function OnHighlightST()
+		self.SetInfoText("$SKI_INFO1{" + _alignments[1] + "}")
+	endFunction
+endState
+
+state FAV_GROUP_UNEQUIP_ARMOR
+
+	function OnDefaultST()
+		Int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, ARMOR_FLAG, false)
+		self.SetToggleOptionValueST(false, false, "")
+	endFunction
+
+	function OnSelectST()
+		Int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
+		Bool newVal = !SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG)
+		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, ARMOR_FLAG, newVal)
+		self.SetToggleOptionValueST(newVal, false, "")
+	endFunction
+
+	function OnHighlightST()
+		self.SetInfoText("$SKI_INFO7{$Off}")
+	endFunction
+endState
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 

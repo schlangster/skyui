@@ -36,11 +36,11 @@ bool _craftingMenuCheckEnabled		= true
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-int property		MinSKSERelease	= 44		autoReadonly
-string property		MinSKSEVersion	= "1.6.16"	autoReadonly
+int property		MinSKSERelease	= 53		autoReadonly
+string property		MinSKSEVersion	= "2.0.10"	autoReadonly
 
-int property		ReqSWFRelease	= 17		autoReadonly
-string property		ReqSWFVersion	= "5.0"		autoReadonly
+int property		ReqSWFRelease	= 2018		autoReadonly
+string property		ReqSWFVersion	= "5.2 SE"	autoReadonly
 
 bool property		ErrorDetected	= false auto
 
@@ -177,22 +177,22 @@ event OnGameReload()
 	ErrorDetected = false
 
 	if (SKSE.GetVersionRelease() == 0)
-		Error(ERR_SKSE_MISSING, "The Skyrim Script Extender (SKSE) is not running.\nSkyUI will not work correctly!\n\n" \
-			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSE has been updated, then install the new version.")
+		Error(ERR_SKSE_MISSING, "The Skyrim Script Extender (SKSEVR) is not running.\nSkyUI will not work correctly!\n\n" \
+			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSEVR has been updated, then install the new version.")
 		return
 
 	elseIf (GetType() == 0)
-		Error(ERR_SKSE_BROKEN, "The SKSE scripts have been overwritten or are not properly loaded.\nReinstalling SKSE might fix this.")
+		Error(ERR_SKSE_BROKEN, "The SKSEVR scripts have been overwritten or are not properly loaded.\nReinstalling SKSE might fix this.")
 		return
 
 	elseIf (SKSE.GetVersionRelease() < MinSKSERelease)
-		Error(ERR_SKSE_VERSION_RT, "SKSE is outdated.\nSkyUI will not work correctly!\n" \
+		Error(ERR_SKSE_VERSION_RT, "SKSEVR is outdated.\nSkyUI will not work correctly!\n" \
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
 
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
-		Error(ERR_SKSE_VERSION_SCPT, "SKSE scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
+		Error(ERR_SKSE_VERSION_SCPT, "SKSEVR scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
 		return
 	endIf
 
@@ -333,4 +333,50 @@ bool function CheckItemMenuComponents(string a_menu)
 	return CheckMenuVersion("skyui/itemcard.swf", a_menu, "_global.ItemCard") && \
 			CheckMenuVersion("skyui/bottombar.swf", a_menu, "_global.BottomBar") && \
 			CheckMenuVersion("skyui/inventorylists.swf", a_menu, "_global.InventoryLists")
+endFunction
+
+function OnGameReload()
+	ErrorDetected = false
+	if skse.GetVersionRelease() == 0
+		self.Error(self.ERR_SKSE_MISSING, "The Skyrim Script Extender (SKSE64) is not running.\nSkyUI will not work correctly!\n\n" + "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSE64 has been updated, then install the new version.")
+		return 
+	elseIf self.GetType() == 0
+		self.Error(self.ERR_SKSE_BROKEN, "The SKSE64 scripts have been overwritten or are not properly loaded.\nReinstalling SKSE64 might fix this.")
+		return 
+	elseIf skse.GetVersionRelease() < self.MinSKSERelease
+		self.Error(self.ERR_SKSE_VERSION_RT, "SKSE64 is outdated.\nSkyUI will not work correctly!\n" + "Required version: " + self.MinSKSEVersion + " or newer\n" + "Detected version: " + skse.GetVersion() as String + "." + skse.GetVersionMinor() as String + "." + skse.GetVersionBeta() as String)
+		return 
+	elseIf skse.GetScriptVersionRelease() < self.MinSKSERelease
+		self.Error(self.ERR_SKSE_VERSION_SCPT, "SKSE64 scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE64.\nSkyUI will not work correctly!")
+		return 
+	endIf
+	if utility.GetINIInt("iMinMemoryPageSize:Papyrus") <= 0 || utility.GetINIInt("iMaxMemoryPageSize:Papyrus") <= 0 || utility.GetINIInt("iMaxAllocatedMemoryBytes:Papyrus") <= 0
+		self.Error(self.ERR_INI_PAPYRUS, "Your Papyrus INI settings are invalid. Please fix this, otherwise SkyUI will stop working at some point.")
+		return 
+	endIf
+	if self.InventoryMenuCheckEnabled
+		self.RegisterForMenu(self.INVENTORY_MENU)
+	endIf
+	if self.MagicMenuCheckEnabled
+		self.RegisterForMenu(self.MAGIC_MENU)
+	endIf
+	if self.ContainerMenuCheckEnabled
+		self.RegisterForMenu(self.CONTAINER_MENU)
+	endIf
+	if self.BarterMenuCheckEnabled
+		self.RegisterForMenu(self.BARTER_MENU)
+	endIf
+	if self.GiftMenuCheckEnabled
+		self.RegisterForMenu(self.GIFT_MENU)
+	endIf
+	if self.MapMenuCheckEnabled
+		self.RegisterForMenu(self.MAP_MENU)
+	endIf
+	if self.FavoritesMenuCheckEnabled
+		self.RegisterForMenu(self.FAVORITES_MENU)
+	endIf
+	if self.CraftingMenuCheckEnabled
+		self.RegisterForMenu(self.CRAFTING_MENU)
+	endIf
+	self.RegisterForMenu(self.JOURNAL_MENU)
 endFunction
