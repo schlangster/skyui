@@ -347,7 +347,7 @@ event OnVersionUpdate(int a_version)
 		_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
 		_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
 	endIf
-endFunction
+endEvent
 
 
 ; EVENTS ------------------------------------------------------------------------------------------
@@ -370,7 +370,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Item List")
 		AddTextOptionST("ITEMLIST_FONT_SIZE", "$Font Size", _sizes[_itemlistFontSizeIdx])
 		AddSliderOptionST("ITEMLIST_QUANTITY_MIN_COUNT", "$Quantity Menu Min. Count", _itemlistQuantityMinCount)
-		;AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
 		AddToggleOptionST("ITEMLIST_NO_ICON_COLORS", "$Disable Icon Colors", _itemlistNoIconColors)
 
 		AddEmptyOption()
@@ -393,7 +393,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Favorite Groups")
 		AddMenuOptionST("FAV_GROUP_SELECT", "", "$Group {" + (_favCurGroupIdx+1) + "}")
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_ARMOR", "$Unequip Armor", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG))
-		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))		
+		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Controls")
@@ -443,7 +443,7 @@ event OnPageReset(string a_page)
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
-		
+
 		AddHeaderOption("$3D Item")
 		AddSliderOptionST("XD_ITEM_XOFFSET", "$Horizontal Offset", _3DItemXOffset, "{0}", _3DItemFlags)
 		AddSliderOptionST("XD_ITEM_YOFFSET", "$Vertical Offset", _3DItemYOffset, "{0}", _3DItemFlags)
@@ -478,7 +478,7 @@ event OnPageReset(string a_page)
 		AddToggleOptionST("CHECK_CONTAINER_MENU", "Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
 		AddToggleOptionST("CHECK_CRAFTING_MENU", "Crafting Menu", SKI_MainInstance.CraftingMenuCheckEnabled)
 		AddToggleOptionST("CHECK_GIFT_MENU", "Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
-		
+
 	endIf
 endEvent
 
@@ -497,7 +497,7 @@ state FAV_GROUP_ADD_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.GroupAddKey = 33		
+		SKI_FavoritesManagerInstance.GroupAddKey = 33
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -519,7 +519,7 @@ state FAV_GROUP_USE_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.GroupUseKey = 19		
+		SKI_FavoritesManagerInstance.GroupUseKey = 19
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -541,7 +541,7 @@ state FAV_SET_ICON_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.SetIconKey = 56		
+		SKI_FavoritesManagerInstance.SetIconKey = 56
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -563,7 +563,7 @@ state FAV_EQUIP_STATE_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.SaveEquipStateKey = 20	
+		SKI_FavoritesManagerInstance.SaveEquipStateKey = 20
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -585,7 +585,7 @@ state FAV_TOGGLE_FOCUS ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.ToggleFocusKey = 57		
+		SKI_FavoritesManagerInstance.ToggleFocusKey = 57
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -741,7 +741,7 @@ state FAV_MENU_HELP_ENABLED ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{$On}")
 	endEvent
-	
+
 endState
 
 state FAV_GROUP_SELECT ; MENU
@@ -771,7 +771,7 @@ state FAV_GROUP_SELECT ; MENU
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO6")
 	endEvent
-	
+
 endState
 
 state FAV_GROUP_UNEQUIP_ARMOR ; TOGGLE
@@ -796,7 +796,7 @@ state FAV_GROUP_UNEQUIP_ARMOR ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO7{$Off}")
 	endEvent
-	
+
 endState
 
 state FAV_GROUP_UNEQUIP_HANDS ; TOGGLE
@@ -821,7 +821,7 @@ state FAV_GROUP_UNEQUIP_HANDS ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO8{$Off}")
 	endEvent
-	
+
 endState
 
 ; -------------------------------------------------------
@@ -847,7 +847,7 @@ state ITEMLIST_FONT_SIZE ; TEXT
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _sizes[1] + "}")
 	endEvent
-	
+
 endState
 
 state ITEMLIST_QUANTITY_MIN_COUNT ; SLIDER
@@ -874,7 +874,7 @@ state ITEMLIST_QUANTITY_MIN_COUNT ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO2{6}")
 	endEvent
-	
+
 endState
 
 state ITEMLIST_CATEGORY_ICON_THEME ; MENU
@@ -900,7 +900,7 @@ state ITEMLIST_CATEGORY_ICON_THEME ; MENU
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _categoryIconThemeShortNames[0] + "}")
 	endEvent
-	
+
 endState
 
 state ITEMLIST_NO_ICON_COLORS ; TOGGLE
@@ -920,7 +920,7 @@ state ITEMLIST_NO_ICON_COLORS ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{$Off}")
 	endEvent
-	
+
 endState
 
 ; -------------------------------------------------------
@@ -950,14 +950,14 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_MIN_TIME_LEFT")
-		
+
 		SetToggleOptionValueST(true)
 	endEvent
 
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{$On}")
 	endEvent
-	
+
 endState
 
 state EFFECT_WIDGET_ICON_SIZE ; TEXT
@@ -982,7 +982,7 @@ state EFFECT_WIDGET_ICON_SIZE ; TEXT
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _sizes[1] + "}")
 	endEvent
-	
+
 endState
 
 state EFFECT_WIDGET_ORIENTATION ; TEXT
@@ -993,7 +993,7 @@ state EFFECT_WIDGET_ORIENTATION ; TEXT
 		else
 		  _effectWidgetOrientationIdx = 0
 		endIf
-		
+
 		SKI_ActiveEffectsWidgetInstance.Orientation = _orientationValues[_effectWidgetOrientationIdx]
 		SetTextOptionValueST(_orientations[_effectWidgetOrientationIdx])
 	endEvent
@@ -1570,7 +1570,7 @@ state CHECK_INVENTORY_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_MAGIC_MENU ; SLIDER
@@ -1589,7 +1589,7 @@ state CHECK_MAGIC_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_BARTER_MENU ; SLIDER
@@ -1608,7 +1608,7 @@ state CHECK_BARTER_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_CONTAINER_MENU ; SLIDER
@@ -1627,7 +1627,7 @@ state CHECK_CONTAINER_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_GIFT_MENU ; SLIDER
@@ -1646,7 +1646,7 @@ state CHECK_GIFT_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_MAP_MENU ; SLIDER
@@ -1665,7 +1665,7 @@ state CHECK_MAP_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_FAVORITES_MENU ; SLIDER
@@ -1684,7 +1684,7 @@ state CHECK_FAVORITES_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_CRAFTING_MENU ; SLIDER
@@ -1703,52 +1703,9 @@ state CHECK_CRAFTING_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
-state EFFECT_WIDGET_HORIZONTAL_ANCHOR
-
-	function OnDefaultST()
-		_effectWidgetVAnchorIdx = 1
-		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
-		self.SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx], false, "")
-	endFunction
-
-	function OnSelectST()
-		if _effectWidgetHAnchorIdx < _alignments.length - 1
-			_effectWidgetHAnchorIdx += 1
-		else
-			_effectWidgetHAnchorIdx = 0
-		endIf
-		SKI_ActiveEffectsWidgetInstance.HAnchor = _alignmentValues[_effectWidgetHAnchorIdx]
-		SKI_ActiveEffectsWidgetInstance.X = _alignmentBaseOffsets[_effectWidgetHAnchorIdx] + _effectWidgetXOffset
-		self.SetTextOptionValueST(_alignments[_effectWidgetHAnchorIdx], false, "")
-	endFunction
-
-	function OnHighlightST()
-		self.SetInfoText("$SKI_INFO1{" + _alignments[1] + "}")
-	endFunction
-endState
-
-state FAV_GROUP_UNEQUIP_ARMOR
-
-	function OnDefaultST()
-		Int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
-		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, ARMOR_FLAG, false)
-		self.SetToggleOptionValueST(false, false, "")
-	endFunction
-
-	function OnSelectST()
-		Int ARMOR_FLAG = SKI_FavoritesManagerInstance.GROUP_FLAG_UNEQUIP_ARMOR
-		Bool newVal = !SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG)
-		SKI_FavoritesManagerInstance.SetGroupFlag(_favCurGroupIdx, ARMOR_FLAG, newVal)
-		self.SetToggleOptionValueST(newVal, false, "")
-	endFunction
-
-	function OnHighlightST()
-		self.SetInfoText("$SKI_INFO7{$Off}")
-	endFunction
-endState
 
 ; FUNCTIONS ---------------------------------------------------------------------------------------
 
@@ -1995,7 +1952,7 @@ endFunction
 
 
 ; REMOVED DATA  -----------------------------------------------------------------------------------
-											
+
 ; -- Version 1 --							; (remove version)
 
 ; int		_itemlistFontSizeOID_T			; (4)
