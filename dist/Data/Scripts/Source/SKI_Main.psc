@@ -29,8 +29,8 @@ bool _magicMenuCheckEnabled			= true
 bool _barterMenuCheckEnabled		= true
 bool _containerMenuCheckEnabled		= true
 bool _giftMenuCheckEnabled			= true
-bool _mapMenuCheckEnabled			= true
-bool _favoritesMenuCheckEnabled		= true
+bool _mapMenuCheckEnabled			= false 	;; SkyUI-VR doesn't come with a custom map
+bool _favoritesMenuCheckEnabled		= false 	;; SkyUI-VR doesn't come with a custom favorites menu
 bool _craftingMenuCheckEnabled		= true
 
 
@@ -122,31 +122,33 @@ endProperty
 
 bool property MapMenuCheckEnabled
 	bool function get()
-		return _mapMenuCheckEnabled
+		;; return _mapMenuCheckEnabled
+		return false
 	endFunction
 
 	function set(bool a_val)
-		_mapMenuCheckEnabled = a_val
-		if (a_val)
-			RegisterForMenu(MAP_MENU)
-		else
-			UnregisterForMenu(MAP_MENU)
-		endIf
+		;; _mapMenuCheckEnabled = a_val
+		;; if (a_val)
+		;;	RegisterForMenu(MAP_MENU)
+		;; else
+		;;	UnregisterForMenu(MAP_MENU)
+		;; endIf
 	endFunction
 endProperty
 
 bool property FavoritesMenuCheckEnabled
 	bool function get()
-		return _favoritesMenuCheckEnabled
+		;; return _favoritesMenuCheckEnabled
+		return false
 	endFunction
 
 	function set(bool a_val)
-		_favoritesMenuCheckEnabled = a_val
-		if (a_val)
-			RegisterForMenu(FAVORITES_MENU)
-		else
-			UnregisterForMenu(FAVORITES_MENU)
-		endIf
+		;; _favoritesMenuCheckEnabled = a_val
+		;; if (a_val)
+		;;	RegisterForMenu(FAVORITES_MENU)
+		;; else
+		;;	UnregisterForMenu(FAVORITES_MENU)
+		;; endIf
 	endFunction
 endProperty
 
@@ -279,14 +281,14 @@ event OnMenuOpen(string a_menuName)
 		endIf
 
 	elseIf (a_menuName == MAP_MENU)
-		if (CheckMenuVersion("map.swf", a_menuName, "_global.Map.MapMenu"))
-			UnregisterForMenu(a_menuName)
-		endIf
+		; if (CheckMenuVersion("map.swf", a_menuName, "_global.Map.MapMenu"))
+		;	UnregisterForMenu(a_menuName)
+		; endIf
 
 	elseIf (a_menuName == FAVORITES_MENU)
-		if (CheckMenuVersion("favoritesmenu.swf", a_menuName, "_global.FavoritesMenu"))
-			UnregisterForMenu(a_menuName)
-		endIf
+		; if (CheckMenuVersion("favoritesmenu.swf", a_menuName, "_global.FavoritesMenu"))
+		;	UnregisterForMenu(a_menuName)
+		; endIf
 
 	elseIf (a_menuName == CRAFTING_MENU)
 		if (CheckMenuVersion("craftingmenu.swf", a_menuName, "_global.CraftingMenu"))
