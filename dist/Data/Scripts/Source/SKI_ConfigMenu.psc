@@ -25,7 +25,7 @@ scriptname SKI_ConfigMenu extends SKI_ConfigBase
 ; 8:	- Removed unsupported icon themes
 
 int function GetVersion()
-	return 8
+	return 9
 endFunction
 
 
@@ -329,7 +329,24 @@ event OnVersionUpdate(int a_version)
 		SKI_SettingsManagerInstance.SetOverride("Appearance$icons$category$source", _categoryIconThemeValues[_categoryIconThemeIdx])
 	endIf
 
-
+	if a_version >= 9 && CurrentVersion < 9
+		debug.Trace(self as String + ": Updating to script version 9")
+		_categoryIconThemeShortNames = new String[4]
+		_categoryIconThemeShortNames[0] = "SKYUI V5"
+		_categoryIconThemeShortNames[1] = "CELTIC"
+		_categoryIconThemeShortNames[2] = "CURVED"
+		_categoryIconThemeShortNames[3] = "STRAIGHT"
+		_categoryIconThemeLongNames = new String[4]
+		_categoryIconThemeLongNames[0] = "SkyUI V5, by PsychoSteve"
+		_categoryIconThemeLongNames[1] = "Celtic, by GreatClone"
+		_categoryIconThemeLongNames[2] = "Curved, by T3T"
+		_categoryIconThemeLongNames[3] = "Straight, by T3T"
+		_categoryIconThemeValues = new String[4]
+		_categoryIconThemeValues[0] = "skyui\\icons_category_psychosteve.swf"
+		_categoryIconThemeValues[1] = "skyui\\icons_category_celtic.swf"
+		_categoryIconThemeValues[2] = "skyui\\icons_category_curved.swf"
+		_categoryIconThemeValues[3] = "skyui\\icons_category_straight.swf"
+	endIf
 endEvent
 
 
@@ -353,7 +370,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Item List")
 		AddTextOptionST("ITEMLIST_FONT_SIZE", "$Font Size", _sizes[_itemlistFontSizeIdx])
 		AddSliderOptionST("ITEMLIST_QUANTITY_MIN_COUNT", "$Quantity Menu Min. Count", _itemlistQuantityMinCount)
-		;AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
+		AddMenuOptionST("ITEMLIST_CATEGORY_ICON_THEME", "$Category Icon Theme", _categoryIconThemeShortNames[_categoryIconThemeIdx])
 		AddToggleOptionST("ITEMLIST_NO_ICON_COLORS", "$Disable Icon Colors", _itemlistNoIconColors)
 
 		AddEmptyOption()
@@ -376,7 +393,7 @@ event OnPageReset(string a_page)
 		AddHeaderOption("$Favorite Groups")
 		AddMenuOptionST("FAV_GROUP_SELECT", "", "$Group {" + (_favCurGroupIdx+1) + "}")
 		AddToggleOptionST("FAV_GROUP_UNEQUIP_ARMOR", "$Unequip Armor", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, ARMOR_FLAG))
-		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))		
+		AddToggleOptionST("FAV_GROUP_UNEQUIP_HANDS", "$Unequip Hands", SKI_FavoritesManagerInstance.GetGroupFlag(_favCurGroupIdx, HANDS_FLAG))
 
 	; -------------------------------------------------------
 	elseIf (a_page == "$Controls")
@@ -426,7 +443,7 @@ event OnPageReset(string a_page)
 	; -------------------------------------------------------
 	elseIf (a_page == "$Advanced")
 		SetCursorFillMode(TOP_TO_BOTTOM)
-		
+
 		AddHeaderOption("$3D Item")
 		AddSliderOptionST("XD_ITEM_XOFFSET", "$Horizontal Offset", _3DItemXOffset, "{0}", _3DItemFlags)
 		AddSliderOptionST("XD_ITEM_YOFFSET", "$Vertical Offset", _3DItemYOffset, "{0}", _3DItemFlags)
@@ -453,15 +470,15 @@ event OnPageReset(string a_page)
 		AddEmptyOption()
 
 		AddHeaderOption("$SWF Version Checking")
-		AddToggleOptionST("CHECK_MAP_MENU", "Map Menu", SKI_MainInstance.MapMenuCheckEnabled)
-		AddToggleOptionST("CHECK_FAVORITES_MENU", "Favorites Menu", SKI_MainInstance.FavoritesMenuCheckEnabled)
+		; AddToggleOptionST("CHECK_MAP_MENU", "Map Menu", SKI_MainInstance.MapMenuCheckEnabled)
+		; AddToggleOptionST("CHECK_FAVORITES_MENU", "Favorites Menu", SKI_MainInstance.FavoritesMenuCheckEnabled)
 		AddToggleOptionST("CHECK_INVENTORY_MENU", "Inventory Menu", SKI_MainInstance.InventoryMenuCheckEnabled)
 		AddToggleOptionST("CHECK_MAGIC_MENU", "Magic Menu", SKI_MainInstance.MagicMenuCheckEnabled)
 		AddToggleOptionST("CHECK_BARTER_MENU", "Barter Menu", SKI_MainInstance.BarterMenuCheckEnabled)
 		AddToggleOptionST("CHECK_CONTAINER_MENU", "Container Menu", SKI_MainInstance.ContainerMenuCheckEnabled)
 		AddToggleOptionST("CHECK_CRAFTING_MENU", "Crafting Menu", SKI_MainInstance.CraftingMenuCheckEnabled)
 		AddToggleOptionST("CHECK_GIFT_MENU", "Gift Menu", SKI_MainInstance.GiftMenuCheckEnabled)
-		
+
 	endIf
 endEvent
 
@@ -480,7 +497,7 @@ state FAV_GROUP_ADD_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.GroupAddKey = 33		
+		SKI_FavoritesManagerInstance.GroupAddKey = 33
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -502,7 +519,7 @@ state FAV_GROUP_USE_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.GroupUseKey = 19		
+		SKI_FavoritesManagerInstance.GroupUseKey = 19
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -524,7 +541,7 @@ state FAV_SET_ICON_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.SetIconKey = 56		
+		SKI_FavoritesManagerInstance.SetIconKey = 56
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -546,7 +563,7 @@ state FAV_EQUIP_STATE_KEY ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.SaveEquipStateKey = 20	
+		SKI_FavoritesManagerInstance.SaveEquipStateKey = 20
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -568,7 +585,7 @@ state FAV_TOGGLE_FOCUS ; KEYMAP
 	endEvent
 
 	event OnDefaultST()
-		SKI_FavoritesManagerInstance.ToggleFocusKey = 57		
+		SKI_FavoritesManagerInstance.ToggleFocusKey = 57
 		RefreshFavoriteHotkeys()
 	endEvent
 
@@ -724,7 +741,7 @@ state FAV_MENU_HELP_ENABLED ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{$On}")
 	endEvent
-	
+
 endState
 
 state FAV_GROUP_SELECT ; MENU
@@ -754,7 +771,7 @@ state FAV_GROUP_SELECT ; MENU
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO6")
 	endEvent
-	
+
 endState
 
 state FAV_GROUP_UNEQUIP_ARMOR ; TOGGLE
@@ -779,7 +796,7 @@ state FAV_GROUP_UNEQUIP_ARMOR ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO7{$Off}")
 	endEvent
-	
+
 endState
 
 state FAV_GROUP_UNEQUIP_HANDS ; TOGGLE
@@ -804,7 +821,7 @@ state FAV_GROUP_UNEQUIP_HANDS ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO8{$Off}")
 	endEvent
-	
+
 endState
 
 ; -------------------------------------------------------
@@ -830,7 +847,7 @@ state ITEMLIST_FONT_SIZE ; TEXT
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _sizes[1] + "}")
 	endEvent
-	
+
 endState
 
 state ITEMLIST_QUANTITY_MIN_COUNT ; SLIDER
@@ -857,7 +874,7 @@ state ITEMLIST_QUANTITY_MIN_COUNT ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO2{6}")
 	endEvent
-	
+
 endState
 
 state ITEMLIST_CATEGORY_ICON_THEME ; MENU
@@ -883,7 +900,7 @@ state ITEMLIST_CATEGORY_ICON_THEME ; MENU
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _categoryIconThemeShortNames[0] + "}")
 	endEvent
-	
+
 endState
 
 state ITEMLIST_NO_ICON_COLORS ; TOGGLE
@@ -903,7 +920,7 @@ state ITEMLIST_NO_ICON_COLORS ; TOGGLE
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{$Off}")
 	endEvent
-	
+
 endState
 
 ; -------------------------------------------------------
@@ -933,14 +950,14 @@ state EFFECT_WIDGET_ENABLED ; TOGGLE
 
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_ICON_SIZE")
 		SetOptionFlagsST(_effectWidgetFlags, true, "EFFECT_WIDGET_MIN_TIME_LEFT")
-		
+
 		SetToggleOptionValueST(true)
 	endEvent
 
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{$On}")
 	endEvent
-	
+
 endState
 
 state EFFECT_WIDGET_ICON_SIZE ; TEXT
@@ -965,7 +982,7 @@ state EFFECT_WIDGET_ICON_SIZE ; TEXT
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO1{" + _sizes[1] + "}")
 	endEvent
-	
+
 endState
 
 state EFFECT_WIDGET_ORIENTATION ; TEXT
@@ -976,7 +993,7 @@ state EFFECT_WIDGET_ORIENTATION ; TEXT
 		else
 		  _effectWidgetOrientationIdx = 0
 		endIf
-		
+
 		SKI_ActiveEffectsWidgetInstance.Orientation = _orientationValues[_effectWidgetOrientationIdx]
 		SetTextOptionValueST(_orientations[_effectWidgetOrientationIdx])
 	endEvent
@@ -1553,7 +1570,7 @@ state CHECK_INVENTORY_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_MAGIC_MENU ; SLIDER
@@ -1572,7 +1589,7 @@ state CHECK_MAGIC_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_BARTER_MENU ; SLIDER
@@ -1591,7 +1608,7 @@ state CHECK_BARTER_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_CONTAINER_MENU ; SLIDER
@@ -1610,7 +1627,7 @@ state CHECK_CONTAINER_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_GIFT_MENU ; SLIDER
@@ -1629,7 +1646,7 @@ state CHECK_GIFT_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_MAP_MENU ; SLIDER
@@ -1648,7 +1665,7 @@ state CHECK_MAP_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_FAVORITES_MENU ; SLIDER
@@ -1667,7 +1684,7 @@ state CHECK_FAVORITES_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 state CHECK_CRAFTING_MENU ; SLIDER
@@ -1686,7 +1703,7 @@ state CHECK_CRAFTING_MENU ; SLIDER
 	event OnHighlightST()
 		SetInfoText("$SKI_INFO3{$On}")
 	endEvent
-	
+
 endState
 
 
@@ -1935,7 +1952,7 @@ endFunction
 
 
 ; REMOVED DATA  -----------------------------------------------------------------------------------
-											
+
 ; -- Version 1 --							; (remove version)
 
 ; int		_itemlistFontSizeOID_T			; (4)

@@ -213,7 +213,15 @@ class skyui.defines.ButtonArtNames
 			"PS3_A", "radial_Either_Right", "radial_Either_Left", "Action_Up", "Action_Double_Up",
 
 			// 460 - 469
-			"Action_Left"
+			"Action_Left", "", "", "", "",
+			"", "", "", "", "",
+
+			// 470 - 479
+			"OCC MOTION", "OCC THUMB_REST", "OCC THUMB_RESET_LEFT", "OCC THUMB_REST_RIGHT", "OCC_A",
+			"OCC_A_HOLD", "OCC_B", "OCC_B_HOLD", "OCC_X", "OCC_X_HOLD",
+
+			// 480
+			"OCC_Y", "OCC_Y_HOLD"
 		]);
 		return aNameMap;
 	}

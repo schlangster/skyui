@@ -1,0 +1,178 @@
+#! env ruby
+
+# Reorder/rewrite the psc file so content is sorted into the same order
+# by entity/construct name.  This is useful for comparing two sets of
+# decompiled pex files.
+
+require('optparse')
+require('pathname')
+require('fileutils')
+require('pp')
+
+options = {}
+optParser = OptionParser.new do |opts|
+	opts.banner = "Usage: cpBuiltFiles [options] destination_dir"
+
+	opts.on("-w", "--watch", "Watch built directory") do
+		options[:watch] = true
+	end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+  	puts opts
+  	exit
+  end
+end
+
+optParser.parse!
+
+destDir = ARGV.pop
+if not destDir then
+	puts optParser
+	exit
+end
+
+# This is where the psc files are
+destDirPath = Pathname.new(destDir)
+
+filesProcessed = 0
+
+def lineOffsets(f)
+	offsets = []
+
+	curOffset = 0
+	File.readlines(f).each do |line|
+		offsets.append << curOffset
+		curOffset += line.length
+	end
+
+	return offsets
+end
+
+def lineNum(lineoffsets, offset)
+	lineoffsets.each_with_index do |entry, index|
+		if entry > offset
+			return index
+		end
+	end
+	return lineoffsets.length
+end
+
+# Retrieve all "property" entries, their names, and their offset into the file
+def properties(f)
+	singlelineProps = /^.*property\b(.*)\bauto$/
+	multilineProps = /\bproperty\b(.*?)\b?$.*?\bendproperty\b/m
+
+	matches = IO.read(f).to_enum(:scan, multilineProps)
+							.map { Regexp.last_match }
+							.map { |match| {name: match.captures.first.strip , offsets: match.offset(0)} }
+end
+
+# Retrieve all "state" entries, their names, and their offset into the file
+def states(f)
+	regex = /\bstate\b(.*?)\b?$.*?\bendState\b/m
+	matches = IO.read(f).to_enum(:scan, regex)
+							.map { Regexp.last_match }
+							.map { |match| {name: match.captures.first.strip , offsets: match.offset(0)} }
+end
+
+def functions(f)
+	regex = /\bfunction\b(.*?)\b?$.*?\bendFunction\b/m
+	matches = IO.read(f).to_enum(:scan, regex)
+							.map { Regexp.last_match }
+							.map { |match| {name: match.captures.first.strip , offsets: match.offset(0)} }
+end
+
+def variables(f)
+	# TODO!!! This needs to be done over lines instead of over the entire file
+	regex = /\b(.*?)\b(.*?)\b?$/m
+	matches = IO.read(f).to_enum(:scan, regex)
+							.map { Regexp.last_match }
+							.map { |match| {name: match.captures.first.strip , offsets: match.offset(0)} }
+end
+
+# Entries usually contain byte offsets into the file.
+# This function adds a field that indictes the actual line numbers the entry spans
+def entryAddLineNum(entry, lineoffsets)
+	entry[:lines] = entry[:offsets].map { |offset|
+		lineNum(lineoffsets, offset)};
+	entry
+end
+
+def lineSpanExpand(linespan)
+	Range.new(linespan.first, linespan.last).to_a
+end
+
+def unprocessedLines(f, processedLines)
+	Range.new(1, IO.read(f).lines.length).to_a - processedLines
+end
+
+def linespansToLines(linespans)
+	linespans
+		.map { |linespan| lineSpanExpand(linespan) }
+		.reduce([]) { |accum, lines| accum + lines }
+end
+
+Pathname.glob("#{destDir}/*.psc").each do |f|
+	filesProcessed += 1
+	# next if filesProcessed > 1
+
+	puts "Processing: #{f}"
+	lineoffsets = lineOffsets(f)
+
+	props = properties(f)
+	props = props
+		.map { |entry| entryAddLineNum(entry, lineoffsets) }
+		.sort_by { |entry| entry[:name] }
+	proplines = linespansToLines(props.map { |entry| entry[:lines] })
+
+	states = states(f)
+	states = states
+		.map { |entry| entryAddLineNum(entry, lineoffsets) }
+		.sort_by { |entry| entry[:name] }
+	statelines = linespansToLines(states.map { |entry| entry[:lines] })
+
+	funcs = functions(f)
+	funcs = funcs
+		.map { |entry| entryAddLineNum(entry, lineoffsets) }
+		.sort_by { |entry| entry[:name] }
+	funclines = linespansToLines(funcs.map { |entry| entry[:lines] }) - proplines - statelines
+
+	puts "props:"
+	pp props
+	puts "states:"
+	pp states
+
+	# Figure out all the lines already processed
+	processedLines = props.map { |entry| entry[:lines] }
+	processedLines += states.map { |entry| entry[:lines] }
+	processedLines += funcs.map { |entry| entry[:lines] }
+	processedLines = linespansToLines(processedLines)
+
+	upl = unprocessedLines(f, processedLines)
+
+	flines = f.readlines
+	File.open(f.sub_ext(".out"), "w") {|outf|
+		outf.puts(";;; --- Properties ---------------------------------");
+		proplines.each { |lineNum| outf.write(flines[lineNum-1]) }
+		outf.puts
+		outf.puts
+
+		outf.puts(";;; --- Functions ----------------------------------");
+		funclines.each { |lineNum| outf.write(flines[lineNum-1]) }
+		outf.puts
+		outf.puts
+
+		outf.puts(";;; --- States -------------------------------------");
+		statelines.each { |lineNum| outf.write(flines[lineNum-1]) }
+		outf.puts
+		outf.puts
+
+		outf.puts(";;; --- Unprocessed --------------------------------");
+		upl.each { |lineNum|
+			line = flines[lineNum-1]
+			if !line.strip.empty? then
+				outf.write(flines[lineNum-1])
+			end
+		}
+	}
+end

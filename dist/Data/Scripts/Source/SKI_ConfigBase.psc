@@ -10,6 +10,7 @@ int property		STATE_RESET		= 1 autoReadonly
 int property		STATE_SLIDER	= 2 autoReadonly
 int property		STATE_MENU		= 3 autoReadonly
 int property		STATE_COLOR		= 4 autoReadonly
+int property		STATE_INPUT		= 5 autoReadonly
 
 int property		OPTION_TYPE_EMPTY	= 0x00 autoReadonly
 int property		OPTION_TYPE_HEADER	= 0x01 autoReadonly
@@ -19,6 +20,7 @@ int property 		OPTION_TYPE_SLIDER	= 0x04 autoReadonly
 int property		OPTION_TYPE_MENU	= 0x05 autoReadonly
 int property		OPTION_TYPE_COLOR	= 0x06 autoReadonly
 int property		OPTION_TYPE_KEYMAP	= 0x07 autoReadonly
+int property		OPTION_TYPE_INPUT	= 0x08 autoReadonly
 
 int property		OPTION_FLAG_NONE		= 0x00 autoReadonly
 int property		OPTION_FLAG_DISABLED	= 0x01 autoReadonly
@@ -56,6 +58,7 @@ int[]				_colorParams
 int					_activeOption		= -1
 
 string				_infoText
+string				_inputStartText
 
 bool				_messageResult		= false
 bool				_waitForMessage		= false
@@ -741,7 +744,7 @@ bool function ShowMessage(string a_message, bool a_withCancel = true, string a_a
 	endWhile
 
 	UnregisterForModEvent("SKICP_messageDialogClosed")
-	
+
 	return _messageResult
 endFunction
 
@@ -765,7 +768,7 @@ function OpenConfig()
 endFunction
 
 function CloseConfig()
-	OnConfigClose()	
+	OnConfigClose()
 	ClearOptionBuffers()
 	_waitForMessage = false
 
@@ -780,14 +783,14 @@ endFunction
 function SetPage(string a_page, int a_index)
 	_currentPage = a_page
 	_currentPageNum = 1+a_index
-	
+
 	; Set default title, can be overridden in OnPageReset
 	if (a_page != "")
 		SetTitleText(a_page)
 	else
 		SetTitleText(ModName)
 	endIf
-	
+
 	ClearOptionBuffers()
 	_state = STATE_RESET
 	OnPageReset(a_page)
@@ -805,18 +808,18 @@ int function AddOption(int a_optionType, string a_text, string a_strValue, float
 	if (pos == -1)
 		return -1 ; invalid
 	endIf
-	
+
 	_optionFlagsBuf[pos] = a_optionType + a_flags * 0x100
 	_textBuf[pos] = a_text
 	_strValueBuf[pos] = a_strValue
 	_numValueBuf[pos] = a_numValue
-	
+
 	; Just use numerical value of fill mode
 	_cursorPosition += _cursorFillMode
 	if (_cursorPosition >= 128)
 		_cursorPosition = -1
 	endIf
-	
+
 	; byte 1 - position
 	; byte 2 - page
 	return pos + _currentPageNum * 0x100
@@ -827,7 +830,7 @@ function AddOptionST(string a_stateName, int a_optionType, string a_text, string
 		Error("State option name " + a_stateName + " is already in use")
 		return
 	endIf
-	
+
 	int index = AddOption(a_optionType, a_text, a_strValue, a_numValue, a_flags) % 0x100
 	if (index < 0)
 		return
@@ -868,7 +871,7 @@ function WriteOptionBuffers()
 		endif
 		i += 1
 	endWhile
-	
+
 	UI.InvokeIntA(menu, root + ".setOptionFlagsBuffer", _optionFlagsBuf)
 	UI.InvokeStringA(menu, root + ".setOptionTextBuffer", _textBuf)
 	UI.InvokeStringA(menu, root + ".setOptionStrValueBuffer", _strValueBuf)
@@ -1113,4 +1116,90 @@ function RemapKey(int a_index, int a_keyCode, string a_conflictControl, string a
 		int option = a_index + _currentPageNum * 0x100
 		OnOptionKeyMapChange(option, a_keyCode, a_conflictControl, a_conflictName)
 	endIf
+endFunction
+
+function OnOptionInputOpen(Int a_option)
+{Called when a text input option has been selected}
+endFunction
+
+function OnInputOpenST()
+{Called when a text input state option has been selected}
+endFunction
+
+function OnOptionInputAccept(Int a_option, String a_input)
+{Called when a new text input has been accepted}
+endFunction
+
+function OnInputAcceptST(String a_input)
+{Called when a new text input has been accepted for this state option}
+endFunction
+
+function SetInputOptionValue(Int a_option, String a_value, Bool a_noUpdate)
+	Int index = a_option % 256
+	Int type = _optionFlagsBuf[index] % 256
+	if type != self.OPTION_TYPE_INPUT
+		Int pageIdx = a_option / 256 - 1
+		if pageIdx != -1
+			self.Error("Option type mismatch. Expected input option, page \"" + Pages[pageIdx] + "\", index " + index as String)
+		else
+			self.Error("Option type mismatch. Expected input option, page \"\", index " + index as String)
+		endIf
+		return
+	endIf
+	self.SetOptionStrValue(index, a_value, a_noUpdate)
+endFunction
+
+function SetInputOptionValueST(String a_value, Bool a_noUpdate, String a_stateName)
+	Int index = self.GetStateOptionIndex(a_stateName)
+	if index < 0
+		self.Error("Cannot use SetInputOptionValueST outside a valid option state")
+		return
+	endIf
+	self.SetInputOptionValue(index, a_value, a_noUpdate)
+endFunction
+
+function RequestInputDialogData(Int a_index)
+	_activeOption = a_index + _currentPageNum * 256
+	_inputStartText = ""
+	_state = self.STATE_INPUT
+	String optionState = _stateOptionMap[a_index]
+	if optionState != ""
+		String oldState = self.GetState()
+		self.GotoState(optionState)
+		self.OnInputOpenST()
+		self.GotoState(oldState)
+	else
+		self.OnOptionInputOpen(_activeOption)
+	endIf
+	_state = self.STATE_DEFAULT
+	ui.InvokeString(self.JOURNAL_MENU, self.MENU_ROOT + ".setInputDialogParams", _inputStartText)
+endFunction
+
+Int function AddInputOption(String a_text, String a_value, Int a_flags)
+	return self.AddOption(self.OPTION_TYPE_INPUT, a_text, a_value, 0 as Float, a_flags)
+endFunction
+
+function AddInputOptionST(String a_stateName, String a_text, String a_value, Int a_flags)
+	self.AddOptionST(a_stateName, self.OPTION_TYPE_INPUT, a_text, a_value, 0 as Float, a_flags)
+endFunction
+
+function SetInputDialogStartText(String a_text)
+	if _state != self.STATE_INPUT
+		self.Error("Cannot set input dialog params while outside OnOptionInputOpen()")
+		return
+	endIf
+	_inputStartText = a_text
+endFunction
+
+function SetInputText(String a_text)
+	String optionState = _stateOptionMap[_activeOption % 256]
+	if optionState != ""
+		String oldState = self.GetState()
+		self.GotoState(optionState)
+		self.OnInputAcceptST(a_text)
+		self.GotoState(oldState)
+	else
+		self.OnOptionInputAccept(_activeOption, a_text)
+	endIf
+	_activeOption = -1
 endFunction
