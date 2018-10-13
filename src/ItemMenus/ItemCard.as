@@ -7,6 +7,7 @@ import Components.DeltaMeter;
 import Shared.GlobalFunc;
 
 import skyui.defines.Inventory;
+import skyui.util.Debug;
 
 
 class ItemCard extends MovieClip
@@ -311,17 +312,23 @@ class ItemCard extends MovieClip
 					var strDragonWord: String = aUpdateObj["dragonWord" + i] == undefined ? "" : aUpdateObj["dragonWord" + i];
 					var strWord: String = aUpdateObj["word" + i] == undefined ? "" : aUpdateObj["word" + i];
 					var bWordKnown: Boolean = aUpdateObj["unlocked" + i] == true;
-					this["ShoutTextInstance" + i].DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
-					this["ShoutTextInstance" + i].ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
-					this["ShoutTextInstance" + i].DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
-					this["ShoutTextInstance" + i].ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
+					var textInstance = this["ShoutTextInstance" + i];
+
+					textInstance.ShoutPronunciation.ShoutWordsLabel.textAutoSize = "shrink";
+					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
+					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
+
+					textInstance.ShoutPronunciation.ShoutWordsLabel.SetText(strDragonWord);
+					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
+					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
 					if (bWordKnown && i == iLastWord && LastUpdateObj.soulSpent == true) {
+						Debug.log("Word learn: " + strDragonWord);
 						this["ShoutTextInstance" + i].gotoAndPlay("Learn");
 					} else if (bWordKnown) {
-						this["ShoutTextInstance" + i].gotoAndStop("Known");
-						this["ShoutTextInstance" + i].gotoAndStop("Known");
+						Debug.log("Word known: " + strDragonWord);
+						this["ShoutTextInstance" + i].gotoAndPlay("Translate");
 					} else {
-						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
+						Debug.log("Word unlocked: " + strDragonWord);
 						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
 					}
 				}
