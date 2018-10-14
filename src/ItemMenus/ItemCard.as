@@ -69,6 +69,8 @@ class ItemCard extends MovieClip
 	var _bEditNameMode: Boolean;
 	var bFadedIn: Boolean;
 
+	var LastShoutObj: Object;
+
 
 	function ItemCard()
 	{
@@ -83,6 +85,19 @@ class ItemCard extends MovieClip
 		bFadedIn = false;
 		InputHandler = undefined;
 		_bEditNameMode = false;
+	}
+
+	function shoutWordPronunciation(word: String): String
+	{
+		word = GlobalFunc.StringReplaceAll(word, "1", "aa");
+		word = GlobalFunc.StringReplaceAll(word, "2", "ei");
+		word = GlobalFunc.StringReplaceAll(word, "3", "ii");
+		word = GlobalFunc.StringReplaceAll(word, "4", "ah");
+		word = GlobalFunc.StringReplaceAll(word, "6", "ur");
+		word = GlobalFunc.StringReplaceAll(word, "7", "ir");
+		word = GlobalFunc.StringReplaceAll(word, "8", "oo");
+		word = GlobalFunc.StringReplaceAll(word, "9", "ey");
+		return word.charAt(0).toUpperCase() + word.slice(1);
 	}
 
 	function get bEditNameMode(): Boolean
@@ -318,22 +333,30 @@ class ItemCard extends MovieClip
 					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
 					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
 
-					textInstance.ShoutPronunciation.ShoutWordsLabel.SetText(strDragonWord);
+					textInstance.ShoutPronunciation.ShoutWordsLabel.SetText(shoutWordPronunciation(strDragonWord));
 					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
 					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
 					if (bWordKnown && i == iLastWord && LastUpdateObj.soulSpent == true) {
-						Debug.log("Word learn: " + strDragonWord);
 						this["ShoutTextInstance" + i].gotoAndPlay("Learn");
 					} else if (bWordKnown) {
-						Debug.log("Word known: " + strDragonWord);
-						this["ShoutTextInstance" + i].gotoAndPlay("Translate");
+						// The word is known.
+						// If we're displaying the same shout we were displaying "last" time,
+						// (likely because we just learned a new word)
+						// do not interrup the 'learn' or previous 'translate' animation that is
+						// already in progress.
+						if(LastShoutObj["name"] != aUpdateObj["name"]) {
+							this["ShoutTextInstance" + i].gotoAndPlay("Translate");
+						}
 					} else {
-						Debug.log("Word unlocked: " + strDragonWord);
 						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
 					}
 				}
 				ShoutEffectsLabel.SetText(aUpdateObj.effects, true);
 				ShoutCostValue.SetText(aUpdateObj.spellCost.toString());
+
+				// Hang on to this shout data
+				// We need this to properly animate the pronunciation label
+				LastShoutObj = aUpdateObj;
 				break;
 
 			case Inventory.ICT_ACTIVE_EFFECT:
