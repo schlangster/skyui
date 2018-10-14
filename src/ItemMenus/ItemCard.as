@@ -7,6 +7,7 @@ import Components.DeltaMeter;
 import Shared.GlobalFunc;
 
 import skyui.defines.Inventory;
+import skyui.util.Debug;
 
 
 class ItemCard extends MovieClip
@@ -68,6 +69,8 @@ class ItemCard extends MovieClip
 	var _bEditNameMode: Boolean;
 	var bFadedIn: Boolean;
 
+	var LastShoutObj: Object;
+
 
 	function ItemCard()
 	{
@@ -82,6 +85,19 @@ class ItemCard extends MovieClip
 		bFadedIn = false;
 		InputHandler = undefined;
 		_bEditNameMode = false;
+	}
+
+	function shoutWordPronunciation(word: String): String
+	{
+		word = GlobalFunc.StringReplaceAll(word, "1", "aa");
+		word = GlobalFunc.StringReplaceAll(word, "2", "ei");
+		word = GlobalFunc.StringReplaceAll(word, "3", "ii");
+		word = GlobalFunc.StringReplaceAll(word, "4", "ah");
+		word = GlobalFunc.StringReplaceAll(word, "6", "ur");
+		word = GlobalFunc.StringReplaceAll(word, "7", "ir");
+		word = GlobalFunc.StringReplaceAll(word, "8", "oo");
+		word = GlobalFunc.StringReplaceAll(word, "9", "ey");
+		return word.charAt(0).toUpperCase() + word.slice(1);
 	}
 
 	function get bEditNameMode(): Boolean
@@ -311,22 +327,36 @@ class ItemCard extends MovieClip
 					var strDragonWord: String = aUpdateObj["dragonWord" + i] == undefined ? "" : aUpdateObj["dragonWord" + i];
 					var strWord: String = aUpdateObj["word" + i] == undefined ? "" : aUpdateObj["word" + i];
 					var bWordKnown: Boolean = aUpdateObj["unlocked" + i] == true;
-					this["ShoutTextInstance" + i].DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
-					this["ShoutTextInstance" + i].ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
-					this["ShoutTextInstance" + i].DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
-					this["ShoutTextInstance" + i].ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
+					var textInstance = this["ShoutTextInstance" + i];
+
+					textInstance.ShoutPronunciation.ShoutWordsLabel.textAutoSize = "shrink";
+					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
+					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
+
+					textInstance.ShoutPronunciation.ShoutWordsLabel.SetText(shoutWordPronunciation(strDragonWord));
+					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
+					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
 					if (bWordKnown && i == iLastWord && LastUpdateObj.soulSpent == true) {
 						this["ShoutTextInstance" + i].gotoAndPlay("Learn");
 					} else if (bWordKnown) {
-						this["ShoutTextInstance" + i].gotoAndStop("Known");
-						this["ShoutTextInstance" + i].gotoAndStop("Known");
+						// The word is known.
+						// If we're displaying the same shout we were displaying "last" time,
+						// (likely because we just learned a new word)
+						// do not interrup the 'learn' or previous 'translate' animation that is
+						// already in progress.
+						if(LastShoutObj["name"] != aUpdateObj["name"]) {
+							this["ShoutTextInstance" + i].gotoAndPlay("Translate");
+						}
 					} else {
-						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
 						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
 					}
 				}
 				ShoutEffectsLabel.SetText(aUpdateObj.effects, true);
 				ShoutCostValue.SetText(aUpdateObj.spellCost.toString());
+
+				// Hang on to this shout data
+				// We need this to properly animate the pronunciation label
+				LastShoutObj = aUpdateObj;
 				break;
 
 			case Inventory.ICT_ACTIVE_EFFECT:

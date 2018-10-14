@@ -227,4 +227,7 @@ class Shared.GlobalFunc
 		return trimStr;
 	}
 
+  static function StringReplaceAll(str:String, search:String, replace:String):String {
+  	return str.split(search).join(replace);
+  }
 }
