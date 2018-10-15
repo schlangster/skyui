@@ -9,6 +9,7 @@ import gfx.managers.FocusHandler;
 import skyui.components.ButtonPanel;
 import skyui.defines.ButtonArtNames;
 import skyui.util.Debug;
+import skyui.VRInput;
 
 class Quest_Journal extends MovieClip
 {
@@ -224,17 +225,131 @@ class Quest_Journal extends MovieClip
 	var controllerTexts = ["", ""];
 	var vrinputOnce = false;
 
+	// Stores the right/left hand controller state that we last saw
+	var lastControllerStates = [ {}, {} ];
+
+	// Stores state of each of the widgets on a controller
+	var inputWidgetStates = [[], []];
+
+	static function vec2Mag(vec2: Array)
+	{
+		if(vec2 == undefined)
+			return undefined;
+		var x = vec2[0];
+		var y = vec2[1];
+		return Math.sqrt(x*x + y*y);
+	}
+
+	static function widgetToString(widget: Object)
+	{
+		var output = "";
+		for (var key:String in widget) {
+			output += key + ": " + widget[key] + "\n";
+		}
+		return output;
+	}
+
+
 	function handleVRInput(controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
 			axis: Array)
 	{
 		if(!vrinputOnce) {
+			inputWidgetStates = VRInput.makeEmptyInputWidgetStates();
 		}
 
 		controllerTexts[controllerHand-1] = controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonPressedHigh, axis);
 
 		var output = "";
+
+
+		var lastState = lastControllerStates[controllerHand - 1];
+		var curState = {
+			packetNum: packetNum,
+			buttonPressedLow: buttonPressedLow,
+			buttonPressedHigh: buttonPressedHigh,
+			buttonTouchedLow: buttonTouchedLow,
+			buttonTouchedHigh: buttonTouchedHigh,
+			axis: axis
+		};
+
+		// When the state looks like it's been updated...
+		if(lastState.packetNum != curState.packetNum)
+		{
+			var widgets = inputWidgetStates[controllerHand-1];
+			var controllerName = VRInput.Platform;
+
+			for(var i = 0; i < 32; i++) {
+				var mask = 1 << i;
+				var id = i;
+				var state = widgets[id];
+
+				state.pressed_raw = (buttonPressedLow & mask) == 0 ? false : true;
+				state.pressed = state.pressed_raw;
+				state.touched_raw = (buttonTouchedLow & mask) == 0 ? false : true;
+				state.touched = state.touched_raw;
+				state.controllerName = controllerName;
+			}
+			for(var i = 0; i < 32; i++) {
+				var mask = 1 << i;
+				var id = i + 32;
+				var state = widgets[id];
+
+				state.pressed_raw = (buttonPressedHigh & mask) == 0 ? false : true;
+				state.pressed = state.pressed_raw;
+				state.touched_raw = (buttonTouchedHigh & mask) == 0 ? false : true;
+				state.touched = state.touched_raw;
+				state.controllerName = controllerName;
+			}
+
+			// Wire up additional Vive controller data
+			if(controllerName == "vive") {
+				widgets[1].widgetName = "application menu";
+				widgets[1].type = "button";
+				VRInput.widgetAddClickWhenPressed(widget[1]);
+
+				widgets[2].widgetName = "grip";
+				widgets[2].type = "button";
+				VRInput.widgetAddClickWhenPressed(widget[2]);
+
+
+				widgets[32].widgetName = "touchpad";
+				widgets[32].type = "touchpad";
+
+				widgets[32].axisId = 0;
+				widgets[32].axis = VRInput.getAxis(axis, 0);
+				VRInput.widgetAddClickWhenPressed(widgets[32]);
+
+
+				widgets[33].widgetName = "trigger";
+				widgets[33].type = "trigger";
+
+				widgets[33].axisId = 1;
+				widgets[33].axis = VRInput.getAxis(axis, 1);
+				VRInput.widgetAddClickForTrigger(widgets[33]);
+
+
+				// Build a list of widgets with interesting states
+				var viveWidgets = [1, 2, 32, 33];
+				var interestingWidgets = [];
+				for(var i = 0; i < viveWidgets.length; i++) {
+					var widget = widgets[viveWidgets[i]];
+					if(widget.pressed || widget.touched || vec2Mag(widget.axis)) {
+						interestingWidgets.push(widget);
+					}
+				}
+
+				var interestingWidgetOutput = "";
+				for(var i = 0; i < interestingWidgets.length; i++) {
+					var widget = interestingWidgets[i];
+					interestingWidgetOutput += widgetToString(widget);
+				}
+				if(interestingWidgetOutput.length != 0)
+					controllerTexts[controllerHand-1] += "\n" + interestingWidgetOutput;
+
+			}
+		}
 
 		if(controllerTexts[0].length != 0) {
 			output += "Left controller:   \n";
@@ -246,10 +361,12 @@ class Quest_Journal extends MovieClip
 		}
 
 		TextPanel.TextArea.SetText(output);
+
+		// Record the current state
+		// We'll use this as the last state when we're called again the next time.
+		lastControllerStates[controllerHand-1] = curState;
+
 		if(!vrinputOnce) {
-			Debug.log("1 << 32: " + (1 << 32));
-			Debug.log("1 << 33: " + (1 << 33));
-			Debug.log("1 << 34: " + (1 << 34));
 			vrinputOnce = true;
 		}
 	}
@@ -357,6 +474,8 @@ class Quest_Journal extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
+		VRInput.Platform = VRInput.platformNameFromEnum(aiPlatform);
+
 		// Not sure if these are the correct mapping for next/prev tab
 		var nextTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Right", MoveArt:"PS3_Y",OculusArt:"OCC_B", WindowsMRArt:"radial_Either_Right"}));
 		var prevTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Left", MoveArt:"PS3_X", OculusArt:"OCC_Y", WindowsMRArt:"radial_Either_Left"}));
