@@ -252,4 +252,13 @@ class skyui.util.GlobalFunctions
 	{
 		return Math.max(min, Math.min(max, val))
 	}
+
+	static public function vec2Mag(vec2: Array)
+	{
+		if(vec2 == undefined)
+			return undefined;
+		var x = vec2[0];
+		var y = vec2[1];
+		return Math.sqrt(x*x + y*y);
+	}
 }
