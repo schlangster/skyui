@@ -183,9 +183,6 @@ class Quest_Journal extends MovieClip
 		{
 			var mask = 1 << i;
 
-			if(buttonPressedHigh != 0) {
-				Debug.log("high pressed: " + buttonPressedHigh);
-			}
 			if(buttonPressedHigh & mask) {
 				output += "pressed: " + (i + 32) + "\n";
 			}

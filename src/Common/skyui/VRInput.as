@@ -61,7 +61,8 @@ class skyui.VRInput {
 	static public var lastControllerStates;
 
 	// Stores state of each of the widgets on a controller
-	static public var widgetStates = makeEmptyWidgetStates();
+	static public var lastWidgetStates;
+	static public var widgetStates;
 
 
 	// CONSTANTS -------------------------------------------------------
@@ -85,9 +86,14 @@ class skyui.VRInput {
 	static public function init() {
 		if(!initialized) {
 			lastControllerStates = [{}, {}];
+			lastWidgetStates = makeEmptyWidgetStates();
 			widgetStates = makeEmptyWidgetStates();
 		}
 		initialized = true;
+	}
+
+	static public function widgetStateLooksEmpty(state) {
+		return state.length <= 2;
 	}
 
 	static public function makeEmptyWidgetStates() {
@@ -96,14 +102,16 @@ class skyui.VRInput {
 		for(var i = 0; i < WIDGET_MAX_COUNT; i++) {
 			widgetStates[0].push({
 				id: i,
-				controllerRole: "left-hand"
+				controllerRole: "left-hand",
+				uninitialized: true
 			});
 		}
 
 		for(var i = 0; i < WIDGET_MAX_COUNT; i++) {
 			widgetStates[1].push({
 			id: i,
-			controllerRole: "right-hand"
+			controllerRole: "right-hand",
+			uninitialized: true
 			});
 		}
 
@@ -135,13 +143,64 @@ class skyui.VRInput {
 		controllerName = controllerNameFromPlatformEnum(platform);
 	}
 
+	static public function widgetDetectPhaseChange(curState, lastState, phaseName) {
+		var cur = curState[phaseName];
+		var last = lastState[phaseName];
+
+		if(cur == last)
+			return "no-change";
+		if(cur && !last)
+			return "start";
+		else
+			return "stop";
+	}
+
+	static public function widgetDetectPhaseStart(curState, lastState, phaseName) {
+		var cur = curState[phaseName];
+		var last = lastState[phaseName];
+
+		if(cur && !last)
+			return "start";
+
+		return "no-change";
+	}
+
+	static public function widgetDetectPhaseStop(curState, lastState, phaseName) {
+		var cur = curState[phaseName];
+		var last = lastState[phaseName];
+
+		if(!cur && last)
+			return "stop";
+
+		return "no-change";
+	}
+
+	static public function makeWidgetEvent(curState, lastState, phaseName, eventName) {
+		return {
+			curState: curState,
+			lastState: lastState,
+			phaseName: phaseName,
+			eventName: eventName
+		};
+	}
+
+	static public function copyWidgetState(src, dest) {
+		for (var key:String in src) {
+			if(key != "axis")
+				dest[key] = src[key];
+		}
+		for (var i = 0; i < src.axis.length; i++) {
+			dest.axis[i][0] = src.axis[i][0];
+			dest.axis[i][1] = src.axis[i][1];
+		}
+	}
+
 	static public function updateControllerState(
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
 			axis: Array): Boolean
 	{
-
 		var lastState = lastControllerStates[controllerHand - 1];
 		var curState = {
 			packetNum: packetNum,
@@ -157,27 +216,56 @@ class skyui.VRInput {
 			var widgets = widgetStates[controllerHand-1];
 			var controllerName = VRInput.controllerName;
 
-			for(var i = 0; i < 32; i++) {
-				var mask = 1 << i;
-				var id = i;
-				var state = widgets[id];
-
-				state.pressed_raw = (buttonPressedLow & mask) == 0 ? false : true;
-				state.pressed = state.pressed_raw;
-				state.touched_raw = (buttonTouchedLow & mask) == 0 ? false : true;
-				state.touched = state.touched_raw;
-				state.controllerName = controllerName;
+			// Only process widgets that we know may actually
+			// be updated
+			var interestingWidgets;
+			switch(controllerName) {
+				case "vive":
+					interestingWidgets = [1, 2, 32, 33];
+					break;
+				default:
+					interestingWidgets = [];
 			}
-			for(var i = 0; i < 32; i++) {
-				var mask = 1 << i;
-				var id = i + 32;
+
+			// Prepare to receive a new state
+			// We're about to get an update on the state of the widget,
+			// move the (old) current state of the widget into the last
+			// state array.
+			//
+			// We're just using two arrays to store the previous and
+			// current state of the widgets and reusing the objects
+			// used to store the information.
+			{
+				var lastWidgets = lastWidgetStates[controllerHand-1];
+				var curWidgets = widgetStates[controllerHand-1];
+				for(var i = 0; i < interestingWidgets.length; i++) {
+					var id = interestingWidgets[i];
+					var temp = lastWidgets[id];
+					lastWidgets[id] = curWidgets[id];
+					curWidgets[id] = temp;
+				}
+			}
+
+			// Update widget states
+			for(var i = 0; i < interestingWidgets.length; i++) {
+				var id = interestingWidgets[i];
+				var mask = 1 << id;
 				var state = widgets[id];
 
-				state.pressed_raw = (buttonPressedHigh & mask) == 0 ? false : true;
-				state.pressed = state.pressed_raw;
-				state.touched_raw = (buttonTouchedHigh & mask) == 0 ? false : true;
-				state.touched = state.touched_raw;
-				state.controllerName = controllerName;
+				if(id < 32) {
+					state.pressed_raw = (buttonPressedLow & mask) == 0 ? false : true;
+					state.pressed = state.pressed_raw;
+					state.touched_raw = (buttonTouchedLow & mask) == 0 ? false : true;
+					state.touched = state.touched_raw;
+					state.controllerName = controllerName;
+				} else {
+					state.pressed_raw = (buttonPressedHigh & mask) == 0 ? false : true;
+					state.pressed = state.pressed_raw;
+					state.touched_raw = (buttonTouchedHigh & mask) == 0 ? false : true;
+					state.touched = state.touched_raw;
+					state.controllerName = controllerName;
+				}
+				delete state["uninitialized"];
 			}
 
 			// Wire up additional Vive controller data
@@ -205,6 +293,56 @@ class skyui.VRInput {
 				widgets[33].axisId = 1;
 				widgets[33].axis = VRInput.getAxis(axis, 1);
 				widgetAddClickForTrigger(widgets[33]);
+				widgetDetectTouchWithAxis(widgets[33]);
+			}
+
+			// Generate events as appropriate
+			var lastWidgets = lastWidgetStates[controllerHand-1];
+			var curWidgets = widgetStates[controllerHand-1];
+			var eventQueue = [];
+			for(var i = 0; i < interestingWidgets.length; i++)
+			{
+				var id = interestingWidgets[i];
+				var lastState = lastWidgets[id];
+				var curState = curWidgets[id];
+
+				if(lastState.uninitialized) {
+					copyWidgetState(curState, lastState);
+					delete lastState["uninitialized"];
+				}
+
+				// Detect and generate phase events
+				// Note that we take a bit of effort to make sure that the start/stop
+				// events are ordered like this:
+				//   touched start => pressed start => clicked start =>
+				//   clicked end => pressed end => touched end
+				var phases;
+
+				phases = ["touched", "pressed", "clicked"];
+				for(var j = 0; j < phases.length; j++) {
+					var phase = phases[j];
+					var change = widgetDetectPhaseStart(curState, lastState, phase);
+					if(change != "no-change") {
+						var event = makeWidgetEvent(curState, lastState, phase, change);
+						eventQueue.push(event);
+					}
+				}
+				phases = ["clicked", "pressed", "touched"];
+				for(var j = 0; j < phases.length; j++) {
+					var phase = phases[j];
+					var change = widgetDetectPhaseStop(curState, lastState, phase);
+					if(change != "no-change") {
+						var event = makeWidgetEvent(curState, lastState, phase, change);
+						eventQueue.push(event);
+					}
+				}
+			}
+
+			if(eventQueue.length > 0)
+				Debug.log("packetNum: " + packetNum);
+			for(var i = 0; i < eventQueue.length; i++)
+			{
+				Debug.dump("event", eventQueue[i], false, 1);
 			}
 
 			// Record the current state
