@@ -261,4 +261,10 @@ class skyui.util.GlobalFunctions
 		var y = vec2[1];
 		return Math.sqrt(x*x + y*y);
 	}
+
+	static public function vec2Angle(vec2: Array)
+	{
+		return Math.atan2(vec2[1], vec2[0]) * (180 / Math.PI);
+	}
+
 }

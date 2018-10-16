@@ -48,6 +48,7 @@
 import mx.utils.ObjectUtil;
 import Shared.Platforms;
 import skyui.util.Debug;
+import skyui.util.GlobalFunctions;
 
 class skyui.VRInput {
 	// GLOBALS ---------------------------------------------------------
@@ -193,6 +194,30 @@ class skyui.VRInput {
 			dest.axis[i][0] = src.axis[i][0];
 			dest.axis[i][1] = src.axis[i][1];
 		}
+	}
+
+	static public function axisQuadrant(vec2) {
+		var angle = GlobalFunctions.vec2Angle(vec2);
+		if (angle < 0)
+			angle += 360;
+
+		if(angle < 45)
+			return "right";
+		if(angle < 135)
+			return "top";
+		if(angle < 225)
+			return "left";
+		if(angle < 315)
+			return "bottom";
+		return "right";
+	}
+
+	static public function axisRegion(vec2) {
+		var mag = GlobalFunctions.vec2Mag(vec2);
+		if(mag <= 0.30)
+			return "center";
+
+		return axisQuadrant(vec2);
 	}
 
 	static public function updateControllerState(
