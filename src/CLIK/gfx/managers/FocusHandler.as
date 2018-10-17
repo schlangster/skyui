@@ -75,21 +75,36 @@ dynamic class gfx.managers.FocusHandler
 		Debug.log("FocusHandler handleInput");
 		Debug.dump("event", event);
 
+		// Grab the focus path
+		// It appears controllerIdx is always 0 here.
 		var controllerIdx: Number = event.details.controllerIdx;
 		var focusIdx: Number = Selection.getControllerFocusGroup(controllerIdx);
 		var path: Array = getPathToFocus(focusIdx);
 
 		Debug.dump("PathToFocus", path);
 
+		// Send the input into the first item in the focus list if possible
 		if (path.length == 0 || path[0].handleInput == null || path[0].handleInput(event.details, path.slice(1)) != true) {
+
+			// If nothing is going to handle the input Or if the handler returned false...
+			// Perform some default handling on "keyup"
 			if (event.details.value != "keyUp") {
+
+				// Only deal with input with a navEquivalent (aka keys we understand && will deal with)
+				// Keys that we don't understand will be skipped.
 				var nav = event.details.navEquivalent;
 				if (nav != null) {
+					// Get the thing that is in focus
 					var focusedElem = eval(Selection.getFocus(controllerIdx));
 					var actualFocus = this.actualFocusLookup[focusIdx];
+
+					// If the thing in focus is a text field, try to have it handle the input...
+					// If the input is handled, don't do anything further.
 					if (actualFocus instanceof TextField && focusedElem == actualFocus && this.textFieldHandleInput(nav, controllerIdx)) {
 						return;
 					}
+
+					// We're going to try to find another thing we can focus on...
 					var dirH = nav == gfx.ui.NavigationCode.LEFT || nav == gfx.ui.NavigationCode.RIGHT;
 					var dirV = nav == gfx.ui.NavigationCode.UP || nav == gfx.ui.NavigationCode.DOWN;
 					var focusContext = focusedElem._parent;
@@ -137,7 +152,7 @@ dynamic class gfx.managers.FocusHandler
 
 	function onSetFocus(oldFocus, newFocus, controllerIdx)
 	{
-		if (oldFocus instanceof TextField && newFocus == null)
+				if (oldFocus instanceof TextField && newFocus == null)
 		{
 			return undefined;
 		}

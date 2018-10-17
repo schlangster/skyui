@@ -29,7 +29,7 @@
 //  // Added annotation
 //  widgetName: (string), // name of button or axis
 //  controllerName: (string) ["vive", "knuckles", "oculus", "wmr"],
-//  controllerRole: (string) ["right-hand", "left-hand"],
+//  controllerRole: (string) ["rightHand", "leftHand"],
 //
 //  pressStartTime: clock time when the event started
 //  touchStartTime: clock time when the event started
@@ -93,17 +93,14 @@ class skyui.VRInput {
 		initialized = true;
 	}
 
-	static public function widgetStateLooksEmpty(state) {
-		return state.length <= 2;
-	}
-
 	static public function makeEmptyWidgetStates() {
 		var widgetStates = [[], []];
 
 		for(var i = 0; i < WIDGET_MAX_COUNT; i++) {
 			widgetStates[0].push({
 				id: i,
-				controllerRole: "left-hand",
+				controllerRole: "leftHand",
+				axis: [],
 				uninitialized: true
 			});
 		}
@@ -111,7 +108,8 @@ class skyui.VRInput {
 		for(var i = 0; i < WIDGET_MAX_COUNT; i++) {
 			widgetStates[1].push({
 			id: i,
-			controllerRole: "right-hand",
+			controllerRole: "rightHand",
+			axis: [],
 			uninitialized: true
 			});
 		}
@@ -190,10 +188,12 @@ class skyui.VRInput {
 			if(key != "axis")
 				dest[key] = src[key];
 		}
-		for (var i = 0; i < src.axis.length; i++) {
-			dest.axis[i][0] = src.axis[i][0];
-			dest.axis[i][1] = src.axis[i][1];
+		if(!dest.axis) {
+			dest.axis = [];
 		}
+		dest.axis[0] = src.axis[0];
+		dest.axis[1] = src.axis[1];
+		return dest;
 	}
 
 	static public function axisQuadrant(vec2) {
@@ -221,6 +221,7 @@ class skyui.VRInput {
 	}
 
 	static public function updateControllerState(
+			timestamp: Number,
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
@@ -268,6 +269,8 @@ class skyui.VRInput {
 					var temp = lastWidgets[id];
 					lastWidgets[id] = curWidgets[id];
 					curWidgets[id] = temp;
+
+					copyWidgetState(lastWidgets[id], curWidgets[id]);
 				}
 			}
 
@@ -336,6 +339,26 @@ class skyui.VRInput {
 					delete lastState["uninitialized"];
 				}
 
+				// Clean up event timestamps if appropriate
+				if(curState.touchedStart && curState.touchedStop) {
+					/* Debug.log("************ removing touched fields from widget ***********"); */
+					/* Debug.dump("before curState", curState, false, 1); */
+					delete curState["touchedStart"];
+					delete curState["touchedStartState"];
+					delete curState["touchedStop"];
+					/* Debug.dump("after curState", curState, false, 1); */
+				}
+				if(curState.pressedStart && curState.pressedStop) {
+					delete curState["pressedStart"];
+					delete curState["pressedStartState"];
+					delete curState["pressedStop"];
+				}
+				if(curState.clickedStart && curState.clickedStop) {
+					delete curState["clickedStart"];
+					delete curState["clickedStartState"];
+					delete curState["clickedStop"];
+				}
+
 				// Detect and generate phase events
 				// Note that we take a bit of effort to make sure that the start/stop
 				// events are ordered like this:
@@ -349,6 +372,8 @@ class skyui.VRInput {
 					var change = widgetDetectPhaseStart(curState, lastState, phase);
 					if(change != "no-change") {
 						var event = makeWidgetEvent(curState, lastState, phase, change);
+						curState[phase + "Start"] = timestamp;
+						curState[phase + "StartState"] = copyWidgetState(curState, {});
 						eventQueue.push(event);
 					}
 				}
@@ -358,17 +383,33 @@ class skyui.VRInput {
 					var change = widgetDetectPhaseStop(curState, lastState, phase);
 					if(change != "no-change") {
 						var event = makeWidgetEvent(curState, lastState, phase, change);
+						curState[phase + "Stop"] = timestamp;
 						eventQueue.push(event);
 					}
 				}
 			}
 
+			// Generate other synthetic events
+			// By reading the event queue
+			if(controllerName == "vive") {
+				widgetTouchpadDetectSwipe(widgets[32], eventQueue);
+			}
+
+			// Print out all of the event queue
 			if(eventQueue.length > 0)
 				Debug.log("packetNum: " + packetNum);
 			for(var i = 0; i < eventQueue.length; i++)
 			{
-				Debug.dump("event", eventQueue[i], false, 1);
+				Debug.log("timestamp: " + timestamp);
+
+				var event = eventQueue[i];
+				Debug.dump("event " + (i+1), event, false, 1);
+
+				if(event.phaseName == "touched" && event.eventName == "start") {
+				}
 			}
+
+			vibrateOnSwipe(eventQueue);
 
 			// Record the current state
 			// We'll use this as the last state when we're called again the next time.
@@ -378,6 +419,36 @@ class skyui.VRInput {
 		}
 		return false;
 	}
+
+	//----------------------------------------------------------------------------
+	// Native function interop
+	//
+
+	// Return a timestamp with millisecond resolution.
+	static private function clock(): Number {
+		// We're sure the VRInput plugin is available.
+		// Just call the clock function.
+		return skse["plugins"]["vrinput"].GetClock();
+	}
+
+	static private function triggerHapticPulse(controllerRole: String, strength: Number) {
+		skse["plugins"]["vrinput"].TriggerHapticPulse(controllerRole == "leftHand" ? 1 : 2, strength);
+	}
+
+
+	//----------------------------------------------------------------------------
+	// Vec2 utilities
+	//
+	static private function cloneVec2(vec2: Array) {
+		return [vec2[0], vec2[1]];
+	}
+
+	static private function copyVec2(src: Array, dest: Array) {
+		dest[0] = src[0];
+		dest[1] = src[1];
+		return dest;
+	}
+
 
 	// Widget synthetic attributes -------------------------------------
 	//
@@ -407,6 +478,143 @@ class skyui.VRInput {
 	{
 		if(widget.axis[0] != 0.0 || widget.axis[1] != 0.0) {
 			widget.touched = true;
+		}
+	}
+
+	static var touchpadSwipeStates = {
+		leftHand: {},
+		rightHand: {}
+	};
+	static function widgetTouchpadDetectSwipe(widget, eventQueue)
+	{
+		// Given the current state of the widget,
+		// generate events if swipes are detected...
+
+		// If the touchpad isn't being touched, do nothing
+		if(!widget.touched) {
+			return;
+		}
+
+		var curTime = clock();
+
+		// Fetch the swipe state associated with the widget
+		var hand = touchpadSwipeStates[widget.controllerRole];
+		var swipeState = hand[widget.id];
+
+		// Are we hanging on to state data from a previous swipe?
+		// If so, clean it up now...
+		if(widget.touchedStart && swipeState.startTime != widget.touchedStart) {
+			delete touchpadSwipeStates[widget.controllerRole][widget.id];
+			swipeState = undefined;
+		}
+
+		// If we don't have a swipe state either because no data
+		// has been associated with said widget or because associated
+		// state has been cleaned up...
+		// Create empty state to hold the swipe state
+		if(!swipeState) {
+			swipeState = {
+				startTime: widget.touchedStart,
+				lastProcessTime: curTime,
+				lastPosition: cloneVec2(widget.axis)
+			};
+			touchpadSwipeStates[widget.controllerRole][widget.id] = swipeState;
+		}
+
+		// Limit the rate at which events can be generated
+		var timeDelta = curTime - swipeState.lastProcessTime;
+		var curPosition = widget.axis;
+		var lastPosition = swipeState.lastPosition
+		var xDelta = curPosition[0] - lastPosition[0];
+		var yDelta = curPosition[1] - lastPosition[1];
+		var distanceDelta = Math.sqrt((xDelta * xDelta) + (yDelta * yDelta));
+		var velocity = distanceDelta / timeDelta;
+
+		var distanceThreshold;
+		var timeThreshold;
+		var savePosition;
+		var velThreshold = 0.16;
+		if(velocity > 0.005) {
+			distanceThreshold = 0.1;
+			timeThreshold = 10;
+			savePosition = false;
+		} else {
+			distanceThreshold = 0.33;
+			timeThreshold = 10;
+			savePosition = false;
+		}
+
+		// FIXME!!! Event firing frequency is tied directly to the framerate.
+		if(timeDelta < timeThreshold) {
+			return;
+		}
+
+		// If the touchpad position moved a certain distance
+		// within the alotted period of time...
+		// Generate an appropriate event.
+
+		// We'e going to restrict swiping to up/down/right/left
+		// First, determine which direction has received more movement...
+		// That is the dominate axis
+		var eventFired = false;
+		if(Math.abs(xDelta) > Math.abs(yDelta)) {
+			if(xDelta > distanceThreshold) {
+				eventQueue.push({
+					eventType: "swipe",
+					direction: "right",
+					widget: widget
+				});
+				eventFired = true;
+			} else if(xDelta < -1 * distanceThreshold) {
+				eventQueue.push({
+					eventType: "swipe",
+					direction: "left",
+					widget: widget
+				});
+				eventFired = true;
+			}
+		} else {
+			if(yDelta > distanceThreshold) {
+				eventQueue.push({
+					eventType: "swipe",
+					direction: "up",
+					widget: widget
+				});
+				eventFired = true;
+			} else if(yDelta < -1 * distanceThreshold) {
+				eventQueue.push({
+					eventType: "swipe",
+					direction: "down",
+					widget: widget
+				});
+				eventFired = true;
+			}
+		}
+
+		// Only update the last position and processing time
+		// if an event actually fired.
+		//
+		// This means that as long as the user has traveled
+		// a specific distance on the touchpad, the swipe
+		// will be registered.
+		//
+		// This emulates the behavior of the game. Though
+		// it isn't ideal, it will do for now.
+		if(eventFired) {
+			copyVec2(widget.axis, swipeState.lastPosition);
+			swipeState.lastProcessTime = curTime;
+		}
+	}
+
+	static public function vibrateOnSwipe(eventQueue) {
+		// Look a swipe event in the event queue
+		// If found, vibrate the corresponding controller...
+		for(var i = 0; i < eventQueue.length; i++) {
+			var event = eventQueue[i];
+			if(event.eventType == "swipe") {
+				triggerHapticPulse(event.widget.controllerRole, 0.25);
+				break;
+			}
 		}
 	}
 }

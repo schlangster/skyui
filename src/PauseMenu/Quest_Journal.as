@@ -217,6 +217,13 @@ class Quest_Journal extends MovieClip
 			if(y != 0.0) {
 				output += "y[" + i + "] = " + y + "\n";
 			}
+
+			if(x != 0.0 || y != 0.0) {
+				var vec2 = [x, y];
+				output += "mag: " + GlobalFunctions.vec2Mag(vec2) + "\n";
+				output += "quadrant: " + VRInput.axisQuadrant(vec2) + "\n";
+				output += "region: " + VRInput.axisRegion(vec2) + "\n";
+			}
 		}
 		return output;
 	}
@@ -235,7 +242,8 @@ class Quest_Journal extends MovieClip
 	}
 
 
-	function handleVRInput(controllerHand: Number, packetNum: Number,
+	function handleVRInput(timestamp: Number,
+			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
 			axis: Array)
@@ -247,6 +255,7 @@ class Quest_Journal extends MovieClip
 
 
 		var updated = VRInput.updateControllerState(
+				timestamp,
 				controllerHand, packetNum,
 				buttonPressedLow, buttonPressedHigh,
 				buttonTouchedLow, buttonTouchedHigh,
