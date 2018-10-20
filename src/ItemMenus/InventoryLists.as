@@ -27,17 +27,17 @@ import skyui.defines.Input;
 class InventoryLists extends MovieClip
 {
 	#include "../version.as"
-	
+
   /* CONSTANTS */
-	
+
 	static var HIDE_PANEL = 0;
 	static var SHOW_PANEL = 1;
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
-	
-	
+
+
   /* STAGE ELEMENTS */
-  
+
 	public var panelContainer: MovieClip;
 	public var zoomButtonHolder: MovieClip;
 
@@ -47,17 +47,17 @@ class InventoryLists extends MovieClip
 	private var _typeFilter: ItemTypeFilter;
 	private var _nameFilter: NameFilter;
 	private var _sortFilter: SortFilter;
-	
+
 	private var _platform: Number;
-	
+
 	private var _currCategoryIndex: Number;
 	private var _savedSelectionIndex: Number = -1;
-	
+
 	private var _searchKey: Number = -1;
 	private var _switchTabKey: Number = -1;
 	private var _sortOrderKey: Number = -1;
 	private var _sortOrderKeyHeld: Boolean = false;
-	
+
 	private var _bTabbed = false;
 	private var _leftTabText: String;
 	private var _rightTabText: String;
@@ -73,17 +73,17 @@ class InventoryLists extends MovieClip
 	public var itemList: TabularList;
 
 	public var categoryList: CategoryList;
-	
+
 	public var tabBar: TabBar;
-	
+
 	public var searchWidget: SearchWidget;
-	
+
 	public var categoryLabel: MovieClip;
-	
+
 	public var columnSelectButton: Button;
-	
+
 	private var _currentState: Number;
-	
+
 	public function get currentState()
 	{
 		return _currentState;
@@ -96,17 +96,17 @@ class InventoryLists extends MovieClip
 
 		_currentState = a_newState;
 	}
-	
+
 	private var _tabBarIconArt: Array;
-	
+
 	public function set tabBarIconArt(a_iconArt: Array)
 	{
 		_tabBarIconArt = a_iconArt;
-		
+
 		if (tabBar)
 			tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
 	}
-	
+
 	public function get tabBarIconArt(): Array
 	{
 		return _tabBarIconArt;
@@ -131,7 +131,7 @@ class InventoryLists extends MovieClip
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new NameFilter();
 		_sortFilter = new SortFilter();
-		
+
 		categoryList = panelContainer.categoryList;
 		categoryLabel = panelContainer.categoryLabel;
 		itemList = panelContainer.itemList;
@@ -141,7 +141,7 @@ class InventoryLists extends MovieClip
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
-	
+
 	private function onLoad(): Void
 	{
 		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
@@ -152,7 +152,7 @@ class InventoryLists extends MovieClip
 		listEnumeration.addFilter(_sortFilter);
 		itemList.listEnumeration = listEnumeration;
 		// data processors are initialized by the top-level menu since they differ in each case
-		
+
 		itemList.listState.maxTextLength = 80;
 
 		_typeFilter.addEventListener("filterChange", this, "onFilterChange");
@@ -172,11 +172,11 @@ class InventoryLists extends MovieClip
 		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
 		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
 		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
-		
+
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
 
 	// @mixin by gfx.events.EventDispatcher
@@ -187,23 +187,23 @@ class InventoryLists extends MovieClip
 	public var removeEventListener: Function;
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
-	
+
 	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
-	
+
 	public function InitExtensions(): Void
 	{
 		// Delay updates until config is ready
 		categoryList.suspended = true;
 		itemList.suspended = true;
 	}
-	
+
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
 		// Release itemlist for updating
 		categoryList.suspended = false;
 		itemList.suspended = false;
-		
+
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
@@ -219,7 +219,7 @@ class InventoryLists extends MovieClip
 		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
-	
+
 	public function enableTabBar(): Void
 	{
 		_bTabbed = true;
@@ -286,17 +286,17 @@ class InventoryLists extends MovieClip
 				searchWidget.startInput();
 				return true;
 			}
-			
+
 			// Toggle tab (default ALT)
 			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {
 				tabBar.tabToggle();
 				return true;
 			}
 		}
-		
+
 		if (categoryList.handleInput(details, pathToFocus))
 			return true;
-		
+
 		var nextClip = pathToFocus.shift();
 		return nextClip.handleInput(details, pathToFocus);
 	}
@@ -306,7 +306,7 @@ class InventoryLists extends MovieClip
 		var lb = panelContainer.ListBackground;
 		return [lb._x, lb._y, lb._width, lb._height];
 	}
-	
+
 	public function showItemsList(): Void
 	{
 		// Save the previous selection in the category
@@ -317,7 +317,7 @@ class InventoryLists extends MovieClip
 		};
 
 		_currCategoryIndex = categoryList.selectedIndex;
-		
+
 		categoryLabel.textField.SetText(categoryList.selectedEntry.text);
 
 		// Start with no selection
@@ -327,20 +327,20 @@ class InventoryLists extends MovieClip
 		if (categoryList.selectedEntry != undefined) {
 			// Set filter type
 			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
-			
+
 			// Not set yet before the config is loaded
 			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
 		}
-		
+
 		itemList.requestUpdate();
-		
+
 		dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 
 		itemList.disableInput = false;
 	}
 
 	// Called to initially set the category list.
-	// @API 
+	// @API
 	public function SetCategoriesList(): Void
 	{
 		var textOffset = 0;
@@ -360,7 +360,7 @@ class InventoryLists extends MovieClip
 
 			_categorySelections.push(undefined);
 		}
-		
+
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
 		if (_bTabbed) {
 			// Restore 0 as default index for tabbed lists
@@ -402,22 +402,22 @@ class InventoryLists extends MovieClip
 			_typeFilter.itemFilter = categoryList.selectedEntry.flag;
 			dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
 		}
-		
-		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
+
+		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data
 		if (itemList.selectedIndex == -1)
 			dispatchEvent({type:"showItemsList", index: -1});
 		else
 			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 	}
-	
-	
+
+
   /* PRIVATE FUNCTIONS */
-  
+
   	private function onConfigLoad(event: Object): Void
 	{
 		var config = event.config;
 		_searchKey = config["Input"].controls.pc.search;
-		
+
 		if (_platform == 0)
 			_switchTabKey = config["Input"].controls.pc.switchTab;
 		else {
@@ -425,22 +425,22 @@ class InventoryLists extends MovieClip
 			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
 		}
 	}
-  
+
 	private function onFilterChange(): Void
 	{
 		itemList.requestInvalidate();
 	}
-	
+
 	private function onTabBarLoad(): Void
 	{
 		tabBar = panelContainer.tabBar;
 		tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
 		tabBar.addEventListener("tabPress", this, "onTabPress");
-		
+
 		if (categoryList.dividerIndex != -1)
 			tabBar.setLabelText(_leftTabText, _rightTabText);
 	}
-	
+
 	private function onColumnSelectButtonPress(event: Object): Void
 	{
 		if (event.type == "timeout") {
@@ -466,24 +466,24 @@ class InventoryLists extends MovieClip
 		// Setup and open the dialog
 		_savedSelectionIndex = itemList.selectedIndex;
 		itemList.selectedIndex = -1;
-		
+
 		categoryList.disableSelection = categoryList.disableInput = true;
 		itemList.disableSelection = itemList.disableInput = true;
 		searchWidget.isDisabled = true;
-			
+
 		_columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
 		_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 	}
-	
+
 	private function onColumnSelectDialogClosed(event: Object): Void
 	{
 		categoryList.disableSelection = categoryList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
 		searchWidget.isDisabled = false;
-		
+
 		itemList.selectedIndex = _savedSelectionIndex;
 	}
-	
+
 	private function onConfigUpdate(event: Object): Void
 	{
 		itemList.layout.refresh();
@@ -491,7 +491,6 @@ class InventoryLists extends MovieClip
 
 	private function onCategoriesItemPress(): Void
 	{
-		_categoryChanged = true;
 		showItemsList();
 	}
 
@@ -525,8 +524,9 @@ class InventoryLists extends MovieClip
 
 	private function onCategoriesListSelectionChange(event: Object): Void
 	{
+		_categoryChanged = true;
 		dispatchEvent({type:"categoryChange", index:event.index});
-		
+
 		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
