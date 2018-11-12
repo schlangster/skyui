@@ -69,7 +69,7 @@ class ItemCard extends MovieClip
 	var _bEditNameMode: Boolean;
 	var bFadedIn: Boolean;
 
-	var LastShoutObj: Object;
+	//var LastShoutObj: Object;
 
 
 	function ItemCard()
@@ -336,27 +336,23 @@ class ItemCard extends MovieClip
 					textInstance.ShoutPronunciation.ShoutWordsLabel.SetText(shoutWordPronunciation(strDragonWord));
 					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
 					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
+
+					// If the player just learned a word, kick off the Learn animation
 					if (bWordKnown && i == iLastWord && LastUpdateObj.soulSpent == true) {
-						this["ShoutTextInstance" + i].gotoAndPlay("Learn");
+						textInstance.gotoAndPlay("Learn");
+
+					// If the word is known, kick off the Translate animation to show the
+					// pronunciation
 					} else if (bWordKnown) {
-						// The word is known.
-						// If we're displaying the same shout we were displaying "last" time,
-						// (likely because we just learned a new word)
-						// do not interrup the 'learn' or previous 'translate' animation that is
-						// already in progress.
-						if(LastShoutObj["name"] != aUpdateObj["name"]) {
-							this["ShoutTextInstance" + i].gotoAndPlay("Translate");
-						}
+						textInstance.gotoAndPlay("Translate");
+
+					// Otherwise, just display the word as is
 					} else {
-						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
+						textInstance.gotoAndStop("Unlocked");
 					}
 				}
 				ShoutEffectsLabel.SetText(aUpdateObj.effects, true);
 				ShoutCostValue.SetText(aUpdateObj.spellCost.toString());
-
-				// Hang on to this shout data
-				// We need this to properly animate the pronunciation label
-				LastShoutObj = aUpdateObj;
 				break;
 
 			case Inventory.ICT_ACTIVE_EFFECT:
