@@ -804,7 +804,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 		; It's two-handed and both hands are free
 		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand)
-			if (a_item == PlayerREF.GetEquippedObject(0) && a_itemId != PlayerREF.GetEquippedItemId(0))
+			; Changed this line from GetEquippedItemId(0) to GetEquippedItemId(1) since two-handed weapons don't seem to appear in left hand
+			if (a_item == PlayerREF.GetEquippedObject(0) && a_itemId != PlayerREF.GetEquippedItemId(1))
 				UnequipHand(0)
 			endIf
 			PlayerREF.EquipItemById(itemWeapon, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
