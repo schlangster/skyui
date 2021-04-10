@@ -960,41 +960,74 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 endFunction
 
 function InvalidateItem(int a_itemId, bool redrawIcon = false)
+	; Version 3 implementation only invalidates the first appearance of an itemID. Any subsequent 
+	; use in other groups is missed. 
+	; This version recursively searches for additional items beyond the first
 	int index
 
 	; GroupData
-	index = _itemIds1.Find(a_itemId)
-	if (index != -1)
-		_itemInvalidFlags1[index] = true
-	endIf
+	index = 0
+	while index < 128
+		index = _itemIds1.Find(a_itemId, index)
+		if (index != -1)
+			_itemInvalidFlags1[index] = true
+			index += 1
+		else
+			index = 128
+		endIf
+	endWhile
 
-	index = _itemIds2.Find(a_itemId)
-	if (index != -1)
-		_itemInvalidFlags2[index] = true
-	endIf
-
+	index = 0
+	while index < 128
+		index = _itemIds2.Find(a_itemId, index)
+		if (index != -1)
+			_itemInvalidFlags2[index] = true
+			index += 1
+		else
+			index = 128
+		endIf
+	endWhile
+	
 	; Main hand
-	index = _groupMainHandItemIds.Find(a_itemId)
-	if (index != -1)
-		_groupMainHandItems[index] = none
-		_groupMainHandItemIds[index] = 0
-	endIf
+	index = 0
+	while index < 8
+		index = _groupMainHandItemIds.Find(a_itemId)
+		if (index != -1)
+			_groupMainHandItems[index] = none
+			_groupMainHandItemIds[index] = 0
+			index += 1
+		else
+			index = 8
+		endIf
+	endWhile
 
 	; Off hand
-	index = _groupOffHandItemIds.Find(a_itemId)
-	if (index != -1)
-		_groupOffHandItems[index] = none
-		_groupOffHandItemIds[index] = 0
-	endIf
+	index = 0
+	while index < 8
+		index = _groupOffHandItemIds.Find(a_itemId)
+		if (index != -1)
+			_groupOffHandItems[index] = none
+			_groupOffHandItemIds[index] = 0
+			index += 1
+		else
+			index = 8
+		endIf
+	endWhile
 
 	; Icon
-	index = _groupIconItemIds.Find(a_itemId)
-	if (index != -1)
-		ReplaceGroupIcon(index)
-		if (redrawIcon)
-			UpdateMenuGroupData(index)
+	index = 0
+	while index < 8
+		index = _groupIconItemIds.Find(a_itemId)
+		if (index != -1)
+			ReplaceGroupIcon(index)
+			if (redrawIcon)
+				UpdateMenuGroupData(index)
+			endIf			
+			index += 1
+		else
+			index = 8
 		endIf
-	endIf
+	endWhile
 endFunction
 
 int function FindFreeIndex(int[] a_itemIds, bool[] a_itemInvalidFlags, int offset)
