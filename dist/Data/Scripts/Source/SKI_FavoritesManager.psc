@@ -11,9 +11,11 @@ import Math
 ; 2:	- Added check for vampire lord
 ;
 ; 3:	- Less eagerly clearing of invalid entries
+;
+; 4:    - EDC - Added repeat find to InvalidateItem()
 
 int function GetVersion()
-	return 3
+	return 4
 endFunction
 
 
@@ -221,6 +223,11 @@ event OnVersionUpdate(int a_version)
 		_itemInvalidFlags1 = new bool[128]
 		_itemInvalidFlags2 = new bool[128]
 	endIf
+	
+	; Version 4
+	if (a_version >= 4 && CurrentVersion < 4)
+		Debug.Trace(self + ": Updating to script version 4")
+	endIf	
 
 endEvent
 
@@ -804,7 +811,8 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 
 		; It's two-handed and both hands are free
 		elseIf (weaponType > 4 && !_usedRightHand && !_usedLeftHand)
-			if (a_item == PlayerREF.GetEquippedObject(0) && a_itemId != PlayerREF.GetEquippedItemId(0))
+			; EDC - Changed this line from GetEquippedItemId(0) to GetEquippedItemId(1) since two-handed weapons don't seem to appear in left hand		
+			if (a_item == PlayerREF.GetEquippedObject(0) && a_itemId != PlayerREF.GetEquippedItemId(1))
 				UnequipHand(0)
 			endIf
 			PlayerREF.EquipItemById(itemWeapon, a_itemId, equipSlot = 0, equipSound = _silenceEquipSounds)
@@ -960,7 +968,7 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 endFunction
 
 function InvalidateItem(int a_itemId, bool redrawIcon = false)
-	; Version 3 implementation only invalidates the first appearance of an itemID. Any subsequent 
+	;EDC - Version 3 implementation only invalidates the first appearance of an itemID. Any subsequent 
 	; use in other groups is missed. 
 	; This version recursively searches for additional items beyond the first
 	int index
@@ -991,7 +999,7 @@ function InvalidateItem(int a_itemId, bool redrawIcon = false)
 	; Main hand
 	index = 0
 	while index < 8
-		index = _groupMainHandItemIds.Find(a_itemId)
+		index = _groupMainHandItemIds.Find(a_itemId, index)
 		if (index != -1)
 			_groupMainHandItems[index] = none
 			_groupMainHandItemIds[index] = 0
@@ -1004,7 +1012,7 @@ function InvalidateItem(int a_itemId, bool redrawIcon = false)
 	; Off hand
 	index = 0
 	while index < 8
-		index = _groupOffHandItemIds.Find(a_itemId)
+		index = _groupOffHandItemIds.Find(a_itemId, index)
 		if (index != -1)
 			_groupOffHandItems[index] = none
 			_groupOffHandItemIds[index] = 0
@@ -1017,7 +1025,7 @@ function InvalidateItem(int a_itemId, bool redrawIcon = false)
 	; Icon
 	index = 0
 	while index < 8
-		index = _groupIconItemIds.Find(a_itemId)
+		index = _groupIconItemIds.Find(a_itemId, index)
 		if (index != -1)
 			ReplaceGroupIcon(index)
 			if (redrawIcon)
