@@ -1,0 +1,16 @@
+*.user
+*.suo
+
+/.vs
+
+/Debug
+/Release
+
+/common/Debug
+/common/Release
+
+/plugin/Debug
+/plugin/Release
+
+/skse/Debug
+/skse/Release
