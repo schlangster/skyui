@@ -1,6 +1,6 @@
-#include "skse/PluginAPI.h"    // super
-#include "skse/skse_version.h" // What version of SKSE is running?
-#include <shlobj.h>            // CSIDL_MYCODUMENTS
+#include "skse64/PluginAPI.h"             // super
+#include "skse64_common/skse_version.h"   // What version of SKSE is running?
+#include <shlobj.h>                       // CSIDL_MYCODUMENTS
 
 #include "Plugin.h"
 
@@ -12,11 +12,11 @@ static SKSEPapyrusInterface * g_papyrus = NULL;
 extern "C" {
    // Called by SKSE to learn about this plugin and check that it's safe to load it
    bool SKSEPlugin_Query(const SKSEInterface * skse, PluginInfo * info) {
-      gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim\\SKSE\\PluginScript.log");
+      gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim\\SKSE\\SkyUI.log");
       gLog.SetPrintLevel(IDebugLog::kLevel_Error);
       gLog.SetLogLevel(IDebugLog::kLevel_DebugMessage);
 
-      _MESSAGE("PluginScript loading");
+      _MESSAGE("SkyUI loading");
 
       // populate info structure
       info->infoVersion = PluginInfo::kInfoVersion;
@@ -29,7 +29,7 @@ extern "C" {
       if (skse->isEditor) {
          _MESSAGE("loaded in editor, marking as incompatible");
          return false;
-      } else if (skse->runtimeVersion != RUNTIME_VERSION_1_9_32_0) {
+      } else if (skse->runtimeVersion != RUNTIME_VR_VERSION_1_4_15) {
          _MESSAGE("unsupported runtime version %08X", skse->runtimeVersion);
          return false;
       }
