@@ -1,7 +1,7 @@
 #include "skse/skse64/PapyrusNativeFunctions.h"
 
-namespace PluginNamespace {
-   float MyTest(StaticFunctionTag *base);
+namespace SkyUIVR {
+   void SetInt(TESForm* form, SInt32 val);
 
    bool RegisterFuncs(VMClassRegistry* registry);
 }

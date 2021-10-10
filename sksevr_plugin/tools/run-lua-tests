@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+SCRIPT_PATH=`dirname "$(realpath $0)"`
+
+cd $SCRIPT_PATH/../lua-tests
+busted --coverage -m "$SCRIPT_PATH/../lua/?.lua" .

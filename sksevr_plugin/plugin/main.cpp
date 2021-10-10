@@ -5,8 +5,9 @@
 #include "Plugin.h"
 
 
+
 static PluginHandle g_pluginHandle = kPluginHandle_Invalid;
-static SKSEPapyrusInterface * g_papyrus = NULL;
+static SKSEPapyrusInterface * g_papyrus = nullptr;
 
 
 extern "C" {
@@ -16,11 +17,11 @@ extern "C" {
       gLog.SetPrintLevel(IDebugLog::kLevel_Error);
       gLog.SetLogLevel(IDebugLog::kLevel_DebugMessage);
 
-      _MESSAGE("SkyUI loading");
+      _MESSAGE("SkyUI-VR loading");
 
       // populate info structure
       info->infoVersion = PluginInfo::kInfoVersion;
-      info->name = "ExportPlugin";
+      info->name = "SkyUI";
       info->version = 1;
 
       // store plugin handle so we can identify ourselves later
@@ -43,16 +44,15 @@ extern "C" {
 
    // Called by SKSE to load this plugin
    bool SKSEPlugin_Load(const SKSEInterface * skse) {
-      _MESSAGE("PluginScript loaded");
+      _MESSAGE("SkyUI-VR loaded");
 
       g_papyrus = (SKSEPapyrusInterface *)skse->QueryInterface(kInterface_Papyrus);
 
       // Check if the function registration was a success...
-      bool btest = g_papyrus->Register(PluginNamespace::RegisterFuncs);
+       g_papyrus->Register(SkyUIVR::RegisterFuncs);
 
-      if (btest) {
-         _MESSAGE("Register Succeeded");
-      }
+
+       _MESSAGE("Plugin loaded");
 
       return true;
    }
