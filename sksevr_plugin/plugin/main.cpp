@@ -7,13 +7,20 @@
 
 
 static PluginHandle g_pluginHandle = kPluginHandle_Invalid;
-static SKSEPapyrusInterface * g_papyrus = nullptr;
+static SKSEPapyrusInterface* g_papyrus = nullptr;
+static SKSEScaleformInterface* g_scaleform = nullptr;
 
+void WaitForDebugger(bool should_break = false) {
+   while (!IsDebuggerPresent())
+      Sleep(100);
+   if (should_break)
+      DebugBreak();
+}
 
 extern "C" {
    // Called by SKSE to learn about this plugin and check that it's safe to load it
    bool SKSEPlugin_Query(const SKSEInterface * skse, PluginInfo * info) {
-      gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim\\SKSE\\SkyUI.log");
+      gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim VR\\SKSE\\SkyUI-VR.log");
       gLog.SetPrintLevel(IDebugLog::kLevel_Error);
       gLog.SetLogLevel(IDebugLog::kLevel_DebugMessage);
 
@@ -46,13 +53,21 @@ extern "C" {
    bool SKSEPlugin_Load(const SKSEInterface * skse) {
       _MESSAGE("SkyUI-VR loaded");
 
+      //WaitForDebugger();
+
+      // Initialize lua
+      // We're storing all our data in lua
+      SkyUIVR::InitGlobalLuaVM();
+
+      // Expose our lua functions to Papyrus
       g_papyrus = (SKSEPapyrusInterface *)skse->QueryInterface(kInterface_Papyrus);
+      g_papyrus->Register(SkyUIVR::RegisterPapyrusFuncs);
 
-      // Check if the function registration was a success...
-       g_papyrus->Register(SkyUIVR::RegisterFuncs);
+      // Expose our lua functions to Scaleform
+      g_scaleform = (SKSEScaleformInterface*)skse->QueryInterface(kInterface_Scaleform);
+      SkyUIVR::RegisterScaleformHooks(g_scaleform);
 
-
-       _MESSAGE("Plugin loaded");
+      _MESSAGE("Plugin loaded");
 
       return true;
    }

@@ -10,6 +10,33 @@ function path_split(path)
     return steps
 end
 
+function table_is_empty(t)
+    return next(t) == nil
+end
+
+-- We want to keep the FormDB relatively clean and free of empty tables.
+-- While it is possible to just walk the entire table tree to locate and
+-- remove empty tables, this may cause a *LOT* of nodes to be visited.
+--
+-- Instead, we only compact tables along a particular path when something
+-- is being removed (set to nil). When this happens, we know the exact
+-- tables and fields we must examine to keep the db compacted.
+--
+function table_trail_compact(trail)
+    -- Starting from the parent of the leaf node, work backwards towards the root
+    for i = #trail, 1, -1 do
+        local post = trail[i]
+        local target = post.t[post.k]
+
+        assert(type(target) == "table")
+        if table_is_empty(target) then
+            post.t[post.k] = nil
+        else
+            break
+        end
+    end
+end
+
 -- Given a (tree of) tables, starting at `root`...
 -- Iteratively walk through the `path`, creating tables/nodes if required,
 -- to set the given 'val'
@@ -30,10 +57,16 @@ end
 function table_set_by_path(root, path, val)
     local steps = path_split(path)
     local step_cnt = #steps
+    local is_delete = val == nil
 
     -- Assuming we're dealing with a tree of tables
     -- Start walking at the passed root
     local cur = root
+    local trail = nil
+    if is_delete then
+        trail = {}
+    end
+
     for i, k in ipairs(steps) do
         if i == step_cnt then
             break
@@ -53,11 +86,20 @@ function table_set_by_path(root, path, val)
             return nil, string.format("[set_by_path] Path '%s' reached a val of type '%s' unexpectedly", table.concat(steps, "/", 1, i), type(candidate))
         end
 
+        if is_delete then
+            table.insert(trail, {t = cur, k = k})
+        end
+
         -- Update the cursor so we can walk deeper into the tree
         cur = candidate
     end
 
     cur[steps[step_cnt]] = val
+
+    if is_delete then
+        table_trail_compact(trail)
+    end
+
     return root
 end
 
@@ -111,7 +153,11 @@ end
 
 function Form_SetVal(formID, field_path, val)
     local o = Form_FetchDataLazyInit(formID)
-    return table_set_by_path(o, field_path, val)
+    local result = {table_set_by_path(o, field_path, val)}
+    if table_is_empty(o) then
+        Form_RemoveAllFields(formID)
+    end
+    return unpack(result)
 end
 
 function Form_GetVal(formID, field_path, default_val)

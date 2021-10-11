@@ -4,3 +4,4 @@
 **/.vs
 
 /Build
+lua-tests/luacov*

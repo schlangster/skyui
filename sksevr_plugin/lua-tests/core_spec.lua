@@ -109,14 +109,21 @@ describe("Data access", function()
 		end)
 	end)
 
+	it("should remove empty tables", function()
+		assert.are.same(
+			{ some_field = true },
+			table_set_by_path({hello = {world = {again = 1}}, some_field = true}, "hello/world/again", nil))
+	end)
+
 
 end)
 
 it("FormDB basics", function()
 	FormDB_init()
 
-	-- Assocate some data with a form
+	-- Associate some data with a form
 	Form_SetVal(123, "inv/item_new", true)
+	Form_SetVal(123, "inv/hidden", true)
 
 	-- Fetch the data again
 	assert.True(Form_GetVal(123, "inv/item_new"))
@@ -125,7 +132,8 @@ it("FormDB basics", function()
 	assert.are.same(
 		{[123] =
 			{inv =
-				{item_new = true}}},
+				{item_new = true,
+				 hidden = true }}},
 		FormDB)
 
 	-- Fetch the data again
@@ -143,9 +151,18 @@ it("FormDB basics", function()
 	assert.are.same(
 		{[123] =
 			{inv =
-				{}}},
+				{hidden = true}}},
 			FormDB)
 
+	-- FormDB is kept compacted as data is removed out of it
+	Form_RemoveField(123, "inv/hidden")
+	assert.are.same(
+		{},
+		FormDB)
+
+	-- Removing all data associated with a FormID all at once
+	Form_SetVal(123, "inv/item_new", true)
+	Form_SetVal(123, "inv/hidden", true)
 	Form_RemoveAllFields(123)
 	assert.are.same(
 		{},
