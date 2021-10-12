@@ -110,8 +110,6 @@ class InventoryListEntry extends TabularListEntry
 			return;
 		}
 
-		Debug.dump("inv item", a_entryObject, true, 0);
-
 		// Text
 		var text = a_entryObject.text;
 
