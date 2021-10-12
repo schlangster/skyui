@@ -1,4 +1,4 @@
-#! env ruby
+#!/usr/bin/env ruby
 
 # This utility copys the newly built files in ../build to the
 # `destination_dir`. It's also possible to watch the directory

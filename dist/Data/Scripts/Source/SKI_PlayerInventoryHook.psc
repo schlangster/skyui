@@ -60,6 +60,6 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
       Debug.Trace("[PIH] " + akBaseItem + " still has the 'new' flag on it!")
     endIf
     RemoveField(akBaseItem, "skyui")
-    Debug.Trace("[PIH] Destroying data associated with " + akItemReference)
+    Debug.Trace("[PIH] Destroying data associated with " + akBaseItem)
   endIf
 endEvent

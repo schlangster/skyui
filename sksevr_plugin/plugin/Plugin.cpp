@@ -51,7 +51,7 @@ int lua_prepend_package_path(lua_State* L, const char* path) {
 
 
 namespace SkyUIVR {
-   
+
    std::filesystem::path dll_path() {
       HMODULE hm = nullptr;
       if (GetModuleHandleEx(
@@ -147,6 +147,7 @@ namespace SkyUIVR {
    }
 
    void Papyrus_Form_SetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool val){
+      _MESSAGE("[PIH]Papyrus -> DLL: SetBool, %x, %s, %s", form->formID, fieldName.c_str(), val ? "true" : "false");
       Form_SetBool(form->formID, fieldName.c_str(), val);
    }
 
@@ -173,11 +174,14 @@ namespace SkyUIVR {
    }
 
    bool Form_GetBool(TESForm* form, BSFixedString fieldName, bool default){
-      return Form_GetInt(form->formID, fieldName.c_str(), default);
+      _MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s", form->formID, fieldName.c_str(), default ? "true" : "false");
+      bool val = Form_GetBool(form->formID, fieldName.c_str(), default);
+      _MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s -> %s", form->formID, fieldName.c_str(), default ? "true" : "false", val ? "true" : "false");
+      return val;
    }
 
    bool Papyrus_Form_GetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool default){
-      return Form_GetInt(form->formID, fieldName.c_str(), default);
+      return Form_GetBool(form->formID, fieldName.c_str(), default);
    }
 
    void Form_RemoveField(UInt32 formID, const char* fieldName){

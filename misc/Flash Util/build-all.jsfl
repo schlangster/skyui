@@ -1,4 +1,4 @@
-﻿var srcDir = "file:///E:/skyui/src/"
+﻿var srcDir = "file:///E:/dev/skyui/src/"
 var flaFiles = [
 	"CraftingMenu/craftingmenu.fla",
 	//"FavoritesMenu/favoritesmenu.fla",
