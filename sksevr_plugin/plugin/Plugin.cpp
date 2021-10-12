@@ -147,7 +147,7 @@ namespace SkyUIVR {
    }
 
    void Papyrus_Form_SetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool val){
-      _MESSAGE("[PIH]Papyrus -> DLL: SetBool, %x, %s, %s", form->formID, fieldName.c_str(), val ? "true" : "false");
+      //_MESSAGE("[PIH]Papyrus -> DLL: SetBool, %x, %s, %s", form->formID, fieldName.c_str(), val ? "true" : "false");
       Form_SetBool(form->formID, fieldName.c_str(), val);
    }
 
@@ -174,9 +174,9 @@ namespace SkyUIVR {
    }
 
    bool Form_GetBool(TESForm* form, BSFixedString fieldName, bool default){
-      _MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s", form->formID, fieldName.c_str(), default ? "true" : "false");
+      //_MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s", form->formID, fieldName.c_str(), default ? "true" : "false");
       bool val = Form_GetBool(form->formID, fieldName.c_str(), default);
-      _MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s -> %s", form->formID, fieldName.c_str(), default ? "true" : "false", val ? "true" : "false");
+      //_MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s -> %s", form->formID, fieldName.c_str(), default ? "true" : "false", val ? "true" : "false");
       return val;
    }
 
@@ -264,10 +264,12 @@ namespace SkyUIVR {
    public:
       virtual void	Invoke(Args* args)
       {
+         //_MESSAGE("In Scaleform_RemoveField");
          ASSERT(args->numArgs == 2);
          ASSERT(args->args[0].GetType() == GFxValue::kType_Number);
          ASSERT(args->args[1].GetType() == GFxValue::kType_String);
 
+         //_MESSAGE("Scaleform -> Dll: RemoveField, %d, %s", UInt32(args->args[0].GetNumber()), args->args[1].GetString());
          Form_RemoveField(UInt32(args->args[0].GetNumber()), args->args[1].GetString());
       }
    };
@@ -278,10 +280,10 @@ namespace SkyUIVR {
    }
 
    void InventoryMarkNew(GFxMovieView* view, GFxValue* object, InventoryEntryData* item) {
-      bool new_item = Form_GetBool(item->type->formID, "skyui/new_item", false);
+      bool new_item = Form_GetBool(item->type->formID, "skyui/newItem", false);
       if(new_item) {
-         _MESSAGE("Marking [%x] with 'new_item'", item->type->formID);
-         RegisterBool(object, "new_item", new_item);
+         //_MESSAGE("Marking [%x] with 'newItem'", item->type->formID);
+         RegisterBool(object, "newItem", new_item);
       }
    }
 

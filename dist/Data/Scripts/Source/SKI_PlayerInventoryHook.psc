@@ -28,7 +28,7 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
   endIf
   ;; We want to associate some data with the base Form to indicate that this item is "new".
   ;; {
-  ;;   <akBaseItem FormID> = {skyui = {new_item: true}}
+  ;;   <akBaseItem FormID> = {skyui = {newItem: true}}
   ;; }
   ;;
   ;; This "new" status is only useful/meaningful when we're viewing the player's inventory.
@@ -36,9 +36,9 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
 
   if akSourceContainer != Game.GetPlayer()
     ;; Add a "new" tag to the item indicating that it is new
-    SetBool(akBaseItem, "skyui/new_item", true)
+    SetBool(akBaseItem, "skyui/newItem", true)
 
-    bool val = GetBool(akBaseItem, "skyui/new_item", false)
+    bool val = GetBool(akBaseItem, "skyui/newItem", false)
     Debug.Trace("[PIH] Setting 'new' flag for " + akBaseItem + " to " + val)
 
   endIf
@@ -55,7 +55,7 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
   ;; Another script might move the item before the player has the opportunity to open the inventory and cause
   ;; all the "new" tags to be cleared.
   if akDestContainer != Game.GetPlayer()
-    bool val = GetBool(akBaseItem, "skyui/new_item", false)
+    bool val = GetBool(akBaseItem, "skyui/newItem", false)
     if val != false
       Debug.Trace("[PIH] " + akBaseItem + " still has the 'new' flag on it!")
     endIf

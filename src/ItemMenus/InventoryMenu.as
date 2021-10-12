@@ -10,7 +10,7 @@ import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Inventory;
 import skyui.defines.Input;
-
+import skyui.util.Debug;
 
 class InventoryMenu extends ItemMenu
 {
@@ -82,6 +82,22 @@ class InventoryMenu extends ItemMenu
 		categoryList.iconArt = _categoryListIconArt;
 
 		itemCard.addEventListener("itemPress", this, "onItemCardListPress");
+	}
+
+	// @override ItemMenu
+	public function closeMenu(): Void
+	{
+		var list = inventoryLists.itemList.listEnumeration;
+		for(var i = 0; i < list.size(); i++) {
+			var item = list.at(i);
+			if(item.newItem) {
+				var skyui_funcs = skse["plugins"]["skyui"];
+				if(skyui_funcs) {
+					skyui_funcs.FormDB_RemoveField(item.formId, "skyui/newItem");
+				}
+			}
+		}
+		super.closeMenu();
 	}
 
 	// @override ItemMenu
@@ -188,7 +204,7 @@ class InventoryMenu extends ItemMenu
 		if (!_bMenuClosing)
 			return;
 
-		GameDelegate.call("CloseMenu", []);
+		closeMenu();
 		if (_bSwitchMenus) {
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("MagicMenu");

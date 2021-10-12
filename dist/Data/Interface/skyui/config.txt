@@ -118,23 +118,24 @@ columns.itemNameColumn.label.textFormat.align = left
 
 columns.itemNameColumn.state1.label.text = '$NAME'
 columns.itemNameColumn.state1.entry.text = @text
+columns.itemNameColumn.state1.sortAttributes = <newItem, text>
 columns.itemNameColumn.state1.sortOptions = {ASCENDING | CASEINSENSITIVE}
 
 columns.itemNameColumn.state2.label.text = '$EQUIPPED'
 columns.itemNameColumn.state2.entry.text = @text
-columns.itemNameColumn.state2.sortAttributes = <isEquipped, equipState, text>
+columns.itemNameColumn.state2.sortAttributes = <newItem, isEquipped, equipState, text>
 columns.itemNameColumn.state2.sortOptions = <{DESCENDING | NUMERIC}, {DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 columns.itemNameColumn.state2.playerOnly = true
 
 columns.itemNameColumn.state3.label.text = '$STOLEN'
 columns.itemNameColumn.state3.entry.text = @text
-columns.itemNameColumn.state3.sortAttributes = <isStolen, text>
+columns.itemNameColumn.state3.sortAttributes = <newItem, isStolen, text>
 columns.itemNameColumn.state3.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 columns.itemNameColumn.state3.playerOnly = true
 
 columns.itemNameColumn.state4.label.text = '$ENCHANTED'
 columns.itemNameColumn.state4.entry.text = @text
-columns.itemNameColumn.state4.sortAttributes = <isEnchanted, text>
+columns.itemNameColumn.state4.sortAttributes = <newItem, isEnchanted, text>
 columns.itemNameColumn.state4.sortOptions = <{DESCENDING | NUMERIC}, {ASCENDING | CASEINSENSITIVE}>
 
 

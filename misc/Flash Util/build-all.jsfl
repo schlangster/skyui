@@ -33,8 +33,9 @@ for(var i = 0; i < flaFiles.length; i++) {
 
 // Starting a new compile session
 // Clear out all errors
+var logfile = "file:///E:/dev/skyui/compile-error.txt";
+FLfile.remove(logfile);
 fl.compilerErrors.clear();
-var logfile = "file:///E:/skyui/compile-error.txt";
 
 function build(documentUri) {
 	FLfile.remove(logfile);
@@ -49,4 +50,3 @@ for(idx in flaFiles) {
 	build(flaFiles[idx]);
 }
 
-FLfile.remove(logfile);

@@ -10,6 +10,7 @@ import skyui.components.ButtonPanel;
 
 import skyui.defines.Inventory;
 import skyui.defines.Item;
+import skyui.util.Debug;
 
 
 class ItemMenu extends MovieClip
@@ -213,9 +214,14 @@ class ItemMenu extends MovieClip
 			return true;
 
 		if (GlobalFunc.IsKeyPressed(details) && (details.navEquivalent == NavigationCode.TAB || details.navEquivalent == NavigationCode.SHIFT_TAB))
-			GameDelegate.call("CloseMenu",[]);
+			closeMenu();
 
 		return true;
+	}
+
+	public function closeMenu()
+	{
+		GameDelegate.call("CloseMenu",[]);
 	}
 
 	// @API
@@ -334,7 +340,7 @@ class ItemMenu extends MovieClip
 
 	private function onExitMenuRectClick(): Void
 	{
-		GameDelegate.call("CloseMenu",[]);
+		closeMenu();
 	}
 
 	private function onCategoryChange(event: Object): Void

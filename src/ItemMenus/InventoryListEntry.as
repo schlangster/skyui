@@ -138,9 +138,8 @@ class InventoryListEntry extends TabularListEntry
 		// All icons have the same size
 		var iconSpace = bestIcon._width * 1.25;
 
-		if (a_entryObject.new_item == true) {
-			newItemIcon._x = iconPos;
-			iconPos = iconPos + iconSpace;
+		if (a_entryObject.newItem == true) {
+			newItemIcon._x = itemIcon._x + itemIcon._width;
 
 			newItemIcon.gotoAndStop("show");
 		} else {
