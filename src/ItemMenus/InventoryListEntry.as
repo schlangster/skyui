@@ -31,7 +31,7 @@ class InventoryListEntry extends TabularListEntry
 	public var stolenIcon: MovieClip;
 	public var enchIcon: MovieClip;
 	public var readIcon: MovieClip;
-	public var newItemIcon: MovieClip;
+	public var newItemIndicator: MovieClip;
 
 
   /* INITIALIZATION */
@@ -68,17 +68,12 @@ class InventoryListEntry extends TabularListEntry
 		enchIcon._height = enchIcon._width = iconSize;
 		readIcon._height = readIcon._width = iconSize;
 
-		var scale = iconSize/newItemIcon._height * 1.0;
-		newItemIcon._width *= scale;
-		newItemIcon._height *= scale;
-
 		bestIcon._y = iconY;
 		favoriteIcon._y = iconY;
 		poisonIcon._y = iconY;
 		stolenIcon._y = iconY;
 		enchIcon._y = iconY;
 		readIcon._y = iconY;
-		newItemIcon._y = iconY;
 	}
 
   	// @override TabularListEntry
@@ -136,13 +131,19 @@ class InventoryListEntry extends TabularListEntry
 		// All icons have the same size
 		var iconSpace = bestIcon._width * 1.25;
 
-		if (a_entryObject.newItem == true) {
-			newItemIcon._x = itemIcon._x + itemIcon._width;
-
-			newItemIcon.gotoAndStop("show");
-		} else {
-			newItemIcon.gotoAndStop("hide");
+		// FIXME!!! Need a better to figure out if we're actually looking at the player's inventory.
+		// Presumably, the player container is always shown as the "right" segment.
+		var shouldShowNewIndicator = false
+		if(a_state.categoryList) {
+			if (a_state.categoryList.activeSegment == CategoryList.RIGHT_SEGMENT && a_entryObject.newItem == true) {
+				shouldShowNewIndicator = true
+			}
+		} else if (a_entryObject.newItem == true) {
+			shouldShowNewIndicator = true
 		}
+
+		newItemIndicator._visible = shouldShowNewIndicator;
+		newItemIndicator._height = this._height - 2.5;
 
 		if (a_entryObject.bestInClass == true) {
 			bestIcon._x = iconPos;

@@ -83,6 +83,10 @@ class ContainerMenu extends ItemMenu
     GameDelegate.addCallBack("Vanilla_XButtonPress",this,"Vanilla_XButtonPress");
 
 		itemCardFadeHolder.StealTextInstance._visible = false;
+
+		// We need access to the categoryList to figure out if want to
+		// show the new icon or not
+		inventoryLists.itemList.listState.categoryList = inventoryLists.categoryList;
 	}
 
 	// @override ItemMenu
@@ -104,6 +108,8 @@ class ContainerMenu extends ItemMenu
 
 		_equipModeKey = a_config["Input"].controls.pc.equipMode;
 		_equipModeControls = {keyCode: _equipModeKey};
+
+		inventoryLists.itemList.listState.layout = layout;
 	}
 
 	// @API

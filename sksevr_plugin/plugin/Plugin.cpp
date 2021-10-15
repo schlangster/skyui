@@ -281,6 +281,9 @@ namespace SkyUIVR {
 
    void InventoryMarkNew(GFxMovieView* view, GFxValue* object, InventoryEntryData* item) {
       bool new_item = Form_GetBool(item->type->formID, "skyui/newItem", false);
+      // Skip marking gold as new
+      if (item->type->formID == 0x0000000f)
+         return;
       if(new_item) {
          //_MESSAGE("Marking [%x] with 'newItem'", item->type->formID);
          RegisterBool(object, "newItem", new_item);

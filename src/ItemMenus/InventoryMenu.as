@@ -116,6 +116,8 @@ class InventoryMenu extends ItemMenu
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)
 			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
+
+		inventoryLists.itemList.listState.layout = layout;
 	}
 
 	// @GFx

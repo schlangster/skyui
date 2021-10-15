@@ -14,9 +14,9 @@ import skyui.defines.Inventory;
 class BarterMenu extends ItemMenu
 {
 	#include "../version.as"
-	
+
   /* PRIVATE VARIABLES */
-  
+
 	private var _buyMult: Number = 1;
 	private var _sellMult: Number = 1;
 	private var _confirmAmount: Number = 0;
@@ -25,10 +25,10 @@ class BarterMenu extends ItemMenu
 
 	private var _categoryListIconArt: Array;
 	private var _tabBarIconArt: Array;
-	
-	
+
+
   /* PROPERTIES */
-	
+
 	// @override ItemMenu
 	public var bEnableTabs: Boolean = true;
 
@@ -45,23 +45,27 @@ class BarterMenu extends ItemMenu
 		_categoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 		_tabBarIconArt = ["buy", "sell"];
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
-  
+
 	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
 		GameDelegate.addCallBack("SetBarterMultipliers", this, "SetBarterMultipliers");
-		
+
 		itemCard.addEventListener("messageConfirm",this,"onTransactionConfirm");
 		itemCard.addEventListener("sliderChange",this,"onQuantitySliderChange");
-		
+
 		inventoryLists.tabBarIconArt = _tabBarIconArt;
-		
+
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
+
+		// We need access to the categoryList to figure out if want to
+		// show the new icon or not
+		inventoryLists.itemList.listState.categoryList = categoryList;
 	}
 
 	// @override ItemMenu
@@ -69,17 +73,19 @@ class BarterMenu extends ItemMenu
 	{
 		super.setConfig(a_config);
 
-		var itemList: TabularList = inventoryLists.itemList;		
+		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new BarterDataSetter(_buyMult, _sellMult));
 		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
-		
+
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
 		itemList.layout = layout;
 
 		// Not 100% happy with doing this here, but has to do for now.
 		if (inventoryLists.categoryList.selectedEntry)
 			layout.changeFilterFlag(inventoryLists.categoryList.selectedEntry.flag);
+
+		inventoryLists.itemList.listState.layout = layout;
 	}
 
 	// @GFx
@@ -127,7 +133,7 @@ class BarterMenu extends ItemMenu
 	{
 		itemCard.ShowConfirmMessage(a_warning);
 	}
-	
+
 	// @override ItemMenu
 	public function UpdateItemCardInfo(a_updateObj: Object): Void
 	{
@@ -149,10 +155,10 @@ class BarterMenu extends ItemMenu
 		_playerGold = a_playerGold;
 		bottomBar.updateBarterInfo(a_playerUpdateObj, itemCard.itemInfo, a_playerGold, a_vendorGold, a_vendorName);
 	}
-	
-	
+
+
   /* PRIVATE FUNCTIONS */
-  
+
 	// @override ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
@@ -176,10 +182,10 @@ class BarterMenu extends ItemMenu
 		super.onHideItemsList(event);
 
 		bottomBar.updateBarterPerItemInfo({type:Inventory.ICT_NONE});
-		
+
 		updateBottomBar(false);
 	}
-	
+
 	private function onQuantitySliderChange(event: Object): Void
 	{
 		var price = itemCard.itemInfo.value * event.value;
@@ -188,7 +194,7 @@ class BarterMenu extends ItemMenu
 		}
 		bottomBar.updateBarterPriceInfo(_playerGold, _vendorGold, itemCard.itemInfo, price);
 	}
-	
+
 	// @override ItemMenu
 	private function onQuantityMenuSelect(event: Object): Void
 	{
@@ -216,13 +222,13 @@ class BarterMenu extends ItemMenu
 			bottomBar.updateBarterPriceInfo(_playerGold, _vendorGold);
 		}
 	}
-	
+
 	private function onTransactionConfirm(): Void
 	{
 		doTransaction(_confirmAmount);
 		_confirmAmount = 0;
 	}
-	
+
 	private function doTransaction(a_amount: Number): Void
 	{
 		GameDelegate.call("ItemSelect",[a_amount, itemCard.itemInfo.value, isViewingVendorItems()]);
@@ -230,17 +236,17 @@ class BarterMenu extends ItemMenu
 		// Update itemList => dataProcessor => BarterDataSetter updateBarterMultipliers
 		// Update itemCardInfo GameDelegate.call("RequestItemCardInfo",[], this, "UpdateItemCardInfo");
 	}
-	
+
 	private function isViewingVendorItems(): Boolean
 	{
 		return inventoryLists.categoryList.activeSegment == 0;
 	}
-	
+
 	// @override ItemMenu
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
 		navPanel.clearButtons();
-		
+
 		if (a_bSelected) {
 			var activateControls = skyui.util.Input.pickControls(_platform, {PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
 			navPanel.addButton({text: (isViewingVendorItems() ? "$Buy" : "$Sell"), controls: activateControls});
@@ -253,7 +259,7 @@ class BarterMenu extends ItemMenu
 			}
 			navPanel.addButton({text: "$Switch Tab", controls: {namedKey: "Action_Left"}});
 		}
-		
+
 		navPanel.updateButtons(true);
 	}
 
