@@ -1,0 +1,207 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/StatsCategoryListList" itemID="51072ca5-00000e04" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="StatsCategoryList" linkageClassName="Shared.CenteredScrollingList" linkageURL="." sourceFlashFilepath="Sprite 460" sourceLibraryItemHRef="Sprites/Sprite 460" lastModified="1359426386" sourceItemID="00000000-7fffffff" displayAsComponent="false" customIconID="0" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="StatsCategoryListList">
+      <layers>
+        <DOMLayer name="Layer 43" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry10">
+                  <matrix>
+                    <Matrix ty="275"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry9">
+                  <matrix>
+                    <Matrix ty="250"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry4">
+                  <matrix>
+                    <Matrix ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry3">
+                  <matrix>
+                    <Matrix ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry8">
+                  <matrix>
+                    <Matrix ty="225"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry7">
+                  <matrix>
+                    <Matrix ty="200"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry6">
+                  <matrix>
+                    <Matrix ty="175"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntryCentered" name="Entry5" selected="true">
+                  <matrix>
+                    <Matrix ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry2">
+                  <matrix>
+                    <Matrix ty="50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry1">
+                  <matrix>
+                    <Matrix ty="25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListEntry" name="Entry0">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="border">
+                  <matrix>
+                    <Matrix a="2.29998779296875" d="3.05003356933594"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <parametersAsXML><![CDATA[   <property id="numTopHalfEntries">
+      <Inspectable name="numTopHalfEntries" variable="numTopHalfEntries" category="" verbose="0" defaultValue="5" type="Number"/>
+   </property>
+   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+</DOMComponentItem>

@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/ObjectivesHeader" itemID="51072f9a-00000e09" sourceFlashFilepath="Sprite 437" lastModified="1359425434" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="ObjectivesHeader">
+      <layers>
+        <DOMLayer name="Layer 2" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText fontRenderingMode="standard" width="118" height="28.45" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="181" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>$OBJECTIVES</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" letterSpacing="1.2" size="24" face="$EverywhereMediumFont*" fillColor="#DDDDDD"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/Shape 435" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

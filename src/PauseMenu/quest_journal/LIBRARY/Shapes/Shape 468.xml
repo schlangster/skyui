@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 468" itemID="4ee20823-000000d6" symbolType="graphic" lastModified="1323436067">
+  <timeline>
+    <DOMTimeline name="Shape 468">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0032AA"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#00FF00"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#00FF00" alpha="0.00784313725490196"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!520 0|3520 0!3520 0|3520 520!3520 520|520 520"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!520 520|0 520!0 520|0 0!0 0|520 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!520 0|520 520"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

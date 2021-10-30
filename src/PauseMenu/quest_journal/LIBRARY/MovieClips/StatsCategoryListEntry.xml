@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/StatsCategoryListEntry" itemID="510729b0-00000df2" sourceFlashFilepath="Sprite 457" lastModified="1359423920" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="StatsCategoryListEntry">
+      <layers>
+        <DOMLayer name="Layer 3" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="textField" selected="true" fontRenderingMode="standard" width="226" height="18.95" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="2" ty="3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>CATEGORY</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" letterSpacing="0.8" lineSpacing="0" size="16" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect">
+                  <matrix>
+                    <Matrix a="2.29998779296875" d="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,106 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/QuestTitleListEntry" itemID="51072d5f-00000e08" sourceFlashFilepath="Sprite 402" lastModified="1359425412" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="QuestTitleListEntry">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" name="Normal" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="Divider" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/EquipIcon" name="EquipIcon" selected="true">
+                  <matrix>
+                    <Matrix tx="233" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="textField" fontRenderingMode="standard" width="226" height="18.95" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="2" ty="3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>QUEST TEXT&#xD;&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" letterSpacing="0.8" lineSpacing="0" size="16" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/QuestTitleListEntryDivider">
+                  <matrix>
+                    <Matrix ty="12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect">
+                  <matrix>
+                    <Matrix a="2.29998779296875" d="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

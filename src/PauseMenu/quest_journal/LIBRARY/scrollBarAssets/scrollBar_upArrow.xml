@@ -1,0 +1,79 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="scrollBarAssets/scrollBar_upArrow" itemID="50f928d6-00007ae1" linkageExportForAS="true" linkageIdentifier="ScrollIndicator_downArrow" linkageClassName="gfx.controls.Button" sourceFlashFilepath="../../Resources/Assets/scrollbar.fla" sourceLibraryItemHRef="scrollBarAssets/scrollBar_upArrow" sourceLastModified="1359420473" lastModified="1359420473" lastUniqueIdentifier="6" sourceItemID="50f928d6-00007ae1" displayAsComponent="false" customIconID="0" actionscriptClass="gfx.controls.Button" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="scrollBar_upArrow">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Label Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="10" name="up" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="over" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" name="down" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="10" name="disabled" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Button" color="#FFFF00" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="scrollBarAssets/scrollBarGraphics/scrollBar_cap_shape" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <classProperties><![CDATA[<class id="gfx.controls.Button" >
+</class>
+<class id="gfx.core.UIComponent" >
+</class>
+<class id="MovieClip" >
+</class>
+]]></classProperties>
+</DOMComponentItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/ConfirmText" itemID="51073437-00000f58" sourceFlashFilepath="Sprite 528" lastModified="1359426615" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="ConfirmText">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="textField" fontRenderingMode="standard" width="416.95" height="28.35" includeOutlines="true" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>$Load this game?  All unsaved progress will be lost.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" letterSpacing="1" size="24" face="$EverywhereFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="2" blurY="2" distance="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

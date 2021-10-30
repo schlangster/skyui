@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="InputMappingArt" itemID="51070bca-00000234" linkageExportForAS="true" linkageIdentifier="InputMappingArt" linkageClassName="InputMappingArt" lastModified="1359448930" lastUniqueIdentifier="18">
+  <timeline>
+    <DOMTimeline name="InputMappingArt">
+      <layers>
+        <DOMLayer name="buttonArt" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ButtonArt" name="buttonArt0">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ButtonArt" name="buttonArt1">
+                  <matrix>
+                    <Matrix tx="13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="textField" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="textField" selected="true" fontRenderingMode="standard" width="146" height="23.7" includeOutlines="true" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>TEXT&#xD;&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" letterSpacing="0.8" size="20" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="2" blurY="2" distance="2" quality="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="background" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="InputMappingArtBG" name="background" centerPoint3DX="13" centerPoint3DY="13">
+                  <transformationPoint>
+                    <Point x="13" y="13"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,79 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="scrollBarAssets/scrollBarOption_thumb" itemID="510722e2-00000c09" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="scrollBarOption_thumb" linkageClassName="gfx.controls.Button" linkageURL="." sourceFlashFilepath="Sprite 497" sourceLibraryItemHRef="Sprites/Sprite 497" scaleGridLeft="-0.7" scaleGridRight="13.7" scaleGridTop="-1.4" scaleGridBottom="11.9" lastModified="1359422572" sourceItemID="00000000-7fffffff" displayAsComponent="false" customIconID="0" actionscriptClass="gfx.controls.Button" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="scrollBarOption_thumb">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="10" name="up" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="over" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" name="down" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="10" name="disabled" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="scrollBarAssets/scrollBarGraphics/scrollBarOption_thumb_shape" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <classProperties><![CDATA[<class id="gfx.controls.Button" >
+</class>
+<class id="gfx.core.UIComponent" >
+</class>
+<class id="MovieClip" >
+</class>
+]]></classProperties>
+</DOMComponentItem>

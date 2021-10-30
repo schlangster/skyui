@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/BackgroundRect" itemID="51071378-00000123" sourceFlashFilepath="Sprite 395" sourceLibraryItemHRef="Sprites/Rect" symbolType="graphic" lastModified="1359418232" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="BackgroundRect">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#00FF00" alpha="0.00784313725490196"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 0S6|2000 0!2000 0|2000 2000!2000 2000|0 2000!0 2000|0 0"/>
+                    <Edge cubics="!0 0(;0,0 2000,0 2000,0q0 0 2000 0);"/>
+                    <Edge cubics="!0 2000(;0,2000 0,0 0,0q0 2000 0 0);"/>
+                    <Edge cubics="!2000 2000(;2000,2000 0,2000 0,2000q2000 2000 0 2000);"/>
+                    <Edge cubics="!2000 0(;2000,0 2000,2000 2000,2000q2000 0 2000 2000);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

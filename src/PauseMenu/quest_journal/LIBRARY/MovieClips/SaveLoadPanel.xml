@@ -1,0 +1,217 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/SaveLoadPanel" itemID="51070cca-00000243" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="SaveLoadPanel" linkageClassName="SaveLoadPanel" linkageURL="." sourceFlashFilepath="Sprite 486" lastModified="1359425928" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="SaveLoadPanel">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" name="start" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="end" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this._parent.currentState = SystemPage.SAVE_LOAD_STATE;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this._parent.currentState = SystemPage.MAIN_STATE;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 64" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/PlayerInfoText" name="PlayerInfoText">
+                  <matrix>
+                    <Matrix tx="335" ty="155"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" motionTweenRotate="none" motionTweenSync="true" motionTweenSnap="true" keyMode="23041">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/PlayerInfoText" name="PlayerInfoText">
+                  <matrix>
+                    <Matrix tx="335" ty="155"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/PlayerInfoText" name="PlayerInfoText">
+                  <matrix>
+                    <Matrix tx="335" ty="155"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SaveLoadList" name="List_mc" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.26.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" motionTweenRotate="none" motionTweenSync="true" motionTweenSnap="true" keyMode="23041">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SaveLoadList" name="List_mc" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.26.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SaveLoadList" name="List_mc" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.26.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ScreenshotHolder" name="ScreenshotHolder">
+                  <matrix>
+                    <Matrix tx="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" motionTweenRotate="none" motionTweenSync="true" motionTweenSnap="true" keyMode="23041">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ScreenshotHolder" name="ScreenshotHolder">
+                  <matrix>
+                    <Matrix tx="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ScreenshotHolder" name="ScreenshotHolder">
+                  <matrix>
+                    <Matrix tx="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="SaveLoadRect" selected="true" centerPoint3DX="313.5" centerPoint3DY="146.8">
+                  <matrix>
+                    <Matrix a="6.27000427246094" d="2.93649291992188"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

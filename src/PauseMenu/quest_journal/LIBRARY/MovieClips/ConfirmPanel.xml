@@ -1,0 +1,207 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/ConfirmPanel" itemID="510731dd-00000e1b" sourceFlashFilepath="Sprite 532" lastModified="1361534700" lastUniqueIdentifier="3" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="ConfirmPanel">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" name="start" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="end" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this._parent.currentState = this.confirmType;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this._parent.currentState = this.returnState;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#808080" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSync="true" motionTweenSnap="true" keyMode="24065">
+              <elements>
+                <DOMComponentInstance libraryItemName="ButtonPanel" name="buttonPanel" uniqueID="2">
+                  <matrix>
+                    <Matrix tx="230" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.20.2'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="buttonRenderer">
+      <Inspectable name="buttonRenderer" variable="buttonRenderer" category="" verbose="0" defaultValue="DialogButton" type="String"/>
+   </property>
+   <property id="maxButtons">
+      <Inspectable name="maxButtons" variable="maxButtons" category="" verbose="0" defaultValue="2" type="Number"/>
+   </property>
+   <property id="buttonInitializer">
+      <Inspectable name="buttonInitializer" variable="buttonInitializer" category="" verbose="0" defaultValue="disableConstraints:false,disabled:false,disableFocus:true,hiddenBackground:true" type="Object"/>
+   </property>
+   <property id="spacing">
+      <Inspectable name="spacing" variable="spacing" category="" verbose="0" defaultValue="40" type="Number"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" motionTweenSync="true" motionTweenSnap="true" keyMode="24065">
+              <elements>
+                <DOMComponentInstance libraryItemName="ButtonPanel" name="buttonPanel" uniqueID="2">
+                  <matrix>
+                    <Matrix tx="130" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.20.2'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="buttonRenderer">
+      <Inspectable name="buttonRenderer" variable="buttonRenderer" category="" verbose="0" defaultValue="DialogButton" type="String"/>
+   </property>
+   <property id="maxButtons">
+      <Inspectable name="maxButtons" variable="maxButtons" category="" verbose="0" defaultValue="2" type="Number"/>
+   </property>
+   <property id="buttonInitializer">
+      <Inspectable name="buttonInitializer" variable="buttonInitializer" category="" verbose="0" defaultValue="disableConstraints:false,disabled:false,disableFocus:true,hiddenBackground:true" type="Object"/>
+   </property>
+   <property id="spacing">
+      <Inspectable name="spacing" variable="spacing" category="" verbose="0" defaultValue="40" type="Number"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="ButtonPanel" name="buttonPanel" uniqueID="2">
+                  <matrix>
+                    <Matrix tx="230" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.20.2'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="buttonRenderer">
+      <Inspectable name="buttonRenderer" variable="buttonRenderer" category="" verbose="0" defaultValue="DialogButton" type="String"/>
+   </property>
+   <property id="maxButtons">
+      <Inspectable name="maxButtons" variable="maxButtons" category="" verbose="0" defaultValue="2" type="Number"/>
+   </property>
+   <property id="buttonInitializer">
+      <Inspectable name="buttonInitializer" variable="buttonInitializer" category="" verbose="0" defaultValue="disableConstraints:false,disabled:false,disableFocus:true,hiddenBackground:true" type="Object"/>
+   </property>
+   <property id="spacing">
+      <Inspectable name="spacing" variable="spacing" category="" verbose="0" defaultValue="40" type="Number"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ConfirmText" name="ConfirmText" centerPoint3DY="12.65">
+                  <matrix>
+                    <Matrix tx="100" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" motionTweenRotate="none" motionTweenSync="true" motionTweenSnap="true" keyMode="23041">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ConfirmText" name="ConfirmText" selected="true" centerPoint3DY="12.65">
+                  <matrix>
+                    <Matrix ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ConfirmText" name="ConfirmText" centerPoint3DY="12.65">
+                  <matrix>
+                    <Matrix tx="100" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="ConfirmRect">
+                  <matrix>
+                    <Matrix a="4.219482421875" d="0.754501342773438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

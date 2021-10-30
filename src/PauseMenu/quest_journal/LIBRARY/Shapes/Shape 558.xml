@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 558" itemID="4ee20823-000000dd" symbolType="graphic" lastModified="1323436067">
+  <timeline>
+    <DOMTimeline name="Shape 558">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0074310302734375" c="0.01995849609375" d="0" tx="85.9" ty="6.05"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0D" alpha="0" ratio="0.101960784313725"/>
+                        <GradientEntry color="#0E0E0D" alpha="0.501960784313725" ratio="0.454901960784314"/>
+                        <GradientEntry color="#0E0E0D" alpha="0" ratio="0.545098039215686"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3542 0|3 0!3 0|3 236!3 236|3542 235!3542 235|3542 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

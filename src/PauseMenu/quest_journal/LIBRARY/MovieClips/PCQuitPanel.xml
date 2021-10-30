@@ -1,0 +1,125 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/PCQuitPanel" itemID="51072bc7-00000dfc" sourceFlashFilepath="Sprite 537" lastModified="1359424455" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="PCQuitPanel">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" name="start" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="end" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this._parent.currentState = SystemPage.PC_QUIT_LIST_STATE;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this._parent.currentState = SystemPage.MAIN_STATE;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/PCQuitList" name="List_mc" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.25.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="None" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/PCQuitList" name="List_mc" selected="true" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.25.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="None" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/PCQuitList" name="List_mc" selected="true" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.25.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="None" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="PCQuitRect">
+                  <matrix>
+                    <Matrix a="1.8499755859375" d="0.699996948242188"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

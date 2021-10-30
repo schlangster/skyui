@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Graphic/ButtonBG Shape" itemID="505cd111-000003f9" sourceFlashFilepath="../../ModConfigPanel/configpanel.fla" sourceLibraryItemHRef="Shapes/ButtonBG Shape" sourceLastModified="1348260113" symbolType="graphic" lastModified="1348260113" sourceItemID="505cd111-000003f9">
+  <timeline>
+    <DOMTimeline name="ButtonBG Shape">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0032AA"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#00FF00"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#00FF00" alpha="0.00784313725490196"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!520 0|3520 0!3520 0|3520 520!3520 520|520 520"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!520 520|520 0"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!520 0|514 0"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!514 0S5|0 0!0 0|0 520!0 520|514 520"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!514 520|520 520"/>
+                    <Edge fillStyle0="2" fillStyle1="2" edges="!514 0S2|514 520"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

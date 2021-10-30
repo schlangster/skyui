@@ -1,0 +1,265 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/QuestJournalBase" itemID="51070d49-00000250" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="QuestJournalBase" linkageClassName="Quest_Journal" linkageURL="." sourceFlashFilepath="Sprite 583" lastModified="1538147467" lastUniqueIdentifier="16" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="QuestJournalBase">
+      <layers>
+        <DOMLayer name="QuestsFader" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/QuestsFader" name="QuestsFader" centerPoint3DX="645.6" centerPoint3DY="407.8">
+                  <matrix>
+                    <Matrix tx="193.1" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="StatsFader" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsFader" name="StatsFader" centerPoint3DX="625.6" centerPoint3DY="349.3">
+                  <matrix>
+                    <Matrix tx="193.1" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SystemFader" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/SystemFader" name="SystemFader" centerPoint3DX="628.55" centerPoint3DY="349.3">
+                  <matrix>
+                    <Matrix tx="167.1" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SystemTab" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/JournalTab" name="SystemTab" centerPoint3DX="906.95" centerPoint3DY="69.65" uniqueID="1">
+                  <matrix>
+                    <Matrix tx="830" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='StatsPage' oldCopiedComponentPath=''>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="autoSize">
+      <Inspectable name="autoSize" variable="autoSize" category="" verbose="0" defaultValue="none" type="Default"/>
+   </property>
+   <property id="data">
+      <Inspectable name="data" variable="data" category="" verbose="0" defaultValue="showSystemPage" type="Default"/>
+   </property>
+   <property id="disableConstraints">
+      <Inspectable name="disableConstraints" variable="disableConstraints" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="disabled">
+      <Inspectable name="disabled" variable="disabled" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="enableInitCallback">
+      <Inspectable name="enableInitCallback" variable="enableInitCallback" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="inspectableGroupName">
+      <Inspectable name="inspectableGroupName" variable="inspectableGroupName" category="" verbose="0" defaultValue="tabGroup" type="Default"/>
+   </property>
+   <property id="labelID">
+      <Inspectable name="labelID" variable="labelID" category="" verbose="0" defaultValue="$SYSTEM" type="Default"/>
+   </property>
+   <property id="selected">
+      <Inspectable name="selected" variable="selected" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="soundMap">
+      <Inspectable name="soundMap" variable="soundMap" category="" verbose="0" defaultValue="click" type="Array"/>
+   </property>
+   <property id="visible">
+      <Inspectable name="visible" variable="visible" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="StatsTab" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/JournalTab" name="StatsTab" centerPoint3DX="643" centerPoint3DY="69.65" uniqueID="1">
+                  <matrix>
+                    <Matrix tx="566.05" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='StatsPage' oldCopiedComponentPath=''>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="autoSize">
+      <Inspectable name="autoSize" variable="autoSize" category="" verbose="0" defaultValue="none" type="Default"/>
+   </property>
+   <property id="data">
+      <Inspectable name="data" variable="data" category="" verbose="0" defaultValue="showStatsPage" type="Default"/>
+   </property>
+   <property id="disableConstraints">
+      <Inspectable name="disableConstraints" variable="disableConstraints" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="disabled">
+      <Inspectable name="disabled" variable="disabled" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="enableInitCallback">
+      <Inspectable name="enableInitCallback" variable="enableInitCallback" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="inspectableGroupName">
+      <Inspectable name="inspectableGroupName" variable="inspectableGroupName" category="" verbose="0" defaultValue="tabGroup" type="Default"/>
+   </property>
+   <property id="labelID">
+      <Inspectable name="labelID" variable="labelID" category="" verbose="0" defaultValue="$GENERAL STATS" type="Default"/>
+   </property>
+   <property id="selected">
+      <Inspectable name="selected" variable="selected" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="soundMap">
+      <Inspectable name="soundMap" variable="soundMap" category="" verbose="0" defaultValue="click" type="Array"/>
+   </property>
+   <property id="visible">
+      <Inspectable name="visible" variable="visible" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="QuestsTab" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/JournalTab" name="QuestsTab" centerPoint3DX="376.95" centerPoint3DY="69.65" uniqueID="1">
+                  <matrix>
+                    <Matrix tx="300" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='StatsPage' oldCopiedComponentPath=''>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="autoSize">
+      <Inspectable name="autoSize" variable="autoSize" category="" verbose="0" defaultValue="none" type="Default"/>
+   </property>
+   <property id="data">
+      <Inspectable name="data" variable="data" category="" verbose="0" defaultValue="showQuestsPage" type="Default"/>
+   </property>
+   <property id="disableConstraints">
+      <Inspectable name="disableConstraints" variable="disableConstraints" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="disabled">
+      <Inspectable name="disabled" variable="disabled" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="enableInitCallback">
+      <Inspectable name="enableInitCallback" variable="enableInitCallback" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="inspectableGroupName">
+      <Inspectable name="inspectableGroupName" variable="inspectableGroupName" category="" verbose="0" defaultValue="tabGroup" type="Default"/>
+   </property>
+   <property id="labelID">
+      <Inspectable name="labelID" variable="labelID" category="" verbose="0" defaultValue="$QUESTS" type="Default"/>
+   </property>
+   <property id="selected">
+      <Inspectable name="selected" variable="selected" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="soundMap">
+      <Inspectable name="soundMap" variable="soundMap" category="" verbose="0" defaultValue="click" type="Array"/>
+   </property>
+   <property id="visible">
+      <Inspectable name="visible" variable="visible" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="BottomBar" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/JournalBottomBar" name="BottomBar" selected="true" centerPoint3DX="640" centerPoint3DY="777.25">
+                  <matrix>
+                    <Matrix tx="-81" ty="650"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TabButtonHelpers" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ButtonArt" name="previousTabButton">
+                  <matrix>
+                    <Matrix tx="180" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ButtonArt" name="nextTabButton">
+                  <matrix>
+                    <Matrix tx="1075" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="JournalBackground" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/JournalBackground" centerPoint3DX="640" centerPoint3DY="322.5">
+                  <matrix>
+                    <Matrix tx="157.1" ty="46.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.62109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

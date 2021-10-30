@@ -1,0 +1,183 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/QuestsPage" itemID="51070d50-00000253" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="QuestsPage" linkageClassName="QuestsPage" linkageURL="." sourceFlashFilepath="Sprite 451" lastModified="1538143199" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="QuestsPage">
+      <layers>
+        <DOMLayer name="Layer 89" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/QuestTitleHolder" name="TitleList_mc" selected="true" centerPoint3DX="125" centerPoint3DY="249.5">
+                  <matrix>
+                    <Matrix ty="22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 88" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="questDescriptionText" fontRenderingMode="standard" width="598.55" height="28.45" isSelectable="false" scrollable="true" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="300.8" ty="69"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Quest description text.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" letterSpacing="0.8" lineSpacing="0" size="24" face="$EverywhereMediumFont*" fillColor="#DDDDDD"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 86" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/QuestTitleEndpieces" name="questTitleEndpieces">
+                  <matrix>
+                    <Matrix tx="597.5" ty="21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 85" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="questTitleText" fontRenderingMode="standard" width="216" height="28.45" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="489.6" ty="25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>TITLE</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" letterSpacing="1.2" size="24" face="$EverywhereMediumFont*" fillColor="#DDDDDD"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/ObjectiveScrollingList" name="objectiveList" uniqueID="1">
+                  <matrix>
+                    <Matrix tx="299.7" ty="182"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.16.3.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Multi-Line" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ObjectivesHeader" name="objectivesHeader">
+                  <matrix>
+                    <Matrix tx="358" ty="140"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Divider" name="Divider">
+                  <matrix>
+                    <Matrix tx="254"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="NoQuestsText" fontRenderingMode="standard" width="223" height="32.8" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="15.15" ty="230"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" letterSpacing="1" lineSpacing="0" size="27" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="QuestsPageRect">
+                  <matrix>
+                    <Matrix a="9.04998779296875" d="4.89999389648438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
