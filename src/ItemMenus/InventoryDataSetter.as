@@ -11,13 +11,13 @@ import skyui.defines.Inventory;
 class InventoryDataSetter extends ItemcardDataExtender
 {
   /* INITIALIZATION */
-  
+
 	public function InventoryDataSetter()
 	{
 		super();
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
 
 	// @override ItemcardDataExtender
@@ -31,22 +31,22 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 		a_entryObject.infoValue = (a_itemInfo.value > 0) ? (Math.round(a_itemInfo.value * 100) / 100) : null;
 		a_entryObject.infoWeight =(a_itemInfo.weight > 0) ? (Math.round(a_itemInfo.weight * 100) / 100) : null;
-		
+
 		a_entryObject.infoValueWeight = (a_itemInfo.weight > 0 && a_itemInfo.value > 0) ? Math.round(a_itemInfo.value / a_itemInfo.weight) : null;
 
 		switch (a_entryObject.formType) {
 			case Form.TYPE_SCROLLITEM:
 				a_entryObject.subTypeDisplay = Translator.translate("$Scroll");
-				
+
 				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 100) / 100) : null;
 				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 100) / 100) : null;
-				
+
 				break;
 
 			case Form.TYPE_ARMOR:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				a_entryObject.infoArmor = (a_itemInfo.armor > 0) ? (Math.round(a_itemInfo.armor * 100) / 100) : null;
-				
+
 				processArmorClass(a_entryObject);
 				processArmorPartMask(a_entryObject);
 				processMaterialKeywords(a_entryObject);
@@ -73,9 +73,9 @@ class InventoryDataSetter extends ItemcardDataExtender
 
 			case Form.TYPE_WEAPON:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
-				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true); 
+				a_entryObject.isPoisoned = (a_itemInfo.poisoned == true);
 				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 100) / 100) : null;
-				
+
 				processWeaponType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				processWeaponBaseId(a_entryObject);
@@ -84,7 +84,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.TYPE_AMMO:
 				a_entryObject.isEnchanted = (a_itemInfo.effects != "");
 				a_entryObject.infoDamage = (a_itemInfo.damage > 0) ? (Math.round(a_itemInfo.damage * 100) / 100) : null;
-				
+
 				processAmmoType(a_entryObject);
 				processMaterialKeywords(a_entryObject);
 				processAmmoBaseId(a_entryObject);
@@ -97,7 +97,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 			case Form.TYPE_POTION:
 				a_entryObject.duration = (a_entryObject.duration > 0) ? (Math.round(a_entryObject.duration * 100) / 100) : null;
 				a_entryObject.magnitude = (a_entryObject.magnitude > 0) ? (Math.round(a_entryObject.magnitude * 100) / 100) : null;
-			
+
 				processPotionType(a_entryObject);
 				break;
 
@@ -116,7 +116,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 	{
 		if (a_entryObject.weightClass == Armor.WEIGHT_NONE)
 			a_entryObject.weightClass = null;
-			
+
 		a_entryObject.weightClassDisplay = Translator.translate("$Other");
 
 		switch (a_entryObject.weightClass) {
@@ -138,7 +138,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 				} else if (a_entryObject.keywords["VendorItemJewelry"] != undefined) {
 					a_entryObject.weightClass = Armor.WEIGHT_JEWELRY;
 					a_entryObject.weightClassDisplay = Translator.translate("$Jewelry");
-				}	 
+				}
 		}
 	}
 
@@ -154,62 +154,62 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.keywords["WeapMaterialDaedric"] != undefined) {
 			a_entryObject.material = Material.DAEDRIC;
 			a_entryObject.materialDisplay = Translator.translate("$Daedric");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialDragonplate"] != undefined) {
 			a_entryObject.material = Material.DRAGONPLATE;
 			a_entryObject.materialDisplay = Translator.translate("$Dragonplate");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialDragonscale"] != undefined) {
 			a_entryObject.material = Material.DRAGONSCALE;
 			a_entryObject.materialDisplay = Translator.translate("$Dragonscale");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialDwarven"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialDwarven"] != undefined) {
 			a_entryObject.material = Material.DWARVEN;
 			a_entryObject.materialDisplay = Translator.translate("$Dwarven");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialEbony"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialEbony"] != undefined) {
 			a_entryObject.material = Material.EBONY;
 			a_entryObject.materialDisplay = Translator.translate("$Ebony");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialElven"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialElven"] != undefined) {
 			a_entryObject.material = Material.ELVEN;
 			a_entryObject.materialDisplay = Translator.translate("$Elven");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialElvenGilded"] != undefined) {
 			a_entryObject.material = Material.ELVENGILDED;
 			a_entryObject.materialDisplay = Translator.translate("$Elven Gilded");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialGlass"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialGlass"] != undefined) {
 			a_entryObject.material = Material.GLASS;
 			a_entryObject.materialDisplay = Translator.translate("$Glass");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialHide"] != undefined) {
 			a_entryObject.material = Material.HIDE;
 			a_entryObject.materialDisplay = Translator.translate("$Hide");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialImperialHeavy"] != undefined ||
 		 		   a_entryObject.keywords["ArmorMaterialImperialLight"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialImperial"] != undefined) {
 			a_entryObject.material = Material.IMPERIAL;
 			a_entryObject.materialDisplay = Translator.translate("$Imperial");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialImperialStudded"] != undefined) {
 			a_entryObject.material = Material.IMPERIALSTUDDED;
 			a_entryObject.materialDisplay = Translator.translate("$Studded");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialIron"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialIron"] != undefined) {
 			a_entryObject.material = Material.IRON;
 			a_entryObject.materialDisplay = Translator.translate("$Iron");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialIronBanded"] != undefined) {
 			a_entryObject.material = Material.IRONBANDED;
 			a_entryObject.materialDisplay = Translator.translate("$Iron Banded");
-		
+
 		// Must be above leather, vampire armor has 2 material keywords
 		} else if (a_entryObject.keywords["DLC1ArmorMaterialVampire"] != undefined) {
 			a_entryObject.material = Material.VAMPIRE;
@@ -218,54 +218,54 @@ class InventoryDataSetter extends ItemcardDataExtender
 		} else if (a_entryObject.keywords["ArmorMaterialLeather"] != undefined) {
 			a_entryObject.material = Material.LEATHER;
 			a_entryObject.materialDisplay = Translator.translate("$Leather");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialOrcish"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialOrcish"] != undefined) {
 			a_entryObject.material = Material.ORCISH;
 			a_entryObject.materialDisplay = Translator.translate("$Orcish");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialScaled"] != undefined) {
 			a_entryObject.material = Material.SCALED;
 			a_entryObject.materialDisplay = Translator.translate("$Scaled");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialSteel"] != undefined ||
 		 		   a_entryObject.keywords["WeapMaterialSteel"] != undefined) {
 			a_entryObject.material = Material.STEEL;
 			a_entryObject.materialDisplay = Translator.translate("$Steel");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialSteelPlate"] != undefined) {
 			a_entryObject.material = Material.STEELPLATE;
 			a_entryObject.materialDisplay = Translator.translate("$Steel Plate");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialStormcloak"] != undefined) {
 			a_entryObject.material = Material.STORMCLOAK;
 			a_entryObject.materialDisplay = Translator.translate("$Stormcloak");
-		
+
 		} else if (a_entryObject.keywords["ArmorMaterialStudded"] != undefined) {
 			a_entryObject.material = Material.STUDDED;
 			a_entryObject.materialDisplay = Translator.translate("$Studded");
-		
+
 		} else if (a_entryObject.keywords["DLC1ArmorMaterialDawnguard"] != undefined) {
 			a_entryObject.material = Material.DAWNGUARD;
 			a_entryObject.materialDisplay = Translator.translate("$Dawnguard");
-		
+
 		} else if (a_entryObject.keywords["DLC1ArmorMaterialFalmerHardened"] != undefined ||
 					a_entryObject.keywords["DLC1ArmorMaterialFalmerHeavy"] != undefined) {
 			a_entryObject.material = Material.FALMERHARDENED;
 			a_entryObject.materialDisplay = Translator.translate("$Falmer Hardened");
-		
+
 		} else if (a_entryObject.keywords["DLC1ArmorMaterialHunter"] != undefined) {
 			a_entryObject.material = Material.HUNTER;
 			a_entryObject.materialDisplay = Translator.translate("$Hunter");
-		
+
 		} else if (a_entryObject.keywords["DLC1LD_CraftingMaterialAetherium"] != undefined) {
 			a_entryObject.material = Material.AETHERIUM;
 			a_entryObject.materialDisplay = Translator.translate("$Aetherium");
-		
+
 		} else if (a_entryObject.keywords["DLC1WeapMaterialDragonbone"] != undefined) {
 			a_entryObject.material = Material.DRAGONBONE;
 			a_entryObject.materialDisplay = Translator.translate("$Dragonbone");
-		
+
 		} else if (a_entryObject.keywords["DLC2ArmorMaterialBonemoldHeavy"] != undefined ||
 		 		   a_entryObject.keywords["DLC2ArmorMaterialBonemoldLight"] != undefined) {
 			a_entryObject.material = Material.BONEMOLD;
@@ -275,17 +275,17 @@ class InventoryDataSetter extends ItemcardDataExtender
 		 		   a_entryObject.keywords["DLC2ArmorMaterialChitinLight"] != undefined) {
 			a_entryObject.material = Material.CHITIN;
 			a_entryObject.materialDisplay = Translator.translate("$Chitin");
-		
+
 		} else if (a_entryObject.keywords["DLC2ArmorMaterialMoragTong"] != undefined) {
 			a_entryObject.material = Material.MORAGTONG;
 			a_entryObject.materialDisplay = Translator.translate("$Morag Tong");
-		
+
 		} else if (a_entryObject.keywords["DLC2ArmorMaterialNordicHeavy"] != undefined ||
 		 		   a_entryObject.keywords["DLC2ArmorMaterialNordicLight"] != undefined ||
 		 		   a_entryObject.keywords["DLC2WeaponMaterialNordic"] != undefined) {
 			a_entryObject.material = Material.NORDIC;
 			a_entryObject.materialDisplay = Translator.translate("$Nordic");
-		
+
 		} else if (a_entryObject.keywords["DLC2ArmorMaterialStalhrimHeavy"] != undefined ||
 		 		   a_entryObject.keywords["DLC2ArmorMaterialStalhrimLight"] != undefined ||
 		 		   a_entryObject.keywords["DLC2WeaponMaterialStalhrim"] != undefined) {
@@ -295,27 +295,27 @@ class InventoryDataSetter extends ItemcardDataExtender
 				a_entryObject.material = Material.DEATHBRAND;
 				a_entryObject.materialDisplay = Translator.translate("$Deathbrand");
 			}
-		
+
 		} else if (a_entryObject.keywords["WeapMaterialDraugr"] != undefined) {
 			a_entryObject.material = Material.DRAUGR;
 			a_entryObject.materialDisplay = Translator.translate("$Draugr");
-		
+
 		} else if (a_entryObject.keywords["WeapMaterialDraugrHoned"] != undefined) {
 			a_entryObject.material = Material.DRAUGRHONED;
 			a_entryObject.materialDisplay = Translator.translate("$Draugr Honed");
-		
+
 		} else if (a_entryObject.keywords["WeapMaterialFalmer"] != undefined) {
 			a_entryObject.material = Material.FALMER;
 			a_entryObject.materialDisplay = Translator.translate("$Falmer");
-		
+
 		} else if (a_entryObject.keywords["WeapMaterialFalmerHoned"] != undefined) {
 			a_entryObject.material = Material.FALMERHONED;
 			a_entryObject.materialDisplay = Translator.translate("$Falmer Honed");
-		
+
 		} else if (a_entryObject.keywords["WeapMaterialSilver"] != undefined) {
 			a_entryObject.material = Material.SILVER;
 			a_entryObject.materialDisplay = Translator.translate("$Silver");
-		
+
 		} else if (a_entryObject.keywords["WeapMaterialWood"] != undefined) {
 			a_entryObject.material = Material.WOOD;
 			a_entryObject.materialDisplay = Translator.translate("$Wood");
@@ -553,7 +553,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 		a_entryObject.subTypeDisplay = Translator.translate("$Book");
 
 		a_entryObject.isRead = ((a_entryObject.flags & Item.BOOKFLAG_READ) != 0);
-		
+
 		if (a_entryObject.bookType == Item.BOOKTYPE_NOTE) {
 			a_entryObject.subType = Item.BOOK_NOTE;
 			a_entryObject.subTypeDisplay = Translator.translate("$Note");
@@ -571,9 +571,14 @@ class InventoryDataSetter extends ItemcardDataExtender
 		}
 	}
 
+	// Mirrors logic in SKSE
+	private function isBolt(a_entryObject: Object): Boolean {
+		return (a_entryObject.flags & Weapon.AMMOFLAG_NONBOLT) == 0;
+	}
+
 	private function processAmmoType(a_entryObject: Object): Void
 	{
-		if ((a_entryObject.flags & Weapon.AMMOFLAG_NONBOLT) != 0) {
+		if (!isBolt(a_entryObject)) {
 			a_entryObject.subType = Weapon.AMMO_ARROW;
 			a_entryObject.subTypeDisplay = Translator.translate("$Arrow");
 		} else {
@@ -681,7 +686,7 @@ class InventoryDataSetter extends ItemcardDataExtender
 				a_entryObject.subType = Item.POTION_DRINK;
 				a_entryObject.subTypeDisplay = Translator.translate("$Drink");
 			}
-			
+
 		} else if ((a_entryObject.flags & Item.ALCHFLAG_POISON) != 0) {
 			a_entryObject.subType = Item.POTION_POISON;
 			a_entryObject.subTypeDisplay = Translator.translate("$Poison");
@@ -787,17 +792,17 @@ class InventoryDataSetter extends ItemcardDataExtender
 			a_entryObject.subType = Item.MISC_TOY;
 			a_entryObject.subTypeDisplay = Translator.translate("$Toy");
 
-		
+
 		} else if (a_entryObject.keywords["BYOHHouseCraftingCategoryWeaponRacks"] != undefined ||
-					a_entryObject.keywords["BYOHHouseCraftingCategoryShelf"] != undefined || 
+					a_entryObject.keywords["BYOHHouseCraftingCategoryShelf"] != undefined ||
 					a_entryObject.keywords["BYOHHouseCraftingCategoryFurniture"] != undefined ||
-					a_entryObject.keywords["BYOHHouseCraftingCategoryExterior"] != undefined || 
+					a_entryObject.keywords["BYOHHouseCraftingCategoryExterior"] != undefined ||
 					a_entryObject.keywords["BYOHHouseCraftingCategoryContainers"] != undefined ||
-					a_entryObject.keywords["BYOHHouseCraftingCategoryBuilding"] != undefined || 
+					a_entryObject.keywords["BYOHHouseCraftingCategoryBuilding"] != undefined ||
 					a_entryObject.keywords["BYOHHouseCraftingCategorySmithing"] != undefined) {
 			a_entryObject.subType = Item.MISC_HOUSEPART;
 			a_entryObject.subTypeDisplay = Translator.translate("$House Part");
-		
+
 
 		} else if (a_entryObject.keywords["VendorItemDaedricArtifact"] != undefined) {
 			a_entryObject.subType = Item.MISC_ARTIFACT;

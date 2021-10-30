@@ -3,6 +3,7 @@
 #include <shlobj.h>                       // CSIDL_MYCODUMENTS
 
 #include "Plugin.h"
+#include "ScaleformExtendedDataFix.h"
 
 
 
@@ -66,6 +67,8 @@ extern "C" {
       // Expose our lua functions to Scaleform
       g_scaleform = (SKSEScaleformInterface*)skse->QueryInterface(kInterface_Scaleform);
       SkyUIVR::RegisterScaleformHooks(g_scaleform);
+
+      SkyUIVR::ExtendDataFix::RegisterScaleformHooks(g_scaleform);
 
       _MESSAGE("Plugin loaded");
 

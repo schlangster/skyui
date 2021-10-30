@@ -144,10 +144,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Plugin.h" />
+    <ClInclude Include="ScaleformExtendedDataFix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Plugin.cpp" />
+    <ClCompile Include="ScaleformExtendedDataFix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />

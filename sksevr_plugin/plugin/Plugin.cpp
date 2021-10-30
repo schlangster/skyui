@@ -10,6 +10,7 @@
 #include "skse64/ScaleformMovie.h"
 #include "skse64/GameExtraData.h"
 #include "skse64/ScaleformExtendedData.h"
+#include "skse64/GameRTTI.h"
 
 extern "C" {
 #include <lua.h>
@@ -258,6 +259,8 @@ namespace SkyUIVR {
       else
          return false;
    }
+
+
 
    class Scaleform_RemoveField : public GFxFunctionHandler
    {
