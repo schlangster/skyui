@@ -126,6 +126,9 @@ class InventoryMenu extends ItemMenu
 		if (!bFadedIn)
 			return true;
 
+		Debug.log("InventoryMenu handleInput");
+		Debug.dump("InputDetails", details, false, 0);
+
 		var nextClip = pathToFocus.shift();
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
@@ -375,8 +378,16 @@ class InventoryMenu extends ItemMenu
 					text: "$Charge",
 					controls: skyui.util.Input.pickControls(_platform,
 																									{PCArt: "T", XBoxArt: "360_RB", PS3Art: "PS3_RB", ViveArt: "radial_Either_Left",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Left"}) });
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Left"})
+					});
 			}
+
+			navPanel.addButton({
+				text: "$Search",
+				controls: skyui.util.Input.pickControls(_platform,
+																									{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Down"})
+			});
 
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});

@@ -4,6 +4,7 @@
 
 #include "Plugin.h"
 #include "ScaleformExtendedDataFix.h"
+#include "Keyboard.h"
 
 
 
@@ -69,7 +70,7 @@ extern "C" {
       SkyUIVR::RegisterScaleformHooks(g_scaleform);
 
       SkyUIVR::ExtendDataFix::RegisterScaleformHooks(g_scaleform);
-
+      //SkyUIVR::Keyboard::RegisterScaleformHooks(g_scaleform);
       _MESSAGE("Plugin loaded");
 
       return true;

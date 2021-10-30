@@ -1,3 +1,5 @@
+import skyui.util.Debug;
+
 dynamic class gfx.managers.FocusHandler
 {
 	static var _instance = gfx.managers.FocusHandler.instance;
@@ -21,7 +23,7 @@ dynamic class gfx.managers.FocusHandler
 
 	static function get instance()
 	{
-		if (_instance == null) 
+		if (_instance == null)
 		{
 			_instance = new FocusHandler();
 		}
@@ -70,9 +72,15 @@ dynamic class gfx.managers.FocusHandler
 
 	function handleInput(event: Object): Void
 	{
+		Debug.log("FocusHandler handleInput");
+		Debug.dump("event", event);
+
 		var controllerIdx: Number = event.details.controllerIdx;
 		var focusIdx: Number = Selection.getControllerFocusGroup(controllerIdx);
 		var path: Array = getPathToFocus(focusIdx);
+
+		Debug.dump("PathToFocus", path);
+
 		if (path.length == 0 || path[0].handleInput == null || path[0].handleInput(event.details, path.slice(1)) != true) {
 			if (event.details.value != "keyUp") {
 				var nav = event.details.navEquivalent;
@@ -112,14 +120,14 @@ dynamic class gfx.managers.FocusHandler
 		var __reg5 = this.currentFocusLookup[focusIdx];
 		var __reg3 = __reg5;
 		var __reg4 = [__reg3];
-		while (__reg3) 
+		while (__reg3)
 		{
 			__reg3 = __reg3._parent;
-			if (__reg3.handleInput != null) 
+			if (__reg3.handleInput != null)
 			{
 				__reg4.unshift(__reg3);
 			}
-			if (__reg3 == _root) 
+			if (__reg3 == _root)
 			{
 				break;
 			}
@@ -129,17 +137,17 @@ dynamic class gfx.managers.FocusHandler
 
 	function onSetFocus(oldFocus, newFocus, controllerIdx)
 	{
-		if (oldFocus instanceof TextField && newFocus == null) 
+		if (oldFocus instanceof TextField && newFocus == null)
 		{
 			return undefined;
 		}
 		var __reg2 = Selection.getControllerFocusGroup(controllerIdx);
 		var __reg6 = this.actualFocusLookup[__reg2];
-		if (__reg6 == newFocus) 
+		if (__reg6 == newFocus)
 		{
 			var __reg4 = newFocus instanceof TextField ? newFocus._parent : newFocus;
 			var __reg5 = __reg4.focused;
-			if (__reg5 & 1 << __reg2 == 0) 
+			if (__reg5 & 1 << __reg2 == 0)
 			{
 				__reg4.focused = __reg5 | 1 << __reg2;
 			}
@@ -153,27 +161,27 @@ dynamic class gfx.managers.FocusHandler
 		var __reg3 = Selection.getCaretIndex(controllerIdx);
 		var __reg4 = Selection.getControllerFocusGroup(controllerIdx);
 		var __reg2 = this.actualFocusLookup[__reg4];
-		if ((__reg0 = nav) === gfx.ui.NavigationCode.UP) 
+		if ((__reg0 = nav) === gfx.ui.NavigationCode.UP)
 		{
-			if (!__reg2.multiline) 
+			if (!__reg2.multiline)
 			{
 				return false;
 			}
 			return __reg3 > 0;
 		}
-		else if (__reg0 === gfx.ui.NavigationCode.LEFT) 
+		else if (__reg0 === gfx.ui.NavigationCode.LEFT)
 		{
 			return __reg3 > 0;
 		}
-		else if (__reg0 === gfx.ui.NavigationCode.DOWN) 
+		else if (__reg0 === gfx.ui.NavigationCode.DOWN)
 		{
-			if (!__reg2.multiline) 
+			if (!__reg2.multiline)
 			{
 				return false;
 			}
 			return __reg3 < TextField(__reg2).length;
 		}
-		else if (__reg0 === gfx.ui.NavigationCode.RIGHT) 
+		else if (__reg0 === gfx.ui.NavigationCode.RIGHT)
 		{
 			return __reg3 < TextField(__reg2).length;
 		}

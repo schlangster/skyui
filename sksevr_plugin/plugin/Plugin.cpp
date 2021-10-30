@@ -19,6 +19,8 @@ extern "C" {
 #include "luajit.h"
 }
 
+#include "Keyboard.h"
+
 static lua_State* g_lua = nullptr;
 
 lua_State* lua_new_with_libs() {
@@ -279,6 +281,7 @@ namespace SkyUIVR {
 
    bool RegisterScaleformFuncs(GFxMovieView* view, GFxValue* plugin) {
       RegisterFunction<Scaleform_RemoveField>(plugin, view, "FormDB_RemoveField");
+      SkyUIVR::Keyboard::RegisterScaleformFuncs(view, plugin);
       return true;
    }
 

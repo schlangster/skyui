@@ -241,6 +241,9 @@ class InventoryLists extends MovieClip
 		if (_currentState != SHOW_PANEL)
 			return false;
 
+		Debug.log("InventoryLists handleInput");
+		Debug.dump("InputDetails", details, false, 0);
+
 		if (_platform != 0) {
 			if (details.skseKeycode == _sortOrderKey) {
 				if (details.value == "keyDown") {
@@ -282,10 +285,19 @@ class InventoryLists extends MovieClip
 
 		if (GlobalFunc.IsKeyPressed(details)) {
 			// Search hotkey (default space)
+			/*
 			if (details.skseKeycode == _searchKey) {
 				searchWidget.startInput();
 				return true;
 			}
+			*/
+			/*
+			if (details.navEquivalent == "down") {
+				Debug.log("InventoryLists triggering search start");
+				searchWidget.startInput();
+				return true;
+			}
+			*/
 
 			// Toggle tab (default ALT)
 			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {
