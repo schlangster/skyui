@@ -8,6 +8,7 @@ import gfx.managers.FocusHandler;
 
 import skyui.components.ButtonPanel;
 import skyui.defines.ButtonArtNames;
+import skyui.util.Debug;
 
 class Quest_Journal extends MovieClip
 {
@@ -19,6 +20,7 @@ class Quest_Journal extends MovieClip
 
 	var BottomBar: MovieClip;
 	var BottomBar_mc: MovieClip;
+	var TextPanel: MovieClip;
 
 	var PageArray: Array;
 
@@ -82,30 +84,45 @@ class Quest_Journal extends MovieClip
 
 	function OnShow(): Void
 	{
-      QuestsTab.disableFocus = true;
-      StatsTab.disableFocus = true;
-      SystemTab.disableFocus = true;
-      QuestsTab.disabled = false;
-      StatsTab.disabled = false;
-      SystemTab.disabled = false;
-      BottomBar_mc.InitBar();
-      var pageCursor = 0;
-      while(pageCursor <= Quest_Journal.PAGE_SYSTEM)
+		Debug.log(">> Quest_Journal OnShow");
+		Debug.dump("skse:", skse, false, 1);
+		Debug.dump("skse.plugins:", skse["plugins"], false, 1);
+		var vrinput = skse["plugins"]["vrinput"];
+		if(vrinput != undefined)
+		{
+			Debug.log("vrinput plugin detected");
+			vrinput.ShutoffButtonEventsToGame(true);
+			vrinput.RegisterInputHandler(this, "handleVRInput");
+		} else {
+			Debug.log("vrinput plugin not available");
+		}
+
+    QuestsTab.disableFocus = true;
+    StatsTab.disableFocus = true;
+    SystemTab.disableFocus = true;
+    QuestsTab.disabled = false;
+    StatsTab.disabled = false;
+    SystemTab.disabled = false;
+    BottomBar_mc.InitBar();
+    var pageCursor = 0;
+    while(pageCursor <= Quest_Journal.PAGE_SYSTEM)
+    {
+      var page = PageArray[pageCursor];
+      Shared.Macros.BSASSERT(page != null && page != undefined,"Unable to open page " + pageCursor);
+      Shared.Macros.BSASSERT(page.OnShow != null && page.OnShow != undefined,"page does not have OnShow function");
+      page.OnShow();
+      if(pageCursor == iCurrentTab)
       {
-         var page = PageArray[pageCursor];
-         Shared.Macros.BSASSERT(page != null && page != undefined,"Unable to open page " + pageCursor);
-         Shared.Macros.BSASSERT(page.OnShow != null && page.OnShow != undefined,"page does not have OnShow function");
-         page.OnShow();
-         if(pageCursor == iCurrentTab)
-         {
-            page.startPage();
-         }
-         pageCursor = pageCursor + 1;
+        page.startPage();
       }
-      if(TopmostPage != null && TopmostPage != undefined)
-      {
-         TopmostPage.gotoAndPlay("fadeIn");
-      }
+      pageCursor = pageCursor + 1;
+    }
+    if(TopmostPage != null && TopmostPage != undefined)
+    {
+      TopmostPage.gotoAndPlay("fadeIn");
+    }
+
+		Debug.log("<< Quest_Journal OnShow");
 	}
 
 	function SetShowMod(): Void
@@ -143,6 +160,98 @@ class Quest_Journal extends MovieClip
 		}
 		TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
 		BottomBar_mc.LevelMeterRect._visible = iCurrentTab != 0;
+	}
+
+	function controllerStateText(buttonPressedLow: Number, buttonPressedHigh: Number,
+			buttonTouchedLow: Number, buttonTouchedHigh: Number,
+			axis: Array) {
+		var output:String = "";
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonPressedLow & mask) {
+				output += "pressed: " + i + "\n";
+			}
+		}
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonPressedHigh != 0) {
+				Debug.log("high pressed: " + buttonPressedHigh);
+			}
+			if(buttonPressedHigh & mask) {
+				output += "pressed: " + (i + 32) + "\n";
+			}
+		}
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonTouchedLow & mask) {
+				output += "touched: " + i + "\n";
+			}
+		}
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonTouchedHigh & mask) {
+				output += "touched: " + (i + 32) + "\n";
+			}
+		}
+
+		for(var i = 0; i < 5; i++)
+		{
+			var x = axis[i*2];
+			var y = axis[i*2 + 1];
+
+			if(x != 0.0) {
+				output += "x[" + i + "] = " + x + "\n";
+			}
+			if(y != 0.0) {
+				output += "y[" + i + "] = " + y + "\n";
+			}
+		}
+		return output;
+	}
+
+	var controllerTexts = ["", ""];
+	var vrinputOnce = false;
+
+	function handleVRInput(controllerHand: Number, packetNum: Number,
+			buttonPressedLow: Number, buttonPressedHigh: Number,
+			buttonTouchedLow: Number, buttonTouchedHigh: Number,
+			axis: Array)
+	{
+		if(!vrinputOnce) {
+		}
+
+		controllerTexts[controllerHand-1] = controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonPressedHigh, axis);
+
+		var output = "";
+
+		if(controllerTexts[0].length != 0) {
+			output += "Left controller:   \n";
+			output += controllerTexts[0];
+		}
+		if(controllerTexts[1].length != 0) {
+			output += "Right controller:   \n";
+			output += controllerTexts[1];
+		}
+
+		TextPanel.TextArea.SetText(output);
+		if(!vrinputOnce) {
+			Debug.log("1 << 32: " + (1 << 32));
+			Debug.log("1 << 33: " + (1 << 33));
+			Debug.log("1 << 34: " + (1 << 34));
+			vrinputOnce = true;
+		}
 	}
 
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -193,9 +302,19 @@ class Quest_Journal extends MovieClip
 
 	function CloseMenu(abForceClose: Boolean): Void
 	{
+		Debug.log(">> Quest_Journal");
+		var vrinput = skse["plugins"]["vrinput"];
+		if(vrinput != undefined)
+		{
+			Debug.log("-- Unregistering vr input");
+			vrinput.ShutoffButtonEventsToGame(false);
+			vrinput.UnregisterInputHandler(this, "handleVRInput");
+		}
+
 		if (abForceClose != true) {
 			GameDelegate.call("PlaySound", ["UIJournalClose"]);
 		}
+		Debug.log("<< Quest_Journal");
 		GameDelegate.call("CloseMenu", [iCurrentTab, QuestsFader.Page_mc.selectedQuestID, QuestsFader.Page_mc.selectedQuestInstance]);
 	}
 
