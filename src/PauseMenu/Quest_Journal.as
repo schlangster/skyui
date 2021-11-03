@@ -242,7 +242,7 @@ class Quest_Journal extends MovieClip
 	}
 
 
-	function handleVRInput(timestamp: Number,
+	function handleVRInput(
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
@@ -251,9 +251,9 @@ class Quest_Journal extends MovieClip
 		if(!vrinputOnce) {
 		}
 
-		controllerTexts[controllerHand-1] = controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonPressedHigh, axis);
+		controllerTexts[controllerHand-1] = controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonTouchedHigh, axis);
 
-
+		var timestamp = getTimer();
 		var updated = VRInput.updateControllerState(
 				timestamp,
 				controllerHand, packetNum,
@@ -284,7 +284,6 @@ class Quest_Journal extends MovieClip
 			// Append widget text to the output for the cooresponding hand
 			if(interestingWidgetOutput.length != 0)
 				controllerTexts[controllerHand-1] += "\n" + interestingWidgetOutput;
-
 		}
 
 		// Output all text prepared for each hand
@@ -299,7 +298,12 @@ class Quest_Journal extends MovieClip
 			output += controllerTexts[1];
 		}
 
-		TextPanel.TextArea.SetText(output);
+		if(output.length != 0) {
+			TextPanel.TextArea.SetText(output);
+		} else {
+			var text = timestamp.toString();
+			TextPanel.TextArea.SetText(text);
+		}
 
 		if(!vrinputOnce) {
 			vrinputOnce = true;

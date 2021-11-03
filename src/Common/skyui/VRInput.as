@@ -45,7 +45,6 @@
 //  generate event obj =>
 //  dispatch event for processing
 
-import mx.utils.ObjectUtil;
 import Shared.Platforms;
 import skyui.util.Debug;
 import skyui.util.GlobalFunctions;
