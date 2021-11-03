@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="TextArea" itemID="5bc19656-00000a5b" symbolType="graphic" lastModified="1539414543">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="TextArea" itemID="61810984-0000079f" lastModified="1635846532">
   <timeline>
     <DOMTimeline name="TextArea">
       <layers>
@@ -27,7 +27,7 @@
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" useScreenSpacing="true" alpha="0.647058823529412" letterSpacing="4" size="25" bitmapSize="500" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs alignment="right" aliasText="false" useScreenSpacing="true" alpha="0.647058823529412" letterSpacing="4" size="20" bitmapSize="500" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
