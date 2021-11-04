@@ -143,14 +143,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ControllerStateHook.h" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="Plugin.h" />
+    <ClInclude Include="FormDB.h" />
     <ClInclude Include="ScaleformExtendedDataFix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ControllerStateHook.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Plugin.cpp" />
+    <ClCompile Include="FormDB.cpp" />
     <ClCompile Include="ScaleformExtendedDataFix.cpp" />
   </ItemGroup>
   <ItemGroup>

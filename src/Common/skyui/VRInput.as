@@ -45,6 +45,7 @@
 //  generate event obj =>
 //  dispatch event for processing
 
+import gfx.managers.FocusHandler;
 import Shared.Platforms;
 import skyui.util.Debug;
 import skyui.util.GlobalFunctions;
@@ -219,12 +220,14 @@ class skyui.VRInput {
 		return axisQuadrant(vec2);
 	}
 
+	// Given the new controller state, perform some upkeep and generate
+	// an array of "interesting" events.
 	static public function updateControllerState(
 			timestamp: Number,
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
-			axis: Array): Boolean
+			axis: Array): Array
 	{
 		var lastState = lastControllerStates[controllerHand - 1];
 		var curState = {
@@ -236,13 +239,13 @@ class skyui.VRInput {
 			axis: axis
 		};
 
+		var eventQueue = [];
 		if(lastState.packetNum != curState.packetNum)
 		{
 			var widgets = widgetStates[controllerHand-1];
 			var controllerName = VRInput.controllerName;
 
-			// Only process widgets that we know may actually
-			// be updated
+			// Only process widgets that we know may actually be updated
 			var interestingWidgets;
 			switch(controllerName) {
 				case "vive":
@@ -326,7 +329,6 @@ class skyui.VRInput {
 			// Generate events as appropriate
 			var lastWidgets = lastWidgetStates[controllerHand-1];
 			var curWidgets = widgetStates[controllerHand-1];
-			var eventQueue = [];
 			for(var i = 0; i < interestingWidgets.length; i++)
 			{
 				var id = interestingWidgets[i];
@@ -394,29 +396,11 @@ class skyui.VRInput {
 				widgetTouchpadDetectSwipe(widgets[32], eventQueue);
 			}
 
-			// Print out all of the event queue
-			if(eventQueue.length > 0)
-				Debug.log("packetNum: " + packetNum);
-			for(var i = 0; i < eventQueue.length; i++)
-			{
-				Debug.log("timestamp: " + timestamp);
-
-				var event = eventQueue[i];
-				Debug.dump("event " + (i+1), event, false, 1);
-
-				if(event.phaseName == "touched" && event.eventName == "start") {
-				}
-			}
-
-			vibrateOnSwipe(eventQueue);
-
 			// Record the current state
 			// We'll use this as the last state when we're called again the next time.
 			lastControllerStates[controllerHand-1] = curState;
-
-			return true;
 		}
-		return false;
+		return eventQueue;
 	}
 
 	//----------------------------------------------------------------------------
@@ -484,6 +468,7 @@ class skyui.VRInput {
 		leftHand: {},
 		rightHand: {}
 	};
+
 	static function widgetTouchpadDetectSwipe(widget, eventQueue)
 	{
 		// Given the current state of the widget,
@@ -615,5 +600,179 @@ class skyui.VRInput {
 				break;
 			}
 		}
+	}
+
+	static public function getInputEvents(
+			timestamp: Number,
+			controllerHand: Number, packetNum: Number,
+			buttonPressedLow: Number, buttonPressedHigh: Number,
+			buttonTouchedLow: Number, buttonTouchedHigh: Number,
+			axis: Array): Array
+	{
+		var eventQueue = updateControllerState(
+				timestamp,
+				controllerHand, packetNum,
+				buttonPressedLow, buttonPressedHigh,
+				buttonTouchedLow, buttonTouchedHigh,
+				axis);
+
+		vibrateOnSwipe(eventQueue);
+
+		/*
+			// Print out all of the event queue
+			if(eventQueue.length > 0)
+				Debug.log("packetNum: " + packetNum);
+			for(var i = 0; i < eventQueue.length; i++)
+			{
+				Debug.log("timestamp: " + timestamp);
+
+				var event = eventQueue[i];
+				Debug.dump("event " + (i+1), event, false, 1);
+			}
+		*/
+
+		return eventQueue;
+	}
+
+	static public function dispatchInputEvents(eventQueue: Array) {
+		var focusPath: Array = FocusHandler.instance.getPathToFocus(Selection.getControllerFocusGroup(0));
+
+		// Take every event in the queue
+		for(var ei = 0; ei < eventQueue.length; ei++) {
+			var event = eventQueue[ei];
+
+			// Send the event to the "handleVRInput" function of every object in the focus path
+			for(var fi = 0; fi < focusPath.length; fi++) {
+				var obj = focusPath[fi];
+				if(obj.handleVRInput != null) {
+
+					// An object may signal that it has already handled the event and stop the event
+					// from going further in the focus path.
+					var stop = obj.handleVRInput(event);
+					if(stop)
+						break;
+				}
+			}
+		}
+	}
+
+	static function controllerStateText(buttonPressedLow: Number, buttonPressedHigh: Number,
+			buttonTouchedLow: Number, buttonTouchedHigh: Number,
+			axis: Array): String {
+		var output:String = "";
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonPressedLow & mask) {
+				output += "pressed: " + i + "\n";
+			}
+		}
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonPressedHigh & mask) {
+				output += "pressed: " + (i + 32) + "\n";
+			}
+		}
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonTouchedLow & mask) {
+				output += "touched: " + i + "\n";
+			}
+		}
+
+		for(var i = 0; i < 32; i++)
+		{
+			var mask = 1 << i;
+
+			if(buttonTouchedHigh & mask) {
+				output += "touched: " + (i + 32) + "\n";
+			}
+		}
+
+		for(var i = 0; i < 5; i++)
+		{
+			var x = axis[i*2];
+			var y = axis[i*2 + 1];
+
+			if(x != 0.0) {
+				output += "x[" + i + "] = " + x + "\n";
+			}
+			if(y != 0.0) {
+				output += "y[" + i + "] = " + y + "\n";
+			}
+
+			if(x != 0.0 || y != 0.0) {
+				var vec2 = [x, y];
+				output += "mag: " + GlobalFunctions.vec2Mag(vec2) + "\n";
+				output += "quadrant: " + VRInput.axisQuadrant(vec2) + "\n";
+				output += "region: " + VRInput.axisRegion(vec2) + "\n";
+			}
+		}
+		return output;
+	}
+
+	static function widgetToString(widget: Object): String
+	{
+		var output = "";
+		for (var key:String in widget) {
+			output += key + ": " + widget[key] + "\n";
+		}
+		return output;
+	}
+
+
+	static var controllerTexts = ["", ""];
+	static function controllerStateString(
+			timestamp: Number,
+			controllerHand: Number, packetNum: Number,
+			buttonPressedLow: Number, buttonPressedHigh: Number,
+			buttonTouchedLow: Number, buttonTouchedHigh: Number,
+			axis: Array): Array
+	{
+		var output = "";
+
+		// Output all text prepared for each hand
+		controllerTexts[controllerHand-1] = VRInput.controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonTouchedHigh, axis);
+
+		// Build a list of widgets with interesting states
+		var viveWidgets = [1, 2, 32, 33];
+		var interestingWidgets = [];
+		var widgets = VRInput.widgetStates[controllerHand-1];
+		for(var i = 0; i < viveWidgets.length; i++) {
+			var widget = widgets[viveWidgets[i]];
+			if(widget.pressed || widget.touched || GlobalFunctions.vec2Mag(widget.axis)) {
+				interestingWidgets.push(widget);
+			}
+		}
+
+		// Build a string representation of all interesting widgets
+		var interestingWidgetOutput = "";
+		for(var i = 0; i < interestingWidgets.length; i++) {
+			var widget = interestingWidgets[i];
+			interestingWidgetOutput += widgetToString(widget);
+		}
+
+		// Append widget text to the output for the cooresponding hand
+		if(interestingWidgetOutput.length != 0)
+			controllerTexts[controllerHand-1] += "\n" + interestingWidgetOutput;
+
+		if(controllerTexts[0].length != 0) {
+			output += "Left controller:   \n";
+			output += controllerTexts[0];
+		}
+		if(controllerTexts[1].length != 0) {
+			output += "Right controller:   \n";
+			output += controllerTexts[1];
+		}
+
+		return output;
 	}
 }

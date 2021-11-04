@@ -86,18 +86,22 @@ class Quest_Journal extends MovieClip
 
 	function OnShow(): Void
 	{
-		Debug.log(">> Quest_Journal OnShow");
-		Debug.dump("skse:", skse, false, 1);
-		Debug.dump("skse.plugins:", skse["plugins"], false, 1);
+		VRInput.init();
+
 		var vrinput = skse["plugins"]["vrinput"];
 		if(vrinput != undefined)
 		{
-			Debug.log("vrinput plugin detected");
-			vrinput.ShutoffButtonEventsToGame(true);
-			vrinput.RegisterInputHandler(this, "handleVRInput");
-			VRInput.init();
+			//vrinput.ShutoffButtonEventsToGame(true);
 		} else {
 			Debug.log("vrinput plugin not available");
+		}
+
+		var skyui = skse["plugins"]["skyui"];
+		if(skyui != undefined)
+		{
+			skyui.RegisterInputHandler(this, "handleVRInput");
+		} else {
+			Debug.log("skyui plugin not available");
 		}
 
     QuestsTab.disableFocus = true;
@@ -124,8 +128,6 @@ class Quest_Journal extends MovieClip
     {
       TopmostPage.gotoAndPlay("fadeIn");
     }
-
-		Debug.log("<< Quest_Journal OnShow");
 	}
 
 	function SetShowMod(): Void
@@ -165,148 +167,33 @@ class Quest_Journal extends MovieClip
 		BottomBar_mc.LevelMeterRect._visible = iCurrentTab != 0;
 	}
 
-	function controllerStateText(buttonPressedLow: Number, buttonPressedHigh: Number,
-			buttonTouchedLow: Number, buttonTouchedHigh: Number,
-			axis: Array) {
-		var output:String = "";
-
-		for(var i = 0; i < 32; i++)
-		{
-			var mask = 1 << i;
-
-			if(buttonPressedLow & mask) {
-				output += "pressed: " + i + "\n";
-			}
-		}
-
-		for(var i = 0; i < 32; i++)
-		{
-			var mask = 1 << i;
-
-			if(buttonPressedHigh & mask) {
-				output += "pressed: " + (i + 32) + "\n";
-			}
-		}
-
-		for(var i = 0; i < 32; i++)
-		{
-			var mask = 1 << i;
-
-			if(buttonTouchedLow & mask) {
-				output += "touched: " + i + "\n";
-			}
-		}
-
-		for(var i = 0; i < 32; i++)
-		{
-			var mask = 1 << i;
-
-			if(buttonTouchedHigh & mask) {
-				output += "touched: " + (i + 32) + "\n";
-			}
-		}
-
-		for(var i = 0; i < 5; i++)
-		{
-			var x = axis[i*2];
-			var y = axis[i*2 + 1];
-
-			if(x != 0.0) {
-				output += "x[" + i + "] = " + x + "\n";
-			}
-			if(y != 0.0) {
-				output += "y[" + i + "] = " + y + "\n";
-			}
-
-			if(x != 0.0 || y != 0.0) {
-				var vec2 = [x, y];
-				output += "mag: " + GlobalFunctions.vec2Mag(vec2) + "\n";
-				output += "quadrant: " + VRInput.axisQuadrant(vec2) + "\n";
-				output += "region: " + VRInput.axisRegion(vec2) + "\n";
-			}
-		}
-		return output;
-	}
-
-	var controllerTexts = ["", ""];
-	var vrinputOnce = false;
-
-
-	static function widgetToString(widget: Object)
-	{
-		var output = "";
-		for (var key:String in widget) {
-			output += key + ": " + widget[key] + "\n";
-		}
-		return output;
-	}
-
-
 	function handleVRInput(
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
 			axis: Array)
 	{
-		if(!vrinputOnce) {
-		}
-
-		controllerTexts[controllerHand-1] = controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonTouchedHigh, axis);
-
 		var timestamp = getTimer();
-		var updated = VRInput.updateControllerState(
+		var eventQueue = VRInput.getInputEvents(
 				timestamp,
 				controllerHand, packetNum,
 				buttonPressedLow, buttonPressedHigh,
 				buttonTouchedLow, buttonTouchedHigh,
 				axis);
 
-		if(updated)
-		{
-			// Build a list of widgets with interesting states
-			var viveWidgets = [1, 2, 32, 33];
-			var interestingWidgets = [];
-			var widgets = VRInput.widgetStates[controllerHand-1];
-			for(var i = 0; i < viveWidgets.length; i++) {
-				var widget = widgets[viveWidgets[i]];
-				if(widget.pressed || widget.touched || GlobalFunctions.vec2Mag(widget.axis)) {
-					interestingWidgets.push(widget);
-				}
-			}
+		VRInput.dispatchInputEvents(eventQueue);
 
-			// Build a string representation of all interesting widgets
-			var interestingWidgetOutput = "";
-			for(var i = 0; i < interestingWidgets.length; i++) {
-				var widget = interestingWidgets[i];
-				interestingWidgetOutput += widgetToString(widget);
-			}
+		var stateString = VRInput.controllerStateString(
+				timestamp,
+				controllerHand, packetNum,
+				buttonPressedLow, buttonPressedHigh,
+				buttonTouchedLow, buttonTouchedHigh,
+				axis);
 
-			// Append widget text to the output for the cooresponding hand
-			if(interestingWidgetOutput.length != 0)
-				controllerTexts[controllerHand-1] += "\n" + interestingWidgetOutput;
-		}
-
-		// Output all text prepared for each hand
-		var output = "";
-
-		if(controllerTexts[0].length != 0) {
-			output += "Left controller:   \n";
-			output += controllerTexts[0];
-		}
-		if(controllerTexts[1].length != 0) {
-			output += "Right controller:   \n";
-			output += controllerTexts[1];
-		}
-
-		if(output.length != 0) {
-			TextPanel.TextArea.SetText(output);
+		if(stateString.length != 0) {
+			TextPanel.TextArea.SetText(stateString);
 		} else {
-			var text = timestamp.toString();
-			TextPanel.TextArea.SetText(text);
-		}
-
-		if(!vrinputOnce) {
-			vrinputOnce = true;
+			TextPanel.TextArea.SetText(timestamp.toString());
 		}
 	}
 
@@ -358,19 +245,20 @@ class Quest_Journal extends MovieClip
 
 	function CloseMenu(abForceClose: Boolean): Void
 	{
-		Debug.log(">> Quest_Journal");
 		var vrinput = skse["plugins"]["vrinput"];
 		if(vrinput != undefined)
 		{
-			Debug.log("-- Unregistering vr input");
-			vrinput.ShutoffButtonEventsToGame(false);
-			vrinput.UnregisterInputHandler(this, "handleVRInput");
+			//vrinput.ShutoffButtonEventsToGame(false);
+		}
+		var skyui = skse["plugins"]["skyui"];
+		if(skyui != undefined)
+		{
+			skyui.UnregisterInputHandler(this, "handleVRInput");
 		}
 
 		if (abForceClose != true) {
 			GameDelegate.call("PlaySound", ["UIJournalClose"]);
 		}
-		Debug.log("<< Quest_Journal");
 		GameDelegate.call("CloseMenu", [iCurrentTab, QuestsFader.Page_mc.selectedQuestID, QuestsFader.Page_mc.selectedQuestInstance]);
 	}
 

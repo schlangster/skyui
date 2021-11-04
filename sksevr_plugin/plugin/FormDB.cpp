@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <assert.h>
 
-#include "Plugin.h"
+#include "FormDB.h"
 #include "skse64/GameForms.h"
 #include "skse64/ScaleformValue.h"
 #include "skse64/ScaleformCallbacks.h"
@@ -52,9 +52,7 @@ int lua_prepend_package_path(lua_State* L, const char* path) {
    return 0;
 }
 
-
-namespace SkyUIVR {
-
+namespace FormDB {
    std::filesystem::path dll_path() {
       HMODULE hm = nullptr;
       if (GetModuleHandleEx(
@@ -94,7 +92,7 @@ namespace SkyUIVR {
       lua_pop(g_lua, 1);
    }
 
-   void Form_SetInt(TESForm* form, BSFixedString fieldName, SInt32 val){
+   void Form_SetInt(TESForm* form, BSFixedString fieldName, SInt32 val) {
       Form_SetInt(form->formID, fieldName.c_str(), val);
    }
 
@@ -124,11 +122,11 @@ namespace SkyUIVR {
       return val;
    }
 
-   SInt32 Form_GetInt(TESForm* form, BSFixedString fieldName, SInt32 default){
+   SInt32 Form_GetInt(TESForm* form, BSFixedString fieldName, SInt32 default) {
       return Form_GetInt(form->formID, fieldName.c_str(), default);
    }
 
-   SInt32 Papyrus_Form_GetInt(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, SInt32 default){
+   SInt32 Papyrus_Form_GetInt(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, SInt32 default) {
       return Form_GetInt(form->formID, fieldName.c_str(), default);
    }
 
@@ -145,11 +143,11 @@ namespace SkyUIVR {
       lua_pop(g_lua, 1);
    }
 
-   void Form_SetBool(TESForm* form, BSFixedString fieldName, bool val){
+   void Form_SetBool(TESForm* form, BSFixedString fieldName, bool val) {
       Form_SetBool(form->formID, fieldName.c_str(), val);
    }
 
-   void Papyrus_Form_SetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool val){
+   void Papyrus_Form_SetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool val) {
       //_MESSAGE("[PIH]Papyrus -> DLL: SetBool, %x, %s, %s", form->formID, fieldName.c_str(), val ? "true" : "false");
       Form_SetBool(form->formID, fieldName.c_str(), val);
    }
@@ -176,51 +174,51 @@ namespace SkyUIVR {
       return val;
    }
 
-   bool Form_GetBool(TESForm* form, BSFixedString fieldName, bool default){
+   bool Form_GetBool(TESForm* form, BSFixedString fieldName, bool default) {
       //_MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s", form->formID, fieldName.c_str(), default ? "true" : "false");
       bool val = Form_GetBool(form->formID, fieldName.c_str(), default);
       //_MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s -> %s", form->formID, fieldName.c_str(), default ? "true" : "false", val ? "true" : "false");
       return val;
    }
 
-   bool Papyrus_Form_GetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool default){
+   bool Papyrus_Form_GetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool default) {
       return Form_GetBool(form->formID, fieldName.c_str(), default);
    }
 
-   void Form_RemoveField(UInt32 formID, const char* fieldName){
+   void Form_RemoveField(UInt32 formID, const char* fieldName) {
       const char* func_name = "Form_RemoveField";
       lua_getglobal(g_lua, func_name);       // Grab the lua function
       lua_pushinteger(g_lua, formID);        // Push the params
       lua_pushstring(g_lua, fieldName);
 
       // Call and print any errors
-      if(lua_pcall(g_lua, 2, 0, 0) != 0)
+      if (lua_pcall(g_lua, 2, 0, 0) != 0)
          _ERROR("Error running `%s`: %s", func_name, lua_tostring(g_lua, -1));
    }
 
-   void Form_RemoveField(TESForm* form, BSFixedString fieldName){
+   void Form_RemoveField(TESForm* form, BSFixedString fieldName) {
       Form_RemoveField(form->formID, fieldName.c_str());
    }
 
-   void Papyrus_Form_RemoveField(StaticFunctionTag*, TESForm* form, BSFixedString fieldName){
+   void Papyrus_Form_RemoveField(StaticFunctionTag*, TESForm* form, BSFixedString fieldName) {
       Form_RemoveField(form->formID, fieldName.c_str());
    }
 
-   void Form_RemoveAllFields(UInt32 formID){
+   void Form_RemoveAllFields(UInt32 formID) {
       const char* func_name = "Form_RemoveAllFields";
       lua_getglobal(g_lua, func_name);
       lua_pushinteger(g_lua, formID);
 
       // Call and print any errors
-      if(lua_pcall(g_lua, 1, 0, 0) != 0)
+      if (lua_pcall(g_lua, 1, 0, 0) != 0)
          _ERROR("Error running `%s`: %s", func_name, lua_tostring(g_lua, -1));
    }
 
-   void Form_RemoveAllFields(TESForm* form){
+   void Form_RemoveAllFields(TESForm* form) {
       Form_RemoveAllFields(form->formID);
    }
 
-   void Papyrus_Form_RemoveAllFields(StaticFunctionTag*, TESForm* form){
+   void Papyrus_Form_RemoveAllFields(StaticFunctionTag*, TESForm* form) {
       Form_RemoveAllFields(form->formID);
    }
 
@@ -281,7 +279,7 @@ namespace SkyUIVR {
 
    bool RegisterScaleformFuncs(GFxMovieView* view, GFxValue* plugin) {
       RegisterFunction<Scaleform_RemoveField>(plugin, view, "FormDB_RemoveField");
-      SkyUIVR::Keyboard::RegisterScaleformFuncs(view, plugin);
+      Keyboard::RegisterScaleformFuncs(view, plugin);
       return true;
    }
 
@@ -290,14 +288,14 @@ namespace SkyUIVR {
       // Skip marking gold as new
       if (item->type->formID == 0x0000000f)
          return;
-      if(new_item) {
+      if (new_item) {
          //_MESSAGE("Marking [%x] with 'newItem'", item->type->formID);
          RegisterBool(object, "newItem", new_item);
       }
    }
 
-   void RegisterScaleformHooks(SKSEScaleformInterface* infc) {
-      infc->Register("skyui", RegisterScaleformFuncs);
+   void RegisterScaleformInventoryHooks(SKSEScaleformInterface* infc) {
       infc->RegisterForInventory(InventoryMarkNew);
    }
 }
+
