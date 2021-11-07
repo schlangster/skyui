@@ -235,14 +235,15 @@ class InventoryLists extends MovieClip
 		itemList.setPlatform(a_platform,a_bPS3Switch);
 	}
 
+	public function classname(): String {
+		return "Class InventoryLists";
+	}
+
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		if (_currentState != SHOW_PANEL)
 			return false;
-
-		Debug.log("InventoryLists handleInput");
-		Debug.dump("InputDetails", details, false, 0);
 
 		if (_platform != 0) {
 			if (details.skseKeycode == _sortOrderKey) {

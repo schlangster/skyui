@@ -72,16 +72,11 @@ dynamic class gfx.managers.FocusHandler
 
 	function handleInput(event: Object): Void
 	{
-		Debug.log("FocusHandler handleInput");
-		Debug.dump("event", event);
-
 		// Grab the focus path
 		// It appears controllerIdx is always 0 here.
 		var controllerIdx: Number = event.details.controllerIdx;
 		var focusIdx: Number = Selection.getControllerFocusGroup(controllerIdx);
 		var path: Array = getPathToFocus(focusIdx);
-
-		Debug.dump("PathToFocus", path);
 
 		// Send the input into the first item in the focus list if possible
 		if (path.length == 0 || path[0].handleInput == null || path[0].handleInput(event.details, path.slice(1)) != true) {

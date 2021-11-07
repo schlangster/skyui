@@ -76,6 +76,8 @@ namespace ControllerStateHook {
             return false;
          case GFxValue::kType_DisplayObject:
             return lhs.data.obj == rhs.data.obj;
+         case GFxValue::kType_Function:
+            return lhs.data.obj == rhs.data.obj;
          default:
             return false;
          }
@@ -136,7 +138,7 @@ namespace ControllerStateHook {
          //_MESSAGE("RegisterInputHandler dll fn called!");
 
          ASSERT(args->numArgs == 2);
-         ASSERT(args->args[0].GetType() == GFxValue::kType_DisplayObject);
+         ASSERT(args->args[0].GetType() == GFxValue::kType_DisplayObject || args->args[0].GetType() == GFxValue::kType_Object);
          ASSERT(args->args[1].GetType() == GFxValue::kType_String);
 
          ScaleformCallback callback;
@@ -166,7 +168,7 @@ namespace ControllerStateHook {
       {
          //_MESSAGE("VRInputScaleform_UnregisterInputHandler dll fn called!");
          ASSERT(args->numArgs == 2);
-         ASSERT(args->args[0].GetType() == GFxValue::kType_DisplayObject);
+         ASSERT(args->args[0].GetType() == GFxValue::kType_DisplayObject || args->args[0].GetType() == GFxValue::kType_Object);
          ASSERT(args->args[1].GetType() == GFxValue::kType_String);
 
          ScaleformCallback callback;

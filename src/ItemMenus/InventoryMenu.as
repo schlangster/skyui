@@ -46,8 +46,10 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
 
-	function OnShow()
+	public function OnShow()
 	{
+		super.OnShow();
+
 		_bMenuClosing = false;
 		// TODO! Cleanup these lines ported from SkyrimVR
 		//this.iLastItemType = InventoryDefines.ICT_NONE;
@@ -126,9 +128,6 @@ class InventoryMenu extends ItemMenu
 		if (!bFadedIn)
 			return true;
 
-		Debug.log("InventoryMenu handleInput");
-		Debug.dump("InputDetails", details, false, 0);
-
 		var nextClip = pathToFocus.shift();
 		if (nextClip.handleInput(details, pathToFocus))
 			return true;
@@ -145,6 +144,15 @@ class InventoryMenu extends ItemMenu
 		}
 
 		return true;
+	}
+
+	public function classname(): String{
+		return "Class Inventorymenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("InventoryMenu::handleVRInput", event);
+		return false;
 	}
 
 	// @API

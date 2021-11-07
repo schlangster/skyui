@@ -40,6 +40,8 @@ class Quest_Journal extends MovieClip
 
 	var ConfigPanel: MovieClip;
 
+	var _VRInput: VRInput;
+
   public static var PAGE_QUEST: Number = 0;
   public static var PAGE_STATS: Number = 1;
   public static var PAGE_SYSTEM: Number = 2;
@@ -86,23 +88,20 @@ class Quest_Journal extends MovieClip
 
 	function OnShow(): Void
 	{
-		VRInput.init();
-
-		var vrinput = skse["plugins"]["vrinput"];
-		if(vrinput != undefined)
+		var vrtools = skse["plugins"]["vrinput"];
+		if(vrtools != undefined)
 		{
-			//vrinput.ShutoffButtonEventsToGame(true);
+			//vrtools.ShutoffButtonEventsToGame(true);
 		} else {
-			Debug.log("vrinput plugin not available");
+			Debug.log("SkyrimVRTools plugin not available");
 		}
 
-		var skyui = skse["plugins"]["skyui"];
-		if(skyui != undefined)
-		{
-			skyui.RegisterInputHandler(this, "handleVRInput");
-		} else {
-			Debug.log("skyui plugin not available");
-		}
+		// For whatever reason, Scaleform API requires an object to be somewhere
+		// on the stage to be able to send inputs via a registered callback.
+		// By adding it here, VRInput should start receiving and button updates
+		// and start pumping out button events.
+		_VRInput = VRInput.instance;
+		VRInput.instance.setup();
 
     QuestsTab.disableFocus = true;
     StatsTab.disableFocus = true;
@@ -167,33 +166,19 @@ class Quest_Journal extends MovieClip
 		BottomBar_mc.LevelMeterRect._visible = iCurrentTab != 0;
 	}
 
-	function handleVRInput(
-			controllerHand: Number, packetNum: Number,
-			buttonPressedLow: Number, buttonPressedHigh: Number,
-			buttonTouchedLow: Number, buttonTouchedHigh: Number,
-			axis: Array)
+	function classname():String {
+		return "class Quest_Journal"
+	}
+
+	function handleVRButtonUpdate(update)
 	{
-		var timestamp = getTimer();
-		var eventQueue = VRInput.getInputEvents(
-				timestamp,
-				controllerHand, packetNum,
-				buttonPressedLow, buttonPressedHigh,
-				buttonTouchedLow, buttonTouchedHigh,
-				axis);
-
-		VRInput.dispatchInputEvents(eventQueue);
-
-		var stateString = VRInput.controllerStateString(
-				timestamp,
-				controllerHand, packetNum,
-				buttonPressedLow, buttonPressedHigh,
-				buttonTouchedLow, buttonTouchedHigh,
-				axis);
-
+		//Debug.dump("update", update);
+		var stateString = VRInput.instance.controllerStateString(update);
+		//Debug.log("stateString: " + stateString);
 		if(stateString.length != 0) {
 			TextPanel.TextArea.SetText(stateString);
 		} else {
-			TextPanel.TextArea.SetText(timestamp.toString());
+			TextPanel.TextArea.SetText(update.timestamp.toString());
 		}
 	}
 
@@ -250,11 +235,8 @@ class Quest_Journal extends MovieClip
 		{
 			//vrinput.ShutoffButtonEventsToGame(false);
 		}
-		var skyui = skse["plugins"]["skyui"];
-		if(skyui != undefined)
-		{
-			skyui.UnregisterInputHandler(this, "handleVRInput");
-		}
+
+		VRInput.instance.teardown();
 
 		if (abForceClose != true) {
 			GameDelegate.call("PlaySound", ["UIJournalClose"]);
@@ -301,7 +283,7 @@ class Quest_Journal extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		VRInput.updatePlatform(aiPlatform);
+		VRInput.instance.updatePlatform(aiPlatform);
 
 		// Not sure if these are the correct mapping for next/prev tab
 		var nextTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Right", MoveArt:"PS3_Y",OculusArt:"OCC_B", WindowsMRArt:"radial_Either_Right"}));

@@ -52,19 +52,18 @@ import skyui.util.GlobalFunctions;
 
 class skyui.VRInput {
 	// GLOBALS ---------------------------------------------------------
-	static public var initialized = false;
+	public var initialized = false;
 
 	// What is the name of the controller that corresponds to the
 	// current platform
-	static public var controllerName: String = "";
+	public var controllerName: String = "";
 
 	// Stores the right/left hand controller state that we last saw
-	static public var lastControllerStates;
+	public var lastControllerStates;
 
 	// Stores state of each of the widgets on a controller
-	static public var lastWidgetStates;
-	static public var widgetStates;
-
+	public var lastWidgetStates;
+	public var widgetStates;
 
 	// CONSTANTS -------------------------------------------------------
 	static public var WIDGET_MAX_COUNT = 64;
@@ -73,7 +72,7 @@ class skyui.VRInput {
 	//
 	// This is the lowest level data we have access to regarding the
 	// controller buttons.
-	static public function makeEmptyControllerState() {
+	public function makeEmptyControllerState() {
 		return {
 			packetNum: 0,
 			buttonPressedLow: 0,
@@ -84,7 +83,7 @@ class skyui.VRInput {
 		};
 	}
 
-	static public function init() {
+	private function init() {
 		if(!initialized) {
 			lastControllerStates = [{}, {}];
 			lastWidgetStates = makeEmptyWidgetStates();
@@ -93,7 +92,7 @@ class skyui.VRInput {
 		initialized = true;
 	}
 
-	static public function makeEmptyWidgetStates() {
+	public function makeEmptyWidgetStates() {
 		var widgetStates = [[], []];
 
 		for(var i = 0; i < WIDGET_MAX_COUNT; i++) {
@@ -117,7 +116,7 @@ class skyui.VRInput {
 		return widgetStates;
 	}
 
-	static public function controllerNameFromPlatformEnum(platform) {
+	public function controllerNameFromPlatformEnum(platform) {
 		switch(platform) {
 			case Platforms.CONTROLLER_VIVE:
 				return "vive";
@@ -134,15 +133,16 @@ class skyui.VRInput {
 		}
 	}
 
-	static public function getAxis(axisArray, idx) {
+	public function getAxis(axisArray, idx) {
 		return [axisArray[idx*2], axisArray[idx*2+1]];
 	}
 
-	static public function updatePlatform(platform: Number) {
+	public function updatePlatform(platform: Number) {
+		Debug.log("VRInput.updatePlatform: " + platform);
 		controllerName = controllerNameFromPlatformEnum(platform);
 	}
 
-	static public function widgetDetectPhaseChange(curState, lastState, phaseName) {
+	public function widgetDetectPhaseChange(curState, lastState, phaseName) {
 		var cur = curState[phaseName];
 		var last = lastState[phaseName];
 
@@ -154,7 +154,7 @@ class skyui.VRInput {
 			return "stop";
 	}
 
-	static public function widgetDetectPhaseStart(curState, lastState, phaseName) {
+	public function widgetDetectPhaseStart(curState, lastState, phaseName) {
 		var cur = curState[phaseName];
 		var last = lastState[phaseName];
 
@@ -164,7 +164,7 @@ class skyui.VRInput {
 		return "no-change";
 	}
 
-	static public function widgetDetectPhaseStop(curState, lastState, phaseName) {
+	public function widgetDetectPhaseStop(curState, lastState, phaseName) {
 		var cur = curState[phaseName];
 		var last = lastState[phaseName];
 
@@ -174,7 +174,7 @@ class skyui.VRInput {
 		return "no-change";
 	}
 
-	static public function makeWidgetEvent(curState, lastState, phaseName, eventName) {
+	public function makeWidgetEvent(curState, lastState, phaseName, eventName) {
 		return {
 			curState: curState,
 			lastState: lastState,
@@ -183,7 +183,7 @@ class skyui.VRInput {
 		};
 	}
 
-	static public function copyWidgetState(src, dest) {
+	public function copyWidgetState(src, dest) {
 		for (var key:String in src) {
 			if(key != "axis")
 				dest[key] = src[key];
@@ -196,7 +196,7 @@ class skyui.VRInput {
 		return dest;
 	}
 
-	static public function axisQuadrant(vec2) {
+	public function axisQuadrant(vec2) {
 		var angle = GlobalFunctions.vec2Angle(vec2);
 		if (angle < 0)
 			angle += 360;
@@ -212,7 +212,7 @@ class skyui.VRInput {
 		return "right";
 	}
 
-	static public function axisRegion(vec2) {
+	public function axisRegion(vec2) {
 		var mag = GlobalFunctions.vec2Mag(vec2);
 		if(mag <= 0.30)
 			return "center";
@@ -222,15 +222,16 @@ class skyui.VRInput {
 
 	// Given the new controller state, perform some upkeep and generate
 	// an array of "interesting" events.
-	static public function updateControllerState(
+	public function updateControllerState(
 			timestamp: Number,
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
 			buttonTouchedLow: Number, buttonTouchedHigh: Number,
 			axis: Array): Array
 	{
-		var lastState = lastControllerStates[controllerHand - 1];
-		var curState = {
+		var handIdx = controllerHand-1;
+		var lastButtonState = lastControllerStates[handIdx];
+		var curButtonState = {
 			packetNum: packetNum,
 			buttonPressedLow: buttonPressedLow,
 			buttonPressedHigh: buttonPressedHigh,
@@ -240,10 +241,9 @@ class skyui.VRInput {
 		};
 
 		var eventQueue = [];
-		if(lastState.packetNum != curState.packetNum)
+		if(lastButtonState.packetNum != curButtonState.packetNum)
 		{
-			var widgets = widgetStates[controllerHand-1];
-			var controllerName = VRInput.controllerName;
+			//Debug.log("packetNum: " + lastButtonState.packetNum + " => " + curButtonState.packetNum);
 
 			// Only process widgets that we know may actually be updated
 			var interestingWidgets;
@@ -252,6 +252,7 @@ class skyui.VRInput {
 					interestingWidgets = [1, 2, 32, 33];
 					break;
 				default:
+					//Debug.log("unknown controller");
 					interestingWidgets = [];
 			}
 
@@ -264,8 +265,8 @@ class skyui.VRInput {
 			// current state of the widgets and reusing the objects
 			// used to store the information.
 			{
-				var lastWidgets = lastWidgetStates[controllerHand-1];
-				var curWidgets = widgetStates[controllerHand-1];
+				var lastWidgets = lastWidgetStates[handIdx];
+				var curWidgets = widgetStates[handIdx];
 				for(var i = 0; i < interestingWidgets.length; i++) {
 					var id = interestingWidgets[i];
 					var temp = lastWidgets[id];
@@ -277,6 +278,7 @@ class skyui.VRInput {
 			}
 
 			// Update widget states
+			var widgets = widgetStates[handIdx];
 			for(var i = 0; i < interestingWidgets.length; i++) {
 				var id = interestingWidgets[i];
 				var mask = 1 << id;
@@ -308,27 +310,25 @@ class skyui.VRInput {
 				widgets[2].type = "button";
 				widgetAddClickWhenPressed(widgets[2]);
 
-
 				widgets[32].widgetName = "touchpad";
 				widgets[32].type = "touchpad";
 
 				widgets[32].axisId = 0;
-				widgets[32].axis = VRInput.getAxis(axis, 0);
+				widgets[32].axis = getAxis(axis, 0);
 				widgetAddClickWhenPressed(widgets[32]);
-
 
 				widgets[33].widgetName = "trigger";
 				widgets[33].type = "trigger";
 
 				widgets[33].axisId = 1;
-				widgets[33].axis = VRInput.getAxis(axis, 1);
+				widgets[33].axis = getAxis(axis, 1);
 				widgetAddClickForTrigger(widgets[33]);
 				widgetDetectTouchWithAxis(widgets[33]);
 			}
 
 			// Generate events as appropriate
-			var lastWidgets = lastWidgetStates[controllerHand-1];
-			var curWidgets = widgetStates[controllerHand-1];
+			var lastWidgets = lastWidgetStates[handIdx];
+			var curWidgets = widgetStates[handIdx];
 			for(var i = 0; i < interestingWidgets.length; i++)
 			{
 				var id = interestingWidgets[i];
@@ -342,12 +342,9 @@ class skyui.VRInput {
 
 				// Clean up event timestamps if appropriate
 				if(curState.touchedStart && curState.touchedStop) {
-					/* Debug.log("************ removing touched fields from widget ***********"); */
-					/* Debug.dump("before curState", curState, false, 1); */
 					delete curState["touchedStart"];
 					delete curState["touchedStartState"];
 					delete curState["touchedStop"];
-					/* Debug.dump("after curState", curState, false, 1); */
 				}
 				if(curState.pressedStart && curState.pressedStop) {
 					delete curState["pressedStart"];
@@ -398,7 +395,11 @@ class skyui.VRInput {
 
 			// Record the current state
 			// We'll use this as the last state when we're called again the next time.
-			lastControllerStates[controllerHand-1] = curState;
+			lastControllerStates[handIdx] = curButtonState;
+			/*
+			Debug.log("handIdx " + handIdx);
+			Debug.dump("lastControllerStates[handIdx]", lastControllerStates[handIdx]);
+			*/
 		}
 		return eventQueue;
 	}
@@ -422,11 +423,11 @@ class skyui.VRInput {
 	//----------------------------------------------------------------------------
 	// Vec2 utilities
 	//
-	static private function cloneVec2(vec2: Array) {
+	private function cloneVec2(vec2: Array) {
 		return [vec2[0], vec2[1]];
 	}
 
-	static private function copyVec2(src: Array, dest: Array) {
+	private function copyVec2(src: Array, dest: Array) {
 		dest[0] = src[0];
 		dest[1] = src[1];
 		return dest;
@@ -439,7 +440,7 @@ class skyui.VRInput {
 	// these functions can be used to add some synthetic attributes
 	// to help bridge these differences.
 
-	static function widgetAddClickWhenPressed(widget)
+	function widgetAddClickWhenPressed(widget)
 	{
 		if(widget.pressed) {
 			widget.clicked = true;
@@ -448,7 +449,7 @@ class skyui.VRInput {
 		}
 	}
 
-	static function widgetAddClickForTrigger(widget)
+	function widgetAddClickForTrigger(widget)
 	{
 		if(widget.axis[0] == 1) {
 			widget.clicked = true;
@@ -457,19 +458,19 @@ class skyui.VRInput {
 		}
 	}
 
-	static function widgetDetectTouchWithAxis(widget)
+	function widgetDetectTouchWithAxis(widget)
 	{
 		if(widget.axis[0] != 0.0 || widget.axis[1] != 0.0) {
 			widget.touched = true;
 		}
 	}
 
-	static var touchpadSwipeStates = {
+	var touchpadSwipeStates = {
 		leftHand: {},
 		rightHand: {}
 	};
 
-	static function widgetTouchpadDetectSwipe(widget, eventQueue)
+	function widgetTouchpadDetectSwipe(widget, eventQueue)
 	{
 		// Given the current state of the widget,
 		// generate events if swipes are detected...
@@ -479,7 +480,7 @@ class skyui.VRInput {
 			return;
 		}
 
-		var curTime = clock();
+		var curTime = getTimer();
 
 		// Fetch the swipe state associated with the widget
 		var hand = touchpadSwipeStates[widget.controllerRole];
@@ -590,7 +591,7 @@ class skyui.VRInput {
 		}
 	}
 
-	static public function vibrateOnSwipe(eventQueue) {
+	public function vibrateOnSwipe(eventQueue) {
 		// Look a swipe event in the event queue
 		// If found, vibrate the corresponding controller...
 		for(var i = 0; i < eventQueue.length; i++) {
@@ -602,7 +603,9 @@ class skyui.VRInput {
 		}
 	}
 
-	static public function getInputEvents(
+	// Refactor? Do we really still need this function?
+	// Is this serving the same role as `handleVRButtonUpdates`?
+	public function getInputEvents(
 			timestamp: Number,
 			controllerHand: Number, packetNum: Number,
 			buttonPressedLow: Number, buttonPressedHigh: Number,
@@ -618,34 +621,82 @@ class skyui.VRInput {
 
 		vibrateOnSwipe(eventQueue);
 
-		/*
-			// Print out all of the event queue
-			if(eventQueue.length > 0)
-				Debug.log("packetNum: " + packetNum);
-			for(var i = 0; i < eventQueue.length; i++)
-			{
-				Debug.log("timestamp: " + timestamp);
-
-				var event = eventQueue[i];
-				Debug.dump("event " + (i+1), event, false, 1);
-			}
-		*/
-
 		return eventQueue;
 	}
 
-	static public function dispatchInputEvents(eventQueue: Array) {
-		var focusPath: Array = FocusHandler.instance.getPathToFocus(Selection.getControllerFocusGroup(0));
+	function getFocusPath() {
+		// Skyrim is a single player game. So technically, we're only dealing with "one controller"
+		return FocusHandler.instance.getPathToFocus(Selection.getControllerFocusGroup(0));
+	}
+
+	function handleVRButtonUpdate(
+			controllerHand: Number, packetNum: Number,
+			buttonPressedLow: Number, buttonPressedHigh: Number,
+			buttonTouchedLow: Number, buttonTouchedHigh: Number,
+			axis: Array)
+	{
+		//Debug.log(">>> VRInput handleVRButtonUpdate");
+		var timestamp = getTimer();
+		var eventQueue = getInputEvents(
+				timestamp,
+				controllerHand, packetNum,
+				buttonPressedLow, buttonPressedHigh,
+				buttonTouchedLow, buttonTouchedHigh,
+				axis);
+
+		var update = {
+			timestamp: timestamp,
+			controllerHand: controllerHand,
+			packetNum: packetNum,
+			buttonPressedLow: buttonPressedLow,
+			buttonPressedHigh: buttonPressedHigh,
+			buttonTouchedLow: buttonTouchedLow,
+			buttonTouchedHigh: buttonTouchedHigh,
+			axis: axis
+		}
+
+		var focusPath = getFocusPath();
+		//Debug.log("focusPath: " + focusPath);
+		//if(eventQueue.length != 0)
+		//	Debug.dump("eventQueue", eventQueue);
+
+		dispatchButtonUpdates(update, focusPath);
+		dispatchInputEvents(eventQueue, focusPath);
+
+		//Debug.log("<<< VRInput handleVRButtonUpdate");
+	}
+
+	public function dispatchButtonUpdates(update, focusPath: Array) {
+		if(focusPath == null)
+			focusPath = getFocusPath();
+
+		for(var i = 0; i < focusPath.length; i++) {
+			var obj = focusPath[i];
+			if(obj.handleVRButtonUpdate != null) {
+				obj.handleVRButtonUpdate(update);
+			}
+		}
+	}
+
+	public function dispatchInputEvents(eventQueue: Array, focusPath: Array) {
+		if(focusPath == null)
+			focusPath = getFocusPath();
 
 		// Take every event in the queue
 		for(var ei = 0; ei < eventQueue.length; ei++) {
 			var event = eventQueue[ei];
+			if(ei == 0) {
+				Debug.dump("focusPath", focusPath);
+			}
+			Debug.log("Dispatching event: " + ei);
 
 			// Send the event to the "handleVRInput" function of every object in the focus path
 			for(var fi = 0; fi < focusPath.length; fi++) {
 				var obj = focusPath[fi];
 				if(obj.handleVRInput != null) {
-
+					if(obj.classname != null)
+						Debug.log("" + fi + ": " + obj.classname());
+					Debug.log("Dispatching focusPath: " + fi);
 					// An object may signal that it has already handled the event and stop the event
 					// from going further in the focus path.
 					var stop = obj.handleVRInput(event);
@@ -656,16 +707,14 @@ class skyui.VRInput {
 		}
 	}
 
-	static function controllerStateText(buttonPressedLow: Number, buttonPressedHigh: Number,
-			buttonTouchedLow: Number, buttonTouchedHigh: Number,
-			axis: Array): String {
+	function controllerStateText(update): String {
 		var output:String = "";
 
 		for(var i = 0; i < 32; i++)
 		{
 			var mask = 1 << i;
 
-			if(buttonPressedLow & mask) {
+			if(update.buttonPressedLow & mask) {
 				output += "pressed: " + i + "\n";
 			}
 		}
@@ -674,7 +723,7 @@ class skyui.VRInput {
 		{
 			var mask = 1 << i;
 
-			if(buttonPressedHigh & mask) {
+			if(update.buttonPressedHigh & mask) {
 				output += "pressed: " + (i + 32) + "\n";
 			}
 		}
@@ -683,7 +732,7 @@ class skyui.VRInput {
 		{
 			var mask = 1 << i;
 
-			if(buttonTouchedLow & mask) {
+			if(update.buttonTouchedLow & mask) {
 				output += "touched: " + i + "\n";
 			}
 		}
@@ -692,15 +741,15 @@ class skyui.VRInput {
 		{
 			var mask = 1 << i;
 
-			if(buttonTouchedHigh & mask) {
+			if(update.buttonTouchedHigh & mask) {
 				output += "touched: " + (i + 32) + "\n";
 			}
 		}
 
 		for(var i = 0; i < 5; i++)
 		{
-			var x = axis[i*2];
-			var y = axis[i*2 + 1];
+			var x = update.axis[i*2];
+			var y = update.axis[i*2 + 1];
 
 			if(x != 0.0) {
 				output += "x[" + i + "] = " + x + "\n";
@@ -712,14 +761,14 @@ class skyui.VRInput {
 			if(x != 0.0 || y != 0.0) {
 				var vec2 = [x, y];
 				output += "mag: " + GlobalFunctions.vec2Mag(vec2) + "\n";
-				output += "quadrant: " + VRInput.axisQuadrant(vec2) + "\n";
-				output += "region: " + VRInput.axisRegion(vec2) + "\n";
+				output += "quadrant: " + axisQuadrant(vec2) + "\n";
+				output += "region: " + axisRegion(vec2) + "\n";
 			}
 		}
 		return output;
 	}
 
-	static function widgetToString(widget: Object): String
+	function widgetToString(widget: Object): String
 	{
 		var output = "";
 		for (var key:String in widget) {
@@ -729,23 +778,20 @@ class skyui.VRInput {
 	}
 
 
-	static var controllerTexts = ["", ""];
-	static function controllerStateString(
-			timestamp: Number,
-			controllerHand: Number, packetNum: Number,
-			buttonPressedLow: Number, buttonPressedHigh: Number,
-			buttonTouchedLow: Number, buttonTouchedHigh: Number,
-			axis: Array): Array
+	var controllerTexts = ["", ""];
+	function controllerStateString(update): String
 	{
 		var output = "";
 
 		// Output all text prepared for each hand
-		controllerTexts[controllerHand-1] = VRInput.controllerStateText(buttonPressedLow, buttonPressedHigh, buttonTouchedLow, buttonTouchedHigh, axis);
+		var text = controllerStateText(update);
+		controllerTexts[update.controllerHand-1] = text;
+		output += text;
 
 		// Build a list of widgets with interesting states
 		var viveWidgets = [1, 2, 32, 33];
 		var interestingWidgets = [];
-		var widgets = VRInput.widgetStates[controllerHand-1];
+		var widgets = widgetStates[update.controllerHand-1];
 		for(var i = 0; i < viveWidgets.length; i++) {
 			var widget = widgets[viveWidgets[i]];
 			if(widget.pressed || widget.touched || GlobalFunctions.vec2Mag(widget.axis)) {
@@ -762,7 +808,7 @@ class skyui.VRInput {
 
 		// Append widget text to the output for the cooresponding hand
 		if(interestingWidgetOutput.length != 0)
-			controllerTexts[controllerHand-1] += "\n" + interestingWidgetOutput;
+			controllerTexts[update.controllerHand-1] += "\n" + interestingWidgetOutput;
 
 		if(controllerTexts[0].length != 0) {
 			output += "Left controller:   \n";
@@ -774,5 +820,42 @@ class skyui.VRInput {
 		}
 
 		return output;
+	}
+
+
+	private static var _instance: VRInput;
+
+	public static function get instance(): VRInput
+	{
+		if (_instance == null)
+			_instance = new VRInput();
+
+		return _instance;
+	}
+
+	private function VRInput() {
+		init();
+	}
+
+	function setup() {
+		Debug.log(">>> VRInput.setup()");
+		var skyui = skse["plugins"]["skyui"];
+		if(skyui != undefined)
+		{
+			Debug.log("Registering to receive VR input");
+			skyui.RegisterInputHandler(this, "handleVRButtonUpdate");
+		} else {
+			Debug.log("skyui plugin not available");
+		}
+		Debug.log("<<< VRInput.setup()");
+	}
+
+	function teardown() {
+		var skyui = skse["plugins"]["skyui"];
+		if(skyui != undefined)
+		{
+			Debug.log("Unregistering to receive VR input");
+			skyui.UnregisterInputHandler(this, "handleVRButtonUpdate");
+		}
 	}
 }
