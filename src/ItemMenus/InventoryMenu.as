@@ -11,6 +11,7 @@ import skyui.props.PropertyDataExtender;
 import skyui.defines.Inventory;
 import skyui.defines.Input;
 import skyui.util.Debug;
+import skyui.VRInput;
 
 class InventoryMenu extends ItemMenu
 {
@@ -152,6 +153,12 @@ class InventoryMenu extends ItemMenu
 
 	public function handleVRInput(event): Boolean {
 		//Debug.dump("InventoryMenu::handleVRInput", event);
+		if(event.phaseName == "clicked" && event.eventName == "start") {
+			var state = event.curState;
+			if(state.widgetName == "touchpad" && VRInput.axisQuadrant(state.axis) == "bottom") {
+				inventoryLists.searchWidget.startInput();
+			}
+		}
 		return false;
 	}
 

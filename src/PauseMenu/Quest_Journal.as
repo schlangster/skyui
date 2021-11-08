@@ -230,10 +230,10 @@ class Quest_Journal extends MovieClip
 
 	function CloseMenu(abForceClose: Boolean): Void
 	{
-		var vrinput = skse["plugins"]["vrinput"];
-		if(vrinput != undefined)
+		var vrtools = skse["plugins"]["vrinput"];
+		if(vrtools != undefined)
 		{
-			//vrinput.ShutoffButtonEventsToGame(false);
+			//vrtools.ShutoffButtonEventsToGame(false);
 		}
 
 		VRInput.instance.teardown();

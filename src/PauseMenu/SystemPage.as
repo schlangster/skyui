@@ -5,6 +5,7 @@ import Shared.GlobalFunc;
 import gfx.ui.NavigationCode;
 import gfx.managers.FocusHandler;
 import skyui.defines.Input;
+import skyui.VRInput;
 
 import skyui.util.Debug;
 
@@ -410,6 +411,8 @@ class SystemPage extends MovieClip
 				break;
 
 			case SystemPage.QUIT_CONFIRM_STATE:
+				// Have skyui dll release any GFxValues it's holding before actually quitting
+				VRInput.instance.teardown();
 				GameDelegate.call("PlaySound", ["UIMenuOK"]);
 				GameDelegate.call("QuitToMainMenu", []);
 				bMenuClosing = true;

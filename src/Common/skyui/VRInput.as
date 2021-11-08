@@ -196,7 +196,7 @@ class skyui.VRInput {
 		return dest;
 	}
 
-	public function axisQuadrant(vec2) {
+	static public function axisQuadrant(vec2) {
 		var angle = GlobalFunctions.vec2Angle(vec2);
 		if (angle < 0)
 			angle += 360;
@@ -212,7 +212,7 @@ class skyui.VRInput {
 		return "right";
 	}
 
-	public function axisRegion(vec2) {
+	static function axisRegion(vec2) {
 		var mag = GlobalFunctions.vec2Mag(vec2);
 		if(mag <= 0.30)
 			return "center";
@@ -685,18 +685,23 @@ class skyui.VRInput {
 		// Take every event in the queue
 		for(var ei = 0; ei < eventQueue.length; ei++) {
 			var event = eventQueue[ei];
+			/*
 			if(ei == 0) {
+				Debug.log("dispatchInputEvents");
 				Debug.dump("focusPath", focusPath);
 			}
 			Debug.log("Dispatching event: " + ei);
+			*/
 
 			// Send the event to the "handleVRInput" function of every object in the focus path
 			for(var fi = 0; fi < focusPath.length; fi++) {
 				var obj = focusPath[fi];
 				if(obj.handleVRInput != null) {
+					/*
 					if(obj.classname != null)
 						Debug.log("" + fi + ": " + obj.classname());
 					Debug.log("Dispatching focusPath: " + fi);
+					*/
 					// An object may signal that it has already handled the event and stop the event
 					// from going further in the focus path.
 					var stop = obj.handleVRInput(event);
@@ -781,12 +786,9 @@ class skyui.VRInput {
 	var controllerTexts = ["", ""];
 	function controllerStateString(update): String
 	{
-		var output = "";
-
 		// Output all text prepared for each hand
 		var text = controllerStateText(update);
 		controllerTexts[update.controllerHand-1] = text;
-		output += text;
 
 		// Build a list of widgets with interesting states
 		var viveWidgets = [1, 2, 32, 33];
@@ -810,6 +812,7 @@ class skyui.VRInput {
 		if(interestingWidgetOutput.length != 0)
 			controllerTexts[update.controllerHand-1] += "\n" + interestingWidgetOutput;
 
+		var output = "";
 		if(controllerTexts[0].length != 0) {
 			output += "Left controller:   \n";
 			output += controllerTexts[0];
@@ -838,7 +841,7 @@ class skyui.VRInput {
 	}
 
 	function setup() {
-		Debug.log(">>> VRInput.setup()");
+		//Debug.log("VRInput.setup()");
 		var skyui = skse["plugins"]["skyui"];
 		if(skyui != undefined)
 		{
@@ -847,10 +850,10 @@ class skyui.VRInput {
 		} else {
 			Debug.log("skyui plugin not available");
 		}
-		Debug.log("<<< VRInput.setup()");
 	}
 
 	function teardown() {
+		//Debug.log("VRInput.teardown()");
 		var skyui = skse["plugins"]["skyui"];
 		if(skyui != undefined)
 		{

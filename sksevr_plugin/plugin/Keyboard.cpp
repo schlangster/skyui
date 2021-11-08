@@ -25,6 +25,10 @@ namespace Keyboard {
    std::thread* keyboardHandlerThread = nullptr;
 
    void WaitForKeyboardInput(GFxValue desc, GFxValue currentText, GFxValue thisValue, GFxValue func) {
+      desc.AddManaged();
+      currentText.AddManaged();
+      thisValue.AddManaged();
+      func.AddManaged();
       // In the case where the user is clicking on the search box directly,
       // wait a short while before activating the keyboard.
       // If we don't do this, the keyboard might become active before the trigger can be released.
@@ -43,18 +47,21 @@ namespace Keyboard {
       if (err != vr::EVROverlayError::VROverlayError_None)
          return;
 
+      //int i = 0;
       vr::VREvent_t eventData;
       while (true)
       {
          // Consume all overlay events
          if (vrContext.VROverlay()->PollNextOverlayEvent(keyboardOverlayHandle, &eventData, sizeof(vr::VREvent_t)))
          {
+            //_MESSAGE("Keyboard got event %i: %d", i++, eventData.eventType);
             // Look for event where the keyboard is dismissed
             if (eventData.eventType == vr::VREvent_KeyboardClosed || eventData.eventType == vr::VREvent_KeyboardDone)
             {
                // Grab the entered text in its entirety.
-               char buffer[charMax+1];
+               char buffer[charMax+1] = "\0";
                vrContext.VROverlay()->GetKeyboardText(buffer, charMax);
+               //_MESSAGE("Keyboard got string: %s", buffer);
 
                // Invoke the callback to send the result back to the Scaleform UI.
                GFxValue vals[3];
@@ -68,8 +75,6 @@ namespace Keyboard {
                }
                vals[2].SetNumber(0);
                func.Invoke("call", nullptr, vals, 3);
-
-               //vrContext.VROverlay()->DestroyOverlay(handle);
                break;
             }
          }
@@ -79,6 +84,14 @@ namespace Keyboard {
       keyboardHandlerThread->detach();
       delete keyboardHandlerThread;
       keyboardHandlerThread = nullptr;
+
+      vrContext.VROverlay()->DestroyOverlay(keyboardOverlayHandle);
+      keyboardOverlayHandle = 0;
+
+      desc.CleanManaged();
+      currentText.CleanManaged();
+      thisValue.CleanManaged();
+      func.CleanManaged();
    }
 
 
@@ -97,11 +110,10 @@ namespace Keyboard {
 
          // Lazily initialize the keyboard overlay
          vr::EVROverlayError err;
-         if (keyboardOverlayHandle == 0) {
-            err = vrContext.VROverlay()->CreateOverlay(args->args[0].GetString(), args->args[1].GetString(), &keyboardOverlayHandle);
-            if (err != vr::EVROverlayError::VROverlayError_None)
-               return;
-         }
+         assert(keyboardOverlayHandle == 0);
+         err = vrContext.VROverlay()->CreateOverlay(args->args[0].GetString(), args->args[1].GetString(), &keyboardOverlayHandle);
+         if (err != vr::EVROverlayError::VROverlayError_None)
+            return;
 
          // Start a thread to wait for keyboard input.
          assert(keyboardHandlerThread == nullptr);
