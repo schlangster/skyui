@@ -13,7 +13,8 @@ import skyui.defines.Input;
 import skyui.defines.Inventory;
 import skyui.defines.Item;
 
-import flash.utils.getTimer;
+import skyui.util.Debug;
+import skyui.VRInput;
 
 class ContainerMenu extends ItemMenu
 {
@@ -177,6 +178,23 @@ class ContainerMenu extends ItemMenu
 		return true;
 	}
 
+	public function classname(): String{
+		return "Class ContainerMenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("ContainerMenu::handleVRInput", event);
+		if (!bFadedIn)
+			return;
+		if(event.phaseName == "clicked" && event.eventName == "start") {
+			var state = event.curState;
+			if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+				inventoryLists.searchWidget.startInput();
+			}
+		}
+		return false;
+	}
+
 	// @override ItemMenu
 	public function UpdateItemCardInfo(a_updateObj: Object): Void
 	{
@@ -309,6 +327,10 @@ class ContainerMenu extends ItemMenu
 	// @override ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
+		// For some unknown reason, OnShow() does not get called for the container menu.
+		//
+		setupVRInput();
+
 		inventoryLists.showItemsList();
 	}
 
@@ -398,11 +420,15 @@ class ContainerMenu extends ItemMenu
 				navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: activateControl});
 				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: favoriteControl});
 			}
+			navPanel.addButton({
+				text: "$Search",
+				controls: skyui.util.Input.pickControls(_platform,
+																									{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down"})});
 			// if (!_bEquipMode)
 			//	 navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			// navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
 				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});

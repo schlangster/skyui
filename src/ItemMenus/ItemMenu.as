@@ -82,9 +82,13 @@ class ItemMenu extends MovieClip
 		_bItemCardFadedIn = false;
 	}
 
-	public function OnShow() {
+	public function setupVRInput() {
 		_VRInput = VRInput.instance;
 		VRInput.instance.setup();
+	}
+
+	public function OnShow() {
+		setupVRInput();
 	}
 
   /* PUBLIC FUNCTIONS */

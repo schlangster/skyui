@@ -153,9 +153,11 @@ class InventoryMenu extends ItemMenu
 
 	public function handleVRInput(event): Boolean {
 		//Debug.dump("InventoryMenu::handleVRInput", event);
+		if (!bFadedIn)
+			return;
 		if(event.phaseName == "clicked" && event.eventName == "start") {
 			var state = event.curState;
-			if(state.widgetName == "touchpad" && VRInput.axisQuadrant(state.axis) == "bottom") {
+			if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
 				inventoryLists.searchWidget.startInput();
 			}
 		}
@@ -401,7 +403,7 @@ class InventoryMenu extends ItemMenu
 				text: "$Search",
 				controls: skyui.util.Input.pickControls(_platform,
 																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Down"})
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down"})
 			});
 
 		} else {
