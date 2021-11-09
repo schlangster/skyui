@@ -56,7 +56,9 @@ class skyui.VRInput {
 
 	// What is the name of the controller that corresponds to the
 	// current platform
-	public var controllerName: String = "";
+	public var controllerName_Game: String = "";      // Controller name reported by the game
+	public var controllerName_OpenVR: String = "";    // Controller name reported by OpenVR
+	public var controllerName: String = "";           // Internal logic will cue off of this
 
 	// Stores the right/left hand controller state that we last saw
 	public var lastControllerStates;
@@ -133,13 +135,35 @@ class skyui.VRInput {
 		}
 	}
 
+	public function controllerNameFromOpenVRName(name) {
+		switch(name) {
+			case "vive_controller":
+				return "vive";
+   		default:
+   			return "unknown";
+		}
+	}
+
 	public function getAxis(axisArray, idx) {
 		return [axisArray[idx*2], axisArray[idx*2+1]];
 	}
 
 	public function updatePlatform(platform: Number) {
 		Debug.log("VRInput.updatePlatform: " + platform);
-		controllerName = controllerNameFromPlatformEnum(platform);
+		controllerName_Game = controllerNameFromPlatformEnum(platform);
+		controllerName_OpenVR = skse["plugins"]["skyui"].ControllerType();
+
+		// We'll prefer controller type reported by OpenVR over the game engine
+		// The game doesn't know how to deal with the index controller.
+		var name = controllerNameFromOpenVRName(name);
+		if (name != "unknown")
+			controllerName = controllerName_OpenVR;
+		else
+			controllerName = controllerName_Game;
+
+		//Debug.log("controllerName_Game: " + controllerName_Game);
+		//Debug.log("controllerName_OpenVR: " + controllerName_OpenVR);
+		//Debug.log("controllerName: " + controllerName);
 	}
 
 	public function widgetDetectPhaseChange(curState, lastState, phaseName) {
@@ -250,6 +274,9 @@ class skyui.VRInput {
 			switch(controllerName) {
 				case "vive":
 					interestingWidgets = [1, 2, 32, 33];
+					break;
+				case "knuckles":
+					interestingWidgets = [1, 2, 7, 32, 33, 34];
 					break;
 				default:
 					//Debug.log("unknown controller");
@@ -813,6 +840,11 @@ class skyui.VRInput {
 			controllerTexts[update.controllerHand-1] += "\n" + interestingWidgetOutput;
 
 		var output = "";
+
+		if(controllerTexts[0].length != 0 || controllerTexts[1].length != 0) {
+			output += ("Skryim says: " + controllerName_Game + "\n");
+			output += ("OpenVR says: " + controllerName_OpenVR + "\n");
+		}
 		if(controllerTexts[0].length != 0) {
 			output += "Left controller:   \n";
 			output += controllerTexts[0];

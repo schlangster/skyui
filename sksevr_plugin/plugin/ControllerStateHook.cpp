@@ -180,12 +180,50 @@ namespace ControllerStateHook {
       }
    };
 
+   std::string GetControllerName(vr::COpenVRContext* vrContext, vr::ETrackedControllerRole role, vr::ETrackedPropertyError* err) {
+      char controllerType[vr::k_unMaxSettingsKeyLength];
+      auto controllerIdx = vrContext->VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand);
+      vrContext->VRSystem()->GetStringTrackedDeviceProperty(controllerIdx, vr::Prop_ControllerType_String, controllerType, vr::k_unMaxSettingsKeyLength, err);
+
+      if (*err == vr::TrackedProp_Success) {
+         return controllerType;
+      }
+      else
+         return "";
+   }
+
+   class VRInputScaleform_ControllerType : public GFxFunctionHandler
+   {
+   public:
+      virtual void	Invoke(Args* args)
+      {
+         ASSERT(args->numArgs == 0);
+
+         auto vrContext = vr::COpenVRContext();
+
+         vr::TrackedPropertyError err;
+         auto controllerName = GetControllerName(&vrContext, vr::TrackedControllerRole_LeftHand, &err);
+         if (err != vr::TrackedProp_Success) {
+            controllerName = GetControllerName(&vrContext, vr::TrackedControllerRole_RightHand, &err);
+         }
+
+         if (err != vr::TrackedProp_Success) {
+            args->result->SetString("unknown");
+            return;
+         }
+
+         GFxValue val;
+         args->movie->CreateString(&val, controllerName.c_str());
+         *args->result = val;
+      }
+   };
+
    bool RegisterScaleformFuncs(GFxMovieView* view, GFxValue* plugin) {
       //_MESSAGE("Registering scaleform functions");
 
       RegisterFunction<VRInputScaleform_RegisterInputHandler>(plugin, view, "RegisterInputHandler");
       RegisterFunction<VRInputScaleform_UnregisterInputHandler>(plugin, view, "UnregisterInputHandler");
-
+      RegisterFunction<VRInputScaleform_ControllerType>(plugin, view, "ControllerType");
       return true;
    }
 }
