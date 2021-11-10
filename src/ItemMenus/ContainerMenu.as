@@ -186,11 +186,25 @@ class ContainerMenu extends ItemMenu
 		//Debug.dump("ContainerMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		if(event.phaseName == "clicked" && event.eventName == "start") {
-			var state = event.curState;
-			if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-				inventoryLists.searchWidget.startInput();
-			}
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			case "knuckles":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
 		}
 		return false;
 	}

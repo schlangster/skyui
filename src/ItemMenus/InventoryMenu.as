@@ -155,7 +155,6 @@ class InventoryMenu extends ItemMenu
 		//Debug.dump("InventoryMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		//Debug.dump("InventoryMenu:: handleVRInput - event", event);
 		switch(VRInput.instance.controllerName) {
 			case "vive":
 				if(event.phaseName == "clicked" && event.eventName == "start") {
