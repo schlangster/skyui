@@ -412,10 +412,12 @@ class SystemPage extends MovieClip
 
 			case SystemPage.QUIT_CONFIRM_STATE:
 				// Have skyui dll release any GFxValues it's holding before actually quitting
+				Debug.log(">>> Quest_Journal SystemPage.QUIT_CONFIRM_STATE");
 				VRInput.instance.teardown();
 				GameDelegate.call("PlaySound", ["UIMenuOK"]);
 				GameDelegate.call("QuitToMainMenu", []);
 				bMenuClosing = true;
+				Debug.log("<<< Quest_Journal SystemPage.QUIT_CONFIRM_STATE");
 				break;
 
 			case SystemPage.PC_QUIT_CONFIRM_STATE:

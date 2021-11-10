@@ -257,10 +257,9 @@ class MagicMenu extends ItemMenu
 				text: "$Search",
 				controls: skyui.util.Input.pickControls(_platform,
 																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down"})
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down"})});
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
 				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});

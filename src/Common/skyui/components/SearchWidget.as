@@ -7,6 +7,7 @@ import Shared.GlobalFunc;
 
 import skyui.util.ConfigManager;
 import skyui.util.Debug;
+import skyui.VRInput;
 
 
 class skyui.components.SearchWidget extends MovieClip
@@ -108,6 +109,12 @@ class skyui.components.SearchWidget extends MovieClip
 
 		_bActive = true;
 
+		// We're about to switch control over to the virtual keyboard
+		// While the keyboard is up and running, we'll want to stop processing input
+		// so we're not accidentally operating on something in the menu while entering text.
+		VRInput.instance.pauseInput("all");
+
+		// Show the keyboard
 		skse["plugins"]["skyui"].ShowVirtualKeyboard("skyui", "Search", "Item name", "", this, recvVirtualKeyboardInput);
 
 		Debug.log("sending inputStart event and entering autoupdate loop");
@@ -145,6 +152,8 @@ class skyui.components.SearchWidget extends MovieClip
 
 		Debug.log("SearchWidget::endInput() rest");
 		delete this.onEnterFrame;
+
+		VRInput.instance.resumeInput("all");
 
 		textField.type = "dynamic";
 		textField.noTranslate = false;

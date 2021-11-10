@@ -144,7 +144,9 @@ namespace ControllerStateHook {
          ScaleformCallback callback;
          callback.movieView = args->movie;
          callback.object = args->args[0];
+         callback.object.AddManaged();
          callback.methodName = args->args[1].GetString();
+
 
          // If the same callback has already been registered, do not add it again.
          // This will cause the callback to triggered twice when input events are sent.
@@ -176,6 +178,7 @@ namespace ControllerStateHook {
          callback.methodName = args->args[1].GetString();
 
          g_scaleformInputHandlers.remove(callback);
+         callback.object.CleanManaged();
          //_MESSAGE("Unregistering: %s | remaining: %d", callback.methodName, g_scaleformInputHandlers.size());
       }
    };

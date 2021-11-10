@@ -155,11 +155,26 @@ class InventoryMenu extends ItemMenu
 		//Debug.dump("InventoryMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		if(event.phaseName == "clicked" && event.eventName == "start") {
-			var state = event.curState;
-			if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-				inventoryLists.searchWidget.startInput();
-			}
+		//Debug.dump("InventoryMenu:: handleVRInput - event", event);
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			case "knuckles":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
 		}
 		return false;
 	}
@@ -242,6 +257,15 @@ class InventoryMenu extends ItemMenu
 		{
 			updateBottomBar(true);
 			GameDelegate.call("SetShowingItemsList",[1]);
+		}
+	}
+
+	public function logAllItems() {
+		var itemList = inventoryLists.itemList;
+		var entryList: Array = itemList.entryList;
+		for (var i: Number = 0; i < entryList.length; i++) {
+			var obj = entryList[i];
+			Debug.dump("inv item", obj);
 		}
 	}
 

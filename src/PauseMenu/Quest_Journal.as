@@ -230,6 +230,8 @@ class Quest_Journal extends MovieClip
 
 	function CloseMenu(abForceClose: Boolean): Void
 	{
+		Debug.log(">>> Quest_Journal::CloseMenu");
+
 		var vrtools = skse["plugins"]["vrinput"];
 		if(vrtools != undefined)
 		{
@@ -242,6 +244,7 @@ class Quest_Journal extends MovieClip
 			GameDelegate.call("PlaySound", ["UIJournalClose"]);
 		}
 		GameDelegate.call("CloseMenu", [iCurrentTab, QuestsFader.Page_mc.selectedQuestID, QuestsFader.Page_mc.selectedQuestInstance]);
+		Debug.log("<<< Quest_Journal::CloseMenu");
 	}
 
 	function onTabClick(event: Object): Void

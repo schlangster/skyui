@@ -12,19 +12,17 @@
 // Something like this looks pretty reasonable:
 // {
 //  id: (int) [0-64],      // OpenVR id for the widget
-//  pressed_raw: (boolean) // extracted from OpenVR ControllerState
 //  pressed: (boolean)     // do we consider the widget pressed?
-//  touched_raw: (boolean) // extracted from OpenVR ControllerState
 //  touched: (boolean)     // do we consider the widget touched?
 //
 //  // For widgets with associated axis data
 //  axisId: (int)          // extracted from OpenVR ControllerState
 //  axis: (vec2)           // extracted from OpenVR ControllerState
 //
-//  type: (string) ["button", // has binary on/off signal
-//                  "joystick", // has x,y axis
-// 									"touchpad", // has x,y axis & touch
-//                  "trigger"], // has x axis
+//  type: (string) ["button",     // has binary on/off signal
+//                  "thumbstick", // has x,y axis
+// 									"touchpad",   // has x,y axis & touch
+//                  "trigger"],   // has x axis
 //
 //  // Added annotation
 //  widgetName: (string), // name of button or axis
@@ -66,6 +64,10 @@ class skyui.VRInput {
 	// Stores state of each of the widgets on a controller
 	public var lastWidgetStates;
 	public var widgetStates;
+
+	public var ignoreInput = false;
+
+	public var errorPrintedFlags = {};
 
 	// CONSTANTS -------------------------------------------------------
 	static public var WIDGET_MAX_COUNT = 64;
@@ -136,12 +138,15 @@ class skyui.VRInput {
 	}
 
 	public function controllerNameFromOpenVRName(name) {
-		switch(name) {
+		switch(name){
 			case "vive_controller":
-				return "vive";
-   		default:
-   			return "unknown";
+  			return "vive";
+			case "knuckles":
+  			return "knuckles";
+			default:
+  			return "unknown";
 		}
+		//return "knuckles";
 	}
 
 	public function getAxis(axisArray, idx) {
@@ -149,21 +154,23 @@ class skyui.VRInput {
 	}
 
 	public function updatePlatform(platform: Number) {
-		Debug.log("VRInput.updatePlatform: " + platform);
+		//Debug.log("VRInput.updatePlatform: " + platform);
 		controllerName_Game = controllerNameFromPlatformEnum(platform);
 		controllerName_OpenVR = skse["plugins"]["skyui"].ControllerType();
 
+		//Debug.log("[skyui] controllerName_Game: " + controllerName_Game);
+		//Debug.log("[skyui] controllerName_OpenVR: " + controllerName_OpenVR);
+
 		// We'll prefer controller type reported by OpenVR over the game engine
 		// The game doesn't know how to deal with the index controller.
-		var name = controllerNameFromOpenVRName(name);
+		var name = controllerNameFromOpenVRName(controllerName_OpenVR);
+		//Debug.log("[skyui] OpenVR mapped name: " + name);
 		if (name != "unknown")
-			controllerName = controllerName_OpenVR;
+			controllerName = name;
 		else
 			controllerName = controllerName_Game;
 
-		//Debug.log("controllerName_Game: " + controllerName_Game);
-		//Debug.log("controllerName_OpenVR: " + controllerName_OpenVR);
-		//Debug.log("controllerName: " + controllerName);
+		Debug.log("[skyui] controllerName: " + controllerName);
 	}
 
 	public function widgetDetectPhaseChange(curState, lastState, phaseName) {
@@ -244,6 +251,26 @@ class skyui.VRInput {
 		return axisQuadrant(vec2);
 	}
 
+	public function interestingWidgetIdxs() {
+			switch(controllerName) {
+				case "vive":
+					return [1, 2, 32, 33];
+					break;
+				case "knuckles":
+					return [1, 2, 7, 32, 33, 34];
+					break;
+				default:
+					if(!errorPrintedFlags["unknown-controller"]) {
+						Debug.log("unknown controller: " + controllerName);
+						Debug.log("controllerName_Game: " + controllerName_Game);
+						Debug.log("controllerName_OpenVR: " + controllerName_OpenVR);
+						Debug.log("controllerName: " + controllerName);
+						errorPrintedFlags["unknown-controller"] = true;
+					}
+					return [1, 2, 32, 33];
+			}
+	}
+
 	// Given the new controller state, perform some upkeep and generate
 	// an array of "interesting" events.
 	public function updateControllerState(
@@ -270,18 +297,7 @@ class skyui.VRInput {
 			//Debug.log("packetNum: " + lastButtonState.packetNum + " => " + curButtonState.packetNum);
 
 			// Only process widgets that we know may actually be updated
-			var interestingWidgets;
-			switch(controllerName) {
-				case "vive":
-					interestingWidgets = [1, 2, 32, 33];
-					break;
-				case "knuckles":
-					interestingWidgets = [1, 2, 7, 32, 33, 34];
-					break;
-				default:
-					//Debug.log("unknown controller");
-					interestingWidgets = [];
-			}
+			var widgetIdxs = interestingWidgetIdxs();
 
 			// Prepare to receive a new state
 			// We're about to get an update on the state of the widget,
@@ -294,8 +310,8 @@ class skyui.VRInput {
 			{
 				var lastWidgets = lastWidgetStates[handIdx];
 				var curWidgets = widgetStates[handIdx];
-				for(var i = 0; i < interestingWidgets.length; i++) {
-					var id = interestingWidgets[i];
+				for(var i = 0; i < widgetIdxs.length; i++) {
+					var id = widgetIdxs[i];
 					var temp = lastWidgets[id];
 					lastWidgets[id] = curWidgets[id];
 					curWidgets[id] = temp;
@@ -306,59 +322,90 @@ class skyui.VRInput {
 
 			// Update widget states
 			var widgets = widgetStates[handIdx];
-			for(var i = 0; i < interestingWidgets.length; i++) {
-				var id = interestingWidgets[i];
+			for(var i = 0; i < widgetIdxs.length; i++) {
+				var id = widgetIdxs[i];
 				var mask = 1 << id;
 				var state = widgets[id];
 
 				if(id < 32) {
-					state.pressed_raw = (buttonPressedLow & mask) == 0 ? false : true;
-					state.pressed = state.pressed_raw;
-					state.touched_raw = (buttonTouchedLow & mask) == 0 ? false : true;
-					state.touched = state.touched_raw;
+					state.pressed = (buttonPressedLow & mask) == 0 ? false : true;
+					state.touched = (buttonTouchedLow & mask) == 0 ? false : true;
 					state.controllerName = controllerName;
 				} else {
-					state.pressed_raw = (buttonPressedHigh & mask) == 0 ? false : true;
-					state.pressed = state.pressed_raw;
-					state.touched_raw = (buttonTouchedHigh & mask) == 0 ? false : true;
-					state.touched = state.touched_raw;
+					state.pressed = (buttonPressedHigh & mask) == 0 ? false : true;
+					state.touched = (buttonTouchedHigh & mask) == 0 ? false : true;
 					state.controllerName = controllerName;
 				}
 				delete state["uninitialized"];
 			}
 
 			// Wire up additional Vive controller data
-			if(controllerName == "vive") {
-				widgets[1].widgetName = "application menu";
-				widgets[1].type = "button";
-				widgetAddClickWhenPressed(widgets[1]);
 
-				widgets[2].widgetName = "grip";
-				widgets[2].type = "button";
-				widgetAddClickWhenPressed(widgets[2]);
+			switch(controllerName) {
+				case "vive":
+					widgets[1].widgetName = "application menu";
+					widgets[1].type = "button";
+					widgetAddClickWhenPressed(widgets[1]);
 
-				widgets[32].widgetName = "touchpad";
-				widgets[32].type = "touchpad";
+					widgets[2].widgetName = "grip";
+					widgets[2].type = "button";
+					widgetAddClickWhenPressed(widgets[2]);
 
-				widgets[32].axisId = 0;
-				widgets[32].axis = getAxis(axis, 0);
-				widgetAddClickWhenPressed(widgets[32]);
+					widgets[32].widgetName = "touchpad";
+					widgets[32].type = "touchpad";
 
-				widgets[33].widgetName = "trigger";
-				widgets[33].type = "trigger";
+					widgets[32].axisId = 0;
+					widgets[32].axis = getAxis(axis, 0);
+					widgetAddClickWhenPressed(widgets[32]);
 
-				widgets[33].axisId = 1;
-				widgets[33].axis = getAxis(axis, 1);
-				widgetAddClickForTrigger(widgets[33]);
-				widgetDetectTouchWithAxis(widgets[33]);
+					widgets[33].widgetName = "trigger";
+					widgets[33].type = "trigger";
+
+					widgets[33].axisId = 1;
+					widgets[33].axis = getAxis(axis, 1);
+					widgetAddClickForTrigger(widgets[33]);
+					widgetDetectTouchWithAxis(widgets[33]);
+					break;
+
+				case "knuckles":
+					widgets[1].widgetName = "B button";
+					widgets[1].type = "button";
+					widgetAddClickWhenPressed(widgets[1]);
+
+					widgets[2].widgetName = "grip";
+					widgets[2].type = "button";
+					widgets[2].axisId = 2;
+					widgets[2].axis = getAxis(axis, 2);
+					widgetAddClickWhenPressed(widgets[2]);
+
+					widgets[7].widgetName = "A button";
+					widgets[7].type = "button";
+					widgetAddClickWhenPressed(widgets[7]);
+
+					widgets[32].widgetName = "thumbstick";
+					widgets[32].type = "thumbstick";
+					widgets[32].axisId = 0;
+					widgets[32].axis = getAxis(axis, 0);
+					widgetAddClickWhenPressed(widgets[32]);
+
+					widgets[33].widgetName = "trigger";
+					widgets[33].type = "trigger";
+					widgets[33].axisId = 1;
+					widgets[33].axis = getAxis(axis, 1);
+					widgetAddClickForTrigger(widgets[33]);
+					widgetDetectTouchWithAxis(widgets[33]);
+
+					widgets[34].widgetName = "fingers";
+					widgets[34].type = "button";
+					break;
 			}
 
 			// Generate events as appropriate
 			var lastWidgets = lastWidgetStates[handIdx];
 			var curWidgets = widgetStates[handIdx];
-			for(var i = 0; i < interestingWidgets.length; i++)
+			for(var i = 0; i < widgetIdxs.length; i++)
 			{
-				var id = interestingWidgets[i];
+				var id = widgetIdxs[i];
 				var lastState = lastWidgets[id];
 				var curState = curWidgets[id];
 
@@ -663,6 +710,13 @@ class skyui.VRInput {
 			axis: Array)
 	{
 		//Debug.log(">>> VRInput handleVRButtonUpdate");
+
+		// Should we update any button states at all?
+		// This is useful for ignorning inputs when we're supposed to be
+		// blocking, waiting for the OpenVR virtual keyboard.
+		if(ignoreInput)
+			return;
+
 		var timestamp = getTimer();
 		var eventQueue = getInputEvents(
 				timestamp,
@@ -682,10 +736,18 @@ class skyui.VRInput {
 			axis: axis
 		}
 
+		var stateText = controllerStateText(update, true);
+		//if(stateText.length != 0) {
+		//	Debug.log("-- Button states --");
+		//	Debug.log(stateText);
+		//}
+
 		var focusPath = getFocusPath();
-		//Debug.log("focusPath: " + focusPath);
-		//if(eventQueue.length != 0)
+		//if(eventQueue.length != 0) {
+		//	Debug.log("focusPath: " + focusPath);
 		//	Debug.dump("eventQueue", eventQueue);
+		//}
+
 
 		dispatchButtonUpdates(update, focusPath);
 		dispatchInputEvents(eventQueue, focusPath);
@@ -712,23 +774,20 @@ class skyui.VRInput {
 		// Take every event in the queue
 		for(var ei = 0; ei < eventQueue.length; ei++) {
 			var event = eventQueue[ei];
-			/*
-			if(ei == 0) {
-				Debug.log("dispatchInputEvents");
-				Debug.dump("focusPath", focusPath);
-			}
-			Debug.log("Dispatching event: " + ei);
-			*/
+			//if(ei == 0) {
+			//	Debug.log("dispatchInputEvents");
+			//	Debug.dump("focusPath", focusPath);
+			//}
+			//Debug.log("Dispatching event: " + ei);
 
 			// Send the event to the "handleVRInput" function of every object in the focus path
 			for(var fi = 0; fi < focusPath.length; fi++) {
 				var obj = focusPath[fi];
 				if(obj.handleVRInput != null) {
-					/*
-					if(obj.classname != null)
-						Debug.log("" + fi + ": " + obj.classname());
-					Debug.log("Dispatching focusPath: " + fi);
-					*/
+					//Debug.log("focusPath: " + fi + " " + obj);
+					//if(obj.classname != null)
+					//	Debug.log("" + fi + ": " + obj.classname());
+
 					// An object may signal that it has already handled the event and stop the event
 					// from going further in the focus path.
 					var stop = obj.handleVRInput(event);
@@ -739,8 +798,9 @@ class skyui.VRInput {
 		}
 	}
 
-	function controllerStateText(update): String {
+	function controllerStateText(update, printFlags): String {
 		var output:String = "";
+		var lastLength = output.length;
 
 		for(var i = 0; i < 32; i++)
 		{
@@ -749,6 +809,11 @@ class skyui.VRInput {
 			if(update.buttonPressedLow & mask) {
 				output += "pressed: " + i + "\n";
 			}
+		}
+
+		if(printFlags && lastLength != output.length){
+			output += "buttonPressedLow: " + update.buttonPressedLow + "\n";
+			lastLength = output.length;
 		}
 
 		for(var i = 0; i < 32; i++)
@@ -760,6 +825,11 @@ class skyui.VRInput {
 			}
 		}
 
+		if(printFlags && lastLength != output.length){
+			output += "buttonPressedHigh: " + update.buttonPressedHigh + "\n";
+			lastLength = output.length;
+		}
+
 		for(var i = 0; i < 32; i++)
 		{
 			var mask = 1 << i;
@@ -769,6 +839,11 @@ class skyui.VRInput {
 			}
 		}
 
+		if(printFlags && lastLength != output.length){
+			output += "buttonTouchedLow: " + update.buttonTouchedLow + "\n";
+			lastLength = output.length;
+		}
+
 		for(var i = 0; i < 32; i++)
 		{
 			var mask = 1 << i;
@@ -776,6 +851,11 @@ class skyui.VRInput {
 			if(update.buttonTouchedHigh & mask) {
 				output += "touched: " + (i + 32) + "\n";
 			}
+		}
+
+		if(printFlags && lastLength != output.length){
+			output += "buttonTouchedHigh: " + update.buttonTouchedHigh + "\n";
+			lastLength = output.length;
 		}
 
 		for(var i = 0; i < 5; i++)
@@ -809,41 +889,48 @@ class skyui.VRInput {
 		return output;
 	}
 
+	// Build a list of widgets with interesting states
+	function collectInterestingWidgets(handIdx): Array {
+		var idxs = interestingWidgetIdxs();
+		var result = [];
+		var widgets = widgetStates[handIdx];
+		for(var i = 0; i < idxs.length; i++) {
+			var widget = widgets[idxs[i]];
+			if(widget.pressed || widget.touched || GlobalFunctions.vec2Mag(widget.axis)) {
+				result.push(widget);
+			}
+		}
+		return result;
+	}
 
 	var controllerTexts = ["", ""];
 	function controllerStateString(update): String
 	{
 		// Output all text prepared for each hand
+		var handIdx = update.controllerHand-1
 		var text = controllerStateText(update);
-		controllerTexts[update.controllerHand-1] = text;
+		controllerTexts[handIdx] = text;
 
-		// Build a list of widgets with interesting states
-		var viveWidgets = [1, 2, 32, 33];
-		var interestingWidgets = [];
-		var widgets = widgetStates[update.controllerHand-1];
-		for(var i = 0; i < viveWidgets.length; i++) {
-			var widget = widgets[viveWidgets[i]];
-			if(widget.pressed || widget.touched || GlobalFunctions.vec2Mag(widget.axis)) {
-				interestingWidgets.push(widget);
-			}
-		}
+		var collectedWidgets = collectInterestingWidgets(handIdx);
 
 		// Build a string representation of all interesting widgets
-		var interestingWidgetOutput = "";
-		for(var i = 0; i < interestingWidgets.length; i++) {
-			var widget = interestingWidgets[i];
-			interestingWidgetOutput += widgetToString(widget);
+		var widgetText = "";
+		for(var i = 0; i < collectedWidgets.length; i++) {
+			var widget = collectedWidgets[i];
+			widgetText += widgetToString(widget);
 		}
 
 		// Append widget text to the output for the cooresponding hand
-		if(interestingWidgetOutput.length != 0)
-			controllerTexts[update.controllerHand-1] += "\n" + interestingWidgetOutput;
+		if(widgetText.length != 0)
+			controllerTexts[handIdx] += "\n" + widgetText;
 
 		var output = "";
 
 		if(controllerTexts[0].length != 0 || controllerTexts[1].length != 0) {
-			output += ("Skryim says: " + controllerName_Game + "\n");
-			output += ("OpenVR says: " + controllerName_OpenVR + "\n");
+			output += "Skryim says: " + controllerName_Game + "\n";
+			output += "OpenVR says: " + controllerName_OpenVR + "\n";
+			output += "Skyui will use: " + controllerName + "\n";
+			output += "\n";
 		}
 		if(controllerTexts[0].length != 0) {
 			output += "Left controller:   \n";
@@ -873,7 +960,7 @@ class skyui.VRInput {
 	}
 
 	function setup() {
-		//Debug.log("VRInput.setup()");
+		Debug.log("VRInput.setup()");
 		var skyui = skse["plugins"]["skyui"];
 		if(skyui != undefined)
 		{
@@ -885,7 +972,7 @@ class skyui.VRInput {
 	}
 
 	function teardown() {
-		//Debug.log("VRInput.teardown()");
+		Debug.log("VRInput.teardown()");
 		var skyui = skse["plugins"]["skyui"];
 		if(skyui != undefined)
 		{
@@ -893,4 +980,36 @@ class skyui.VRInput {
 			skyui.UnregisterInputHandler(this, "handleVRButtonUpdate");
 		}
 	}
+
+
+	function pauseInput(type) {
+		switch(type) {
+			case "self":
+				ignoreInput = true;
+				break;
+			case "game":
+				skse["plugins"]["vrinput"].ShutoffButtonEventsToGame(true);
+				break;
+			case "all":
+				pauseInput("game");
+				pauseInput("self");
+				break;
+		}
+	}
+
+	function resumeInput(type) {
+		switch(type) {
+			case "self":
+				ignoreInput = false;
+				break;
+			case "game":
+				skse["plugins"]["vrinput"].ShutoffButtonEventsToGame(false);
+				break;
+			case "all":
+				resumeInput("game");
+				resumeInput("self");
+				break;
+		}
+	}
+
 }
