@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/360/LB" itemID="50149c1e-00000440" symbolType="graphic" lastModified="1343530774">
+  <timeline>
+    <DOMTimeline name="LB">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!214 68[215 47 209 31!209 31[204 16 191 8!191 8[178 0 155 0!155 0|113 0!113 0|113 256!113 256|154 256!154 256[189 256 204 239!204 239[219 221 218 186!218 186[218 172 215 160!215 160[212 148 204 139!204 139[197 130 182 126!182 126|182
+ 125!182 125[196 121 203 113!203 113[210 104 212 93!212 93[215 81 214 68!178 48[181 57 181 67!181 67[181 81 179 91!179 91[176 102 168 107!168 107[161 113 145 113!145 113|145 29!145 29|151 29!151 29[162 29 169 34!169 34[176 39 178 48!0
+ 0|0 256!0 256|91 256!91 256|91 226!91 226|34 226!34 226|34 0!34 0|0 0!145 140[161 139 169 145!169 145[177 150 179 161!179 161[182 171 182 185!182 185[182 199 179 209!179 209[176 218 168 223!168 223[160 228 145 227!145 227|145 140"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

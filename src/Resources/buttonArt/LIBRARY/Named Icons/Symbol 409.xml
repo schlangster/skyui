@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 409" itemID="5b986e27-000009d7" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 409">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E469AC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A6A8AB" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!585 39[624 77 624 132!624 132|624 388!624 388[624 442 585 481!585 481[546 520 492 520!492 520|132 520!132 520[78 520 39 481!39 481[0 443 0 388!0 388|0 132!0 132[0 78 39 39!39 39[78 0 132 0!132 0|492 0!492 0[546 0 585 39"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!492 58|132 58!132 58[102 58 80 80!80 80[59 102 59 132!59 132|59 388!59 388[59 418 80 440!80 440[102 461 132 461!132 461|492 461!492 461[521 461 544 440!544 440[565 417 565 388!565 388|565 132!565 132[565 102 544 80!544 80[522 58 492
+ 58"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!567 57[536 26 492 26!492 26|132 26!132 26[88 26 56 56!56 56[26 88 26 132!26 132|26 388!26 388[26 431 56 463!56 463[88 494 132 494!132 494|492 494!492 494[536 494 567 463!567 463[598 432 598 388!598 388|598 132!598 132[598 88 567 57"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

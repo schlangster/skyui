@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ButtonArtBackgrounds/BackgroundRight" itemID="5014d3ce-00002648" sourceFlashFilepath="../../PauseMenu/quest_journal.fla" sourceLibraryItemHRef="Shapes/Shape 324" sourceLastModified="1323436068" symbolType="graphic" lastModified="1348597317" sourceItemID="4ee20824-0000024f">
+  <timeline>
+    <DOMTimeline name="BackgroundRight">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A6A8AB"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!461 388[461 418 439 439!439 439[418 461 388 461!388 461|132 461!132 461[102 461 81 439!81 439[59 418 59 388!59 388|59 132!59 132[59 102 81 81!81 81[102 59 132 59!132 59|262 59!262 59[339 61 397 114!397 114[453 167 460 243!460 243|461
+ 388"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!492 388[492 431 462 462!462 462[431 492 388 492!388 492|132 492!132 492[89 492 59 462!59 462[28 432 28 388!28 388|28 132!28 132[28 89 59 59!59 59[89 28 132 28!132 28|263 28!263 28[352 30 418 91!418 91[485 153 491 242!491 242|492 388"/>
+                    <Edge fillStyle0="1" edges="
+!519 241[512 141 438 72!438 72[364 2 263 0!263 0|132 0!132 0[77 0 38 39!38 39[2 75 0 127!0 127|0 130!0 130|0 390!0 390|0 394!0 394[2 445 38 481!38 481[77 520 132 520!132 520|388 520!388 520[443 520 481 481!481 481[520 443 520 388!520
+ 388|519 241"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

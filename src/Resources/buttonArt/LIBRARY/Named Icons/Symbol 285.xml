@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 285" itemID="5b986e27-00000961" symbolType="graphic" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 285">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!246 165|246 251!246 251[267 252 275 239!275 239|281 204!281 204[281 164 251 165!251 165|246 165!303 154[315 171 315 206!315 206[315 255 283 264!283 264[319 276 319 326!319 326[319 364 304 381!304 381[289 398 254 398!254 398|213 398!213
+ 398|213 135!213 135|256 135!256 135[289 135 303 154!276 358[283 348 283 325!283 325[283 302 276 290!276 290[268 278 246 278!246 278|246 368!246 368[267 369 276 358"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!259 174|259 259!259 259[280 260 289 247!289 247|295 213!295 213[295 173 265 174!265 174|259 174!269 144[302 144 317 162!317 162[329 178 329 213!329 213[329 263 296 272!296 272|296 273!296 273[333 284 333 334!333 334[333 371 318 389!318
+ 389[302 406 268 406!268 406|226 406!226 406|226 144!226 144|269 144!259 287|259 377!259 377[280 378 289 367!289 367[296 356 296 333!296 333[296 309 290 299!290 299[281 286 259 287"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

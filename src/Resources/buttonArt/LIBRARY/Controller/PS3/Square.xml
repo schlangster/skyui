@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/Square" itemID="5014750f-000006a8" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="ButtonArtKeys/ButtonArtKeySquare" sourceLastModified="1343506986" symbolType="graphic" lastModified="1343521705" sourceItemID="5011e3cb-00000e0c">
+  <timeline>
+    <DOMTimeline name="Square">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!0 227S2|0 0!0 0|227 0!227 0|227 227!227 227|0 227"/>
+                    <Edge fillStyle0="1" edges="!191 191S1|36 191!36 191|36 36!36 36|191 36!191 36|191 191"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

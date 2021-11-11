@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/SemiColon" itemID="5014705c-00000373" symbolType="graphic" lastModified="1343521954">
+  <timeline>
+    <DOMTimeline name="SemiColon">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2" ty="-5.4"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!52 128S1[52 137 58 143!58 143[63 149 72 149!72 149[81 149 86 143!86 143[92 137 92 128!92 128[92 119 86 114!86 114[81 108 72 108!72 108[63 108 58 114!58 114[52 119 52 128!91 254|63 246!63 246|40 340!40 340|58 345!58 345|91 254"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

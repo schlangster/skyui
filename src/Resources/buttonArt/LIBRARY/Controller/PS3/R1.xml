@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/R1" itemID="50149bad-00000438" symbolType="graphic" lastModified="1343527866">
+  <timeline>
+    <DOMTimeline name="R1">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-5.3" ty="9.2"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!167 -183S1[156 -184 147 -184!147 -184|106 -184!106 -184|106 72!106 72|140 72!140 72|140 -54!140 -54|187 72!187 72|222 72!222 72|175 -53!175 -53[189 -56 197 -67!197 -67[204 -78 207 -92!207 -92[210 -106 210 -119!210 -119[210 -143 204 -156
+!204 -156[198 -170 188 -176!188 -176[178 -182 167 -183!145 -155[158 -156 164 -150!164 -150[170 -144 172 -134!172 -134[174 -124 174 -111!174 -111[174 -92 167 -81!167 -81[159 -70 140 -71!140 -71|140 -155!140 -155|145 -155!254 -155|279 -155
+!279 -155|279 72!279 72|313 72!313 72|313 -184!313 -184|254 -184!254 -184|254 -155"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

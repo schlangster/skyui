@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NumberPad/NP7" itemID="5014cacf-00001178" symbolType="graphic" lastModified="1343539928">
+  <timeline>
+    <DOMTimeline name="NP7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-45.1" ty="-2.4"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1301 48S1|1186 48!1186 48|1186 77!1186 77|1257 77!1257 77|1186 304!1186 304|1223 304!1223 304|1301 48!1130 98[1133 107 1133 119!1133 119[1133 141 1125 152!1125 152[1117 163 1096 162!1096 162|1096 77!1096 77|1101 77!1101 77[1113 77 1121
+ 82!1121 82[1128 88 1130 98!1125 49[1114 48 1103 48!1103 48|1062 48!1062 48|1062 304!1062 304|1096 304!1096 304|1096 190!1096 190[1135 192 1152 174!1152 174[1169 155 1169 116!1169 116[1169 92 1163 78!1163 78[1157 64 1147 57!1147 57[1137
+ 51 1125 49!994 242|934 48!934 48|902 48!902 48|902 304!902 304|936 304!936 304|929 106!929 106|989 304!989 304|1021 304!1021 304|1021 48!1021 48|987 48!987 48|995 242!995 242|994 242"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Dollar Sign" itemID="50146b79-000002ef" symbolType="graphic" lastModified="1343521833">
+  <timeline>
+    <DOMTimeline name="Dollar Sign">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.604721069335938" d="0.602935791015625" tx="-1.4" ty="-0.1"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!114 4S1|99 4!99 4|99 26!99 26[81 27 70 36!70 36[58 45 53 59!53 59[47 73 47 89!47 89[47 110 53 123!53 123[59 137 71 147!71 147[82 157 99 167!99 167[110 174 118 179!118 179[125 185 130 193!130 193[134 201 134 215!134 215[134 225 132 234
+!132 234[129 243 123 248!123 248[117 253 106 253!106 253[94 253 87 247!87 247[80 241 77 230!77 230|49 243!49 243[55 262 67 271!67 271[79 280 99 282!99 282|99 305!99 305|114 305!114 305|114 282!114 282[135 280 146 269!146 269[158 259 163
+ 244!163 244[167 229 167 210!167 210[167 191 162 178!162 178[157 166 147 157!147 157[137 149 121 139!121 139[109 132 100 125!100 125[91 119 85 110!85 110[80 101 80 88!80 88[80 73 86 64!86 64[92 55 108 54!108 54[119 54 127 61!127 61[135
+ 68 138 79!138 79|164 63!164 63[159 46 146 36!146 36[133 27 114 26!114 26|114 4"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

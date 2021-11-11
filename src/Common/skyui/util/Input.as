@@ -1,4 +1,5 @@
 import skyui.util.Debug;
+import skyui.VRInput;
 
 class skyui.util.Input
 {
@@ -12,6 +13,16 @@ class skyui.util.Input
 	//---------------------------------------------------------------------
 	static function pickButtonArt(a_platform: Number, buttonNames: Object): String
 	{
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+   			return buttonNames["ViveArt"];
+			case "knuckles":
+   			if(buttonNames["KnucklesArt"])
+					return buttonNames["KnucklesArt"];
+				else
+					return buttonNames["OculusArt"];
+		}
+
 		switch(a_platform) {
 
    		case Shared.Platforms.CONTROLLER_PC:

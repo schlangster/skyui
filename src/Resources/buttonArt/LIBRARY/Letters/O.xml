@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/O" itemID="50146f8e-00000341" symbolType="graphic" lastModified="1343521597">
+  <timeline>
+    <DOMTimeline name="O">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.55" ty="-1.1"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!138 68S1[144 81 147 104!147 104[149 126 149 154!149 154[149 181 147 204!147 204[144 226 138 240!138 240[131 253 118 253!118 253[105 253 98 240!98 240[91 226 89 204!89 204[87 181 87 154!87 154[87 126 89 104!89 104[91 81 98 68!98 68[105
+ 55 118 54!118 54[131 55 138 68!118 22[98 23 86 31!86 31[73 40 66 55!66 55[59 70 56 88!56 88[53 105 52 122!52 122[51 140 51 154!51 154[51 168 52 185!52 185[53 203 56 220!56 220[59 238 66 252!66 252[73 267 86 276!86 276[98 285 118 285
+!118 285[138 285 150 276!150 276[163 267 170 252!170 252[177 238 180 220!180 220[183 203 184 185!184 185[185 168 185 154!185 154[185 140 184 122!184 122[183 105 180 88!180 88[177 70 170 55!170 55[163 40 150 31!150 31[138 23 118 22"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

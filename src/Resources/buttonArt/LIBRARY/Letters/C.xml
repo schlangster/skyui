@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/C" itemID="50146f3b-00000329" symbolType="graphic" lastModified="1343521507">
+  <timeline>
+    <DOMTimeline name="C">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!106 8[99 4 92 2!92 2[85 0 76 0!76 0[56 1 42 9!42 9[28 18 20 33!20 33[11 48 7 66!7 66[3 84 1 102!1 102[0 120 0 136!0 136[0 156 3 178!3 178[6 201 14 220!14 220[22 239 37 251!37 251[53 263 79 263!79 263[86 263 93 262!93 262[100 260 106
+ 256!106 256|106 226!106 226[101 229 96 230!96 230[91 231 86 231!86 231[68 231 58 221!58 221[48 211 43 195!43 195[39 180 37 163!37 163[36 147 36 133!36 133[36 124 37 111!37 111[37 98 39 84!39 84[42 70 47 59!47 59[52 47 61 40!61 40[70
+ 32 84 32!84 32[90 32 96 34!96 34[101 36 106 39!106 39|106 8"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

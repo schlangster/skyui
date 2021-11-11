@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Asterisk" itemID="50146c68-000002f7" symbolType="graphic" lastModified="1343521795">
+  <timeline>
+    <DOMTimeline name="Asterisk">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.604721069335938" d="0.602935791015625" tx="-1.4" ty="-0.8"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!141 114S1|149 103!149 103|109 81!109 81|149 59!149 59|141 47!141 47|104 71!104 71|104 26!104 26|90 26!90 26|92 71!92 71|53 48!53 48|47 61!47 61|85 81!85 81|47 103!47 103|55 114!55 114|92 91!92 91|90 136!90 136|105 136!105 136|104 92
+!104 92|141 114"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

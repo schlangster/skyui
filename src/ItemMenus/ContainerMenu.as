@@ -438,7 +438,8 @@ class ContainerMenu extends ItemMenu
 				text: "$Search",
 				controls: skyui.util.Input.pickControls(_platform,
 																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down"})});
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "radial_Either_Down",
+																								 	 KnucklesArt: "OCC THUMB_REST"})});
 			// if (!_bEquipMode)
 			//	 navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {

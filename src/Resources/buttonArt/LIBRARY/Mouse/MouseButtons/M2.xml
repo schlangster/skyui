@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Mouse/MouseButtons/M2" itemID="5014c7c3-00001148" symbolType="graphic" lastModified="1343539264">
+  <timeline>
+    <DOMTimeline name="M2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!276 61S1[276 78 270 95!270 95[265 112 258 127!258 127|196 259!196 259|309 259!309 259|309 229!309 229|245 229!245 229|267 188!267 188[276 171 286 149!286 149[296 127 303 105!303 105[311 82 311 63!311 63[311 33 298 16!298 16[285 0 254
+ 0!254 0[229 0 217 10!217 10[206 21 202 39!202 39[199 56 199 77!199 77|199 86!199 86|234 86!234 86|234 79!234 79[233 75 233 67!233 67[233 59 235 51!235 51[236 42 240 36!240 36[245 30 253 30!253 30[262 30 267 35!267 35[272 40 274 47!274
+ 47[276 53 276 61!121 3|89 177!89 177|88 188!88 188|87 188!87 188|50 3!50 3|21 3!21 3|0 259!0 259|33 259!33 259|42 82!42 82|43 82!43 82|76 259!76 259|99 259!99 259|132 82!132 82|141 259!141 259|175 259!175 259|151 3!151 3|121 3"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

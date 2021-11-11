@@ -426,8 +426,8 @@ class InventoryMenu extends ItemMenu
 				text: "$Search",
 				controls: skyui.util.Input.pickControls(_platform,
 																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down"})
-			});
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down",
+																								 	 KnucklesArt: "OCC THUMB_REST"})});
 
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});

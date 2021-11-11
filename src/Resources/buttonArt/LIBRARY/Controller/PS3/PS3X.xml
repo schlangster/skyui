@@ -1,0 +1,26 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/PS3X" itemID="5014cb73-0000118c" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="ButtonArtKeys/ButtonArtKeyX" sourceLastModified="1343349712" symbolType="graphic" lastModified="1343540083" sourceItemID="5011e3d0-00000e0e">
+  <timeline>
+    <DOMTimeline name="PS3X">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!238 25S2|145 118!145 118|238 211!238 211|212 236!212 236|119 143!119 143|26 236!26 236|0 211!0 211|93 118!93 118|0 25!0 25|26 0!26 0|119 93!119 93|122 91!122 91|212 0!212 0|238 25"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

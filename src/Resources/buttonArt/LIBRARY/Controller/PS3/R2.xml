@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/R2" itemID="50149bdf-0000043e" symbolType="graphic" lastModified="1343527965">
+  <timeline>
+    <DOMTimeline name="R2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!235 16[222 0 191 0!191 0[166 0 154 10!154 10[143 21 139 39!139 39[136 56 136 77!136 77|136 86!136 86|171 86!171 86|171 79!171 79[170 75 170 67!170 67[170 59 172 51!172 51[173 42 177 36!177 36[182 30 190 30!190 30[199 30 204 35!204 35
+[209 40 211 47!211 47[213 53 213 61!213 61[213 78 207 95!207 95[202 112 195 127!195 127|133 259!133 259|246 259!246 259|246 229!246 229|182 229!182 229|204 188!204 188[213 171 223 149!223 149[233 127 240 105!240 105[248 82 248 63!248
+ 63[248 33 235 16!61 4[50 3 41 3!41 3|0 3!0 3|0 259!0 259|34 259!34 259|34 133!34 133|81 259!81 259|116 259!116 259|69 134!69 134[83 131 91 120!91 120[98 109 101 95!101 95[104 81 104 68!104 68[104 44 98 31!98 31[92 17 82 11!82 11[72 5
+ 61 4!66 53[68 63 68 76!68 76[68 95 61 106!61 106[53 117 34 116!34 116|34 32!34 32|39 32!39 32[52 31 58 37!58 37[64 43 66 53"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

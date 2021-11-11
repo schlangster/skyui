@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/LAlt" itemID="50aab067-00004187" symbolType="graphic" lastModified="1355267106">
+  <timeline>
+    <DOMTimeline name="LAlt">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!323 62|323 110!323 110|306 110!306 110|306 136!306 136|323 136!323 136|323 282!323 282|355 282!355 282|355 136!355 136|372 136!372 136|372 110!372 110|355 110!355 110|355 62!355 62|323 62!256 0|256 282!256 282|288 282!288 282|288 0!288
+ 0|256 0!0 26|0 282!0 282|91 282!91 282|91 252!91 252|34 252!34 252|34 26!34 26|0 26!195 232|205 282!205 282|239 282!239 282|184 26!184 26|157 26!157 26|101 282!101 282|135 282!135 282|144 232!144 232|195 232!170 75|190 205!190 205|149
+ 205!149 205|170 75"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

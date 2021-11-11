@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/Triangle" itemID="50147bb5-000006bf" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="ButtonArtKeys/ButtonArtKeyTriangle" sourceLastModified="1343507051" symbolType="graphic" lastModified="1343521713" sourceItemID="5011e3cd-00000e0d">
+  <timeline>
+    <DOMTimeline name="Triangle">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!53 186|201 186!201 186|127 61!127 61|53 186!127 0|254 217!254 217|0 217!0 217|127 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

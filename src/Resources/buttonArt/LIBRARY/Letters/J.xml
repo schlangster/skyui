@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/J" itemID="50146f71-00000337" symbolType="graphic" lastModified="1343521556">
+  <timeline>
+    <DOMTimeline name="J">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2" ty="-1.3"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!119 26S1|85 26!85 26|85 217!85 217[85 226 84 234!84 234[83 242 78 247!78 247[73 253 62 253!62 253[56 253 50 250!50 250[45 247 40 244!40 244|40 279!40 279[46 282 54 284!54 284[62 285 69 285!69 285[91 285 102 276!102 276[113 267 116 252
+!116 252[120 237 119 218!119 218|119 26"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Pound" itemID="5014b5eb-00000e12" symbolType="graphic" lastModified="1343534600">
+  <timeline>
+    <DOMTimeline name="Pound">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!68 28[67 14 60 7!60 7[52 0 39 0!39 0[22 0 13 10!13 10[4 20 4 37!4 37[4 49 8 60!8 60[13 71 18 82!18 82|4 82!4 82|4 89!4 89|20 89!20 89[22 94 23 97!23 97[24 101 24 106!24 106[24 110 23 113!23 113[22 117 20 120!20 120|18 120!18 120[13 120
+ 9 122!9 122[5 125 3 128!3 128[1 132 0 137!0 137|14 142!14 142[15 140 16 138!16 138[18 136 21 136!21 136[25 136 29 138!29 138[33 141 38 143!38 143[43 145 49 145!49 145[58 145 62 140!62 140[67 134 69 128!69 128|54 122!54 122[53 125 51
+ 127!51 127[50 129 47 129!47 129[44 129 41 127!41 127[37 125 35 123!35 123[37 119 38 113!38 113[39 108 39 102!39 102[39 99 38 96!38 96[38 92 37 89!37 89|54 89!54 89|54 82!54 82|36 82!36 82[33 74 30 66!30 66[26 58 24 50!24 50[22 42 22
+ 33!22 33[22 25 26 20!26 20[31 15 39 15!39 15[44 15 48 18!48 18[51 20 53 25!53 25[54 29 53 35!53 35|68 28"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
