@@ -1012,4 +1012,7 @@ class skyui.VRInput {
 		}
 	}
 
+	static public function inputEventSummary(event): String {
+		return "phase: " + event.phaseName + ", event: " + event.eventName + ", widget: " + event.curState.widgetName;
+	}
 }

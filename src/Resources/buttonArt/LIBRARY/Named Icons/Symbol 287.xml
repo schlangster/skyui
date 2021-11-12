@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 287" itemID="5b986e27-00000963" symbolType="graphic" lastModified="1535509198">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 287" itemID="5b986e27-00000963" symbolType="graphic" lastModified="1636707876">
   <timeline>
     <DOMTimeline name="Symbol 287">
       <layers>
@@ -6,14 +6,14 @@
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#BBBDBF"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!279 131|335 394!335 394|300 394!300 394|291 343!291 343|239 343!239 343|229 394!229 394|195 394!195 394|252 131!252 131|279 131!264 183|244 315!244 315|286 315!286 315|265 183!265 183|264 183"/>
+                    <Edge fillStyle1="1" edges="!259 183|239 315!239 315|281 315!281 315|260 183!260 183|259 183!274 131|330 394!330 394|295 394!295 394|286 343!286 343|234 343!234 343|224 394!224 394|190 394!190 394|247 131!247 131|274 131"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -24,14 +24,14 @@
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!293 140|349 402!349 402|314 402!314 402|304 351!304 351|252 351!252 351|243 402!243 402|209 402!209 402|265 140!265 140|293 140!278 190|258 324!258 324|299 324!299 324|279 190!279 190|278 190"/>
+                    <Edge fillStyle1="1" edges="!273 190|253 324!253 324|294 324!294 324|274 190!274 190|273 190!288 140|344 402!344 402|309 402!309 402|299 351!299 351|247 351!247 351|238 402!238 402|204 402!204 402|260 140!260 140|288 140"/>
                   </edges>
                 </DOMShape>
               </elements>

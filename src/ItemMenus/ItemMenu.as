@@ -567,7 +567,7 @@ class ItemMenu extends MovieClip
 		// FIXME? This crashes SkyrimVR
 		// When opening the inventory a second time without having an item selected for some reason.
 		//saveIndices();
-		//GameDelegate.call("CloseMenu",[]);
+		//closemenu();
 		//skse.OpenMenu("Inventory Menu");
 	}
 

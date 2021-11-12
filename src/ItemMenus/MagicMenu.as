@@ -194,7 +194,7 @@ class MagicMenu extends ItemMenu
 		if (!_bMenuClosing)
 			return;
 
-		GameDelegate.call("CloseMenu", []);
+		closeMenu();
 		if (_bSwitchMenus) {
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("InventoryMenu");
@@ -236,7 +236,7 @@ class MagicMenu extends ItemMenu
 			startMenuFade();
 		} else {
 			saveIndices();
-			GameDelegate.call("CloseMenu",[]);
+			closeMenu();
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("InventoryMenu");
 		}

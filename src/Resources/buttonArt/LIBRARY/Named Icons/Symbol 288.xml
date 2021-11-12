@@ -2,11 +2,11 @@
   <timeline>
     <DOMTimeline name="Symbol 288">
       <layers>
-        <DOMLayer name="Layer 1" color="#7F4AC1">
+        <DOMLayer name="Layer 1" color="#7F4AC1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 287" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 287" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix ty="-0.3"/>
                   </matrix>
@@ -18,11 +18,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#CDAD75" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#CDAD75">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 258" selected="true" centerPoint3DX="13" centerPoint3DY="13">
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 258" centerPoint3DX="13" centerPoint3DY="13">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

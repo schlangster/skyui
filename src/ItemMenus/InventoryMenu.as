@@ -344,7 +344,7 @@ class InventoryMenu extends ItemMenu
 			startMenuFade();
 		} else {
 			saveIndices();
-			GameDelegate.call("CloseMenu",[]);
+			closeMenu();
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("MagicMenu");
 		}

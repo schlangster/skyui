@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ButtonArt" itemID="505f130d-000005ab" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="ButtonArt" linkageURL="skyui/buttonart.swf" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="Labels" sourceLastModified="1343514293" lastModified="1636596514" lastUniqueIdentifier="159" sourceItemID="00000000-7fffffff">
   <timeline>
-    <DOMTimeline name="ButtonArt" currentFrame="473">
+    <DOMTimeline name="ButtonArt">
       <layers>
         <DOMLayer name="script" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -3115,7 +3115,7 @@
             </DOMFrame>
             <DOMFrame index="473" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 288" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 288" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point x="13" y="13"/>
                   </transformationPoint>

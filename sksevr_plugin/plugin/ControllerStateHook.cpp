@@ -15,6 +15,8 @@
 #include "skse64/ScaleformMovie.h"
 #include "skse64/Hooks_Scaleform.h"
 #include "skse64/ScaleformCallbacks.h"
+#include "skse64/GameEvents.h"
+#include "skse64/GameMenus.h"
 
 #include "VRHookAPI.h"
 #include <list>
@@ -46,14 +48,7 @@ namespace ControllerStateHook {
       return true;
    }
 
-   void Init() {
-      // Ask for SkyrimVRTools to send us ConstrollerStates whenever they are requested.
-      hookMgr = RequestOpenVRHookManagerObject();
-      if (!hookMgr)
-         return;
 
-      hookMgr->RegisterControllerStateCB(ControllerStateCB);
-   }
 
    bool equalGFxValue(const GFxValue& lhs, const GFxValue& rhs)
    {
@@ -229,5 +224,56 @@ namespace ControllerStateHook {
       RegisterFunction<VRInputScaleform_ControllerType>(plugin, view, "ControllerType");
       return true;
    }
-}
 
+   class CleanControllerHookOnMenuClose : public BSTEventSink<MenuOpenCloseEvent>
+   {
+      EventResult ReceiveEvent(MenuOpenCloseEvent* evn, EventDispatcher<MenuOpenCloseEvent>* dispatcher) {
+         if (evn->opening)
+            return kEvent_Continue;
+
+         //_MESSAGE("Close menu: %s", evn->menuName);
+ 
+         // FIXME!!! Can find the actionscript code that controls crafting menu closing.
+         // This means we can't properly unregister VRInput::handleVRButtonUpdate().
+         // Instead, we listen for the menu close event globally here and forcefully kickout
+         // any registration here.
+         //
+         // This only works because VRInput is the only code that registers for these button updates.
+         // We really shouldn't be able to unintentionally remove handlers we don't intend to.
+         if (_stricmp(evn->menuName, "Crafting Menu") == 0) {
+
+            // Any GFxValue we might have tried to hang on are probably gone/destroyed now.
+            // We're removing the "managed" flag manually here we don't try to reference them and
+            // clean them up again, which will result in a crash.
+            for (auto it = g_scaleformInputHandlers.begin(); it != g_scaleformInputHandlers.end(); it++) {
+               ScaleformCallback& cb = *it;
+               cb.object.type &= ~GFxValue::kTypeFlag_Managed;
+            }
+            
+            g_scaleformInputHandlers.clear();
+         }
+
+         return kEvent_Continue;
+      }
+   };
+
+   CleanControllerHookOnMenuClose g_menuCloseHandler;
+
+   void Init() {
+      // Ask for SkyrimVRTools to send us ConstrollerStates whenever they are requested.
+      hookMgr = RequestOpenVRHookManagerObject();
+      if (!hookMgr)
+         return;
+
+      hookMgr->RegisterControllerStateCB(ControllerStateCB);
+
+      // Handle menu close events
+      MenuManager* mm = MenuManager::GetSingleton();
+      if (mm) {
+         mm->MenuOpenCloseEventDispatcher()->AddEventSink(&g_menuCloseHandler);
+      }
+      else {
+         _MESSAGE("Failed to register menu close handler!");
+      }
+   }
+}

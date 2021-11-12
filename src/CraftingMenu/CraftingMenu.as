@@ -13,6 +13,7 @@ import skyui.util.GlobalFunctions;
 
 import skyui.defines.Input;
 import flash.utils.getTimer;
+import skyui.VRInput;
 
 class CraftingMenu extends MovieClip
 {
@@ -64,6 +65,7 @@ class CraftingMenu extends MovieClip
 	private var _subtypeName: String;
 
 	private var _handleInputRateLimiter: Boolean;
+	private var _VRInput: VRInput;
 
 
   /* PROPERTIES */
@@ -211,7 +213,7 @@ class CraftingMenu extends MovieClip
 		
 		ExitMenuRect.onPress = function ()
 		{
-			GameDelegate.call("CloseMenu", []);
+			closeMenu();
 		};
 		
 		bCanCraft = false;
@@ -365,6 +367,8 @@ class CraftingMenu extends MovieClip
 	// @API
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
+		VRInput.instance.updatePlatform(a_platform);
+
 		_platform = a_platform;
 		
 		if (a_platform == 0) {
@@ -451,7 +455,36 @@ class CraftingMenu extends MovieClip
 		// component to focus on.
 		return true;
 	}
-	
+
+	public function classname(): String{
+		return "Class CraftingMenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("CraftingMenu::handleVRInput", event);
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						InventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			case "knuckles":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						InventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+
   /* PRIVATE FUNCTIONS */
 
 	private function positionFixedElements(): Void
@@ -614,8 +647,15 @@ class CraftingMenu extends MovieClip
 		GameDelegate.call("ShowItem3D", [event.index != -1]);
 	}
 
+	public function setupVRInput() {
+		_VRInput = VRInput.instance;
+		VRInput.instance.setup();
+	}
+
 	private function onShowItemsList(event: Object): Void
 	{
+		setupVRInput();
+
 		if (_platform == Shared.Platforms.CONTROLLER_PC ||
 				_platform == Shared.Platforms.CONTROLLER_VIVE ||
 				_platform == Shared.Platforms.CONTROLLER_OCULUS ||
@@ -679,7 +719,13 @@ class CraftingMenu extends MovieClip
 
 	private function onExitButtonPress(): Void
 	{
-		GameDelegate.call("CloseMenu", []);
+		closeMenu();
+	}
+
+	public function closeMenu()
+	{
+		VRInput.instance.teardown();
+		GameDelegate.call("CloseMenu",[]);
 	}
 
 	private function onAuxButtonPress(): Void
