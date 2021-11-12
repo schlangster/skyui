@@ -9,6 +9,7 @@ import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Input;
 import skyui.defines.Inventory;
+import skyui.VRInput;
 
 
 class BarterMenu extends ItemMenu
@@ -116,9 +117,36 @@ class BarterMenu extends ItemMenu
 		return super.handleInput(details, pathToFocus);
 	}
 
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("BarterMenu::handleVRInput", event);
+		if (!bFadedIn)
+			return;
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			case "knuckles":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+
 	private function onExitButtonPress(): Void
 	{
-		GameDelegate.call("CloseMenu",[]);
+		closeMenu()
 	}
 
 	// @API
@@ -162,6 +190,8 @@ class BarterMenu extends ItemMenu
 	// @override ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
+		setupVRInput();
+
 		inventoryLists.showItemsList();
 
 		//super.onShowItemsList(event);
@@ -259,6 +289,13 @@ class BarterMenu extends ItemMenu
 			}
 			navPanel.addButton({text: "$Switch Tab", controls: {namedKey: "Action_Left"}});
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "radial_Either_Down",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}
