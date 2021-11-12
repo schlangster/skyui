@@ -421,14 +421,6 @@ class InventoryMenu extends ItemMenu
 																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Left"})
 					});
 			}
-
-			navPanel.addButton({
-				text: "$Search",
-				controls: skyui.util.Input.pickControls(_platform,
-																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down",
-																								 	 KnucklesArt: "OCC THUMB_REST"})});
-
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			// navPanel.addButton({text: "$Search", controls: _searchControls});
@@ -438,6 +430,13 @@ class InventoryMenu extends ItemMenu
 			}
 			// navPanel.addButton({text: "$Magic", controls: _switchControls});
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}

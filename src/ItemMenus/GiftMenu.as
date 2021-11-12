@@ -147,6 +147,13 @@ class GiftMenu extends ItemMenu
 			}
 		}
 
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "radial_Either_Down",
+																								 KnucklesArt: "OCC THUMB_REST"})});
+
 		navPanel.updateButtons(true);
 	}
 

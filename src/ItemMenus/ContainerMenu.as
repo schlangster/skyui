@@ -434,12 +434,6 @@ class ContainerMenu extends ItemMenu
 				navPanel.addButton({text: bNPCMode ? "$Give" : "$Store", controls: activateControl});
 				navPanel.addButton({text: itemCard.itemInfo.favorite ? "$Unfavorite" : "$Favorite", controls: favoriteControl});
 			}
-			navPanel.addButton({
-				text: "$Search",
-				controls: skyui.util.Input.pickControls(_platform,
-																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "radial_Either_Down",
-																								 	 KnucklesArt: "OCC THUMB_REST"})});
 			// if (!_bEquipMode)
 			//	 navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
@@ -454,6 +448,13 @@ class ContainerMenu extends ItemMenu
 				navPanel.addButton({text: "$Take All", controls: takeAllControl});
 
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "radial_Either_Down",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}

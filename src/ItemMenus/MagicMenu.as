@@ -267,12 +267,6 @@ class MagicMenu extends ItemMenu
 			if (itemCard.itemInfo.showUnlocked)
 				navPanel.addButton({text: "$Unlock", controls: unlockControls});
 
-			navPanel.addButton({
-				text: "$Search",
-				controls: skyui.util.Input.pickControls(_platform,
-																									{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down",
-																								 	 KnucklesArt: "OCC THUMB_REST"})});
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			if (_platform != 0) {
@@ -281,6 +275,13 @@ class MagicMenu extends ItemMenu
 			}
 			// navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}
