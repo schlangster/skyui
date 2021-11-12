@@ -234,10 +234,10 @@ class ItemMenu extends MovieClip
 
 	public function closeMenu()
 	{
-		Debug.log(">>> ItemMenu::CloseMenu");
+		//Debug.log(">>> ItemMenu::CloseMenu");
 		VRInput.instance.teardown();
 		GameDelegate.call("CloseMenu",[]);
-		Debug.log("<<< ItemMenu::CloseMenu");
+		//Debug.log("<<< ItemMenu::CloseMenu");
 	}
 
 	// @API

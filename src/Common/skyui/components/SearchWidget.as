@@ -83,18 +83,18 @@ class skyui.components.SearchWidget extends MovieClip
 
 	public function onRelease(a_mouseIndex, a_keyboardOrMouse)
 	{
-		Debug.log("In onRelease!");
+		//Debug.log("In onRelease!");
 		//setTimeout(startInput, 100);
 		startInput();
 	}
 
 	public function startInput(): Void
 	{
-		Debug.log("SearchWidget::startInput()");
+		//Debug.log("SearchWidget::startInput()");
 		if (_bActive || isDisabled)
 			return;
 
-		Debug.log("SearchWidget::startInput() rest");
+		//Debug.log("SearchWidget::startInput() rest");
 		_previousFocus = FocusHandler.instance.getFocus(0);
 
 		_currentInput = _lastInput = undefined;
@@ -117,7 +117,7 @@ class skyui.components.SearchWidget extends MovieClip
 		// Show the keyboard
 		skse["plugins"]["skyui"].ShowVirtualKeyboard("skyui", "Search", "Item name", "", this, recvVirtualKeyboardInput);
 
-		Debug.log("sending inputStart event and entering autoupdate loop");
+		//Debug.log("sending inputStart event and entering autoupdate loop");
 		dispatchEvent({type: "inputStart"});
 
 		if ( _bEnableAutoupdate) {
@@ -139,18 +139,18 @@ class skyui.components.SearchWidget extends MovieClip
 
 	private function recvVirtualKeyboardInput(text:String, err:Number): Void
 	{
-		Debug.log("recvVirtualKeyboardInput: ", text, err);
+		//Debug.log("recvVirtualKeyboardInput: ", text, err);
 		textField.text = text;
 		endInput();
 	}
 
 	public function endInput(): Void
 	{
-		Debug.log("SearchWidget::endInput()");
+		//Debug.log("SearchWidget::endInput()");
 		if (!_bActive)
 			return;
 
-		Debug.log("SearchWidget::endInput() rest");
+		//Debug.log("SearchWidget::endInput() rest");
 		delete this.onEnterFrame;
 
 		VRInput.instance.resumeInput("all");
@@ -181,7 +181,7 @@ class skyui.components.SearchWidget extends MovieClip
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		Debug.log("search widget handle input");
+		//Debug.log("search widget handle input");
 		Debug.dump("InputDetails", details, false, 0);
 
 		if (GlobalFunc.IsKeyPressed(details)) {

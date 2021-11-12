@@ -170,7 +170,7 @@ class skyui.VRInput {
 		else
 			controllerName = controllerName_Game;
 
-		Debug.log("[skyui] controllerName: " + controllerName);
+		//Debug.log("[skyui] controllerName: " + controllerName);
 	}
 
 	public function widgetDetectPhaseChange(curState, lastState, phaseName) {
@@ -960,7 +960,7 @@ class skyui.VRInput {
 	}
 
 	function setup() {
-		Debug.log("VRInput.setup()");
+		//Debug.log("VRInput.setup()");
 		var skyui = skse["plugins"]["skyui"];
 		if(skyui != undefined)
 		{
@@ -972,7 +972,7 @@ class skyui.VRInput {
 	}
 
 	function teardown() {
-		Debug.log("VRInput.teardown()");
+		//Debug.log("VRInput.teardown()");
 		var skyui = skse["plugins"]["skyui"];
 		if(skyui != undefined)
 		{
