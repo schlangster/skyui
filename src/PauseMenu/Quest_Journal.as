@@ -23,6 +23,7 @@ class Quest_Journal extends MovieClip
 	var BottomBar: MovieClip;
 	var BottomBar_mc: MovieClip;
 	var TextPanel: MovieClip;
+	var showInputReadout: Boolean;
 
 	var PageArray: Array;
 
@@ -96,12 +97,17 @@ class Quest_Journal extends MovieClip
 			Debug.log("SkyrimVRTools plugin not available");
 		}
 
-		// For whatever reason, Scaleform API requires an object to be somewhere
-		// on the stage to be able to send inputs via a registered callback.
-		// By adding it here, VRInput should start receiving and button updates
-		// and start pumping out button events.
-		_VRInput = VRInput.instance;
-		VRInput.instance.setup();
+		showInputReadout = skse["plugins"]["skyui"].IniGetBool("showInputReadout");
+		if(!showInputReadout)
+			TextPanel._visible = false;
+		else {
+			// For whatever reason, Scaleform API requires an object to be somewhere
+			// on the stage to be able to send inputs via a registered callback.
+			// By adding it here, VRInput should start receiving and button updates
+			// and start pumping out button events.
+			_VRInput = VRInput.instance;
+			VRInput.instance.setup();
+		}
 
     QuestsTab.disableFocus = true;
     StatsTab.disableFocus = true;
@@ -172,9 +178,12 @@ class Quest_Journal extends MovieClip
 
 	function handleVRButtonUpdate(update)
 	{
+		if(!showInputReadout)
+			return;
+
 		//Debug.dump("update", update);
 		var stateString = VRInput.instance.controllerStateString(update);
-		//Debug.log("stateString: " + stateString);
+		Debug.log("stateString: " + stateString);
 		if(stateString.length != 0) {
 			TextPanel.TextArea.SetText(stateString);
 		} else {

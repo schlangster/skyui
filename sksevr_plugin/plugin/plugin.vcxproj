@@ -147,6 +147,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="FormDB.h" />
     <ClInclude Include="ScaleformExtendedDataFix.h" />
+    <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControllerStateHook.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FormDB.cpp" />
     <ClCompile Include="ScaleformExtendedDataFix.cpp" />
+    <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />

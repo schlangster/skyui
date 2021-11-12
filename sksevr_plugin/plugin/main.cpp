@@ -6,6 +6,7 @@
 #include "ScaleformExtendedDataFix.h"
 #include "Keyboard.h"
 #include "ControllerStateHook.h"
+#include "Settings.h"
 
 static PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 static SKSEPapyrusInterface* g_papyrus = nullptr;
@@ -74,6 +75,7 @@ extern "C" {
          FormDB::RegisterScaleformFuncs(view, plugin);               // Expose FormDB lua functions to Scaleform
          ControllerStateHook::RegisterScaleformFuncs(view, plugin);
          Keyboard::RegisterScaleformFuncs(view, plugin);
+         Settings::RegisterScaleformFuncs(view, plugin);
          return true;
       });
 
