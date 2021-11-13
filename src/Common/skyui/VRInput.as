@@ -245,7 +245,7 @@ class skyui.VRInput {
 
 	static function axisRegion(vec2) {
 		var mag = GlobalFunctions.vec2Mag(vec2);
-		if(mag <= 0.30)
+		if(mag <= 0.45)
 			return "center";
 
 		return axisQuadrant(vec2);
