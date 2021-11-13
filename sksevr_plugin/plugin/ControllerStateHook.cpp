@@ -20,6 +20,7 @@
 
 #include "VRHookAPI.h"
 #include <list>
+#include <unordered_set>
 #include <assert.h>
 
 
@@ -225,22 +226,61 @@ namespace ControllerStateHook {
       return true;
    }
 
+   std::unordered_set<std::string> ignoredMenus({
+      "WSActivateRollover",
+      "WSEnemyMeters",
+      "LoadWaitSpinner",
+      "HUD Menu",
+      "Cursor Menu",
+      "Fader Menu",
+      "Mist Menu",
+      "LoadWaitSpinner",
+      "Loading Menu",
+      "TweenMenu",
+   });
+
+   std::unordered_set<std::string> forceCleanMenus({
+      "Journal Menu",
+      "InventoryMenu",
+      "MagicMenu",
+      "ContainerMenu",
+      "BarterMenu",
+      "GiftMenu",
+      "Crafting Menu",
+   });
+
+   bool contains(std::unordered_set<std::string>& set, const char* key) {
+      if (set.find(key) == set.end())
+         return false;
+      else
+         return true;
+   }
+
    class CleanControllerHookOnMenuClose : public BSTEventSink<MenuOpenCloseEvent>
    {
       EventResult ReceiveEvent(MenuOpenCloseEvent* evn, EventDispatcher<MenuOpenCloseEvent>* dispatcher) {
          if (evn->opening)
             return kEvent_Continue;
 
-         //_MESSAGE("Close menu: %s", evn->menuName);
- 
-         // FIXME!!! Can find the actionscript code that controls crafting menu closing.
+         //if (!contains(ignoredMenus, evn->menuName))
+         //   _MESSAGE("Closing menu: %s", evn->menuName);
+
+         // In the menus, the game engine seems to still respond to a lot of the events on its own.
+         // There are places where additional menus are opened without skyui's intervention.
+         // There are also places where menus are closed without skyui receiving notifications.
          // This means we can't properly unregister VRInput::handleVRButtonUpdate().
          // Instead, we listen for the menu close event globally here and forcefully kickout
-         // any registration here.
+         // any registration.
          //
          // This only works because VRInput is the only code that registers for these button updates.
          // We really shouldn't be able to unintentionally remove handlers we don't intend to.
-         if (_stricmp(evn->menuName, "Crafting Menu") == 0) {
+         //
+         // Examples:
+         //    ContainerMenu:
+         //       Take all: forcefully closes the menu
+         //    CraftingMenu:
+         //       "Quit alchemy" prompt forcefully closes the menu
+         if (contains(forceCleanMenus, evn->menuName)) {
 
             // Any GFxValue we might have tried to hang on are probably gone/destroyed now.
             // We're removing the "managed" flag manually here we don't try to reference them and
