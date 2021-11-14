@@ -141,8 +141,10 @@ class skyui.VRInput {
 		switch(name){
 			case "vive_controller":
   			return "vive";
-			case "knuckles":
+  		case "knuckles":
   			return "knuckles";
+			case "oculus":
+  			return "oculus";
 			default:
   			return "unknown";
 		}
@@ -258,6 +260,9 @@ class skyui.VRInput {
 					break;
 				case "knuckles":
 					return [1, 2, 7, 32, 33, 34];
+					break;
+				case "oculus":
+					return [1, 2, 7, 32, 33];
 					break;
 				default:
 					if(!errorPrintedFlags["unknown-controller"]) {
@@ -397,6 +402,36 @@ class skyui.VRInput {
 
 					widgets[34].widgetName = "fingers";
 					widgets[34].type = "button";
+					break;
+
+				default:
+					widgets[1].widgetName = "B button";
+					widgets[1].type = "button";
+					widgetAddClickWhenPressed(widgets[1]);
+
+					widgets[2].widgetName = "grip";
+					widgets[2].type = "button";
+					widgets[2].axisId = 2;
+					widgets[2].axis = getAxis(axis, 2);
+					widgetAddClickWhenPressed(widgets[2]);
+
+					widgets[7].widgetName = "A button";
+					widgets[7].type = "button";
+					widgetAddClickWhenPressed(widgets[7]);
+
+					widgets[32].widgetName = "thumbstick";
+					widgets[32].type = "thumbstick";
+					widgets[32].axisId = 0;
+					widgets[32].axis = getAxis(axis, 0);
+					widgetAddClickWhenPressed(widgets[32]);
+
+					widgets[33].widgetName = "trigger";
+					widgets[33].type = "trigger";
+					widgets[33].axisId = 1;
+					widgets[33].axis = getAxis(axis, 1);
+					widgetAddClickForTrigger(widgets[33]);
+					widgetDetectTouchWithAxis(widgets[33]);
+
 					break;
 			}
 

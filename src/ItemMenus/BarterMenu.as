@@ -132,7 +132,7 @@ class BarterMenu extends ItemMenu
 				}
 				break;
 
-			case "knuckles":
+			default:
 				if(event.phaseName == "clicked" && event.eventName == "start") {
 					var state = event.curState;
 					if(state.widgetName == "thumbstick") {
@@ -294,7 +294,7 @@ class BarterMenu extends ItemMenu
 			text: "$Search",
 			controls: skyui.util.Input.pickControls(_platform,
 																								{PCArt: "Space", ViveArt: "radial_Either_Down",
-																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "OCC THUMB_REST",
 																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);

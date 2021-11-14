@@ -141,7 +141,7 @@ class MagicMenu extends ItemMenu
 				}
 				break;
 
-			case "knuckles":
+			default:
 				if(event.phaseName == "clicked" && event.eventName == "start") {
 					var state = event.curState;
 					if(state.widgetName == "thumbstick") {
