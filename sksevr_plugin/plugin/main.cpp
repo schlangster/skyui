@@ -2,10 +2,11 @@
 #include "skse64_common/skse_version.h"   // What version of SKSE is running?
 #include <shlobj.h>                       // CSIDL_MYCODUMENTS
 
-#include "Plugin.h"
+#include "FormDB.h"
 #include "ScaleformExtendedDataFix.h"
-
-
+#include "Keyboard.h"
+#include "ControllerStateHook.h"
+#include "Settings.h"
 
 static PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 static SKSEPapyrusInterface* g_papyrus = nullptr;
@@ -58,17 +59,28 @@ extern "C" {
 
       // Initialize lua
       // We're storing all our data in lua
-      SkyUIVR::InitGlobalLuaVM();
+      FormDB::InitGlobalLuaVM();
 
-      // Expose our lua functions to Papyrus
+      // Register additional Papyrus functions
       g_papyrus = (SKSEPapyrusInterface *)skse->QueryInterface(kInterface_Papyrus);
-      g_papyrus->Register(SkyUIVR::RegisterPapyrusFuncs);
+      g_papyrus->Register(FormDB::RegisterPapyrusFuncs);             // Expose FormDB lua functions to Papyrus
 
-      // Expose our lua functions to Scaleform
+      // Register Inventory item hooks
       g_scaleform = (SKSEScaleformInterface*)skse->QueryInterface(kInterface_Scaleform);
-      SkyUIVR::RegisterScaleformHooks(g_scaleform);
+      FormDB::RegisterScaleformInventoryHooks(g_scaleform);
+      ExtendDataFix::RegisterScaleformInventoryHooks(g_scaleform);
 
-      SkyUIVR::ExtendDataFix::RegisterScaleformHooks(g_scaleform);
+      // Register additional Scaleform functions
+      g_scaleform->Register("skyui", [](GFxMovieView* view, GFxValue* plugin) {
+         FormDB::RegisterScaleformFuncs(view, plugin);               // Expose FormDB lua functions to Scaleform
+         ControllerStateHook::RegisterScaleformFuncs(view, plugin);
+         Keyboard::RegisterScaleformFuncs(view, plugin);
+         Settings::RegisterScaleformFuncs(view, plugin);
+         return true;
+      });
+
+      // Start receiving constroller state updates
+      ControllerStateHook::Init();
 
       _MESSAGE("Plugin loaded");
 

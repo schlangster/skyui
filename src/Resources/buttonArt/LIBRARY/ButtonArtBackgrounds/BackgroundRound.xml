@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ButtonArtBackgrounds/BackgroundRound" itemID="5014cb44-00001186" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="ButtonArtBackgrounds/ButtonArtBackgroundRound" sourceLastModified="1343506406" symbolType="graphic" lastModified="1348597321" sourceItemID="5011e412-00000e22">
+  <timeline>
+    <DOMTimeline name="BackgroundRound">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!486 261[486 168 420 101!420 101[354 35 261 35!261 35[168 35 102 101!102 101[36 168 36 261!36 261[36 353 102 419!102 419[168 485 261 485!261 485[353 485 420 419!420 419[486 353 486 261!444 444[368 521 261 521!261 521[154 521 77 444!77
+ 444[1 368 1 261!1 261[1 153 77 77!77 77[153 1 261 1!261 1[368 1 444 77!444 77[521 153 521 261!521 261[521 368 444 444"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A6A8AB"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!486 261[486 353 420 419!420 419[353 485 261 485!261 485[168 485 102 419!102 419[36 353 36 261!36 261[36 168 102 101!102 101[168 35 261 35!261 35[354 35 420 101!420 101[486 168 486 261!261 70[183 70 127 126!127 126[71 182 71 261!71 261
+[71 340 127 394!127 394[183 450 261 450!261 450[340 450 395 394!395 394[451 340 451 261!451 261[451 182 395 126!395 126[340 70 261 70"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!71 261[71 182 127 126!127 126[183 70 261 70!261 70[340 70 395 126!395 126[451 182 451 261!451 261[451 340 395 394!395 394[340 450 261 450!261 450[183 450 127 394!127 394[71 340 71 261"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

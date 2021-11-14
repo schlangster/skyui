@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/360/LS" itemID="5014a51c-00000555" symbolType="graphic" lastModified="1343539238">
+  <timeline>
+    <DOMTimeline name="LS">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!178 35S1[185 38 192 43!192 43|192 9!192 9[184 4 175 2!175 2[166 0 156 0!156 0[137 0 124 9!124 9[111 18 105 33!105 33[98 48 98 66!98 66[99 86 106 100!106 100[113 115 124 126!124 126[134 136 145 147!145 147[156 157 163 168!163 168[170
+ 179 170 194!170 194[170 204 167 212!167 212[164 220 157 225!157 225[151 230 140 230!140 230[131 230 122 226!122 226[114 223 107 217!107 217|107 251!107 251[115 258 124 260!124 260[134 263 144 263!144 263[163 263 176 254!176 254[190 245
+ 197 230!197 230[204 215 204 196!204 196[204 179 200 167!200 167[196 154 187 143!187 143[179 133 168 121!168 121|142 93!142 93[137 87 135 80!135 80[133 73 133 65!133 65[133 51 141 42!141 42[149 33 163 32!163 32[171 32 178 35!0 4|0 260
+!0 260|91 260!91 260|91 230!91 230|34 230!34 230|34 4!34 4|0 4"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

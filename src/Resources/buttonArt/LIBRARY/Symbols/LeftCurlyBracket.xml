@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/LeftCurlyBracket" itemID="50146d48-00000303" symbolType="graphic" lastModified="1343521858">
+  <timeline>
+    <DOMTimeline name="LeftCurlyBracket">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.604721069335938" d="0.602935791015625" tx="-1.15" ty="-0.8"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!113 26S1[100 26 90 29!90 29[80 33 74 43!74 43[68 53 68 70!68 70|68 134!68 134[68 145 63 151!63 151[59 156 52 159!52 159[45 161 38 162!38 162|38 180!38 180[45 180 52 183!52 183[59 185 63 191!63 191[68 197 68 207!68 207|68 271!68 271[68
+ 289 74 298!74 298[80 308 90 312!90 312[100 316 113 316!113 316|124 316!124 316|124 297!124 297[109 296 103 289!103 289[96 282 97 267!97 267|97 213!97 213[97 202 94 194!94 194[92 185 85 179!85 179[78 174 65 171!65 171|65 170!65 170[78
+ 168 85 162!85 162[92 156 94 148!94 148[97 140 97 129!97 129|97 75!97 75[96 59 103 53!103 53[109 46 124 45!124 45|124 26!124 26|113 26"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

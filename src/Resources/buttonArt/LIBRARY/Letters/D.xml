@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/D" itemID="50146f41-0000032b" symbolType="graphic" lastModified="1343521517">
+  <timeline>
+    <DOMTimeline name="D">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!105 30[96 15 85 9!85 9[74 2 62 1!62 1[50 0 38 0!38 0|0 0!0 0|0 256!0 256|23 256!23 256[41 256 57 255!57 255[72 253 85 247!85 247[97 240 106 227!106 227[114 214 119 191!119 191[123 168 123 132!123 132[123 93 118 69!118 69[113 44 105 30
+!82 64[87 81 87 99!87 99[88 117 87 132!87 132[88 149 87 166!87 166[86 182 82 197!82 197[77 211 66 219!66 219[55 227 34 227!34 227|34 29!34 29[55 28 66 38!66 38[78 48 82 64"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

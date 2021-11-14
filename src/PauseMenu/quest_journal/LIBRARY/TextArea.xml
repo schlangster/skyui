@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="TextArea" itemID="61810984-0000079f" lastModified="1635846532">
+  <timeline>
+    <DOMTimeline name="TextArea">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="1.00006103515625" tx="-676.95" ty="-20"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.647058823529412"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!18839 400|18839 13399!18839 13399|13539 13399!13539 13399|13539 400!13539 400|18839 400"/>
+                  </edges>
+                </DOMShape>
+                <DOMDynamicText name="TextArea" selected="true" fontRenderingMode="standard" width="251" height="641" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="7" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" useScreenSpacing="true" alpha="0.647058823529412" letterSpacing="4" size="25" bitmapSize="500" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

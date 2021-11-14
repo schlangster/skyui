@@ -7,14 +7,16 @@ import skyui.props.PropertyDataExtender;
 
 import skyui.defines.Input;
 import skyui.defines.Inventory;
+import skyui.util.Debug;
+import skyui.VRInput;
 
 
 class GiftMenu extends ItemMenu
 {
 	#include "../version.as"
-	
+
   /* PRIVATE VARIABLES */
-  
+
 	private var _bGivingGifts: Boolean = true;
 
 	private var _categoryListIconArt: Array;
@@ -28,15 +30,15 @@ class GiftMenu extends ItemMenu
 
 		_categoryListIconArt = ["inv_all", "inv_weapons", "inv_armor", "inv_potions", "inv_scrolls", "inv_food", "inv_ingredients", "inv_books", "inv_keys", "inv_misc"];
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
-  
+
 	public function InitExtensions(): Void
 	{
 		super.InitExtensions();
 		GameDelegate.addCallBack("SetMenuInfo", this, "SetMenuInfo");
-		
+
 		// Initialize menu-specific list components
 		var categoryList: CategoryList = inventoryLists.categoryList;
 		categoryList.iconArt = _categoryListIconArt;
@@ -47,11 +49,11 @@ class GiftMenu extends ItemMenu
 	{
 		super.setConfig(a_config);
 
-		var itemList: TabularList = inventoryLists.itemList;		
+		var itemList: TabularList = inventoryLists.itemList;
 		itemList.addDataProcessor(new InventoryDataSetter());
 		itemList.addDataProcessor(new InventoryIconSetter(a_config["Appearance"]));
 		itemList.addDataProcessor(new PropertyDataExtender(a_config["Appearance"], a_config["Properties"], "itemProperties", "itemIcons", "itemCompoundProperties"));
-		
+
 		var layout: ListLayout = ListLayoutManager.createLayout(a_config["ListLayout"], "ItemListLayout");
 		itemList.layout = layout;
 
@@ -71,7 +73,7 @@ class GiftMenu extends ItemMenu
 	public function SetMenuInfo(a_bGivingGifts: Boolean, a_bUseFavorPoints: Boolean): Void
 	{
 		_bGivingGifts = a_bGivingGifts;
-		
+
 		if (!a_bUseFavorPoints)
 			bottomBar.hidePlayerInfo();
 	}
@@ -82,12 +84,14 @@ class GiftMenu extends ItemMenu
 		bottomBar.setGiftInfo(a_favorPoints);
 	}
 
-	
+
   /* PRIVATE FUNCTIONS */
 
 	// @override ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
+		setupVRInput();
+
 		// Force select of first category because RestoreIndices isn't called for GiftMenu
 		// TODO: Do this in the correct place, i.e. InventoryLists.SetCategoriesList();
 		var categoryList: CategoryList = inventoryLists.categoryList;
@@ -104,16 +108,16 @@ class GiftMenu extends ItemMenu
 		super.onHideItemsList(event);
 
 		bottomBar.updatePerItemInfo({type:Inventory.ICT_NONE});
-		
+
 		updateBottomBar(false);
 	}
 
 	private function onItemHighlightChange(event: Object): Void
 	{
 		super.onItemHighlightChange(event);
-		
+
 		if (event.index != -1)
-			updateBottomBar(true);	
+			updateBottomBar(true);
 	}
 
 	// @override ItemMenu
@@ -123,7 +127,7 @@ class GiftMenu extends ItemMenu
 		if (event.menu == "quantity")
 			GameDelegate.call("QuantitySliderOpen", [event.opening]);
 	}
-	
+
 	// @override ItemMenu
 	private function updateBottomBar(a_bSelected: Boolean): Void
 	{
@@ -142,8 +146,42 @@ class GiftMenu extends ItemMenu
 				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
 		}
-		
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "OCC THUMB_REST",
+																								 KnucklesArt: "OCC THUMB_REST"})});
+
 		navPanel.updateButtons(true);
 	}
 
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("GiftMenu::handleVRInput", event);
+		if (!bFadedIn)
+			return;
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			default:
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+		}
+		return false;
+	}
 }

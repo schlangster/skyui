@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 457" itemID="5b986e27-000009ff" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 457">
+      <layers>
+        <DOMLayer name="Layer 1" color="#96ACB7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A6A8AB" alpha="0.6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!1272 388[1272 443 1233 481!1233 481[1195 520 1140 520!1140 520|131 520!131 520[78 520 39 481!39 481[0 443 0 388!0 388|0 132!0 132[0 78 39 39!39 39[78 0 131 0!131 0|1140 0!1140 0[1195 0 1233 39!1233 39[1272 78 1272 132!1272 132|1272 388"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1246 388|1246 132!1246 132[1246 88 1215 56!1215 56[1183 26 1140 26!1140 26|131 26!131 26[88 26 56 56!56 56[26 88 26 132!26 132|26 388!26 388[26 431 56 463!56 463[88 494 131 494!131 494|1140 494!1140 494[1182 494 1215 463!1215 463[1246
+ 432 1246 388"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!1213 388|1213 132!1213 132[1213 102 1192 80!1192 80[1169 58 1140 58!1140 58|131 58!131 58[102 58 80 80!80 80[59 102 59 132!59 132|59 388!59 388[59 418 80 440!80 440[102 461 131 461!131 461|1140 461!1140 461[1170 461 1192 440!1192 440
+[1213 417 1213 388"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

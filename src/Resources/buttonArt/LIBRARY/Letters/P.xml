@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/P" itemID="50146f96-00000343" symbolType="graphic" lastModified="1343521611">
+  <timeline>
+    <DOMTimeline name="P">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!85 9S1[75 3 63 1!63 1[52 0 41 0!41 0|0 0!0 0|0 256!0 256|34 256!34 256|34 142!34 142[73 144 90 126!90 126[107 107 107 68!107 68[107 44 101 30!101 30[95 16 85 9!68 50[71 59 71 71!71 71[71 93 63 104!63 104[55 115 34 114!34 114|34 29!34
+ 29|39 29!39 29[51 29 59 34!59 34[66 40 68 50"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

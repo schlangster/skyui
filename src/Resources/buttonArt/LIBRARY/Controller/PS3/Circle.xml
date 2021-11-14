@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/Circle" itemID="501474cf-000006a5" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="ButtonArtKeys/ButtonArtKeyCircle" sourceLastModified="1343507002" symbolType="graphic" lastModified="1343521675" sourceItemID="5011e3ca-00000e0b">
+  <timeline>
+    <DOMTimeline name="Circle">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!266 75S2[282 105 282 141!282 141[282 176 268 204!268 204[257 224 240 241!240 241[238 243 236 245!236 245[196 282 141 282!141 282[85 282 45 245!45 245[43 243 41 241!41 241[24 224 14 204!14 204[0 176 0 141!0 141[0 105 16 75!16 75[26 57
+ 41 42!41 42[82 0 141 0!141 0[199 0 240 42!240 42[256 57 266 75"/>
+                    <Edge fillStyle0="1" edges="
+!209 75S1[236 102 236 140!236 140[236 177 211 204!211 204[209 206 207 208!207 208[179 236 140 236!140 236[100 236 72 208!72 208[70 206 69 204!69 204[45 177 45 140!45 140[45 102 70 75!70 75[71 74 72 73!72 73[100 45 140 45!140 45[179 45
+ 207 73!207 73[208 74 209 75"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

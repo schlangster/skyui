@@ -189,6 +189,16 @@ class skyui.util.Debug
 
 		return null;
 	}
+
+	static public function dumpFocusPath(focusPath: Array) {
+		Debug.dump("focusPath", focusPath);
+		for(var i = 0; i < focusPath.length; i++) {
+			var obj = focusPath[i];
+			if(obj.classname != null)
+				Debug.log("" + i + ": " + obj.classname());
+		}
+	}
+
 }
 
 

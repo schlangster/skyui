@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/360/RT" itemID="50149c88-00000444" symbolType="graphic" lastModified="1343528117">
+  <timeline>
+    <DOMTimeline name="RT">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!225 0|113 0!113 0|113 29!113 29|153 29!153 29|153 256!153 256|187 256!187 256|187 29!187 29|225 29!225 29|225 0!102 40[#64.5E #21.21 98 28!98 28[92 14 82 8!82 8[72 2 61 1!61 1[50 0 41 0!41 0|0 0!0 0|0 256!0 256|34 256!34 256|34 130!34
+ 130|81 256!81 256|116 256!116 256|69 131!69 131[#45.81 #82.E4 70 131!70 131[#53.4A #7F.9A 91 117!91 117[98 106 101 92!101 92[#65.8D #59.6E 102 87!102 87[104 #4B.9D 104 65!104 65[104 #33.27 102 41!102 41[#65.E7 #28.7F 102 40!66 50[68
+ 60 68 73!68 73[68 92 61 103!61 103[53 114 34 113!34 113|34 29!34 29|39 29!39 29[52 28 58 34!58 34[64 40 66 50"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

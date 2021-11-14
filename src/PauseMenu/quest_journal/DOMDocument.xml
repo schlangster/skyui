@@ -405,6 +405,7 @@
           <Include href="Shapes/Shape 573.xml" itemIcon="1" loadImmediate="false" itemID="4ee20823-000000ce" lastModified="1323436067"/>
           <Include href="Shapes/Shape 575.xml" itemIcon="1" loadImmediate="false" itemID="4ee20823-000000ca" lastModified="1323436067"/>
           <Include href="Shapes/Shape 577.xml" itemIcon="1" loadImmediate="false" itemID="4ee20823-000000c5" lastModified="1323436067"/>
+          <Include href="TextArea.xml" loadImmediate="false" itemID="61810984-0000079f" lastModified="1635846532"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Page 1">

@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Action_Up_Arrow" itemID="5bab005f-00003d52" linkageExportForAS="true" linkageIdentifier="Action_Up_Arrow" symbolType="graphic" lastModified="1537933407">
+  <timeline>
+    <DOMTimeline name="Action_Up_Arrow">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.955612182617188" d="0.9576416015625" tx="-61.25" ty="37.65"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="3">
+                        <fill>
+                          <SolidColor color="#A6A8AB"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1282 -786|1710 -786"/>
+                    <Edge cubics="!1282 -786(1282,-786;1282,-786 1710,-786 1710,-786q1282 -786 1710 -786);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.67572021484375" b="-0.677139282226563" c="0.675704956054688" d="0.677154541015625" tx="-45.85" ty="87.75"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="3" joints="miter">
+                        <fill>
+                          <SolidColor color="#A6A8AB"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1800 -400|2060 -400!2060 -400|2060 -140"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0" b="0.9576416015625" c="-0.955612182617188" d="0" tx="-27.35" ty="-55.9"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="3">
+                        <fill>
+                          <SolidColor color="#A6A8AB"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1282 -786|1710 -786"/>
+                    <Edge cubics="!1282 -786(1282,-786;1282,-786 1710,-786 1710,-786q1282 -786 1710 -786);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

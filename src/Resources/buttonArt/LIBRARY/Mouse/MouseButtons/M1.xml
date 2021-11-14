@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Mouse/MouseButtons/M1" itemID="5014c7ae-00001146" symbolType="graphic" lastModified="1343540258">
+  <timeline>
+    <DOMTimeline name="M1">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!211 0|211 29!211 29|236 29!236 29|236 256!236 256|270 256!270 256|270 0!270 0|211 0!89 174|88 185!88 185|87 185!87 185|50 0!50 0|21 0!21 0|0 256!0 256|33 256!33 256|42 79!42 79|43 79!43 79|76 256!76 256|99 256!99 256|132 79!132 79|141
+ 256!141 256|175 256!175 256|151 0!151 0|121 0!121 0|89 174"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

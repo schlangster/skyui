@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/PS3/L2" itemID="50149b9f-00000436" symbolType="graphic" lastModified="1343539252">
+  <timeline>
+    <DOMTimeline name="L2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!220 63[220 33 207 16!207 16[194 0 163 0!163 0[138 0 126 10!126 10[115 21 111 39!111 39[108 56 108 77!108 77|108 86!108 86|143 86!143 86|143 79!143 79[142 75 142 67!142 67[142 59 144 51!144 51[145 42 149 36!149 36[154 30 162 30!162 30
+[171 30 176 35!176 35[181 40 183 47!183 47[185 53 185 61!185 61[185 78 179 95!179 95[174 112 167 127!167 127|105 259!105 259|218 259!218 259|218 229!218 229|154 229!154 229|176 188!176 188[185 171 195 149!195 149[205 127 212 105!212 105
+[220 82 220 63!0 3|0 259!0 259|91 259!91 259|91 229!91 229|34 229!34 229|34 3!34 3|0 3"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

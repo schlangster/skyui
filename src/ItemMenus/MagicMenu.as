@@ -11,7 +11,7 @@ import skyui.props.PropertyDataExtender;
 import skyui.defines.Input;
 import skyui.defines.Inventory;
 import skyui.util.Debug;
-
+import skyui.VRInput;
 
 class MagicMenu extends ItemMenu
 {
@@ -42,7 +42,9 @@ class MagicMenu extends ItemMenu
 							   "mag_powers", "mag_activeeffects"];
 	}
 
-	function OnShow() {
+	public function OnShow() {
+		super.OnShow();
+
 		_bMenuClosing = false;
 		//iLastItemType = InventoryDefines.ICT_NONE;
 		//bottomBar.iLastItemType = Inventory.ICT_NONE;
@@ -121,6 +123,36 @@ class MagicMenu extends ItemMenu
 		return true;
 	}
 
+	public function classname(): String{
+		return "Class MagicMenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		if (!bFadedIn)
+			return;
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			default:
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+
 	// @API
 	public function DragonSoulSpent(): Void
 	{
@@ -162,7 +194,7 @@ class MagicMenu extends ItemMenu
 		if (!_bMenuClosing)
 			return;
 
-		GameDelegate.call("CloseMenu", []);
+		closeMenu();
 		if (_bSwitchMenus) {
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("InventoryMenu");
@@ -204,7 +236,7 @@ class MagicMenu extends ItemMenu
 			startMenuFade();
 		} else {
 			saveIndices();
-			GameDelegate.call("CloseMenu",[]);
+			closeMenu();
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("InventoryMenu");
 		}
@@ -237,13 +269,19 @@ class MagicMenu extends ItemMenu
 
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			// navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
 				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
 			// navPanel.addButton({text: "$Inventory", controls: _switchControls});
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC_X", WindowsMRArt: "radial_Either_Down",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}

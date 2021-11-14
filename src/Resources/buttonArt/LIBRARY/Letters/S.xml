@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/S" itemID="50146fb7-00000349" symbolType="graphic" lastModified="1343521627">
+  <timeline>
+    <DOMTimeline name="S">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!58 0[39 0 26 9!26 9[13 18 7 33!7 33[0 48 0 66!0 66[1 86 8 100!8 100[15 115 26 126!26 126[36 136 47 147!47 147[58 157 65 168!65 168[72 179 72 194!72 194[72 204 69 212!69 212[66 220 59 225!59 225[53 230 42 230!42 230[33 230 24 226!24 226
+[16 223 9 217!9 217|9 251!9 251[17 258 26 260!26 260[36 263 46 263!46 263[65 263 78 254!78 254[92 245 99 230!99 230[106 215 106 196!106 196[106 179 102 167!102 167[98 154 89 143!89 143[81 133 70 121!70 121|44 93!44 93[39 87 37 80!37 80
+[35 73 35 65!35 65[35 51 43 42!43 42[51 33 65 32!65 32[73 32 80 35!80 35[87 38 94 43!94 43|94 9!94 9[86 4 77 2!77 2[68 0 58 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

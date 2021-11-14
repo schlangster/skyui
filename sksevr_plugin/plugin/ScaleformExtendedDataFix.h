@@ -2,8 +2,6 @@
 
 #include "skse64/PluginAPI.h"
 
-namespace SkyUIVR {
-   namespace ExtendDataFix{
-      void RegisterScaleformHooks(SKSEScaleformInterface* infc);
-   }
+namespace ExtendDataFix{
+   void RegisterScaleformInventoryHooks(SKSEScaleformInterface* infc);
 }

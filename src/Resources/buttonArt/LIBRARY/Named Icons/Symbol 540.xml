@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 540" itemID="5b986e27-00000a4f" symbolType="graphic" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 540">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!224 127|224 371!224 371|286 371!286 371|286 404!286 404|189 404!189 404|189 127!189 127|224 127"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!238 135|238 379!238 379|300 379!300 379|300 411!300 411|202 411!202 411|202 135!202 135|238 135"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!498 345[520 358 547 358!547 358[587 358 615 330!615 330[644 302 644 263!644 263[644 222 615 195!615 195|615 194!615 194|613 192"/>
+                    <Edge fillStyle1="2" edges="!613 192[591 179 563 179!563 179[522 179 494 206!494 206[467 233 467 275!467 275[467 315 494 342!494 342|495 342!495 342|498 345"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!640 156|647 162!647 162[688 202 688 263!688 263[688 322 648 362!648 362|647 363!647 363[606 404 547 404!547 404[505 404 473 384"/>
+                    <Edge fillStyle0="2" edges="!473 384[510 416 563 416!563 416[622 416 663 375!663 375|664 374!664 374[704 334 704 275!704 275[704 214 663 174!663 174|640 156"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!498 345|479 330!479 330|478 330!478 330[451 303 451 263!451 263[451 221 478 194!478 194[506 167 547 167!547 167[586 167 613 192"/>
+                    <Edge fillStyle1="1" edges="!473 384[459 375 447 362!447 362[406 322 406 263!406 263[406 204 447 162!447 162[488 122 547 122!547 122[601 122 640 156"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

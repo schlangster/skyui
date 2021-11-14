@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/F7" itemID="5014911c-00000b44" symbolType="graphic" lastModified="1343525162">
+  <timeline>
+    <DOMTimeline name="F7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.75" ty="9.25"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!163 -156S1|234 -156!234 -156|163 71!163 71|200 71!200 71|278 -185!278 -185|163 -185!163 -185|163 -156!141 -46|141 -75!141 -75|89 -75!89 -75|89 -156!89 -156|147 -156!147 -156|147 -185!147 -185|55 -185!55 -185|55 71!55 71|89 71!89 71|89
+ -46!89 -46|141 -46"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

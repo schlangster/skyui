@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 318" itemID="5b986e27-0000097e" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 318">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FA3CAB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF" alpha="0.6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!91 449[109 461 132 461!132 461|619 461!619 461[597 430 597 388!597 388|597 132!597 132[597 90 619 59"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!619 59|132 59!132 59|130 59!130 59|110 63!110 63[94 68 81 81!81 81[65 96 61 117!61 117|59 131!59 131|59 388!59 388[59 399 62 410!62 410|67 422!67 422|81 440!81 440|91 449"/>
+                    <Edge fillStyle1="1" edges="!651 26|636 39!636 39|619 59"/>
+                    <Edge fillStyle0="2" edges="!651 26[683 2 727 0!727 0|132 0!132 0[78 0 39 39!39 39[0 78 0 132!0 132|0 388!0 388[0 443 39 482!39 482[77 520 132 520!132 520|727 520!727 520[683 519 651 494"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!651 494|132 494!132 494|130 494!130 494[103 493 82 482"/>
+                    <Edge fillStyle0="2" edges="!82 482|57 463!57 463[42 448 34 429"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!34 429|26 388!26 388|26 132!26 132[26 89 58 58!58 58[87 26 132 26!132 26|651 26"/>
+                    <Edge fillStyle1="1" edges="!91 449[109 462 132 462!132 462|620 462!620 462|636 481!636 481|651 494"/>
+                    <Edge fillStyle0="1" edges="!34 429|58 463!58 463|82 482"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

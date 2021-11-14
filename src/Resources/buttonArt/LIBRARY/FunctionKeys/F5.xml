@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/F5" itemID="50149137-00000b48" symbolType="graphic" lastModified="1343525183">
+  <timeline>
+    <DOMTimeline name="F5">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.4" ty="6.95"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!169 -15S1[174 -16 180 -17!180 -17[185 -18 190 -18!190 -18[214 -18 224 -4!224 -4[235 10 234 32!234 32[234 41 233 51!233 51[231 61 227 70!227 70[222 78 215 84!215 84[207 89 196 90!196 90[187 89 181 87!181 87[174 84 166 79!166 79|157 110
+!157 110[167 114 177 117!177 117[186 120 197 120!197 120[217 120 231 112!231 112[245 104 254 91!254 91[262 78 266 61!266 61[269 45 269 27!269 27[269 5 262 -11!262 -11[255 -28 240 -37!240 -37[225 -46 202 -45!202 -45|210 -110!210 -110|266
+ -110!266 -110|266 -139!266 -139|184 -139!184 -139|169 -15!82 -29|82 -110!82 -110|140 -110!140 -110|140 -139!140 -139|48 -139!48 -139|48 117!48 117|82 117!82 117|82 0!82 0|134 0!134 0|134 -29!134 -29|82 -29"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

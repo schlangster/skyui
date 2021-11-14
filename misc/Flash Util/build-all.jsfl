@@ -17,7 +17,7 @@ var flaFiles = [
 	//"ModConfigPanel/mcm_splash.fla",
 	//"ModConfigPanel/skyui_splash.fla",
 	"PauseMenu/quest_journal/quest_journal.xfl",
-	"Resources/buttonArt.fla",
+	"Resources/buttonArt/buttonArt.xfl",
 	//"Resources/icons_category_celtic.fla",
 	//"Resources/icons_category_curved.fla",
 	//"Resources/icons_category_psychosteve.fla",

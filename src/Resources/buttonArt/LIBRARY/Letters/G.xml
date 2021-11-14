@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/G" itemID="50146f5d-00000331" symbolType="graphic" lastModified="1343521535">
+  <timeline>
+    <DOMTimeline name="G">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!107 14S1[92 0 65 0!65 0[43 0 30 11!30 11[17 21 11 40!11 40[4 58 2 82!2 82[0 105 0 133!0 133[0 160 2 183!2 183[5 207 11 225!11 225[18 243 32 253!32 253[46 263 68 263!68 263[89 263 101 254!101 254[113 245 119 230!119 230[125 215 128 197
+!128 197[130 179 130 162!130 162[130 144 129 129!129 129|129 125!129 125|67 125!67 125|67 154!67 154|95 154!95 154|95 168!95 168[95 191 93 204!93 204[90 217 86 223!86 223[82 229 77 230!77 230[71 232 66 231!66 231[61 232 55 228!55 228
+[50 225 46 215!46 215[41 205 39 185!39 185[36 165 36 132!36 132[36 101 38 79!38 79[40 56 46 44!46 44[52 32 66 32!66 32[77 32 82 37!82 37[88 42 91 50!91 50[94 57 95 66!95 66|128 53!128 53[121 27 107 14"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

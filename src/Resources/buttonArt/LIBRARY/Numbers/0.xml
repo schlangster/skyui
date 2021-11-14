@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Numbers/0" itemID="50147034-0000036b" symbolType="graphic" lastModified="1343521723">
+  <timeline>
+    <DOMTimeline name="0">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.45" ty="-1.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!124 67S1[129 81 131 104!131 104[132 127 132 154!132 154[132 181 131 204!131 204[129 227 124 240!124 240[119 254 107 255!107 255[96 254 90 240!90 240[85 227 83 204!83 204[82 181 82 154!82 154[82 127 83 104!83 104[85 81 90 67!90 67[96
+ 53 107 53!107 53[119 53 124 67!107 23[89 23 78 32!78 32[66 42 60 57!60 57[54 72 52 90!52 90[49 108 49 125!49 125[49 141 49 154!49 154[49 166 49 183!49 183[49 200 52 218!52 218[54 235 60 251!60 251[66 266 78 275!78 275[89 285 107 285
+!107 285[125 285 137 275!137 275[148 266 154 251!154 251[160 235 162 218!162 218[165 200 165 183!165 183[165 166 165 154!165 154[165 141 165 125!165 125[165 108 162 90!162 90[160 72 154 57!154 57[148 42 137 32!137 32[125 23 107 23"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

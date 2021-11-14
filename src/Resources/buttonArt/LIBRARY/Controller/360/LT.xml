@@ -1,0 +1,26 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Controller/360/LT" itemID="50149c33-00000442" symbolType="graphic" lastModified="1343528070">
+  <timeline>
+    <DOMTimeline name="LT">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!203 0|91 0!91 0|91 29!91 29|131 29!131 29|131 256!131 256|165 256!165 256|165 29!165 29|203 29!203 29|203 0!0 0|0 256!0 256|91 256!91 256|91 226!91 226|34 226!34 226|34 0!34 0|0 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

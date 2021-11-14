@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 284" itemID="5b986e27-00000960" linkageExportForAS="true" linkageIdentifier="360_Back" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 284">
+      <layers>
+        <DOMLayer name="Layer 1" color="#F89698">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#BBBDBF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!479 265|479 345!479 345|356 345"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!356 345|335 345!335 345|335 249!335 249|479 249!479 249|479 265"/>
+                    <Edge fillStyle1="1" edges="!394 139|414 139!414 139|414 213"/>
+                    <Edge fillStyle1="2" edges="!414 213|517 213!517 213|517 228"/>
+                    <Edge fillStyle1="1" edges="!517 228|538 228!538 228|538 398!538 398|318 398!318 398|318 382"/>
+                    <Edge fillStyle1="2" edges="!318 382|298 382!298 382|298 308"/>
+                    <Edge fillStyle1="1" edges="!298 308|195 308!195 308|195 292"/>
+                    <Edge fillStyle1="2" edges="!195 292|174 292!174 292|174 123!174 123|394 123!394 123|394 139"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!318 382|517 382!517 382|517 228"/>
+                    <Edge fillStyle1="1" edges="!377 213|377 202"/>
+                    <Edge fillStyle1="2" edges="!377 202|356 202!356 202|356 175"/>
+                    <Edge fillStyle1="1" edges="!356 175|233 175!233 175|233 255"/>
+                    <Edge fillStyle1="2" edges="!233 255|281 255!281 255|281 272"/>
+                    <Edge fillStyle1="1" edges="!281 272|298 272"/>
+                    <Edge fillStyle1="2" edges="!298 272|298 213!298 213|377 213"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!233 255|212 255!212 255|212 159!212 159|356 159!356 159|356 175"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!394 139|394 202!394 202|377 202"/>
+                    <Edge fillStyle0="1" edges="!356 345|356 265!356 265|479 265"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!281 272|281 292!281 292|195 292!298 308|298 272"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!414 213|377 213"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A9F106" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 264" centerPoint3DX="17.85" centerPoint3DY="12.95">
+                  <matrix>
+                    <Matrix ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

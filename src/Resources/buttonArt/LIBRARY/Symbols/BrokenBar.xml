@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/BrokenBar" itemID="501470f5-000003cc" symbolType="graphic" lastModified="1343521814">
+  <timeline>
+    <DOMTimeline name="BrokenBar">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.869537353515625" d="0.803924560546875" tx="-2.95" ty="-2.3"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!68 57S1|68 142!68 142|91 142!91 142|91 57!91 57|68 57!68 227|68 312!68 312|91 312!91 312|91 227!91 227|68 227"/>
+                    <Edge cubics="!91 57(;91,57 68,57 68,57q91 57 68 57);"/>
+                    <Edge cubics="!91 142(;91,142 91,57 91,57q91 142 91 57);"/>
+                    <Edge cubics="!68 142(;68,142 91,142 91,142q68 142 91 142);"/>
+                    <Edge cubics="!68 57(;68,57 68,142 68,142q68 57 68 142);"/>
+                    <Edge cubics="!91 227(;91,227 68,227 68,227q91 227 68 227);"/>
+                    <Edge cubics="!91 312(;91,312 91,227 91,227q91 312 91 227);"/>
+                    <Edge cubics="!68 312(;68,312 91,312 91,312q68 312 91 312);"/>
+                    <Edge cubics="!68 227(;68,227 68,312 68,312q68 227 68 312);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

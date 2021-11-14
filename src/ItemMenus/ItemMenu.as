@@ -11,6 +11,7 @@ import skyui.components.ButtonPanel;
 import skyui.defines.Inventory;
 import skyui.defines.Item;
 import skyui.util.Debug;
+import skyui.VRInput;
 
 
 class ItemMenu extends MovieClip
@@ -37,6 +38,7 @@ class ItemMenu extends MovieClip
 	private var _sortColumnControls: Array;
 	private var _sortOrderControls: Object;
 
+	private var _VRInput: VRInput;
 
   /* STAGE ELEMENTS */
 
@@ -78,6 +80,15 @@ class ItemMenu extends MovieClip
 
 		bFadedIn = true;
 		_bItemCardFadedIn = false;
+	}
+
+	public function setupVRInput() {
+		_VRInput = VRInput.instance;
+		VRInput.instance.setup();
+	}
+
+	public function OnShow() {
+		setupVRInput();
 	}
 
   /* PUBLIC FUNCTIONS */
@@ -170,6 +181,8 @@ class ItemMenu extends MovieClip
 	// @API
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
+		VRInput.instance.updatePlatform(a_platform);
+
 		_platform = a_platform;
 
 		if (a_platform == 0) {
@@ -221,7 +234,10 @@ class ItemMenu extends MovieClip
 
 	public function closeMenu()
 	{
+		//Debug.log(">>> ItemMenu::CloseMenu");
+		VRInput.instance.teardown();
 		GameDelegate.call("CloseMenu",[]);
+		//Debug.log("<<< ItemMenu::CloseMenu");
 	}
 
 	// @API
@@ -551,7 +567,7 @@ class ItemMenu extends MovieClip
 		// FIXME? This crashes SkyrimVR
 		// When opening the inventory a second time without having an item selected for some reason.
 		//saveIndices();
-		//GameDelegate.call("CloseMenu",[]);
+		//closemenu();
 		//skse.OpenMenu("Inventory Menu");
 	}
 

@@ -13,7 +13,8 @@ import skyui.defines.Input;
 import skyui.defines.Inventory;
 import skyui.defines.Item;
 
-import flash.utils.getTimer;
+import skyui.util.Debug;
+import skyui.VRInput;
 
 class ContainerMenu extends ItemMenu
 {
@@ -177,6 +178,37 @@ class ContainerMenu extends ItemMenu
 		return true;
 	}
 
+	public function classname(): String{
+		return "Class ContainerMenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("ContainerMenu::handleVRInput", event);
+		if (!bFadedIn)
+			return;
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			default:
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+
 	// @override ItemMenu
 	public function UpdateItemCardInfo(a_updateObj: Object): Void
 	{
@@ -309,6 +341,10 @@ class ContainerMenu extends ItemMenu
 	// @override ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
+		// For some unknown reason, OnShow() does not get called for the container menu.
+		//
+		setupVRInput();
+
 		inventoryLists.showItemsList();
 	}
 
@@ -402,7 +438,6 @@ class ContainerMenu extends ItemMenu
 			//	 navPanel.addButton({text: "$Equip Mode", controls: _equipModeControls});
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			// navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
 				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
 				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
@@ -413,6 +448,13 @@ class ContainerMenu extends ItemMenu
 				navPanel.addButton({text: "$Take All", controls: takeAllControl});
 
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "OCC THUMB_REST",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}

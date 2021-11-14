@@ -8,6 +8,9 @@ import gfx.managers.FocusHandler;
 
 import skyui.components.ButtonPanel;
 import skyui.defines.ButtonArtNames;
+import skyui.util.Debug;
+import skyui.VRInput;
+import skyui.util.GlobalFunctions;
 
 class Quest_Journal extends MovieClip
 {
@@ -19,6 +22,8 @@ class Quest_Journal extends MovieClip
 
 	var BottomBar: MovieClip;
 	var BottomBar_mc: MovieClip;
+	var TextPanel: MovieClip;
+	var showInputReadout: Boolean;
 
 	var PageArray: Array;
 
@@ -35,6 +40,8 @@ class Quest_Journal extends MovieClip
 	var TabButtonGroup: ButtonGroup;
 
 	var ConfigPanel: MovieClip;
+
+	var _VRInput: VRInput;
 
   public static var PAGE_QUEST: Number = 0;
   public static var PAGE_STATS: Number = 1;
@@ -82,30 +89,50 @@ class Quest_Journal extends MovieClip
 
 	function OnShow(): Void
 	{
-      QuestsTab.disableFocus = true;
-      StatsTab.disableFocus = true;
-      SystemTab.disableFocus = true;
-      QuestsTab.disabled = false;
-      StatsTab.disabled = false;
-      SystemTab.disabled = false;
-      BottomBar_mc.InitBar();
-      var pageCursor = 0;
-      while(pageCursor <= Quest_Journal.PAGE_SYSTEM)
+		var vrtools = skse["plugins"]["vrinput"];
+		if(vrtools != undefined)
+		{
+			//vrtools.ShutoffButtonEventsToGame(true);
+		} else {
+			Debug.log("SkyrimVRTools plugin not available");
+		}
+
+		showInputReadout = skse["plugins"]["skyui"].IniGetBool("showInputReadout");
+		if(!showInputReadout)
+			TextPanel._visible = false;
+		else {
+			// For whatever reason, Scaleform API requires an object to be somewhere
+			// on the stage to be able to send inputs via a registered callback.
+			// By adding it here, VRInput should start receiving and button updates
+			// and start pumping out button events.
+			_VRInput = VRInput.instance;
+			VRInput.instance.setup();
+		}
+
+    QuestsTab.disableFocus = true;
+    StatsTab.disableFocus = true;
+    SystemTab.disableFocus = true;
+    QuestsTab.disabled = false;
+    StatsTab.disabled = false;
+    SystemTab.disabled = false;
+    BottomBar_mc.InitBar();
+    var pageCursor = 0;
+    while(pageCursor <= Quest_Journal.PAGE_SYSTEM)
+    {
+      var page = PageArray[pageCursor];
+      Shared.Macros.BSASSERT(page != null && page != undefined,"Unable to open page " + pageCursor);
+      Shared.Macros.BSASSERT(page.OnShow != null && page.OnShow != undefined,"page does not have OnShow function");
+      page.OnShow();
+      if(pageCursor == iCurrentTab)
       {
-         var page = PageArray[pageCursor];
-         Shared.Macros.BSASSERT(page != null && page != undefined,"Unable to open page " + pageCursor);
-         Shared.Macros.BSASSERT(page.OnShow != null && page.OnShow != undefined,"page does not have OnShow function");
-         page.OnShow();
-         if(pageCursor == iCurrentTab)
-         {
-            page.startPage();
-         }
-         pageCursor = pageCursor + 1;
+        page.startPage();
       }
-      if(TopmostPage != null && TopmostPage != undefined)
-      {
-         TopmostPage.gotoAndPlay("fadeIn");
-      }
+      pageCursor = pageCursor + 1;
+    }
+    if(TopmostPage != null && TopmostPage != undefined)
+    {
+      TopmostPage.gotoAndPlay("fadeIn");
+    }
 	}
 
 	function SetShowMod(): Void
@@ -143,6 +170,25 @@ class Quest_Journal extends MovieClip
 		}
 		TopmostPage.gotoAndPlay(abForceFade ? "ForceFade" : "fadeIn");
 		BottomBar_mc.LevelMeterRect._visible = iCurrentTab != 0;
+	}
+
+	function classname():String {
+		return "class Quest_Journal"
+	}
+
+	function handleVRButtonUpdate(update)
+	{
+		if(!showInputReadout)
+			return;
+
+		//Debug.dump("update", update);
+		var stateString = VRInput.instance.controllerStateString(update);
+		Debug.log("stateString: " + stateString);
+		if(stateString.length != 0) {
+			TextPanel.TextArea.SetText(stateString);
+		} else {
+			TextPanel.TextArea.SetText(update.timestamp.toString());
+		}
 	}
 
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
@@ -193,10 +239,21 @@ class Quest_Journal extends MovieClip
 
 	function CloseMenu(abForceClose: Boolean): Void
 	{
+		//Debug.log(">>> Quest_Journal::CloseMenu");
+
+		var vrtools = skse["plugins"]["vrinput"];
+		if(vrtools != undefined)
+		{
+			//vrtools.ShutoffButtonEventsToGame(false);
+		}
+
+		VRInput.instance.teardown();
+
 		if (abForceClose != true) {
 			GameDelegate.call("PlaySound", ["UIJournalClose"]);
 		}
 		GameDelegate.call("CloseMenu", [iCurrentTab, QuestsFader.Page_mc.selectedQuestID, QuestsFader.Page_mc.selectedQuestInstance]);
+		//Debug.log("<<< Quest_Journal::CloseMenu");
 	}
 
 	function onTabClick(event: Object): Void
@@ -238,6 +295,8 @@ class Quest_Journal extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
+		VRInput.instance.updatePlatform(aiPlatform);
+
 		// Not sure if these are the correct mapping for next/prev tab
 		var nextTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Right", MoveArt:"PS3_Y",OculusArt:"OCC_B", WindowsMRArt:"radial_Either_Right"}));
 		var prevTabArt = ButtonArtNames.lookup(skyui.util.Input.pickButtonArt(aiPlatform, {ViveArt:"radial_Either_Left", MoveArt:"PS3_X", OculusArt:"OCC_Y", WindowsMRArt:"radial_Either_Left"}));

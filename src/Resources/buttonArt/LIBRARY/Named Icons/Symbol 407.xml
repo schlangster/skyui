@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 407" itemID="5b986e27-000009d6" symbolType="graphic" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 407">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!231 178[230 148 212 128!212 128|194 115!194 115|125 115!125 115|125 372!125 372|159 372!159 372|159 251!159 251|205 372!205 372|244 372!244 372|196 247!196 247|212 242!212 242[229 231 231 204!231 204|231 178!194 203[192 221 176 229!176
+ 229|160 233!160 233|160 146!160 146|177 146!177 146[188 146 194 168!194 168|194 203"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!227 137|210 124!210 124|140 124!140 124|140 380!140 380|175 380!175 380|175 259!175 259|222 380!222 380|260 380!260 380|211 255!211 255|227 250!227 250[246 238 247 213!247 213|246 186!246 186[246 155 227 137!210 211[206 239 176 240!176
+ 240|176 154!176 154|192 154!192 154[204 154 210 175!210 175|210 211"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

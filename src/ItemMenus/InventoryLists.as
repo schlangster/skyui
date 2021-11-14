@@ -235,6 +235,10 @@ class InventoryLists extends MovieClip
 		itemList.setPlatform(a_platform,a_bPS3Switch);
 	}
 
+	public function classname(): String {
+		return "Class InventoryLists";
+	}
+
 	// @GFx
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
@@ -282,10 +286,19 @@ class InventoryLists extends MovieClip
 
 		if (GlobalFunc.IsKeyPressed(details)) {
 			// Search hotkey (default space)
+			/*
 			if (details.skseKeycode == _searchKey) {
 				searchWidget.startInput();
 				return true;
 			}
+			*/
+			/*
+			if (details.navEquivalent == "down") {
+				Debug.log("InventoryLists triggering search start");
+				searchWidget.startInput();
+				return true;
+			}
+			*/
 
 			// Toggle tab (default ALT)
 			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {

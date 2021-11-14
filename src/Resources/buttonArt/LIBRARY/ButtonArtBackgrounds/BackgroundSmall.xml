@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ButtonArtBackgrounds/BackgroundSmall" itemID="5014cb4f-00001188" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="ButtonArtBackgrounds/ButtonArtBackgroundSquare" sourceLastModified="1343506414" symbolType="graphic" lastModified="1348597318" sourceItemID="5011e40a-00000e21">
+  <timeline>
+    <DOMTimeline name="BackgroundSmall">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A6A8AB"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!481 39S2[520 78 520 132!520 132|520 388!520 388[520 443 481 481!481 481[480 482 479 483!479 483[442 520 388 520!388 520|132 520!132 520[78 520 39 481!39 481[0 443 0 388!0 388|0 132!0 132[0 78 39 39!39 39[78 0 132 0!132 0|388 0!388 0
+[442 0 479 37!479 37[480 38 481 39"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!440 80S3[418 58 388 58!388 58|132 58!132 58[102 58 80 80!80 80[59 102 59 132!59 132|59 388!59 388[59 418 80 440!80 440[102 461 132 461!132 461|388 461!388 461[417 461 440 440!440 440[461 417 461 388!461 388|461 132!461 132[461 102 440
+ 80"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!463 56S3[431 26 388 26!388 26|132 26!132 26[88 26 56 56!56 56[26 88 26 132!26 132|26 388!26 388[26 431 56 463!56 463[88 494 132 494!132 494|388 494!388 494[431 494 463 463!463 463[472 453 479 443!479 443[494 418 494 388!494 388|494 132
+!494 132[494 101 479 77!479 77[472 66 463 56"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

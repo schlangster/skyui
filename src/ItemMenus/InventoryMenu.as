@@ -11,6 +11,7 @@ import skyui.props.PropertyDataExtender;
 import skyui.defines.Inventory;
 import skyui.defines.Input;
 import skyui.util.Debug;
+import skyui.VRInput;
 
 class InventoryMenu extends ItemMenu
 {
@@ -46,8 +47,10 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
 
-	function OnShow()
+	public function OnShow()
 	{
+		super.OnShow();
+
 		_bMenuClosing = false;
 		// TODO! Cleanup these lines ported from SkyrimVR
 		//this.iLastItemType = InventoryDefines.ICT_NONE;
@@ -144,6 +147,37 @@ class InventoryMenu extends ItemMenu
 		return true;
 	}
 
+	public function classname(): String{
+		return "Class Inventorymenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("InventoryMenu::handleVRInput", event);
+		if (!bFadedIn)
+			return;
+		switch(VRInput.instance.controllerName) {
+			case "vive":
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			default:
+				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+
 	// @API
 	public function AttemptEquip(a_slot: Number, a_bCheckOverList: Boolean): Void
 	{
@@ -225,6 +259,15 @@ class InventoryMenu extends ItemMenu
 		}
 	}
 
+	public function logAllItems() {
+		var itemList = inventoryLists.itemList;
+		var entryList: Array = itemList.entryList;
+		for (var i: Number = 0; i < entryList.length; i++) {
+			var obj = entryList[i];
+			Debug.dump("inv item", obj);
+		}
+	}
+
 	private function onItemHighlightChange(event: Object): Void
 	{
 		super.onItemHighlightChange(event);
@@ -301,7 +344,7 @@ class InventoryMenu extends ItemMenu
 			startMenuFade();
 		} else {
 			saveIndices();
-			GameDelegate.call("CloseMenu",[]);
+			closeMenu();
 			GameDelegate.call("CloseTweenMenu",[]);
 			skse.OpenMenu("MagicMenu");
 		}
@@ -375,9 +418,9 @@ class InventoryMenu extends ItemMenu
 					text: "$Charge",
 					controls: skyui.util.Input.pickControls(_platform,
 																									{PCArt: "T", XBoxArt: "360_RB", PS3Art: "PS3_RB", ViveArt: "radial_Either_Left",
-																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Left"}) });
+																								 	 MoveArt: "PS3_X", OculusArt: "OCC_Y", WindowsMRArt: "radial_Either_Left"})
+					});
 			}
-
 		} else {
 			// navPanel.addButton({text: "$Exit", controls: _cancelControls});
 			// navPanel.addButton({text: "$Search", controls: _searchControls});
@@ -387,6 +430,13 @@ class InventoryMenu extends ItemMenu
 			}
 			// navPanel.addButton({text: "$Magic", controls: _switchControls});
 		}
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "OCC THUMB_REST",
+																								 KnucklesArt: "OCC THUMB_REST"})});
 
 		navPanel.updateButtons(true);
 	}

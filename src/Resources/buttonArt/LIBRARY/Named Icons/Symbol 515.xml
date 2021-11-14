@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 515" itemID="5b986e27-00000a36" symbolType="graphic" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 515">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.00392156862745098"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!494 132|494 388!494 388[494 432 463 463!463 463[432 494 388 494!388 494|132 494!132 494|130 494!130 494[103 493 82 482!82 482|57 463!57 463[42 448 34 429!34 429|26 388!26 388|26 132!26 132[26 89 58 58!58 58[87 26 132 26!132 26|388 26
+!388 26[432 26 463 58!463 58[494 88 494 132"/>
+                    <Edge fillStyle1="1" edges="
+!520 132|520 388!520 388[520 443 482 482!482 482[443 520 388 520!388 520|132 520!132 520[77 520 39 482!39 482[0 443 0 388!0 388|0 132!0 132[0 78 39 39!39 39[78 0 132 0!132 0|388 0!388 0[443 0 482 39!482 39[520 77 520 132"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/F12" itemID="50149079-00000b3a" symbolType="graphic" lastModified="1343525047">
+  <timeline>
+    <DOMTimeline name="F12">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!315 16[302 0 271 0!271 0[246 0 234 10!234 10[223 21 219 39!219 39[216 56 216 77!216 77|216 86!216 86|251 86!251 86|251 79!251 79[250 75 250 67!250 67[250 59 252 51!252 51[253 42 257 36!257 36[262 30 270 30!270 30[279 30 284 35!284 35
+[289 40 291 47!291 47[293 53 293 61!293 61[293 78 287 95!287 95[282 112 275 127!275 127|213 259!213 259|326 259!326 259|326 229!326 229|262 229!262 229|284 188!284 188[293 171 303 149!303 149[313 127 320 105!320 105[328 82 328 63!328
+ 63[328 33 315 16!123 3|123 32!123 32|148 32!148 32|148 259!148 259|182 259!182 259|182 3!182 3|123 3!92 3|0 3!0 3|0 259!0 259|34 259!34 259|34 142!34 142|86 142!86 142|86 113!86 113|34 113!34 113|34 32!34 32|92 32!92 32|92 3"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

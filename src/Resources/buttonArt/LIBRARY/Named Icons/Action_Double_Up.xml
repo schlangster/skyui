@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Action_Double_Up" itemID="5bab000e-00003d43" linkageExportForAS="true" linkageIdentifier="Action_Double_Up" symbolType="graphic" lastModified="1537933347">
+  <timeline>
+    <DOMTimeline name="Action_Double_Up">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="ButtonArtBackgrounds/BackgroundLarge" selected="true" symbolType="graphic" loop="loop">
+                      <transformationPoint>
+                        <Point x="26.45" y="13"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMGroup selected="true">
+                      <members>
+                        <DOMSymbolInstance libraryItemName="Named Icons/Action_Up_Arrow" selected="true" symbolType="graphic" loop="loop">
+                          <matrix>
+                            <Matrix a="0.5745849609375" d="0.576919555664063" tx="14.5" ty="5.5"/>
+                          </matrix>
+                          <transformationPoint>
+                            <Point x="10.2" y="13"/>
+                          </transformationPoint>
+                        </DOMSymbolInstance>
+                        <DOMSymbolInstance libraryItemName="Named Icons/Action_Up_Arrow" selected="true" symbolType="graphic" loop="loop">
+                          <matrix>
+                            <Matrix a="0.5745849609375" d="0.576919555664063" tx="26.7" ty="5.5"/>
+                          </matrix>
+                          <transformationPoint>
+                            <Point x="10.2" y="13"/>
+                          </transformationPoint>
+                        </DOMSymbolInstance>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

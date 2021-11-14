@@ -1,0 +1,26 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/RightParenthesis" itemID="50146ebc-00000323" symbolType="graphic" lastModified="1343521934">
+  <timeline>
+    <DOMTimeline name="RightParenthesis">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!18 88S1[18 110 14 132!14 132[9 155 0 175!0 175|20 180!20 180[28 158 33 135!33 135[38 112 38 89!38 89[38 66 33 44!33 44[29 21 20 0!20 0|0 5!0 5[8 25 13 46!13 46[18 67 18 88"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -5,36 +5,34 @@
 #include "skse64/GameRTTI.h"
 #include "skse64/GameExtraData.h"
 
-namespace SkyUIVR {
-   namespace ExtendDataFix {
+namespace ExtendDataFix {
 
-      // As of SKSEVR 2.0.12, the layout of TESAmmo is slightly off, causing the "flags" field to be
-      // read & passed to skyui incorrectly.
-      // The end result is skyui seems to always categorize bolts and arrow as "type: bolt".
-      void AttachAmmoFlags(GFxMovieView* view, GFxValue* pFxVal, InventoryEntryData* item) {
-         TESForm* pForm = item->type;
-         if (!pForm || !pFxVal || !pFxVal->IsObject())
-            return;
+   // As of SKSEVR 2.0.12, the layout of TESAmmo is slightly off, causing the "flags" field to be
+   // read & passed to skyui incorrectly.
+   // The end result is skyui seems to always categorize bolts and arrow as "type: bolt".
+   void AttachAmmoFlags(GFxMovieView* view, GFxValue* pFxVal, InventoryEntryData* item) {
+      TESForm* pForm = item->type;
+      if (!pForm || !pFxVal || !pFxVal->IsObject())
+         return;
 
-         switch (pForm->GetFormType())
+      switch (pForm->GetFormType())
+      {
+         case kFormType_Ammo:
          {
-            case kFormType_Ammo:
+            TESAmmo* pAmmo = DYNAMIC_CAST(pForm, TESForm, TESAmmo);
+            if (pAmmo)
             {
-               TESAmmo* pAmmo = DYNAMIC_CAST(pForm, TESForm, TESAmmo);
-               if (pAmmo)
-               {
-                  RegisterNumber(pFxVal, "flags", pAmmo->settings.flags);
-               }
+               RegisterNumber(pFxVal, "flags", pAmmo->settings.flags);
             }
-            break;
-
-            default:
-               break;
          }
-      }
+         break;
 
-      void RegisterScaleformHooks(SKSEScaleformInterface* infc) {
-         infc->RegisterForInventory(AttachAmmoFlags);
+         default:
+            break;
       }
+   }
+
+   void RegisterScaleformInventoryHooks(SKSEScaleformInterface* infc) {
+      infc->RegisterForInventory(AttachAmmoFlags);
    }
 }
