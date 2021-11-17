@@ -144,8 +144,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ControllerStateHook.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="FormDB.h" />
+    <ClInclude Include="PapyrusUIFix.h" />
     <ClInclude Include="ScaleformExtendedDataFix.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
@@ -154,6 +156,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FormDB.cpp" />
+    <ClCompile Include="PapyrusUIFix.cpp" />
     <ClCompile Include="ScaleformExtendedDataFix.cpp" />
     <ClCompile Include="Settings.cpp" />
   </ItemGroup>

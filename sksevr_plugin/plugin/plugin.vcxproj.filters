@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ScaleformExtendedDataFix.cpp">
+      <Filter>SKSE Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerStateHook.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="FormDB.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="PapyrusUIFix.cpp">
+      <Filter>SKSE Patches</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ScaleformExtendedDataFix.h">
+      <Filter>SKSE Patches</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerStateHook.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="FormDB.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="PapyrusUIFix.h">
+      <Filter>SKSE Patches</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exports.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SKSE Patches">
+      <UniqueIdentifier>{6d3ec361-f98a-4172-b913-8e3f183dad14}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

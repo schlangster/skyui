@@ -3,14 +3,20 @@
 #include <shlobj.h>                       // CSIDL_MYCODUMENTS
 
 #include "FormDB.h"
-#include "ScaleformExtendedDataFix.h"
 #include "Keyboard.h"
 #include "ControllerStateHook.h"
 #include "Settings.h"
 
-static PluginHandle g_pluginHandle = kPluginHandle_Invalid;
-static SKSEPapyrusInterface* g_papyrus = nullptr;
-static SKSEScaleformInterface* g_scaleform = nullptr;
+// SKSE patches
+#include "ScaleformExtendedDataFix.h"
+#include "PapyrusUIFix.h"
+#include "skse64/Hooks_UI.h"
+
+PluginHandle g_pluginHandle = kPluginHandle_Invalid;
+SKSEPapyrusInterface* g_papyrus = nullptr;
+SKSEScaleformInterface* g_scaleform = nullptr;
+SKSETaskInterface* g_SkseTaskInterface = nullptr;
+SKSEObjectInterface* g_SkseObjectInterface = nullptr;
 
 void WaitForDebugger(bool should_break = false) {
    while (!IsDebuggerPresent())
@@ -61,9 +67,15 @@ extern "C" {
       // We're storing all our data in lua
       FormDB::InitGlobalLuaVM();
 
+      // Setup pointers to various SKSE interfaces
+      // Parts of the program may need to access these sparatically.
+      g_SkseTaskInterface = (SKSETaskInterface*)skse->QueryInterface(kInterface_Task);
+      g_SkseObjectInterface = (SKSEObjectInterface*)skse->QueryInterface(kInterface_Object);
+
       // Register additional Papyrus functions
       g_papyrus = (SKSEPapyrusInterface *)skse->QueryInterface(kInterface_Papyrus);
       g_papyrus->Register(FormDB::RegisterPapyrusFuncs);             // Expose FormDB lua functions to Papyrus
+      g_papyrus->Register(PapyrusUIFix::RegisterPapyrusFuncs);       // Fix Papyrus=>SKSE=>Scaleform SInt32 conversion bug
 
       // Register Inventory item hooks
       g_scaleform = (SKSEScaleformInterface*)skse->QueryInterface(kInterface_Scaleform);
@@ -81,6 +93,9 @@ extern "C" {
 
       // Start receiving constroller state updates
       ControllerStateHook::Init();
+
+
+      
 
       _MESSAGE("Plugin loaded");
 
