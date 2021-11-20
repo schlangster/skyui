@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+#
+
+require('pathname')
+require('fileutils')
+require('tmpdir')
+
+
+# Make sure we can find where the files we're packing from
+testDir = ENV["SKYUIVR_TEST_DIR"]
+if not testDir then
+  puts "Please set a directory to package from using $SKYUIVR_TEST_DIR"
+  exit
+end
+
+# Make sure we have a place to put the packed file
+releaseDir = ENV["SKYUIVR_RELEASE_DIR"]
+if not releaseDir then
+  puts "Please set a directory to package from using $SKYUIVR_RELEASE_DIR"
+  exit
+end
+
+puts "Add a tag?"
+tag = gets.chomp
+
+# Make a temp directory to copy the files to be compressed
+tempDir =  Dir.mktmpdir("skyuivr-pack")
+tempPath = Pathname.new(tempDir)
+puts tempPath
+
+
+# Copy the files in the test directory to a new temp directory named "SkyUI"
+srcPath = Pathname.new(testDir)
+# contentPath = Pathname.new(tempDir) + "SkyUI"
+# FileUtils.mkdir_p(contentPath)
+
+puts "Copying from #{srcPath} => #{tempPath}"
+FileUtils::cp_r(srcPath.realpath, tempPath.realpath)
+contentPath = tempPath + "SkyUI"
+FileUtils.mv(tempPath + srcPath.basename, contentPath)
+FileUtils::rm(contentPath + "meta.ini")
+
+
+# Zip up the directory
+if tag[0] == "v" then
+  archiveFilename = tempPath + "SkyUI.#{tag}.7z"
+else
+  archiveFilename = tempPath + "SkyUI - #{tag}.7z"
+end
+puts "ContentPath: #{contentPath}"
+system("7z a '#{archiveFilename}' '#{contentPath}'")
+
+FileUtils::cp(archiveFilename, releaseDir)

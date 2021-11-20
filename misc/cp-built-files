@@ -29,6 +29,9 @@ optParser.parse!
 
 destDir = ARGV.pop
 if not destDir then
+	destDir = ENV["SKYUIVR_TEST_DIR"]
+end
+if not destDir then
 	puts optParser
 	exit
 end
