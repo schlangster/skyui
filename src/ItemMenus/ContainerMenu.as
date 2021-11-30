@@ -197,8 +197,20 @@ class ContainerMenu extends ItemMenu
 				}
 				break;
 
-			default:
+			case "knuckles":
 				if(event.phaseName == "clicked" && event.eventName == "start") {
+					var state = event.curState;
+					if(state.widgetName == "thumbstick") {
+						inventoryLists.searchWidget.startInput();
+						return true;
+					}
+				}
+				break;
+
+			default:
+				if(event.curState.controllerRole == "leftHand" &&
+						event.phaseName == "clicked" &&
+						event.eventName == "start") {
 					var state = event.curState;
 					if(state.widgetName == "thumbstick") {
 						inventoryLists.searchWidget.startInput();

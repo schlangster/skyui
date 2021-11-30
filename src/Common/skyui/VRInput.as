@@ -148,6 +148,7 @@ class skyui.VRInput {
 			default:
   			return "unknown";
 		}
+		//return "oculus";
 		//return "knuckles";
 	}
 
