@@ -97,7 +97,7 @@ class Quest_Journal extends MovieClip
 			Debug.log("SkyrimVRTools plugin not available");
 		}
 
-		showInputReadout = skse["plugins"]["skyui"].IniGetBool("showInputReadout");
+		showInputReadout = skse["plugins"]["skyui"].IniGetBool("Settings/showInputReadout");
 		if(!showInputReadout)
 			TextPanel._visible = false;
 		else {

@@ -12,172 +12,193 @@
 #include "skse64/ScaleformCallbacks.h"
 #include "skse64_common/Utilities.h"
 
+#include "lua_glue.h"
+#include "FormDB.h"
+
 namespace Settings {
-   typedef std::map<std::string, std::string> SettingsMap;
-   SettingsMap* g_settingsMap = nullptr;
 
-   inline std::vector<std::string> split(const std::string& s, char delimiter)
-   {
-      std::vector<std::string> tokens;
-      std::string token;
-      std::istringstream tokenStream(s);
-      while (std::getline(tokenStream, token, delimiter))
-      {
-         tokens.push_back(std::move(token));
+   bool GetBool(lua_State* L, const char* path, bool default) {
+      return lua::lua_table_get_bool_by_path(L, LUA_GLOBALSINDEX, path, default);
+   }
+
+   double GetDouble(lua_State* L, const char* path, double default) {
+      return lua::lua_table_get_double_by_path(L, LUA_GLOBALSINDEX, path, default);
+   }
+
+   std::string GetString(lua_State* L, const char* path, std::string default) {
+      return lua::lua_table_get_string_by_path(L, LUA_GLOBALSINDEX, path, default);
+   }
+
+   bool load_settings_file(lua_State* L, const char* path) {
+      const char* func_name = "load_settings_file";
+      lua_getglobal(L, func_name);       // Grab the lua function
+      lua_pushstring(L, path);
+
+      // Call and print any errors
+      if (lua_pcall(L, 1, 1, 0) != 0) {
+         _ERROR("Error running `%s`: %s", func_name, lua_tostring(g_lua, -1));
+         return false;
       }
-      return tokens;
-   }
 
-   void removeComments(std::string& str)
-   {
-      auto pos = str.find("#");
-      if (pos != std::string::npos)
-      {
-         str.erase(pos);
-      }
-   }
-
-   inline void ltrim(std::string& s) {
-      s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-         return !std::isspace(ch);
-      }));
-   }
-
-   inline void rtrim(std::string& s) {
-      s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-         return !std::isspace(ch);
-      }).base(), s.end());
-   }
-
-   inline bool to_bool(std::string& s, bool& val) {
-      std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-      if (s == "true" || s == "yes" || s == "1")
-         val = true;
-      else
-         val = false;
       return true;
    }
 
-   inline bool to_int(std::string& s, int& val) {
-      try {
-         int r = std::stoi(s);
-         val = r;
-         return true;
-      }
-      catch (std::exception&) {
-         return false;
-      }
-   }
-
-   inline bool to_float(std::string& s, float& val) {
-      try {
-         float r = std::stof(s);
-         val = r;
-         return true;
-      }
-      catch (std::exception&) {
-         return false;
-      }
-   }
-
-   inline bool to_double(std::string& s, double& val) {
-      try {
-         double r = std::stod(s);
-         val = r;
-         return true;
-      }
-      catch (std::exception&) {
-         return false;
-      }
-   }
-
-   bool GetBool(SettingsMap& m, const char* varname, bool& val) {
-      auto it = m.find(varname);
-      if (it == m.end())
-         return false;
-      return to_bool(it->second, val);
-   }
-
-   bool GetInt(SettingsMap& m, const char* varname, int& val) {
-      auto it = m.find(varname);
-      if (it == m.end())
-         return false;
-      return to_int(it->second, val);
-   }
-
-   bool GetFloat(SettingsMap& m, const char* varname, float& val) {
-      auto it = m.find(varname);
-      if (it == m.end())
-         return false;
-      return to_float(it->second, val);
-   }
-
-   bool GetDouble(SettingsMap& m, const char* varname, double& val) {
-      auto it = m.find(varname);
-      if (it == m.end())
-         return false;
-      return to_double(it->second, val);
-   }
-
-   bool GetString(SettingsMap& m, const char* varname, std::string** val) {
-      auto it = m.find(varname);
-      if (it == m.end())
-         return false;
-      *val = &it->second;
-      return true;
-   }
-
-   SettingsMap* loadConfig(const char* settingFilePath = nullptr)
+   bool loadLuaConfig(const char* settingFilePath = nullptr)
    {
       std::string path;
-      auto result = new SettingsMap();
 
       // Figure out which file we're trying to open.
       if (settingFilePath) {
          path = settingFilePath;
       }
       else {
-         path = GetRuntimeDirectory() + "Data\\SKSE\\Plugins\\Skyui-VR.ini";
+         path = GetRuntimeDirectory() + "Data\\SKSE\\Plugins\\SkyUI-VR.settings.lua";
       }
 
-      // Open the file
-      std::ifstream file(path);
-      if (!file.is_open())
-         return std::move(result);
+      int top = lua_gettop(g_lua);
 
-      // Process each line in the file
-      std::string line;
-      while (std::getline(file, line))
+      bool ok = load_settings_file(g_lua, path.c_str());
+      if (!ok)
+         return false;
+
+      lua_getfield(g_lua, -1, "Settings");
+      lua_setglobal(g_lua, "Settings");
+      lua::lua_pop_to_level(g_lua, top);
+      return true;
+   }
+
+   bool deepCopyValue(lua_State* L, int index, GFxMovieView* movie, GFxValue* val);
+
+   bool deepCopyTable(lua_State* L, int index, GFxMovieView* movie, GFxValue* object) {
+      int top = lua_gettop(L);
+
+      // stack now contains: -1 => table 
+      bool isArray = lua::lua_table_is_array(L, index);
+
+      if (isArray) {
+         movie->CreateArray(object);
+
+         lua_pushnil(L);
+         // stack now contains: -1 => nil; -2 => table
+
+         for(int i = 0; lua_next(L, -2); i++) {
+            // stack now contains: -1 => value; -2 => key; -3 => table
+            GFxValue val;
+
+            //lua::lua_print_value(L, -1);
+            //printf("\n");
+
+            // Copy the lua value from the top of the stack into a Scaleform Value
+            deepCopyValue(L, -1, movie, &val);
+
+            // Add the Scaleform value to the Scaleform array
+            object->PushBack(&val);
+
+            // pop value, leaving the key
+            lua_pop(L, 1);
+            // stack now contains: -1 => key; -2 => table
+         }
+      }
+      else {
+         movie->CreateObject(object);
+
+         lua_pushnil(L);
+         // stack now contains: -1 => nil; -2 => table
+
+         while (lua_next(L, -2))
+         {
+            // stack now contains: -1 => value; -2 => key; -3 => table
+            const char* key = lua_tostring(L, -2);
+            const char* value = lua_tostring(L, -1);
+
+            //lua::lua_print_value(L, -2);
+            //printf(" => ");
+            //lua::lua_print_value(L, -1);
+            //printf("\n");
+
+            GFxValue val;
+            deepCopyValue(L, -1, movie, &val);
+            object->SetMember(key, &val);
+
+            // pop value, leaving the key
+            lua_pop(L, 1);
+            // stack now contains: -1 => key; -2 => table
+         }
+      }
+
+      // stack now contains: -1 => table
+      // (when lua_next returns 0 it pops the key but does not push anything.)
+
+      // Restore stack to the same state as when we entered the function
+      lua::lua_pop_to_level(L, top);
+
+      return true;
+   }
+
+
+   bool deepCopyValue(lua_State* L, int index, GFxMovieView* movie, GFxValue* val) {
+      switch (lua_type(L, index)) {
+      case LUA_TNONE:
+         val->SetUndefined();
+         break;
+
+      case LUA_TNIL:
+         val->SetNull();
+         break;
+
+      case LUA_TBOOLEAN:
+         val->SetBool(lua_toboolean(L, index));
+         break;
+
+      case LUA_TNUMBER:
+         val->SetBool(lua_tonumber(L, index));
+         break;
+
+      case LUA_TSTRING:
+         val->SetString(lua_tostring(L, index));
+         break;
+
+      case LUA_TTABLE:
+         deepCopyTable(L, index, movie, val);
+         break;
+
+      case LUA_TLIGHTUSERDATA:
+         printf("Cannot copy light user data");
+         break;
+      case LUA_TFUNCTION:
+         printf("Cannot copy function");
+         break;
+      case LUA_TUSERDATA:
+         printf("Cannot copy userdata");
+         break;
+      case LUA_TTHREAD:
+         printf("Cannot copy thread");
+         break;
+      }
+
+      return true;
+   }
+
+   class Scaleform_IniGet : public GFxFunctionHandler
+   {
+   public:
+      virtual void	Invoke(Args* args)
       {
-         removeComments(line);
-         ltrim(line);
-         rtrim(line);
-         if (line.length() == 0)
-            continue;
+         ASSERT(args->numArgs >= 1);
+         ASSERT(args->args[0].GetType() == GFxValue::kType_String); // Key
+         ASSERT(g_lua);
 
-         // Skip all section markers
-         if (line[0] == '[')
-         {
-            continue;
-         }
+         int top = lua_gettop(g_lua);
+         bool ok = lua::lua_table_get_by_path(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString());
 
-         // If we can successfully split the line with '=',
-         // put the first and second item into a map.
-         auto tokens = split(line, '=');
-         if (tokens.size() > 1)
-         {
-            result->insert(make_pair(tokens[0], tokens[1]));
-         }
+         if (ok)
+            deepCopyValue(g_lua, -1, args->movie, args->result);
+         else
+            args->result->SetNull();
+
+         lua::lua_pop_to_level(g_lua, top);
       }
-
-      return std::move(result);
-   }
-
-   void lazyInit() {
-      if (g_settingsMap == nullptr) {
-         g_settingsMap = loadConfig();
-      }
-   }
+   };
 
    class Scaleform_IniGetBool : public GFxFunctionHandler
    {
@@ -186,15 +207,19 @@ namespace Settings {
       {
          ASSERT(args->numArgs >= 1);
          ASSERT(args->args[0].GetType() == GFxValue::kType_String); // Key
+         ASSERT(g_lua);
 
-         lazyInit();
-         bool val;
-         bool success = GetBool(*g_settingsMap, args->args[0].GetString(), val);
+         lua::lua_print_value_recursive(g_lua, LUA_GLOBALSINDEX);
 
-         if (!success)
-            args->result->SetNull();
+         int top = lua_gettop(g_lua);
+         bool ok = lua::lua_table_get_by_path(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString());
+
+         if (ok && lua_isboolean(g_lua, -1))
+            deepCopyValue(g_lua, -1, args->movie, args->result);
          else
-            args->result->SetBool(val);
+            args->result->SetUndefined();
+
+         lua::lua_pop_to_level(g_lua, top);
       }
    };
 
@@ -205,15 +230,17 @@ namespace Settings {
       {
          ASSERT(args->numArgs >= 1);
          ASSERT(args->args[0].GetType() == GFxValue::kType_String); // Key
+         ASSERT(g_lua);
+         
+         int top = lua_gettop(g_lua);
+         bool ok = lua::lua_table_get_by_path(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString());
 
-         lazyInit();
-         double val;
-         bool success = GetDouble(*g_settingsMap, args->args[0].GetString(), val);
-
-         if (!success)
-            args->result->SetNull();
+         if (ok && lua_isnumber(g_lua, -1))
+            deepCopyValue(g_lua, -1, args->movie, args->result);
          else
-            args->result->SetNumber(val);
+            args->result->SetUndefined();
+
+         lua::lua_pop_to_level(g_lua, top);
       }
    };
 
@@ -224,21 +251,22 @@ namespace Settings {
       {
          ASSERT(args->numArgs >= 1);
          ASSERT(args->args[0].GetType() == GFxValue::kType_String); // Key
+         ASSERT(g_lua);
 
-         lazyInit();
-         std::string* val;
+         int top = lua_gettop(g_lua);
+         bool ok = lua::lua_table_get_by_path(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString());
 
-         bool success = GetString(*g_settingsMap, args->args[0].GetString(), &val);
-         assert(val);
-
-         if (!success)
-            args->result->SetNull();
+         if (ok && lua_isstring(g_lua, -1))
+            deepCopyValue(g_lua, -1, args->movie, args->result);
          else
-            args->result->SetString(val->c_str());
+            args->result->SetUndefined();
+
+         lua::lua_pop_to_level(g_lua, top);
       }
    };
 
    bool RegisterScaleformFuncs(GFxMovieView* view, GFxValue* plugin) {
+      RegisterFunction<Scaleform_IniGet>(plugin, view, "IniGet");
       RegisterFunction<Scaleform_IniGetBool>(plugin, view, "IniGetBool");
       RegisterFunction<Scaleform_IniGetNumber>(plugin, view, "IniGetNumber");
       RegisterFunction<Scaleform_IniGetString>(plugin, view, "IniGetString");

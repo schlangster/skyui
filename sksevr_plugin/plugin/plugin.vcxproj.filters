@@ -12,6 +12,8 @@
     <ClCompile Include="PapyrusUIFix.cpp">
       <Filter>SKSE Patches</Filter>
     </ClCompile>
+    <ClCompile Include="lua_glue.cpp" />
+    <ClCompile Include="guicon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ScaleformExtendedDataFix.h">
@@ -25,6 +27,8 @@
       <Filter>SKSE Patches</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="lua_glue.h" />
+    <ClInclude Include="guicon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />

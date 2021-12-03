@@ -145,15 +145,19 @@
   <ItemGroup>
     <ClInclude Include="ControllerStateHook.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="guicon.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="FormDB.h" />
+    <ClInclude Include="lua_glue.h" />
     <ClInclude Include="PapyrusUIFix.h" />
     <ClInclude Include="ScaleformExtendedDataFix.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControllerStateHook.cpp" />
+    <ClCompile Include="guicon.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="lua_glue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FormDB.cpp" />
     <ClCompile Include="PapyrusUIFix.cpp" />

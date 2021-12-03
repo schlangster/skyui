@@ -12,6 +12,8 @@
 #include "PapyrusUIFix.h"
 #include "skse64/Hooks_UI.h"
 
+#include "guicon.h"
+
 PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 SKSEPapyrusInterface* g_papyrus = nullptr;
 SKSEScaleformInterface* g_scaleform = nullptr;
@@ -61,11 +63,15 @@ extern "C" {
    bool SKSEPlugin_Load(const SKSEInterface * skse) {
       _MESSAGE("SkyUI-VR loaded");
 
-      //WaitForDebugger();
+#ifdef _DEBUG
+      WaitForDebugger();
+      RedirectIOToConsole();
+#endif // DEBUG
 
       // Initialize lua
       // We're storing all our data in lua
       FormDB::InitGlobalLuaVM();
+      Settings::loadLuaConfig();
 
       // Setup pointers to various SKSE interfaces
       // Parts of the program may need to access these sparatically.

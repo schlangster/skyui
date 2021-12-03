@@ -103,6 +103,11 @@ function table_set_by_path(root, path, val)
     return root
 end
 
+function inspect(o)
+    local dump = require("inspect")
+    print(dump(o))
+end
+
 -- Given a (tree of) tables, starting at `root`...
 -- Iteratively walk through the `path` to fetch a value
 -- If the item is not present, return the `default`
@@ -120,26 +125,32 @@ function table_get_by_path(root, path, default)
     -- Start walking at the passed root
     local cur = root
     for i, k in ipairs(steps) do
-        if i == step_cnt then
-            break
-        end
-
-        -- Try to get the table that's next level down
-        local candidate = cur[k]
-
-        -- If we arrived at some leaf value or 'nil' (anything that is not a table)...
-        -- Abort the walk with an error messsage
-        if candidate == nil then
-            return default
-        elseif type(candidate) ~= "table" then
+        -- Can we actually move further into the path?
+        if type(cur) ~= "table" then
             return default, string.format("[get_by_path] Path '%s' reached a val of type '%s' unexpectedly", table.concat(steps, "/", 1, i), type(candidate))
         end
 
-        -- Update the cursor so we can walk deeper into the tree
-        cur = candidate
+        -- Walk deeper into the tree
+        cur = cur[k]
     end
 
-    return cur[steps[step_cnt]] or default
+    if cur == nil then
+        return default
+    else
+        return cur
+    end
+end
+
+function load_settings_file(path)
+    local chunk = loadfile(path)
+    local env={}
+    setfenv(chunk, env)
+    chunk()
+    return env
+end
+
+function print_value_recursive(val)
+    print(dump_table(val))
 end
 
 function Form_FetchDataLazyInit(formID)

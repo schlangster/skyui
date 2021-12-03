@@ -12,67 +12,12 @@
 #include "skse64/ScaleformExtendedData.h"
 #include "skse64/GameRTTI.h"
 
-extern "C" {
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-#include "luajit.h"
-}
-
 #include "Keyboard.h"
 
-static lua_State* g_lua = nullptr;
-
-lua_State* lua_new_with_libs() {
-   lua_State* L = luaL_newstate();
-   if (L) {
-      luaL_openlibs(L);
-   }
-
-   return L;
-}
-
-int lua_prepend_package_path(lua_State* L, const char* path) {
-   int stack_before = lua_gettop(L);
-   auto new_path = std::string(path);
-
-   lua_getglobal(L, "package");
-   lua_getfield(L, -1, "path");                 // get field "path" from table at top of stack (-1)
-   const char* cur_path = lua_tostring(L, -1);  // grab path string from top of stack
-   lua_pop(L, 1);                               // Pop the result we just used
-
-   new_path.append(";");
-   new_path.append(cur_path);
-
-   lua_pushstring(L, new_path.c_str()); // push the new one
-   lua_setfield(L, -2, "path");         // set the field "path" in table at -2 with value at top of stack
-   lua_pop(L, 1);                       // get rid of package table from top of stack
-
-   assert(stack_before == lua_gettop(L));
-   return 0;
-}
+lua_State* g_lua = nullptr;
 
 namespace FormDB {
-   std::filesystem::path dll_path() {
-      HMODULE hm = nullptr;
-      if (GetModuleHandleEx(
-         GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-         (LPCSTR)&dll_path, &hm) == 0)
-      {
-         int ret = GetLastError();
-         _ERROR("GetModuleHandle failed, error = %d\n", ret);
-         return L"";
-      }
 
-      wchar_t path[MAX_PATH];
-      if (GetModuleFileNameW(hm, path, _countof(path)) == 0) {
-         int ret = GetLastError();
-         _ERROR("GetModuleFileName failed, error = %d\n", ret);
-         return L"";
-      }
-
-      return std::filesystem::path(path);
-   }
 
    void Form_SetInt(UInt32 formID, const char* fieldName, SInt32 val) {
       const char* func_name = "Form_SetVal";
@@ -237,22 +182,8 @@ namespace FormDB {
       if (g_lua)
          return false;
 
-      //DebugBreak();
-
       // Setup new lua instance
-      g_lua = lua_new_with_libs();
-
-      auto dll_dir = dll_path().parent_path();
-      auto package_path = dll_dir / "SkyUI/?.lua";
-      lua_prepend_package_path(g_lua, package_path.generic_u8string().c_str());
-
-      // Execute our lua file to setup global functions and variables in the vm
-      // FIXME!!! This will probably not work for non-ascii paths.
-      auto mainEntryPath = dll_dir / "SkyUI/MainEntry.lua";
-      if (luaL_dofile(g_lua, mainEntryPath.generic_u8string().c_str()) != 0) {
-         _ERROR("Could not load lua file '%s': %s", mainEntryPath.generic_u8string().c_str(), lua_tostring(g_lua, lua_gettop(g_lua)));
-         lua_pop(g_lua, 1);
-      }
+      g_lua = lua::lua_new_skyui_state();
 
       if (g_lua)
          return true;
