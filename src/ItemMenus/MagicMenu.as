@@ -42,8 +42,16 @@ class MagicMenu extends ItemMenu
 							   "mag_powers", "mag_activeeffects"];
 	}
 
+	private var vrActionConditions = undefined;
+
 	public function OnShow() {
 		super.OnShow();
+
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("MagicMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+		}
 
 		_bMenuClosing = false;
 		//iLastItemType = InventoryDefines.ICT_NONE;
@@ -130,38 +138,13 @@ class MagicMenu extends ItemMenu
 	public function handleVRInput(event): Boolean {
 		if (!bFadedIn)
 			return;
-		switch(VRInput.instance.controllerName) {
-			case "vive":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-				break;
 
-			case "knuckles":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
 						inventoryLists.searchWidget.startInput();
 						return true;
 					}
-				}
-				break;
 
-			default:
-				if(event.curState.controllerRole == "leftHand" &&
-						event.phaseName == "clicked" &&
-						event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-		}
 		return false;
 	}
 

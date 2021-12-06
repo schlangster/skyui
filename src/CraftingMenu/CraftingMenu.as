@@ -67,6 +67,7 @@ class CraftingMenu extends MovieClip
 	private var _handleInputRateLimiter: Boolean;
 	private var _VRInput: VRInput;
 
+	private var vrActionConditions = undefined;
 
   /* PROPERTIES */
 
@@ -469,38 +470,13 @@ class CraftingMenu extends MovieClip
 
 	public function handleVRInput(event): Boolean {
 		//Debug.dump("CraftingMenu::handleVRInput", event);
-		switch(VRInput.instance.controllerName) {
-			case "vive":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-						InventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-				break;
 
-			case "knuckles":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
 						InventoryLists.searchWidget.startInput();
 						return true;
 					}
-				}
-				break;
 
-			default:
-				if(event.curState.controllerRole == "leftHand" &&
-						event.phaseName == "clicked" &&
-						event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
-						InventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-		}
 		return false;
 	}
 
@@ -674,6 +650,12 @@ class CraftingMenu extends MovieClip
 	private function onShowItemsList(event: Object): Void
 	{
 		setupVRInput();
+
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("CraftingMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+			}
 
 		if (_platform == Shared.Platforms.CONTROLLER_PC ||
 				_platform == Shared.Platforms.CONTROLLER_VIVE ||

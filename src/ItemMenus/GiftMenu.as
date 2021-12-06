@@ -21,6 +21,7 @@ class GiftMenu extends ItemMenu
 
 	private var _categoryListIconArt: Array;
 
+	private var vrActionConditions = undefined;
 
   /* INITIALIZATION */
 
@@ -91,6 +92,11 @@ class GiftMenu extends ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
 		setupVRInput();
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("GiftMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+		}
 
 		// Force select of first category because RestoreIndices isn't called for GiftMenu
 		// TODO: Do this in the correct place, i.e. InventoryLists.SetCategoriesList();
@@ -162,38 +168,12 @@ class GiftMenu extends ItemMenu
 		//Debug.dump("GiftMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		switch(VRInput.instance.controllerName) {
-			case "vive":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-				break;
 
-			case "knuckles":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
 						inventoryLists.searchWidget.startInput();
 						return true;
 					}
-				}
-				break;
-
-			default:
-				if(event.curState.controllerRole == "leftHand" &&
-						event.phaseName == "clicked" &&
-						event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-		}
 		return false;
 	}
 }

@@ -262,6 +262,8 @@ namespace ControllerStateHook {
          if (evn->opening)
             return kEvent_Continue;
 
+         //_MESSAGE(">>> CleanControllerHookOnMenuHook");
+
          //if (!contains(ignoredMenus, evn->menuName))
          //   _MESSAGE("Closing menu: %s", evn->menuName);
 
@@ -280,7 +282,10 @@ namespace ControllerStateHook {
          //       Take all: forcefully closes the menu
          //    CraftingMenu:
          //       "Quit alchemy" prompt forcefully closes the menu
+
+         //_MESSAGE("Menu name is: %s", evn->menuName);
          if (contains(forceCleanMenus, evn->menuName)) {
+            //_MESSAGE("Actually cleaning up");
 
             // Any GFxValue we might have tried to hang on are probably gone/destroyed now.
             // We're removing the "managed" flag manually here we don't try to reference them and
@@ -293,6 +298,7 @@ namespace ControllerStateHook {
             g_scaleformInputHandlers.clear();
          }
 
+         //_MESSAGE("<<< CleanControllerHookOnMenuHook");
          return kEvent_Continue;
       }
    };

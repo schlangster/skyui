@@ -11,6 +11,8 @@ import skyui.defines.Input;
 import skyui.defines.Inventory;
 import skyui.VRInput;
 
+import skyui.util.Debug;
+
 
 class BarterMenu extends ItemMenu
 {
@@ -36,6 +38,7 @@ class BarterMenu extends ItemMenu
 	private var _handleInputRateLimiter: Boolean;
 	private var _tabSwitchRateLimiter: Boolean;
 
+	private var vrActionConditions = undefined;
 
   /* INITIALIZATION */
 
@@ -121,38 +124,12 @@ class BarterMenu extends ItemMenu
 		//Debug.dump("BarterMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		switch(VRInput.instance.controllerName) {
-			case "vive":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-				break;
 
-			case "knuckles":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
 						inventoryLists.searchWidget.startInput();
 						return true;
 					}
-				}
-				break;
-
-			default:
-				if(event.curState.controllerRole == "leftHand" &&
-						event.phaseName == "clicked" &&
-						event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-		}
 		return false;
 	}
 
@@ -203,6 +180,12 @@ class BarterMenu extends ItemMenu
 	private function onShowItemsList(event: Object): Void
 	{
 		setupVRInput();
+
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("BarterMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+		}
 
 		inventoryLists.showItemsList();
 

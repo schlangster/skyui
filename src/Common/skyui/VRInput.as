@@ -69,6 +69,8 @@ class skyui.VRInput {
 
 	public var errorPrintedFlags = {};
 
+	public var logDetails = false;
+
 	// CONSTANTS -------------------------------------------------------
 	static public var WIDGET_MAX_COUNT = 64;
 
@@ -92,6 +94,8 @@ class skyui.VRInput {
 			lastControllerStates = [{}, {}];
 			lastWidgetStates = makeEmptyWidgetStates();
 			widgetStates = makeEmptyWidgetStates();
+
+			logDetails = skse["plugins"]["skyui"].IniGetBool("Settings/VRInput/logDetails");
 		}
 		initialized = true;
 	}
@@ -145,11 +149,31 @@ class skyui.VRInput {
   			return "knuckles";
 			case "oculus":
   			return "oculus";
+			case "wmr":
+  			return "wmr";
 			default:
   			return "unknown";
 		}
 		//return "oculus";
 		//return "knuckles";
+	}
+
+	public function getDefaultBindingsFilename() {
+		var conName = controllerName ||
+			controllerNameFromOpenVRName(skse["plugins"]["skyui"].ControllerType());
+
+		if(conName == "unknown")
+			conName = "general"
+
+		return "defaults-" + conName;
+	}
+
+	public function getActionConditionDefs(menuName) {
+		return skse["plugins"]["skyui"].IniGetWithDefaults("Settings/" + menuName, getDefaultBindingsFilename());
+	}
+
+	public function getActionConditions(menuName) {
+		return generateActionTriggerConditions(getActionConditionDefs(menuName));
 	}
 
 	public function getAxis(axisArray, idx) {
@@ -359,7 +383,6 @@ class skyui.VRInput {
 
 					widgets[32].widgetName = "touchpad";
 					widgets[32].type = "touchpad";
-
 					widgets[32].axisId = 0;
 					widgets[32].axis = getAxis(axis, 0);
 					widgetAddClickWhenPressed(widgets[32]);
@@ -403,6 +426,35 @@ class skyui.VRInput {
 
 					widgets[34].widgetName = "fingers";
 					widgets[34].type = "button";
+					break;
+
+				case "wmr":
+					widgets[1].widgetName = "application menu";
+					widgets[1].type = "button";
+					widgetAddClickWhenPressed(widgets[1]);
+
+					widgets[2].widgetName = "grip";
+					widgets[2].type = "button";
+					widgetAddClickWhenPressed(widgets[2]);
+
+					widgets[32].widgetName = "touchpad";
+					widgets[32].type = "touchpad";
+					widgets[32].axisId = 0;
+					widgets[32].axis = getAxis(axis, 0);
+					widgetAddClickWhenPressed(widgets[32]);
+
+					widgets[33].widgetName = "trigger";
+					widgets[33].type = "trigger";
+					widgets[33].axisId = 1;
+					widgets[33].axis = getAxis(axis, 1);
+					widgetAddClickForTrigger(widgets[33]);
+					widgetDetectTouchWithAxis(widgets[33]);
+
+					widgets[34].widgetName = "thumbstick";
+					widgets[34].type = "thumbstick";
+					widgets[34].axisId = 0;
+					widgets[34].axis = getAxis(axis, 2);
+					widgetAddClickWhenPressed(widgets[34]);
 					break;
 
 				default:
@@ -1050,5 +1102,188 @@ class skyui.VRInput {
 
 	static public function inputEventSummary(event): String {
 		return "phase: " + event.phaseName + ", event: " + event.eventName + ", widget: " + event.curState.widgetName;
+	}
+
+	// Given a single array of strings, describing how an action should be triggered,
+	// fill out an object to help make trigger comparison easier.
+	public function makeActionTriggerCondition(specs: Array) {
+		if(logDetails) {
+			Debug.log(">>> makeActionTriggerCondition");
+			Debug.dump("specs", specs);
+		}
+
+		var condition = new Object();
+
+		for(var i = 0; i < specs.length; i++) {
+			var spec = specs[i];
+			if(logDetails) {
+				Debug.log("processing spec: " + spec);
+				Debug.dump("condition cur:", condition);
+			}
+			switch(spec) {
+				case 'leftHand':
+				case 'rightHand':
+
+					if(logDetails) {
+						Debug.log("--- 1 ---");
+					}
+					condition["role"] = spec;
+					break;
+
+				case 'start':
+				case 'end':
+
+					if(logDetails) {
+						Debug.log("--- 2 ---");
+					}
+					condition["eventName"] = spec;
+					break;
+
+				case 'top':
+				case 'right':
+				case 'left':
+				case 'bottom':
+				case 'center':
+					if(logDetails) {
+						Debug.log("--- 3 ---");
+					}
+					condition["region"] = spec;
+					break;
+
+				case 'touched':
+				case 'pressed':
+				case 'clicked':
+					if(logDetails) {
+						Debug.log("--- 4 ---");
+					}
+					condition["phaseName"] = spec;
+					break;
+
+				case 'touch':
+				case 'press':
+				case 'click':
+					if(logDetails) {
+						Debug.log("--- 5 ---");
+					}
+					condition["phaseName"] = spec + "ed";
+					break;
+
+				case 'touchpad':
+				case 'thumbstick':
+				case 'application menu':
+				case 'grip':
+				case 'trigger':
+				case 'b button':
+				case 'a button':
+				case 'x button':
+				case 'y button':
+					if(logDetails) {
+						Debug.log("--- 6 ---");
+					}
+					condition["widgetName"] = spec;
+					break;
+
+				default:
+
+					if(logDetails) {
+						Debug.log("--- 7 ---");
+						Debug.log("Unhandled spec string: " + spec);
+					}
+					break;
+			}
+		}
+
+		// Default phaseName is "clicked"
+		if(!condition["phaseName"])
+			condition["eventName"] = "clicked";
+
+		// Default eventName is "start"
+		if(!condition["eventName"])
+			condition["eventName"] = "start";
+
+		if(logDetails) {
+			Debug.dump("condition final:", condition);
+		}
+		return condition;
+	}
+
+	// Given an object that maps from "action name" => "trigger condition strings",
+	// return an object that maps from "action name" => "trigger condition"
+	public function generateActionTriggerConditions(settings: Object) {
+		if(logDetails) {
+			Debug.log(">>> generateActionTriggerConditions")
+			Debug.dump("settings", settings);
+		}
+		var actionConditions = new Object;
+
+		for(var key in settings) {
+			actionConditions[key] = makeActionTriggerCondition(settings[key]);
+			actionConditions[key]["name"] = key;
+		}
+
+		if(logDetails) {
+			Debug.log("<<< generateActionTriggerConditions")
+		}
+		return actionConditions;
+	}
+
+	// Given a list of actions the event object sent to vrHandleInput,
+	// return the action name that has been triggered
+	public function triggeredAction(actionConditions: Object, event: Object) {
+		if(logDetails) {
+			Debug.log(">>> triggeredAction")
+			Debug.dump("event", event);
+		}
+		var state = event.curState;
+		var candidate = undefined;
+		for(var actionName in actionConditions) {
+			var condition = actionConditions[actionName];
+
+			if(logDetails) {
+				Debug.dump("condition", condition);
+				Debug.log("-- 1 --");
+			}
+			var role = condition["role"]
+			if(role && state.controllerRole != role)
+				continue;
+
+			if(logDetails) {
+				Debug.log("-- 2 --");
+			}
+			var widgetName = condition["widgetName"]
+			if(widgetName && state.widgetName.toLowerCase() != widgetName.toLowerCase())
+				continue;
+
+			if(logDetails) {
+				Debug.log("-- 3 --");
+			}
+			var phaseName = condition["phaseName"]
+			if(phaseName && event.phaseName != phaseName)
+				continue;
+
+			if(logDetails) {
+				Debug.log("-- 4 --");
+			}
+			var eventName = condition["eventName"]
+			if(eventName && eventName != event.eventName)
+				continue;
+
+			if(logDetails) {
+				Debug.log("-- 5 --");
+			}
+			var region = condition["region"]
+			if(region && region != VRInput.axisRegion(state.axis))
+				continue;
+
+			if(logDetails) {
+				Debug.log("<<< triggeredAction: " + actionName)
+			}
+			return actionName;
+		}
+
+		if(logDetails) {
+			Debug.log("<<< triggeredAction: no match")
+		}
+		return undefined;
 	}
 }

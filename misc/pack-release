@@ -38,7 +38,7 @@ puts "Copying from #{srcPath} => #{tempPath}"
 FileUtils::cp_r(srcPath.realpath, tempPath.realpath)
 contentPath = tempPath + "SkyUI"
 FileUtils.mv(tempPath + srcPath.basename, contentPath)
-FileUtils::rm(contentPath + "meta.ini")
+FileUtils::rm_f(contentPath + "meta.ini")
 
 
 # Zip up the directory

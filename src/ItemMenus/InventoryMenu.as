@@ -47,9 +47,17 @@ class InventoryMenu extends ItemMenu
 		GameDelegate.addCallBack("ItemRotating", this, "ItemRotating");
 	}
 
+	private var vrActionConditions = undefined;
+
+
 	public function OnShow()
 	{
 		super.OnShow();
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("InventoryMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+		}
 
 		_bMenuClosing = false;
 		// TODO! Cleanup these lines ported from SkyrimVR
@@ -155,38 +163,13 @@ class InventoryMenu extends ItemMenu
 		//Debug.dump("InventoryMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		switch(VRInput.instance.controllerName) {
-			case "vive":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-				break;
 
-			case "knuckles":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
 						inventoryLists.searchWidget.startInput();
 						return true;
 					}
-				}
-				break;
 
-			default:
-				if(event.curState.controllerRole == "leftHand" &&
-						event.phaseName == "clicked" &&
-						event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-		}
 		return false;
 	}
 

@@ -200,6 +200,51 @@ namespace Settings {
       }
    };
 
+   // Used by actionscript code to request VR action bindings.
+   // Here, we're using both the globally loaded settings and another
+   // one to provide defaults if the specified path/value cannot be located.
+   class Scaleform_IniGetWithDefaults : public GFxFunctionHandler
+   {
+   public:
+      virtual void	Invoke(Args* args)
+      {
+         ASSERT(args->numArgs >= 1);
+         ASSERT(args->args[0].GetType() == GFxValue::kType_String); // Path
+         ASSERT(args->args[1].GetType() == GFxValue::kType_String); // Defaults filename
+         ASSERT(g_lua);
+
+         const char* givenFilename = args->args[1].GetString();
+         std::string defaultsFilename;
+
+         if (std::filesystem::exists(givenFilename)) {
+            defaultsFilename = givenFilename;
+         }
+         else {
+            std::string candidate = GetRuntimeDirectory() + "Data\\SKSE\\Plugins\\SkyUI-VR\\" + givenFilename + ".lua";
+            if (std::filesystem::exists(candidate.c_str()))
+               defaultsFilename = candidate;
+         }
+
+         int top = lua_gettop(g_lua);
+         bool ok;
+
+         if (defaultsFilename.length() != 0) {
+            ok = lua::lua_settings_get_by_path_with_defaults(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString(), defaultsFilename.c_str());
+         }
+         else {
+            _ERROR("Unable to locate defaults settings file: %s", givenFilename);
+            ok = lua::lua_table_get_by_path(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString());
+         }
+
+         if (ok)
+            deepCopyValue(g_lua, -1, args->movie, args->result);
+         else
+            args->result->SetNull();
+
+         lua::lua_pop_to_level(g_lua, top);
+      }
+   };
+
    class Scaleform_IniGetBool : public GFxFunctionHandler
    {
    public:
@@ -208,8 +253,6 @@ namespace Settings {
          ASSERT(args->numArgs >= 1);
          ASSERT(args->args[0].GetType() == GFxValue::kType_String); // Key
          ASSERT(g_lua);
-
-         lua::lua_print_value_recursive(g_lua, LUA_GLOBALSINDEX);
 
          int top = lua_gettop(g_lua);
          bool ok = lua::lua_table_get_by_path(g_lua, LUA_GLOBALSINDEX, args->args[0].GetString());
@@ -267,6 +310,7 @@ namespace Settings {
 
    bool RegisterScaleformFuncs(GFxMovieView* view, GFxValue* plugin) {
       RegisterFunction<Scaleform_IniGet>(plugin, view, "IniGet");
+      RegisterFunction<Scaleform_IniGetWithDefaults>(plugin, view, "IniGetWithDefaults");
       RegisterFunction<Scaleform_IniGetBool>(plugin, view, "IniGetBool");
       RegisterFunction<Scaleform_IniGetNumber>(plugin, view, "IniGetNumber");
       RegisterFunction<Scaleform_IniGetString>(plugin, view, "IniGetString");

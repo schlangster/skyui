@@ -42,6 +42,7 @@ class ContainerMenu extends ItemMenu
 
 	private var _columnOpRequested: Number;
 
+	private var vrActionConditions = undefined;
 
   /* PROPERTIES */
 
@@ -186,38 +187,12 @@ class ContainerMenu extends ItemMenu
 		//Debug.dump("ContainerMenu::handleVRInput", event);
 		if (!bFadedIn)
 			return;
-		switch(VRInput.instance.controllerName) {
-			case "vive":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "touchpad" && VRInput.axisRegion(state.axis) == "bottom") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-				break;
 
-			case "knuckles":
-				if(event.phaseName == "clicked" && event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
 						inventoryLists.searchWidget.startInput();
 						return true;
 					}
-				}
-				break;
-
-			default:
-				if(event.curState.controllerRole == "leftHand" &&
-						event.phaseName == "clicked" &&
-						event.eventName == "start") {
-					var state = event.curState;
-					if(state.widgetName == "thumbstick") {
-						inventoryLists.searchWidget.startInput();
-						return true;
-					}
-				}
-		}
 		return false;
 	}
 
@@ -356,6 +331,12 @@ class ContainerMenu extends ItemMenu
 		// For some unknown reason, OnShow() does not get called for the container menu.
 		//
 		setupVRInput();
+
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("ContainerMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+		}
 
 		inventoryLists.showItemsList();
 	}

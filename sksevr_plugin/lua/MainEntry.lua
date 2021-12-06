@@ -1,4 +1,12 @@
-dump_table = require('inspect')
+function file_exists(name)
+    local f=io.open(name,"r")
+    if f~=nil then
+        io.close(f)
+        return true
+    else
+        return false
+    end
+end
 
 function path_split(path)
     local steps = {}
@@ -108,6 +116,10 @@ function inspect(o)
     print(dump(o))
 end
 
+function print_value_recursive(o)
+    inspect(o)
+end
+
 -- Given a (tree of) tables, starting at `root`...
 -- Iteratively walk through the `path` to fetch a value
 -- If the item is not present, return the `default`
@@ -149,8 +161,55 @@ function load_settings_file(path)
     return env
 end
 
-function print_value_recursive(val)
-    print(dump_table(val))
+function settings_get_by_path_with_defaults(root, path, defaults_filename, default)
+    local defaultsTop = "SettingsDefaults"
+    local defaults_table = nil
+    print("defaults_filename: ", defaults_filename)
+    -- Try to access "SettingsDefaults/defaults_filename"
+    -- We can't use table_get_by_path() here because the `defaults_filename` will likely
+    -- contain path separators, which interferes with the way the function works.
+    local t = _G[defaultsTop]
+    print("--- 0 ---")
+    print("_G[defaultsTop]")
+    inspect(t)
+    if t then
+        print("--- 1 ---")
+        defaults_table = t[defaults_filename]
+        print("defaults_table")
+        inspect(defaults_table)
+    else
+        print("--- 2 ---")
+        _G[defaultsTop] = {}
+    end
+    print("--- 3 ---")
+    if not defaults_table then
+        -- Load the settings file
+        local file_contents = load_settings_file(defaults_filename)
+        if file_contents then
+            print("--- 4 ---")
+            print("loaded from file")
+            inspect(file_contents)
+            defaults_table = {}
+            print("defaults top: ", defaultsTop)
+            print("defaults_filename: ", defaults_filename)
+            _G[defaultsTop][defaults_filename] = defaults_table
+            defaults_table["Settings"] = file_contents["Settings"]
+        end
+    end
+    print("--- 5 ---")
+    local val = table_get_by_path(root, path, nil);
+    if not val then
+        print("--- 6 ---")
+        print("--- reverting to defaults ---")
+        val = table_get_by_path(defaults_table, path, nil);
+    end
+    if nil == val then
+        return default
+    else
+        print("val")
+        inspect(val)
+        return val
+    end
 end
 
 function Form_FetchDataLazyInit(formID)

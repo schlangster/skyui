@@ -59,12 +59,12 @@ namespace lua {
       lua_State* state = lua_new_with_libs();
 
       auto dll_dir = dll_path().parent_path();
-      auto package_path = dll_dir / "SkyUI/?.lua";
+      auto package_path = dll_dir / "SkyUI-VR/?.lua";
       lua_prepend_package_path(state, package_path.generic_u8string().c_str());
 
       // Execute our lua file to setup global functions and variables in the vm
       // FIXME!!! This will probably not work for non-ascii paths.
-      auto mainEntryPath = dll_dir / "SkyUI/MainEntry.lua";
+      auto mainEntryPath = dll_dir / "SkyUI-VR/MainEntry.lua";
       if (luaL_dofile(state, mainEntryPath.generic_u8string().c_str()) != 0) {
          _ERROR("Could not load lua file '%s': %s", mainEntryPath.generic_u8string().c_str(), lua_tostring(state, lua_gettop(state)));
          lua_pop(state, 1);
@@ -184,6 +184,22 @@ namespace lua {
 
       // Call and print any errors
       if (lua_pcall(L, 3, 1, 0) != 0) {
+         _ERROR("Error running `%s`: %s", func_name, lua_tostring(g_lua, -1));
+         return false;
+      }
+      return true;
+   }
+
+   bool lua_settings_get_by_path_with_defaults(lua_State* L, int tableIdx, const char* path, const char* defaultsFilename) {
+      const char* func_name = "settings_get_by_path_with_defaults";
+      lua_getglobal(L, func_name);       // Grab the lua function
+      lua_pushvalue(L, tableIdx);
+      lua_pushstring(L, path);
+      lua_pushstring(L, defaultsFilename);
+      lua_pushnil(L);
+
+      // Call and print any errors
+      if (lua_pcall(L, 4, 1, 0) != 0) {
          _ERROR("Error running `%s`: %s", func_name, lua_tostring(g_lua, -1));
          return false;
       }
