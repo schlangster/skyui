@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -85,13 +85,13 @@
       </IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>if defined SkyUITestPath (
-  echo Copying built dll to test directory
-  xcopy /y $(TargetPath) "%SkyUITestPath%\SKSE\Plugins"
-) else (
-  echo %%SkyUITestPath%% not defined
-  echo Not copying built artifact to test directory
-)</Command>
+       <Command>if defined SkyUITestPath (
+          echo Copying built dll to test directory
+          xcopy /y $(TargetPath) "%SkyUITestPath%\SKSE\Plugins"
+       ) else (
+          echo %%SkyUITestPath%% not defined
+          echo Not copying built artifact to test directory
+          )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,6 +125,7 @@
       <Command>if defined SkyUITestPath (
   echo Copying built dll to test directory
   xcopy /y $(TargetPath) "%SkyUITestPath%\SKSE\Plugins"
+  xcopy /y $(TargetDir)SkyUI-VR.pdb "%SkyUITestPath%\SKSE\Plugins"
 ) else (
   echo %%SkyUITestPath%% not defined
   echo Not copying built artifact to test directory
