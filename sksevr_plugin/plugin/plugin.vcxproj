@@ -85,13 +85,14 @@
       </IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-       <Command>if defined SkyUITestPath (
-          echo Copying built dll to test directory
-          xcopy /y $(TargetPath) "%SkyUITestPath%\SKSE\Plugins"
-       ) else (
-          echo %%SkyUITestPath%% not defined
-          echo Not copying built artifact to test directory
-          )</Command>
+      <Command>if defined SkyUITestPath (
+  echo Copying built dll to test directory
+  xcopy /y $(TargetPath) "%SkyUITestPath%\SKSE\Plugins"
+  xcopy /y $(TargetDir)SkyUI-VR.pdb "%SkyUITestPath%\SKSE\Plugins"
+) else (
+  echo %%SkyUITestPath%% not defined
+  echo Not copying built artifact to test directory
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

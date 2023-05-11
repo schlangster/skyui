@@ -38,10 +38,22 @@ namespace FormDB {
    }
 
    void Form_SetInt(TESForm* form, BSFixedString fieldName, SInt32 val) {
+      if (form == nullptr) {
+         // _MESSAGE("Form_SetInt: form is null");
+         return;
+      }
+
+      // _MESSAGE("Form_SetInt: 0x%x, %s, %d", form->formID, fieldName.c_str(), val);
       Form_SetInt(form->formID, fieldName.c_str(), val);
    }
 
    void Papyrus_Form_SetInt(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, SInt32 val) {
+      if (form == nullptr) {
+         // _MESSAGE("Papyrus_Form_SetInt: form is null");
+         return;
+      }
+
+      // _MESSAGE("Papyrus_Form_SetInt: 0x%x, %s, %d", form->formID, fieldName.c_str(), val);
       Form_SetInt(form->formID, fieldName.c_str(), val);
    }
 
@@ -68,11 +80,34 @@ namespace FormDB {
    }
 
    SInt32 Form_GetInt(TESForm* form, BSFixedString fieldName, SInt32 default) {
-      return Form_GetInt(form->formID, fieldName.c_str(), default);
+      if (form == nullptr) {
+         // _MESSAGE("Form_GetInt: form is null");
+         return default;
+      }
+
+      // _MESSAGE("Form_GetInt: 0x%x, %s", form->formID, fieldName);
+      auto val = Form_GetInt(form->formID, fieldName.c_str(), default);
+      // _MESSAGE("Form_GetInt result: %d", val);
+      return val;
    }
 
    SInt32 Papyrus_Form_GetInt(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, SInt32 default) {
-      return Form_GetInt(form->formID, fieldName.c_str(), default);
+      if (form == nullptr) {
+          // _MESSAGE("Papyrus_Form_GetInt: form is null");
+         return default;
+      }
+
+      // _MESSAGE("Papyrus_Form_GetInt: 0x%x, %s", form->formID, fieldName);
+      auto val = Form_GetInt(form->formID, fieldName.c_str(), default);
+      // _MESSAGE("Papyrus_Form_GetInt result: %d", val);
+      return val;
+   }
+
+   const char* boolToStr(bool val) {
+      if (val)
+         return "true";
+      else
+         return "false";
    }
 
    void Form_SetBool(UInt32 formID, const char* fieldName, bool val) {
@@ -89,11 +124,22 @@ namespace FormDB {
    }
 
    void Form_SetBool(TESForm* form, BSFixedString fieldName, bool val) {
+      if (form == nullptr) {
+         // _MESSAGE("Form_SetBool: form is null");
+         return;
+      }
+
+      // _MESSAGE("Form_SetBool: 0x%x, %s, %s", form->formID, fieldName.c_str(), boolToStr(val));
       Form_SetBool(form->formID, fieldName.c_str(), val);
    }
 
    void Papyrus_Form_SetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool val) {
-      //_MESSAGE("[PIH]Papyrus -> DLL: SetBool, %x, %s, %s", form->formID, fieldName.c_str(), val ? "true" : "false");
+      if (form == nullptr) {
+         // _MESSAGE("Form_SetBool: form is null");
+         return;
+      }
+
+      // _MESSAGE("Papyrus_Form_SetBool: 0x%x, %s, %s", form->formID, fieldName.c_str(), boolToStr(val));
       Form_SetBool(form->formID, fieldName.c_str(), val);
    }
 
@@ -120,14 +166,27 @@ namespace FormDB {
    }
 
    bool Form_GetBool(TESForm* form, BSFixedString fieldName, bool default) {
-      //_MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s", form->formID, fieldName.c_str(), default ? "true" : "false");
+      if (form == nullptr) {
+         // _MESSAGE("Form_GetBool: form is null");
+         return default;
+      }
+
+      // _MESSAGE("Form_GetBool: 0x%x, %s", form->formID, fieldName);
       bool val = Form_GetBool(form->formID, fieldName.c_str(), default);
-      //_MESSAGE("[PIH]Papyrus -> DLL: GetBool, %x, %s, %s -> %s", form->formID, fieldName.c_str(), default ? "true" : "false", val ? "true" : "false");
+      // _MESSAGE("Form_GetBool result: %s", boolToStr(val));
       return val;
    }
 
    bool Papyrus_Form_GetBool(StaticFunctionTag*, TESForm* form, BSFixedString fieldName, bool default) {
-      return Form_GetBool(form->formID, fieldName.c_str(), default);
+      if (form == nullptr) {
+         // _MESSAGE("Papyrus_Form_GetBool: form is null");
+         return default;
+      }
+
+      // _MESSAGE("Papyrus_Form_GetBool: 0x%x, %s", form->formID, fieldName);
+      auto val = Form_GetBool(form->formID, fieldName.c_str(), default);
+      // _MESSAGE("Papyrus_Form_GetBool result: %s", boolToStr(val));
+      return val;
    }
 
    void Form_RemoveField(UInt32 formID, const char* fieldName) {
@@ -142,10 +201,21 @@ namespace FormDB {
    }
 
    void Form_RemoveField(TESForm* form, BSFixedString fieldName) {
+      if (form == nullptr) {
+         // _MESSAGE("Form_RemoveField: form is null");
+         return;
+      }
+
+      // _MESSAGE("Form_RemoveField: 0x%x, %s", form->formID, fieldName);
       Form_RemoveField(form->formID, fieldName.c_str());
    }
 
    void Papyrus_Form_RemoveField(StaticFunctionTag*, TESForm* form, BSFixedString fieldName) {
+      if (form == nullptr) {
+         // _MESSAGE("Papyrus_Form_RemoveField: form is null");
+         return;
+      }
+      // _MESSAGE("Papyrus_Form_RemoveField: 0x%x, %s", form->formID, fieldName);
       Form_RemoveField(form->formID, fieldName.c_str());
    }
 
@@ -160,10 +230,20 @@ namespace FormDB {
    }
 
    void Form_RemoveAllFields(TESForm* form) {
+      if (form == nullptr) {
+         // _MESSAGE("Form_RemoveAllFields: form is null");
+         return;
+      }
+      // _MESSAGE("Form_RemoveAllFields: 0x%x, %s", form->formID);
       Form_RemoveAllFields(form->formID);
    }
 
    void Papyrus_Form_RemoveAllFields(StaticFunctionTag*, TESForm* form) {
+      if (form == nullptr) {
+         // _MESSAGE("Papyrus_Form_RemoveAllFields: form is null");
+         return;
+      }
+      // _MESSAGE("Papyrus_Form_RemoveAllFields: 0x%x, %s", form->formID);
       Form_RemoveAllFields(form->formID);
    }
 
