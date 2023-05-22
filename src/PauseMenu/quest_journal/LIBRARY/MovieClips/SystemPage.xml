@@ -1,0 +1,251 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/SystemPage" itemID="51070cac-00000242" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="SystemPage" linkageClassName="SystemPage" linkageURL="." sourceFlashFilepath="Sprite 545" lastModified="1359548820" lastUniqueIdentifier="28" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="SystemPage">
+      <layers>
+        <DOMLayer name="PanelRect" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="PanelRect">
+                  <matrix>
+                    <Matrix a="6.27000427246094" d="4.59977722167969" tx="275" ty="15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="HelpTextPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/HelpTextPanel" name="HelpTextPanel">
+                  <matrix>
+                    <Matrix tx="285" ty="15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="HelpListPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/HelpListPanel" name="HelpListPanel">
+                  <matrix>
+                    <Matrix tx="285" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ErrorText" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="ErrorText" selected="true" fontRenderingMode="standard" width="663.95" height="30" includeOutlines="true" isSelectable="false" scrollable="true" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="256.95" ty="415.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" letterSpacing="1" size="24" face="$EverywhereMediumFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="2" blurY="2" distance="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SaveLoadPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/SaveLoadPanel" name="SaveLoadPanel">
+                  <matrix>
+                    <Matrix tx="275" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="PCQuitPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/PCQuitPanel" name="PCQuitPanel">
+                  <matrix>
+                    <Matrix tx="275" ty="210"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="InputMappingPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/InputMappingPanel" name="InputMappingPanel">
+                  <matrix>
+                    <Matrix tx="275" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="OptionsListsPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/OptionsListsPanel" name="OptionsListsPanel">
+                  <matrix>
+                    <Matrix tx="275" ty="70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SettingsPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/SettingsPanel" name="SettingsPanel">
+                  <matrix>
+                    <Matrix tx="275" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ConfirmPanel" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ConfirmPanel" name="ConfirmPanel">
+                  <matrix>
+                    <Matrix tx="375" ty="397.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="VersionText" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="VersionText" fontRenderingMode="standard" width="119" height="14.2" includeOutlines="true" isSelectable="false" scrollable="true">
+                  <matrix>
+                    <Matrix tx="17" ty="456.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>&lt;version&gt;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" alpha="0.282352941176471" bitmapSize="240" face="$EverywhereFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CategoryList" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/SystemCategoryList" name="CategoryList_mc">
+                  <matrix>
+                    <Matrix ty="72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SystemDivider" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Divider" name="SystemDivider">
+                  <matrix>
+                    <Matrix tx="235"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SystemPageRect" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="SystemPageRect">
+                  <matrix>
+                    <Matrix a="9.01992797851563" d="4.89999389648438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

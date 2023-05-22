@@ -29,18 +29,18 @@ bool _magicMenuCheckEnabled			= true
 bool _barterMenuCheckEnabled		= true
 bool _containerMenuCheckEnabled		= true
 bool _giftMenuCheckEnabled			= true
-bool _mapMenuCheckEnabled			= true
-bool _favoritesMenuCheckEnabled		= true
+bool _mapMenuCheckEnabled			= false 	;; SkyUI-VR doesn't come with a custom map
+bool _favoritesMenuCheckEnabled		= false 	;; SkyUI-VR doesn't come with a custom favorites menu
 bool _craftingMenuCheckEnabled		= true
 
 
 ; PROPERTIES --------------------------------------------------------------------------------------
 
-int property		MinSKSERelease	= 44		autoReadonly
-string property		MinSKSEVersion	= "1.6.16"	autoReadonly
+int property		MinSKSERelease	= 53		autoReadonly
+string property		MinSKSEVersion	= "2.0.10"	autoReadonly
 
-int property		ReqSWFRelease	= 17		autoReadonly
-string property		ReqSWFVersion	= "5.0"		autoReadonly
+int property		ReqSWFRelease	= 2018		autoReadonly
+string property		ReqSWFVersion	= "5.2 SE"	autoReadonly
 
 bool property		ErrorDetected	= false auto
 
@@ -122,31 +122,33 @@ endProperty
 
 bool property MapMenuCheckEnabled
 	bool function get()
-		return _mapMenuCheckEnabled
+		;; return _mapMenuCheckEnabled
+		return false
 	endFunction
 
 	function set(bool a_val)
-		_mapMenuCheckEnabled = a_val
-		if (a_val)
-			RegisterForMenu(MAP_MENU)
-		else
-			UnregisterForMenu(MAP_MENU)
-		endIf
+		;; _mapMenuCheckEnabled = a_val
+		;; if (a_val)
+		;;	RegisterForMenu(MAP_MENU)
+		;; else
+		;;	UnregisterForMenu(MAP_MENU)
+		;; endIf
 	endFunction
 endProperty
 
 bool property FavoritesMenuCheckEnabled
 	bool function get()
-		return _favoritesMenuCheckEnabled
+		;; return _favoritesMenuCheckEnabled
+		return false
 	endFunction
 
 	function set(bool a_val)
-		_favoritesMenuCheckEnabled = a_val
-		if (a_val)
-			RegisterForMenu(FAVORITES_MENU)
-		else
-			UnregisterForMenu(FAVORITES_MENU)
-		endIf
+		;; _favoritesMenuCheckEnabled = a_val
+		;; if (a_val)
+		;;	RegisterForMenu(FAVORITES_MENU)
+		;; else
+		;;	UnregisterForMenu(FAVORITES_MENU)
+		;; endIf
 	endFunction
 endProperty
 
@@ -177,22 +179,22 @@ event OnGameReload()
 	ErrorDetected = false
 
 	if (SKSE.GetVersionRelease() == 0)
-		Error(ERR_SKSE_MISSING, "The Skyrim Script Extender (SKSE) is not running.\nSkyUI will not work correctly!\n\n" \
-			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSE has been updated, then install the new version.")
+		Error(ERR_SKSE_MISSING, "The Skyrim Script Extender (SKSEVR) is not running.\nSkyUI will not work correctly!\n\n" \
+			+ "This message may also appear if a new Skyrim Patch has been released. In this case, wait until SKSEVR has been updated, then install the new version.")
 		return
 
 	elseIf (GetType() == 0)
-		Error(ERR_SKSE_BROKEN, "The SKSE scripts have been overwritten or are not properly loaded.\nReinstalling SKSE might fix this.")
+		Error(ERR_SKSE_BROKEN, "The SKSEVR scripts have been overwritten or are not properly loaded.\nReinstalling SKSE might fix this.")
 		return
 
 	elseIf (SKSE.GetVersionRelease() < MinSKSERelease)
-		Error(ERR_SKSE_VERSION_RT, "SKSE is outdated.\nSkyUI will not work correctly!\n" \
+		Error(ERR_SKSE_VERSION_RT, "SKSEVR is outdated.\nSkyUI will not work correctly!\n" \
 			+ "Required version: " + MinSKSEVersion + " or newer\n" \
 			+ "Detected version: " + SKSE.GetVersion() + "." + SKSE.GetVersionMinor() + "." + SKSE.GetVersionBeta())
 		return
 
 	elseIf (SKSE.GetScriptVersionRelease() < MinSKSERelease)
-		Error(ERR_SKSE_VERSION_SCPT, "SKSE scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
+		Error(ERR_SKSE_VERSION_SCPT, "SKSEVR scripts are outdated.\nYou probably forgot to install/update them with the rest of SKSE.\nSkyUI will not work correctly!")
 		return
 	endIf
 
@@ -279,14 +281,14 @@ event OnMenuOpen(string a_menuName)
 		endIf
 
 	elseIf (a_menuName == MAP_MENU)
-		if (CheckMenuVersion("map.swf", a_menuName, "_global.Map.MapMenu"))
-			UnregisterForMenu(a_menuName)
-		endIf
+		; if (CheckMenuVersion("map.swf", a_menuName, "_global.Map.MapMenu"))
+		;	UnregisterForMenu(a_menuName)
+		; endIf
 
 	elseIf (a_menuName == FAVORITES_MENU)
-		if (CheckMenuVersion("favoritesmenu.swf", a_menuName, "_global.FavoritesMenu"))
-			UnregisterForMenu(a_menuName)
-		endIf
+		; if (CheckMenuVersion("favoritesmenu.swf", a_menuName, "_global.FavoritesMenu"))
+		;	UnregisterForMenu(a_menuName)
+		; endIf
 
 	elseIf (a_menuName == CRAFTING_MENU)
 		if (CheckMenuVersion("craftingmenu.swf", a_menuName, "_global.CraftingMenu"))

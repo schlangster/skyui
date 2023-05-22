@@ -1,5 +1,6 @@
 ﻿import gfx.managers.FocusHandler;
 import gfx.io.GameDelegate;
+import gfx.ui.InputDetails;
 import Shared.GlobalFunc;
 
 import skyui.components.list.ListLayoutManager;
@@ -11,58 +12,63 @@ import skyui.util.Debug;
 import skyui.util.GlobalFunctions;
 
 import skyui.defines.Input;
-
+import flash.utils.getTimer;
+import skyui.VRInput;
 
 class CraftingMenu extends MovieClip
 {
 	#include "../version.as"
-	
+
   /* CONSTANTS */
-	
+
 	static var LIST_OFFSET: Number = 20;
 	static var SELECT_BUTTON: Number = 0;
 	static var EXIT_BUTTON: Number = 1;
 	static var AUX_BUTTON: Number = 2;
 	static var CRAFT_BUTTON: Number = 3;
-	
+
 	static var SUBTYPE_NAMES = [ "ConstructibleObject", "Smithing", "EnchantConstruct", "EnchantDestruct", "Alchemy" ];
-	
-	
+
+
   /* STAGE ELEMENTS */
-  
+
 	// @API
 	public var BottomBarInfo: MovieClip;
-  
+
 	public var ItemInfoHolder: MovieClip;
 	public var MenuDescriptionHolder: MovieClip;
 	public var MenuNameHolder: MovieClip;
 
 	// Not API, but keeping the original name for compatiblity with vanilla.
 	public var InventoryLists: CraftingLists;
-	
+
 	public var MouseRotationRect: MovieClip;
 	public var ExitMenuRect: MovieClip;
-	
-	
+
+
   /* PRIVATE VARIABLES */
-  
+
 	private var _bCanCraft: Boolean = false;
 	private var _bCanFadeItemInfo: Boolean = true;
 	private var _bItemCardAdditionalDescription: Boolean = false;
 	private var _platform: Number = 0;
-	
+
 	private var _searchKey: Number;
-	
+
 	private var _acceptControls: Object;
 	private var _cancelControls: Object;
 	private var _searchControls: Object;
 	private var _sortColumnControls: Array;
 	private var _sortOrderControls: Object;
-	
+
 	private var _config: Object;
 	private var _subtypeName: String;
-	
-	
+
+	private var _handleInputRateLimiter: Boolean;
+	private var _VRInput: VRInput;
+
+	private var vrActionConditions = undefined;
+
   /* PROPERTIES */
 
 	public var AdditionalDescriptionHolder: MovieClip;
@@ -72,7 +78,7 @@ class CraftingMenu extends MovieClip
 
 	// @API
 	public var ButtonText: Array;
-	
+
 	// @API
 	public var CategoryList: CraftingLists;
 
@@ -84,7 +90,7 @@ class CraftingMenu extends MovieClip
 
 	// @API
 	public var MenuDescription: TextField;
-	
+
 	// @API
 	public var MenuName: TextField;
 
@@ -100,7 +106,7 @@ class CraftingMenu extends MovieClip
 		_bCanCraft = abCanCraft;
 		UpdateButtonText();
 	}
-	
+
 	public function get bCanFadeItemInfo(): Boolean
 	{
 		GameDelegate.call("CanFadeItemInfo", [], this, "SetCanFadeItemInfo");
@@ -132,45 +138,45 @@ class CraftingMenu extends MovieClip
 
 	// @API
 	public var bCanExpandPanel: Boolean;
-	
+
 	// @API
 	public var bHideAdditionalDescription: Boolean;
-	
+
 	public var currentMenuType: String = "";
-	
+
 	public var navPanel: ButtonPanel;
-	
-	
+
+
 	var dbgIntvl = 0;
-	
-	
+
+
   /* INITIALIZATION */
 
 	public function CraftingMenu()
 	{
 		super();
-		
+
 		bCanExpandPanel = true;
 		bHideAdditionalDescription = false;
 		ButtonText = new Array("", "", "", "");
-		
+
 		CategoryList = InventoryLists;
 		ItemInfo = ItemInfoHolder.ItemInfo;
 		Mouse.addListener(this);
-		
+
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
-		
+
 		navPanel = BottomBarInfo.buttonPanel;
 	}
-	
+
 	// @API
 	public function Initialize(): Void
 	{
 		skse.ExtendData(true);
 		skse.ExtendAlchemyCategories(true);
-		
+
 		_subtypeName = SUBTYPE_NAMES[_currentFrame-1];
-		
+
 		ItemInfoHolder = ItemInfoHolder;
 		ItemInfoHolder.gotoAndStop("default");
 		ItemInfo.addEventListener("endEditItemName", this, "onEndEditItemName");
@@ -179,44 +185,44 @@ class CraftingMenu extends MovieClip
 		AdditionalDescriptionHolder = ItemInfoHolder.AdditionalDescriptionHolder;
 		AdditionalDescription = AdditionalDescriptionHolder.AdditionalDescription;
 		AdditionalDescription.textAutoSize = "shrink";
-		
+
 		// Naming FTW - gotta respect the API though.
 		MenuName = MenuNameHolder.MenuName;
 		MenuName.autoSize = "left";
 		MenuNameHolder._visible = false;
-		
+
 		MenuDescription = MenuDescriptionHolder.MenuDescription;
 		MenuDescription.autoSize = "center";
 
 		CategoryList.InitExtensions(_subtypeName);
 
 		FocusHandler.instance.setFocus(CategoryList, 0);
-		
+
 		CategoryList.addEventListener("itemHighlightChange", this, "onItemHighlightChange");
 		CategoryList.addEventListener("showItemsList", this, "onShowItemsList");
 		CategoryList.addEventListener("hideItemsList", this, "onHideItemsList");
 		CategoryList.addEventListener("categoryChange", this, "onCategoryListChange");
-		
+
 		ItemList = CategoryList.itemList;
 		ItemList.addEventListener("itemPress", this, "onItemSelect");
-				
+
 /*		BottomBarInfo["Button" + CraftingMenu.CRAFT_BUTTON].addEventListener("press", this, "onCraftButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.EXIT_BUTTON].addEventListener("click", this, "onExitButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.EXIT_BUTTON].disabled = false;
 		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
 		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;*/
-		
+
 		ExitMenuRect.onPress = function ()
 		{
-			GameDelegate.call("CloseMenu", []);
+			closeMenu();
 		};
-		
+
 		bCanCraft = false;
 		positionFixedElements();
 	}
-	
+
   /* PUBLIC FUNCTIONS */
-	
+
 	// @API - Alchemy
 	public function SetPartitionedFilterMode(a_bPartitioned: Boolean): Void
 	{
@@ -233,35 +239,51 @@ class CraftingMenu extends MovieClip
 	public function UpdateButtonText(): Void
 	{
 		navPanel.clearButtons();
-		
+
+		var activateControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"E",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"});
+		var exitControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"Tab",XBoxArt:"360_B",PS3Art:"PS3_B",ViveArt:"grip",MoveArt:"PS3_B",OculusArt:"grab",WindowsMRArt:"grab"});
+		var auxControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"F",XBoxArt:"360_Y",PS3Art:"PS3_Y",ViveArt:"radial_Either_Up",MoveArt:"PS3_Y",OculusArt:"OCC_Y",WindowsMRArt:"radial_Either_Up"});
+		var craftControls = skyui.util.Input.pickControls(_platform,
+				{PCArt:"R",XBoxArt:"360_X",PS3Art:"PS3_X",ViveArt:"radial_Either_Down",MoveArt:"PS3_X",OculusArt:"OCC_B",WindowsMRArt:"radial_Either_Down"});
+
 		if (getItemShown()) {
-			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: Input.Activate});
+			navPanel.addButton({text: ButtonText[CraftingMenu.SELECT_BUTTON], controls: activateControls});
 		} else {
-			navPanel.addButton({text: "$Exit", controls: _cancelControls});
-			navPanel.addButton({text: "$Search", controls: _searchControls});
+			navPanel.addButton({text: "$Exit", controls: exitControls});
+			//navPanel.addButton({text: "$Search", controls: _searchControls});
 			if (_platform != 0) {
-				navPanel.addButton({text: "$Column", controls: _sortColumnControls});
-				navPanel.addButton({text: "$Order", controls: _sortOrderControls});
+				navPanel.addButton({text: "$Column", controls: {namedKey: "Action_Up"}});
+				navPanel.addButton({text: "$Order", controls: {namedKey: "Action_Double_Up"}});
 			}
 		}
-		
+
+		navPanel.addButton({
+			text: "$Search",
+			controls: skyui.util.Input.pickControls(_platform,
+																								{PCArt: "Space", ViveArt: "radial_Either_Down",
+																								 MoveArt: "PS3_X", OculusArt: "OCC THUMB_REST", WindowsMRArt: "OCC THUMB_REST",
+																								 KnucklesArt: "OCC THUMB_REST"})});
+
 		if (bCanCraft && ButtonText[CraftingMenu.CRAFT_BUTTON] != "") {
-			navPanel.addButton({text: ButtonText[CraftingMenu.CRAFT_BUTTON], controls: Input.XButton});
+			navPanel.addButton({text: ButtonText[CraftingMenu.CRAFT_BUTTON], controls: craftControls});
 		}
-		
+
 		if (bCanCraft && ButtonText[CraftingMenu.AUX_BUTTON] != "") {
-			navPanel.addButton({text: ButtonText[CraftingMenu.AUX_BUTTON], controls: Input.YButton});
+			navPanel.addButton({text: ButtonText[CraftingMenu.AUX_BUTTON], controls: auxControls});
 		}
-		
+
 //		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].addEventListener("click", this, "onAuxButtonPress");
 //		BottomBarInfo["Button" + CraftingMenu.AUX_BUTTON].disabled = false;
-		
+
 		navPanel.updateButtons(true);
 	}
 
 	// @API
 	public function UpdateItemList(abFullRebuild: Boolean): Void
-	{		
+	{
 		if (_subtypeName == "ConstructibleObject") {
 			// After constructing an item, the native control flow is:
 			//    (1) Call InvalidateListData directly and set some basic data
@@ -271,7 +293,7 @@ class CraftingMenu extends MovieClip
 			// For this menu, this is not a problem. For others it would be (recursive calls to UpdateItemList).
 			abFullRebuild = true;
 		}
-		
+
 		if (abFullRebuild == true) {
 			CategoryList.InvalidateListData();
 		} else {
@@ -306,13 +328,13 @@ class CraftingMenu extends MovieClip
 			AdditionalDescriptionHolder._visible = true;
 		}
 	}
-	
+
 	// @API
 	public function SetSelectedItem(aSelection: Number): Void
 	{
 		GameDelegate.call("SetSelectedItem", [aSelection]);
 	}
-	
+
 	// @API - Alchemy
 	public function PreRebuildList(): Void
 	{
@@ -323,7 +345,7 @@ class CraftingMenu extends MovieClip
 
 	// @API - Alchemy
 	public function PostRebuildList(abRestoreSelection: Boolean): Void
-	{		
+	{
 		/*if (abRestoreSelection) {
 			var entryList: Array = CategoryList.CategoriesList.entryList;
 			var centerIndex: Number = -1;
@@ -349,29 +371,31 @@ class CraftingMenu extends MovieClip
 			CategoryList.ItemsList.UpdateList();
 		}*/
 	}
-	
+
 	// @API
 	public function SetPlatform(a_platform: Number, a_bPS3Switch: Boolean): Void
 	{
+		VRInput.instance.updatePlatform(a_platform);
+
 		_platform = a_platform;
-		
+
 		if (a_platform == 0) {
 			_acceptControls = Input.Enter;
 			_cancelControls = Input.Tab;
 		} else {
 			_acceptControls = Input.Accept;
 			_cancelControls = Input.Cancel;
-			
+
 			// Defaults
 			_sortColumnControls = Input.SortColumn;
 			_sortOrderControls = Input.SortOrder;
 		}
-		
+
 		// Defaults
 		_searchControls = Input.Space;
-		
+
 		ItemInfo.SetPlatform(a_platform, a_bPS3Switch);
-		
+
 		BottomBarInfo.setPlatform(a_platform, a_bPS3Switch);
 		CategoryList.setPlatform(a_platform, a_bPS3Switch);
 	}
@@ -416,81 +440,106 @@ class CraftingMenu extends MovieClip
 		ItemInfo.quantitySlider.addEventListener("change", this, "onSliderChanged");
 		onSliderChanged();
 	}
-	
+
 	// @API
 	public function SetSliderValue(aValue: Number): Void
 	{
 		ItemInfo.quantitySlider.value = aValue;
 	}
-	
+
 	// @GFx
-	public function handleInput(aInputEvent: Object, aPathToFocus: Array): Boolean
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		aPathToFocus[0].handleInput(aInputEvent, aPathToFocus.slice(1));
-		
+		// Don't process input too quickly
+		if(_handleInputRateLimiter) {
+			return;
+		}
+		skyui.util.Input.rateLimit(this, "_handleInputRateLimiter", 10);
+
+		pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+
+		// Always answer `true` or even `undefined`.
+		// Answering false may cause the Scaleform player to locate another
+		// component to focus on.
 		return true;
 	}
-	
+
+	public function classname(): String{
+		return "Class CraftingMenu";
+	}
+
+	public function handleVRInput(event): Boolean {
+		//Debug.dump("CraftingMenu::handleVRInput", event);
+
+		var action = VRInput.instance.triggeredAction(vrActionConditions, event);
+		if(action == "search") {
+						InventoryLists.searchWidget.startInput();
+						return true;
+					}
+
+		return false;
+	}
+
   /* PRIVATE FUNCTIONS */
 
 	private function positionFixedElements(): Void
 	{
 		GlobalFunc.SetLockFunction();
-		
+
 		MovieClip(CategoryList).Lock("L");
 		CategoryList._x = CategoryList._x - CraftingMenu.LIST_OFFSET;
-		
+
 		MenuNameHolder.Lock("L");
 		MenuNameHolder._x = MenuNameHolder._x - CraftingMenu.LIST_OFFSET;
 		MenuDescriptionHolder.Lock("TR");
 		var leftOffset: Number = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightOffset: Number = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-		
+
 		var a = CategoryList.getContentBounds();
 		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
 		var panelEdge = CategoryList._x + a[0] + a[2] + 25;
-		
+
 		MenuDescriptionHolder._x = 10 + panelEdge + ((rightOffset - panelEdge) / 2) + (MenuDescriptionHolder._width / 2);
 
 		BottomBarInfo.positionElements(leftOffset, rightOffset);
-	
+
 		MovieClip(ExitMenuRect).Lock("TL");
 		ExitMenuRect._x = ExitMenuRect._x - (Stage.safeRect.x + 10);
 		ExitMenuRect._y = ExitMenuRect._y - Stage.safeRect.y;
 	}
-	
+
 	private function positionFloatingElements(): Void
 	{
 		var leftEdge = Stage.visibleRect.x + Stage.safeRect.x;
 		var rightEdge = Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x;
-		
+
 		var a = CategoryList.getContentBounds();
 		// 25 is hardcoded cause thats the final offset after the animation of the panel container is done
 		var panelEdge = CategoryList._x + a[0] + a[2] + 25;
 
 		var itemCardContainer = ItemInfo._parent;
 		var itemcardPosition = _config.ItemInfo.itemcard;
-		
-		
+
+
 		var itemCardWidth: Number;
-		
-		// For some reason 
+
+		// For some reason
 		if (ItemInfo.background != undefined)
 			itemCardWidth = ItemInfo.background._width;
 		else
 			itemCardWidth = ItemInfo._width;
-		
+
 		// For some reason the container is larger than the card
 		// Card x is at 0 so we can use the inner width without adjustment
 		var scaleMult = (rightEdge - panelEdge) / itemCardContainer._width;
-		
+
 		// Scale down if necessary
 		if (scaleMult < 1.0) {
 			itemCardContainer._width *= scaleMult;
 			itemCardContainer._height *= scaleMult;
 			itemCardWidth *= scaleMult;
 		}
-		
+
 		if (itemcardPosition.align == "left") {
 			itemCardContainer._x = panelEdge + itemcardPosition.xOffset;
 		} else if (itemcardPosition.align == "right") {
@@ -505,23 +554,23 @@ class CraftingMenu extends MovieClip
 		MouseRotationRect._x = ItemInfo._parent._x;
 		MouseRotationRect._width = ItemInfo._parent._width;
 		MouseRotationRect._height = 0.55 * Stage.visibleRect.height;
-			
+
 //		_bItemCardPositioned = true;
-		
+
 		// Delayed fade in if positioned wasn't set
 /*		if (_bItemCardFadedIn) {
 			GameDelegate.call("UpdateItem3D",[true]);
 			itemCard.FadeInCard();
 		}*/
 	}
-	
+
 	private function onConfigLoad(event: Object): Void
 	{
 		setConfig(event.config);
-		
+
 		CategoryList.showPanel();
 	}
-	
+
 	private function setConfig(a_config: Object): Void
 	{
 		_config = a_config;
@@ -529,45 +578,45 @@ class CraftingMenu extends MovieClip
 		ItemList.addDataProcessor(new CraftingIconSetter(a_config["Appearance"]));
 
 		positionFloatingElements();
-		
+
 		var itemListState = CategoryList.itemList.listState;
 		var appearance = a_config["Appearance"];
-		
+
 		itemListState.iconSource = appearance.icons.item.source;
 		itemListState.showStolenIcon = appearance.icons.item.showStolen;
-		
+
 		itemListState.defaultEnabledColor = appearance.colors.text.enabled;
 		itemListState.negativeEnabledColor = appearance.colors.negative.enabled;
 		itemListState.stolenEnabledColor = appearance.colors.stolen.enabled;
 		itemListState.defaultDisabledColor = appearance.colors.text.disabled;
 		itemListState.negativeDisabledColor = appearance.colors.negative.disabled;
 		itemListState.stolenDisabledColor = appearance.colors.stolen.disabled;
-		
+
 		var layout: ListLayout;
-		
+
 		if (_subtypeName == "EnchantConstruct") {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "EnchantListLayout");
-			
+
 		} else if (_subtypeName == "Smithing") {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "SmithingListLayout");
-			
-		} else if (_subtypeName == "ConstructibleObject") {			
+
+		} else if (_subtypeName == "ConstructibleObject") {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "ConstructListLayout");
-			
+
 		} else /*if (_subtypeName == "Alchemy")*/ {
 			layout = ListLayoutManager.createLayout(a_config["ListLayout"], "AlchemyListLayout");
 			layout.entryWidth -= CraftingLists.SHORT_LIST_OFFSET;
 		}
-		
+
 		ItemList.layout = layout;
-		
+
 		var previousColumnKey = a_config["Input"].controls.gamepad.prevColumn;
 		var nextColumnKey = a_config["Input"].controls.gamepad.nextColumn;
 		var sortOrderKey = a_config["Input"].controls.gamepad.sortOrder;
 		_sortColumnControls = [{keyCode: previousColumnKey},
 							   {keyCode: nextColumnKey}];
 		_sortOrderControls = {keyCode: sortOrderKey};
-		
+
 		_searchKey = a_config["Input"].controls.pc.search;
 		_searchControls = {keyCode: _searchKey};
 	}
@@ -593,12 +642,28 @@ class CraftingMenu extends MovieClip
 		GameDelegate.call("ShowItem3D", [event.index != -1]);
 	}
 
+	public function setupVRInput() {
+		_VRInput = VRInput.instance;
+		VRInput.instance.setup();
+	}
+
 	private function onShowItemsList(event: Object): Void
 	{
-		if (_platform == 0) {
+		setupVRInput();
+
+		if(!vrActionConditions) {
+			vrActionConditions = VRInput.instance.getActionConditions("CraftingMenu");
+			if(VRInput.instance.logDetails)
+				Debug.dump("vrActionConditions", vrActionConditions);
+			}
+
+		if (_platform == Shared.Platforms.CONTROLLER_PC ||
+				_platform == Shared.Platforms.CONTROLLER_VIVE ||
+				_platform == Shared.Platforms.CONTROLLER_OCULUS ||
+				_platform == Shared.Platforms.CONTROLLER_VIVE_KNUCKLES) {
 			GameDelegate.call("SetSelectedCategory", [CategoryList.CategoriesList.selectedIndex]);
 		}
-		
+
 		onItemHighlightChange(event);
 	}
 
@@ -612,8 +677,10 @@ class CraftingMenu extends MovieClip
 
 	private function onCategoryListChange(event: Object): Void
 	{
-		if (_platform != 0) 
-		{
+		if (_platform != Shared.Platforms.CONTROLLER_PC ||
+				_platform != Shared.Platforms.CONTROLLER_VIVE ||
+				_platform != Shared.Platforms.CONTROLLER_OCULUS ||
+				_platform != Shared.Platforms.CONTROLLER_VIVE_KNUCKLES) {
 			GameDelegate.call("SetSelectedCategory", [event.index]);
 		}
 	}
@@ -643,7 +710,7 @@ class CraftingMenu extends MovieClip
 			GameDelegate.call("SliderClose", [!event.canceled, event.value]);
 		}
 	}
-	
+
 	private function onCraftButtonPress(): Void
 	{
 		if (bCanCraft) {
@@ -653,14 +720,20 @@ class CraftingMenu extends MovieClip
 
 	private function onExitButtonPress(): Void
 	{
-		GameDelegate.call("CloseMenu", []);
+		closeMenu();
+	}
+
+	public function closeMenu()
+	{
+		VRInput.instance.teardown();
+		GameDelegate.call("CloseMenu",[]);
 	}
 
 	private function onAuxButtonPress(): Void
 	{
 		GameDelegate.call("AuxButtonPress", []);
 	}
-	
+
 	private function onEndEditItemName(event: Object): Void
 	{
 		ItemInfo.EndEditName();

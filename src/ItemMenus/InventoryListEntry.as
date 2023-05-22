@@ -6,65 +6,68 @@ import skyui.components.list.TabularListEntry;
 import skyui.components.list.ListState;
 import skyui.util.ConfigManager;
 
+import skyui.util.Debug;
+
 
 class InventoryListEntry extends TabularListEntry
 {
   /* CONSTANTS */
-  
+
 	private static var STATES = ["None", "Equipped", "LeftEquip", "RightEquip", "LeftAndRightEquip"];
 
   /* PRIVATE VARIABLES */
-	
+
 	private var _iconLabel: String;
 	private var _iconColor: Number;
-	
+
   /* STAGE ELMENTS */
-  
+
   	public var itemIcon: MovieClip;
   	public var equipIcon: MovieClip;
-	
+
 	public var bestIcon: MovieClip;
 	public var favoriteIcon: MovieClip;
 	public var poisonIcon: MovieClip;
 	public var stolenIcon: MovieClip;
 	public var enchIcon: MovieClip;
 	public var readIcon: MovieClip;
-	
-	
+	public var newItemIndicator: MovieClip;
+
+
   /* INITIALIZATION */
-	
+
   	// @override TabularListEntry
 	public function initialize(a_index: Number, a_state: ListState): Void
 	{
 		super.initialize();
-		
+
 		var iconLoader = new MovieClipLoader();
 		iconLoader.addListener(this);
 		iconLoader.loadClip(a_state.iconSource, itemIcon);
-		
+
 		itemIcon._visible = false;
 		equipIcon._visible = false;
-		
+
 		for (var i = 0; this["textField" + i] != undefined; i++)
 			this["textField" + i]._visible = false;
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
-	
+
   	// @override TabularListEntry
 	public function setSpecificEntryLayout(a_entryObject: Object, a_state: ListState): Void
 	{
 		var iconY = TabularList(a_state.list).layout.entryHeight * 0.25;
 		var iconSize = TabularList(a_state.list).layout.entryHeight * 0.5;
-			
+
 		bestIcon._height = bestIcon._width = iconSize;
 		favoriteIcon._height = favoriteIcon._width = iconSize;
 		poisonIcon._height = poisonIcon._width = iconSize;
 		stolenIcon._height = stolenIcon._width = iconSize;
 		enchIcon._height = enchIcon._width = iconSize;
 		readIcon._height = readIcon._width = iconSize;
-			
+
 		bestIcon._y = iconY;
 		favoriteIcon._y = iconY;
 		poisonIcon._y = iconY;
@@ -119,7 +122,7 @@ class InventoryListEntry extends TabularListEntry
 
 		a_entryField.autoSize = "left";
 		a_entryField.SetText(text);
-		
+
 		formatColor(a_entryField, a_entryObject, a_state);
 
 		// BestInClass icon
@@ -127,6 +130,20 @@ class InventoryListEntry extends TabularListEntry
 
 		// All icons have the same size
 		var iconSpace = bestIcon._width * 1.25;
+
+		// FIXME!!! Need a better to figure out if we're actually looking at the player's inventory.
+		// Presumably, the player container is always shown as the "right" segment.
+		var shouldShowNewIndicator = false
+		if(a_state.categoryList) {
+			if (a_state.categoryList.activeSegment == CategoryList.RIGHT_SEGMENT && a_entryObject.newItem == true) {
+				shouldShowNewIndicator = true
+			}
+		} else if (a_entryObject.newItem == true) {
+			shouldShowNewIndicator = true
+		}
+
+		newItemIndicator._visible = shouldShowNewIndicator;
+		newItemIndicator._height = this._height - 2.5;
 
 		if (a_entryObject.bestInClass == true) {
 			bestIcon._x = iconPos;
@@ -182,14 +199,14 @@ class InventoryListEntry extends TabularListEntry
 			readIcon.gotoAndStop("hide");
 		}
 	}
-	
+
   	// @override TabularEntry
 	public function formatText(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
 	{
 		formatColor(a_entryField, a_entryObject, a_state);
 	}
-	
-	
+
+
   /* PRIVATE FUNCTIONS */
 
 	// @implements MovieClipLoader
@@ -198,22 +215,22 @@ class InventoryListEntry extends TabularListEntry
 		a_icon.gotoAndStop(_iconLabel);
 		changeIconColor(a_icon, _iconColor);
 	}
-	
+
 	private function formatColor(a_entryField: Object, a_entryObject: Object, a_state: ListState): Void
 	{
 		// Negative Effect
 		if (a_entryObject.negativeEffect == true)
 			a_entryField.textColor = a_entryObject.enabled == false ? a_state.negativeDisabledColor : a_state.negativeEnabledColor;
-			
+
 		// Stolen
 		else if (a_entryObject.infoIsStolen == true || a_entryObject.isStealing == true)
 			a_entryField.textColor = a_entryObject.enabled == false ? a_state.stolenDisabledColor : a_state.stolenEnabledColor;
-			
+
 		// Default
 		else
 			a_entryField.textColor = a_entryObject.enabled == false ? a_state.defaultDisabledColor : a_state.defaultEnabledColor;
 	}
-	
+
 	private function changeIconColor(a_icon: MovieClip, a_rgb: Number): Void
 	{
 		var element: Object;

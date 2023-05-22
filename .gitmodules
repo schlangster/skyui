@@ -1,0 +1,10 @@
+[submodule "sksevr_plugin/skse"]
+	path = sksevr_plugin/skse
+	url = git@github.com:Odie/sksevr-mirror.git
+[submodule "sksevr_plugin/common"]
+	path = sksevr_plugin/common
+	url = git@github.com:Odie/sksevr-common-mirror.git
+[submodule "sksevr_plugin/luajit"]
+	path = sksevr_plugin/luajit
+	url = https://luajit.org/git/luajit.git
+	ignore = dirty

@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Letters/M" itemID="50146f82-0000033d" symbolType="graphic" lastModified="1343521572">
+  <timeline>
+    <DOMTimeline name="M">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.25" ty="-1.3"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!134 200S1|133 211!133 211|132 211!132 211|95 26!95 26|66 26!66 26|45 282!45 282|78 282!78 282|87 105!87 105|88 105!88 105|121 282!121 282|144 282!144 282|177 105!177 105|186 282!186 282|220 282!220 282|196 26!196 26|166 26!166 26|134
+ 200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

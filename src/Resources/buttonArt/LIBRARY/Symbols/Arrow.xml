@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Arrow" itemID="501472cb-000005b3" sourceFlashFilepath="../buttonArt1.fla" sourceLibraryItemHRef="Uplol" sourceLastModified="1343507024" symbolType="graphic" lastModified="1347407499" sourceItemID="501449ce-00000277">
+  <timeline>
+    <DOMTimeline name="Arrow">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 118S1|39 118!39 118|39 282!39 282|61 282!61 282|61 118!61 118|99 118!99 118|99 117!99 117|50 0!50 0|1 117!1 117|0 118"/>
+                    <Edge cubics="!39 282(;39,282 61,282 61,282q39 282 61 282);"/>
+                    <Edge cubics="!61 282(;61,282 61,118 61,118q61 282 61 118);"/>
+                    <Edge cubics="!39 118(;39,118 39,282 39,282q39 118 39 282);"/>
+                    <Edge cubics="!99 118(;99,118 99,117 99,117q99 118 99 117);"/>
+                    <Edge cubics="!1 117(;1,117 0,118 0,118q1 117 0 118);"/>
+                    <Edge cubics="!99 117(;99,117 50,0 50,0q99 117 50 0);"/>
+                    <Edge cubics="!50 0(;50,0 1,117 1,117q50 0 1 117);"/>
+                    <Edge cubics="!0 118(;0,118 39,118 39,118q0 118 39 118);"/>
+                    <Edge cubics="!61 118(;61,118 99,118 99,118q61 118 99 118);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

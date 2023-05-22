@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 506" itemID="5b986e27-00000a2d" symbolType="graphic" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 506">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!63 494|-172 495!-172 495[-214 495 -230 443!-230 443|-237 390!-237 390[-233 221 -237 142!-237 142[-240 70 -206 41!-206 41[-189 27 -172 27!-172 27|73 27!73 27|39 62!39 62|-155 62!-155 62[-167 62 -179 69!-179 69[-202 83 -203 119!-203 119
+|-203 405!-203 405|-196 434!-196 434[-182 463 -150 462!-150 462[-60 460 36 461!36 461|63 494"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!142 9|195 0!195 0|-172 0!-172 0|-217 14!-217 14[-262 43 -262 115!-262 115|-262 415!-262 415|-249 468!-249 468[-223 521 -157 520!-157 520|198 520!198 520|144 509!144 509[84 491 54 457!54 457[37 438 20 400!20 400[2 361 2 343!2 343|2 171
+!2 171|14 132!14 132[32 87 64 53!64 53[91 24 142 9"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/HelpTextButtonArtHolder" itemID="51079105-0000353f" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="ButtonArtHolder" linkageClassName="Shared.ButtonTextArtHolder" linkageURL="." sourceFlashFilepath="Sprite 470" sourceLibraryItemHRef="Sprites/Sprite 470" lastModified="1359450373" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="HelpTextButtonArtHolder">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/ButtonArtBackground" selected="true">
+                  <matrix>
+                    <Matrix a="3.4090576171875" d="15.384521484375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

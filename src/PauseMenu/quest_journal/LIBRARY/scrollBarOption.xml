@@ -1,0 +1,88 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="scrollBarOption" itemID="51072281-00000c07" linkageExportForAS="true" linkageIdentifier="scrollBarOption" linkageClassName="gfx.controls.ScrollBar" scaleGridRight="10" scaleGridTop="27.15" scaleGridBottom="90" lastModified="1359422744" displayAsComponent="false" customIconID="0" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="scrollBarOption">
+      <layers>
+        <DOMLayer name="UpArrow" color="#FFFF00" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMComponentInstance libraryItemName="scrollBarAssets/scrollBar_upArrow" name="upArrow" centerPoint3DX="6.1" centerPoint3DY="8.5" uniqueID="11">
+                  <matrix>
+                    <Matrix tx="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.35" y="8.5"/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.24.3.1.1.1.11'>
+</component>
+]]></dataBindingXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="DownArrow" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMComponentInstance libraryItemName="scrollBarAssets/scrollBar_downArrow" name="downArrow" centerPoint3DX="6.05" centerPoint3DY="116.85" uniqueID="10">
+                  <matrix>
+                    <Matrix tx="-1.25" ty="108.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.3" y="8.4"/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.24.3.1.1.1.10'>
+</component>
+]]></dataBindingXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Thumb" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="scrollBarAssets/scrollBarOption_thumb" name="thumb" centerPoint3DX="8.45" centerPoint3DY="24" uniqueID="15">
+                  <matrix>
+                    <Matrix tx="1.25" ty="17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.2" y="7"/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.24.3.1.1.1.15'>
+</component>
+]]></dataBindingXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Track" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="scrollBarAssets/scrollBar_track" name="track" centerPoint3DX="5.9" centerPoint3DY="62.85" uniqueID="16">
+                  <matrix>
+                    <Matrix d="3.65863037109375" tx="-1.25" ty="17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.15" y="12.55"/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.24.3.1.1.1.16'>
+</component>
+]]></dataBindingXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <parametersAsXML><![CDATA[   <property id="trackMode">
+      <Inspectable name="trackMode" variable="trackMode" category="" verbose="0" defaultValue="scrollToCursor" type="String"/>
+   </property>
+]]></parametersAsXML>
+</DOMComponentItem>

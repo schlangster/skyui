@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Question" itemID="50146eb1-00000322" symbolType="graphic" lastModified="1343521909">
+  <timeline>
+    <DOMTimeline name="Question">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.604721069335938" d="0.602935791015625" tx="-1.45" ty="-0.65"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!142 61S1[139 44 128 33!128 33[117 23 94 22!94 22[73 22 64 31!64 31[54 39 51 54!51 54[48 68 48 85!48 85|48 89!48 89|80 89!80 89|80 83!80 83[80 77 81 70!81 70[81 62 84 57!84 57[87 52 95 51!95 51[102 52 106 58!106 58[109 64 111 72!111 72
+[112 81 112 90!112 90[112 98 112 103!112 103[112 113 111 123!111 123[110 132 104 138!104 138[99 145 87 145!87 145|79 144!79 144|79 222!79 222|109 222!109 222|109 167!109 167[122 167 129 160!129 160[137 154 140 143!140 143[143 132 144
+ 121!144 121[145 109 144 99!144 99[145 79 142 61!108 279[114 273 114 264!114 264[114 256 108 250!108 250[102 244 93 244!93 244[85 244 79 250!79 250[73 256 73 264!73 264[73 273 79 279!79 279[85 285 93 285!93 285[102 285 108 279"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

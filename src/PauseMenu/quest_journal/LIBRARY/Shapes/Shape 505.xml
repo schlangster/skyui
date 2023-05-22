@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 505" itemID="4ee20823-000000fd" symbolType="graphic" lastModified="1323436067">
+  <timeline>
+    <DOMTimeline name="Shape 505">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!176 53|126 2!126 2|7 120!7 120|52 165!52 165|53 163!53 163|63 152!63 152|65 149!65 149|36 120!36 120|126 31!126 31|163 68!163 68|164 67!164 67|175 54!175 54|176 53!200 79|194 85!194 85|188 91!188 91|187 92!187 92|215 120!215 120|126
+ 210!126 210|90 174!90 174|80 193!80 193|126 239!126 239|244 120!244 120|201 77!201 77|200 79"/>
+                    <Edge fillStyle0="1" edges="
+!256 119|125 -11!125 -11|-5 119!-5 119|125 250!125 250|256 119"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

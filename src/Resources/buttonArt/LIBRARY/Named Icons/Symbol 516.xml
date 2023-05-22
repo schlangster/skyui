@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 516" itemID="5b986e27-00000a37" symbolType="graphic" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 516">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BBBDBF" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!641 261[641 354 577 421!577 421[512 487 420 490!420 490|263 490!263 490[168 490 101 423!101 423[34 356 34 261!34 261[34 166 101 99!101 99[168 32 263 32!263 32|421 32!421 32[513 36 577 102!577 102[641 168 641 261"/>
+                    <Edge fillStyle0="1" edges="!603 262[603 338 550 394!550 394[497 449 421 452!421 452|263 452!263 452[184 452 128 396!128 396[72 341 72 262!72 262[72 183 128 128!128 128[184 72 263 72!263 72|422 72!422 72[497 76 550 131!550 131[603 186 603 262"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!421 -1[527 2 605 80!605 80[683 158 683 265!683 265[683 371 605 448!605 448[527 523 419 525!419 525|263 525!263 525[154 525 76 448!76 448[-1 371 -1 262!-1 262[-1 153 76 76!76 76[153 -1 263 -1!263 -1|421 -1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

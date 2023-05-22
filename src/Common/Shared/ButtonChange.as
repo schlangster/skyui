@@ -2,11 +2,16 @@ import gfx.events.EventDispatcher;
 
 class Shared.ButtonChange extends gfx.events.EventDispatcher
 {
+	// Not sure why this is being duplicated from Shared.Platforms
 	static var PLATFORM_PC: Number = 0;
 	static var PLATFORM_PC_GAMEPAD: Number = 1;
 	static var PLATFORM_360: Number = 2;
 	static var PLATFORM_PS3: Number = 3;
-	
+  static var PLATFORM_VIVE: Number = 4;
+  static var PLATFORM_MOVE: Number = 5;
+  static var PLATFORM_OCULUS: Number = 6;
+  static var PLATFORM_WINDOWS_MR: Number = 8;
+
 	var iCurrPlatform: Number = Shared.ButtonChange.PLATFORM_360;
 	var dispatchEvent: Function;
 

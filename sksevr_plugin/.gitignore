@@ -1,0 +1,7 @@
+*.user
+*.suo
+
+**/.vs
+
+/Build
+lua-tests/luacov*

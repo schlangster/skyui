@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 562" itemID="4ee20823-000000e1" symbolType="graphic" lastModified="1323436067">
+  <timeline>
+    <DOMTimeline name="Shape 562">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.006866455078125" c="-0.0040283203125" d="0" tx="53.95" ty="5.8"/>
+                        </matrix>
+                        <GradientEntry color="#F1F1F2" alpha="0" ratio="0.101960784313725"/>
+                        <GradientEntry color="#F1F1F2" alpha="0.709803921568627" ratio="0.454901960784314"/>
+                        <GradientEntry color="#F1F1F2" alpha="0" ratio="0.545098039215686"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3537 0|0 0!0 0|0 237!0 237|3540 238!3540 238|3540 22!3540 22|3537 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.108169555664063" d="0.0072021484375" tx="88.5" ty="5.95"/>
+                        </matrix>
+                        <GradientEntry color="#95BED9" ratio="0.0352941176470588"/>
+                        <GradientEntry color="#66B8CC" ratio="0.141176470588235"/>
+                        <GradientEntry color="#69A4C9" ratio="0.219607843137255"/>
+                        <GradientEntry color="#7084B1" ratio="0.411764705882353"/>
+                        <GradientEntry color="#5C75AB" ratio="0.556862745098039"/>
+                        <GradientEntry color="#535A9B" ratio="0.776470588235294"/>
+                        <GradientEntry color="#474E85" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3540 1|0 1!0 1|0 236!0 236|3540 237!3540 237|3540 1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

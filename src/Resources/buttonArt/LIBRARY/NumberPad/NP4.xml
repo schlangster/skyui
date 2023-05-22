@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NumberPad/NP4" itemID="5014ca9e-00001170" symbolType="graphic" lastModified="1343539882">
+  <timeline>
+    <DOMTimeline name="NP4">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-11.3" ty="10.95"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!319 -25S1|318 -25!318 -25|258 -219!258 -219|226 -219!226 -219|226 37!226 37|260 37!260 37|253 -161!253 -161|313 37!313 37|345 37!345 37|345 -219!345 -219|311 -219!311 -219|319 -25!576 -167|576 -59!576 -59|534 -59!534 -59|575 -167!575
+ -167|576 -167!457 -148[457 -126 449 -115!449 -115[441 -104 420 -105!420 -105|420 -190!420 -190|425 -190!425 -190[437 -190 445 -185!445 -185[452 -179 454 -169!454 -169[457 -160 457 -148!487 -189[481 -203 471 -210!471 -210[461 -216 449
+ -218!449 -218[438 -219 427 -219!427 -219|386 -219!386 -219|386 37!386 37|420 37!420 37|420 -77!420 -77[459 -75 476 -93!476 -93[493 -112 493 -151!493 -151[493 -175 487 -189!576 -33|576 37!576 37|609 37!609 37|609 -33!609 -33|625 -33!625
+ -33|625 -59!625 -59|609 -59!609 -59|609 -219!609 -219|576 -219!576 -219|507 -63!507 -63|507 -33!507 -33|576 -33"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

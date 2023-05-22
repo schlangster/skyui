@@ -1,0 +1,112 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/OptionStepperArrowBtn" itemID="51070d38-0000024d" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="OptionStepperArrowBtn" linkageClassName="gfx.controls.Button" linkageURL="." sourceFlashFilepath="Sprite 500" sourceLibraryItemHRef="Sprites/Sprite 500" lastModified="1359416657" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="OptionStepperArrowBtn">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" name="up" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" name="over" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" name="down" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" name="disabled" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/Shape 499" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect">
+                  <matrix>
+                    <Matrix a="0.300003051757813" d="0.300003051757813"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

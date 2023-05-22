@@ -1,0 +1,28 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ButtonPanel" itemID="506a59ab-00000e80" linkageExportForAS="true" linkageIdentifier="ButtonPanel" linkageClassName="skyui.components.ButtonPanel" sourceFlashFilepath="../../ItemMenus/bottombar.fla" sourceLibraryItemHRef="MovieClip/ButtonPanel" sourceLastModified="1349540303" lastModified="1361534055" lastUniqueIdentifier="6" sourceItemID="506a59ab-00000e80" displayAsComponent="false" customIconID="0" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="ButtonPanel">
+      <layers>
+        <DOMLayer name="btns" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <parametersAsXML><![CDATA[   <property id="buttonRenderer">
+      <Inspectable name="buttonRenderer" variable="buttonRenderer" category="" verbose="0" defaultValue="MappedButton" type="String"/>
+   </property>
+   <property id="maxButtons">
+      <Inspectable name="maxButtons" variable="maxButtons" category="" verbose="0" defaultValue="6" type="Number"/>
+   </property>
+   <property id="buttonInitializer">
+      <Inspectable name="buttonInitializer" variable="buttonInitializer" category="" verbose="0" defaultValue="disableConstraints:true,disabled:false,disableFocus:false,hiddenBackground:false" type="Object"/>
+   </property>
+   <property id="spacing">
+      <Inspectable name="spacing" variable="spacing" category="" verbose="0" defaultValue="10" type="Number"/>
+   </property>
+]]></parametersAsXML>
+</DOMComponentItem>

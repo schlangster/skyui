@@ -1,0 +1,15 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/ConfigPanelFader" itemID="4fce80e3-0000440b" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="ConfigPanelFader" linkageURL="skyui\ConfigPanel.swf" sourceFlashFilepath="../../quest_journal.fla" sourceLibraryItemHRef="ConfigPanelFader" sourceLastModified="1338933475" lastModified="1347153330" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="ConfigPanelFader">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

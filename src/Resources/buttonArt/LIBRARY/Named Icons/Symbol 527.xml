@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 527" itemID="5b986e27-00000a42" linkageExportForAS="true" linkageIdentifier="PS3_LS" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 527">
+      <layers>
+        <DOMLayer name="Layer 1" color="#269DCA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 413" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.04443359375" d="1.0438232421875" tx="3.85" ty="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C5F2D1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 258" centerPoint3DX="13" centerPoint3DY="13">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

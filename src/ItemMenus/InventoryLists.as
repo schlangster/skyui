@@ -27,17 +27,17 @@ import skyui.defines.Input;
 class InventoryLists extends MovieClip
 {
 	#include "../version.as"
-	
+
   /* CONSTANTS */
-	
+
 	static var HIDE_PANEL = 0;
 	static var SHOW_PANEL = 1;
 	static var TRANSITIONING_TO_HIDE_PANEL = 2;
 	static var TRANSITIONING_TO_SHOW_PANEL = 3;
-	
-	
+
+
   /* STAGE ELEMENTS */
-  
+
 	public var panelContainer: MovieClip;
 	public var zoomButtonHolder: MovieClip;
 
@@ -47,41 +47,43 @@ class InventoryLists extends MovieClip
 	private var _typeFilter: ItemTypeFilter;
 	private var _nameFilter: NameFilter;
 	private var _sortFilter: SortFilter;
-	
+
 	private var _platform: Number;
-	
+
 	private var _currCategoryIndex: Number;
 	private var _savedSelectionIndex: Number = -1;
-	
+
 	private var _searchKey: Number = -1;
 	private var _switchTabKey: Number = -1;
 	private var _sortOrderKey: Number = -1;
 	private var _sortOrderKeyHeld: Boolean = false;
-	
+
 	private var _bTabbed = false;
 	private var _leftTabText: String;
 	private var _rightTabText: String;
 
 	private var _columnSelectDialog: MovieClip;
 	private var _columnSelectInterval: Number;
-	
+	private var _categoryChanged: Boolean;
+	private var _categorySelections: Object;
+
 
   /* PROPERTIES */
 
 	public var itemList: TabularList;
 
 	public var categoryList: CategoryList;
-	
+
 	public var tabBar: TabBar;
-	
+
 	public var searchWidget: SearchWidget;
-	
+
 	public var categoryLabel: MovieClip;
-	
+
 	public var columnSelectButton: Button;
-	
+
 	private var _currentState: Number;
-	
+
 	public function get currentState()
 	{
 		return _currentState;
@@ -94,17 +96,17 @@ class InventoryLists extends MovieClip
 
 		_currentState = a_newState;
 	}
-	
+
 	private var _tabBarIconArt: Array;
-	
+
 	public function set tabBarIconArt(a_iconArt: Array)
 	{
 		_tabBarIconArt = a_iconArt;
-		
+
 		if (tabBar)
 			tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
 	}
-	
+
 	public function get tabBarIconArt(): Array
 	{
 		return _tabBarIconArt;
@@ -129,7 +131,7 @@ class InventoryLists extends MovieClip
 		_typeFilter = new ItemTypeFilter();
 		_nameFilter = new NameFilter();
 		_sortFilter = new SortFilter();
-		
+
 		categoryList = panelContainer.categoryList;
 		categoryLabel = panelContainer.categoryLabel;
 		itemList = panelContainer.itemList;
@@ -139,7 +141,7 @@ class InventoryLists extends MovieClip
 		ConfigManager.registerLoadCallback(this, "onConfigLoad");
 		ConfigManager.registerUpdateCallback(this, "onConfigUpdate");
 	}
-	
+
 	private function onLoad(): Void
 	{
 		categoryList.listEnumeration = new BasicEnumeration(categoryList.entryList);
@@ -150,7 +152,7 @@ class InventoryLists extends MovieClip
 		listEnumeration.addFilter(_sortFilter);
 		itemList.listEnumeration = listEnumeration;
 		// data processors are initialized by the top-level menu since they differ in each case
-		
+
 		itemList.listState.maxTextLength = 80;
 
 		_typeFilter.addEventListener("filterChange", this, "onFilterChange");
@@ -165,15 +167,16 @@ class InventoryLists extends MovieClip
 
 		itemList.addEventListener("selectionChange", this, "onItemsListSelectionChange");
 		itemList.addEventListener("sortChange", this, "onSortChange");
+		itemList.addEventListener("listUpdated", this, "onItemsListUpdate");
 
 		searchWidget.addEventListener("inputStart", this, "onSearchInputStart");
 		searchWidget.addEventListener("inputEnd", this, "onSearchInputEnd");
 		searchWidget.addEventListener("inputChange", this, "onSearchInputChange");
-		
+
 		columnSelectButton.addEventListener("press", this, "onColumnSelectButtonPress");
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
 
 	// @mixin by gfx.events.EventDispatcher
@@ -184,23 +187,23 @@ class InventoryLists extends MovieClip
 	public var removeEventListener: Function;
 	public var removeAllEventListeners: Function;
 	public var cleanUpEvents: Function;
-	
+
 	// @mixin by Shared.GlobalFunc
 	public var Lock: Function;
-	
+
 	public function InitExtensions(): Void
 	{
 		// Delay updates until config is ready
 		categoryList.suspended = true;
 		itemList.suspended = true;
 	}
-	
+
 	public function showPanel(a_bPlayBladeSound: Boolean): Void
 	{
 		// Release itemlist for updating
 		categoryList.suspended = false;
 		itemList.suspended = false;
-		
+
 		_currentState = TRANSITIONING_TO_SHOW_PANEL;
 		gotoAndPlay("PanelShow");
 
@@ -216,7 +219,7 @@ class InventoryLists extends MovieClip
 		gotoAndPlay("PanelHide");
 		GameDelegate.call("PlaySound",["UIMenuBladeCloseSD"]);
 	}
-	
+
 	public function enableTabBar(): Void
 	{
 		_bTabbed = true;
@@ -230,6 +233,10 @@ class InventoryLists extends MovieClip
 
 		categoryList.setPlatform(a_platform,a_bPS3Switch);
 		itemList.setPlatform(a_platform,a_bPS3Switch);
+	}
+
+	public function classname(): String {
+		return "Class InventoryLists";
 	}
 
 	// @GFx
@@ -279,21 +286,30 @@ class InventoryLists extends MovieClip
 
 		if (GlobalFunc.IsKeyPressed(details)) {
 			// Search hotkey (default space)
+			/*
 			if (details.skseKeycode == _searchKey) {
 				searchWidget.startInput();
 				return true;
 			}
-			
+			*/
+			/*
+			if (details.navEquivalent == "down") {
+				Debug.log("InventoryLists triggering search start");
+				searchWidget.startInput();
+				return true;
+			}
+			*/
+
 			// Toggle tab (default ALT)
 			if (tabBar != undefined && details.skseKeycode == _switchTabKey) {
 				tabBar.tabToggle();
 				return true;
 			}
 		}
-		
+
 		if (categoryList.handleInput(details, pathToFocus))
 			return true;
-		
+
 		var nextClip = pathToFocus.shift();
 		return nextClip.handleInput(details, pathToFocus);
 	}
@@ -303,11 +319,18 @@ class InventoryLists extends MovieClip
 		var lb = panelContainer.ListBackground;
 		return [lb._x, lb._y, lb._width, lb._height];
 	}
-	
+
 	public function showItemsList(): Void
 	{
+		// Save the previous selection in the category
+		var prevCategory = categoryList.lastSelectedIndex;
+		_categorySelections[prevCategory] = {
+			selectedIndex: itemList.selectedIndex,
+			scrollPosition: itemList.scrollPosition
+		};
+
 		_currCategoryIndex = categoryList.selectedIndex;
-		
+
 		categoryLabel.textField.SetText(categoryList.selectedEntry.text);
 
 		// Start with no selection
@@ -317,20 +340,20 @@ class InventoryLists extends MovieClip
 		if (categoryList.selectedEntry != undefined) {
 			// Set filter type
 			_typeFilter.changeFilterFlag(categoryList.selectedEntry.flag);
-			
+
 			// Not set yet before the config is loaded
 			itemList.layout.changeFilterFlag(categoryList.selectedEntry.flag);
 		}
-		
+
 		itemList.requestUpdate();
-		
+
 		dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 
 		itemList.disableInput = false;
 	}
 
 	// Called to initially set the category list.
-	// @API 
+	// @API
 	public function SetCategoriesList(): Void
 	{
 		var textOffset = 0;
@@ -339,6 +362,7 @@ class InventoryLists extends MovieClip
 		var len = 3;
 
 		categoryList.clearList();
+		_categorySelections = new Array();
 
 		for (var i = 0, index = 0; i < arguments.length; i = i + len, index++) {
 			var entry = {text:arguments[i + textOffset], flag:arguments[i + flagOffset], bDontHide:arguments[i + bDontHideOffset], savedItemIndex:0, filterFlag:arguments[i + bDontHideOffset] == true ? (1) : (0)};
@@ -346,8 +370,10 @@ class InventoryLists extends MovieClip
 
 			if (entry.flag == 0)
 				categoryList.dividerIndex = index;
+
+			_categorySelections.push(undefined);
 		}
-		
+
 		// Initialize tabbar labels and replace text of segment heads (name -> ALL)
 		if (_bTabbed) {
 			// Restore 0 as default index for tabbed lists
@@ -389,22 +415,22 @@ class InventoryLists extends MovieClip
 			_typeFilter.itemFilter = categoryList.selectedEntry.flag;
 			dispatchEvent({type:"categoryChange", index:categoryList.selectedIndex});
 		}
-		
-		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data    
+
+		// This is called when an ItemCard list closes(ex. ShowSoulGemList) to refresh ItemCard data
 		if (itemList.selectedIndex == -1)
 			dispatchEvent({type:"showItemsList", index: -1});
 		else
 			dispatchEvent({type:"itemHighlightChange", index:itemList.selectedIndex});
 	}
-	
-	
+
+
   /* PRIVATE FUNCTIONS */
-  
+
   	private function onConfigLoad(event: Object): Void
 	{
 		var config = event.config;
 		_searchKey = config["Input"].controls.pc.search;
-		
+
 		if (_platform == 0)
 			_switchTabKey = config["Input"].controls.pc.switchTab;
 		else {
@@ -412,22 +438,22 @@ class InventoryLists extends MovieClip
 			_sortOrderKey = config["Input"].controls.gamepad.sortOrder;
 		}
 	}
-  
+
 	private function onFilterChange(): Void
 	{
 		itemList.requestInvalidate();
 	}
-	
+
 	private function onTabBarLoad(): Void
 	{
 		tabBar = panelContainer.tabBar;
 		tabBar.setIcons(_tabBarIconArt[0], _tabBarIconArt[1]);
 		tabBar.addEventListener("tabPress", this, "onTabPress");
-		
+
 		if (categoryList.dividerIndex != -1)
 			tabBar.setLabelText(_leftTabText, _rightTabText);
 	}
-	
+
 	private function onColumnSelectButtonPress(event: Object): Void
 	{
 		if (event.type == "timeout") {
@@ -439,27 +465,38 @@ class InventoryLists extends MovieClip
 			DialogManager.close();
 			return;
 		}
-		
+
+		openColumnSelectDialog();
+	}
+
+	public function openColumnSelectDialog(): Void
+	{
+		// Don't do anything if the dialog is already opened
+		if (_columnSelectDialog) {
+			return;
+		}
+
+		// Setup and open the dialog
 		_savedSelectionIndex = itemList.selectedIndex;
 		itemList.selectedIndex = -1;
-		
+
 		categoryList.disableSelection = categoryList.disableInput = true;
 		itemList.disableSelection = itemList.disableInput = true;
 		searchWidget.isDisabled = true;
-			
+
 		_columnSelectDialog = DialogManager.open(panelContainer, "ColumnSelectDialog", {_x: 554, _y: 35, layout: itemList.layout});
 		_columnSelectDialog.addEventListener("dialogClosed", this, "onColumnSelectDialogClosed");
 	}
-	
+
 	private function onColumnSelectDialogClosed(event: Object): Void
 	{
 		categoryList.disableSelection = categoryList.disableInput = false;
 		itemList.disableSelection = itemList.disableInput = false;
 		searchWidget.isDisabled = false;
-		
+
 		itemList.selectedIndex = _savedSelectionIndex;
 	}
-	
+
 	private function onConfigUpdate(event: Object): Void
 	{
 		itemList.layout.refresh();
@@ -469,28 +506,40 @@ class InventoryLists extends MovieClip
 	{
 		showItemsList();
 	}
-	
-	private function onTabPress(event: Object): Void
+
+	public function toggleTab(): Void
+	{
+		var newTab = tabBar.activeTab == TabBar.LEFT_TAB ? TabBar.RIGHT_TAB : TabBar.LEFT_TAB;
+		switchTab(newTab);
+	}
+
+	public function switchTab(newTab: Number): Void
 	{
 		if (categoryList.disableSelection || categoryList.disableInput || itemList.disableSelection || itemList.disableInput)
 			return;
-		
-		if (event.index == TabBar.LEFT_TAB) {
+
+		if (newTab == TabBar.LEFT_TAB) {
 			tabBar.activeTab = TabBar.LEFT_TAB;
 			categoryList.activeSegment = CategoryList.LEFT_SEGMENT;
-		} else if (event.index == TabBar.RIGHT_TAB) {
+		} else if (newTab == TabBar.RIGHT_TAB) {
 			tabBar.activeTab = TabBar.RIGHT_TAB;
 			categoryList.activeSegment = CategoryList.RIGHT_SEGMENT;
 		}
-		
+
 		GameDelegate.call("PlaySound",["UIMenuBladeOpenSD"]);
 		showItemsList();
 	}
 
+	private function onTabPress(event: Object): Void
+	{
+		switchTab(event.index);
+	}
+
 	private function onCategoriesListSelectionChange(event: Object): Void
 	{
+		_categoryChanged = true;
 		dispatchEvent({type:"categoryChange", index:event.index});
-		
+
 		if (event.index != -1)
 			GameDelegate.call("PlaySound",["UIMenuFocus"]);
 	}
@@ -506,6 +555,37 @@ class InventoryLists extends MovieClip
 	private function onSortChange(event: Object): Void
 	{
 		_sortFilter.setSortBy(event.attributes, event.options);
+	}
+
+	private function onItemsListUpdate(): Void
+	{
+		if(!_categoryChanged)
+			return;
+
+		// The items list was just updated because the selected
+		// category changed.
+
+		// Restore the selected item and scroll position settings.
+		// This is needed because it's quite easy to accidentally
+		// switch catetory by accdient while using the VR trackpad.
+
+		// In these case, we want to be able to return to the previous
+		// category and retain our position in the list. If the scroll
+		// position always returned to the top of the list, this makes
+		// navigating large inventory lists very difficult.
+
+		// If we can find a previously saved selection setting for this
+		// category, restore it now.
+		var savedSelection = _categorySelections[_currCategoryIndex];
+		if(savedSelection != undefined) {
+			itemList.selectedIndex = savedSelection.selectedIndex;
+			itemList.scrollPosition = savedSelection.scrollPosition;
+		} else {
+			itemList.selectedIndex = -1;
+			itemList.scrollPosition = 0;
+		}
+
+		_categoryChanged = false;
 	}
 
 	private function onSearchInputStart(event: Object): Void

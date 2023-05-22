@@ -7,12 +7,13 @@ import Components.DeltaMeter;
 import Shared.GlobalFunc;
 
 import skyui.defines.Inventory;
+import skyui.util.Debug;
 
 
 class ItemCard extends MovieClip
 {
 	#include "../version.as"
-	
+
 	var ActiveEffectTimeValue: TextField;
 	var ApparelArmorValue: TextField;
 	var ApparelEnchantedLabel: TextField;
@@ -41,7 +42,7 @@ class ItemCard extends MovieClip
 	var TotalChargesValue: TextField;
 	var WeaponDamageValue: TextField;
 	var WeaponEnchantedLabel: TextField;
-	
+
 	var ButtonRect: MovieClip;
 	var ButtonRect_mc: MovieClip;
 	var CardList_mc: MovieClip;
@@ -58,16 +59,18 @@ class ItemCard extends MovieClip
 	var PrevFocus: MovieClip;
 	var QuantitySlider_mc: MovieClip;
 	var WeaponChargeMeter: MovieClip;
-	
+
 	var InputHandler: Function;
 	var dispatchEvent: Function;
-	
+
 	var ItemCardMeters: Object;
 	var LastUpdateObj: Object;
-	
+
 	var _bEditNameMode: Boolean;
 	var bFadedIn: Boolean;
-	
+
+	//var LastShoutObj: Object;
+
 
 	function ItemCard()
 	{
@@ -84,6 +87,19 @@ class ItemCard extends MovieClip
 		_bEditNameMode = false;
 	}
 
+	function shoutWordPronunciation(word: String): String
+	{
+		word = GlobalFunc.StringReplaceAll(word, "1", "aa");
+		word = GlobalFunc.StringReplaceAll(word, "2", "ei");
+		word = GlobalFunc.StringReplaceAll(word, "3", "ii");
+		word = GlobalFunc.StringReplaceAll(word, "4", "ah");
+		word = GlobalFunc.StringReplaceAll(word, "6", "ur");
+		word = GlobalFunc.StringReplaceAll(word, "7", "ir");
+		word = GlobalFunc.StringReplaceAll(word, "8", "oo");
+		word = GlobalFunc.StringReplaceAll(word, "9", "ey");
+		return word.charAt(0).toUpperCase() + word.slice(1);
+	}
+
 	function get bEditNameMode(): Boolean
 	{
 		return _bEditNameMode;
@@ -94,12 +110,12 @@ class ItemCard extends MovieClip
 		return ItemName;
 	}
 
-	function SetupItemName(aPrevName: String): Void
+	function SetupItemName(aName: String): Void
 	{
 		ItemName = ItemText.ItemTextField;
-		if (ItemName != undefined) {
+		if (aName != undefined) {
 			ItemName.textAutoSize = "shrink";
-			ItemName.htmlText = aPrevName;
+			ItemName.SetText(aName, true);
 			ItemName.selectable = false;
 		}
 	}
@@ -115,14 +131,21 @@ class ItemCard extends MovieClip
 
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
-		ButtonRect_mc.AcceptGamepadButton._visible = aiPlatform != 0;
-		ButtonRect_mc.CancelGamepadButton._visible = aiPlatform != 0;
-		ButtonRect_mc.AcceptMouseButton._visible = aiPlatform == 0;
-		ButtonRect_mc.CancelMouseButton._visible = aiPlatform == 0;
-		if (aiPlatform != 0) {
-			ButtonRect_mc.AcceptGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-			ButtonRect_mc.CancelGamepadButton.SetPlatform(aiPlatform, abPS3Switch);
-		}
+		// TODO!!! Clean out both *GamepadButton and *MouseButton
+		// We're now using MappedButton instead of CrossplatformButton
+		ButtonRect_mc.AcceptGamepadButton._visible = false;
+		ButtonRect_mc.CancelGamepadButton._visible = false;
+		ButtonRect_mc.AcceptMouseButton._visible = false;
+		ButtonRect_mc.CancelMouseButton._visible = false;
+
+		var acceptControls = skyui.util.Input.pickControls(aiPlatform,
+				{PCArt:"Enter",XBoxArt:"360_A",PS3Art:"PS3_A",ViveArt:"trigger",MoveArt:"PS3_MOVE",OculusArt:"trigger",WindowsMRArt:"trigger"})
+		var cancelControls = skyui.util.Input.pickControls(aiPlatform,
+				{PCArt:"Esc", XBoxArt:"360_B", PS3Art:"PS3_B", ViveArt:"grip", MoveArt:"PS3_B", OculusArt:"grab", WindowsMRArt:"grab"});
+
+		ButtonRect_mc.AcceptButton.setButtonData({text: "$Yes", controls: acceptControls});
+		ButtonRect_mc.CancelButton.setButtonData({text: "$No", controls: cancelControls});
+
 		ItemList.SetPlatform(aiPlatform, abPS3Switch);
 	}
 
@@ -179,8 +202,8 @@ class ItemCard extends MovieClip
 		ItemCardMeters = new Array();
 		var strItemNameHtml: String = ItemName == undefined ? "" : ItemName.htmlText;
 		var _iItemType: Number = aUpdateObj.type;
-		
-		
+
+
 		switch (_iItemType) {
 			case Inventory.ICT_ARMOR:
 				if (aUpdateObj.effects.length == 0)
@@ -190,10 +213,10 @@ class ItemCard extends MovieClip
 				ApparelArmorValue.textAutoSize = "shrink";
 				ApparelArmorValue.SetText(aUpdateObj.armor);
 				ApparelEnchantedLabel.textAutoSize = "shrink";
-				ApparelEnchantedLabel.htmlText = aUpdateObj.effects;
-				SkillTextInstance.text = aUpdateObj.skillText;
+				ApparelEnchantedLabel.SetText(aUpdateObj.effects, true);
+				SkillTextInstance.SetText(aUpdateObj.skillText);
 				break;
-				
+
 			case Inventory.ICT_WEAPON:
 				if (aUpdateObj.effects.length == 0) {
 					gotoAndStop("Weapons_reg");
@@ -213,10 +236,10 @@ class ItemCard extends MovieClip
 				PoisonInstance.gotoAndStop(strIsPoisoned);
 				WeaponDamageValue.SetText(aUpdateObj.damage);
 				WeaponEnchantedLabel.textAutoSize = "shrink";
-				WeaponEnchantedLabel.htmlText = aUpdateObj.effects;
+				WeaponEnchantedLabel.SetText(aUpdateObj.effects, true);
 				break;
-				
-			case Inventory.ICT_BOOK: 
+
+			case Inventory.ICT_BOOK:
 				if (aUpdateObj.description != undefined && aUpdateObj.description != "") {
 					gotoAndStop("Books_Description");
 					BookDescriptionLabel.SetText(aUpdateObj.description);
@@ -224,21 +247,21 @@ class ItemCard extends MovieClip
 					gotoAndStop("Books_reg");
 				}
 				break;
-				
-			case Inventory.ICT_POTION: 
+
+			case Inventory.ICT_POTION:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
-				PotionsLabel.htmlText = aUpdateObj.effects;
-				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
+				PotionsLabel.SetText(aUpdateObj.effects, true);
+				SkillTextInstance.SetText(aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName);
 				break;
-				
+
 			case Inventory.ICT_FOOD:
 				gotoAndStop("Potions_reg");
 				PotionsLabel.textAutoSize = "shrink";
-				PotionsLabel.htmlText = aUpdateObj.effects;
-				SkillTextInstance.text = aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName;
+				PotionsLabel.SetText(aUpdateObj.effects, true);
+				SkillTextInstance.SetText(aUpdateObj.skillName == undefined ? "" : aUpdateObj.skillName);
 				break;
-				
+
 			case Inventory.ICT_SPELL_DEFAULT:
 				gotoAndStop("Power_reg");
 				MagicEffectsLabel.SetText(aUpdateObj.effects, true);
@@ -252,27 +275,27 @@ class ItemCard extends MovieClip
 				} else {
 					MagicCostValue._alpha = 100;
 					MagicCostLabel._alpha = 100;
-					MagicCostValue.text = aUpdateObj.spellCost.toString();
+					MagicCostValue.SetText(aUpdateObj.spellCost.toString());
 				}
 				break;
-				
+
 			case Inventory.ICT_SPELL:
 				var bCastTime: Boolean = aUpdateObj.castTime == 0;
 				if (bCastTime)
 					gotoAndStop("Magic_time_label");
 				else
 					gotoAndStop("Magic_reg");
-				SkillLevelText.text = aUpdateObj.castLevel.toString();
+				SkillLevelText.SetText(aUpdateObj.castLevel.toString());
 				MagicEffectsLabel.SetText(aUpdateObj.effects, true);
 				MagicEffectsLabel.textAutoSize = "shrink";
 				MagicCostValue.textAutoSize = "shrink";
 				MagicCostTimeValue.textAutoSize = "shrink";
 				if (bCastTime)
-					MagicCostTimeValue.text = aUpdateObj.spellCost.toString();
+					MagicCostTimeValue.SetText(aUpdateObj.spellCost.toString());
 				else
-					MagicCostValue.text = aUpdateObj.spellCost.toString();
+					MagicCostValue.SetText(aUpdateObj.spellCost.toString());
 				break;
-				
+
 			case Inventory.ICT_INGREDIENT:
 				gotoAndStop("Ingredients_reg");
 				for (var i: Number = 0; i < 4; i++) {
@@ -288,11 +311,11 @@ class ItemCard extends MovieClip
 					}
 				}
 				break;
-				
+
 			case Inventory.ICT_MISC:
 				gotoAndStop("Misc_reg");
 				break;
-				
+
 			case Inventory.ICT_SHOUT:
 				gotoAndStop("Shouts_reg");
 				var iLastWord: Number = 0;
@@ -304,24 +327,34 @@ class ItemCard extends MovieClip
 					var strDragonWord: String = aUpdateObj["dragonWord" + i] == undefined ? "" : aUpdateObj["dragonWord" + i];
 					var strWord: String = aUpdateObj["word" + i] == undefined ? "" : aUpdateObj["word" + i];
 					var bWordKnown: Boolean = aUpdateObj["unlocked" + i] == true;
-					this["ShoutTextInstance" + i].DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
-					this["ShoutTextInstance" + i].ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
-					this["ShoutTextInstance" + i].DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
-					this["ShoutTextInstance" + i].ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
+					var textInstance = this["ShoutTextInstance" + i];
+
+					textInstance.ShoutPronunciation.ShoutWordsLabel.textAutoSize = "shrink";
+					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.textAutoSize = "shrink";
+					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.textAutoSize = "shrink";
+
+					textInstance.ShoutPronunciation.ShoutWordsLabel.SetText(shoutWordPronunciation(strDragonWord));
+					textInstance.DragonShoutLabelInstance.ShoutWordsLabel.SetText(strDragonWord.toUpperCase());
+					textInstance.ShoutLabelInstance.ShoutWordsLabelTranslation.SetText(strWord);
+
+					// If the player just learned a word, kick off the Learn animation
 					if (bWordKnown && i == iLastWord && LastUpdateObj.soulSpent == true) {
-						this["ShoutTextInstance" + i].gotoAndPlay("Learn");
+						textInstance.gotoAndPlay("Learn");
+
+					// If the word is known, kick off the Translate animation to show the
+					// pronunciation
 					} else if (bWordKnown) {
-						this["ShoutTextInstance" + i].gotoAndStop("Known");
-						this["ShoutTextInstance" + i].gotoAndStop("Known");
+						textInstance.gotoAndPlay("Translate");
+
+					// Otherwise, just display the word as is
 					} else {
-						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
-						this["ShoutTextInstance" + i].gotoAndStop("Unlocked");
+						textInstance.gotoAndStop("Unlocked");
 					}
 				}
-				ShoutEffectsLabel.htmlText = aUpdateObj.effects;
-				ShoutCostValue.text = aUpdateObj.spellCost.toString();
+				ShoutEffectsLabel.SetText(aUpdateObj.effects, true);
+				ShoutCostValue.SetText(aUpdateObj.spellCost.toString());
 				break;
-				
+
 			case Inventory.ICT_ACTIVE_EFFECT:
 				gotoAndStop("ActiveEffects");
 				MagicEffectsLabel.html = true;
@@ -333,36 +366,36 @@ class ItemCard extends MovieClip
 					SecsText._alpha = 100;
 					if (iEffectTimeRemaining >= 3600) {
 						iEffectTimeRemaining = Math.floor(iEffectTimeRemaining / 3600);
-						ActiveEffectTimeValue.text = iEffectTimeRemaining.toString();
+						ActiveEffectTimeValue.SetText(iEffectTimeRemaining.toString());
 						if (iEffectTimeRemaining == 1)
-							SecsText.text = "$hour";
+							SecsText.SetText("$hour");
 						else
-							SecsText.text = "$hours";
+							SecsText.SetText("$hours");
 					} else if (iEffectTimeRemaining >= 60) {
 						iEffectTimeRemaining = Math.floor(iEffectTimeRemaining / 60);
-						ActiveEffectTimeValue.text = iEffectTimeRemaining.toString();
+						ActiveEffectTimeValue.SetText(iEffectTimeRemaining.toString());
 						if (iEffectTimeRemaining == 1)
-							SecsText.text = "$min";
+							SecsText.SetText("$min");
 						else
-							SecsText.text = "$mins";
+							SecsText.SetText("$mins");
 					} else {
-						ActiveEffectTimeValue.text = iEffectTimeRemaining.toString();
+						ActiveEffectTimeValue.SetText(iEffectTimeRemaining.toString());
 						if (iEffectTimeRemaining == 1)
-							SecsText.text = "$sec";
+							SecsText.SetText("$sec");
 						else
-							SecsText.text = "$secs";
+							SecsText.SetText("$secs");
 					}
 				} else {
 					ActiveEffectTimeValue._alpha = 0;
 					SecsText._alpha = 0;
 				}
 				break;
-				
+
 			case Inventory.ICT_SOUL_GEMS:
 				gotoAndStop("SoulGem");
-				SoulLevel.text = aUpdateObj.soulLVL;
+				SoulLevel.SetText(aUpdateObj.soulLVL);
 				break;
-				
+
 			case Inventory.ICT_LIST:
 				gotoAndStop("Item_list");
 				if (aUpdateObj.listItems != undefined) {
@@ -374,7 +407,7 @@ class ItemCard extends MovieClip
 					OpenListMenu();
 				}
 				break;
-				
+
 			case Inventory.ICT_CRAFT_ENCHANTING:
 			case Inventory.ICT_HOUSE_PART:
 				if (aUpdateObj.type == Inventory.ICT_HOUSE_PART) {
@@ -387,7 +420,7 @@ class ItemCard extends MovieClip
 					gotoAndStop("Craft_Enchanting");
 					ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Default.MeterInstance);
 					if (aUpdateObj.totalCharges != undefined && aUpdateObj.totalCharges != 0)
-						TotalChargesValue.text = aUpdateObj.totalCharges;
+						TotalChargesValue.SetText(aUpdateObj.totalCharges);
 				} else if (aUpdateObj.damage == undefined) {
 					if (aUpdateObj.armor == undefined) {
 						if (aUpdateObj.soulLVL == undefined) {
@@ -398,24 +431,24 @@ class ItemCard extends MovieClip
 						} else {
 							gotoAndStop("Craft_Enchanting_SoulGem");
 							ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_SoulGem.MeterInstance);
-							SoulLevel.text = aUpdateObj.soulLVL;
+							SoulLevel.SetText(aUpdateObj.soulLVL);
 						}
 					} else {
 						gotoAndStop("Craft_Enchanting_Armor");
 						ApparelArmorValue.SetText(aUpdateObj.armor);
-						SkillTextInstance.text = aUpdateObj.skillText;
+						SkillTextInstance.SetText(aUpdateObj.skillText);
 					}
 				} else {
 					gotoAndStop("Craft_Enchanting_Weapon");
 					ItemCardMeters[Inventory.ICT_WEAPON] = new DeltaMeter(ChargeMeter_Weapon.MeterInstance);
 					WeaponDamageValue.SetText(aUpdateObj.damage);
 				}
-				
+
 				if (aUpdateObj.usedCharge == 0 && aUpdateObj.totalCharges == 0)
 					ItemCardMeters[Inventory.ICT_WEAPON].DeltaMeterMovieClip._parent._parent._alpha = 0;
 				else if (aUpdateObj.usedCharge != undefined)
 					ItemCardMeters[Inventory.ICT_WEAPON].SetPercent(aUpdateObj.usedCharge);
-				
+
 				if (aUpdateObj.effects != undefined && aUpdateObj.effects.length > 0) {
 					if (EnchantmentLabel != undefined)
 						EnchantmentLabel.SetText(aUpdateObj.effects, true);
@@ -431,13 +464,13 @@ class ItemCard extends MovieClip
 					Enchanting_Background._alpha = 0;
 				}
 				break;
-			
+
 			case Inventory.ICT_KEY:
 			case Inventory.ICT_NONE:
 			default:
 				gotoAndStop("Empty");
 		}
-		
+
 		SetupItemName(strItemNameHtml);
 		if (aUpdateObj.name != undefined) {
 			var strItemName: String = aUpdateObj.count != undefined && aUpdateObj.count > 1 ? aUpdateObj.name + " (" + aUpdateObj.count + ")" : aUpdateObj.name;
@@ -467,9 +500,9 @@ class ItemCard extends MovieClip
 		var iEnchantingSlider_yOffset = 147.3;
 		var iButtonRect_iOffset = 130;
 		var iButtonRect_iOffsetEnchanting = 166;
-		
+
 		switch (aActiveClip) {
-			case EnchantingSlider_mc: 
+			case EnchantingSlider_mc:
 				QuantitySlider_mc._y = -100;
 				ButtonRect._y = iButtonRect_iOffsetEnchanting;
 				EnchantingSlider_mc._y = iEnchantingSlider_yOffset;
@@ -479,8 +512,8 @@ class ItemCard extends MovieClip
 				EnchantingSlider_mc._alpha = 100;
 				CardList_mc._alpha = 0;
 				break;
-				
-			case QuantitySlider_mc: 
+
+			case QuantitySlider_mc:
 				QuantitySlider_mc._y = iQuantitySlider_yOffset;
 				ButtonRect._y = iButtonRect_iOffset;
 				EnchantingSlider_mc._y = -100;
@@ -490,8 +523,8 @@ class ItemCard extends MovieClip
 				EnchantingSlider_mc._alpha = 0;
 				CardList_mc._alpha = 0;
 				break;
-				
-			case CardList_mc: 
+
+			case CardList_mc:
 				QuantitySlider_mc._y = -100;
 				ButtonRect._y = -100;
 				EnchantingSlider_mc._y = -100;
@@ -501,8 +534,8 @@ class ItemCard extends MovieClip
 				EnchantingSlider_mc._alpha = 0;
 				CardList_mc._alpha = 100;
 				break;
-				
-			case ButtonRect: 
+
+			case ButtonRect:
 				QuantitySlider_mc._y = -100;
 				ButtonRect._y = iButtonRect_iOffset;
 				EnchantingSlider_mc._y = -100;
@@ -605,7 +638,7 @@ class ItemCard extends MovieClip
 		if (Selection.getFocus() != ItemName) {
 			PrevFocus = FocusHandler.instance.getFocus(0);
 			if (aInitialText != undefined)
-				ItemName.text = aInitialText;
+				ItemName.SetText(aInitialText);
 			ItemName.type = "input";
 			ItemName.noTranslate = true;
 			ItemName.selectable = true;
@@ -636,7 +669,7 @@ class ItemCard extends MovieClip
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bHandledInput: Boolean = false;
-		if (pathToFocus.length > 0 && pathToFocus[0].handleInput != undefined) 
+		if (pathToFocus.length > 0 && pathToFocus[0].handleInput != undefined)
 			pathToFocus[0].handleInput(details, pathToFocus.slice(1));
 		if (InputHandler != undefined)
 			bHandledInput = InputHandler(details);
@@ -722,7 +755,7 @@ class ItemCard extends MovieClip
 
 	function onListMouseSelectionChange(event: Object): Void
 	{
-		if (event.keyboardOrMouse == 0) 
+		if (event.keyboardOrMouse == 0)
 			onListSelectionChange(event);
 	}
 

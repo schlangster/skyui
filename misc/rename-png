@@ -1,0 +1,56 @@
+#! env ruby
+
+def toWinPath(wslPath)
+	cmd = "wslpath -w '#{wslPath}'"
+	return `#{cmd}`.strip
+end
+
+# This is a one-off utility to rename png files in a directory.
+# We're exporting icon pngs from the VR version of the game
+# to use in the help text.
+#
+# Ideally, we would export all the known button art as png
+# and import them again. I'm being lazy and skipping that for now.
+
+require('optparse')
+require('pathname')
+require('fileutils')
+
+options = {}
+optParser = OptionParser.new do |opts|
+	opts.banner = "Usage: decompile-pex [options] target_dir"
+
+	# opts.on("-w", "--watch", "Watch built directory") do
+	# 	options[:watch] = true
+	# end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+  	puts opts
+  	exit
+  end
+end
+
+optParser.parse!
+
+targetDir = ARGV.pop
+if not targetDir then
+	puts optParser
+	exit
+end
+
+targetDirPath = Pathname.new(targetDir)
+if !targetDirPath.exist? or !targetDirPath.directory? then
+		puts "Cannot locate target directory: " + targetDirPath;
+		exit 1
+end
+
+def transformName(oldName)
+	oldName = oldName.to_s
+	firstUnderscore = oldName.to_s.index('_')
+	return oldName.slice(firstUnderscore+1, oldName.length - 4 - firstUnderscore - 1)
+end
+
+Pathname.glob(targetDirPath + "*.png.png").each do |f|
+	puts "#{f} => #{targetDirPath + transformName(f)}"
+	f.rename(targetDirPath + transformName(f))
+end

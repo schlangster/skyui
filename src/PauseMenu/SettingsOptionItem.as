@@ -18,6 +18,10 @@ class SettingsOptionItem extends MovieClip
 	var scrollBar: ScrollBar;
 	var textField: TextField;
 
+	var pScope = null;
+	var sFunction: String = "";
+	var bRequiresRestart: Boolean = false;
+
 	function SettingsOptionItem()
 	{
 		super();
@@ -27,6 +31,12 @@ class SettingsOptionItem extends MovieClip
 		CheckBox_mc = checkBox;
 		bSendChangeEvent = true;
 		textField.textAutoSize = "shrink";
+	}
+
+	function SetOnChangeCallback(apScope, asFunction)
+	{
+		pScope = apScope;
+		sFunction = asFunction;
 	}
 
 	function onLoad(): Void
@@ -145,6 +155,16 @@ class SettingsOptionItem extends MovieClip
 		CheckBox_mc._alpha = abSelected ? 100 : 30;
 	}
 
+	function get requiresRestart()
+	{
+		return bRequiresRestart;
+	}
+
+	function set requiresRestart(abRequiresRestart)
+	{
+		bRequiresRestart = abRequiresRestart;
+	}
+
 	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		var bhandledInput: Boolean = false;
@@ -164,6 +184,9 @@ class SettingsOptionItem extends MovieClip
 				case 1:
 					if (details.navEquivalent == NavigationCode.LEFT || details.navEquivalent == NavigationCode.RIGHT) {
 						bhandledInput = OptionStepper_mc.handleInput(details, pathToFocus);
+					} else if (details.navEquivalent == NavigationCode.ENTER) {
+						OptionStepper_mc.ToggleNextOrAround();
+						bhandledInput = true;
 					}
 					break;
 					
@@ -261,6 +284,7 @@ class SettingsOptionItem extends MovieClip
 		if (bSendChangeEvent) {
 			DoOptionChange();
 		}
+		ProcessOnChangeCallback();
 	}
 
 	function onScroll(event: Object): Void
@@ -268,13 +292,21 @@ class SettingsOptionItem extends MovieClip
 		if (bSendChangeEvent) {
 			DoOptionChange();
 		}
+		ProcessOnChangeCallback();
 	}
 
 	function DoOptionChange(): Void
 	{
-		GameDelegate.call("OptionChange", [ID, value]);
+		GameDelegate.call("OptionChange", [ID, value], requiresRestart);
 		GameDelegate.call("PlaySound", ["UIMenuPrevNext"]);
 		_parent.onValueChange(MovieClip(this).itemIndex, value);
+		ProcessOnChangeCallback();
 	}
 
+	function ProcessOnChangeCallback()
+	{
+		if(pScope != null && pScope != undefined && sFunction != null && sFunction != undefined) {
+			pScope[sFunction].apply(pScope, [this]);
+		}
+	}
 }

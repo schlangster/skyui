@@ -1,5 +1,8 @@
 ﻿import gfx.managers.FocusHandler;
 import gfx.io.GameDelegate;
+import gfx.ui.InputDetails;
+import Shared.GlobalFunc;
+import gfx.ui.NavigationCode;
 
 class StatsPage extends MovieClip
 {
@@ -8,6 +11,8 @@ class StatsPage extends MovieClip
 	var StatsList_mc: MovieClip;
 	var _StatsList: MovieClip;
 	var bUpdated: Boolean;
+	var iPlatform: Number;
+	var Divider: MovieClip;
 
 	function StatsPage()
 	{
@@ -15,6 +20,22 @@ class StatsPage extends MovieClip
 		CategoryList = CategoryList_mc.List_mc;
 		_StatsList = StatsList_mc;
 		bUpdated = false;
+	}
+
+	function OnShow(): Void
+	{
+		bUpdated = false;
+		var STAT_ENTRYLISTINDEX = 2;
+		var STAT_STRIDE = 4;
+		var cursor = 0;
+		while(cursor < arguments.length)
+		{
+			CategoryList.entryList[arguments[cursor + STAT_ENTRYLISTINDEX]].stats.length = 0;
+			cursor = cursor + STAT_STRIDE;
+		}
+		CategoryList.entryList.length = 0;
+		CategoryList.InvalidateData();
+		onLoad();
 	}
 
 	function onLoad(): Void
@@ -30,7 +51,7 @@ class StatsPage extends MovieClip
 		CategoryList.addEventListener("listMovedDown", this, "onCategoryListMoveDown");
 		CategoryList.addEventListener("selectionChange", this, "onCategoryListMouseSelectionChange");
 		CategoryList.disableInput = true; // Bugfix for vanilla
-		_StatsList.disableSelection = true;
+		_StatsList.disableSelection = false;
 	}
 
 	function startPage(): Void
@@ -56,20 +77,20 @@ class StatsPage extends MovieClip
 		var STAT_ENTRYLISTINDEX = 2;
 		var STAT_UNKNOWN = 3;
 		var STAT_STRIDE = 4;
-		
+
 		for (var i: Number = 0; i < arguments.length; i += STAT_STRIDE) {
 			var stat: Object = {text: "$" + arguments[i + STAT_TEXT], value: arguments[i + STAT_VALUE]};
 			CategoryList.entryList[arguments[i + STAT_ENTRYLISTINDEX]].stats.push(stat);
 		}
 		onCategoryHighlight();
-	} 
+	}
 
 	function onCategoryHighlight(): Void
 	{
 		var stats: Array = CategoryList.selectedEntry.stats;
 		_StatsList.ClearList();
 		_StatsList.scrollPosition = 0;
-		
+
 		for(var i: Number = 0; i < stats.length; i++) {
 			_StatsList.entryList.push(stats[i]);
 		}
@@ -115,6 +136,48 @@ class StatsPage extends MovieClip
 	{
 		CategoryList.SetPlatform(aiPlatform, abPS3Switch);
 		_StatsList.SetPlatform(aiPlatform, abPS3Switch);
+		iPlatform = aiPlatform;
+	}
+
+	function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		var bhandledInput: Boolean = false;
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (_StatsList.entryList.length > 0) {
+				if (details.navEquivalent == NavigationCode.LEFT && FocusHandler.instance.getFocus(0) != CategoryList) {
+					switchFocusToCategoryList();
+					bhandledInput = true;
+				} else if (details.navEquivalent == NavigationCode.RIGHT && FocusHandler.instance.getFocus(0) != _StatsList) {
+					switchFocusToStatsList();
+					bhandledInput = true;
+
+				} else if (details.navEquivalent == NavigationCode.DOWN && FocusHandler.instance.getFocus(0) == _StatsList) {
+					// Scroll down if the user has the stat list select and hits "down"
+					_StatsList.scrollPosition = _StatsList.scrollPosition + 1;
+				} else if (details.navEquivalent == NavigationCode.UP && FocusHandler.instance.getFocus(0) == _StatsList) {
+					// Scroll up if the user has the stat list select and hits "up"
+					_StatsList.scrollPosition = _StatsList.scrollPosition - 1;
+				}
+			}
+		}
+
+		// Let other widgets try handling the event
+		if (!bhandledInput && pathToFocus != undefined && pathToFocus.length > 0) {
+			bhandledInput = pathToFocus[0].handleInput(details, pathToFocus.slice(1));
+		}
+		return bhandledInput;
+	}
+
+	private function switchFocusToStatsList(): Void
+	{
+		FocusHandler.instance.setFocus(_StatsList, 0);
+		Divider.gotoAndStop("Left");
+	}
+
+	private function switchFocusToCategoryList(): Void
+	{
+		FocusHandler.instance.setFocus(CategoryList, 0);
+		Divider.gotoAndStop("Right");
 	}
 
 }

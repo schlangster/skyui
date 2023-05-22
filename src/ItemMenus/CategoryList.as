@@ -54,7 +54,10 @@ class CategoryList extends BasicList
 	
 	// The active segment for divided lists (left or right).
 	private var _activeSegment: Number;
-	
+
+	// Index of previous selected item
+	public var lastSelectedIndex: Number;
+
 	public function set activeSegment(a_segment: Number)
 	{
 		if (a_segment == _activeSegment)
@@ -76,8 +79,29 @@ class CategoryList extends BasicList
 	{
 		return _activeSegment;
 	}
-	
-	
+
+	public function selectionAtBeginningOfSegment(): Boolean
+	{
+		if(selectedIndex == 0)
+			return true;
+
+		if(dividerIndex != -1 && selectedIndex == dividerIndex + 1)
+			return true;
+
+		return false;
+	}
+
+	public function selectionAtEndOfSegment(): Boolean
+	{
+		if(selectedIndex == entryList.length)
+			return true;
+
+		if(dividerIndex != -1 && selectedIndex == dividerIndex - 1)
+			return true;
+
+		return false;
+	}
+
   /* INITIALIZATION */
 	
 	public function CategoryList()
@@ -180,7 +204,8 @@ class CategoryList extends BasicList
 
 		var curIndex = _selectedIndex;
 		var startIndex = _selectedIndex;
-			
+		lastSelectedIndex = curIndex;
+
 		do {
 			if (curIndex > _segmentOffset) {
 				curIndex--;
@@ -201,7 +226,8 @@ class CategoryList extends BasicList
 			
 		var curIndex = _selectedIndex;
 		var startIndex = _selectedIndex;
-			
+		lastSelectedIndex = curIndex;
+
 		do {
 			if (curIndex < _segmentOffset + _segmentLength - 1) {
 				curIndex++;

@@ -3,7 +3,7 @@
 class skyui.util.GlobalFunctions
 {
   /* PUBLIC FUNCTIONS */
-	
+
 	public static function extract(a_str: String, a_startChar: String, a_endChar: String): String
 	{
 		return a_str.slice(a_str.indexOf(a_startChar) + 1,a_str.lastIndexOf(a_endChar));
@@ -26,7 +26,7 @@ class skyui.util.GlobalFunctions
 		return a_str.slice(i,j + 1);
 	}
 
-	public static function unescape(a_str: String): String 
+	public static function unescape(a_str: String): String
 	{
 		a_str = a_str.split("\\n").join("\n");
 		a_str = a_str.split("\\t").join("\t");
@@ -39,39 +39,39 @@ class skyui.util.GlobalFunctions
 	{
 		if (_arrayExtended)
 			return;
-			
+
 		_arrayExtended = true;
-		
+
 		Array.prototype.indexOf = function (a_element): Number
 		{
 			for (var i=0; i<this.length; i++)
 				if (this[i] == a_element)
 					return i;
-					
+
 			return undefined;
 		};
-		
-		Array.prototype.equals = function (a: Array): Boolean 
+
+		Array.prototype.equals = function (a: Array): Boolean
 		{
 			if (a == undefined)
 				return false;
-			
+
 	    	if (this.length != a.length)
 	        	return false;
-			
+
 	    	for (var i = 0; i < a.length; i++)
 	        	if (a[i] !== this[i])
 					return false;
-					
+
 	    	return true;
     	};
-		
-		Array.prototype.contains = function (a_element): Boolean 
+
+		Array.prototype.contains = function (a_element): Boolean
 		{
 			for (var i=0; i<this.length; i++)
 				if (this[i] == a_element)
 					return true;
-					
+
 	    	return false;
     	};
 
@@ -84,7 +84,7 @@ class skyui.util.GlobalFunctions
 		//NUMERO SIGN
 		if (a_charCode == 0x2116)
 			return 0xB9;
-			
+
 		else if (0x0401 <= a_charCode && a_charCode <= 0x0491) {
 			switch (a_charCode) {
 				//CYRILLIC CAPITAL LETTER IO
@@ -143,24 +143,24 @@ class skyui.util.GlobalFunctions
 		}
 		return a_charCode;
 	}
-	
+
 	// Ex: format("Last {2}% longer", 100.66666)
 	public static function formatString(a_str: String /*, ... */): String
 	{
 		if (arguments.length < 2)
 			return a_str;
-		
+
 		var buf: String = "";
 		var pos: Number = 0;
 		for (var i: Number = 1; i < arguments.length; i++) {
 			var start: Number = a_str.indexOf("{", pos);
 			if (start == -1)
 				return a_str;
-				
+
 			var end: Number = a_str.indexOf("}", pos);
 			if (end == -1)
 				return a_str;
-				
+
 			buf += a_str.slice(pos, start);
 			var decimal: Number = Number(a_str.slice(start+1, end));
 			var mult: Number = Math.pow(10, decimal);
@@ -176,12 +176,12 @@ class skyui.util.GlobalFunctions
 			buf += valStr;
 			pos = end+1;
 		}
-		
+
 		buf += a_str.slice(pos);
-		
+
 		return buf;
 	}
-	
+
 	public static function formatNumber(a_number: Number, a_decimal: Number): String
 	{
 		var valStr: String = a_number.toString().toLowerCase();
@@ -189,31 +189,31 @@ class skyui.util.GlobalFunctions
 		var mult = Math.pow(10, a_decimal);
 
 		valStr = String((Math.round(parseFloat(floatComponents[0]) * mult) / mult));
-		
-		
+
+
 		if (a_decimal > 0) {
 				var dotIdx: Number = valStr.indexOf(".")
 				if (dotIdx == -1) {
 					dotIdx = valStr.length
 					valStr += ".";
 				}
-		
+
 				var decLen: Number = valStr.length - (dotIdx + 1);
 				for (var i: Number = 0; decLen + i < a_decimal; i++)
 					valStr += "0";
 		}
-			
+
 		if (floatComponents[1] != undefined)
 			valStr += "E" + floatComponents[1]
-		
+
 		return valStr;
 	}
-	
+
 	public static function getMappedKey(a_control: String, a_context: Number, a_bGamepad: Boolean): Number
 	{
 		if (_global.skse == undefined)
 			return -1;
-		
+
 		if (a_bGamepad == true) {
 			return skse.GetMappedKey(a_control, Input.DEVICE_GAMEPAD, a_context);
 		} else {
@@ -233,18 +233,38 @@ class skyui.util.GlobalFunctions
 		a_scope[a_memberFn] = function () {memberFn.apply(a_scope, arguments); a_hookScope[a_hookFn].apply(a_hookScope, arguments);}
 		return true;
 	}
-	
+
 	public static function getDistance(a: MovieClip, b: MovieClip): Number
 	{
 		var dx = b._x - a._x;
 		var dy = b._y - a._y;
 		return Math.sqrt(dx*dx + dy*dy);
 	}
-	
+
 	public static function getAngle(a: MovieClip, b: MovieClip): Number
 	{
 		var dx = b._x - a._x;
-		var dy = b._y - a._y;		
+		var dy = b._y - a._y;
 		return Math.atan2(dy, dx) * (180 / Math.PI);
 	}
+
+	static public function clamp(val:Number, min:Number, max:Number)
+	{
+		return Math.max(min, Math.min(max, val))
+	}
+
+	static public function vec2Mag(vec2: Array)
+	{
+		if(vec2 == undefined)
+			return undefined;
+		var x = vec2[0];
+		var y = vec2[1];
+		return Math.sqrt(x*x + y*y);
+	}
+
+	static public function vec2Angle(vec2: Array)
+	{
+		return Math.atan2(vec2[1], vec2[0]) * (180 / Math.PI);
+	}
+
 }

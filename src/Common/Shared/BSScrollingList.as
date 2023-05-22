@@ -166,7 +166,7 @@ class Shared.BSScrollingList extends MovieClip
 				SetEntry(GetClipByIndex(EntriesA[iCurrentIndex].clipIndex),EntriesA[iCurrentIndex]);
 
 			if (iSelectedIndex != -1) {
-				if (iPlatform != 0) {
+				if (iPlatform != Shared.Platforms.CONTROLLER_PC) {
 					if (iSelectedIndex < iScrollPosition)
 						scrollPosition = iSelectedIndex;
 					else if (iSelectedIndex >= iScrollPosition + iListItemsShown)
@@ -412,7 +412,7 @@ class Shared.BSScrollingList extends MovieClip
 	function SetPlatform(aiPlatform: Number, abPS3Switch: Boolean): Void
 	{
 		iPlatform = aiPlatform;
-		bMouseDrivenNav = iPlatform == 0;
+		bMouseDrivenNav = iPlatform == Shared.Platforms.CONTROLLER_PC;
 	}
 
 	function onScroll(event: Object): Void

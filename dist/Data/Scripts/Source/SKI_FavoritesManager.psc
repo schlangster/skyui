@@ -954,6 +954,11 @@ bool function ProcessItem(Form a_item, int a_itemType, bool a_allowDeferring = t
 		endIf
 
 		return true
+
+	; MISC ------------
+	elseIf a_itemType == 32
+		PlayerREF.EquipItem(a_item, abSilent = True)
+		return true
 	endIf
 
 	return true

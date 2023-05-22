@@ -1,0 +1,115 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/SettingsOptionStepper" itemID="51070dbc-0000025a" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="SettingsOptionStepper" linkageClassName="gfx.controls.OptionStepper" linkageURL="." sourceFlashFilepath="Sprite 503" sourceLibraryItemHRef="Sprites/Sprite 503" scaleGridLeft="24.2" scaleGridRight="163.6" scaleGridTop="-2.35" scaleGridBottom="32" lastModified="1359423867" sourceItemID="00000000-7fffffff" displayAsComponent="false" customIconID="0" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="SettingsOptionStepper">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="10" name="default" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="focused" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" name="disabled" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/OptionStepperArrowBtn" name="prevBtn">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/OptionStepperArrowBtn" name="nextBtn">
+                  <matrix>
+                    <Matrix a="-0.999496459960938" tx="190"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="textField" fontRenderingMode="standard" width="126" height="25" includeOutlines="true" isSelectable="false" scrollable="true" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="32" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>OPTION</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" bold="true" letterSpacing="0.8" size="20" face="$EverywhereBoldFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="2" blurY="2" distance="2" strength="1.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <parametersAsXML><![CDATA[   <property id="disabled">
+      <Inspectable name="disabled" variable="disabled" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="enableInitCallback">
+      <Inspectable name="enableInitCallback" variable="enableInitCallback" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="soundMap">
+      <Inspectable name="soundMap" variable="soundMap" category="" verbose="0" defaultValue="change" type="Array"/>
+   </property>
+   <property id="visible">
+      <Inspectable name="visible" variable="visible" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+]]></parametersAsXML>
+</DOMComponentItem>

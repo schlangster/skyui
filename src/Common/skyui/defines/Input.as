@@ -1,9 +1,12 @@
-﻿class skyui.defines.Input
+﻿import Shared.Platforms;
+import skyui.util.Debug;
+
+class skyui.defines.Input
 {
 	static var DEVICE_KEYBOARD: Number	= 0;
 	static var DEVICE_MOUSE: Number		= 1;
 	static var DEVICE_GAMEPAD: Number	= 2;
-	
+
 	static var CONTEXT_GAMEPLAY: Number		= 0;
 	static var CONTEXT_MENUMODE: Number		= 1;
 	static var CONTEXT_CONSOLE: Number		= 2;
@@ -21,7 +24,7 @@
 	static var CONTEXT_MAPDEBUG: Number		= 14;
 	static var CONTEXT_LOCKPICKING: Number	= 15;
 	static var CONTEXT_FAVOR: Number		= 16;
-	
+
 	// Controlmap
 	static var ChargeItem	= {name: "ChargeItem", context: CONTEXT_INVENTORY};
 	static var XButton		= {name: "XButton", context: CONTEXT_ITEMMENU};
@@ -37,7 +40,7 @@
 	static var Cancel		= {name: "Cancel", context: CONTEXT_MENUMODE};
 	static var JournalXButton	= {name: "XButton", context: CONTEXT_JOURNAL};
 	static var JournalYButton	= {name: "YButton", context: CONTEXT_JOURNAL};
-	
+
 	// Custom
 	static var LeftRight: Array = [
 		{name: "Left", context: CONTEXT_MENUMODE},
@@ -60,5 +63,4 @@
 	static var Shift		= {keyCode: 42};
 	static var Space		= {keyCode: 57};
 	static var Alt			= {keyCode: 56};
-
 }

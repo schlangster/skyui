@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/OCC BUTTON BASE SQUARE" itemID="5bb229e4-000004d6" lastModified="1538402788">
+  <timeline>
+    <DOMTimeline name="OCC BUTTON BASE SQUARE">
+      <layers>
+        <DOMLayer name="Layer 1" color="#33B0A8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#BBBDBF" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!450 92[461 109 461 131!461 131|461 388!461 388[461 418 440 440"/>
+                    <Edge fillStyle1="2" edges="!440 440[462 419 462 388!462 388|462 132!462 132[462 109 450 92"/>
+                    <Edge fillStyle1="1" edges="!520 132|520 388!520 388[520 443 482 482!482 482[443 520 388 520!388 520|132 520!132 520[77 520 39 482!39 482[0 443 0 388!0 388|0 132!0 132[0 78 39 39!39 39[78 0 132 0!132 0|388 0!388 0[443 0 482 39!482 39[520 77 520 132"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!91 449|81 440!81 440|67 422!67 422|62 410!62 410[59 399 59 388!59 388|59 131!59 131|61 117!61 117[65 96 81 81!81 81[94 68 110 63!110 63|130 59!130 59|132 59!132 59|389 59!389 59[407 59 423 68!423 68[432 73 440 81!440 81|450 92"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!34 429|26 388!26 388|26 132!26 132[26 89 58 58!58 58[87 26 132 26!132 26|388 26!388 26[432 26 463 58!463 58[494 88 494 132!494 132|494 388!494 388[494 432 463 463!463 463[432 494 388 494!388 494|132 494!132 494|130 494!130 494[103 493
+ 82 482"/>
+                    <Edge fillStyle0="1" edges="
+!82 482|57 463!57 463[42 448 34 429"/>
+                    <Edge fillStyle0="2" edges="
+!34 429|58 463!58 463|82 482"/>
+                    <Edge fillStyle0="1" edges="
+!91 449[109 461 132 461!132 461|389 461!389 461[418 461 440 440"/>
+                    <Edge fillStyle0="2" edges="
+!440 440[419 462 388 462!388 462|132 462!132 462[109 462 91 449"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

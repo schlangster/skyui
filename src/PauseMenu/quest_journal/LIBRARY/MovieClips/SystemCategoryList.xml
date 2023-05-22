@@ -1,0 +1,168 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/SystemCategoryList" itemID="51072b8c-00000dfb" sourceFlashFilepath="Sprite 525" lastModified="1359424399" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="SystemCategoryList">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" name="moveUp" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="moveDown" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this.List_mc.listAnimating = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this.List_mc.listAnimating = true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this.List_mc.listAnimating = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this.List_mc.listAnimating = true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+this.List_mc.listAnimating = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SystemCategoriesList" name="List_mc" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.28.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="numTopHalfEntries">
+      <Inspectable name="numTopHalfEntries" variable="numTopHalfEntries" category="" verbose="0" defaultValue="6" type="Number"/>
+   </property>
+   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SystemCategoriesList" name="List_mc" centerPoint3DY="-3.35" uniqueID="1">
+                  <matrix>
+                    <Matrix ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.28.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="numTopHalfEntries">
+      <Inspectable name="numTopHalfEntries" variable="numTopHalfEntries" category="" verbose="0" defaultValue="6" type="Number"/>
+   </property>
+   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SystemCategoriesList" name="List_mc" selected="true" centerPoint3DY="6.65" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.28.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="numTopHalfEntries">
+      <Inspectable name="numTopHalfEntries" variable="numTopHalfEntries" category="" verbose="0" defaultValue="6" type="Number"/>
+   </property>
+   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SystemCategoriesList" name="List_mc" centerPoint3DY="16.65" uniqueID="1">
+                  <matrix>
+                    <Matrix ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.28.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="numTopHalfEntries">
+      <Inspectable name="numTopHalfEntries" variable="numTopHalfEntries" category="" verbose="0" defaultValue="6" type="Number"/>
+   </property>
+   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/SystemCategoriesList" name="List_mc" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Page 1' oldCopiedComponentPath='1.6.14.4.28.1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="numTopHalfEntries">
+      <Inspectable name="numTopHalfEntries" variable="numTopHalfEntries" category="" verbose="0" defaultValue="6" type="Number"/>
+   </property>
+   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="scrollBarAssets/scrollBarGraphics/scrollBarOption_thumb_shape" itemID="51072314-00000c0b" symbolType="graphic" lastModified="1359422557">
+  <timeline>
+    <DOMTimeline name="scrollBarOption_thumb_shape">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFFFFF" alpha="0.298039215686275"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!162 103|101 136!101 136[89 131 77 125!77 125|77 78!77 78[90 72 102 65!102 65|161 101!161 101|162 103"/>
+                    <Edge fillStyle0="1" edges="!0 3|0 197!0 197|19 197!19 197|61 179!61 179|95 200!95 200|259 101!259 101|95 0!95 0|56 23!56 23|18 3!18 3|0 3"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!96 24|222 101!222 101|95 177!95 177|22 136!22 136|22 66!22 66|96 24"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

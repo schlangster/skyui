@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NumberPad/NPMinus" itemID="5014ce86-00001697" symbolType="graphic" lastModified="1343540957">
+  <timeline>
+    <DOMTimeline name="NPMinus">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!245 9[235 3 223 1!223 1[212 0 201 0!201 0|160 0!160 0|160 256!160 256|194 256!194 256|194 142!194 142[233 144 250 126!250 126[267 107 267 68!267 68[267 44 261 30!261 30[255 16 245 9!231 71[231 93 223 104!223 104[215 115 194 114!194 114
+|194 29!194 29|199 29!199 29[211 29 219 34!219 34[226 40 228 50!228 50[231 59 231 71"/>
+                    <Edge fillStyle0="1" edges="
+!282 181S1|342 181!342 181|342 155!342 155|282 155!282 155|282 181"/>
+                    <Edge fillStyle0="1" edges="
+!93 194|92 194!92 194|32 0!32 0|0 0!0 0|0 256!0 256|34 256!34 256|27 58!27 58|87 256!87 256|119 256!119 256|119 0!119 0|85 0!85 0|93 194"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

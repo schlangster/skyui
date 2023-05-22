@@ -1,4 +1,11 @@
-﻿import gfx.events.EventDispatcher;
+﻿/* Class InputDelegate
+ *
+ * This is where keydown/keyup events are normally passed to the UI.
+ * We attach some supplimental information from SKSE, then dispatch
+ * the event to the rest of the UI.
+ *
+ */
+import gfx.events.EventDispatcher;
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
 
@@ -9,29 +16,34 @@ import skyui.util.GlobalFunctions;
 class gfx.managers.InputDelegate extends EventDispatcher
 {
   /* SINGLETON */
-	
+
 	private static var _instance: InputDelegate;
-	
+
 	public static function get instance(): InputDelegate
 	{
-		if (_instance == null) 
+		if (_instance == null)
 			_instance = new InputDelegate();
-			
+
 		return _instance;
 	}
-	
-	
+
+  public function Reset()
+  {
+    _keyRepeatStateLookup = {};
+  }
+
+
   /* PRIVATE VARIABLES */
-	
+
 	private var _keyRepeatStateLookup: Object;
 	private var _keyRepeatSuppressLookup: Object;
-	
+
 	private var _bEnableControlFixup: Boolean = false;
 	private var _acceptKeycode: Number = -1;
-	
-	
+
+
   /* PROPERTIES */
-  
+
   	public var isGamepad: Boolean = false;
 
 
@@ -40,22 +52,22 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	public function InputDelegate()
 	{
 		super();
-		
+
 		Key.addListener(this);
 		_keyRepeatSuppressLookup = {};
 		_keyRepeatStateLookup = {};
 	}
-	
-	
+
+
   /* PUBLIC FUNCTIONS */
-  
+
 	// Certain menus wont receive navEquiv's, i.e. ENTER for activate in MapMenu
 	// Has to be disabled manually for skse.AllowTextInput
 	public function enableControlFixup(a_bEnabled: Boolean): Void
 	{
 		if (a_bEnabled)
 			_acceptKeycode = GlobalFunctions.getMappedKey("Accept", Input.CONTEXT_MENUMODE, isGamepad);
-			
+
 		_bEnableControlFixup = a_bEnabled;
 	}
 
@@ -74,11 +86,17 @@ class gfx.managers.InputDelegate extends EventDispatcher
 	{
 		var code = Key.getCode(a_controllerIdx);
 		var repeatState = getKeyRepeatState(a_controllerIdx);
-		
+
+		// We can get multiple keydowns for the same key
+		// Possible outcomes:
+		//  - send/passthrough the keydown event
+		//  - supress the event
+		//  - send a keyheld event
+
 		if (!repeatState[code]) {
 			handleKeyPress("keyDown", code, a_controllerIdx, skse.GetLastControl(true), skse.GetLastKeycode(true));
 			repeatState[code] = true;
-			
+
 		} else {
 			var suppressState = getKeyRepeatSuppress(a_controllerIdx);
 			if (!suppressState[code])
@@ -88,14 +106,16 @@ class gfx.managers.InputDelegate extends EventDispatcher
 
 	public function onKeyUp(a_controllerIdx: Number): Void
 	{
+		// Just send through the keyup event
+
 		var code = Key.getCode(a_controllerIdx);
 		var repeatState = getKeyRepeatState(a_controllerIdx);
 		repeatState[code] = false;
-		
+
 		handleKeyPress("keyUp", code, a_controllerIdx, skse.GetLastControl(false), skse.GetLastKeycode(false));
 	}
-	
-	
+
+
   /* PRIVATE FUNCTIONS */
 
 	private function handleKeyPress(a_type: String, a_code: Number, a_controllerIdx: Number, a_control: String, a_skseKeycode: Number): Void
@@ -112,7 +132,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 					a_skseKeycode = null;
 					break;
 			}
-		
+
 		// For != null, attempt fixup?
 		} else if (_bEnableControlFixup) {
 			if (a_skseKeycode == _acceptKeycode) {
@@ -120,6 +140,8 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			}
 		}
 
+		// Dispatch the event.
+		// By default, FocusHandler is the only listener.
 		var details = new InputDetails("key", a_code, a_type, navEquivalent, a_controllerIdx, a_control, a_skseKeycode);
 		dispatchEvent({type: "input", details: details});
 	}
@@ -143,9 +165,13 @@ class gfx.managers.InputDelegate extends EventDispatcher
 		}
 		return obj;
 	}
-	
+
 	private function inputToNav(a_code: Number): String
 	{
+		// We're usually given just a number that represents the key.
+		// This function is used to map these key numbers to some symbolic
+		// name so we can deal with the key in a more reasonable manner
+		// in the rest of the code.
 		switch (a_code)
 		{
 			case 38:	return NavigationCode.UP;
@@ -176,7 +202,7 @@ class gfx.managers.InputDelegate extends EventDispatcher
 			case 106:	return NavigationCode.GAMEPAD_START;
 			case 107:	return NavigationCode.GAMEPAD_BACK;
 		}
-		
+
 		return null;
 	}
 }

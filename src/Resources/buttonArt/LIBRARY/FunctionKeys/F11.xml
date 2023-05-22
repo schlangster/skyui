@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/F11" itemID="501490bf-00000b3c" symbolType="graphic" lastModified="1343525087">
+  <timeline>
+    <DOMTimeline name="F11">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!213 0|213 29!213 29|238 29!238 29|238 256!238 256|272 256!272 256|272 0!272 0|213 0!123 29|148 29!148 29|148 256!148 256|182 256!182 256|182 0!182 0|123 0!123 0|123 29!34 29|92 29!92 29|92 0!92 0|0 0!0 0|0 256!0 256|34 256!34 256|34
+ 139!34 139|86 139!86 139|86 110!86 110|34 110!34 110|34 29"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

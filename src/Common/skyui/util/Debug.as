@@ -5,6 +5,8 @@ class skyui.util.Debug
   /* PRIVATE VARIABLES */
 	private static var _buffer: Array = [];
 
+	private static var indent = 0;
+
   /* PUBLIC STATIC FUNCTIONS */
 	public static function log(/* a_text: String , a_text2: String ... */): Void
 	{
@@ -23,12 +25,21 @@ class skyui.util.Debug
 		// Flush buffer
 		if (_global.skse && _buffer.length > 0) {
 			for(var i = 0; i < _buffer.length; i++)
-				skse.Log(_buffer[i]);			
+				skse.Log(_buffer[i]);
 			_buffer.splice(0);
 		}
 
+		if(arguments[0].slice(0, 3) == "<< ")
+			indent -= 1;
+
 		for(var i = 0; i < arguments.length; i++) {
-			var str = dateTime + " " + arguments[i];
+			var str = dateTime + " ";
+
+			for(var j = 0; j < indent; j++) {
+				str += "  ";
+			}
+
+			str += arguments[i];
 
 			if (_global.skse)
 				skse.Log(str);
@@ -37,6 +48,8 @@ class skyui.util.Debug
 			else
 				_buffer.push(str);
 		}
+		if(arguments[0].slice(0, 3) == ">> ")
+			indent += 1;
 	}
 
 	public static function logNT(/* a_text: String , a_text2: String ... */): Void
@@ -44,7 +57,7 @@ class skyui.util.Debug
 		// Flush buffer
 		if (_global.skse && _buffer.length > 0) {
 			for(var i = 0; i < _buffer.length; i++)
-				skse.Log(_buffer[i]);			
+				skse.Log(_buffer[i]);
 			_buffer.splice(0);
 		}
 
@@ -176,6 +189,16 @@ class skyui.util.Debug
 
 		return null;
 	}
+
+	static public function dumpFocusPath(focusPath: Array) {
+		Debug.dump("focusPath", focusPath);
+		for(var i = 0; i < focusPath.length; i++) {
+			var obj = focusPath[i];
+			if(obj.classname != null)
+				Debug.log("" + i + ": " + obj.classname());
+		}
+	}
+
 }
 
 

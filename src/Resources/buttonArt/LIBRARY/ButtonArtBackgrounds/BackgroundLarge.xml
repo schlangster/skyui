@@ -1,0 +1,87 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ButtonArtBackgrounds/BackgroundLarge" itemID="5061f6c0-00000cab" symbolType="graphic" lastModified="1348597440">
+  <timeline>
+    <DOMTimeline name="BackgroundLarge">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1000 132|1000 388!1000 388[1000 417 979 440!979 440[957 461 927 461!927 461|131 461!131 461[102 461 80 440!80 440[59 418 59 388!59 388|59 132!59 132[59 102 80 80!80 80[102 58 131 58!131 58|927 58!927 58[956 58 979 80!979 80[1000 102
+ 1000 132"/>
+                    <Edge cubics="!80 80(;95,65 112,58 131,58q80 80Q102 58q131 58);"/>
+                    <Edge cubics="!59 132(;59,112 66,95 80,80q59 132Q59 102q80 80);"/>
+                    <Edge cubics="!59 388(;59,388 59,132 59,132q59 388 59 132);"/>
+                    <Edge cubics="!80 440(;66,425 59,408 59,388q80 440Q59 418q59 388);"/>
+                    <Edge cubics="!131 461(;112,461 95,454 80,440q131 461Q102 461q80 440);"/>
+                    <Edge cubics="!131 58(;131,58 827,58 827,58q131 58 827 58);"/>
+                    <Edge cubics="!827 58(;827,58 900,58 900,58q827 58 900 58);"/>
+                    <Edge cubics="!900 461(;900,461 827,461 827,461q900 461 827 461);"/>
+                    <Edge cubics="!827 461(;827,461 131,461 131,461q827 461 131 461);"/>
+                    <Edge cubics="!979 80(;993,95 1000,112 1000,132q979 80Q1000 102q1000 132);"/>
+                    <Edge cubics="!927 58(;946,58 964,65 979,80q927 58Q956 58q979 80);"/>
+                    <Edge cubics="!979 440(;964,454 947,461 927,461q979 440Q957 461q927 461);"/>
+                    <Edge cubics="!1000 388(;1000,407 993,425 979,440q1000 388Q1000 417q979 440);"/>
+                    <Edge cubics="!1000 132(;1000,132 1000,388 1000,388q1000 132 1000 388);"/>
+                    <Edge cubics="!827 461(;827,461 827,58 827,58q827 461 827 58);"/>
+                    <Edge cubics="!927 461(;927,461 900,461 900,461q927 461 900 461);"/>
+                    <Edge cubics="!900 58(;900,58 927,58 927,58q900 58 927 58);"/>
+                    <Edge cubics="!900 461(;900,461 900,58 900,58q900 461 900 58);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A6A8AB"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1002 56[1033 88 1033 132!1033 132|1033 388!1033 388[1033 432 1002 463!1002 463[969 494 927 494!927 494|131 494!131 494[88 494 56 463!56 463[26 431 26 388!26 388|26 132!26 132[26 88 56 56!56 56[88 26 131 26!131 26|927 26!927 26[970 26
+ 1002 56!927 58|131 58!131 58[102 58 80 80!80 80[59 102 59 132!59 132|59 388!59 388[59 418 80 440!80 440[102 461 131 461!131 461|927 461!927 461[957 461 979 440!979 440[1000 417 1000 388!1000 388|1000 132!1000 132[1000 102 979 80!979
+ 80[956 58 927 58"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1059 132|1059 388!1059 388[1059 443 1020 481!1020 481[982 520 927 520!927 520|131 520!131 520[78 520 39 481!39 481[0 443 0 388!0 388|0 132!0 132[0 78 39 39!39 39[78 0 131 0!131 0|927 0!927 0[982 0 1020 39!1020 39[1059 78 1059 132!927
+ 26|131 26!131 26[88 26 56 56!56 56[26 88 26 132!26 132|26 388!26 388[26 431 56 463!56 463[88 494 131 494!131 494|927 494!927 494[969 494 1002 463!1002 463[1033 432 1033 388!1033 388|1033 132!1033 132[1033 88 1002 56!1002 56[970 26 927
+ 26"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

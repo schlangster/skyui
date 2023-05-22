@@ -1,0 +1,61 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/SettingsCheckBox" itemID="51070ea9-0000026e" sourceFlashFilepath="Sprite 509" lastModified="1359417001" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="SettingsCheckBox">
+      <layers>
+        <DOMLayer name="Script 0" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/SettingsCheckBoxCheck">
+                  <matrix>
+                    <Matrix a="2.337646484375" d="2.30302429199219"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/SettingsCheckBoxBackground">
+                  <matrix>
+                    <Matrix a="2.16667175292969" d="2.16667175292969"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 556" itemID="4ee20823-000000dc" symbolType="graphic" lastModified="1323436067">
+  <timeline>
+    <DOMTimeline name="Shape 556">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.14990234375" d="-0.14990234375" tx="111.6" ty="-40.65"/>
+                        </matrix>
+                        <GradientEntry color="#9B9B98" ratio="0.0352941176470588"/>
+                        <GradientEntry color="#8A97A8" ratio="0.141176470588235"/>
+                        <GradientEntry color="#7C94B6" ratio="0.219607843137255"/>
+                        <GradientEntry color="#7883A9" ratio="0.349019607843137"/>
+                        <GradientEntry color="#63778B" ratio="0.596078431372549"/>
+                        <GradientEntry color="#4E6B87" ratio="0.717647058823529"/>
+                        <GradientEntry color="#5C7B9A" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!5599 0|4 0!4 0|4 238!4 238|5599 238!5599 238|5599 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

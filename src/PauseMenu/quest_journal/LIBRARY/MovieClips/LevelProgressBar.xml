@@ -1,0 +1,105 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/LevelProgressBar" itemID="51073371-00000f4e" sourceFlashFilepath="Sprite 564" lastModified="1359426509" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="LevelProgressBar">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="139" name="Full" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="139" name="Empty" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="140" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name=" 8" color="#4F80FF" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="139" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/MeterMask">
+                  <matrix>
+                    <Matrix tx="-89.7" ty="-8.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="139" tweenType="motion" keyMode="17921">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/MeterMask">
+                  <matrix>
+                    <Matrix tx="-266.85" ty="-8.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#4F80FF" parentLayerIndex="2" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="140" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/MeterBar">
+                  <matrix>
+                    <Matrix tx="-88.75" ty="-5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="140" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/MeterBarBackground">
+                  <matrix>
+                    <Matrix tx="-88.8" ty="-5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="140" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/MeterBackground" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

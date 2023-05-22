@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 555" itemID="5b986e27-00000a5c" linkageExportForAS="true" linkageIdentifier="PS3_A" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 555">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FEE161">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#BBBDBF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!371 151|356 137!356 137|266 228"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!266 228|263 230!263 230|184 151"/>
+                    <Edge fillStyle0="2" edges="!184 151|170 137!170 137|144 162!144 162|237 255!237 255|144 348!144 348|170 373!170 373|171 372"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!171 372|263 280!263 280|278 295"/>
+                    <Edge fillStyle0="2" edges="!278 295|356 373!356 373|358 371"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!358 371|382 348!382 348|289 255!289 255|382 162!382 162|371 151"/>
+                    <Edge fillStyle0="1" edges="!358 371|373 386!373 386|398 361!398 361|305 268!305 268|398 175!398 175|373 148!373 148|371 151"/>
+                    <Edge fillStyle1="1" edges="!184 151|186 148!186 148|266 228"/>
+                    <Edge fillStyle0="1" edges="!171 372|186 386!186 386|278 295"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DAA751" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Named Icons/Symbol 258" centerPoint3DX="13" centerPoint3DY="13">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

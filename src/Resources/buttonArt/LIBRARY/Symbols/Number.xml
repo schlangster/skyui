@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Number" itemID="50146ea3-0000031d" symbolType="graphic" lastModified="1343521879">
+  <timeline>
+    <DOMTimeline name="Number">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.680755615234375" d="0.686630249023438" tx="-0.8" ty="-0.9"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!160 26S1|134 112!134 112|104 112!104 112|130 26!130 26|112 26!112 26|85 112!85 112|48 112!48 112|42 132!42 132|79 132!79 132|66 174!66 174|30 174!30 174|24 194!24 194|60 194!60 194|33 282!33 282|52 282!52 282|79 194!79 194|109 194!109
+ 194|82 282!82 282|101 282!101 282|127 194!127 194|166 194!166 194|172 174!172 174|134 174!134 174|147 132!147 132|185 132!185 132|190 112!190 112|153 112!153 112|179 26!179 26|160 26!98 132|128 132!128 132|115 174!115 174|85 174!85 174
+|98 132"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

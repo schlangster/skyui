@@ -10,14 +10,14 @@ class Shared.GlobalFunc
 	static function Lerp(aTargetMin: Number, aTargetMax: Number, aSourceMin: Number, aSourceMax: Number, aSource: Number, abClamp: Boolean): Number
 	{
 		var normVal: Number = aTargetMin + (aSource - aSourceMin) / (aSourceMax - aSourceMin) * (aTargetMax - aTargetMin);
-		if (abClamp) 
+		if (abClamp)
 			normVal = Math.min(Math.max(normVal, aTargetMin), aTargetMax);
 		return normVal;
 	}
 
 	static function IsKeyPressed(aInputInfo: Object, abProcessKeyHeldDown: Boolean): Boolean
 	{
-		if (abProcessKeyHeldDown == undefined) 
+		if (abProcessKeyHeldDown == undefined)
 			abProcessKeyHeldDown = true;
 		return aInputInfo.value == "keyDown" || (abProcessKeyHeldDown && aInputInfo.value == "keyHold");
 	}
@@ -32,14 +32,13 @@ class Shared.GlobalFunc
 	{
 		TextField.prototype.SetText = function (aText: String, abHTMLText: Boolean)
 		{
-			if (aText == undefined || aText == "") 
+			if (aText == undefined || aText == "")
 				aText = " ";
 			var textFormat: TextFormat = this.getTextFormat();
 			if (abHTMLText) {
 				var letterSpacing: Number = textFormat.letterSpacing;
 				var kerning: Boolean = textFormat.kerning;
 				this.htmlText = aText;
-				textFormat = this.getTextFormat();
 				textFormat.letterSpacing = letterSpacing;
 				textFormat.kerning = kerning;
 				this.setTextFormat(textFormat);
@@ -67,14 +66,14 @@ class Shared.GlobalFunc
 			//                    |     THE     |
 			//                    |    STAGE    |
 			//  (minXY.x, maxXY.y)|_____________|(maxXY.x, maxXY.y)
-			
-			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR") 
+
+			if (aPosition == "T" || aPosition == "TL" || aPosition == "TR")
 				this._y = minXY.y;
-			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR") 
+			if (aPosition == "B" || aPosition == "BL" || aPosition == "BR")
 				this._y = maxXY.y;
-			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL") 
+			if (aPosition == "L" || aPosition == "TL" || aPosition == "BL")
 				this._x = minXY.x;
-			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR") 
+			if (aPosition == "R" || aPosition == "TR" || aPosition == "BR")
 				this._x = maxXY.x;
 		};
 
@@ -87,7 +86,7 @@ class Shared.GlobalFunc
 		{
 			var movieClips: Array = new Array();
 			for (var i: Number = 0; i < this.length; i++)
-				if (this[i] instanceof MovieClip && this[i] != this) 
+				if (this[i] instanceof MovieClip && this[i] != this)
 					movieClips.push(this[i]);
 			return movieClips;
 		};
@@ -137,14 +136,14 @@ class Shared.GlobalFunc
 
 	static function GetTextField(aParentClip: MovieClip, aName: String): TextField
 	{
-		if (Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name] != undefined) 
+		if (Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name] != undefined)
 			return Shared.GlobalFunc.RegisteredTextFields[aName + aParentClip._name];
 		trace(aName + " is not registered a TextField name.");
 	}
 
 	static function GetMovieClip(aParentClip: MovieClip, aName: String): MovieClip
 	{
-		if (Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name] != undefined) 
+		if (Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name] != undefined)
 			return Shared.GlobalFunc.RegisteredMovieClips[aName + aParentClip._name];
 		trace(aName + " is not registered a MovieClip name.");
 	}
@@ -153,7 +152,7 @@ class Shared.GlobalFunc
 	{
 		TextField.prototype.RegisterTextField = function (aStartingClip): Void
 		{
-			if (Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] == undefined) 
+			if (Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] == undefined)
 				Shared.GlobalFunc.RegisteredTextFields[this._name + aStartingClip._name] = this;
 		};
 
@@ -163,7 +162,7 @@ class Shared.GlobalFunc
 	static function RegisterTextFields(aStartingClip: MovieClip) : Void
 	{
 		for (var i: Number = 0; i < aStartingClip.length; i++)
-			if (aStartingClip[i] instanceof TextField) 
+			if (aStartingClip[i] instanceof TextField)
 				aStartingClip[i].RegisterTextField(aStartingClip);
 	}
 
@@ -179,7 +178,7 @@ class Shared.GlobalFunc
 	{
 		MovieClip.prototype.RegisterMovieClip = function (aStartingClip): Void
 		{
-			if (Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] == undefined) 
+			if (Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] == undefined)
 				Shared.GlobalFunc.RegisteredMovieClips[this._name + aStartingClip._name] = this;
 		};
 
@@ -189,7 +188,7 @@ class Shared.GlobalFunc
 	static function RegisterMovieClips(aStartingClip: MovieClip): Void
 	{
 		for (var i: Number = 0; i < aStartingClip.length; i++)
-			if (aStartingClip[i] instanceof MovieClip) 
+			if (aStartingClip[i] instanceof MovieClip)
 				aStartingClip[i].RegisterMovieClip(aStartingClip);
 	}
 
@@ -197,7 +196,7 @@ class Shared.GlobalFunc
 	{
 		for (var i: Number = 0; i < aStartingClip.length; i++) {
 			if (aStartingClip[i] instanceof MovieClip) {
-				if (aStartingClip[i] != aStartingClip) 
+				if (aStartingClip[i] != aStartingClip)
 					Shared.GlobalFunc.RecursiveRegisterMovieClips(aStartingClip[i], aRootClip);
 				aStartingClip[i].RegisterMovieClip(aRootClip);
 			}
@@ -218,14 +217,17 @@ class Shared.GlobalFunc
 		var j: Number = 0;
 		var strLength: Number = astrText.length;
 		var trimStr: String = undefined;
-		while (astrText.charAt(i) == " " || astrText.charAt(i) == "\n" || astrText.charAt(i) == "\r" || astrText.charAt(i) == "\t") 
+		while (astrText.charAt(i) == " " || astrText.charAt(i) == "\n" || astrText.charAt(i) == "\r" || astrText.charAt(i) == "\t")
 			++i;
 		trimStr = astrText.substring(i);
 		j = trimStr.length - 1;
-		while (trimStr.charAt(j) == " " || trimStr.charAt(j) == "\n" || trimStr.charAt(j) == "\r" || trimStr.charAt(j) == "\t") 
+		while (trimStr.charAt(j) == " " || trimStr.charAt(j) == "\n" || trimStr.charAt(j) == "\r" || trimStr.charAt(j) == "\t")
 			--j;
 		trimStr = trimStr.substring(0, j + 1);
 		return trimStr;
 	}
 
+  static function StringReplaceAll(str:String, search:String, replace:String):String {
+  	return str.split(search).join(replace);
+  }
 }

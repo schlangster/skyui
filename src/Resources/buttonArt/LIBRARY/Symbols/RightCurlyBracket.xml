@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/RightCurlyBracket" itemID="50146d56-00000305" symbolType="graphic" lastModified="1343521917">
+  <timeline>
+    <DOMTimeline name="RightCurlyBracket">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.604721069335938" d="0.602935791015625" tx="-1.15" ty="-0.8"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!49 26S1|38 26!38 26|38 45!38 45[52 46 59 53!59 53[66 59 65 75!65 75|65 129!65 129[65 140 67 148!67 148[70 156 77 162!77 162[84 168 97 170!97 170|97 171!97 171[84 174 77 179!77 179[70 185 67 194!67 194[65 202 65 213!65 213|65 267!65 267
+[66 282 59 289!59 289[52 296 38 297!38 297|38 316!38 316|49 316!49 316[62 316 72 312!72 312[82 308 88 298!88 298[93 289 93 271!93 271|93 207!93 207[94 197 98 191!98 191[103 185 110 183!110 183[117 180 124 180!124 180|124 162!124 162[117
+ 161 110 159!110 159[103 156 98 151!98 151[94 145 93 134!93 134|93 70!93 70[93 53 88 43!88 43[82 33 72 29!72 29[62 26 49 26"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

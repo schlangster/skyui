@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/Alt" itemID="501484cb-000006ea" symbolType="graphic" lastModified="1343523427">
+  <timeline>
+    <DOMTimeline name="Alt">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!222 110|205 110!205 110|205 136!205 136|222 136!222 136|222 282!222 282|254 282!254 282|254 136!254 136|271 136!271 136|271 110!271 110|254 110!254 110|254 62!254 62|222 62!222 62|222 110!69 75|89 205!89 205|48 205!48 205|69 75!94 232
+|104 282!104 282|138 282!138 282|83 26!83 26|56 26!56 26|0 282!0 282|34 282!34 282|43 232!43 232|94 232!155 0|155 282!155 282|187 282!187 282|187 0!187 0|155 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

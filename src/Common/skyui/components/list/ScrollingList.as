@@ -196,6 +196,8 @@ class skyui.components.list.ScrollingList extends BasicList
 			scrollUpButton._visible = _scrollPosition > 0;
 		if (scrollDownButton != undefined) 
 			scrollDownButton._visible = _scrollPosition < _maxScrollPosition;
+
+		dispatchEvent({type: "listUpdated"});
 	}
 
 	// @override BasicList
@@ -216,9 +218,6 @@ class skyui.components.list.ScrollingList extends BasicList
 		
 		listEnumeration.invalidate();
 
-		if (_selectedIndex >= listEnumeration.size())
-			_selectedIndex = listEnumeration.size() - 1;
-			
 		if (listEnumeration.lookupEnumIndex(_selectedIndex) == null)
 			_selectedIndex = -1;
 		

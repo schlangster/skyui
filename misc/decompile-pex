@@ -1,0 +1,55 @@
+#! env ruby
+
+def toWinPath(wslPath)
+	cmd = "wslpath -w '#{wslPath}'"
+	return `#{cmd}`.strip
+end
+
+# This utility decompiles every pex file in the target_dir
+# and places the result file in the same directory.
+
+require('optparse')
+require('pathname')
+require('fileutils')
+
+options = {}
+optParser = OptionParser.new do |opts|
+	opts.banner = "Usage: decompile-pex [options] target_dir"
+
+	# opts.on("-w", "--watch", "Watch built directory") do
+	# 	options[:watch] = true
+	# end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+  	puts opts
+  	exit
+  end
+end
+
+optParser.parse!
+
+targetDir = ARGV.pop
+if not targetDir then
+	puts optParser
+	exit
+end
+
+targetDirPath = Pathname.new(targetDir)
+if !targetDirPath.exist? or !targetDirPath.directory? then
+		puts "Cannot locate target directory: " + targetDirPath;
+		exit 1
+end
+
+decompiler = ENV['PEX_DECOMPILER']
+if !File.exists?(decompiler) then
+		puts "Cannot locate decompiler from $PEX_DECOMPILER";
+		exit 1
+end
+
+Dir.chdir targetDirPath
+Pathname.glob("#{targetDirPath}/**/*.pex").each do |f|
+	next if f.directory?
+
+	cmd = "\"#{decompiler}\" -p \"#{toWinPath(targetDirPath)}\" \"#{toWinPath(f)}\""
+	puts `#{cmd}`
+end

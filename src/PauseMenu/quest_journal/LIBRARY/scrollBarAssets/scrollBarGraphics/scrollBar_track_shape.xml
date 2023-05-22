@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="scrollBarAssets/scrollBarGraphics/scrollBar_track_shape" itemID="50f92501-00007929" sourceFlashFilepath="../../Resources/Assets/scrollbar.fla" sourceLibraryItemHRef="scrollBarAssets/scrollBarGraphics/scrollBar_track_shape" sourceLastModified="1358505217" symbolType="graphic" lastModified="1358505217" sourceItemID="50f92501-00007929">
+  <timeline>
+    <DOMTimeline name="scrollBar_track_shape">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#FFFFFF" alpha="0.2"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!50 500|30 500!30 500|30 0!30 0|50 0"/>
+                    <Edge fillStyle1="2" edges="!50 0S2|70 0"/>
+                    <Edge fillStyle1="3" edges="!70 0S2|220 0"/>
+                    <Edge fillStyle1="2" edges="!220 0S2|240 0"/>
+                    <Edge fillStyle1="1" edges="!240 0|260 0!260 0|260 500!260 500|240 500"/>
+                    <Edge fillStyle1="2" edges="!240 500S2|220 500"/>
+                    <Edge fillStyle1="3" edges="!220 500S2|70 500"/>
+                    <Edge fillStyle1="2" edges="!70 500S2|50 500"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!240 0S2|240 500"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!70 0S3|70 500"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!50 500S2|50 0"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!220 0S3|220 500"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

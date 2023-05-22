@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbols/Tilde" itemID="50146e07-00000313" symbolType="graphic" lastModified="1343521963">
+  <timeline>
+    <DOMTimeline name="Tilde">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="0.604721069335938" d="0.602935791015625" tx="-1.55" ty="-4.95"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!75 176S1[67 182 62 191!62 191[56 200 52 210!52 210|64 226!64 226[67 219 70 212!70 212[74 205 79 200!79 200[84 196 92 195!92 195[98 196 104 198!104 198[110 201 115 204!115 204[120 206 127 210!127 210[134 213 141 216!141 216[148 219 153
+ 219!153 219[162 219 170 213!170 213[177 207 183 199!183 199[188 190 192 181!192 181|181 165!181 165[178 171 174 178!174 178[170 184 165 189!165 189[160 193 153 193!153 193[148 193 140 189!140 189[133 186 124 181!124 181[116 177 108 173
+!108 173[99 170 92 169!92 169[82 170 75 176"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

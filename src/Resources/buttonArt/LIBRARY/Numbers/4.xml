@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Numbers/4" itemID="5014700b-0000035f" symbolType="graphic" lastModified="1343521746">
+  <timeline>
+    <DOMTimeline name="4">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.35" ty="-1.3"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!116 78S1|116 186!116 186|74 186!74 186|115 78!115 78|116 78!116 26|47 182!47 182|47 212!47 212|116 212!116 212|116 282!116 282|149 282!149 282|149 212!149 212|165 212!165 212|165 186!165 186|149 186!149 186|149 26!149 26|116 26"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

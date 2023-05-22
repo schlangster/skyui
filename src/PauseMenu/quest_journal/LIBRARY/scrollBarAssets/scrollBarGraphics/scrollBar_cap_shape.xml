@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="scrollBarAssets/scrollBarGraphics/scrollBar_cap_shape" itemID="50f924ee-00007924" sourceFlashFilepath="../../Resources/Assets/scrollbar.fla" sourceLibraryItemHRef="scrollBarAssets/scrollBarGraphics/scrollBar_cap_shape" sourceLastModified="1358505198" symbolType="graphic" lastModified="1358505198" sourceItemID="50f924ee-00007924">
+  <timeline>
+    <DOMTimeline name="scrollBar_cap_shape">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!50 340S3|50 318!50 318|67 270!67 270|47 231!47 231/145 48!145 48/243 231!243 231|223 270!223 270|240 318!240 318|240 340"/>
+                    <Edge fillStyle0="1" edges="!240 340S1|260 340!260 340|260 314!260 314|245 271!245 271|265 231!265 231/145 1!145 1/145 0!145 0|25 231!25 231|45 271!45 271|30 314!30 314|30 340!30 340|50 340"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!69 231S3|110 314!110 314|180 314!180 314|221 231!221 231/145 91!145 91/69 231!181 225|171 252!171 252|119 252!119 252|109 225!109 225/145 158!145 158/181 225"/>
+                    <Edge fillStyle1="2" edges="!240 340S2|50 340"/>
+                    <Edge cubics="!260 340(;260,340 260,314 260,314q260 340 260 314);"/>
+                    <Edge cubics="!30 340(;30,340 50,340 50,340q30 340 50 340);"/>
+                    <Edge cubics="!45 271(;45,271 30,314 30,314q45 271 30 314);"/>
+                    <Edge cubics="!50 318(;50,318 67,270 67,270q50 318 67 270);"/>
+                    <Edge cubics="!69 231(;69,231 110,314 110,314q69 231 110 314);"/>
+                    <Edge cubics="!25 231(;25,231 45,271 45,271q25 231 45 271);"/>
+                    <Edge cubics="!67 270(;67,270 47,231 47,231q67 270 47 231);"/>
+                    <Edge cubics="!119 252(;119,252 109,225 109,225q119 252 109 225);"/>
+                    <Edge cubics="!50 340(;50,340 50,318 50,318q50 340 50 318);"/>
+                    <Edge cubics="!30 314(;30,314 30,340 30,340q30 314 30 340);"/>
+                    <Edge cubics="!145 0(;145,0 145,1 145,1q145 0 145 1);"/>
+                    <Edge cubics="!145 158(;145,158 109,225 109,225q145 158 109 225);"/>
+                    <Edge cubics="!260 340(;260,340 240,340 240,340q260 340 240 340);"/>
+                    <Edge cubics="!245 271(;245,271 260,314 260,314q245 271 260 314);"/>
+                    <Edge cubics="!240 318(;240,318 223,270 223,270q240 318 223 270);"/>
+                    <Edge cubics="!221 231(;221,231 180,314 180,314q221 231 180 314);"/>
+                    <Edge cubics="!223 270(;223,270 243,231 243,231q223 270 243 231);"/>
+                    <Edge cubics="!171 252(;171,252 181,225 181,225q171 252 181 225);"/>
+                    <Edge cubics="!240 340(;240,340 240,318 240,318q240 340 240 318);"/>
+                    <Edge cubics="!145 158(;145,158 181,225 181,225q145 158 181 225);"/>
+                    <Edge cubics="!245 271(;245,271 265,231 265,231q245 271 265 231);"/>
+                    <Edge cubics="!171 252(;171,252 119,252 119,252q171 252 119 252);"/>
+                    <Edge cubics="!180 314(;180,314 110,314 110,314q180 314 110 314);"/>
+                    <Edge cubics="!50 340(;50,340 240,340 240,340q50 340 240 340);"/>
+                    <Edge cubics="!25 231(;25,231 145,0 145,0q25 231 145 0);"/>
+                    <Edge cubics="!145 1(;145,1 265,231 265,231q145 1 265 231);"/>
+                    <Edge cubics="!243 231(;243,231 145,48 145,48q243 231 145 48);"/>
+                    <Edge cubics="!47 231(;47,231 145,48 145,48q47 231 145 48);"/>
+                    <Edge cubics="!145 91(;145,91 221,231 221,231q145 91 221 231);"/>
+                    <Edge cubics="!145 91(;145,91 69,231 69,231q145 91 69 231);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Named Icons/Symbol 258" itemID="5b986e27-0000094a" lastModified="1535509198">
+  <timeline>
+    <DOMTimeline name="Symbol 258">
+      <layers>
+        <DOMLayer name="Layer 1" color="#943EE8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A6A8AB" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!520 260[520 367 443 443!443 443[367 520 260 520!260 520[153 520 76 443!76 443[0 367 0 260!0 260[0 152 76 76!76 76[152 0 260 0!260 0[367 0 443 76!443 76[520 152 520 260"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!419 418[352 484 260 484!260 484[167 484 101 418!101 418[35 352 35 260!35 260[35 167 101 100!101 100[167 34 260 34!260 34[353 34 419 100!419 100[485 167 485 260!485 260[485 352 419 418"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!394 125[450 181 450 260!450 260[450 339 394 393!394 393[339 449 260 449!260 449[182 449 126 393!126 393[70 339 70 260!70 260[70 181 126 125!126 125[182 69 260 69!260 69[339 69 394 125"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

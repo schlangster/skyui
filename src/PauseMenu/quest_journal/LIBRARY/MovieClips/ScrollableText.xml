@@ -1,0 +1,104 @@
+<DOMComponentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/ScrollableText" itemID="51070db8-00000257" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="ScrollableText" linkageClassName="gfx.controls.TextArea" linkageURL="." sourceFlashFilepath="Sprite 467" sourceLibraryItemHRef="Sprites/Sprite 467" lastModified="1359425655" sourceItemID="00000000-7fffffff" displayAsComponent="false" customIconID="0" persistLivePreview11="true" editFrameIndex="1" requiredMinimumPlayerVersion="0" requiredMinimumASVersion="0" parametersAreLocked="true">
+  <timeline>
+    <DOMTimeline name="ScrollableText">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="10" name="default" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" name="focused" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" name="disabled" labelType="name" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script 0" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="8704">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="8704">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="8704">
+              <elements>
+                <DOMDynamicText name="textField" selected="true" width="596" height="396" includeOutlines="true" isSelectable="false" scrollable="true" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Help text goes here!</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" letterSpacing="1" size="24" face="$EverywhereFont*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+  <parametersAsXML><![CDATA[   <property id="actAsButton">
+      <Inspectable name="actAsButton" variable="actAsButton" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="defaultText">
+      <Inspectable name="defaultText" variable="defaultText" category="" verbose="0" defaultValue="" type="Default"/>
+   </property>
+   <property id="disabled">
+      <Inspectable name="disabled" variable="disabled" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="editable">
+      <Inspectable name="editable" variable="editable" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="enableInitCallback">
+      <Inspectable name="enableInitCallback" variable="enableInitCallback" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="maxChars">
+      <Inspectable name="maxChars" variable="maxChars" category="" verbose="0" defaultValue="0.000000" type="Number"/>
+   </property>
+   <property id="inspectableScrollBar">
+      <Inspectable name="inspectableScrollBar" variable="inspectableScrollBar" category="" verbose="0" defaultValue="scrollbar" type="Default"/>
+   </property>
+   <property id="scrollPolicy">
+      <Inspectable name="scrollPolicy" variable="scrollPolicy" category="" verbose="0" defaultValue="auto" type="Default"/>
+   </property>
+   <property id="soundMap">
+      <Inspectable name="soundMap" variable="soundMap" category="" verbose="0" defaultValue="scroll" type="Array"/>
+   </property>
+   <property id="textID">
+      <Inspectable name="textID" variable="textID" category="" verbose="0" defaultValue="" type="Default"/>
+   </property>
+   <property id="visible">
+      <Inspectable name="visible" variable="visible" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+]]></parametersAsXML>
+</DOMComponentItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Numbers/3" itemID="50147004-0000035d" symbolType="graphic" lastModified="1343521742">
+  <timeline>
+    <DOMTimeline name="3">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-2.55" ty="-1.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!107 23S1[85 23 74 32!74 32[62 41 59 57!59 57[55 72 56 92!56 92|56 94!56 94|88 94!88 94|88 86!88 86[88 79 90 72!90 72[91 64 95 59!95 59[100 53 108 53!108 53[118 53 122 61!122 61[126 68 127 77!127 77[128 87 128 94!128 94[128 109 125 117
+!125 117[123 126 115 130!115 130[107 133 93 133!93 133|89 133!89 133|89 164!89 164|99 164!99 164[112 164 118 170!118 170[125 176 127 186!127 186[129 196 129 207!129 207[129 213 129 221!129 221[128 229 126 237!126 237[124 245 119 249!119
+ 249[114 254 105 255!105 255[97 254 92 250!92 250[88 246 86 240!86 240[84 233 84 226!84 226|84 218!84 218|51 218!51 218|51 226!51 226[51 254 63 270!63 270[76 285 105 285!105 285[128 285 141 275!141 275[154 264 159 247!159 247[164 230
+ 164 209!164 209[164 197 162 184!162 184[160 172 153 163!153 163[146 154 132 150!132 150|132 149!132 149[145 145 152 135!152 135[158 126 159 113!159 113[161 101 161 89!161 89[161 70 157 55!157 55[152 40 140 31!140 31[129 23 107 23"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

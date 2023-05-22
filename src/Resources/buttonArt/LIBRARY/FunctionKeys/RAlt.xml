@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="FunctionKeys/RAlt" itemID="50a94b0f-0000364e" symbolType="graphic" lastModified="1355267276">
+  <timeline>
+    <DOMTimeline name="RAlt">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!334 110|334 136!334 136|351 136!351 136|351 282!351 282|383 282!383 282|383 136!383 136|400 136!400 136|400 110!400 110|383 110!383 110|383 62!383 62|351 62!351 62|351 110!351 110|334 110!284 0|284 282!284 282|316 282!316 282|316 0!316
+ 0|284 0!0 26|0 282!0 282|34 282!34 282|34 156!34 156|81 282!81 282|116 282!116 282|69 157!69 157[83 154 91 143!91 143[98 132 101 118!101 118[104 104 104 91!104 91[104 67 98 54!98 54[92 40 82 34!82 34[72 28 61 27!61 27[50 26 41 26!41
+ 26|0 26!68 99[68 118 61 129!61 129[53 140 34 139!34 139|34 55!34 55|39 55!39 55[52 54 58 60!58 60[64 66 66 76!66 76[68 86 68 99!198 75|218 205!218 205|177 205!177 205|198 75!163 282|172 232!172 232|223 232!223 232|233 282!233 282|267
+ 282!267 282|212 26!212 26|185 26!185 26|129 282!129 282|163 282"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

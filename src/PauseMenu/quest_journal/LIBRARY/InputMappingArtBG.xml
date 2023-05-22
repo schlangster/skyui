@@ -1,0 +1,26 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="InputMappingArtBG" itemID="51070bc7-00000233" sourceFlashFilepath="../../ItemMenus/bottombar.fla" sourceLibraryItemHRef="MovieClip/ButtonBG" sourceLastModified="1348259858" lastModified="1359416263" sourceItemID="505cd012-000003df">
+  <timeline>
+    <DOMTimeline name="InputMappingArtBG">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#00FF00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!520 0|520 520!520 520|0 520!0 520|0 0!0 0|520 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

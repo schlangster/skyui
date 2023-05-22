@@ -1,0 +1,82 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MovieClips/StatsPage" itemID="51070ca3-0000023f" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="StatsPage" linkageClassName="StatsPage" linkageURL="." sourceFlashFilepath="Sprite 464" lastModified="1359435262" lastUniqueIdentifier="3" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="StatsPage">
+      <layers>
+        <DOMLayer name="Layer 8" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMComponentInstance libraryItemName="MovieClips/StatsList" name="StatsList_mc" uniqueID="1">
+                  <matrix>
+                    <Matrix tx="265" ty="50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='StatsPage' oldCopiedComponentPath='1'>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="textOption">
+      <Inspectable name="textOption" variable="textOption" category="" verbose="0" defaultValue="Shrink To Fit" type="Default"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MovieClips/StatsCategoryListHolder" name="CategoryList_mc">
+                  <matrix>
+                    <Matrix ty="95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Divider" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Divider" name="Divider" centerPoint3DX="242.5" centerPoint3DY="243.3">
+                  <matrix>
+                    <Matrix tx="235"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-110" y="243.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/BackgroundRect" name="StatsPageRect">
+                  <matrix>
+                    <Matrix a="8.64999389648438" d="4.89999389648438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

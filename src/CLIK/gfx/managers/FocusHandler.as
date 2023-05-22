@@ -1,3 +1,5 @@
+import skyui.util.Debug;
+
 dynamic class gfx.managers.FocusHandler
 {
 	static var _instance = gfx.managers.FocusHandler.instance;
@@ -21,7 +23,7 @@ dynamic class gfx.managers.FocusHandler
 
 	static function get instance()
 	{
-		if (_instance == null) 
+		if (_instance == null)
 		{
 			_instance = new FocusHandler();
 		}
@@ -70,18 +72,34 @@ dynamic class gfx.managers.FocusHandler
 
 	function handleInput(event: Object): Void
 	{
+		// Grab the focus path
+		// It appears controllerIdx is always 0 here.
 		var controllerIdx: Number = event.details.controllerIdx;
 		var focusIdx: Number = Selection.getControllerFocusGroup(controllerIdx);
 		var path: Array = getPathToFocus(focusIdx);
+
+		// Send the input into the first item in the focus list if possible
 		if (path.length == 0 || path[0].handleInput == null || path[0].handleInput(event.details, path.slice(1)) != true) {
+
+			// If nothing is going to handle the input Or if the handler returned false...
+			// Perform some default handling on "keyup"
 			if (event.details.value != "keyUp") {
+
+				// Only deal with input with a navEquivalent (aka keys we understand && will deal with)
+				// Keys that we don't understand will be skipped.
 				var nav = event.details.navEquivalent;
 				if (nav != null) {
+					// Get the thing that is in focus
 					var focusedElem = eval(Selection.getFocus(controllerIdx));
 					var actualFocus = this.actualFocusLookup[focusIdx];
+
+					// If the thing in focus is a text field, try to have it handle the input...
+					// If the input is handled, don't do anything further.
 					if (actualFocus instanceof TextField && focusedElem == actualFocus && this.textFieldHandleInput(nav, controllerIdx)) {
 						return;
 					}
+
+					// We're going to try to find another thing we can focus on...
 					var dirH = nav == gfx.ui.NavigationCode.LEFT || nav == gfx.ui.NavigationCode.RIGHT;
 					var dirV = nav == gfx.ui.NavigationCode.UP || nav == gfx.ui.NavigationCode.DOWN;
 					var focusContext = focusedElem._parent;
@@ -112,14 +130,14 @@ dynamic class gfx.managers.FocusHandler
 		var __reg5 = this.currentFocusLookup[focusIdx];
 		var __reg3 = __reg5;
 		var __reg4 = [__reg3];
-		while (__reg3) 
+		while (__reg3)
 		{
 			__reg3 = __reg3._parent;
-			if (__reg3.handleInput != null) 
+			if (__reg3.handleInput != null)
 			{
 				__reg4.unshift(__reg3);
 			}
-			if (__reg3 == _root) 
+			if (__reg3 == _root)
 			{
 				break;
 			}
@@ -129,17 +147,17 @@ dynamic class gfx.managers.FocusHandler
 
 	function onSetFocus(oldFocus, newFocus, controllerIdx)
 	{
-		if (oldFocus instanceof TextField && newFocus == null) 
+				if (oldFocus instanceof TextField && newFocus == null)
 		{
 			return undefined;
 		}
 		var __reg2 = Selection.getControllerFocusGroup(controllerIdx);
 		var __reg6 = this.actualFocusLookup[__reg2];
-		if (__reg6 == newFocus) 
+		if (__reg6 == newFocus)
 		{
 			var __reg4 = newFocus instanceof TextField ? newFocus._parent : newFocus;
 			var __reg5 = __reg4.focused;
-			if (__reg5 & 1 << __reg2 == 0) 
+			if (__reg5 & 1 << __reg2 == 0)
 			{
 				__reg4.focused = __reg5 | 1 << __reg2;
 			}
@@ -153,27 +171,27 @@ dynamic class gfx.managers.FocusHandler
 		var __reg3 = Selection.getCaretIndex(controllerIdx);
 		var __reg4 = Selection.getControllerFocusGroup(controllerIdx);
 		var __reg2 = this.actualFocusLookup[__reg4];
-		if ((__reg0 = nav) === gfx.ui.NavigationCode.UP) 
+		if ((__reg0 = nav) === gfx.ui.NavigationCode.UP)
 		{
-			if (!__reg2.multiline) 
+			if (!__reg2.multiline)
 			{
 				return false;
 			}
 			return __reg3 > 0;
 		}
-		else if (__reg0 === gfx.ui.NavigationCode.LEFT) 
+		else if (__reg0 === gfx.ui.NavigationCode.LEFT)
 		{
 			return __reg3 > 0;
 		}
-		else if (__reg0 === gfx.ui.NavigationCode.DOWN) 
+		else if (__reg0 === gfx.ui.NavigationCode.DOWN)
 		{
-			if (!__reg2.multiline) 
+			if (!__reg2.multiline)
 			{
 				return false;
 			}
 			return __reg3 < TextField(__reg2).length;
 		}
-		else if (__reg0 === gfx.ui.NavigationCode.RIGHT) 
+		else if (__reg0 === gfx.ui.NavigationCode.RIGHT)
 		{
 			return __reg3 < TextField(__reg2).length;
 		}

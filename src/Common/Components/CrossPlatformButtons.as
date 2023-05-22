@@ -1,3 +1,6 @@
+// TODO!!! Doesn't look like this file is use at all by skyui.
+// Consider removing this file completely.
+
 import Shared.ButtonChange;
 
 class Components.CrossPlatformButtons extends gfx.controls.Button

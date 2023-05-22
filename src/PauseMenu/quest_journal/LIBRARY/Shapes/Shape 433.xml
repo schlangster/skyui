@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 433" itemID="4ee20823-000000eb" sourceFlashFilepath="../../../../skyrimui/src/quest_journal.fla" sourceLibraryItemHRef="Shapes/Shape 433" sourceLastModified="1323436067" symbolType="graphic" lastModified="1323436067" sourceItemID="4ee20823-000000eb">
+  <timeline>
+    <DOMTimeline name="Shape 433">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999" alpha="0.501960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!160 0|160 4709!160 4709|397 4946!397 4946|160 5183!160 5183|160 9733!160 9733|201 9733!201 9733|201 5206!201 5206|257 5150!257 5150|257 9733!257 9733|298 9733!298 9733|298 5109!298 5109|461 4946!461 4946|298 4783!298 4783|298 0!298 0
+|257 0!257 0|257 4742!257 4742|201 4686!201 4686|201 0!201 0|160 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

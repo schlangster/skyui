@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/Shape 409" itemID="4ee20823-000001f2" symbolType="graphic" lastModified="1323436067">
+  <timeline>
+    <DOMTimeline name="Shape 409">
+      <layers>
+        <DOMLayer name="Shape Sublayer 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#DDDDDD"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!196 460|185 473!185 473[180 473 146 416!146 416[113 357 114 351!114 351|146 287!146 287[180 228 184 228!184 228|196 243"/>
+                    <Edge fillStyle1="1" edges="!196 243|169 287!169 287|137 351!137 351[136 357 169 416!169 416|196 460"/>
+                    <Edge fillStyle1="2" edges="!196 460|223 416!223 416|256 351!256 351|222 287!222 287|196 243"/>
+                    <Edge fillStyle0="2" edges="!196 192|184 177!184 177[179 177 130 261!130 261[83 343 83 350!83 350|83 351!83 351[86 366 131 444!131 444[179 523 185 523!185 523|197 511"/>
+                    <Edge fillStyle0="1" edges="!197 511|208 523!208 523[214 523 261 444!261 444|310 351!310 351|310 350!310 350|260 261!260 261|207 177!207 177|196 192"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!196 192|237 261!237 261|287 350!287 350|287 351!287 351|238 444!238 444|197 511"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
